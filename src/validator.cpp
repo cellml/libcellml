@@ -837,21 +837,19 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
-    const std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
+    std::string modifiedInput = input;
+
+    // It may be that we need to copy over the cellml namespace from the enclosing document.
+    auto cellMLNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
+    if (input.find("cellml:units") != std::string::npos && input.find(cellMLNamespaceText) == std::string::npos) {
+        auto foundIndex = input.find(MATHML_NS);
+        if (foundIndex) {
+            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellMLNamespaceText);
+        }
+    }
 
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
-    std::string modifiedInput = input;
-//    if (input.find(cellml2NamespaceString) == std::string::npos) {
-//        std::cout << "no cellml namespace" << std::endl;
-//        const std::string keyText = "MathML\"";
-//        size_t foundAt = input.find(keyText);
-//        if (foundAt != std::string::npos) {
-//            std::cout << "adjusting" << std::endl;
-//            modifiedInput.insert(foundAt + std::string(keyText).size(), cellml2NamespaceString);
-//        }
-//        std::cout << modifiedInput;
-//    }
     doc->parse(modifiedInput);
     // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
