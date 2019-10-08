@@ -66,6 +66,29 @@ class EntityTestCase(unittest.TestCase):
         m = Model()
         x.setParent(m)
         self.assertIsNotNone(x.parent())
+        x.clearParent()
+        self.assertIsNone(x.parent())
+        c = Component()
+        x.setParent(c)
+        self.assertIsNotNone(x.parent())
+        x.clearParent()
+        self.assertIsNone(x.parent())
+
+    def test_has_parent(self):
+        from libcellml import Entity, Component
+
+        # bool hasParent(Component* c)
+        x = Entity()
+        c1 = Component()
+        self.assertFalse(x.hasParent())
+        x.setParent(c1)
+        self.assertTrue(x.hasParent())
+        x.clearParent()
+        self.assertFalse(x.hasParent())
+        c2 = Component()
+        c2.setParent(c1)
+        x.setParent(c2)
+        self.assertTrue(x.hasParent())
 
 
 if __name__ == '__main__':
