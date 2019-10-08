@@ -14,21 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "namespaces.h"
-#include "utilities.h"
-#include "xmldoc.h"
+#include "libcellml/validator.h"
+
+#include <algorithm>
+#include <cmath>
+#include <libxml/uri.h>
+#include <stdexcept>
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/reset.h"
-#include "libcellml/validator.h"
 #include "libcellml/variable.h"
-
-#include <algorithm>
-#include <cmath>
-#include <stdexcept>
-
-#include <libxml/uri.h>
+#include "namespaces.h"
+#include "utilities.h"
+#include "xmldoc.h"
 
 namespace libcellml {
 
