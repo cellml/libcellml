@@ -21,9 +21,7 @@ limitations under the License.
 
 namespace libcellml {
 
-using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
-using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
-using EntityWeakPtr = std::weak_ptr<Entity>;
+using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
 
 /**
  * @brief The Entity::EntityImpl struct.
@@ -110,15 +108,15 @@ bool Entity::hasParent() const
 
 bool Entity::hasAncestor(const EntityPtr &entity) const
 {
-    bool hasParent = false;
+    bool hasAncestor = false;
     EntityPtr parent = mPimpl->mParent.lock();
     if (parent == entity) {
-        hasParent = true;
+        hasAncestor = true;
     } else if (parent) {
-        hasParent = parent->hasAncestor(entity);
+        hasAncestor = parent->hasAncestor(entity);
     }
 
-    return hasParent;
+    return hasAncestor;
 }
 
 } // namespace libcellml
