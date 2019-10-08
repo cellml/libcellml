@@ -40,7 +40,7 @@ TEST(Coverage, connectionComment)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(0), p.errorCount()); // Not sure why this was non-zero: comments don't throw errors in the parser?
+    EXPECT_EQ(size_t(4), p.errorCount());
 }
 
 TEST(Coverage, import)
@@ -268,5 +268,46 @@ TEST(Coverage, model)
     std::vector<libcellml::Model> vec;
 
     vec.push_back(rm);
+    vec.insert(vec.begin(), ao);
+}
+
+TEST(Coverage, generator)
+{
+    libcellml::Generator rg;
+    libcellml::Generator ao;
+
+    ao = rg;
+
+    std::vector<libcellml::Generator> vec;
+
+    vec.push_back(rg);
+    vec.insert(vec.begin(), ao);
+
+    rg.setProfile(std::make_shared<libcellml::GeneratorProfile>());
+}
+
+TEST(Coverage, generatorProfile)
+{
+    libcellml::GeneratorProfile rgp;
+    libcellml::GeneratorProfile ao;
+
+    ao = rgp;
+
+    std::vector<libcellml::GeneratorProfile> vec;
+
+    vec.push_back(rgp);
+    vec.insert(vec.begin(), ao);
+}
+
+TEST(Coverage, generatorVariable)
+{
+    libcellml::GeneratorVariable rgp;
+    libcellml::GeneratorVariable ao;
+
+    ao = rgp;
+
+    std::vector<libcellml::GeneratorVariable> vec;
+
+    vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
 }

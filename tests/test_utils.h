@@ -20,6 +20,10 @@ limitations under the License.
 
 void dbg(const std::string &text, bool newLine=true);
 
+std::string resourcePath(const std::string &resourceRelativePath = "");
+
+std::string fileContents(const std::string &fileName);
+
 void printErrors(const libcellml::Validator &v);
 void printErrors(const libcellml::Parser &p);
 

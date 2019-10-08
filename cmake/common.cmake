@@ -20,7 +20,7 @@ function(TARGET_WARNINGS_AS_ERRORS _TARGET)
   if(${_INDEX} GREATER -1)
     set(_COMPILER_WAE -Wall -W -Werror)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(_COMPILER_WAE /W3)
+    set(_COMPILER_WAE /W4 /WX)
   endif()
 
   if(_COMPILER_WAE)
@@ -122,6 +122,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
 
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
+        set(_NO_BUGPRONE_EXCEPTION_ESCAPE -bugprone-exception-escape)
         set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
         set(_NO_HICPP_VARARG -hicpp-vararg)
     endif()
@@ -131,6 +132,8 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
+      -bugprone-branch-clone
+      ${_NO_BUGPRONE_EXCEPTION_ESCAPE}
       cert-*
       -cert-err58-cpp
       cppcoreguidelines-*
@@ -142,6 +145,8 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -cppcoreguidelines-special-member-functions
       fuchsia-*
       -fuchsia-default-arguments
+      -fuchsia-default-arguments-calls
+      -fuchsia-default-arguments-declarations
       -fuchsia-multiple-inheritance
       -fuchsia-statically-constructed-objects
       google-*
@@ -155,10 +160,13 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
+      -modernize-pass-by-value
       -modernize-raw-string-literal
+      -modernize-use-trailing-return-type
       performance-*
       -performance-inefficient-string-concatenation
       readability-*
+      -readability-convert-member-functions-to-static
       -readability-magic-numbers
     )
     string(REPLACE ";" ","

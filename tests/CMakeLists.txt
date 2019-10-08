@@ -1,3 +1,16 @@
+# Copyright libCellML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 # include gtest so we can make use of the gtest_main target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest)
@@ -16,6 +29,7 @@ include(component/tests.cmake)
 include(connection/tests.cmake)
 include(coverage/tests.cmake)
 include(error/tests.cmake)
+include(generator/tests.cmake)
 include(math/tests.cmake)
 include(model/tests.cmake)
 include(parser/tests.cmake)
@@ -31,6 +45,8 @@ set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
 set(TESTS_SOURCE_FILES ${TEST_UTILS_SRC})
 set(TESTS_HEADER_FILES ${TEST_UTILS_HDR})
+
+include(test_resources.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
@@ -127,13 +143,13 @@ if(LIBCELLML_LLVM_COVERAGE)
 
   # Unfortunately we cannot get an output in html format at this time as it is not supported at version 8.
   add_custom_target(llvm_coverage
-    COMMAND ${LLVM_COV_EXE} report $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=text
+    COMMAND ${LLVM_COV_EXE} report $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=text -use-color
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage tests")
 
   add_custom_target(llvm_coverage_missing_lines
-    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -line-coverage-lt=100 -Xdemangler c++filt -Xdemangler -n
+    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=html -Xdemangler c++filt -Xdemangler -n -o coverage_report
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage missing lines command")
@@ -150,8 +166,6 @@ if(LIBCELLML_MEMCHECK)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/memcheck
     COMMENT "Running memcheck tests")
 endif()
-
-include(test_resources.cmake)
 
 set(TESTS_SOURCE_FILES ${TESTS_SOURCE_FILES} PARENT_SCOPE)
 set(TESTS_HEADER_FILES ${TESTS_HEADER_FILES} PARENT_SCOPE)

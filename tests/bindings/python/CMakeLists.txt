@@ -1,9 +1,24 @@
+# Copyright libCellML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 set(TEST_SRCS
   test_component.py
   test_component_entity.py
   test_entity.py
   test_error.py
+  test_generator.py
+  test_generator_profile.py
   test_import_source.py
   test_imported_entity.py
   test_logger.py
@@ -20,6 +35,8 @@ set(TEST_SRCS
   test_docstrings.py
 )
 
+include(test_resources.cmake)
+
 foreach(_TEST ${TEST_SRCS})
   configure_file(${_TEST} ${_TEST} COPYONLY)
   get_filename_component(_TEST_NAME ${_TEST} NAME_WE)
@@ -29,8 +46,13 @@ foreach(_TEST ${TEST_SRCS})
     if(TARGET xml2)
       set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
     endif()
+    if(NOT POLICY CMP0078)
+      set(_PYTHON_MODULE_TARGET _entity)
+	else()
+      set(_PYTHON_MODULE_TARGET entity)
+    endif()
     set_tests_properties(${_TEST_NAME} PROPERTIES
-      ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:_entity>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
+      ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:${_PYTHON_MODULE_TARGET}>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
   else()
     set_tests_properties(${_TEST_NAME} PROPERTIES
       ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
