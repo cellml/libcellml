@@ -18,13 +18,34 @@ limitations under the License.
 
 #include <libcellml>
 
-std::string resourcePath(const std::string &resourceRelativePath = "");
+#include "test_exportdefinitions.h"
 
-std::string fileContents(const std::string &fileName);
+std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 
-void printErrors(const libcellml::Validator &v);
-void printErrors(const libcellml::Parser &p);
-void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::Logger &logger);
+std::string TEST_EXPORT fileContents(const std::string &fileName);
 
-libcellml::ModelPtr createModel(const std::string &name = "");
-libcellml::ModelPtr createModelWithComponent(const std::string &name = "");
+void TEST_EXPORT printErrors(const libcellml::Validator &v);
+void TEST_EXPORT printErrors(const libcellml::Parser &p);
+void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &errors,
+                                   const libcellml::Logger &logger);
+void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
+                                                        const std::vector<std::string> &specificationHeadings,
+                                                        const libcellml::Logger &logger);
+void TEST_EXPORT expectEqualErrorsKinds(const std::vector<std::string> &errors,
+                                        const std::vector<libcellml::Error::Kind> &kinds,
+                                        const libcellml::Logger &logger);
+
+libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
+libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");
+
+#define EXPECT_EQ_ERRORS(errors, logger) \
+    SCOPED_TRACE("Error occured here."); \
+    expectEqualErrors(errors, logger)
+
+#define EXPECT_EQ_ERRORS_SPECIFICATION_HEADINGS(errors, specificationHeadings, logger) \
+    SCOPED_TRACE("Error occured here."); \
+    expectEqualErrorsSpecificationHeadings(errors, specificationHeadings, logger)
+
+#define EXPECT_EQ_ERRORS_KINDS(errors, kinds, logger) \
+    SCOPED_TRACE("Error occured here."); \
+    expectEqualErrorsKinds(errors, kinds, logger)
