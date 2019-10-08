@@ -1757,10 +1757,13 @@ TEST(Parser, parseResetsWithErrors)
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined."};
 
     libcellml::Parser p;
-    libcellml::Printer printer;
     libcellml::ModelPtr model = p.parseModel(input);
 
+    libcellml::ResetPtr resetExpected = model->component(1)->reset(0);
+
     EXPECT_EQ_ERRORS(expectedErrors, p);
+
+    EXPECT_EQ(resetExpected, p.error(0)->reset());
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)
@@ -1829,6 +1832,7 @@ TEST(Parser, xmlComments)
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
+        "        <!-- THIS COMMENT SHOULD BE IGNORED 6 -->\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some condition in mathml\n"
         "        </math>\n"
@@ -1837,9 +1841,9 @@ TEST(Parser, xmlComments)
         "  </component>\n"
         "  <component name=\"child\"/>\n"
         "  <encapsulation>\n"
-        "    <!-- THIS COMMENT SHOULD BE IGNORED 6 -->\n"
+        "    <!-- THIS COMMENT SHOULD BE IGNORED 7 -->\n"
         "    <component_ref component=\"main\">\n"
-        "       <!-- THIS COMMENT SHOULD BE IGNORED 7 -->\n"
+        "       <!-- THIS COMMENT SHOULD BE IGNORED 8 -->\n"
         "       <component_ref component=\"child\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
