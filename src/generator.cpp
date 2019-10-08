@@ -1066,7 +1066,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 equation->addVariable(generatorVariable);
             }
         } else {
-            std::string modelName = getEntityName(component->parent());
+            std::string modelName = entityName(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variableName
@@ -1232,7 +1232,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                std::string modelName = getEntityName(component->parent());
+                std::string modelName = entityName(component->parent());
                 ErrorPtr err = std::make_shared<Error>();
 
                 err->setDescription("Variable '" + variable->name()
@@ -1250,7 +1250,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
             ModelPtr voiModel = std::dynamic_pointer_cast<Model>(voiComponent->parent());
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ModelPtr model = parentModel(component);
+            ModelPtr model = owningModel(component);
             ComponentPtr c1 = std::dynamic_pointer_cast<Component>(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
@@ -1276,7 +1276,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         if (convertToDouble(ast->mValue) != 1.0) {
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ModelPtr model = parentModel(component);
+            ModelPtr model = owningModel(component);
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("The differential equation for variable '" + variable->name()
@@ -1626,7 +1626,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const VariablePtr &variable)
 {
-    auto variableComponentSize = getEntityName(variable->parent()).length() + 1;
+    auto variableComponentSize = entityName(variable->parent()).length() + 1;
     auto variableNameSize = variable->name().length() + 1;
     auto variableUnitsSize = variable->units().length() + 1;
     // Note: +1 to account for the end of string termination.
@@ -2117,7 +2117,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
 
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
-        std::string component = (mVoi != nullptr) ? getEntityName(mVoi->parent()) : "";
+        std::string component = (mVoi != nullptr) ? entityName(mVoi->parent()) : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -2143,7 +2143,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->name(),
                                                                 state->units(),
-                                                                getEntityName(state->parent()));
+                                                                entityName(state->parent()));
         }
 
         if (!infoElementsCode.empty()) {
@@ -2195,7 +2195,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
                                                           "<UNITS>", variable->variable()->units()),
-                                                  "<COMPONENT>", getEntityName(variable->variable()->parent())),
+                                                  "<COMPONENT>", entityName(variable->variable()->parent())),
                                           "<TYPE>", variableType);
         }
 

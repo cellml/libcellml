@@ -335,7 +335,7 @@ std::string sha1(const std::string &string);
  * @param entity The entity to get the name for.
  * @return The @c std::string name of the entity.
  */
-std::string getEntityName(const EntityPtr &entity);
+std::string entityName(const EntityPtr &entity);
 
 /**
  * @brief Get the @c Model that the entity is owned by.
@@ -346,7 +346,21 @@ std::string getEntityName(const EntityPtr &entity);
  * @param entity The entity to get the owning model for.
  * @return The owning @c Model or the @c nullptr if no model owns this entity.
  */
-ModelPtr parentModel(const EntityPtr &entity);
+ModelPtr owningModel(const EntityPtr &entity);
+
+/**
+ * @brief Remove the given component from the given entity.
+ *
+ * The entity given can be either a @c Model or @c Component and as such is
+ * expected to be derived from @c ComponentEntity.  The component to be removed
+ * is expected to be a direct child of the given entity.  That is to say the component
+ * will only be removed if it is a direct child of the entity itself, the component
+ * hierarchy of the entity will *not* be searched for the location of the component.
+ *
+ * @param entity The entity to remove the component from.
+ * @param component The component to remove from the entity.
+ */
+void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
 
 /**
  * @brief Check if the provided @p name is a standard unit.
