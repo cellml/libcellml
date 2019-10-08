@@ -111,6 +111,17 @@ TEST(Component, addAndCountChildren)
     EXPECT_EQ(size_t(1), child3->componentCount());
 }
 
+TEST(Component, addComponentToItself)
+{
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    component->setName("component");
+
+    EXPECT_EQ(size_t(0), component->componentCount());
+
+    EXPECT_FALSE(component->addComponent(component));
+    EXPECT_EQ(size_t(0), component->componentCount());
+}
+
 TEST(Component, contains)
 {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -240,7 +251,7 @@ TEST(Component, removeComponentMethods)
     c->addComponent(c1);
     c->addComponent(c1);
     c->addComponent(c1);
-    // Remove the first occurence of "child1".
+    // Remove the occurence of "child1".
     EXPECT_TRUE(c->removeComponent("child1"));
     // Cannot remove a second occurence of "child1".
     EXPECT_FALSE(c->removeComponent(c1));
@@ -318,7 +329,6 @@ TEST(Component, componentMethods)
 
     // Modify a deeper Component
     c->setName("parent");
-    //c->addComponent(c1);
     c1->addComponent(c2);
     c1->addComponent(c3);
 
@@ -494,9 +504,8 @@ TEST(Component, constructors)
     EXPECT_EQ("my_name", c3->name());
 }
 
-TEST(Component, multiParentWithAddComponentBugIssue399)
+TEST(Component, onlyOneParentAtAnyGivenTime)
 {
-    // Addressing Issue 399.
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
