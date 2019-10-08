@@ -46,14 +46,12 @@ TEST(Encapsulation, reparentComponent)
         "  <component name=\"child1\"/>\n"
         "  <component name=\"child2\"/>\n"
         "  <component name=\"child3\"/>\n"
-        "  <component name=\"child3\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"parent_component\">\n"
         "      <component_ref component=\"child1\"/>\n"
         "      <component_ref component=\"child2\">\n"
         "        <component_ref component=\"child3\"/>\n"
         "      </component_ref>\n"
-        "      <component_ref component=\"child3\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
@@ -64,19 +62,12 @@ TEST(Encapsulation, reparentComponent)
         "  <component name=\"child1\"/>\n"
         "  <component name=\"child2\"/>\n"
         "  <component name=\"child3\"/>\n"
-        "  <component name=\"child3\"/>\n"
-        "  <component name=\"child2\"/>\n"
-        "  <component name=\"child3\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"parent_component\">\n"
         "      <component_ref component=\"child1\"/>\n"
-        "      <component_ref component=\"child2\">\n"
-        "        <component_ref component=\"child3\"/>\n"
-        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"child2\">\n"
         "      <component_ref component=\"child3\"/>\n"
-        "      <component_ref component=\"child2\">\n"
-        "        <component_ref component=\"child3\"/>\n"
-        "      </component_ref>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
@@ -100,21 +91,16 @@ TEST(Encapsulation, reparentComponent)
     std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
-    // what do we expect this to achieve? The addition of child3 to child2
+    // 'child3's parent is changed to 'child2'.
     child2->addComponent(child3);
 
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
-    // Now we have two 'child2's and three 'child3's with a hierarchical encapsulation
-    parent->addComponent(child2);
+    // Now we have two components at the bottom of the hierarchy.
+    model->addComponent(child2);
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_re_add, a_parent);
-
-    // option 2: add child3 as a child of child2 and remove it as a child of parent_component
-    // Not really an option is it a bit side-effecty
-
-    // other options?
 }
 
 TEST(Encapsulation, hierarchyWaterfall)
@@ -194,22 +180,75 @@ TEST(Encapsulation, hierarchyCircular)
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
     child2->setName("child2");
 
+    // Standard addition of one component onto another.
     parent->addComponent(child1);
-    child1->addComponent(parent);
+    EXPECT_EQ(size_t(0), child1->componentCount());
+    EXPECT_EQ(size_t(1), parent->componentCount());
 
+    // Can't make this circular hierarchy 'parent' will not be added as a child
+    // of 'child1'. Everything will remain as it is.
+    child1->addComponent(parent);
+    EXPECT_EQ(size_t(0), child1->componentCount());
+    EXPECT_EQ(size_t(1), parent->componentCount());
+
+    // Add the 'parent' component onto the model to make a
+    // waterfall hierarchy of two steps.
     model->addComponent(parent);
 
     libcellml::Printer printer;
     std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
-    child1->addComponent(child2);
+    // Add 'child2' to 'child1' to make a waterfall hierarchy of
+    // three steps.
+    EXPECT_TRUE(child1->addComponent(child2));
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
-    child2->addComponent(parent);
+    // Try to make a circular hierarchy but we will not succeed as this is not
+    // allowed.  The model will stay as it is.
+    EXPECT_FALSE(child2->addComponent(parent));
+    EXPECT_FALSE(parent->hasAncestor(child2));
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
+}
+
+TEST(Encapsulation, hierarchyRepeatedComponent)
+{
+    const std::string expected =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main\">\n"
+        "  <component name=\"repeated_component\"/>\n"
+        "  <component name=\"repeated_component\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"repeated_component\">\n"
+        "      <component_ref component=\"repeated_component\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedErrors = {
+        "Model 'main' contains multiple components with the name 'repeated_component'. Valid component names must be unique to their model.",
+    };
+
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName("main");
+    libcellml::ComponentPtr first_instance = std::make_shared<libcellml::Component>();
+    first_instance->setName("repeated_component");
+    libcellml::ComponentPtr second_instance = std::make_shared<libcellml::Component>();
+    second_instance->setName("repeated_component");
+
+    model->addComponent(first_instance);
+    first_instance->addComponent(second_instance);
+
+    libcellml::Printer printer;
+    std::string actual = printer.printModel(model);
+    EXPECT_EQ(expected, actual);
+
+    libcellml::Validator v;
+    v.validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Encapsulation, hierarchyWaterfallAndParse)
@@ -283,6 +322,12 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ(size_t(1), model->componentCount());
+    auto component = model->component(0);
+    for (size_t i = 0; i < 3; ++i) {
+        EXPECT_EQ(size_t(1), component->componentCount());
+        component = component->component(0);
+    }
+    EXPECT_EQ(size_t(0), component->componentCount());
 }
 
 TEST(Encapsulation, encapsulatedComponentMethods)
