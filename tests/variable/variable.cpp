@@ -1080,3 +1080,41 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
     parser.parseModel(e);
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
+
+TEST(Variable, parentlessVariable)
+{
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    // Valid connections.
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    // Make a variable without a parent component.
+    comp2->removeVariable(v2);
+
+    EXPECT_EQ(size_t(0), comp2->variableCount());
+    EXPECT_FALSE(v2->hasParent());
+    EXPECT_EQ(v2->parent(), nullptr);
+}
