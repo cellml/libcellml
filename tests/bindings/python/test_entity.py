@@ -92,22 +92,5 @@ class EntityTestCase(unittest.TestCase):
         self.assertTrue(x.hasParent())
 
 
-    def test_has_parent(self):
-        from libcellml import Entity, Component
-
-        # bool hasParent(Component* c)
-        x = Entity()
-        c1 = Component()
-        self.assertFalse(x.hasAncestor(c1))
-        x.setParent(c1)
-        self.assertTrue(x.hasAncestor(c1))
-        x.clearParent()
-        self.assertFalse(x.hasAncestor(c1))
-        c2 = Component()
-        c2.setParent(c1)
-        x.setParent(c2)
-        self.assertTrue(x.hasAncestor(c1))
-
-
 if __name__ == '__main__':
     unittest.main()
