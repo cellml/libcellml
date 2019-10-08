@@ -119,4 +119,16 @@ bool Entity::hasAncestor(const EntityPtr &entity) const
     return hasAncestor;
 }
 
+ModelPtr Entity::parentAsModel()
+{
+    EntityPtr parent = mPimpl->mParent.lock();
+    return std::dynamic_pointer_cast<Model>(parent);
+}
+
+ComponentPtr Entity::parentAsComponent()
+{
+    EntityPtr parent = mPimpl->mParent.lock();
+    return std::dynamic_pointer_cast<Component>(parent);
+}
+
 } // namespace libcellml

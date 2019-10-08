@@ -31,6 +31,12 @@ unset).";
 %feature("docstring") libcellml::Entity::setParent
 "Set the parent of the entity to the given Model or Component.";
 
+%feature("docstring") libcellml::Entity::parentAsModel
+"Return the parent of the entity to the given entity cast as a ModelPtr.";
+
+%feature("docstring") libcellml::Entity::parentAsComponent
+"Return the parent of the entity to the given entity cast as a ComponentPtr.";
+
 %{
 #include "libcellml/entity.h"
 %}

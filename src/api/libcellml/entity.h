@@ -111,6 +111,20 @@ public:
      */
     bool hasAncestor(const EntityPtr &entity) const;
 
+    /**
+     * @brief Return the parent pointer cast to a Model
+     * 
+     * @return The pointer to this entity's parent cast as a Model
+     * */
+    ModelPtr parentAsModel();
+
+    /**
+     * @brief Return the parent pointer cast to a Component
+     * 
+     * @return The pointer to this entity's parent cast as a Component
+     * */
+    ComponentPtr parentAsComponent();
+
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
