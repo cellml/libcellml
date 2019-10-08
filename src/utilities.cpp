@@ -398,7 +398,7 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-std::string getEntityName(const EntityPtr &entity)
+std::string entityName(const EntityPtr &entity)
 {
     std::string name;
     auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(entity);

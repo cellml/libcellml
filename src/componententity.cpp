@@ -92,14 +92,15 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-void ComponentEntity::addComponent(const ComponentPtr &component)
+bool ComponentEntity::addComponent(const ComponentPtr &component)
 {
-    doAddComponent(component);
+    return doAddComponent(component);
 }
 
-void ComponentEntity::doAddComponent(const ComponentPtr &component)
+bool ComponentEntity::doAddComponent(const ComponentPtr &component)
 {
     mPimpl->mComponents.push_back(component);
+    return true;
 }
 
 bool ComponentEntity::removeComponent(const std::string &name, bool searchEncapsulated)
