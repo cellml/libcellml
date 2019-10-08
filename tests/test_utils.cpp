@@ -62,6 +62,30 @@ void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::
     }
 }
 
+void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
+                                            const std::vector<std::string> &specificationHeadings,
+                                            const libcellml::Logger &logger)
+{
+    EXPECT_EQ(errors.size(), logger.errorCount());
+    EXPECT_EQ(specificationHeadings.size(), logger.errorCount());
+    for (size_t i = 0; i < logger.errorCount() && i < errors.size(); ++i) {
+        EXPECT_EQ(errors.at(i), logger.error(i)->description());
+        EXPECT_EQ(specificationHeadings.at(i), logger.error(i)->specificationHeading());
+    }
+}
+
+void expectEqualErrorsKinds(const std::vector<std::string> &errors,
+                            const std::vector<libcellml::Error::Kind> &kinds,
+                            const libcellml::Logger &logger)
+{
+    EXPECT_EQ(errors.size(), logger.errorCount());
+    EXPECT_EQ(kinds.size(), logger.errorCount());
+    for (size_t i = 0; i < logger.errorCount() && i < errors.size(); ++i) {
+        EXPECT_EQ(errors.at(i), logger.error(i)->description());
+        EXPECT_EQ(kinds.at(i), logger.error(i)->kind());
+    }
+}
+
 libcellml::ModelPtr createModel(const std::string &name)
 {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
