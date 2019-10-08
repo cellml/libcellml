@@ -14,16 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "utilities.h"
-#include "xmldoc.h"
-
-#include "libcellml/component.h"
 #include "libcellml/generator.h"
-#include "libcellml/generatorprofile.h"
-#include "libcellml/model.h"
-#include "libcellml/validator.h"
-#include "libcellml/variable.h"
-#include "libcellml/version.h"
+
 
 #include <algorithm>
 #include <limits>
@@ -31,6 +23,15 @@ limitations under the License.
 #include <regex>
 #include <sstream>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/generatorprofile.h"
+#include "libcellml/model.h"
+#include "libcellml/validator.h"
+#include "libcellml/variable.h"
+#include "libcellml/version.h"
+#include "utilities.h"
+#include "xmldoc.h"
 
 #undef NAN
 
