@@ -102,6 +102,8 @@ struct Parser::ParserImpl
      */
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
+    ComponentPtr loadComponentRef(const ModelPtr &model, const XmlNodePtr &node);
+
     /**
      * @brief Update the @p import source with attributes parsed from @p node and add any imported
      * components or units it to the @p model.
@@ -840,8 +842,9 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
 }
 
-void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
+ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const XmlNodePtr &node)
 {
+//<<<<<<< HEAD
     XmlNodePtr parentComponentNode = node;
     while (parentComponentNode) {
         ComponentPtr parentComponent = nullptr;
@@ -879,17 +882,101 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             }
             // TODO Should this be removed too?
             if ((!parentComponent) && (parentComponentName.empty())) {
+// =======
+//     ComponentPtr parentComponent = nullptr;
+//     std::string parentComponentName;
+//     std::string encapsulationId;
+//     // Check for a component in the parent component_ref.
+//     XmlAttributePtr attribute = node->firstAttribute();
+//     while (attribute) {
+//         if (attribute->isType("component")) {
+//             parentComponentName = attribute->value();
+//             if (model->containsComponent(parentComponentName)) {
+//                 // Will re-add this to the model once we encapsulate the child(ren).
+//                 parentComponent = model->takeComponent(parentComponentName);
+//             } else {
+// >>>>>>> develop
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
+                err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
                 err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                 mParser->addError(err);
-            } else if (parentComponent) {
-                parentComponent->setEncapsulationId(encapsulationId);
             }
-        } else if (parentComponentNode->isText()) {
-            const std::string textNode = parentComponentNode->convertToString();
+        } else if (attribute->isType("id")) {
+            encapsulationId = attribute->value();
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid component_ref attribute '" + attribute->name() + "'.");
+            err->setModel(model);
+            err->setKind(Error::Kind::ENCAPSULATION);
+            err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+            mParser->addError(err);
+        }
+        attribute = attribute->next();
+    }
+    if ((!parentComponent) && (parentComponentName.empty())) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
+        err->setModel(model);
+        err->setKind(Error::Kind::ENCAPSULATION);
+        err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+        mParser->addError(err);
+    } else if (parentComponent) {
+        parentComponent->setEncapsulationId(encapsulationId);
+    }
+
+    // Get first child of this parent component_ref.
+    XmlNodePtr childComponentNode = node->firstChild();
+
+    // Loop over encapsulated children.
+    std::string childEncapsulationId;
+    while (childComponentNode) {
+        ComponentPtr childComponent = nullptr;
+        if (childComponentNode->isCellmlElement("component_ref")) {
+            childComponent = loadComponentRef(model, childComponentNode);
+        } else if (childComponentNode->isText()) {
+            const std::string textNode = childComponentNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                mParser->addError(err);
+            }
+        } else if (childComponentNode->isComment()) {
+            // Do nothing.
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + childComponentNode->name() + "'.");
+            err->setModel(model);
+            err->setKind(Error::Kind::ENCAPSULATION);
+            mParser->addError(err);
+        }
+
+        if ((parentComponent) && (childComponent)) {
+            // Set parent/child encapsulation relationship.
+            parentComponent->addComponent(childComponent);
+        }
+        childComponentNode = childComponentNode->next();
+    }
+
+    return parentComponent;
+}
+
+void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
+{
+    XmlNodePtr componentRefNode = node;
+    while (componentRefNode) {
+        ComponentPtr parentComponent = nullptr;
+        std::string encapsulationId;
+        bool haveComponentRef = false;
+        if (componentRefNode->isCellmlElement("component_ref")) {
+            haveComponentRef = true;
+            parentComponent = loadComponentRef(model, componentRefNode);
+        } else if (componentRefNode->isText()) {
+            const std::string textNode = componentRefNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -900,128 +987,39 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 mParser->addError(err);
             } else {
                 // Continue to next node if this is whitespace (don't try to parse children of whitespace).
-                parentComponentNode = parentComponentNode->next();
+                componentRefNode = componentRefNode->next();
                 continue;
             }
+        } else if (componentRefNode->isComment()) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + parentComponentNode->name() + "'.");
+            err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::ENCAPSULATION);
             err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
             mParser->addError(err);
         }
 
-        // Get first child of this parent component_ref.
-        XmlNodePtr childComponentNode = parentComponentNode->firstChild();
-        if (!childComponentNode) {
-            XmlNodePtr grandParentComponentNode = parentComponentNode->parent();
-            if (grandParentComponentNode->isCellmlElement("encapsulation")) {
-                ErrorPtr err = std::make_shared<Error>();
-                if (parentComponent) {
-                    err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponent->name() + "' as a parent component_ref but it does not have any children.");
-                } else {
-                    err->setDescription("Encapsulation in model '" + model->name() + "' specifies an invalid parent component_ref that also does not have any children.");
-                }
-                err->setModel(model);
-                err->setKind(Error::Kind::ENCAPSULATION);
-                mParser->addError(err);
-            }
-        }
-
-        // Loop over encapsulated children.
-        std::string childEncapsulationId;
-        while (childComponentNode) {
-            ComponentPtr childComponent = nullptr;
-            if (childComponentNode->isCellmlElement("component_ref")) {
-                bool childComponentMissing = false;
-                bool foundChildComponent = false;
-                XmlAttributePtr attribute = childComponentNode->firstAttribute();
-                while (attribute) {
-                    if (attribute->isType("component")) {
-                        const std::string childComponentName = attribute->value();
-                        if (model->containsComponent(childComponentName)) {
-                            childComponent = model->component(childComponentName);
-                            foundChildComponent = true;
-                        } else {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + childComponentName + "' as a component in a component_ref but it does not exist in the model.");
-                            err->setModel(model);
-                            err->setKind(Error::Kind::ENCAPSULATION);
-                            err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                            mParser->addError(err);
-                            childComponentMissing = true;
-                        }
-                    } else if (attribute->isType("id")) {
-                        childEncapsulationId = attribute->value();
-                    } else {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid component_ref attribute '" + attribute->name() + "'.");
-                        err->setModel(model);
-                        err->setKind(Error::Kind::ENCAPSULATION);
-                        mParser->addError(err);
-                    }
-                    attribute = attribute->next();
-                }
-                if ((!foundChildComponent) && (!childComponentMissing)) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    if (parentComponent) {
-                        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of '" + parentComponent->name() + "'.");
-                    } else if (!parentComponentName.empty()) {
-                        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of invalid parent component '" + parentComponentName + "'.");
-                    } else {
-                        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.");
-                    }
-                    err->setModel(model);
-                    err->setKind(Error::Kind::ENCAPSULATION);
-                    err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                    mParser->addError(err);
-                }
-                if (childComponent) {
-                    childComponent->setEncapsulationId(childEncapsulationId);
-                }
-            } else if (childComponentNode->isText()) {
-                const std::string textNode = childComponentNode->convertToString();
-                // Ignore whitespace when parsing.
-                if (hasNonWhitespaceCharacters(textNode)) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                    err->setModel(model);
-                    err->setKind(Error::Kind::ENCAPSULATION);
-                    err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
-                    mParser->addError(err);
-                }
-            } else {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + childComponentNode->name() + "'.");
-                err->setModel(model);
-                err->setKind(Error::Kind::ENCAPSULATION);
-                err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
-                mParser->addError(err);
-            }
-
-            if ((parentComponent) && (childComponent)) {
-                // Set parent/child encapsulation relationship.
-                parentComponent->addComponent(childComponent);
-            }
-            // Load any further encapsulated children.
-            if (childComponentNode->firstChild()) {
-                loadEncapsulation(model, childComponentNode);
-            }
-            if ((parentComponent) && (childComponent)) {
-                // A child component is added through its parent component rather than the model,
-                // so remove it if it exists.
-                model->removeComponent(childComponent);
-            }
-            childComponentNode = childComponentNode->next();
-        }
-
-        // Re-add the parentComponent to the model with its child(ren) encapsulated.
+        // Add the parentComponent to the model with its child(ren) encapsulated.
         if (parentComponent) {
             model->addComponent(parentComponent);
+            if (parentComponent->componentCount() == 0) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponent->name() + "' as a parent component_ref but it does not have any children.");
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                mParser->addError(err);
+            }
+        } else if (!parentComponent && haveComponentRef) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Encapsulation in model '" + model->name() + "' specifies an invalid parent component_ref that also does not have any children.");
+            err->setModel(model);
+            err->setKind(Error::Kind::ENCAPSULATION);
+            mParser->addError(err);
         }
-        // Get the next parent component at this level
-        parentComponentNode = parentComponentNode->next();
+
+        componentRefNode = componentRefNode->next();
     }
 }
 
