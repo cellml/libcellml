@@ -99,8 +99,7 @@ TEST(Reset, printResetWithoutTestValue)
         "    <variable name=\"variable2\"/>\n"
         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
         "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
@@ -121,7 +120,7 @@ TEST(Reset, printResetWithoutTestValue)
     r1->setVariable(v1);
     r1->setTestVariable(v2);
     r1->setOrder(1);
-    r1->setResetValue(emptyMath);
+    r1->setResetValue(EMPTY_MATH);
 
     c->addReset(r1);
     c->addVariable(v1);
@@ -218,12 +217,10 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    <variable name=\"variable2\"/>\n"
         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
         "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
@@ -236,12 +233,10 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    <variable name=\"variable2\"/>\n"
         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"2\">\n" // only difference is order of reset
         "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </test_value>\n"
         "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
@@ -271,8 +266,8 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     r1->setVariable(v1);
     r1->setTestVariable(v2);
     r1->setOrder(1);
-    r1->setResetValue(emptyMath);
-    r1->setTestValue(emptyMath);
+    r1->setResetValue(EMPTY_MATH);
+    r1->setTestValue(EMPTY_MATH);
 
     c->addReset(r1);
     c->addVariable(v1);
@@ -285,8 +280,8 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     r2->setVariable(v1);
     r2->setTestVariable(v2);
     r2->setOrder(2);
-    r2->setResetValue(emptyMath);
-    r2->setTestValue(emptyMath);
+    r2->setResetValue(EMPTY_MATH);
+    r2->setTestValue(EMPTY_MATH);
     c->addReset(r2);
 
     // Remove the first one and print the model
@@ -403,8 +398,7 @@ TEST(Reset, testValueSetClear)
         "  <component>\n"
         "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
         "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </test_value>\n"
         "    </reset>\n"
         "  </component>\n"
@@ -429,7 +423,7 @@ TEST(Reset, testValueSetClear)
     EXPECT_EQ(test1, out1);
 
     // Test setting of test_value block
-    r->setTestValue(emptyMath);
+    r->setTestValue(EMPTY_MATH);
     const std::string out2 = p.printModel(m);
     EXPECT_EQ(test2, out2);
 
@@ -504,8 +498,7 @@ TEST(Reset, resetValueSetClear)
         "  <component>\n"
         "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
         "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
@@ -530,7 +523,7 @@ TEST(Reset, resetValueSetClear)
     EXPECT_EQ(test1, out1);
 
     // Test setting of reset_value block
-    r->setResetValue(emptyMath);
+    r->setResetValue(EMPTY_MATH);
     const std::string out2 = p.printModel(m);
     EXPECT_EQ(test2, out2);
 
