@@ -41,7 +41,7 @@ public:
     /**
      * @brief Constructs an Error for the model.
      *
-     * Convienence constructor for creating an error for the model.
+     * Convenience constructor for creating an error for the model.
      *
      * @param model The model the error references.
      */
@@ -50,7 +50,7 @@ public:
     /**
      * @brief Constructs an Error for the component.
      *
-     * Convienence constructor for creating an error for the component.
+     * Convenience constructor for creating an error for the component.
      *
      * @param component The component the error references.
      */
@@ -59,7 +59,7 @@ public:
     /**
      * @brief Constructs an Error for the import source.
      *
-     * Convienence constructor for creating an error for the import source.
+     * Convenience constructor for creating an error for the import source.
      *
      * @param importSource The import source the error references.
      */
@@ -68,7 +68,7 @@ public:
     /**
      * @brief Constructs an Error for the units.
      *
-     * Convienence constructor for creating an error for the units.
+     * Convenience constructor for creating an error for the units.
      *
      * @param units The units the error references.
      */
@@ -77,7 +77,7 @@ public:
     /**
      * @brief Constructs an Error for the variable.
      *
-     * Convienence constructor for creating an error for the variable.
+     * Convenience constructor for creating an error for the variable.
      *
      * @param variable The variable the error references.
      */
@@ -86,7 +86,7 @@ public:
     /**
      * @brief Constructs an Error for the reset.
      *
-     * Convienence constructor for creating an error for the reset.
+     * Convenience constructor for creating an error for the reset.
      *
      * @param reset The reset the error references.
      */
@@ -109,7 +109,8 @@ public:
         UNDEFINED,
         UNITS,
         VARIABLE,
-        XML
+        XML,
+        GENERATOR
     };
 
     /**
@@ -153,7 +154,7 @@ public:
     /**
      * @brief Check whether the kind of this error matches the argument kind.
      *
-     * Returns @c true if the @p kind matches the the @c Error::Kind for this
+     * Return @c true if the @p kind matches the the @c Error::Kind for this
      * error and @c false otherwise.
      *
      * @return @c true if the @p kind matches the the @c Error::Kind for this

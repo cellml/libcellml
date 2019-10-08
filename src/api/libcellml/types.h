@@ -20,17 +20,25 @@ limitations under the License.
 
 namespace libcellml {
 
-// Input, output, and error handlers.
+// General classes.
+class Error; /**< Forward declaration of Error class. */
+using ErrorPtr = std::shared_ptr<Error>; /**< Type definition for shared error pointer. */
+class Generator; /**< Forward declaration of Generator class. */
+using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
+class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
+using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
+class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */
+using GeneratorVariablePtr = std::shared_ptr<GeneratorVariable>; /**< Type definition for shared generator variable pointer. */
 class Parser; /**< Forward declaration of Parser class. */
+using ParserPtr = std::shared_ptr<Parser>; /**< Type definition for shared parser pointer. */
 class Validator; /**< Forward declaration of Validator class. */
+using ValidatorPtr = std::shared_ptr<Validator>; /**< Type definition for shared validator pointer. */
 
 // CellML entities.
 class Component; /**< Forward declaration of Component class. */
 using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
-class Error; /**< Forward declaration of Error class. */
-using ErrorPtr = std::shared_ptr<Error>; /**< Type definition for shared error pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */

@@ -867,10 +867,10 @@ TEST(Validator, integerStrings)
         "</model>\n";
 
     const std::vector<std::string> expectedParsingErrors = {
-        // "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
-        // "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
-        // "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
-        // "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
     };
 
     const std::vector<std::string> expectedValidationErrors = {
@@ -1652,7 +1652,7 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
     // u1 = u2 = u3: testing multiplier or prefix don't affect base unit equivalence.
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit10");
-    u1->addUnit("gram", 2.0, 1000.0);
+    u1->addUnit("gram", 2, 1000.0);
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("testunit11");
     u2->addUnit("kilogram", 2.0);

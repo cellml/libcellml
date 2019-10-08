@@ -1,15 +1,5 @@
 
-set(CELLML_SINE_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations.xml")
-set(CELLML_SINE_IMPORTS_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations_import.xml")
-set(CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/complex_encapsulation.xml")
-set(CELLML_COMPLEX_IMPORT_HIERARCHY_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/complex_imports.xml")
-set(CELLML_ORD_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/Ohara_Rudy_2011.cellml")
-set(CELLML_A_PLUS_B_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/a_plus_b.cellml")
-set(CELLML_INVALID_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/invalid_cellml_2.0.xml")
-set(CELLML_UNITS_DEFINITIONS_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/units_definitions.cellml")
-set(CELLML_UNITS_IMPORT_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/import_units_model.cellml")
-set(CELLML_IMPORT_LEVEL0_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/level0.xml")
-set(CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/level0-broken-imports.xml")
+set(TESTS_RESOURCE_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 set(TEST_RESOURCE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test_resources.h)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.h.in ${TEST_RESOURCE_HEADER})
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.in.h ${TEST_RESOURCE_HEADER})

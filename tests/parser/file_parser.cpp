@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
+#include "test_utils.h"
 
 #include "gtest/gtest.h"
 
@@ -27,43 +27,28 @@ limitations under the License.
 
 TEST(Parser, parseSineModelFromFile)
 {
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_SINE_MODEL_RESOURCE));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    p.parseModel(buffer.str());
+    p.parseModel(fileContents("sine_approximations.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 }
 
 TEST(Parser, parseSineImportsModelFromFile)
 {
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    p.parseModel(buffer.str());
+    p.parseModel(fileContents("sine_approximations_import.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 }
 
 TEST(Parser, parseInvalidModelFromFile)
 {
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_INVALID_MODEL_RESOURCE));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     std::vector<std::string> expectedErrors = {
         "Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input."};
 
     libcellml::Parser p;
-    p.parseModel(buffer.str());
+    p.parseModel(fileContents("invalid_cellml_2.0.xml"));
 
     EXPECT_EQ(expectedErrors.size(), p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
@@ -73,13 +58,8 @@ TEST(Parser, parseInvalidModelFromFile)
 
 TEST(Parser, parseOrdModelFromFile)
 {
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_ORD_MODEL_RESOURCE));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("Ohara_Rudy_2011.cellml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 
@@ -100,13 +80,8 @@ TEST(Parser, parseOrdModelFromFile)
 TEST(Parser, parseComplexEncapsulationModelFromFile)
 {
     // This test resulted from https://github.com/cellml/libcellml/issues/170
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    p.parseModel(buffer.str());
+    p.parseModel(fileContents("complex_encapsulation.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 }
@@ -147,13 +122,8 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
         "  </apply>\n"
         "</math>\n";
 
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("a_plus_b.cellml"));
     EXPECT_EQ(size_t(0), p.errorCount());
 
     std::string a = model->component("c1")->math();
