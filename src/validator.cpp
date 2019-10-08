@@ -42,19 +42,6 @@ struct Validator::ValidatorImpl
     Validator *mValidator = nullptr;
 
     /**
-     * @brief Validate the given name is unique in the model.
-     *
-     * The @p name is checked against known names in @p names. If
-     * the @p name already exists an error is added to the validator
-     * with the model passed to the error for further reference.
-     *
-     * @param model The model the name is used in.
-     * @param name The name of the component to validate.
-     * @param names The list of component names already used in the model.
-     */
-    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names);
-
-    /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
      *
      * Validate the given @p component and its encapsulated entities using
@@ -63,30 +50,6 @@ struct Validator::ValidatorImpl
      * @param component The component to validate.
      */
     void validateComponent(const ComponentPtr &component);
-
-    /**
-     * @brief Validate an imported component.
-     *
-     * Validates the imported @p component.  Any errors will be
-     * logged to the @c Validator.
-     *
-     * @sa validateComponent
-     *
-     * @param component The imported component to validate.
-     */
-    void validateImportedComponent(const ComponentPtr &component);
-
-    /**
-     * @brief Validate the component tree of the given @p component.
-     *
-     * Validate the given compoment and all child components of the component.
-     *
-     * @param model The model the @p component comes from.
-     * @param component The @c Component to validate.
-     * @param componentNames The list of already used component names used
-     * to track repeated component names.
-     */
-    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -350,9 +313,58 @@ void Validator::validateModel(const ModelPtr &model)
     // Check for components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
+        std::vector<std::string> componentRefs;
+        std::vector<std::string> componentImportSources;
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
-            mPimpl->validateComponentTree(model, component, componentNames);
+            // Check for duplicate component names in this model.
+            std::string componentName = component->name();
+            if (!componentName.empty()) {
+                if (component->isImport()) {
+                    // Check for a component_ref; assumes imported if the import source is not null.
+                    std::string componentRef = component->importReference();
+                    std::string importSource = component->importSource()->url();
+
+                    if (!mPimpl->isCellmlIdentifier(componentRef)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
+                        err->setComponent(component);
+                        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                        addError(err);
+                    }
+                    if (importSource.empty()) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
+                        err->setImportSource(component->importSource());
+                        err->setRule(SpecificationRule::IMPORT_HREF);
+                        addError(err);
+                    } else {
+                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                        if (uri == nullptr) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
+                            err->setImportSource(component->importSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
+                            addError(err);
+
+                        } else {
+                            xmlFreeURI(uri);
+                        }
+                    }
+                    // Push back the unique sources and refs.
+                    componentImportSources.push_back(importSource);
+                    componentRefs.push_back(componentRef);
+                }
+                if (std::find(componentNames.begin(), componentNames.end(), componentName) != componentNames.end()) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + componentName + "'. Valid component names must be unique to their model.");
+                    err->setModel(model);
+                    addError(err);
+                }
+                componentNames.push_back(componentName);
+            }
+            // Validate component.
+            mPimpl->validateComponent(component);
         }
     }
     // Check for units in this model.
@@ -388,7 +400,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     // Check if we already have another import from the same source with the same units_ref.
-                    // (This looks for matching entries at the same position in the source and ref vectors).
+                    // (This looks for matching enties at the same position in the source and ref vectors).
                     if (!unitsImportSources.empty() && (!foundImportError)) {
                         if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
                             == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())) {
@@ -430,85 +442,19 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names)
-{
-    if (!name.empty()) {
-        if (std::find(names.begin(), names.end(), name) != names.end()) {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + name + "'. Valid component names must be unique to their model.");
-            err->setModel(model);
-            mValidator->addError(err);
-        } else {
-            names.push_back(name);
-        }
-    }
-}
-
-void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames)
-{
-    validateUniqueName(model, component->name(), componentNames);
-    for (size_t i = 0; i < component->componentCount(); ++i) {
-        auto childComponent = component->component(i);
-        validateComponentTree(model, childComponent, componentNames);
-    }
-    if (component->isImport()) {
-        validateImportedComponent(component);
-    } else {
-        validateComponent(component);
-    }
-}
-
-void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component)
-{
-    if (!isCellmlIdentifier(component->name())) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setComponent(component);
-        err->setDescription("Imported component does not have a valid name attribute.");
-        err->setRule(SpecificationRule::IMPORT_COMPONENT_NAME);
-        mValidator->addError(err);
-    }
-
-    // Check for a component_ref; assumes imported if the import source is not null.
-    std::string componentRef = component->importReference();
-    std::string importSource = component->importSource()->url();
-    std::string componentName = component->name();
-
-    if (!isCellmlIdentifier(componentRef)) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
-        err->setComponent(component);
-        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-        mValidator->addError(err);
-    }
-    if (importSource.empty()) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
-        err->setImportSource(component->importSource());
-        err->setRule(SpecificationRule::IMPORT_HREF);
-        mValidator->addError(err);
-    } else {
-        xmlURIPtr uri = xmlParseURI(importSource.c_str());
-        if (uri == nullptr) {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
-            err->setImportSource(component->importSource());
-            err->setRule(SpecificationRule::IMPORT_HREF);
-            mValidator->addError(err);
-
-        } else {
-            xmlFreeURI(uri);
-        }
-    }
-}
-
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(component->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setComponent(component);
-        err->setDescription("Component does not have a valid name attribute.");
-        err->setRule(SpecificationRule::COMPONENT_NAME);
+        if (component->isImport()) {
+            err->setDescription("Imported component does not have a valid name attribute.");
+            err->setRule(SpecificationRule::IMPORT_COMPONENT_NAME);
+        } else {
+            err->setDescription("Component does not have a valid name attribute.");
+            err->setRule(SpecificationRule::COMPONENT_NAME);
+        }
         mValidator->addError(err);
     }
     // Check for variables in this component.

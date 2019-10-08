@@ -111,7 +111,6 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
 
     if(NOT "${_TARGET}" STREQUAL "cellml")
       list(APPEND _COMPILE_OPTIONS
-        -Wno-used-but-marked-unused
         --system-header-prefix=gtest/
       )
     endif()

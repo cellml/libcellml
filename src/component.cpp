@@ -18,8 +18,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
-#include "utilities.h"
-
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -111,22 +109,12 @@ void Component::swap(Component &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-bool Component::doAddComponent(const ComponentPtr &component)
+void Component::doAddComponent(const ComponentPtr &component)
 {
-    bool hasParent = component->hasParent();
-    if (hasParent) {
-        if (hasAncestor(component)) {
-            return false;
-        }
-        auto parent = component->parent();
-        removeComponentFromEntity(parent, component);
-    } else if (!hasParent && hasAncestor(component)) {
-        return false;
-    } else if (shared_from_this() == component) {
-        return false;
+    if (!hasAncestor(component)) {
+        component->setParent(shared_from_this());
+        ComponentEntity::doAddComponent(component);
     }
-    component->setParent(shared_from_this());
-    return ComponentEntity::doAddComponent(component);
 }
 
 void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)

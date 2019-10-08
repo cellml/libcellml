@@ -18,11 +18,12 @@ limitations under the License.
 
 #include <libcellml>
 
-#include "test_exportdefinitions.h"
+std::string resourcePath(const std::string &resourceRelativePath = "");
 
-std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
+std::string fileContents(const std::string &fileName);
 
-std::string TEST_EXPORT fileContents(const std::string &fileName);
+void printErrors(const libcellml::Validator &v);
+void printErrors(const libcellml::Parser &p);
 
 static const std::string emptyMath =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"

@@ -336,7 +336,7 @@ public:
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    bool doAddComponent(const ComponentPtr &component) override;
+    void doAddComponent(const ComponentPtr &component) override;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */
