@@ -43,17 +43,15 @@ TEST(Parser, parseSineImportsModelFromFile)
 
 TEST(Parser, parseInvalidModelFromFile)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input."};
+        "Could not get a valid XML root node from the provided input.",
+    };
 
     libcellml::Parser p;
     p.parseModel(fileContents("invalid_cellml_2.0.xml"));
 
-    EXPECT_EQ(expectedErrors.size(), p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
-    }
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, parseOrdModelFromFile)

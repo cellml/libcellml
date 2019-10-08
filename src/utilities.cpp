@@ -25,6 +25,10 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
+#include "libcellml/component.h"
+#include "libcellml/model.h"
+#include "libcellml/namedentity.h"
+
 namespace libcellml {
 
 double convertToDouble(const std::string &candidate)
@@ -391,6 +395,34 @@ std::string sha1(const std::string &string)
     }
 
     return result.str();
+}
+
+std::string entityName(const EntityPtr &entity)
+{
+    std::string name;
+    auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(entity);
+    if (namedEntity != nullptr) {
+        name = namedEntity->name();
+    }
+    return name;
+}
+
+ModelPtr owningModel(const EntityPtr &entity)
+{
+    auto model = std::dynamic_pointer_cast<Model>(entity->parent());
+    auto component = std::dynamic_pointer_cast<Component>(entity->parent());
+    while (!model && component && component->parent()) {
+        model = std::dynamic_pointer_cast<Model>(component->parent());
+        component = std::dynamic_pointer_cast<Component>(component->parent());
+    }
+
+    return model;
+}
+
+void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component)
+{
+    auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);
+    componentEntity->removeComponent(component, false);
 }
 
 } // namespace libcellml

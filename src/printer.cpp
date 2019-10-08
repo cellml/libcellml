@@ -166,8 +166,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            ComponentPtr component1 = variable->parentComponent();
-                            ComponentPtr component2 = equivalentVariable->parentComponent();
+                            ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                            ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {

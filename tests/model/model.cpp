@@ -206,7 +206,6 @@ TEST(Model, removeComponent)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"child2\"/>\n"
-        "  <component name=\"child1\"/>\n"
         "</model>\n";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -227,17 +226,16 @@ TEST(Model, removeComponent)
     EXPECT_FALSE(m->removeComponent(1));
 
     m->addComponent(c1);
-    m->addComponent(c1);
 
     // Remove the first occurence of "child1".
     EXPECT_TRUE(m->removeComponent("child1"));
-    EXPECT_EQ(size_t(2), m->componentCount());
+    EXPECT_EQ(size_t(1), m->componentCount());
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change to model.
     EXPECT_FALSE(m->removeComponent("child3"));
-    EXPECT_EQ(size_t(2), m->componentCount());
+    EXPECT_EQ(size_t(1), m->componentCount());
 }
 
 TEST(Model, componentMethods)
@@ -289,14 +287,14 @@ TEST(Model, takeComponentMethods)
     EXPECT_EQ(m->takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->name());
-    EXPECT_EQ(nullptr, c02->parentModel());
+    EXPECT_EQ(nullptr, c02->parent());
 
     libcellml::ComponentPtr c01 = m->takeComponent("child1");
     EXPECT_NE(nullptr, c01);
     EXPECT_EQ(size_t(0), m->componentCount());
 
     EXPECT_EQ("child1", c01->name());
-    EXPECT_EQ(nullptr, c01->parentModel());
+    EXPECT_EQ(nullptr, c01->parent());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);

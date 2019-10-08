@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
 
 #include <map>
 #include <string>
@@ -324,5 +324,42 @@ bool areEqual(double value1, double value2);
  * @return The @c std::string SHA-1 value.
  */
 std::string sha1(const std::string &string);
+
+/**
+ * @brief Get the name of the entity.
+ *
+ * If the entity is a @c NamedEntity then the name of the entity will
+ * be returned (which could be the empty string).  If the entity is not
+ * a @c NamedEntity then the empty string will be returned.
+ *
+ * @param entity The entity to get the name for.
+ * @return The @c std::string name of the entity.
+ */
+std::string entityName(const EntityPtr &entity);
+
+/**
+ * @brief Get the @c Model that the entity is owned by.
+ *
+ * Travel up the entities hierarchy to find the owning model. If
+ * the entity doesn't have an owning model return the @c nullptr.
+ *
+ * @param entity The entity to get the owning model for.
+ * @return The owning @c Model or the @c nullptr if no model owns this entity.
+ */
+ModelPtr owningModel(const EntityPtr &entity);
+
+/**
+ * @brief Remove the given component from the given entity.
+ *
+ * The entity given can be either a @c Model or @c Component and as such is
+ * expected to be derived from @c ComponentEntity.  The component to be removed
+ * is expected to be a direct child of the given entity.  That is to say the component
+ * will only be removed if it is a direct child of the entity itself, the component
+ * hierarchy of the entity will *not* be searched for the location of the component.
+ *
+ * @param entity The entity to remove the component from.
+ * @param component The component to remove from the entity.
+ */
+void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
 
 } // namespace libcellml
