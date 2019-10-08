@@ -16,23 +16,21 @@ limitations under the License.
 
 #include "libcellml/validator.h"
 
+#include <algorithm>
+#include <cmath>
+#include <libxml/uri.h>
+#include <stdexcept>
+
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
+#include "libcellml/units.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
-
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
-
-#include <algorithm>
-#include <cmath>
-#include <stdexcept>
-
-#include <iostream>
-
-#include <libxml/uri.h>
 
 namespace libcellml {
 
@@ -843,7 +841,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     auto cellMLNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
     if (input.find("cellml:units") != std::string::npos && input.find(cellMLNamespaceText) == std::string::npos) {
         auto foundIndex = input.find(MATHML_NS);
-        if (foundIndex) {
+        if (foundIndex != std::string::npos) {
             modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellMLNamespaceText);
         }
     }
@@ -908,7 +906,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
     // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
     std::string cleanMathml = mathNode->convertToString();
-    removeSubstring(cleanMathml, cellml2NamespaceString);
+    removeSubstring(cleanMathml, cellMLNamespaceText + "\"");
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -917,7 +915,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (mathmlDoc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(mathmlDoc->xmlError(i));
+            err->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
