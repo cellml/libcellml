@@ -114,6 +114,11 @@ void Reset::setTestValueId(const std::string &id)
     mPimpl->mTestValueId = id;
 }
 
+void Reset::clearTestValueId()
+{
+    mPimpl->mTestValueId = "";
+}
+
 std::string Reset::testValueId() const
 {
     return mPimpl->mTestValueId;
@@ -122,6 +127,11 @@ std::string Reset::testValueId() const
 void Reset::setTestValue(const std::string &math)
 {
     mPimpl->mTestValue = math;
+}
+
+void Reset::clearTestValue()
+{
+    mPimpl->mTestValue = "";
 }
 
 void Reset::appendResetValue(const std::string &math)
@@ -139,9 +149,19 @@ void Reset::setResetValue(const std::string &math)
     mPimpl->mResetValue = math;
 }
 
+void Reset::clearResetValue()
+{
+    mPimpl->mResetValue = "";
+}
+
 void Reset::setResetValueId(const std::string &id)
 {
     mPimpl->mResetValueId = id;
+}
+
+void Reset::clearResetValueId()
+{
+    mPimpl->mResetValueId = "";
 }
 
 std::string Reset::resetValueId() const

@@ -103,6 +103,8 @@ public:
      */
     void setTestValue(const std::string &math);
 
+    void clearTestValue();
+
     /**
      * @brief Set an identifier to the test value for this reset.
      *
@@ -112,6 +114,8 @@ public:
      * @param id The @c std::string to set for this reset's test value.
      */
     void setTestValueId(const std::string &id);
+
+    void clearTestValueId();
 
     /**
      * @brief Return the identifier of the test value for this reset.
@@ -151,6 +155,8 @@ public:
      */
     void setResetValue(const std::string &math);
 
+    void clearResetValue();
+
     /**
      * @brief Set an identifier to the reset value for this reset.
      *
@@ -159,6 +165,8 @@ public:
      * @param id The @c std::string to set for this reset's reset value identifier.
      */
     void setResetValueId(const std::string &id);
+
+    void clearResetValueId();
 
     /**
      * @brief Return the identifier of the reset value for this reset.
