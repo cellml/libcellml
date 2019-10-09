@@ -103,6 +103,13 @@ public:
      */
     void setTestValue(const std::string &math);
 
+    /**
+     * @brief Clear the test value math for this reset.
+     *
+     * Clear the test value math for this reset.
+     *
+     * @sa setTestValue
+     */
     void clearTestValue();
 
     /**
@@ -115,6 +122,13 @@ public:
      */
     void setTestValueId(const std::string &id);
 
+    /**
+     * @brief Clear the identifier for the test value math.
+     *
+     * Clear the identifier for the test value math.
+     *
+     * @sa setTestValueId
+     */
     void clearTestValueId();
 
     /**
@@ -155,6 +169,13 @@ public:
      */
     void setResetValue(const std::string &math);
 
+    /**
+     * @brief Clear the reset value math for this reset.
+     *
+     * Clear the reset value math for this reset.
+     *
+     * @sa setResetValue
+     */
     void clearResetValue();
 
     /**
@@ -166,6 +187,13 @@ public:
      */
     void setResetValueId(const std::string &id);
 
+    /**
+     * @brief Clear the identifier for the reset value math.
+     *
+     * Clear the identifier for the reset value math.
+     *
+     * @sa setResetValueId
+     */
     void clearResetValueId();
 
     /**
