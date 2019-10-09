@@ -30,6 +30,8 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -232,6 +234,55 @@ void Parser::ParserImpl::updateModel(const ModelPtr &model, const std::string &i
     loadModel(model, input);
 }
 
+XmlNamespaceMap attributeNamespaces(const XmlNodePtr &node)
+{
+    XmlNamespaceMap namespaceMap;
+    auto tempAttribute = node->firstAttribute();
+    while (tempAttribute != nullptr) {
+        namespaceMap[tempAttribute->namespacePrefix()] = tempAttribute->namespaceUri();
+        tempAttribute = tempAttribute->next();
+    }
+    return namespaceMap;
+}
+
+XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1, const XmlNamespaceMap &namespaceMap2)
+{
+    XmlNamespaceMap undefinedNamespaces;
+    XmlNamespaceMap::const_iterator it;
+    for (it = namespaceMap1.begin(); it != namespaceMap1.end(); ++it) {
+        auto result = namespaceMap2.find(it->first);
+        if (result == namespaceMap2.end()) {
+            undefinedNamespaces[it->first] = it->second;
+        }
+    }
+    return undefinedNamespaces;
+}
+
+XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
+{
+    XmlNamespaceMap undefinedNamespaces;
+    auto tempNode = node;
+    while (tempNode != nullptr) {
+        auto definedNamespaces = tempNode->definedNamespaces();
+        auto usedNamespaces = attributeNamespaces(tempNode);
+        auto missingNamespaces = determineMissingNamespaces(usedNamespaces, definedNamespaces);
+
+        // Update undefined namespaces with missing namespaces.
+        missingNamespaces.insert(undefinedNamespaces.begin(), undefinedNamespaces.end());
+        std::swap(undefinedNamespaces, missingNamespaces);
+
+        auto subUndefineNamespaces = traverseTreeForUndefinedNamespaces(tempNode->firstChild());
+
+        // Update undefined namespaces with undefined namespaces in children.
+        subUndefineNamespaces.insert(undefinedNamespaces.begin(), undefinedNamespaces.end());
+        std::swap(undefinedNamespaces, subUndefineNamespaces);
+
+        tempNode = tempNode->next();
+    }
+
+    return undefinedNamespaces;
+}
+
 void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input)
 {
     XmlDocPtr doc = std::make_shared<XmlDoc>();
@@ -398,9 +449,19 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             loadReset(reset, component, childNode);
             component->addReset(reset);
         } else if (childNode->isMathmlElement("math")) {
-            // TODO: copy any namespaces declared in parents into the math element
-            //       so math is a valid subdocument.
+            // Copy any namespaces that do not feature as a namespace definition
+            // of the math node into the math node.
+            auto mathElementDefinedNamespaces = childNode->definedNamespaces();
+            auto possiblyUndefinedNamspaces = traverseTreeForUndefinedNamespaces(childNode);
+            auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamspaces, mathElementDefinedNamespaces);
+            XmlNamespaceMap::const_iterator it;
+            for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
+                childNode->addNamespaceDefinition(it->first, it->second);
+            }
+
+            // Append a self contained math XML document to the component.
             std::string math = childNode->convertToString(true) + "\n";
+//            std::cout << math << std::endl;
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
