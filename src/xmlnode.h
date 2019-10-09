@@ -66,15 +66,6 @@ public:
     std::string namespaceUri() const;
 
     /**
-     * @brief Get the namespace prefix of the XML element.
-     *
-     * Get the namespace prefix of the XML element.
-     *
-     * @return A @c std::string representation of the XML namespace prefix.
-     */
-    std::string namespacePrefix() const;
-
-    /**
      * @brief Add a namespace definition to this XML element.
      *
      * Add a libXml2 namespace definition to this XML element using the given URI
@@ -168,8 +159,6 @@ public:
      * otherwise.
      */
     bool isComment();
-
-    bool isNamespace();
 
     /**
      * @brief Get the name of the XML element.

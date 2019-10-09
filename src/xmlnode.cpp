@@ -125,14 +125,6 @@ XmlNamespaceMap XmlNode::definedNamespaces() const
     return namespaceMap;
 }
 
-std::string XmlNode::namespacePrefix() const
-{
-    if (mPimpl->mXmlNodePtr->ns == nullptr || mPimpl->mXmlNodePtr->ns->prefix == nullptr) {
-        return std::string();
-    }
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->prefix));
-}
-
 bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
@@ -162,11 +154,6 @@ bool XmlNode::isText()
 bool XmlNode::isComment()
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
-}
-
-bool XmlNode::isNamespace()
-{
-    return mPimpl->mXmlNodePtr->type == XML_NAMESPACE_DECL;
 }
 
 std::string XmlNode::name() const
