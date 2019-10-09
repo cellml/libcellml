@@ -224,16 +224,6 @@ struct Validator::ValidatorImpl
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
 
     /**
-     * @brief Remove the @c std::string @p pattern from the @c std::string @p input.
-     *
-     * Remove all occurrences of the @c std::string @p pattern from the @c std::string @p input.
-     *
-     * @param input The @c std::string to remove all occurrences of the @p pattern from.
-     * @param pattern The @c std::string to remove from the @c std::string @p input.
-     */
-    void removeSubstring(std::string &input, const std::string &pattern);
-
-    /**
      * @brief Check if the provided @p name is a standard unit.
      *
      * Checks if the provided @p name is one of the standard units in the
@@ -840,17 +830,6 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
-//    std::string /*modifiedInput*/ = input;
-
-    // It may be that we need to copy over the cellml namespace from the enclosing document.
-//    auto cellmlNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
-//    if (input.find("cellml:units") != std::string::npos && input.find(cellmlNamespaceText) == std::string::npos) {
-//        auto foundIndex = input.find(MATHML_NS);
-//        if (foundIndex != std::string::npos) {
-//            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellmlNamespaceText);
-//        }
-//    }
-
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
     doc->parse(input);
@@ -907,14 +886,12 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Iterate through ci/cn elements and remove cellml units attributes.
     XmlNodePtr mathNode = node;
     validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
-    // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
-    // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
-    // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
+
+    // Remove the cellml namespace definition.
     mathNode->removeNamespaceDefinition(CELLML_2_0_NS);
+
+    // Get the MathML string with cellml:units attributes and namespace already removed.
     std::string cleanMathml = mathNode->convertToString();
-    std::cout << "clean math" << std::endl;
-    std::cout << cleanMathml << std::endl;
-//    removeSubstring(cleanMathml, cellmlNamespaceText + "\"");
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -1170,18 +1147,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 }
             }
         }
-    }
-}
-
-// TODO: validateEncapsulations.
-
-void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
-{
-    std::string::size_type n = pattern.length();
-    for (std::string::size_type i = input.find(pattern);
-         i != std::string::npos;
-         i = input.find(pattern)) {
-        input.erase(i, n);
     }
 }
 

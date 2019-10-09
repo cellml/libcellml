@@ -64,9 +64,6 @@ std::string XmlAttribute::namespaceUri() const
 std::string XmlAttribute::namespacePrefix() const
 {
     if (mPimpl->mXmlAttributePtr->ns == nullptr || mPimpl->mXmlAttributePtr->ns->prefix == nullptr) {
-        if (mPimpl->mXmlAttributePtr->ns != nullptr && mPimpl->mXmlAttributePtr->ns->prefix == nullptr) {
-            return "null-prefix";
-        }
         return std::string();
     }
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->prefix));

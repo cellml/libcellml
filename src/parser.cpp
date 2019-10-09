@@ -456,7 +456,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamspaces, mathElementDefinedNamespaces);
             XmlNamespaceMap::const_iterator it;
             for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
-                childNode->addNamespaceDefinition(it->first, it->second);
+                childNode->addNamespaceDefinition(it->second, it->first);
             }
 
             // Append a self contained math XML document to the component.
