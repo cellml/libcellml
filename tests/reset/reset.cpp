@@ -428,7 +428,7 @@ TEST(Reset, testValueSetClear)
     EXPECT_EQ(test2, out2);
 
     // Test clearing of test_value block
-    r->setTestValue("");
+    r->clearTestValue();
     const std::string out3 = p.printModel(m);
     EXPECT_EQ(test1, out3);
 }
@@ -528,7 +528,7 @@ TEST(Reset, resetValueSetClear)
     EXPECT_EQ(test2, out2);
 
     // Test clearing of reset_value block
-    r->setResetValue("");
+    r->clearResetValue();
     const std::string out3 = p.printModel(m);
     EXPECT_EQ(test1, out3);
 }
@@ -572,4 +572,86 @@ TEST(Reset, resetValueAppend)
 
     const std::string out = p.printModel(m);
     EXPECT_EQ(test, out);
+}
+
+TEST(Reset, resetClearTestValue)
+{
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_EQ("", r->testValue());
+
+    r->setTestValue("some test condition math");
+
+    EXPECT_EQ("some test condition math", r->testValue());
+
+    r->clearTestValue();
+
+    EXPECT_EQ("", r->testValue());
+}
+
+TEST(Reset, resetClearResetValue)
+{
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_EQ("", r->resetValue());
+
+    r->setResetValue("some reset sort of math");
+
+    EXPECT_EQ("some reset sort of math", r->resetValue());
+
+    r->clearResetValue();
+
+    EXPECT_EQ("", r->resetValue());
+}
+
+TEST(Reset, resetSetTestValueId)
+{
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_EQ("", r->testValueId());
+
+    r->setTestValueId("id1");
+
+    EXPECT_EQ("id1", r->testValueId());
+}
+
+TEST(Reset, resetSetResetValueId)
+{
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_EQ("", r->resetValueId());
+
+    r->setResetValueId("id1");
+
+    EXPECT_EQ("id1", r->resetValueId());
+}
+
+TEST(Reset, resetClearTestValueId)
+{
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_EQ("", r->testValueId());
+
+    r->setTestValueId("id1");
+
+    EXPECT_EQ("id1", r->testValueId());
+
+    r->clearTestValueId();
+
+    EXPECT_EQ("", r->testValueId());
+}
+
+TEST(Reset, resetClearResetValueId)
+{
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_EQ("", r->resetValueId());
+
+    r->setResetValueId("id1");
+
+    EXPECT_EQ("id1", r->resetValueId());
+
+    r->clearResetValueId();
+
+    EXPECT_EQ("", r->resetValueId());
 }
