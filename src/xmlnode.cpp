@@ -24,6 +24,8 @@ limitations under the License.
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -61,6 +63,76 @@ std::string XmlNode::namespaceUri() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
 }
 
+void XmlNode::addNamespaceDefinition(const std::string &uri, const std::string& prefix)
+{
+    xmlNsPtr nsPtr = xmlNewNs(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(uri.c_str()), reinterpret_cast<const xmlChar *>(prefix.c_str()));
+    auto last = mPimpl->mXmlNodePtr->nsDef;
+    while (last != nullptr) {
+        last = last->next;
+    }
+    last = nsPtr;
+}
+
+void XmlNode::removeNamespaceDefinition(const std::string &uri)
+{
+    std::cout << "removing namespace definition: " << uri << std::endl;
+    xmlNsPtr previous = nullptr;
+    xmlNsPtr next = nullptr;
+    auto current = mPimpl->mXmlNodePtr->nsDef;
+    while (current != nullptr) {
+        next = current->next;
+        std::cout << current->href << std::endl;
+        xmlNsPtr namespaceToRemove = nullptr;
+        if (xmlStrcmp(reinterpret_cast<const xmlChar *>(uri.c_str()), reinterpret_cast<const xmlChar *>(current->href)) == 0) {
+            namespaceToRemove = current;
+        } else {
+            previous = current;
+        }
+        current = current->next;
+        if (namespaceToRemove != nullptr) {
+            std::cout << "freeing namespace " << namespaceToRemove << std::endl;
+            if (previous == nullptr) {
+                mPimpl->mXmlNodePtr->nsDef = next;
+            } else {
+                previous->next = next;
+            }
+            namespaceToRemove->next = nullptr;
+            xmlFreeNs(namespaceToRemove);
+            std::cout << "still here " << previous << std::endl;
+        }
+    }
+    std::cout << "done" << std::endl;
+}
+
+XmlNamespaceMap XmlNode::definedNamespaces() const
+{
+    XmlNamespaceMap namespaceMap;
+    if (mPimpl->mXmlNodePtr->nsDef != nullptr) {
+        auto next = mPimpl->mXmlNodePtr->nsDef;
+        while (next != nullptr) {
+            std::string prefix;
+            if (next->prefix != nullptr) {
+                prefix = std::string(reinterpret_cast<const char *>(next->prefix));
+            }
+            std::string href;
+            if (next->href != nullptr) {
+                href = std::string(reinterpret_cast<const char *>(next->href));
+            }
+            namespaceMap[prefix] = href;
+            next = next->next;
+        }
+    }
+    return namespaceMap;
+}
+
+std::string XmlNode::namespacePrefix() const
+{
+    if (mPimpl->mXmlNodePtr->ns == nullptr || mPimpl->mXmlNodePtr->ns->prefix == nullptr) {
+        return std::string();
+    }
+    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->prefix));
+}
+
 bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
@@ -90,6 +162,11 @@ bool XmlNode::isText()
 bool XmlNode::isComment()
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
+}
+
+bool XmlNode::isNamespace()
+{
+    return mPimpl->mXmlNodePtr->type == XML_NAMESPACE_DECL;
 }
 
 std::string XmlNode::name() const
@@ -140,7 +217,7 @@ XmlNodePtr XmlNode::firstChild()
     return childHandle;
 }
 
-XmlNodePtr XmlNode::next()
+XmlNodePtr XmlNode::next() const
 {
     xmlNodePtr next = mPimpl->mXmlNodePtr->next;
     XmlNodePtr nextHandle = nullptr;
