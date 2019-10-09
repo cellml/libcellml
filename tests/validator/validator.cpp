@@ -470,6 +470,7 @@ TEST(Validator, invalidMath)
     m->addComponent(c2);
 
     v.validateModel(m);
+
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
@@ -574,8 +575,8 @@ TEST(Validator, invalidMathMLVariables)
         "MathML ci element has an empty child element.",
         "MathML ci element has no child.",
         "MathML ci element has an empty child element.",
-        "No declaration for element nonsense.",
-        "Element nonsense is not declared in ci list of possible children.",
+        "W3C MathML DTD error: No declaration for element nonsense.",
+        "W3C MathML DTD error: Element nonsense is not declared in ci list of possible children.",
     };
 
     libcellml::Validator v;
@@ -604,7 +605,6 @@ TEST(Validator, invalidMathMLVariables)
 
     v.validateModel(m);
 
-    // Check for expected error messages.
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
@@ -655,7 +655,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "MathML ci element has no child.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute.",
-        "Namespace prefix cellml for value on ci is not defined.",
+        "W3C MathML DTD error: Namespace prefix cellml for value on ci is not defined.",
         "No declaration for attribute cellml:value of element ci.",
     };
 
@@ -692,6 +692,54 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
     for (size_t i = 0; i < v.errorCount() - 1; ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
+}
+
+TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
+{
+    const std::string math =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <cn cellml:units=\"dimensionless\">3</cn>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <apply>\n"
+        "        <plus/>\n"
+        "        <ci cellml:units=\"dimensionless\">C</ci>\n"
+        "        <cn cellml:units=\"dimensionless\">7</cn>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("C");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
 }
 
 TEST(Validator, parseAndValidateInvalidUnitErrors)
@@ -860,20 +908,14 @@ TEST(Validator, integerStrings)
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
-    for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
-        EXPECT_EQ(expectedParsingErrors.at(i), p.error(i)->description());
-    }
+
+    EXPECT_EQ_ERRORS(expectedParsingErrors, p);
 
     libcellml::Validator v;
     v.validateModel(m);
-    EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
-        EXPECT_EQ(expectedValidationErrors.at(i), v.error(i)->description());
-    }
-}
 
-static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+    EXPECT_EQ_ERRORS(expectedValidationErrors, v);
+}
 
 TEST(Validator, resets)
 {
@@ -904,11 +946,11 @@ TEST(Validator, resets)
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
 
     w1->setOrder(776);
-    w1->setCondition(emptyMath);
-    w1->setValue(emptyMath);
+    w1->setCondition(EMPTY_MATH);
+    w1->setValue(EMPTY_MATH);
     w2->setOrder(345);
-    w2->setCondition(emptyMath);
-    w2->setValue(emptyMath);
+    w2->setCondition(EMPTY_MATH);
+    w2->setValue(EMPTY_MATH);
 
     r1->setOrder(300);
     r1->addWhen(w1);
@@ -984,12 +1026,12 @@ TEST(Validator, whens)
     var->setUnits("second");
 
     w2->setOrder(250);
-    w2->setCondition(emptyMath);
+    w2->setCondition(EMPTY_MATH);
     w3->setOrder(250);
-    w3->setValue(emptyMath);
+    w3->setValue(EMPTY_MATH);
     w4->setOrder(365);
-    w4->setCondition(emptyMath);
-    w4->setValue(emptyMath);
+    w4->setCondition(EMPTY_MATH);
+    w4->setValue(EMPTY_MATH);
 
     c->addVariable(var);
     c->addReset(r1);
@@ -1009,6 +1051,40 @@ TEST(Validator, validMathCnElements)
 {
     const std::string math =
         "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>C</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("C");
+    v1->setInitialValue("3.5");
+    v1->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+}
+
+TEST(Validator, validMathCnElementsMissingCellMLNamespace)
+{
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
         "    <eq/>\n"
         "    <ci>C</ci>\n"
