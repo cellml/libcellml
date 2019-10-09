@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "xmlattribute.h"
 
+#include <map>
 #include <memory>
 #include <string>
 
@@ -27,6 +28,11 @@ namespace libcellml {
 
 class XmlNode; /**< Forward declaration of the internal XmlNode class. */
 using XmlNodePtr = std::shared_ptr<XmlNode>; /**< Type definition for shared XML node pointer. */
+/**
+ * Type definition for the XML namespace map using XML namespace prefix
+ * for the key and the XML namespace URI for the value.
+ */
+using XmlNamespaceMap = std::map<std::string, std::string>;
 
 /**
  * @brief The XmlNode class.
@@ -57,8 +63,40 @@ public:
      *
      * @return A @c std::string representation of the XML namespace URI.
      */
-
     std::string namespaceUri() const;
+
+    /**
+     * @brief Get the namespace prefix of the XML element.
+     *
+     * Get the namespace prefix of the XML element.
+     *
+     * @return A @c std::string representation of the XML namespace prefix.
+     */
+    std::string namespacePrefix() const;
+
+    /**
+     * @brief Add a namespace definition to this XML element.
+     *
+     * Add a libXml2 namespace definition to this XML element using the given URI
+     * and prefix.
+     *
+     * @param uri The @c std::string representation of the XML namespace URI.
+     * @param prefix The @c std::string representatin of the XML namespace prefix.
+     */
+    void addNamespaceDefinition(const std::string &uri, const std::string& prefix);
+
+    void removeNamespaceDefinition(const std::string &uri);
+
+    /**
+     * @brief Get the namespaces defined on this XML element.
+     *
+     * Get the namespaces defined on this XML element as a map.  The map is constructed
+     * from the XML namespace prefix and XML namespace URI as key and value for the map
+     * respectively.
+     *
+     * @return A map with a key of an XML namespace prefix and a value of an XML namespace URI.
+     */
+    XmlNamespaceMap definedNamespaces() const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the given
@@ -131,6 +169,8 @@ public:
      */
     bool isComment();
 
+    bool isNamespace();
+
     /**
      * @brief Get the name of the XML element.
      *
@@ -198,7 +238,7 @@ public:
      *
      * @return The @c XmlNodePtr to the next node following this @c XmlNode.
      */
-    XmlNodePtr next();
+    XmlNodePtr next() const;
 
     /**
      * @brief Get the @c XmlNode parent of this @c XmlNode.

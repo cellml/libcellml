@@ -648,11 +648,13 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "</math>\n";
     const std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
-        "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
-        "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
+        "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in the model 'modelName' or a standard unit.",
+        "Math ci element has an invalid attribute type 'value' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.",
         "MathML ci element has an empty child element.",
         "MathML ci element has the child text 'undefined_variable' which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         "MathML ci element has no child.",
+        "CellML identifiers must not begin with a European numeric character [0-9].",
+        "Math ci element with the value 'B' does not have a valid cellml:units attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute.",
         "W3C MathML DTD error: Namespace prefix cellml for value on ci is not defined.",
@@ -1096,6 +1098,19 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "  </apply>\n"
         "</math>\n";
 
+    const std::vector<std::string> expectedErrors {
+        "Namespace prefix cellml for units on cn is not defined.",
+        "Namespace prefix cellml for units on cn is not defined.",
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Math cn element with the value '3.44' does not have a valid cellml:units attribute.",
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Math cn element with the value '-9.612' does not have a valid cellml:units attribute.",
+        "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
+        "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
+    };
+
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -1112,7 +1127,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(size_t(0), v.errorCount());
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)

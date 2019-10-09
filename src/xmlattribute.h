@@ -58,6 +58,15 @@ public:
     std::string namespaceUri() const;
 
     /**
+     * @brief Get the namespace prefix of this XmlAttribute.
+     *
+     * Get the namespace prefix of this XmlAttribute.
+     *
+     * @return A @c std::string representation of the XML namespace prefix.
+     */
+    std::string namespacePrefix() const;
+
+    /**
      * @brief Test if this XmlAttribute is in the given namespace.
      *
      * Test if this XmlAttribute is in the given namespace. Return @c true
@@ -131,7 +140,7 @@ public:
      *
      * @return The XmlAttributePtr to the next attribute following this XmlAttribute.
      */
-    XmlAttributePtr next();
+    XmlAttributePtr next() const;
 
     /**
      * @brief Remove this XmlAttribute from its parent XmlNode.

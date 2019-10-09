@@ -32,6 +32,8 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -203,6 +205,9 @@ struct Validator::ValidatorImpl
      * @param component The component the MathML belongs to.
      */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
+
+    bool validateCiCnUnits(const ComponentPtr &component, const std::string &unitsName,
+                           const std::string &nodeName, const std::string &textNode);
 
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
@@ -835,20 +840,20 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
-    std::string modifiedInput = input;
+//    std::string /*modifiedInput*/ = input;
 
     // It may be that we need to copy over the cellml namespace from the enclosing document.
-    auto cellmlNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
-    if (input.find("cellml:units") != std::string::npos && input.find(cellmlNamespaceText) == std::string::npos) {
-        auto foundIndex = input.find(MATHML_NS);
-        if (foundIndex != std::string::npos) {
-            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellmlNamespaceText);
-        }
-    }
+//    auto cellmlNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
+//    if (input.find("cellml:units") != std::string::npos && input.find(cellmlNamespaceText) == std::string::npos) {
+//        auto foundIndex = input.find(MATHML_NS);
+//        if (foundIndex != std::string::npos) {
+//            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellmlNamespaceText);
+//        }
+//    }
 
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
-    doc->parse(modifiedInput);
+    doc->parse(input);
     // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
@@ -905,8 +910,11 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
     // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
     // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
+    mathNode->removeNamespaceDefinition(CELLML_2_0_NS);
     std::string cleanMathml = mathNode->convertToString();
-    removeSubstring(cleanMathml, cellmlNamespaceText + "\"");
+    std::cout << "clean math" << std::endl;
+    std::cout << cleanMathml << std::endl;
+//    removeSubstring(cleanMathml, cellmlNamespaceText + "\"");
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -921,6 +929,23 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             mValidator->addError(err);
         }
     }
+}
+
+bool Validator::ValidatorImpl::validateCiCnUnits(const ComponentPtr &component, const std::string &unitsName,
+                                                 const std::string &nodeName, const std::string &textNode)
+{
+    bool checkUnitsIsInModel = false;
+    if (isCellmlIdentifier(unitsName)) {
+        checkUnitsIsInModel = true;
+    } else {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Math " + nodeName + " element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
+        err->setComponent(component);
+        err->setKind(Error::Kind::MATHML);
+        mValidator->addError(err);
+    }
+
+    return checkUnitsIsInModel;
 }
 
 void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames,
@@ -969,9 +994,9 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 if (attribute->isCellmlType("units")) {
                     unitsName = attribute->value();
                     unitsAttribute = attribute;
-                } else {
+                } else if (attribute->inNamespaceUri(CELLML_2_0_NS)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.");
+                    err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -980,34 +1005,23 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             attribute = attribute->next();
         }
 
-        bool checkUnitsIsInComponent = false;
-        // Check that cellml:units has been set.
-        if (ciType) {
-            if (unitsAttribute != nullptr) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math ci element with value '" + textNode + "' has a cellml:units attribute with name '" + unitsAttribute->value() + "'.");
-            }
+        bool checkUnitsIsInModel = false;
+        // Check that cellml:units has been set if appropriate for type.
+        if (ciType && unitsAttribute != nullptr) {
+            checkUnitsIsInModel = validateCiCnUnits(component, unitsName, "ci", textNode);
         } else if (cnType) {
-            if (isCellmlIdentifier(unitsName)) {
-                checkUnitsIsInComponent = true;
-            } else {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
-                err->setComponent(component);
-                err->setKind(Error::Kind::MATHML);
-                mValidator->addError(err);
-            }
+            checkUnitsIsInModel = validateCiCnUnits(component, unitsName, "cn", textNode);
         }
 
         // Check that a specified units is valid.
-        if (checkUnitsIsInComponent) {
-            // Check for a matching units in this component.
-            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+        if (checkUnitsIsInModel) {
+            // Check for a matching units in this model.
+            ModelPtr model = owningModel(component);
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in component '" + component->name() + "' or a standard unit.");
+                    err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in the model '" + model->name() + "' or a standard unit.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
