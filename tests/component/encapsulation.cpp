@@ -20,8 +20,6 @@ limitations under the License.
 
 #include <libcellml>
 
-#include <iostream>
-
 TEST(Encapsulation, reparentComponent)
 {
     const std::string e_parent_1 =
