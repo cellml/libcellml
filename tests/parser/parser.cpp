@@ -1836,7 +1836,7 @@ TEST(Parser, xmlComments)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<!-- THIS COMMENT SHOULD BE IGNORED 0 -->\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <!-- THIS COMMENT SHOULD BE IGNORED 1 -->\n"
         "  <units name=\"fahrenheitish\">\n"
         "    <!-- THIS COMMENT SHOULD BE IGNORED 2 -->\n"
@@ -1858,44 +1858,7 @@ TEST(Parser, xmlComments)
         "        </math>\n"
         "      </when>\n"
         "    </reset>\n"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>b2</ci>\n"
-        "    <apply>\n"
-        "      <times/>\n"
-        "      <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
-        "      <ci>d</ci>\n"
-        "    </apply>\n"
-        "  </apply>\n"
-        "</math>\n"
         "  </component>\n"
-        "<component>\n"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>b2</ci>\n"
-        "    <apply>\n"
-        "      <times/>\n"
-        "      <cn cellml:units=\"dimensionless\">2.0</cn>\n"
-        "      <ci>d</ci>\n"
-        "    </apply>\n"
-        "  </apply>\n"
-        "</math>\n"
-            "</component>\n"
-        "<component>\n"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>b2</ci>\n"
-        "    <apply>\n"
-        "      <times/>\n"
-        "      <cn ns_1:units=\"dimensionless\">2.0</cn>\n"
-        "      <ci>d</ci>\n"
-        "    </apply>\n"
-        "  </apply>\n"
-        "</math>\n"
-            "</component>\n"
         "  <component name=\"child\"/>\n"
         "  <encapsulation>\n"
         "    <!-- THIS COMMENT SHOULD BE IGNORED 6 -->\n"
@@ -1905,6 +1868,84 @@ TEST(Parser, xmlComments)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithNamespacesDefinedOnTheMathNode)
+{
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+            "  <component>\n"
+            "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "    <apply>\n"
+            "      <eq/>\n"
+            "      <ci>b2</ci>\n"
+            "      <apply>\n"
+            "        <times/>\n"
+            "        <cn cellml:units=\"dimensionless\">2.0</cn>\n"
+            "        <ci>d</ci>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </math>\n"
+            "  </component>\n"
+            "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
+{
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+            "  <component>\n"
+            "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+            "    <apply>\n"
+            "      <eq/>\n"
+            "      <ci>b2</ci>\n"
+            "      <apply>\n"
+            "        <times/>\n"
+            "        <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
+            "        <ci>d</ci>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </math>\n"
+            "  </component>\n"
+            "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithNamespacesDefinedOnTheMathNodeNonStandardPrefix)
+{
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+            "  <component>\n"
+            "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+            "      <apply>\n"
+            "        <eq/>\n"
+            "        <ci>b2</ci>\n"
+            "        <apply>\n"
+            "          <times/>\n"
+            "          <cn ns_1:units=\"dimensionless\">2.0</cn>\n"
+            "          <ci>d</ci>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "    </math>\n"
+            "  </component>\n"
+            "</model>\n";
 
     libcellml::Parser parser;
     parser.parseModel(input);
