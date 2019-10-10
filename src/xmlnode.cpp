@@ -118,7 +118,7 @@ XmlNamespaceMap XmlNode::definedNamespaces() const
     return namespaceMap;
 }
 
-bool XmlNode::isElement(const char *name, const char *ns)
+bool XmlNode::isElement(const char *name, const char *ns) const
 {
     bool found = false;
     if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
@@ -129,22 +129,22 @@ bool XmlNode::isElement(const char *name, const char *ns)
     return found;
 }
 
-bool XmlNode::isCellmlElement(const char *name)
+bool XmlNode::isCellmlElement(const char *name) const
 {
     return isElement(name, CELLML_2_0_NS);
 }
 
-bool XmlNode::isMathmlElement(const char *name)
+bool XmlNode::isMathmlElement(const char *name) const
 {
     return isElement(name, MATHML_NS);
 }
 
-bool XmlNode::isText()
+bool XmlNode::isText() const
 {
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
-bool XmlNode::isComment()
+bool XmlNode::isComment() const
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
 }
@@ -154,7 +154,7 @@ std::string XmlNode::name() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
 }
 
-bool XmlNode::hasAttribute(const char *attributeName)
+bool XmlNode::hasAttribute(const char *attributeName) const
 {
     bool found = false;
     xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
@@ -164,7 +164,7 @@ bool XmlNode::hasAttribute(const char *attributeName)
     return found;
 }
 
-std::string XmlNode::attribute(const char *attributeName)
+std::string XmlNode::attribute(const char *attributeName) const
 {
     std::string attributeValueString;
     if (hasAttribute(attributeName)) {
@@ -175,7 +175,7 @@ std::string XmlNode::attribute(const char *attributeName)
     return attributeValueString;
 }
 
-XmlAttributePtr XmlNode::firstAttribute()
+XmlAttributePtr XmlNode::firstAttribute() const
 {
     xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
     XmlAttributePtr attributeHandle = nullptr;
@@ -186,7 +186,7 @@ XmlAttributePtr XmlNode::firstAttribute()
     return attributeHandle;
 }
 
-XmlNodePtr XmlNode::firstChild()
+XmlNodePtr XmlNode::firstChild() const
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = nullptr;
@@ -208,7 +208,7 @@ XmlNodePtr XmlNode::next() const
     return nextHandle;
 }
 
-XmlNodePtr XmlNode::parent()
+XmlNodePtr XmlNode::parent() const
 {
     xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
     XmlNodePtr parentHandle = nullptr;
@@ -219,7 +219,7 @@ XmlNodePtr XmlNode::parent()
     return parentHandle;
 }
 
-std::string XmlNode::convertToString(bool format)
+std::string XmlNode::convertToString(bool format) const
 {
     std::string contentString;
     xmlBufferPtr buffer = xmlBufferCreate();
@@ -234,7 +234,7 @@ std::string XmlNode::convertToString(bool format)
     return contentString;
 }
 
-std::string XmlNode::convertToStrippedString()
+std::string XmlNode::convertToStrippedString() const
 {
     std::string contentString = convertToString();
     contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));

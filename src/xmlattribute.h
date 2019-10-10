@@ -77,7 +77,7 @@ public:
      * @return @c true if this XmlAttribute is in the namespace
      * specified by @p ns and @c false otherwise.
      */
-    bool inNamespaceUri(const char *ns);
+    bool inNamespaceUri(const char *ns) const;
 
     /**
      * @brief Check if this XmlAttribute is of the named attribute type in the
@@ -95,7 +95,7 @@ public:
      * specified by the @p name in the namespace @p ns
      * and @c false otherwise.
      */
-    bool isType(const char *name, const char *ns = "");
+    bool isType(const char *name, const char *ns = "") const;
 
     /**
      * @brief Check if this XmlAttribute is of the named attribute type in the
@@ -111,7 +111,7 @@ public:
      * specified by the @p name in the CellML 2.0 namespace
      * and @c false otherwise.
      */
-    bool isCellmlType(const char *name);
+    bool isCellmlType(const char *name) const;
 
     /**
      * @brief Get the name of this XmlAttribute.
