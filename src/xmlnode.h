@@ -76,6 +76,19 @@ public:
      */
     void addNamespaceDefinition(const std::string &uri, const std::string &prefix);
 
+    /**
+     * @brief Remove the namespace definition from this XML element.
+     *
+     * Remove all matching namespace definitions that match the given URI.
+     * The URI is compared against the namespace href attribute and if
+     * a match is found the namespace definition is removed from this XML
+     * elements list of namespace definitions.
+     *
+     * If the given XML namespace URI does not match any of the namespaces
+     * in the namespace definition list then nothing is changed.
+     *
+     * @param uri The @c std::string representation of the XML namespace URI.
+     */
     void removeNamespaceDefinition(const std::string &uri);
 
     /**
