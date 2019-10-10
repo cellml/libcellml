@@ -63,7 +63,7 @@ std::string XmlNode::namespaceUri() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
 }
 
-void XmlNode::addNamespaceDefinition(const std::string &uri, const std::string& prefix)
+void XmlNode::addNamespaceDefinition(const std::string &uri, const std::string &prefix)
 {
     xmlNsPtr nsPtr = xmlNewNs(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(uri.c_str()), reinterpret_cast<const xmlChar *>(prefix.c_str()));
     auto last = mPimpl->mXmlNodePtr->nsDef;

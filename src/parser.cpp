@@ -461,7 +461,6 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
 
             // Append a self contained math XML document to the component.
             std::string math = childNode->convertToString(true) + "\n";
-//            std::cout << math << std::endl;
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
