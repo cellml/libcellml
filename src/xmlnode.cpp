@@ -75,13 +75,11 @@ void XmlNode::addNamespaceDefinition(const std::string &uri, const std::string &
 
 void XmlNode::removeNamespaceDefinition(const std::string &uri)
 {
-    std::cout << "removing namespace definition: " << uri << std::endl;
     xmlNsPtr previous = nullptr;
     xmlNsPtr next = nullptr;
     auto current = mPimpl->mXmlNodePtr->nsDef;
     while (current != nullptr) {
         next = current->next;
-        std::cout << current->href << std::endl;
         xmlNsPtr namespaceToRemove = nullptr;
         if (xmlStrcmp(reinterpret_cast<const xmlChar *>(uri.c_str()), reinterpret_cast<const xmlChar *>(current->href)) == 0) {
             namespaceToRemove = current;
@@ -90,7 +88,6 @@ void XmlNode::removeNamespaceDefinition(const std::string &uri)
         }
         current = current->next;
         if (namespaceToRemove != nullptr) {
-            std::cout << "freeing namespace " << namespaceToRemove << std::endl;
             if (previous == nullptr) {
                 mPimpl->mXmlNodePtr->nsDef = next;
             } else {
@@ -98,10 +95,8 @@ void XmlNode::removeNamespaceDefinition(const std::string &uri)
             }
             namespaceToRemove->next = nullptr;
             xmlFreeNs(namespaceToRemove);
-            std::cout << "still here " << previous << std::endl;
         }
     }
-    std::cout << "done" << std::endl;
 }
 
 XmlNamespaceMap XmlNode::definedNamespaces() const
