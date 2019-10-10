@@ -19,7 +19,6 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <algorithm>
-#include <iostream>
 #include <libcellml>
 #include <string>
 #include <vector>

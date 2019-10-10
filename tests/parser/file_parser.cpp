@@ -20,7 +20,6 @@ limitations under the License.
 
 #include <algorithm>
 #include <fstream>
-#include <iostream>
 #include <libcellml>
 #include <sstream>
 #include <vector>

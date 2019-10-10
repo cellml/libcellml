@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
@@ -22,6 +21,8 @@ limitations under the License.
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include "test_resources.h"
 
 std::string resourcePath(const std::string &resourceRelativePath)
 {
