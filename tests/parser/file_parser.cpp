@@ -134,19 +134,19 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
 TEST(Parser, simpleGeneratorModel)
 {
     const std::string e =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <apply>\n"
-            "    <eq/>\n"
-            "    <apply>\n"
-            "      <diff/>\n"
-            "      <bvar>\n"
-            "        <ci>time</ci>\n"
-            "      </bvar>\n"
-            "      <ci>x</ci>\n"
-            "    </apply>\n"
-            "    <cn cellml:units=\"per_second\">1</cn>\n"
-            "  </apply>\n"
-            "</math>\n";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <apply>\n"
+        "      <diff/>\n"
+        "      <bvar>\n"
+        "        <ci>time</ci>\n"
+        "      </bvar>\n"
+        "      <ci>x</ci>\n"
+        "    </apply>\n"
+        "    <cn cellml:units=\"per_second\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
