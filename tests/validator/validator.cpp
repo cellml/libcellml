@@ -658,7 +658,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute.",
         "W3C MathML DTD error: Namespace prefix cellml for value on ci is not defined.",
-        "No declaration for attribute cellml:value of element ci.",
+        "W3C MathML DTD error: No declaration for attribute cellml:value of element ci.",
     };
 
     libcellml::Validator v;
@@ -686,14 +686,8 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    // Note: we are not checking the exact message of the last error as older
-    //       versions of libxml may not include the namespace in the error
-    //       message.
-    for (size_t i = 0; i < v.errorCount() - 1; ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
