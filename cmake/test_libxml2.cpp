@@ -2,6 +2,7 @@
 #include <iostream>
 #include <libxml/parser.h>
 #include <libxml/xmlerror.h>
+#include <mathmlconfig.h>
 
 void structuredErrorCallback(void *userData, xmlErrorPtr error)
 {
@@ -15,10 +16,12 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
 
 int main(int argc, char *argv[])
 {
-  const char *input = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ci cellml:units=\"dimensionless\">B</ci>";
+  const std::string input = "<math><ci cellml:units=\"dimensionless\">B</ci></math>";
+  const std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + libcellml::LIBCELLML_MATHML_DTD_LOCATION + "\">";
+  std::string mathmlString = mathmlDtd + input;
   xmlParserCtxtPtr context = xmlNewParserCtxt();
   xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-  xmlDocPtr xmlDoc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input), "/", nullptr, 0);
+  xmlDocPtr xmlDoc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr, XML_PARSE_DTDVALID);
   xmlFreeParserCtxt(context);
   xmlSetStructuredErrorFunc(nullptr, nullptr);
   xmlFreeDoc(xmlDoc);
