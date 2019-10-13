@@ -84,41 +84,6 @@ else()
   find_package(LibXml2 REQUIRED)
 endif()
 
-# Try and determine what type of libxml2 we have found.  Required for knowing what answers
-# our tests need as the test answers differ on the version libXml2.
-set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
-set(_TEST_SRC "${libCellML_SOURCE_DIR}/cmake/test_libxml2.cpp")
-if(HAVE_LIBXML2_CONFIG)
-  set(_COMPILE_DEFINITIONS)
-  set(_LINK_DEFINITIONS LINK_LIBRARIES xml2)
-else()
-  set(_COMPILE_DEFINITIONS COMPILE_DEFINITIONS "-I${LIBXML2_INCLUDE_DIR}" "-I${PROJECT_BINARY_DIR}/src")
-  set(_LINK_DEFINITIONS LINK_LIBRARIES "${LIBXML2_LIBRARIES}")
-endif()
-try_run(RUN_TEST_LIBXML2_RESULT COMPILE_TEST_LIBXML2_RESULT
-        ${libCellML_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp
-        ${_TEST_SRC}
-        ${_COMPILE_DEFINITIONS}
-        ${_LINK_DEFINITIONS}
-        LINK_OPTIONS "${LIBXML2_LIBRARIES}"
-        COMPILE_OUTPUT_VARIABLE _COMPILE
-        RUN_OUTPUT_VARIABLE _OUTPUT)
-
-if(COMPILE_TEST_LIBXML2_RESULT AND RUN_TEST_LIBXML2_RESULT STREQUAL "0")
-  string(FIND "${_OUTPUT}" "cellml:units" _NAMESPACE_INDEX)
-  if(_NAMESPACE_INDEX STREQUAL "-1")
-    # libXml2 is not namespace aware.
-    set(HAVE_LIBXML2_NAMESPACE_AWARE FALSE)
-  else()
-    # libXml2 is namespace aware.
-    set(HAVE_LIBXML2_NAMESPACE_AWARE TRUE)
-  endif()
-else()
-  # Couldn't determine libXml2's knowledge of namespaces.
-  message(STATUS "Undetermined libXml2 namespace understanding.")
-  set(HAVE_LIBXML2_NAMESPACE_UNKNOWN TRUE)
-endif()
-
 if(CLANG_FORMAT_EXE AND GIT_EXE)
   set(CLANG_FORMAT_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executables required to run the ClangFormat test are available.")
 endif()
