@@ -1802,3 +1802,16 @@ TEST(Validator, duplicatedCellMLUnitsOnCiElement)
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
+
+TEST(Validator, multipleDefinitionsOfCellMLNamespace)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("multiplecellmlnamespaces.cellml"));
+    printErrors(parser);
+
+    libcellml::Validator validator;
+    validator.validateModel(model);
+    printErrors(validator);
+
+    EXPECT_EQ(size_t(0),validator.errorCount());
+}
