@@ -657,11 +657,6 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "Math ci element with the value 'B' does not have a valid cellml:units attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute.",
-#ifdef HAVE_LIBXML2_NAMESPACE_AWARE
-        "W3C MathML DTD error: Namespace prefix cellml for value on ci is not defined.",
-        "W3C MathML DTD error: No declaration for attribute cellml:value of element ci.",
-#else
-#endif
     };
 
     libcellml::Validator v;
@@ -690,13 +685,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
 
     v.validateModel(m);
 
-#ifdef HAVE_LIBXML2_NAMESPACE_UNKNOWN
-    for (size_t i = 0; i < 10; ++i) {
-        EXPECT_EQ(errors.at(i), logger.error(i)->description());
-    }
-#else
     EXPECT_EQ_ERRORS(expectedErrors, v);
-#endif
 }
 
 TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
@@ -1778,6 +1767,37 @@ TEST(Validator, unitComplexCycle)
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
     u1->addUnit("brotherFromAnotherMother");
+    v.validateModel(m);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, duplicatedCellMLUnitsOnCiElement)
+{
+    const std::string math =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <ci cellml:units=\"dimensionless\" cellml:units=\"second\">B</ci>\n"
+        "</math>\n";
+
+    const std::vector<std::string> expectedErrors = {
+        "Attribute cellml:units redefined.",
+        "Could not get a valid XML root node from the math on component 'componentName'.",
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("B");
+    v1->setUnits("second");
+    c->addVariable(v1);
+
+    c->setMath(math);
+    m->addComponent(c);
+
     v.validateModel(m);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);

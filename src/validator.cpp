@@ -964,12 +964,15 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         XmlAttributePtr attribute = node->firstAttribute();
         std::string unitsName;
         XmlAttributePtr unitsAttribute = nullptr;
+        std::vector<XmlAttributePtr> cellmlAttributesToRemove;
         while (attribute) {
             if (!attribute->value().empty()) {
                 if (attribute->isCellmlType("units")) {
                     unitsName = attribute->value();
                     unitsAttribute = attribute;
+                    cellmlAttributesToRemove.push_back(attribute);
                 } else if (attribute->inNamespaceUri(CELLML_2_0_NS)) {
+                    cellmlAttributesToRemove.push_back(attribute);
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.");
                     err->setComponent(component);
@@ -1006,8 +1009,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Now that we've validated this XML node's cellml:units attribute, remove it from the node.
         // This is done so we can validate a "clean" MathML string using the MathML DTD. The math
         // string stored on the component will not be affected.
-        if (unitsAttribute) {
-            unitsAttribute->removeAttribute();
+        for (const auto &cellmlAttribute : cellmlAttributesToRemove) {
+            cellmlAttribute->removeAttribute();
         }
     } else {
         // Check children for ci/cn elements.
