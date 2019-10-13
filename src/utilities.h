@@ -364,20 +364,24 @@ ModelPtr owningModel(const EntityPtr &entity);
  */
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
 
-struct dbg {
+struct dbg
+{
     dbg() = default;
 
-    ~dbg() {
+    ~dbg()
+    {
         std::cout << mSS.str() << std::endl;
     }
 
 public:
     // accepts just about anything
     template<class T>
-    dbg &operator<<(const T &x) {
+    dbg &operator<<(const T &x)
+    {
         mSS << x;
         return *this;
     }
+
 private:
     std::ostringstream mSS;
 };
