@@ -13,7 +13,6 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 include(CheckCXXCompilerFlag)
-include(CheckCXXSourceRuns)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
