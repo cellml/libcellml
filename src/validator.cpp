@@ -1018,6 +1018,9 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             validateAndCleanMathCiCnNodes(childNode, component, variableNames, bvarNames);
         }
     }
+    if (node->hasNamespaceDefinition(CELLML_2_0_NS)) {
+        node->removeNamespaceDefinition(CELLML_2_0_NS);
+    }
     // Check siblings for ci/cn.
     node = node->next();
     if (node != nullptr) {

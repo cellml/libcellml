@@ -91,6 +91,8 @@ public:
      */
     void removeNamespaceDefinition(const std::string &uri);
 
+    bool hasNamespaceDefinition(const std::string &uri);
+
     /**
      * @brief Get the namespaces defined on this XML element.
      *
