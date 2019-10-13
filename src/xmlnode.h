@@ -91,6 +91,16 @@ public:
      */
     void removeNamespaceDefinition(const std::string &uri);
 
+    /**
+     * @brief Test if this XML element has the given namespace definition.
+     *
+     * Test to see if this XML element has the given namespace definition defined
+     * on it.  The URI is compared against the namespace definition href attribute.
+     * If a match is found true is returned, otherwise false is.
+     *
+     * @param uri The @c std::string representation of the XML namespace URI.
+     * @return true if this element has the given namespace definition, false otherwise.
+     */
     bool hasNamespaceDefinition(const std::string &uri);
 
     /**
