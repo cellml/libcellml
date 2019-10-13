@@ -149,6 +149,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -fuchsia-default-arguments-calls
       -fuchsia-default-arguments-declarations
       -fuchsia-multiple-inheritance
+      -fuchsia-overloaded-operator
       -fuchsia-statically-constructed-objects
       google-*
       -google-readability-todo
