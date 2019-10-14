@@ -156,9 +156,10 @@ else()
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
+# Use target compile features to propogate features to consuming projects.
+target_compile_features(cellml PUBLIC cxx_std_11)
+
 set_target_properties(cellml PROPERTIES
-  CXX_STANDARD 11
-  CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
   DEBUG_POSTFIX d
