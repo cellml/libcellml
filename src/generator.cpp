@@ -1330,6 +1330,12 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVar
 bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
                                                               const GeneratorInternalVariablePtr &variable2)
 {
+    if (variable1 == nullptr) {
+        dbg() << "varible 1 is nullptr";
+    }
+    if (variable2 == nullptr) {
+        dbg() << "variable 2 is nullptr";
+    }
     if (variable1->mType == variable2->mType) {
         return variable1->mIndex < variable2->mIndex;
     }

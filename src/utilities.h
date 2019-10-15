@@ -370,7 +370,7 @@ struct dbg
 
     ~dbg()
     {
-        std::cout << mSS.str() << std::endl;
+        std::cout << mSS.str() << std::endl; // LCOV_EXCL_LINE
     }
 
 public:
