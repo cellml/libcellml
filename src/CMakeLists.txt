@@ -253,7 +253,11 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_CMAKE_FILE})
 
-set(ConfigPackageLocation lib/cmake)
+if(WIN32)
+  set(ConfigPackageLocation ${PROJECT_NAME}/CMake)
+else()
+  set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
+endif()
 install(EXPORT libcellml-targets
   FILE libcellml-targets.cmake
   DESTINATION ${ConfigPackageLocation}
