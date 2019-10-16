@@ -553,8 +553,8 @@ struct Generator::GeneratorImpl
 
     Generator::ModelType mModelType = Generator::ModelType::UNKNOWN;
 
-    std::list<GeneratorInternalVariablePtr> mInternalVariables;
-    std::list<GeneratorEquationPtr> mEquations;
+    std::list<GeneratorInternalVariablePtr> mInternalVariables = {};
+    std::list<GeneratorEquationPtr> mEquations = {};
 
     VariablePtr mVoi;
     std::vector<VariablePtr> mStates;
