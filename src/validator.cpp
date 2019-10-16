@@ -195,7 +195,7 @@ struct Validator::ValidatorImpl
 
     void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component);
     void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
-    bool validateCnUnits(const ComponentPtr &component, const std::string &nodeName, const std::string &textNode);
+    bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode);
 
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
