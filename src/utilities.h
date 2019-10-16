@@ -364,25 +364,31 @@ ModelPtr owningModel(const EntityPtr &entity);
  */
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
 
-struct dbg
+class dbg
 {
-    dbg() = default;
+public:
+    explicit dbg(bool newLine = true)
+        : mNewLine(newLine)
+    {
+    }
 
     ~dbg()
     {
-        std::cout << mSS.str() << std::endl; // LCOV_EXCL_LINE
+        std::cout << mSS.str();
+        if (mNewLine) {
+            std::cout << std::endl;
+        }
     }
 
-public:
     // accepts just about anything
-    template<class T>
-    dbg &operator<<(const T &x)
+    dbg &operator<<(const std::string &x)
     {
         mSS << x;
         return *this;
     }
 
 private:
+    bool mNewLine;
     std::ostringstream mSS;
 };
 
