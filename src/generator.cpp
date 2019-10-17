@@ -1063,6 +1063,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 equation->addOdeVariable(generatorVariable);
             } else if (!(node->parent()->isMathmlElement("bvar")
                          && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
+                dbg() << "adding variable to equation: " << generatorVariable->mVariable->name();
                 equation->addVariable(generatorVariable);
             }
         } else {
@@ -1331,18 +1332,59 @@ bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInt
                                                               const GeneratorInternalVariablePtr &variable2)
 {
     if (variable1 == nullptr) {
-        dbg() << "varible 1 is nullptr";
+        dbg() << "varible 1 is nullptr" << ", var 2 " << variable2->mVariable->name();
     }
     if (variable2 == nullptr) {
-        dbg() << "variable 2 is nullptr";
+        dbg() << "var 1 " << variable1->mVariable->name() << ", variable 2 is nullptr";
     }
+    dbg() << "var 1 " << variable1->mVariable->name() << ", var 2 " << variable2->mVariable->name();
     if (variable1->mType == variable2->mType) {
         return variable1->mIndex < variable2->mIndex;
     }
 
     return variable1->mType < variable2->mType;
 }
-
+/*
+5: var 1 V, var 2 E_y
+5: var 1 beta_y, var 2 alpha_y
+5: var 1 alpha_y, var 2 E_y
+5: var 1 alpha_y, var 2 V
+5: var 1 gamma, var 2 g_y
+5: var 1 y, var 2 t
+5: var 1 t, var 2 i_y
+5: var 1 y, var 2 i_y
+5: var 1 t, var 2 g_y
+5: var 1 y, var 2 g_y
+5: var 1 i_y, var 2 g_y
+5: var 1 i_y, var 2 gamma
+5: var 1 t, var 2 E_y
+5: var 1 y, var 2 E_y
+5: var 1 g_y, var 2 E_y
+5: var 1 g_y, var 2 V
+5: var 1 g_y, var 2 alpha_y
+5: var 1 g_y, var 2 beta_y
+5: var 1 i_y, var 2 y
+5
+   6: var 1 V, var 2 E_y
+   6: var 1 beta_y, var 2 alpha_y
+   6: var 1 alpha_y, var 2 E_y
+   6: var 1 alpha_y, var 2 V
+   6: var 1 gamma, var 2 g_y
+   6: var 1 y, var 2 t
+   6: var 1 t, var 2 i_y
+   6: var 1 y, var 2 i_y
+   6: var 1 t, var 2 g_y
+   6: var 1 y, var 2 g_y
+   6: var 1 i_y, var 2 g_y
+   6: var 1 i_y, var 2 gamma
+   6: var 1 t, var 2 E_y
+   6: var 1 y, var 2 E_y
+   6: var 1 g_y, var 2 E_y
+   6: var 1 g_y, var 2 V
+   6: var 1 g_y, var 2 alpha_y
+   6: var 1 g_y, var 2 beta_y
+   6: variable 2 is nullptr
+*/
 bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
                                                           const GeneratorEquationPtr &equation2)
 {
@@ -1390,11 +1432,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Process our different equations' AST to determine the type of our
     // variables.
 
+    dbg() << "size 1: " << mEquations.size();
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
         }
     }
+    dbg() << "size 2: " << mEquations.size();
 
     // Sort our variables, determine the index of our constant variables and
     // then loop over our equations, checking which variables, if any, can be
@@ -1509,7 +1553,12 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
+        dbg() << "size 3: " << mEquations.size();
+        for (auto entry : mEquations) {
+            dbg(false) << entry->mVariable->mVariable->name();
+        }
         mEquations.sort(compareEquationsByVariable);
+
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {

@@ -386,6 +386,16 @@ public:
         mSS << x;
         return *this;
     }
+    dbg &operator<<(const size_t &x)
+    {
+        mSS << std::to_string(x);
+        return *this;
+    }
+    dbg &operator<<(std::nullptr_t)
+    {
+        mSS << "(nullptr)";
+        return *this;
+    }
 
 private:
     bool mNewLine;
