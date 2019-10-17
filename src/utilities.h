@@ -380,7 +380,6 @@ public:
         }
     }
 
-    // accepts just about anything
     dbg &operator<<(const std::string &x)
     {
         mSS << x;
