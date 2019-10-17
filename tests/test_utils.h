@@ -20,6 +20,8 @@ limitations under the License.
 
 #include "test_exportdefinitions.h"
 
+const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 
 std::string TEST_EXPORT fileContents(const std::string &fileName);
