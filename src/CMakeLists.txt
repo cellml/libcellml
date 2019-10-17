@@ -246,10 +246,14 @@ set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
 list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
 
+if (HAVE_LIBXML2_CONFIG)
+  file(TO_CMAKE_PATH ${LibXml2_DIR} _NORMALISED_PATH)
+  set(LIBXML2_CONFIG_MODE_INFORMATION "include(CMakeFindDependencyMacro)\n\nset(LibXml2_DIR \"${_NORMALISED_PATH}\")\nfind_dependency(LibXml2 CONFIG)\n")
+endif()
 set(LIBCELLML_CONFIG_CMAKE_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config.cmake")
 configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
   ${LIBCELLML_CONFIG_CMAKE_FILE}
-  COPYONLY
+  @ONLY
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_CMAKE_FILE})
 
