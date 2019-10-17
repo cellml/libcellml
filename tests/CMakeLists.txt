@@ -106,6 +106,9 @@ foreach(TEST ${LIBCELLML_TESTS})
   unset(CURRENT_CATEGORY)
 endforeach()
 
+# Generate tests for header files.
+include(api_headers/tests.cmake)
+
 add_subdirectory(bindings)
 
 if(LIBCELLML_COVERAGE)
