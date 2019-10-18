@@ -20,8 +20,10 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Generator, tutorial4Isolated)
+TEST(Generator, isolatedFirstOrderModel)
 {
+    // This test resulted from https://github.com/cellml/libcellml/issues/432
+
     //  1.a   Create the model instance
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("Tutorial4_FirstOrderModel");
