@@ -1503,7 +1503,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mEquations.sort(compareEquationsByVariable);
 
-
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
                 mStates.push_back(internalVariable->mVariable);
