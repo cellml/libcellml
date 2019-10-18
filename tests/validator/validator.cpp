@@ -1812,3 +1812,44 @@ TEST(Validator, multipleDefinitionsOfCellMLNamespace)
 
     EXPECT_EQ(size_t(0), validator.errorCount());
 }
+
+TEST(Validator, mathInEncapsulatedComponentSegfault)
+{
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+
+    libcellml::Validator validator;
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>v</ci>\n"
+        "    <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName("v");
+    v->setUnits("dimensionless");
+    c3->addVariable(v);
+
+    validator.validateModel(model);
+    EXPECT_EQ(size_t(0), validator.errorCount());  // passes fine ...
+
+    c3->setMath(math);
+
+    validator.validateModel(model);  // SEGFAULTS HERE
+    EXPECT_EQ(size_t(0), validator.errorCount());
+}

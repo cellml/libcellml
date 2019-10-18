@@ -209,9 +209,16 @@ XmlNodePtr XmlNode::firstChild() const
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = nullptr;
-    if (child != nullptr) {
+    while (child != nullptr) {
         childHandle = std::make_shared<XmlNode>();
         childHandle->setXmlNode(child);
+        bool textNode = childHandle->isText();
+        if (textNode && !childHandle->convertToStrippedString().empty()) {
+            break;
+        } else if (!textNode) {
+            break;
+        }
+        child = child->next;
     }
     return childHandle;
 }

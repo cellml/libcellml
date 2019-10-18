@@ -780,7 +780,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            const GeneratorEquationPtr &equation)
 {
     // Basic content elements.
-
     if (node->isMathmlElement("apply")) {
         // We may have 2, 3 or more child nodes, e.g.
         //
@@ -1080,7 +1079,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
-
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
@@ -1330,12 +1328,6 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVar
 bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
                                                               const GeneratorInternalVariablePtr &variable2)
 {
-    if (variable1 == nullptr) {
-        dbg() << "varible 1 is nullptr";
-    }
-    if (variable2 == nullptr) {
-        dbg() << "variable 2 is nullptr";
-    }
     if (variable1->mType == variable2->mType) {
         return variable1->mIndex < variable2->mIndex;
     }
@@ -1510,6 +1502,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mEquations.sort(compareEquationsByVariable);
+
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
