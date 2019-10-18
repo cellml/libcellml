@@ -56,7 +56,6 @@ void printErrors(const libcellml::Logger &l, bool headings, bool kinds, bool rul
         }
         std::cout << std::endl;
     }
-
 }
 
 void printErrors(const libcellml::Validator &v)

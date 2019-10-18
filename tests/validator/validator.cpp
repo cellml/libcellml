@@ -1846,10 +1846,10 @@ TEST(Validator, mathInEncapsulatedComponentSegfault)
     c3->addVariable(v);
 
     validator.validateModel(model);
-    EXPECT_EQ(size_t(0), validator.errorCount());  // passes fine ...
+    EXPECT_EQ(size_t(0), validator.errorCount()); // passes fine ...
 
     c3->setMath(math);
 
-    validator.validateModel(model);  // SEGFAULTS HERE
+    validator.validateModel(model); // SEGFAULTS HERE
     EXPECT_EQ(size_t(0), validator.errorCount());
 }
