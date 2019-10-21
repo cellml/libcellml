@@ -570,11 +570,8 @@ TEST(Validator, invalidMathMLVariables)
     const std::vector<std::string> expectedErrors = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
-        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
-        "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        "MathML ci element has an empty child element.",
-        "MathML ci element has no child.",
-        "MathML ci element has an empty child element.",
+        "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName'.",
+        "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
         "W3C MathML DTD error: No declaration for element nonsense.",
         "W3C MathML DTD error: Element nonsense is not declared in ci list of possible children.",
     };
@@ -614,14 +611,14 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
         "    <eq/>\n"
-        "    <cn cellml:units=\"invalid\">oops</cn>\n"
+        "    <cn cellml:units=\"invalid\" cellml:value=\"zero\">oops</cn>\n"
         "    <apply>\n"
         "      <plus/>\n"
         "      <ci>A</ci>\n"
         "      <apply>\n"
         "        <plus/>\n"
         "        <bvar>\n"
-        "          <ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>\n"
+        "          <ci cellml:units=\"dimensionless\">new_bvar</ci>\n"
         "        </bvar>\n"
         "        <apply>\n"
         "          <plus/>\n"
@@ -647,16 +644,16 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "  </apply>\n"
         "</math>\n";
     const std::vector<std::string> expectedErrors = {
-        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
+        "Math cn element has an invalid attribute type 'value' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in the model 'modelName' or a standard unit.",
-        "Math ci element has an invalid attribute type 'value' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.",
-        "MathML ci element has an empty child element.",
-        "MathML ci element has the child text 'undefined_variable' which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        "MathML ci element has no child.",
-        "CellML identifiers must not begin with a European numeric character [0-9].",
-        "Math ci element with the value 'B' does not have a valid cellml:units attribute.",
+        "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
+        "MathML ci element has the child text 'undefined_variable' which does not correspond with any variable names present in component 'componentName'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute.",
+        "W3C MathML DTD error: Namespace prefix cellml for units on ci is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element ci.",
+        "W3C MathML DTD error: Namespace prefix cellml for units on ci is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element ci.",
     };
 
     libcellml::Validator v;
@@ -701,7 +698,7 @@ TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
         "      <ci>A</ci>\n"
         "      <apply>\n"
         "        <plus/>\n"
-        "        <ci cellml:units=\"dimensionless\">C</ci>\n"
+        "        <ci>C</ci>\n"
         "        <cn cellml:units=\"dimensionless\">7</cn>\n"
         "      </apply>\n"
         "    </apply>\n"
