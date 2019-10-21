@@ -197,7 +197,6 @@ struct Validator::ValidatorImpl
     void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
     bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode);
 
-
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
      *
@@ -868,7 +867,6 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         mathNode->removeNamespaceDefinition(CELLML_2_0_NS);
     }
 
-
     // Get the MathML string with cellml:units attributes and namespace already removed.
     std::string cleanMathml = mathNode->convertToString();
 
@@ -995,7 +993,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         validateAndCleanCiNode(node, component, variableNames);
     } else if (childNode != nullptr) {
         validateAndCleanMathCiCnNodes(childNode, component, variableNames);
-    }    // Check siblings for ci/cn.
+    } // Check siblings for ci/cn.
     node = node->next();
     if (node != nullptr) {
         validateAndCleanMathCiCnNodes(node, component, variableNames);

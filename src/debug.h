@@ -33,7 +33,7 @@ struct dbg
 public:
     dbg &operator<<(const void *p)
     {
-        const void * address = static_cast<const void*>(p);
+        const void *address = static_cast<const void *>(p);
         std::ostringstream ss;
         ss << address;
         mSS << ss.str();
