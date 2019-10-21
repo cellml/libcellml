@@ -200,14 +200,13 @@ struct Validator::ValidatorImpl
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
      *
-     * Validates CellML variables found in MathML @c ci elements and new variables from @c bvar elements. Validates @c cellml:units
-     * attributes found on @c ci and @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
+     * Validates CellML variables found in MathML @c ci elements. Validates @c cellml:units
+     * attributes found on @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
      * be validated using the MathML DTD.
      *
      * @param node The @c XmlNode to validate CellML entities on and remove @c cellml:units from.
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
-     * @param bvarNames A @c vector list of the names of new MathML @c bvar variables in this @c XmlNode @p node.
      */
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
 
@@ -987,12 +986,14 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
 
 void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames)
 {
-    XmlNodePtr childNode = node->firstChild();
     if (node->isMathmlElement("cn")) {
         validateAndCleanCnNode(node, component);
     } else if (node->isMathmlElement("ci")) {
         validateAndCleanCiNode(node, component, variableNames);
-    } else if (childNode != nullptr) {
+    }
+    // Check children for ci/cn.
+    XmlNodePtr childNode = node->firstChild();
+    if (childNode != nullptr) {
         validateAndCleanMathCiCnNodes(childNode, component, variableNames);
     }
     // Check siblings for ci/cn.

@@ -16,13 +16,11 @@ limitations under the License.
 
 #pragma once
 
-#include "xmlattribute.h"
-
 #include <map>
 #include <memory>
 #include <string>
 
-#include <libxml/parser.h>
+#include "xmlattribute.h"
 
 namespace libcellml {
 
