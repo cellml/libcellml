@@ -78,16 +78,20 @@ XmlDoc::~XmlDoc()
 
 void XmlDoc::parse(const std::string &input)
 {
+    xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
+    xmlCleanupParser();
+    xmlCleanupGlobals();
 }
 
 void XmlDoc::parseMathML(const std::string &input)
 {
+    xmlInitParser();
     std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">";
     std::string mathmlString = mathmlDtd + input;
     xmlParserCtxtPtr context = xmlNewParserCtxt();
@@ -96,6 +100,8 @@ void XmlDoc::parseMathML(const std::string &input)
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr, XML_PARSE_DTDVALID);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
+    xmlCleanupParser();
+    xmlCleanupGlobals();
 }
 
 XmlNodePtr XmlDoc::rootNode() const
