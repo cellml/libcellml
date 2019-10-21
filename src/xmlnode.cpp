@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "namespaces.h"
-#include "xmlattribute.h"
 #include "xmlnode.h"
 
 #include <algorithm>
-#include <string>
-
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <string>
+
+#include "namespaces.h"
+#include "xmlattribute.h"
 
 namespace libcellml {
 
@@ -71,14 +71,35 @@ void XmlNode::addNamespaceDefinition(const std::string &uri, const std::string &
     last = nsPtr;
 }
 
+void clearNamespace(const xmlNodePtr &node, xmlNsPtr ns)
+{
+    if (node->ns == ns) {
+        node->ns = nullptr;
+    }
+    xmlAttrPtr attr = node->properties;
+    while (attr != nullptr) {
+        if (attr->ns == ns) {
+            attr->ns = nullptr;
+        }
+        attr = attr->next;
+    }
+    if (node->children != nullptr) {
+        clearNamespace(node->children, ns);
+    }
+    if (node->next != nullptr) {
+        clearNamespace(node->next, ns);
+    }
+}
+
 void XmlNode::removeNamespaceDefinition(const std::string &uri)
 {
     xmlNsPtr previous = nullptr;
     xmlNsPtr next = nullptr;
+    xmlNsPtr namespaceToRemove = nullptr;
     auto current = mPimpl->mXmlNodePtr->nsDef;
     while (current != nullptr) {
         next = current->next;
-        xmlNsPtr namespaceToRemove = nullptr;
+        namespaceToRemove = nullptr;
         if (xmlStrcmp(reinterpret_cast<const xmlChar *>(uri.c_str()), reinterpret_cast<const xmlChar *>(current->href)) == 0) {
             namespaceToRemove = current;
         } else {
@@ -92,6 +113,8 @@ void XmlNode::removeNamespaceDefinition(const std::string &uri)
                 previous->next = next;
             }
             namespaceToRemove->next = nullptr;
+            // Search subtree of this node and clear uses of the namespace.
+            clearNamespace(mPimpl->mXmlNodePtr, namespaceToRemove);
             xmlFreeNs(namespaceToRemove);
         }
     }

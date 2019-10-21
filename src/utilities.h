@@ -18,9 +18,7 @@ limitations under the License.
 
 #include "libcellml/types.h"
 
-#include <iostream>
 #include <map>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -363,42 +361,5 @@ ModelPtr owningModel(const EntityPtr &entity);
  * @param component The component to remove from the entity.
  */
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
-
-class dbg
-{
-public:
-    explicit dbg(bool newLine = true)
-        : mNewLine(newLine)
-    {
-    }
-
-    ~dbg()
-    {
-        std::cout << mSS.str();
-        if (mNewLine) {
-            std::cout << std::endl;
-        }
-    }
-
-    dbg &operator<<(const std::string &x)
-    {
-        mSS << x;
-        return *this;
-    }
-    dbg &operator<<(const size_t &x)
-    {
-        mSS << std::to_string(x);
-        return *this;
-    }
-    dbg &operator<<(std::nullptr_t)
-    {
-        mSS << "(nullptr)";
-        return *this;
-    }
-
-private:
-    bool mNewLine;
-    std::ostringstream mSS;
-};
 
 } // namespace libcellml
