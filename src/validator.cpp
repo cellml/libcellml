@@ -679,10 +679,10 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-        ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+        ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
+            err->setDescription("Variable '" + variable->name() + "' has an units reference '" + variable->units() + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
