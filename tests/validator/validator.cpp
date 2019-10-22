@@ -1767,10 +1767,9 @@ TEST(Validator, unitComplexCycle)
 
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
-    // This test resulted from https://github.com/cellml/libcellml/issues/430
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v' has an units reference 'neither_do_I_but_Im_not_reported' that does not correspond with a standard units and is not a units defined in the variable's model.",
-        "Variable 'v' has an units reference 'i_dont_exist' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' has an units reference 'non_existent_deep' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' has an units reference 'non_existent_shallow' that does not correspond with a standard units and is not a units defined in the variable's model.",
     };
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -1790,8 +1789,8 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     c2->addComponent(c3);
 
     c1->addVariable(createVariableWithUnits("v", "dimensionless"));
-    c2->addVariable(createVariableWithUnits("v", "i_dont_exist"));
-    c3->addVariable(createVariableWithUnits("v", "neither_do_I_but_Im_not_reported"));
+    c2->addVariable(createVariableWithUnits("v", "non_existent_shallow"));
+    c3->addVariable(createVariableWithUnits("v", "non_existent_deep"));
 
     v.validateModel(model);
 
