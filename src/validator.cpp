@@ -23,7 +23,9 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
+#include "libcellml/units.h"
 #include "libcellml/variable.h"
 #include "namespaces.h"
 #include "utilities.h"
@@ -795,9 +797,20 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
+    std::string modifiedInput = input;
+
+    // It may be that we need to copy over the cellml namespace from the enclosing document.
+    auto cellmlNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
+    if (input.find("cellml:units") != std::string::npos && input.find(cellmlNamespaceText) == std::string::npos) {
+        auto foundIndex = input.find(MATHML_NS);
+        if (foundIndex != std::string::npos) {
+            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellmlNamespaceText);
+        }
+    }
+
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
-    doc->parse(input);
+    doc->parse(modifiedInput);
     // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
@@ -854,9 +867,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
     // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
     // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
-    std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
     std::string cleanMathml = mathNode->convertToString();
-    removeSubstring(cleanMathml, cellml2NamespaceString);
+    removeSubstring(cleanMathml, cellmlNamespaceText + "\"");
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -865,7 +877,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (mathmlDoc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(mathmlDoc->xmlError(i));
+            err->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
