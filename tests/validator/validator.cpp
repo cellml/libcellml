@@ -191,7 +191,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Variable does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'margie' does not have a valid units attribute.",
-        "Variable 'ransom' has an invalid units reference 'dollars' that does not correspond with a standard unit or units in the variable's parent component or model.",
+        "Variable 'ransom' has an units reference 'dollars' that does not correspond with a standard units and is not a units defined in the variable's model.",
     };
 
     libcellml::Validator validator;
@@ -1897,4 +1897,37 @@ TEST(Validator, mathInEncapsulatedComponentSegfault)
 
     validator.validateModel(model); // SEGFAULTS HERE
     EXPECT_EQ(size_t(0), validator.errorCount());
+}
+
+TEST(Validator, unfoundUnitsInEncapsulatedComponents)
+{
+    // This test resulted from https://github.com/cellml/libcellml/issues/430
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'v' has an units reference 'neither_do_I_but_Im_not_reported' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' has an units reference 'i_dont_exist' that does not correspond with a standard units and is not a units defined in the variable's model.",
+    };
+
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+
+    libcellml::Validator v;
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+
+    c1->addVariable(createVariableWithUnits("v", "dimensionless"));
+    c2->addVariable(createVariableWithUnits("v", "i_dont_exist"));
+    c3->addVariable(createVariableWithUnits("v", "neither_do_I_but_Im_not_reported"));
+
+    v.validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }

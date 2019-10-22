@@ -121,3 +121,12 @@ libcellml::ModelPtr createModelWithComponent(const std::string &name)
     model->addComponent(component);
     return model;
 }
+
+libcellml::VariablePtr createVariableWithUnits(const std::string &name, const std::string &units)
+{
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(name);
+    v->setUnits(units);
+
+    return v;
+}
