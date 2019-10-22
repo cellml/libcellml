@@ -1765,17 +1765,9 @@ TEST(Validator, unitComplexCycle)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-libcellml::VariablePtr createVariableWithUnits(const std::string &name, const std::string &units)
-{
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    v->setName(name);
-    v->setUnits(units);
-
-    return v;
-}
-
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
+    // This test resulted from https://github.com/cellml/libcellml/issues/430
     const std::vector<std::string> expectedErrors = {
         "Variable 'v' has an units reference 'neither_do_I_but_Im_not_reported' that does not correspond with a standard units and is not a units defined in the variable's model.",
         "Variable 'v' has an units reference 'i_dont_exist' that does not correspond with a standard units and is not a units defined in the variable's model.",
