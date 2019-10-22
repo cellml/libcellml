@@ -191,7 +191,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Variable does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'margie' does not have a valid units attribute.",
-        "Variable 'ransom' has an units reference 'dollars' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'ransom' has a units reference 'dollars' that does not correspond with a standard units and is not a units defined in the variable's model.",
     };
 
     libcellml::Validator validator;
@@ -1768,8 +1768,8 @@ TEST(Validator, unitComplexCycle)
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v' has an units reference 'non_existent_deep' that does not correspond with a standard units and is not a units defined in the variable's model.",
-        "Variable 'v' has an units reference 'non_existent_shallow' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' has a units reference 'non_existent_deep' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' has a units reference 'non_existent_shallow' that does not correspond with a standard units and is not a units defined in the variable's model.",
     };
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
