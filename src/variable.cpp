@@ -53,7 +53,7 @@ struct Variable::VariableImpl
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
-    std::string mUnits; /**< The name of the units defined for this Variable.*/
+    UnitsPtr mUnits = nullptr; /**< The units defined for this Variable.*/
 
     /**
      * @brief Private function to add an equivalent variable to the set for this variable.
@@ -375,15 +375,17 @@ std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &eq
 
 void Variable::setUnits(const std::string &name)
 {
-    mPimpl->mUnits = name;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName(name);
+    mPimpl->mUnits = u;
 }
 
 void Variable::setUnits(const UnitsPtr &units)
 {
-    mPimpl->mUnits = units->name();
+    mPimpl->mUnits = units;
 }
 
-std::string Variable::units() const
+UnitsPtr Variable::units() const
 {
     return mPimpl->mUnits;
 }

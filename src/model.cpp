@@ -112,6 +112,7 @@ bool Model::doAddComponent(const ComponentPtr &component)
 void Model::addUnits(const UnitsPtr &units)
 {
     mPimpl->mUnits.push_back(units);
+    units->setParent(shared_from_this());
 }
 
 bool Model::removeUnits(size_t index)

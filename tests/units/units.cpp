@@ -613,12 +613,23 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(e, validator.error(0)->description());
 }
 
+TEST(Units, compareEqualMultiplierSimple)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 113.0);
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("metre", 0, 1.0, 113.0);
+
+    double factor = libcellml::Units::scalingFactor(u1, u2);
+
+    EXPECT_EQ(1.0, factor);
+}
+
 TEST(Units, compareMultiplierSimple)
 {
-    // Test to show that we need a function to return multiplier mismatch ahead of the code generation
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    m->setName("model");
-
     // u1 = 1000*u2
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("u1");
@@ -626,10 +637,8 @@ TEST(Units, compareMultiplierSimple)
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("u2");
     u2->addUnit("metre", 0, 1.0, 1.0);
-    m->addUnits(u1);
-    m->addUnits(u2);
 
-    double factor = u1->scalingFactor(m, "u1", "u2");
+    double factor = libcellml::Units::scalingFactor(u1, u2);
 
     EXPECT_EQ(1000.0, factor); // 10^3.0 factor difference
 }
@@ -689,41 +698,10 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     model->addUnits(incredible_pile_of_square_apples);
     model->addUnits(bunch_of_bananas);
 
-    EXPECT_EQ(1.0, u1->scalingFactor(model, "u1", "u2"));
-    EXPECT_EQ(1.0, u3->scalingFactor(model, "u3", "u4"));
-    EXPECT_EQ(100000000.0, u1->scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
-    EXPECT_EQ(0.0, u1->scalingFactor(model, "bunch_of_bananas", "banana")); // banana doesn't exist, returns 0
-    EXPECT_EQ(1000.0, u1->scalingFactor(model, "kilogram", "gram"));
-    EXPECT_EQ(0.001, u1->scalingFactor(model, "gram", "kilogram"));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
+//    EXPECT_EQ(100000000.0, scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
+//    EXPECT_EQ(0.0, u1->scalingFactor(model, "bunch_of_bananas", "banana")); // banana doesn't exist, returns 0
+//    EXPECT_EQ(1000.0, u1->scalingFactor(model, "kilogram", "gram"));
+//    EXPECT_EQ(0.001, u1->scalingFactor(model, "gram", "kilogram"));
 }
-
-// TEST(Units, scalingUnitsWithoutModel)
-// {
-//     // Trying to see whether it's useful to be able to compare units without those units having to belong to a model
-
-//     libcellml::UnitsPtr apple = std::make_shared<libcellml::Units>();
-//     apple->setName("apple");
-
-//     libcellml::UnitsPtr dozen_apples = std::make_shared<libcellml::Units>();
-//     dozen_apples->setName("dozen_apples");
-//     dozen_apples->addUnit(apple, 0, 1, 12.0); // pass by pointer not name or StandardUnit?
-
-//     libcellml::UnitsPtr bushell_of_apples = std::make_shared<libcellml::Units>();
-//     bushell_of_apples->setName("bushell_of_apples");
-//     bushell_of_apples->addUnit("apple", "mega", 1.0, 1000.0); // (1000)(10^6)apple^1
-
-//     libcellml::UnitsPtr square_apple = std::make_shared<libcellml::Units>();
-//     square_apple->setName("square_apple");
-//     square_apple->addUnit("apple", 2);  // apple^2
-
-//     libcellml::UnitsPtr incredible_pile_of_square_apples = std::make_shared<libcellml::Units>();
-//     incredible_pile_of_square_apples->setName("incredible_pile_of_square_apples");
-//     incredible_pile_of_square_apples->addUnit("square_apple", "mega", 1, 100.0); // (100)(10^6)apple^2
-
-//     libcellml::UnitsPtr squared_bushell = std::make_shared<libcellml::Units>();
-//     squared_bushell->setName("squared_bushell");
-//     squared_bushell->addUnit("bushell_of_apples", 2); // ((1000)(10^6)apple^1)^2
-
-//     double factor = scalingFactor()
-
-// }
