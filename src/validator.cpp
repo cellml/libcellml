@@ -676,18 +676,19 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addError(err);
     }
     // Check for a valid units attribute.
-    if (!isCellmlIdentifier(variable->units())) {
+    std::string unitsName = variable->units() != nullptr ? variable->units()->name() : "";
+    if (!isCellmlIdentifier(unitsName)) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
         err->setVariable(variable);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
-    } else if (!isStandardUnitName(variable->units())) {
+    } else if (!isStandardUnitName(unitsName)) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + variable->units() + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
+            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + unitsName + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
@@ -1133,7 +1134,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             double multiplier = 0.0;
                             if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
+                                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
                                 err->setModel(model);
                                 err->setKind(Error::Kind::UNITS);
                                 mValidator->addError(err);
@@ -1248,26 +1249,26 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     hints = "";
     multiplier = 0.0;
 
-    if (model->hasUnits(v1->units())) {
+    if (model->hasUnits(v1->units()->name())) {
         libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-        u1 = model->units(v1->units());
+        u1 = model->units(v1->units()->name());
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()) != unitMap.end()) {
-        ref = v1->units();
+    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
+        ref = v1->units()->name();
         unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v1->units(), 1, 0, 1);
+    } else if (isStandardUnitName(v1->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
     }
 
-    if (model->hasUnits(v2->units())) {
+    if (model->hasUnits(v2->units()->name())) {
         libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-        u2 = model->units(v2->units());
+        u2 = model->units(v2->units()->name());
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()) != unitMap.end()) {
-        ref = v2->units();
-        unitMap.at(v2->units()) -= 1.0;
-    } else if (isStandardUnitName(v2->units())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v2->units(), 1, 0, -1);
+    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
+        ref = v2->units()->name();
+        unitMap.at(v2->units()->name()) -= 1.0;
+    } else if (isStandardUnitName(v2->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
     }
 
     // Remove "dimensionless" from base unit testing.

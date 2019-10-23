@@ -325,7 +325,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
     repr += indent + "<variable";
     std::string name = variable->name();
     std::string id = variable->id();
-    std::string units = variable->units();
+    std::string units = variable->units() != nullptr ? variable->units()->name() : "";
     std::string intial_value = variable->initialValue();
     std::string interface_type = variable->interfaceType();
     if (!name.empty()) {

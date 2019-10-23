@@ -145,7 +145,7 @@ TEST(Coverage, variable)
 
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(n, vc.units());
+    EXPECT_EQ(n, vc.units()->name());
 }
 
 TEST(Coverage, component)

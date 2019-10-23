@@ -258,9 +258,9 @@ public:
      *
      * @sa setUnits
      *
-     * @return The @c std::string name of the units for this variable.
+     * @return The @c UnitsPtr of the units for this variable.
      */
-    std::string units() const;
+    UnitsPtr units() const;
 
     /**
      * @brief Set the initial value for this variable using a string.

@@ -376,7 +376,7 @@ public:
      * @param u2Name The second unit name
      * @return The factor u1/u2
      */
-    double scalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
+    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
