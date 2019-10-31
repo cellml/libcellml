@@ -145,6 +145,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
       -cppcoreguidelines-slicing
       -cppcoreguidelines-special-member-functions
+      -modernize-make-shared
       fuchsia-*
       -fuchsia-default-arguments
       -fuchsia-default-arguments-calls
