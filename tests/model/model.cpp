@@ -41,6 +41,10 @@ TEST(Model, name)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
+
+    auto m2 = libcellml::Model::create(n);
+    const std::string a2 = printer.printModel(m2);
+    EXPECT_EQ(e, a2);
 }
 
 TEST(Model, unsetName)
