@@ -335,35 +335,6 @@ Units::~Units()
     delete mPimpl;
 }
 
-Units::Units(const Units &rhs)
-    : NamedEntity(rhs)
-    , ImportedEntity(rhs)
-    , mPimpl(new UnitsImpl())
-{
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-}
-
-Units::Units(Units &&rhs) noexcept
-    : NamedEntity(std::move(rhs))
-    , ImportedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Units &Units::operator=(Units rhs)
-{
-    NamedEntity::operator=(rhs);
-    ImportedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Units::swap(Units &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 bool Units::isBaseUnit() const
 {
     return unitCount() == 0;

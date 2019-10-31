@@ -95,7 +95,7 @@ libcellml::ModelPtr createModel(const std::string &name)
 
 libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model, const std::string &componentName)
 {
-    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr component = libcellml::Component::create();
     component->setName(componentName);
     model->addComponent(component);
     return component;
@@ -111,7 +111,7 @@ libcellml::ModelPtr createModelWithComponent(const std::string &name)
 
 libcellml::VariablePtr createVariableWithUnits(const std::string &name, const std::string &units)
 {
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     v->setName(name);
     v->setUnits(units);
 
@@ -125,10 +125,10 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
     auto c1 = createComponentInModel(model, c1Name);
     auto c2 = createComponentInModel(model, c2Name);
 
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
     v1->setName(v1Name);
     c1->addVariable(v1);
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     v2->setName(v2Name);
     c2->addVariable(v2);
 

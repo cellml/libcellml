@@ -65,33 +65,6 @@ ComponentEntity::~ComponentEntity()
     delete mPimpl;
 }
 
-ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
-    : NamedEntity(rhs)
-    , mPimpl(new ComponentEntityImpl())
-{
-    mPimpl->mComponents = rhs.mPimpl->mComponents;
-    mPimpl->mEncapsulationId = rhs.mPimpl->mEncapsulationId;
-}
-
-ComponentEntity::ComponentEntity(ComponentEntity &&rhs) noexcept
-    : NamedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-ComponentEntity &ComponentEntity::operator=(ComponentEntity rhs)
-{
-    NamedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void ComponentEntity::swap(ComponentEntity &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 bool ComponentEntity::addComponent(const ComponentPtr &component)
 {
     return doAddComponent(component);

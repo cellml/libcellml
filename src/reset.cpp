@@ -52,34 +52,6 @@ Reset::~Reset()
     delete mPimpl;
 }
 
-Reset::Reset(const Reset &rhs)
-    : OrderedEntity(rhs)
-    , mPimpl(new ResetImpl())
-{
-    mPimpl->mOrder = rhs.mPimpl->mOrder;
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mWhens = rhs.mPimpl->mWhens;
-}
-
-Reset::Reset(Reset &&rhs) noexcept
-    : OrderedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Reset &Reset::operator=(Reset rhs)
-{
-    OrderedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Reset::swap(Reset &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void Reset::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;

@@ -185,6 +185,7 @@ Variable::~Variable()
     delete mPimpl;
 }
 
+/*
 Variable::Variable(const Variable &rhs)
     : NamedEntity(rhs)
     , mPimpl(new VariableImpl())
@@ -216,7 +217,7 @@ void Variable::swap(Variable &rhs)
 {
     std::swap(mPimpl, rhs.mPimpl);
 }
-
+*/
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     variable1->mPimpl->setEquivalentTo(variable2);
@@ -375,7 +376,7 @@ std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &eq
 
 void Variable::setUnits(const std::string &name)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName(name);
     mPimpl->mUnits = u;
 }

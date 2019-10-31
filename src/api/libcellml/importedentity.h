@@ -31,8 +31,10 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT ImportedEntity
 {
-public:
+protected:
     ImportedEntity(); /**< Constructor */
+
+public:
     virtual ~ImportedEntity(); /**< Destructor */
     ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
     ImportedEntity(ImportedEntity &&rhs) noexcept; /**< Move constructor */
