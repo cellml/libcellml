@@ -30,7 +30,7 @@ TEST(Units, validName)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("valid_name");
 
     m->addUnits(u);
@@ -51,7 +51,7 @@ TEST(Units, invalidName)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("invalid name");
 
     m->addUnits(u);
@@ -76,7 +76,7 @@ TEST(Units, compoundUnitsRaw)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit("ampere", -6, 1.0);
@@ -92,7 +92,7 @@ TEST(Units, compoundUnitsRaw)
 
 TEST(Units, addUnitsVariations)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
@@ -115,7 +115,7 @@ TEST(Units, compoundUnitsUsingDefines)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
@@ -144,7 +144,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
@@ -194,11 +194,11 @@ TEST(Units, removeUnitsMethodsAndCount)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
     u1->setName("compound_unit");
     u2->setName("simple_unit_2");
     u3->setName("simple_unit_3");
@@ -244,7 +244,7 @@ TEST(Units, hasUnitsName)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("a_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
@@ -256,7 +256,7 @@ TEST(Units, hasUnitsPtr)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("a_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
@@ -268,9 +268,9 @@ TEST(Units, takeUnits)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
 
     u1->setName("a_unit");
     u2->setName("b_unit");
@@ -298,9 +298,9 @@ TEST(Units, replaceUnits)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
 
     u1->setName("a_unit");
     u2->setName("b_unit");
@@ -353,7 +353,7 @@ TEST(Units, multiply)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("compound_unit");
 
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
@@ -362,12 +362,12 @@ TEST(Units, multiply)
 
     m->addUnits(u1);
 
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("valid_name");
 
     m->addUnits(u2);
 
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
     u3->setName("multiplied");
     u3->addUnit("compound_unit");
     u3->addUnit("valid_name");
@@ -389,7 +389,7 @@ TEST(Units, newBaseUnit)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("pH");
 
     m->addUnits(u);
@@ -402,7 +402,7 @@ TEST(Units, newBaseUnit)
 
 TEST(Units, isBaseUnit)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("pH");
 
     EXPECT_TRUE(u->isBaseUnit());
@@ -424,7 +424,7 @@ TEST(Units, farhenheit)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
@@ -441,7 +441,7 @@ TEST(Units, unitAttributes)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
@@ -559,13 +559,13 @@ TEST(Units, multipleAndParse)
 
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
     u1->addUnit("kelvin", 0, 1.0, 1.8);
 
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("metres_per_second");
     u2->addUnit(libcellml::Units::StandardUnit::METRE);
     u2->addUnit(libcellml::Units::StandardUnit::SECOND, -1.0);
@@ -593,11 +593,11 @@ TEST(Units, unitsWithPrefixOutOfRange)
     libcellml::Validator validator;
     libcellml::ModelPtr m = libcellml::Model::create();
     m->setName("myModel");
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     c->setName("myComponent");
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     v->setName("myVariable");
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
     u->setName("myUnits");
     u->addUnit("second", "18446744073709551616");
@@ -616,10 +616,10 @@ TEST(Units, unitsWithPrefixOutOfRange)
 TEST(Units, compareEqualMultiplierSimple)
 {
     // u1 = 1000*u2
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
     u1->addUnit("metre", 0, 1.0, 113.0);
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("u2");
     u2->addUnit("metre", 0, 1.0, 113.0);
 
@@ -631,10 +631,10 @@ TEST(Units, compareEqualMultiplierSimple)
 TEST(Units, compareMultiplierSimple)
 {
     // u1 = 1000*u2
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
     u1->addUnit("metre", 0, 1.0, 1000.0);
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("u2");
     u2->addUnit("metre", 0, 1.0, 1.0);
 
@@ -647,43 +647,43 @@ TEST(Units, complicatedMultiplicationFactorUnits)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
     u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
     u1->addUnit("dimensionless");
 
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("u2");
     u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
     u2->addUnit("dimensionless");
 
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
     u3->setName("u3");
     u3->addUnit("1", "kilo", 4.0, 0.001); // standard, exponent.
 
-    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
     u4->setName("u4");
     u4->addUnit("u2", "milli", 4.0, 1000.0);
 
-    libcellml::UnitsPtr apple = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr apple = libcellml::Units::create();
     apple->setName("apple");
 
-    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
     u5->setName("bushell_of_apples");
     u5->addUnit("apple", "mega", 1.0, 1000.0); // 1000*mega*apple^1
 
-    libcellml::UnitsPtr square_apple = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr square_apple = libcellml::Units::create();
     square_apple->setName("square_apple");
     square_apple->addUnit("apple", 2);
 
-    libcellml::UnitsPtr incredible_pile_of_square_apples = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr incredible_pile_of_square_apples = libcellml::Units::create();
     incredible_pile_of_square_apples->setName("incredible_pile_of_square_apples");
     incredible_pile_of_square_apples->addUnit("square_apple", "mega", 1, 100.0);
 
-    libcellml::UnitsPtr bunch_of_bananas = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr bunch_of_bananas = libcellml::Units::create();
     bunch_of_bananas->setName("bunch_of_bananas");
     bunch_of_bananas->addUnit("banana", 1, 1, 1.0); // 10 bananas
 

@@ -97,7 +97,7 @@ TEST(Model, addComponent)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     m->addComponent(c);
 
     libcellml::Printer printer;
@@ -115,7 +115,7 @@ TEST(Model, addValidNamedComponent)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     c->setName(in);
     m->addComponent(c);
 
@@ -134,7 +134,7 @@ TEST(Model, addInvalidNamedComponent)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     c->setName(in);
     m->addComponent(c);
 
@@ -155,10 +155,10 @@ TEST(Model, addTwoNamedComponents)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
     c1->setName(name1);
     m->addComponent(c1);
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     m->addComponent(c2);
     // once the component is added, we should be able to change the handle to the component and have those changes
     // reflected in the model? Yes we are using shared pointers.
@@ -172,8 +172,8 @@ TEST(Model, addTwoNamedComponents)
 TEST(Model, countComponents)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
 
@@ -187,8 +187,8 @@ TEST(Model, countComponents)
 TEST(Model, containsComponent)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
 
@@ -213,8 +213,8 @@ TEST(Model, removeComponent)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
     m->addComponent(c1);
@@ -251,7 +251,7 @@ TEST(Model, componentMethods)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
     c1->setName("child1");
     m->addComponent(c1);
 
@@ -278,8 +278,8 @@ TEST(Model, takeComponentMethods)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
     m->addComponent(c1);
@@ -398,10 +398,10 @@ TEST(Model, replaceComponent)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
     c3->setName("child3");
@@ -493,14 +493,14 @@ TEST(Model, setAndCheckIdsAllEntities)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
     libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w1 = libcellml::When::create();
 
     i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");

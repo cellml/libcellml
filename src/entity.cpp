@@ -46,30 +46,6 @@ Entity::~Entity()
     delete mPimpl;
 }
 
-Entity::Entity(const Entity &rhs)
-    : mPimpl(new EntityImpl())
-{
-    mPimpl->mParent = rhs.mPimpl->mParent;
-    mPimpl->mId = rhs.mPimpl->mId;
-}
-
-Entity::Entity(Entity &&rhs) noexcept
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Entity &Entity::operator=(Entity rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void Entity::swap(Entity &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void Entity::setId(const std::string &id)
 {
     mPimpl->mId = id;

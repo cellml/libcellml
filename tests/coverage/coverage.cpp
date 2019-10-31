@@ -136,7 +136,7 @@ TEST(Coverage, variable)
 
     libcellml::Variable v;
     libcellml::Variable vm;
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
     u->setName(n);
     v.setUnits(u);
@@ -247,10 +247,10 @@ TEST(Coverage, generatorVariable)
 TEST(Coverage, entityHasParent)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
 
     c2->addVariable(v);
     c1->addComponent(c2);

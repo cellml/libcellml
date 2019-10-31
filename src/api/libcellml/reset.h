@@ -31,12 +31,19 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Reset: public OrderedEntity
 {
-public:
+private:
     Reset(); /**< Constructor */
+
+public:
     ~Reset() override; /**< Destructor */
-    Reset(const Reset &rhs); /**< Copy constructor */
-    Reset(Reset &&rhs) noexcept; /**< Move constructor */
-    Reset &operator=(Reset rhs); /**< Assignment operator */
+    Reset(const Reset &rhs) = delete; /**< Copy constructor */
+    Reset(Reset &&rhs) noexcept = delete; /**< Move constructor */
+    Reset &operator=(Reset rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Reset> create(Args&&... args) noexcept {
+        return std::shared_ptr<Reset>{new Reset{std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Set the @c Variable for this @c Reset.
@@ -160,8 +167,6 @@ public:
     size_t whenCount() const;
 
 private:
-    void swap(Reset &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct ResetImpl; /**< Forward declaration for pImpl idiom. */
     ResetImpl *mPimpl; /**< Private member to implementation pointer */
 };

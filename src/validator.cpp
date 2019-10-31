@@ -229,32 +229,6 @@ struct Validator::ValidatorImpl
     void removeSubstring(std::string &input, const std::string &pattern);
 
     /**
-     * @brief Check if the provided @p name is a standard unit.
-     *
-     * Checks if the provided @p name is one of the standard units in the
-     * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard units.
-     *
-     * @return @c true if @name is a standard unit and @c false otherwise.
-     */
-    // bool isStandardUnitName(const std::string &name);
-
-    /**
-     * @brief Check if the provided @p name is a standard prefix.
-     *
-     * Checks if the provided @p name is one of the standard prefixes in the
-     * @c Prefix @c enum. Returns @c true if @name is a standard prefix
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard prefixes.
-     *
-     * @return @c true if @name is a standard prefix and @c false otherwise.
-     */
-    // bool isStandardPrefixName(const std::string &name);
-
-    /**
      * @brief Check if the provided @p node is a supported MathML element.
      *
      * Checks if the provided @p node is one of the supported MathML elements defined in the table
@@ -1167,8 +1141,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 }
 
-// TODO: validateEncapsulations.
-
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
 {
     std::string::size_type n = pattern.length();
@@ -1184,24 +1156,6 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
     return (node->namespaceUri() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
-
-// bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
-// {
-//     bool result = false;
-//     if (standardUnitsList.count(name) != 0) {
-//         result = true;
-//     }
-//     return result;
-// }
-
-// bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
-// {
-//     bool result = false;
-//     if (standardPrefixList.count(name) != 0) {
-//         result = true;
-//     }
-//     return result;
-// }
 
 bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 {
@@ -1256,7 +1210,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     }
 
     if (model->hasUnits(v1->units()->name())) {
-        libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+        libcellml::UnitsPtr u1 = libcellml::Units::create();
         u1 = model->units(v1->units()->name());
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
     } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
@@ -1267,7 +1221,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     }
 
     if (model->hasUnits(v2->units()->name())) {
-        libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+        libcellml::UnitsPtr u2 = libcellml::Units::create();
         u2 = model->units(v2->units()->name());
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
     } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {

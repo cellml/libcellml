@@ -73,13 +73,13 @@ TEST(Encapsulation, reparentComponent)
         "</model>\n";
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
     parent->setName("parent_component");
-    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child1 = libcellml::Component::create();
     child1->setName("child1");
-    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child2 = libcellml::Component::create();
     child2->setName("child2");
-    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child3 = libcellml::Component::create();
     child3->setName("child3");
     parent->addComponent(child1);
     parent->addComponent(child2);
@@ -124,13 +124,13 @@ TEST(Encapsulation, hierarchyWaterfall)
         "</model>\n";
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
     parent->setName("parent_component");
-    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child1 = libcellml::Component::create();
     child1->setName("child1");
-    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child2 = libcellml::Component::create();
     child2->setName("child2");
-    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child3 = libcellml::Component::create();
     child3->setName("child3");
 
     child2->addComponent(child3);
@@ -173,11 +173,11 @@ TEST(Encapsulation, hierarchyCircular)
         "</model>\n";
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
     parent->setName("parent_component");
-    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child1 = libcellml::Component::create();
     child1->setName("child1");
-    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child2 = libcellml::Component::create();
     child2->setName("child2");
 
     // Standard addition of one component onto another.
@@ -233,9 +233,9 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
 
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("main");
-    libcellml::ComponentPtr first_instance = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr first_instance = libcellml::Component::create();
     first_instance->setName("repeated_component");
-    libcellml::ComponentPtr second_instance = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr second_instance = libcellml::Component::create();
     second_instance->setName("repeated_component");
 
     model->addComponent(first_instance);
@@ -272,13 +272,13 @@ TEST(Encapsulation, hierarchyWaterfallAndParse)
         "</model>\n";
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
     parent->setName("parent_component");
-    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child1 = libcellml::Component::create();
     child1->setName("child1");
-    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child2 = libcellml::Component::create();
     child2->setName("child2");
-    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child3 = libcellml::Component::create();
     child3->setName("child3");
 
     child2->addComponent(child3);
@@ -333,14 +333,14 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
 TEST(Encapsulation, encapsulatedComponentMethods)
 {
     const std::string e = "<component/>\n";
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c4 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c5 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c6 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c4n = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
+    libcellml::ComponentPtr c5 = libcellml::Component::create();
+    libcellml::ComponentPtr c6 = libcellml::Component::create();
+    libcellml::ComponentPtr c4n = libcellml::Component::create();
 
     c1->setName("comp1");
     c2->setName("comp2");
@@ -403,15 +403,15 @@ TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)
         "  </encapsulation>\n"
         "</model>\n";
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent1 = libcellml::Component::create();
     parent1->setName("parent1_component");
-    libcellml::ComponentPtr parent2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent2 = libcellml::Component::create();
     parent2->setName("parent2_component");
-    libcellml::ComponentPtr child11 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child11 = libcellml::Component::create();
     child11->setName("child11_component");
-    libcellml::ComponentPtr child12 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child12 = libcellml::Component::create();
     child12->setName("child12_component");
-    libcellml::ComponentPtr child21 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child21 = libcellml::Component::create();
     child21->setName("child21_component");
 
     parent1->addComponent(child11);

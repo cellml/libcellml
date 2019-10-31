@@ -41,7 +41,7 @@ TEST(ComponentImport, basics)
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
 
     EXPECT_EQ(c->importSource(), nullptr);
     EXPECT_EQ(c->importReference(), "");
@@ -73,7 +73,7 @@ TEST(ComponentImport, singleImportA)
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr importedComponent = libcellml::Component::create();
 
     EXPECT_EQ(importedComponent->importSource(), nullptr);
 
@@ -105,7 +105,7 @@ TEST(ComponentImport, singleImportB)
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr importedComponent = libcellml::Component::create();
     importedComponent->setName("component_in_this_model");
     importedComponent->setImportSource(imp);
     importedComponent->setImportReference("a_component_in_that_model");
@@ -130,7 +130,7 @@ TEST(ComponentImport, nonExistentURLAndParse)
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("http://someplace.world/cellml/model.xml");
 
-    libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr importedComponent = libcellml::Component::create();
 
     EXPECT_EQ(importedComponent->importSource(), nullptr);
 
@@ -183,18 +183,18 @@ TEST(ComponentImport, multipleImportAndParse)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
     c1->setName("c1");
     c1->setSourceComponent(imp, "cc1");
     m->addComponent(c1);
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c2->setName("c2");
     c2->setSourceComponent(imp, "cc2");
     m->addComponent(c2);
 
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
     imp2->setUrl("some-other-model.xml");
-    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
     c3->setName("c3");
     c3->setSourceComponent(imp2, "cc1");
     m->addComponent(c3);
@@ -234,17 +234,17 @@ TEST(ComponentImport, hierarchicalImportAndParse)
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::ComponentPtr dave = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr dave = libcellml::Component::create();
     dave->setName("dave");
     m->addComponent(dave);
 
-    libcellml::ComponentPtr bob = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr bob = libcellml::Component::create();
     bob->setName("bob");
     dave->addComponent(bob);
 
     EXPECT_FALSE(dave->isImport());
 
-    libcellml::ComponentPtr i1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr i1 = libcellml::Component::create();
     i1->setName("c1");
     i1->setSourceComponent(imp, "cc1");
 
@@ -291,17 +291,17 @@ TEST(ComponentImport, complexImportAndParse)
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::ComponentPtr dave = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr dave = libcellml::Component::create();
     dave->setName("dave");
     m->addComponent(dave);
 
-    libcellml::ComponentPtr bob = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr bob = libcellml::Component::create();
     bob->setName("bob");
     dave->addComponent(bob);
 
     EXPECT_FALSE(dave->isImport());
 
-    libcellml::ComponentPtr i1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr i1 = libcellml::Component::create();
     i1->setName("c1");
     i1->setSourceComponent(imp, "cc1");
 
@@ -309,7 +309,7 @@ TEST(ComponentImport, complexImportAndParse)
 
     bob->addComponent(i1);
 
-    libcellml::ComponentPtr angus = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr angus = libcellml::Component::create();
     angus->setName("angus");
     bob->addComponent(angus);
 
