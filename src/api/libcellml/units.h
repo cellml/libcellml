@@ -38,12 +38,19 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
-public:
+private:
     Units(); /**< Constructor */
+
+public:
     ~Units() override; /**< Destructor */
-    Units(const Units &rhs); /**< Copy constructor */
-    Units(Units &&rhs) noexcept; /**< Move constructor */
-    Units &operator=(Units rhs); /**< Assignment operator */
+    Units(const Units &rhs) = delete; /**< Copy constructor */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Units> create(Args&&... args) noexcept {
+        return std::shared_ptr<Units>{new Units{std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief The Standard Unit enum class.
@@ -379,8 +386,6 @@ public:
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
 private:
-    void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl *mPimpl; /**< Private member to implementation pointer */
 };

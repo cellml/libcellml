@@ -76,36 +76,6 @@ Model::~Model()
     delete mPimpl;
 }
 
-/*
-Model::Model(const Model &rhs)
-    : ComponentEntity(rhs)
-#ifndef SWIG
-    , std::enable_shared_from_this<Model>(rhs)
-#endif
-    , mPimpl(new ModelImpl())
-{
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-}
-
-Model::Model(Model &&rhs) noexcept
-    : ComponentEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Model &Model::operator=(Model rhs)
-{
-    ComponentEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Model::swap(Model &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-*/
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {

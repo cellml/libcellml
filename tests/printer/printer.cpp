@@ -42,7 +42,7 @@ TEST(Printer, printEmptyUnits)
         "  <units/>\n"
         "</model>\n";
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
     m->addUnits(u);
 
@@ -62,7 +62,7 @@ TEST(Printer, printEmptyVariable)
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     c->addVariable(v);
 
     libcellml::Printer printer;
@@ -121,8 +121,8 @@ TEST(Printer, printEncapsulation)
         "</model>\n";
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
+    libcellml::ComponentPtr child = libcellml::Component::create();
     parent->addComponent(child);
 
     model->addComponent(parent);
@@ -147,9 +147,9 @@ TEST(Printer, printEncapsulationWithNames)
         "</model>\n";
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
     parent->setName("parent_component");
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child = libcellml::Component::create();
     child->setName("child_component");
     parent->addComponent(child);
 

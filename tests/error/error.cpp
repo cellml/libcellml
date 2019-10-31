@@ -28,7 +28,7 @@ TEST(Error, createModelError)
 
 TEST(Error, createComponemntError)
 {
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(c);
 
     EXPECT_EQ(libcellml::Error::Kind::COMPONENT, e->kind());
@@ -36,7 +36,7 @@ TEST(Error, createComponemntError)
 
 TEST(Error, createVariableError)
 {
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(v);
 
     EXPECT_EQ(libcellml::Error::Kind::VARIABLE, e->kind());
@@ -44,7 +44,7 @@ TEST(Error, createVariableError)
 
 TEST(Error, createUnitsError)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(u);
 
     EXPECT_EQ(libcellml::Error::Kind::UNITS, e->kind());
@@ -68,7 +68,7 @@ TEST(Error, createResetError)
 
 TEST(Error, createWhenError)
 {
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w = libcellml::When::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(w);
 
     EXPECT_EQ(libcellml::Error::Kind::WHEN, e->kind());

@@ -78,40 +78,6 @@ Component::~Component()
     delete mPimpl;
 }
 
-Component::Component(const Component &rhs)
-    : ComponentEntity(rhs)
-    , ImportedEntity(rhs)
-#ifndef SWIG
-    , std::enable_shared_from_this<Component>(rhs)
-#endif
-    , mPimpl(new ComponentImpl())
-{
-    mPimpl->mVariables = rhs.mPimpl->mVariables;
-    mPimpl->mResets = rhs.mPimpl->mResets;
-    mPimpl->mMath = rhs.mPimpl->mMath;
-}
-
-Component::Component(Component &&rhs) noexcept
-    : ComponentEntity(std::move(rhs))
-    , ImportedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Component &Component::operator=(Component rhs)
-{
-    ComponentEntity::operator=(rhs);
-    ImportedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Component::swap(Component &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 bool Component::doAddComponent(const ComponentPtr &component)
 {
     bool hasParent = component->hasParent();

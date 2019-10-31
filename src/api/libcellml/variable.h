@@ -31,12 +31,19 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Variable: public NamedEntity
 {
-public:
+private:
     Variable(); /**< Constructor */
+
+public:
     ~Variable() override; /**< Destructor */
-    Variable(const Variable &rhs); /**< Copy constructor */
-    Variable(Variable &&rhs) noexcept; /**< Move constructor */
-    Variable &operator=(Variable rhs); /**< Assignment operator */
+    Variable(const Variable &rhs) = delete; /**< Copy constructor */
+    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor */
+    Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Variable> create(Args&&... args) noexcept {
+        return std::shared_ptr<Variable>{new Variable{std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief The InterfaceType enum class.
@@ -345,8 +352,6 @@ public:
     std::string interfaceType() const;
 
 private:
-    void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */
 };

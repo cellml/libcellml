@@ -20,14 +20,14 @@ limitations under the License.
 
 TEST(When, create)
 {
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w = libcellml::When::create();
 
     EXPECT_NE(nullptr, w);
 }
 
 TEST(When, condition)
 {
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w = libcellml::When::create();
 
     w->setCondition("<some mathml type string for condition.>");
 
@@ -36,7 +36,7 @@ TEST(When, condition)
 
 TEST(When, value)
 {
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w = libcellml::When::create();
 
     w->setValue("<some mathml type string for value.>");
 
@@ -45,7 +45,7 @@ TEST(When, value)
 
 TEST(When, order)
 {
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w = libcellml::When::create();
 
     EXPECT_FALSE(w->isOrderSet());
 
