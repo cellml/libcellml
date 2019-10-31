@@ -57,7 +57,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return u == units; });
+                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name(); });
 }
 
 Model::Model()
@@ -65,11 +65,18 @@ Model::Model()
 {
 }
 
+Model::Model(const std::string &name)
+    : mPimpl(new ModelImpl())
+{
+    setName(name);
+}
+
 Model::~Model()
 {
     delete mPimpl;
 }
 
+/*
 Model::Model(const Model &rhs)
     : ComponentEntity(rhs)
 #ifndef SWIG
@@ -98,7 +105,7 @@ void Model::swap(Model &rhs)
 {
     std::swap(mPimpl, rhs.mPimpl);
 }
-
+*/
 bool Model::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {

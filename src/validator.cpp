@@ -1133,8 +1133,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             // TODO: add check for cyclical connections (17.10.5).
                             double multiplier = 0.0;
                             if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units()->name() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units()->name() + "'. The mismatch is: " + hints);
+                                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                                 err->setModel(model);
                                 err->setKind(Error::Kind::UNITS);
                                 mValidator->addError(err);
@@ -1248,6 +1250,10 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     std::string ref;
     hints = "";
     multiplier = 0.0;
+
+    if (v1->units() == nullptr || v2->units() == nullptr) {
+        return false;
+    }
 
     if (model->hasUnits(v1->units()->name())) {
         libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();

@@ -72,7 +72,7 @@ TEST(Encapsulation, reparentComponent)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -123,7 +123,7 @@ TEST(Encapsulation, hierarchyWaterfall)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -172,7 +172,7 @@ TEST(Encapsulation, hierarchyCircular)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -231,7 +231,7 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
         "Model 'main' contains multiple components with the name 'repeated_component'. Valid component names must be unique to their model.",
     };
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("main");
     libcellml::ComponentPtr first_instance = std::make_shared<libcellml::Component>();
     first_instance->setName("repeated_component");
@@ -271,7 +271,7 @@ TEST(Encapsulation, hierarchyWaterfallAndParse)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -402,7 +402,7 @@ TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr parent1 = std::make_shared<libcellml::Component>();
     parent1->setName("parent1_component");
     libcellml::ComponentPtr parent2 = std::make_shared<libcellml::Component>();

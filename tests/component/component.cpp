@@ -506,7 +506,7 @@ TEST(Component, constructors)
 
 TEST(Component, onlyOneParentAtAnyGivenTime)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
