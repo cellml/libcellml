@@ -186,7 +186,7 @@ TEST(Coverage, error)
 TEST(Coverage, model)
 {
     const std::string n = "model";
-
+/*
     libcellml::Model rm;
     libcellml::Model ao;
 
@@ -200,6 +200,7 @@ TEST(Coverage, model)
 
     vec.push_back(rm);
     vec.insert(vec.begin(), ao);
+    */
 }
 
 TEST(Coverage, generator)
@@ -245,7 +246,7 @@ TEST(Coverage, generatorVariable)
 
 TEST(Coverage, entityHasParent)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();

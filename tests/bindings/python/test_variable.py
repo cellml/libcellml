@@ -190,7 +190,7 @@ class VariableTestCase(unittest.TestCase):
         u.setName(name)
         v = Variable()
         v.setUnits(u)
-        self.assertEqual(v.units(), name)
+        self.assertEqual(v.units().name(), name)
 
     def test_units(self):
         from libcellml import Variable
@@ -198,11 +198,11 @@ class VariableTestCase(unittest.TestCase):
         # std::string units()
         name = 'testo'
         v = Variable()
-        self.assertEqual(v.units(), '')
+        self.assertEqual(v.units(), None)
         v.setUnits(name)
-        self.assertEqual(v.units(), name)
+        self.assertEqual(v.units().name(), name)
         v.setUnits('')
-        self.assertEqual(v.units(), '')
+        self.assertEqual(v.units().name(), '')
         del(v, name)
 
     def test_set_initial_value(self):

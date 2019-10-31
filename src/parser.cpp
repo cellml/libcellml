@@ -222,7 +222,7 @@ void Parser::swap(Parser &rhs)
 
 ModelPtr Parser::parseModel(const std::string &input)
 {
-    ModelPtr model = std::make_shared<Model>();
+    ModelPtr model = Model::create();
     mPimpl->updateModel(model, input);
     return model;
 }

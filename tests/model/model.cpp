@@ -21,7 +21,7 @@ limitations under the License.
 TEST(Model, setGetId)
 {
     const std::string id = "modelID";
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     m->setId(id);
     EXPECT_EQ(id, m->id());
 }
@@ -33,7 +33,7 @@ TEST(Model, name)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     m->setName(n);
 
     EXPECT_EQ(n, m->name());
@@ -53,7 +53,7 @@ TEST(Model, unsetName)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     m->setName(n);
     EXPECT_EQ(n, m->name());
 
@@ -74,7 +74,7 @@ TEST(Model, invalidName)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     m->setName(n);
 
     EXPECT_EQ(n, m->name());
@@ -92,7 +92,7 @@ TEST(Model, addComponent)
         "  <component/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m->addComponent(c);
 
@@ -110,7 +110,7 @@ TEST(Model, addValidNamedComponent)
         "  <component name=\"valid_name\"/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
     m->addComponent(c);
@@ -129,7 +129,7 @@ TEST(Model, addInvalidNamedComponent)
         "  <component name=\"invalid name\"/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
     m->addComponent(c);
@@ -150,7 +150,7 @@ TEST(Model, addTwoNamedComponents)
         "  <component name=\"component_2\"/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     c1->setName(name1);
     m->addComponent(c1);
@@ -167,7 +167,7 @@ TEST(Model, addTwoNamedComponents)
 
 TEST(Model, countComponents)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -182,7 +182,7 @@ TEST(Model, countComponents)
 
 TEST(Model, containsComponent)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -208,7 +208,7 @@ TEST(Model, removeComponent)
         "  <component name=\"child2\"/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -246,7 +246,7 @@ TEST(Model, componentMethods)
         "  <component name=\"childA\"/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
     m->addComponent(c1);
@@ -273,7 +273,7 @@ TEST(Model, takeComponentMethods)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -393,7 +393,7 @@ TEST(Model, replaceComponent)
         "  <component name=\"child3\"/>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
@@ -437,7 +437,7 @@ TEST(Model, constructors)
         "</model>\n";
     const std::string n = "my_name";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ModelPtr m1;
     libcellml::ModelPtr m2;
     m->setName(n);
@@ -486,7 +486,7 @@ TEST(Model, setAndCheckIdsAllEntities)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
     libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();

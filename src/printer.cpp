@@ -573,14 +573,4 @@ std::string Printer::printModel(const ModelPtr &model) const
     return repr;
 }
 
-std::string Printer::printModel(Model model) const
-{
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, &model));
-}
-
-std::string Printer::printModel(Model *model) const
-{
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, model));
-}
-
 } // namespace libcellml

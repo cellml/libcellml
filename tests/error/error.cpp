@@ -20,7 +20,7 @@ limitations under the License.
 
 TEST(Error, createModelError)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(m);
 
     EXPECT_EQ(libcellml::Error::Kind::MODEL, e->kind());

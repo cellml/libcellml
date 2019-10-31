@@ -240,7 +240,7 @@ double doGetScalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     updateUnitMultipliers(unitMap, multiplier, units1, 1, 0, 1);
     updateUnitMultipliers(unitMap, multiplier, units2, 1, 0, -1);
 
-    return multiplier;
+    return std::pow(10, multiplier);
 }
 
 double doGetScalingFactor(const ModelPtr &/*model*/, const std::string &/*u1Name*/, const std::string &/*u2Name*/)
