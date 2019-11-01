@@ -29,7 +29,7 @@ TEST(UnitsImport, basics)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("a-model.xml");
 
     libcellml::UnitsPtr u = libcellml::Units::create();
@@ -61,7 +61,7 @@ TEST(UnitsImport, importValidName)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::UnitsPtr importedUnits = libcellml::Units::create();
@@ -95,7 +95,7 @@ TEST(UnitsImport, importInvalidName)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::UnitsPtr importedUnits = libcellml::Units::create();
@@ -125,7 +125,7 @@ TEST(UnitsImport, nonExistentURL)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("http://someplace.world/cellml/model.xml");
 
     libcellml::UnitsPtr importedUnits = libcellml::Units::create();
@@ -169,7 +169,7 @@ TEST(UnitsImport, importModifyAndParse)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::UnitsPtr importedUnits = libcellml::Units::create();

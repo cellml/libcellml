@@ -483,7 +483,7 @@ TEST(Component, constructors)
     libcellml::ComponentPtr c2;
 
     c->setName(n);
-    c->addComponent(std::make_shared<libcellml::Component>());
+    c->addComponent(libcellml::Component::create());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);

@@ -946,7 +946,7 @@ TEST(Connection, importedComponentConnectionAndParse)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     libcellml::ComponentPtr componentImported = libcellml::Component::create();
     libcellml::ComponentPtr componentBob = libcellml::Component::create();
     libcellml::VariablePtr variableImported = libcellml::Variable::create();

@@ -108,8 +108,7 @@ the structure."
 #include "libcellml/componententity.h"
 %}
 
-%ignore libcellml::ComponentEntity::ComponentEntity(ComponentEntity &&);
-%ignore libcellml::ComponentEntity::operator =;
+%ignore libcellml::ComponentEntity::ComponentEntity();
 
 %include "libcellml/types.h"
 %include "libcellml/componententity.h"

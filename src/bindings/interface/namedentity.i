@@ -18,7 +18,6 @@
 #include "libcellml/namedentity.h"
 %}
 
-%ignore libcellml::NamedEntity::NamedEntity(NamedEntity &&);
-%ignore libcellml::NamedEntity::operator =;
+%ignore libcellml::NamedEntity::NamedEntity();
 
 %include "libcellml/namedentity.h"

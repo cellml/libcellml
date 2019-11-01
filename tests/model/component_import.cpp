@@ -38,7 +38,7 @@ TEST(ComponentImport, basics)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("a-model.xml");
 
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -70,7 +70,7 @@ TEST(ComponentImport, singleImportA)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::ComponentPtr importedComponent = libcellml::Component::create();
@@ -102,7 +102,7 @@ TEST(ComponentImport, singleImportB)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::ComponentPtr importedComponent = libcellml::Component::create();
@@ -127,7 +127,7 @@ TEST(ComponentImport, nonExistentURLAndParse)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("http://someplace.world/cellml/model.xml");
 
     libcellml::ComponentPtr importedComponent = libcellml::Component::create();
@@ -181,7 +181,7 @@ TEST(ComponentImport, multipleImportAndParse)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
     libcellml::ComponentPtr c1 = libcellml::Component::create();
     c1->setName("c1");
@@ -192,7 +192,7 @@ TEST(ComponentImport, multipleImportAndParse)
     c2->setSourceComponent(imp, "cc2");
     m->addComponent(c2);
 
-    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
     imp2->setUrl("some-other-model.xml");
     libcellml::ComponentPtr c3 = libcellml::Component::create();
     c3->setName("c3");
@@ -231,7 +231,7 @@ TEST(ComponentImport, hierarchicalImportAndParse)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::ComponentPtr dave = libcellml::Component::create();
@@ -288,7 +288,7 @@ TEST(ComponentImport, complexImportAndParse)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
     libcellml::ComponentPtr dave = libcellml::Component::create();

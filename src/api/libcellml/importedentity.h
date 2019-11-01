@@ -36,9 +36,9 @@ protected:
 
 public:
     virtual ~ImportedEntity(); /**< Destructor */
-    ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
-    ImportedEntity(ImportedEntity &&rhs) noexcept; /**< Move constructor */
-    ImportedEntity &operator=(ImportedEntity rhs); /**< Assignment operator */
+    ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor */
+    ImportedEntity(ImportedEntity &&rhs) noexcept = delete; /**< Move constructor */
+    ImportedEntity &operator=(ImportedEntity rhs) = delete; /**< Assignment operator */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -99,8 +99,6 @@ public:
     void setImportReference(const std::string &reference);
 
 private:
-    void swap(ImportedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
     ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };

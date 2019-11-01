@@ -65,9 +65,9 @@ TEST(Variable, validVariableName)
 {
     const std::string in = "valid_name";
     const std::string e = in;
-    libcellml::Variable v;
-    v.setName(in);
-    const std::string a = v.name();
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    v->setName(in);
+    const std::string a = v->name();
     EXPECT_EQ(e, a);
 }
 
@@ -75,9 +75,9 @@ TEST(Variable, invalidVariableName)
 {
     const std::string in = "invalid name";
     const std::string e = in;
-    libcellml::Variable v;
-    v.setName(in);
-    const std::string a = v.name();
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    v->setName(in);
+    const std::string a = v->name();
     EXPECT_EQ(e, a);
 }
 
@@ -191,16 +191,16 @@ TEST(Variable, setInitialValueByReference)
 
 TEST(Variable, unsetInitialValue)
 {
-    libcellml::Variable v;
-    EXPECT_EQ(v.initialValue(), "");
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    EXPECT_EQ(v->initialValue(), "");
 }
 
 TEST(Variable, setInitialValue)
 {
-    libcellml::Variable v;
+    libcellml::VariablePtr v = libcellml::Variable::create();
     const std::string e = "0.0";
-    v.setInitialValue(e);
-    const std::string a = v.initialValue();
+    v->setInitialValue(e);
+    const std::string a = v->initialValue();
     EXPECT_EQ(e, a);
 }
 
@@ -320,28 +320,28 @@ TEST(Variable, setInterfaceTypePublicAndPrivate)
 
 TEST(Variable, setGetInterfaceType)
 {
-    libcellml::Variable v1;
-    libcellml::Variable v2;
-    libcellml::Variable v3;
-    libcellml::Variable v4;
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
     libcellml::Variable::InterfaceType interfaceType1 = libcellml::Variable::InterfaceType::NONE;
     libcellml::Variable::InterfaceType interfaceType2 = libcellml::Variable::InterfaceType::PRIVATE;
     libcellml::Variable::InterfaceType interfaceType3 = libcellml::Variable::InterfaceType::PUBLIC;
     libcellml::Variable::InterfaceType interfaceType4 = libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE;
-    v1.setInterfaceType(interfaceType1);
-    v2.setInterfaceType(interfaceType2);
-    v3.setInterfaceType(interfaceType3);
-    v4.setInterfaceType(interfaceType4);
+    v1->setInterfaceType(interfaceType1);
+    v2->setInterfaceType(interfaceType2);
+    v3->setInterfaceType(interfaceType3);
+    v4->setInterfaceType(interfaceType4);
 
     const std::string interfaceTypeString1 = "none";
     const std::string interfaceTypeString2 = "private";
     const std::string interfaceTypeString3 = "public";
     const std::string interfaceTypeString4 = "public_and_private";
 
-    EXPECT_EQ(interfaceTypeString1, v1.interfaceType());
-    EXPECT_EQ(interfaceTypeString2, v2.interfaceType());
-    EXPECT_EQ(interfaceTypeString3, v3.interfaceType());
-    EXPECT_EQ(interfaceTypeString4, v4.interfaceType());
+    EXPECT_EQ(interfaceTypeString1, v1->interfaceType());
+    EXPECT_EQ(interfaceTypeString2, v2->interfaceType());
+    EXPECT_EQ(interfaceTypeString3, v3->interfaceType());
+    EXPECT_EQ(interfaceTypeString4, v4->interfaceType());
 }
 
 TEST(Variable, addVariable)

@@ -43,22 +43,6 @@ TEST(Coverage, connectionComment)
     EXPECT_EQ(size_t(4), p.errorCount());
 }
 
-TEST(Coverage, import)
-{
-    const std::string id = "id";
-
-    libcellml::ImportSource i;
-    libcellml::ImportSource im;
-
-    i.setId(id);
-
-    im = std::move(i);
-
-    libcellml::ImportSource ic(im);
-
-    EXPECT_EQ(id, ic.id());
-}
-
 TEST(Coverage, importWithNonHrefXlink)
 {
     const std::string e =
@@ -96,75 +80,6 @@ TEST(Coverage, printer)
     libcellml::Printer pc(pm);
 
     EXPECT_EQ(size_t(1), pc.errorCount());
-}
-
-TEST(Coverage, units)
-{
-    const std::string n = "dimensionless";
-
-    libcellml::Units u;
-    libcellml::Units um;
-
-    u.setName("dimensionless");
-
-    um = std::move(u);
-
-    libcellml::Units uc(um);
-
-    EXPECT_EQ(n, uc.name());
-}
-
-TEST(Coverage, when)
-{
-    const std::string id = "id";
-
-    libcellml::When w;
-    libcellml::When wm;
-
-    w.setId(id);
-
-    wm = std::move(w);
-
-    libcellml::When wc(wm);
-
-    EXPECT_EQ(id, wc.id());
-}
-
-TEST(Coverage, variable)
-{
-    const std::string n = "dimensionless";
-
-    libcellml::Variable v;
-    libcellml::Variable vm;
-    libcellml::UnitsPtr u = libcellml::Units::create();
-
-    u->setName(n);
-    v.setUnits(u);
-
-    vm = std::move(v);
-
-    libcellml::Variable vc(vm);
-
-    EXPECT_EQ(n, vc.units()->name());
-}
-
-TEST(Coverage, component)
-{
-    const std::string n = "name";
-
-    libcellml::Component rc;
-    libcellml::Component ao;
-
-    rc.setName(n);
-
-    ao = rc;
-
-    EXPECT_EQ(n, ao.name());
-
-    std::vector<libcellml::Component> vec;
-
-    vec.push_back(rc);
-    vec.insert(vec.begin(), ao);
 }
 
 TEST(Coverage, error)
