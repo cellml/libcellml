@@ -16,21 +16,21 @@ limitations under the License.
 
 #include "libcellml/validator.h"
 
+#include <algorithm>
+#include <cmath>
+#include <libxml/uri.h>
+#include <stdexcept>
+
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
+#include "libcellml/units.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
-
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
-
-#include <algorithm>
-#include <cmath>
-#include <stdexcept>
-
-#include <libxml/uri.h>
 
 namespace libcellml {
 
@@ -44,6 +44,19 @@ struct Validator::ValidatorImpl
     Validator *mValidator = nullptr;
 
     /**
+     * @brief Validate the given name is unique in the model.
+     *
+     * The @p name is checked against known names in @p names. If
+     * the @p name already exists an error is added to the validator
+     * with the model passed to the error for further reference.
+     *
+     * @param model The model the name is used in.
+     * @param name The name of the component to validate.
+     * @param names The list of component names already used in the model.
+     */
+    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names);
+
+    /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
      *
      * Validate the given @p component and its encapsulated entities using
@@ -52,6 +65,30 @@ struct Validator::ValidatorImpl
      * @param component The component to validate.
      */
     void validateComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Validate an imported component.
+     *
+     * Validates the imported @p component.  Any errors will be
+     * logged to the @c Validator.
+     *
+     * @sa validateComponent
+     *
+     * @param component The imported component to validate.
+     */
+    void validateImportedComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Validate the component tree of the given @p component.
+     *
+     * Validate the given compoment and all child components of the component.
+     *
+     * @param model The model the @p component comes from.
+     * @param component The @c Component to validate.
+     * @param componentNames The list of already used component names used
+     * to track repeated component names.
+     */
+    void validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -327,58 +364,9 @@ void Validator::validateModel(const ModelPtr &model)
     // Check for components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
-        std::vector<std::string> componentRefs;
-        std::vector<std::string> componentImportSources;
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
-            // Check for duplicate component names in this model.
-            std::string componentName = component->name();
-            if (!componentName.empty()) {
-                if (component->isImport()) {
-                    // Check for a component_ref; assumes imported if the import source is not null.
-                    std::string componentRef = component->importReference();
-                    std::string importSource = component->importSource()->url();
-
-                    if (!mPimpl->isCellmlIdentifier(componentRef)) {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
-                        err->setComponent(component);
-                        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                        addError(err);
-                    }
-                    if (importSource.empty()) {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
-                        err->setImportSource(component->importSource());
-                        err->setRule(SpecificationRule::IMPORT_HREF);
-                        addError(err);
-                    } else {
-                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
-                        if (uri == nullptr) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
-                            err->setImportSource(component->importSource());
-                            err->setRule(SpecificationRule::IMPORT_HREF);
-                            addError(err);
-
-                        } else {
-                            xmlFreeURI(uri);
-                        }
-                    }
-                    // Push back the unique sources and refs.
-                    componentImportSources.push_back(importSource);
-                    componentRefs.push_back(componentRef);
-                }
-                if (std::find(componentNames.begin(), componentNames.end(), componentName) != componentNames.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + componentName + "'. Valid component names must be unique to their model.");
-                    err->setModel(model);
-                    addError(err);
-                }
-                componentNames.push_back(componentName);
-            }
-            // Validate component.
-            mPimpl->validateComponent(component);
+            mPimpl->validateComponentTree(model, component, componentNames);
         }
     }
     // Check for units in this model.
@@ -414,7 +402,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     // Check if we already have another import from the same source with the same units_ref.
-                    // (This looks for matching enties at the same position in the source and ref vectors).
+                    // (This looks for matching entries at the same position in the source and ref vectors).
                     if (!unitsImportSources.empty() && (!foundImportError)) {
                         if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
                             == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())) {
@@ -456,19 +444,85 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 }
 
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names)
+{
+    if (!name.empty()) {
+        if (std::find(names.begin(), names.end(), name) != names.end()) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + name + "'. Valid component names must be unique to their model.");
+            err->setModel(model);
+            mValidator->addError(err);
+        } else {
+            names.push_back(name);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, const ComponentPtr &component, std::vector<std::string> &componentNames)
+{
+    validateUniqueName(model, component->name(), componentNames);
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        validateComponentTree(model, childComponent, componentNames);
+    }
+    if (component->isImport()) {
+        validateImportedComponent(component);
+    } else {
+        validateComponent(component);
+    }
+}
+
+void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component)
+{
+    if (!isCellmlIdentifier(component->name())) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setComponent(component);
+        err->setDescription("Imported component does not have a valid name attribute.");
+        err->setRule(SpecificationRule::IMPORT_COMPONENT_NAME);
+        mValidator->addError(err);
+    }
+
+    // Check for a component_ref; assumes imported if the import source is not null.
+    std::string componentRef = component->importReference();
+    std::string importSource = component->importSource()->url();
+    std::string componentName = component->name();
+
+    if (!isCellmlIdentifier(componentRef)) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
+        err->setComponent(component);
+        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+        mValidator->addError(err);
+    }
+    if (importSource.empty()) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
+        err->setImportSource(component->importSource());
+        err->setRule(SpecificationRule::IMPORT_HREF);
+        mValidator->addError(err);
+    } else {
+        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+        if (uri == nullptr) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
+            err->setImportSource(component->importSource());
+            err->setRule(SpecificationRule::IMPORT_HREF);
+            mValidator->addError(err);
+
+        } else {
+            xmlFreeURI(uri);
+        }
+    }
+}
+
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(component->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setComponent(component);
-        if (component->isImport()) {
-            err->setDescription("Imported component does not have a valid name attribute.");
-            err->setRule(SpecificationRule::IMPORT_COMPONENT_NAME);
-        } else {
-            err->setDescription("Component does not have a valid name attribute.");
-            err->setRule(SpecificationRule::COMPONENT_NAME);
-        }
+        err->setDescription("Component does not have a valid name attribute.");
+        err->setRule(SpecificationRule::COMPONENT_NAME);
         mValidator->addError(err);
     }
     // Check for variables in this component.
@@ -625,10 +679,10 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-        ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+        ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
+            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + variable->units() + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
@@ -781,9 +835,20 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
+    std::string modifiedInput = input;
+
+    // It may be that we need to copy over the cellml namespace from the enclosing document.
+    auto cellmlNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
+    if (input.find("cellml:units") != std::string::npos && input.find(cellmlNamespaceText) == std::string::npos) {
+        auto foundIndex = input.find(MATHML_NS);
+        if (foundIndex != std::string::npos) {
+            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellmlNamespaceText);
+        }
+    }
+
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
-    doc->parse(input);
+    doc->parse(modifiedInput);
     // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
@@ -840,9 +905,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
     // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
     // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
-    std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
     std::string cleanMathml = mathNode->convertToString();
-    removeSubstring(cleanMathml, cellml2NamespaceString);
+    removeSubstring(cleanMathml, cellmlNamespaceText + "\"");
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -851,7 +915,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (mathmlDoc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(mathmlDoc->xmlError(i));
+            err->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);

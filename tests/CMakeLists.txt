@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
+include(GenerateExportHeader)
+
 # include gtest so we can make use of the gtest_main target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest)
 if(APPLE)
@@ -42,8 +44,20 @@ include(variable/tests.cmake)
 include(version/tests.cmake)
 include(when/tests.cmake)
 
+set(TEST_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/test_exportdefinitions.h")
+
 set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
+
+add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTDEFINITIONS_H})
+target_link_libraries(test_utils PUBLIC cellml gtest)
+target_include_directories(test_utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+set_target_properties(test_utils PROPERTIES
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN 1
+  FOLDER tests)
+generate_export_header(test_utils EXPORT_FILE_NAME ${TEST_EXPORTDEFINITIONS_H} BASE_NAME TEST)
+
 set(TESTS_SOURCE_FILES ${TEST_UTILS_SRC})
 set(TESTS_HEADER_FILES ${TEST_UTILS_HDR})
 
@@ -59,14 +73,11 @@ foreach(TEST ${LIBCELLML_TESTS})
   endif()
   list(APPEND TESTS_SOURCE_FILES ${${TEST}_SRCS})
   list(APPEND TESTS_HEADER_FILES ${${TEST}_HDRS})
-  add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS} ${TEST_UTILS_SRC} ${TEST_UTILS_HDR})
+  add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
   target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(${CURRENT_TEST} cellml gtest_main)
+  target_link_libraries(${CURRENT_TEST} cellml gtest_main test_utils)
 
-  set_target_properties(${CURRENT_TEST} PROPERTIES
-    CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED ON
-    FOLDER tests)
+  set_target_properties(${CURRENT_TEST} PROPERTIES FOLDER tests)
 
   configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
 
@@ -90,6 +101,9 @@ foreach(TEST ${LIBCELLML_TESTS})
   unset(CURRENT_CATEGORY)
 endforeach()
 
+# Generate tests for header files.
+include(api_headers/tests.cmake)
+
 add_subdirectory(bindings)
 
 if(LIBCELLML_COVERAGE)
@@ -97,6 +111,9 @@ if(LIBCELLML_COVERAGE)
   add_custom_target(clean_coverage
     COMMAND ${FIND_EXE} ${GCOV_ANALYSIS_PATH} -type f -name '*.gcda' -print | xargs /bin/rm -f
     COMMENT "Clean old coverage data")
+
+  # Clean away any coverage files when the libCellML is built.
+  add_dependencies(cellml clean_coverage)
 
   # Prepare for test coverage by generating the gcov note files
   add_custom_target(prepare_coverage
