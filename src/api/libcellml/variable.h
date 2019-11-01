@@ -33,6 +33,7 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
 {
 private:
     Variable(); /**< Constructor */
+    explicit Variable(const std::string &name);
 
 public:
     ~Variable() override; /**< Destructor */

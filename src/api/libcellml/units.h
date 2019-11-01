@@ -40,6 +40,7 @@ class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
 private:
     Units(); /**< Constructor */
+    explicit Units(const std::string &name);
 
 public:
     ~Units() override; /**< Destructor */

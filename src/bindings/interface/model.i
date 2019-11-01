@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include <std_shared_ptr.i>
+%include "createconstructor.i"
 
 %import "types.i"
 %import "componententity.i"
@@ -85,19 +86,8 @@ determine the full path to the source model relative to this one.";
 %}
 
 %shared_ptr(libcellml::Model);
-%include "createconstructor.i"
+%create_constructor(Model);
+%create_name_constructor(Model);
 
 %include "libcellml/types.h"
 %include "libcellml/model.h"
-
-/*
-%newobject libcellml::Model;
-libcellml::ModelPtr libcellml::Model() {
-  return libcellml::Model::create();
-}
-//%template(libcellml_model) libcellml::Model<libcellml::Model>;
-/*
-%extend libcellml::Model {
-  static libcellml::ModelPtr __new__() { return libcellml::Model::create(); }
-};
-*/

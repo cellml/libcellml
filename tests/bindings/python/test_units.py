@@ -11,9 +11,10 @@ class UnitsTestCase(unittest.TestCase):
 
         x = Units()
         del(x)
-        y = Units()
-        z = Units(y)
-        del(y, z)
+
+        y = Units("mine")
+        self.assertEqual("mine", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
@@ -30,8 +31,6 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Units(x)
-        self.assertEqual(y.id(), idx)
 
     def test_standard_unit(self):
         from libcellml import Units

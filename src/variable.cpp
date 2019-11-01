@@ -180,6 +180,13 @@ Variable::Variable()
     mPimpl->mVariable = this;
 }
 
+Variable::Variable(const std::string &name)
+    : mPimpl(new VariableImpl())
+{
+    mPimpl->mVariable = this;
+    setName(name);
+}
+
 Variable::~Variable()
 {
     delete mPimpl;

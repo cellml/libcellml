@@ -330,6 +330,12 @@ Units::Units()
 {
 }
 
+Units::Units(const std::string &name)
+    : mPimpl(new UnitsImpl())
+{
+    setName(name);
+}
+
 Units::~Units()
 {
     delete mPimpl;

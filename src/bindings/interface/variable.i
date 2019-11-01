@@ -97,6 +97,7 @@ not equivalent the connection id is not set.";
 %ignore libcellml::Variable::operator =;
 
 %create_constructor(Variable)
+%create_name_constructor(Variable)
 
 %include "libcellml/types.h"
 %include "libcellml/variable.h"
