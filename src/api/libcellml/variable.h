@@ -42,8 +42,9 @@ public:
     Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<Variable> create(Args&&... args) noexcept {
-        return std::shared_ptr<Variable>{new Variable{std::forward<Args>(args)...}};
+    static std::shared_ptr<Variable> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Variable> {new Variable {std::forward<Args>(args)...}};
     }
 
     /**

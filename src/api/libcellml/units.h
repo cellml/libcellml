@@ -49,8 +49,9 @@ public:
     Units &operator=(Units rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<Units> create(Args&&... args) noexcept {
-        return std::shared_ptr<Units>{new Units{std::forward<Args>(args)...}};
+    static std::shared_ptr<Units> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Units> {new Units {std::forward<Args>(args)...}};
     }
 
     /**

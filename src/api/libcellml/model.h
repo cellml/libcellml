@@ -34,7 +34,8 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Model: public ComponentEntity
 #ifndef SWIG
-    , public std::enable_shared_from_this<Model>
+    ,
+                              public std::enable_shared_from_this<Model>
 #endif
 {
 private:
@@ -44,12 +45,13 @@ private:
 public:
     ~Model() override; /**< Destructor */
     Model(const Model &rhs) = delete; /**< Copy constructor */
-    Model(Model && rhs) noexcept = delete; /**< Move constructor */
+    Model(Model &&rhs) noexcept = delete; /**< Move constructor */
     Model &operator=(Model rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<Model> create(Args&&... args) noexcept {
-        return std::shared_ptr<Model>{new Model{std::forward<Args>(args)...}};
+    static std::shared_ptr<Model> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Model> {new Model {std::forward<Args>(args)...}};
     }
 
     /**
