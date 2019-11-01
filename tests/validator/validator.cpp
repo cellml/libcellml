@@ -264,7 +264,7 @@ TEST(Validator, importUnits)
     m->setName("model_name");
 
     // Valid units import
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
     libcellml::UnitsPtr importedUnits = libcellml::Units::create();
     importedUnits->setName("valid_imported_units_in_this_model");
@@ -274,7 +274,7 @@ TEST(Validator, importUnits)
     EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid units import- missing refs
-    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
     libcellml::UnitsPtr importedUnits2 = libcellml::Units::create();
     importedUnits2->setName("invalid_imported_units_in_this_model");
     importedUnits2->setSourceUnits(imp2, "");
@@ -283,7 +283,7 @@ TEST(Validator, importUnits)
     EXPECT_EQ(size_t(3), v.errorCount());
 
     // Invalid units import - duplicate refs
-    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
     imp3->setUrl("some-other-model.xml");
     libcellml::UnitsPtr importedUnits3 = libcellml::Units::create();
     importedUnits3->setName("duplicate_imported_units_in_this_model");
@@ -293,7 +293,7 @@ TEST(Validator, importUnits)
     EXPECT_EQ(size_t(4), v.errorCount());
 
     // Invalid units import - unnamed units
-    libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::UnitsPtr importedUnits4 = libcellml::Units::create();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
@@ -320,7 +320,7 @@ TEST(Validator, importComponents)
     m->setName("model_name");
 
     // Valid component import
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent = libcellml::Component::create();
     importedComponent->setName("valid_imported_component_in_this_model");
@@ -330,7 +330,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(0), v.errorCount());
 
     // Another valid component import
-    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
     imp2->setUrl("yet-another-other-model.xml");
     libcellml::ComponentPtr importedComponent2 = libcellml::Component::create();
     importedComponent2->setName("another_valid_imported_component_in_this_model");
@@ -340,7 +340,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid component import - missing ref to source component
-    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
     libcellml::ComponentPtr importedComponent3 = libcellml::Component::create();
     importedComponent3->setName("invalid_imported_component_in_this_model");
     importedComponent3->setSourceComponent(imp3, "");
@@ -349,7 +349,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(3), v.errorCount());
 
     // Valid component import - two components imported from the same place is allowed
-    libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
     imp4->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent4 = libcellml::Component::create();
     importedComponent4->setName("duplicate_imported_component_in_this_model");
@@ -359,7 +359,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(3), v.errorCount());
 
     // Invalid - name missing from component
-    libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp5 = libcellml::ImportSource::create();
     imp5->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent5 = libcellml::Component::create();
     importedComponent5->setSourceComponent(imp5, "component_in_that_model");
@@ -368,7 +368,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(5), v.errorCount());
 
     // Valid - two components from the same source is allowed
-    libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp7 = libcellml::ImportSource::create();
     imp7->setUrl("yet-another-other-model.xml");
     libcellml::ComponentPtr importedComponent7 = libcellml::Component::create();
     importedComponent7->setName("another_duplicate_imported_component");
@@ -378,7 +378,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(5), v.errorCount());
 
     // Valid - duplicate component_ref from a different source
-    libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp8 = libcellml::ImportSource::create();
     imp8->setUrl("yet-another-other-model.xml"); // source used before
     libcellml::ComponentPtr importedComponent8 = libcellml::Component::create();
     importedComponent8->setName("a_good_imported_component");
@@ -388,7 +388,7 @@ TEST(Validator, importComponents)
     EXPECT_EQ(size_t(5), v.errorCount());
 
     // Invalid: component_ref url is not valid html
-    libcellml::ImportSourcePtr imp9 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr imp9 = libcellml::ImportSource::create();
     imp9->setUrl("not @ valid url");
     libcellml::ComponentPtr importedComponent9 = libcellml::Component::create();
     importedComponent9->setName("a_bad_imported_component");
@@ -936,13 +936,13 @@ TEST(Validator, resets)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::VariablePtr var = libcellml::Variable::create();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
+    libcellml::ResetPtr r4 = libcellml::Reset::create();
+    libcellml::ResetPtr r5 = libcellml::Reset::create();
+    libcellml::ResetPtr r6 = libcellml::Reset::create();
+    libcellml::ResetPtr r7 = libcellml::Reset::create();
     libcellml::WhenPtr w1 = libcellml::When::create();
     libcellml::WhenPtr w2 = libcellml::When::create();
 
@@ -1005,9 +1005,9 @@ TEST(Validator, whens)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::VariablePtr var = libcellml::Variable::create();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
     libcellml::WhenPtr w1 = libcellml::When::create();
     libcellml::WhenPtr w2 = libcellml::When::create();
     libcellml::WhenPtr w3 = libcellml::When::create();

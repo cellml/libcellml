@@ -35,8 +35,7 @@ unset).";
 #include "libcellml/entity.h"
 %}
 
-%ignore libcellml::Entity::Entity(Entity &&);
-%ignore libcellml::Entity::operator =;
+%ignore libcellml::Entity::Entity();
 
 %include "libcellml/types.h"
 %include "libcellml/entity.h"

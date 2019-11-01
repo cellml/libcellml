@@ -490,57 +490,57 @@ TEST(Units, unitAttributes)
 
 TEST(Units, multipleUnitUsingStandardRef)
 {
-    libcellml::Units u;
+    auto u = libcellml::Units::create();
 
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
 
-    EXPECT_EQ(size_t(4), u.unitCount());
+    EXPECT_EQ(size_t(4), u->unitCount());
 
-    u.removeUnit(libcellml::Units::StandardUnit::AMPERE);
+    u->removeUnit(libcellml::Units::StandardUnit::AMPERE);
 
-    EXPECT_EQ(size_t(3), u.unitCount());
+    EXPECT_EQ(size_t(3), u->unitCount());
 
     std::string prefix;
     std::string reference;
     std::string id;
     double exponent;
     double multiplier;
-    u.unitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
+    u->unitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.unitAttributes(0, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.unitAttributes(1, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("centi", prefix);
-    u.unitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
 }
 
 TEST(Units, removeUnit)
 {
-    libcellml::Units u;
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    u.addUnit("kelvin");
-    u.addUnit("siemens", "milli", -1.0);
-    u.addUnit("metre", "1.7e10");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    u->addUnit("kelvin");
+    u->addUnit("siemens", "milli", -1.0);
+    u->addUnit("metre", "1.7e10");
 
-    EXPECT_EQ(size_t(4), u.unitCount());
-    EXPECT_TRUE(u.removeUnit("siemens"));
-    EXPECT_TRUE(u.removeUnit(libcellml::Units::StandardUnit::KELVIN));
-    EXPECT_TRUE(u.removeUnit(1));
-    EXPECT_EQ(size_t(1), u.unitCount());
+    EXPECT_EQ(size_t(4), u->unitCount());
+    EXPECT_TRUE(u->removeUnit("siemens"));
+    EXPECT_TRUE(u->removeUnit(libcellml::Units::StandardUnit::KELVIN));
+    EXPECT_TRUE(u->removeUnit(1));
+    EXPECT_EQ(size_t(1), u->unitCount());
 
     // Remove non-existent unit
-    EXPECT_FALSE(u.removeUnit("gram"));
-    EXPECT_FALSE(u.removeUnit(libcellml::Units::StandardUnit::BECQUEREL));
-    EXPECT_FALSE(u.removeUnit(3));
-    EXPECT_EQ(size_t(1), u.unitCount());
+    EXPECT_FALSE(u->removeUnit("gram"));
+    EXPECT_FALSE(u->removeUnit(libcellml::Units::StandardUnit::BECQUEREL));
+    EXPECT_FALSE(u->removeUnit(3));
+    EXPECT_EQ(size_t(1), u->unitCount());
 
-    u.removeAllUnits();
-    EXPECT_EQ(size_t(0), u.unitCount());
+    u->removeAllUnits();
+    EXPECT_EQ(size_t(0), u->unitCount());
 }
 
 TEST(Units, multipleAndParse)

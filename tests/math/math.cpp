@@ -22,9 +22,9 @@ limitations under the License.
 
 TEST(Maths, setAndGetMath)
 {
-    libcellml::Component c;
-    c.setMath(EMPTY_MATH);
-    EXPECT_EQ(EMPTY_MATH, c.math());
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    c->setMath(EMPTY_MATH);
+    EXPECT_EQ(EMPTY_MATH, c->math());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent)

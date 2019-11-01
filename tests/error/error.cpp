@@ -52,7 +52,7 @@ TEST(Error, createUnitsError)
 
 TEST(Error, createImportSourceError)
 {
-    libcellml::ImportSourcePtr i = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(i);
 
     EXPECT_EQ(libcellml::Error::Kind::IMPORT, e->kind());
@@ -60,7 +60,7 @@ TEST(Error, createImportSourceError)
 
 TEST(Error, createResetError)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(r);
 
     EXPECT_EQ(libcellml::Error::Kind::RESET, e->kind());

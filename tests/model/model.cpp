@@ -445,7 +445,7 @@ TEST(Model, constructors)
     libcellml::ModelPtr m1;
     libcellml::ModelPtr m2;
     m->setName(n);
-    m->addComponent(std::make_shared<libcellml::Component>());
+    m->addComponent(libcellml::Component::create());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -491,15 +491,15 @@ TEST(Model, setAndCheckIdsAllEntities)
         "</model>\n";
 
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
-    libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
+    libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
     libcellml::ComponentPtr c1 = libcellml::Component::create();
     libcellml::ComponentPtr c2 = libcellml::Component::create();
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     libcellml::UnitsPtr u2 = libcellml::Units::create();
     libcellml::UnitsPtr u3 = libcellml::Units::create();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
     libcellml::WhenPtr w1 = libcellml::When::create();
 
     i1->setUrl("some-other-model.xml");

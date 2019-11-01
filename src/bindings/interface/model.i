@@ -84,36 +84,8 @@ determine the full path to the source model relative to this one.";
 #include "libcellml/model.h"
 %}
 
-%typemap(out) libcellml::Model *Model() {
-  /*
-  Here we take the returned value from the Constructor for this object and cast it
-  to the pointer that it actually is.  Once that is done we can set the required resultobj.
-  */
-  std::shared_ptr<  libcellml::Model > *smartresult = reinterpret_cast<std::shared_ptr<  libcellml::Model > *>(result);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__Model_t, SWIG_POINTER_NEW | SWIG_POINTER_OWN);
-}
-
-%extend libcellml::Model {
-    Model() {
-        /*
-        Provide a fake Constructor for the class and return a shared pointer
-        as an actual class pointer because that is what we have to return from
-        this fake Constructor.  The intention here is that this method is
-        only used in one place so there we know it is actually a pointer
-        to a shared pointer and cast it back to its proper form then.
-        */
-        auto ptr = new std::shared_ptr<  libcellml::Model >(libcellml::Model::create());
-        return reinterpret_cast<libcellml::Model *>(ptr);
-    }
-
-    Model(const std::string &name)
-    {
-        auto ptr = new std::shared_ptr<  libcellml::Model >(libcellml::Model::create(name));
-        return reinterpret_cast<libcellml::Model *>(ptr);
-    }
-}
-
 %shared_ptr(libcellml::Model);
+%include "createconstructor.i"
 
 %include "libcellml/types.h"
 %include "libcellml/model.h"

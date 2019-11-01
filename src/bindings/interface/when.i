@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include "std_string.i"
+%include "createconstructor.i"
 
 %import "types.i"
 %import "orderedentity.i"
@@ -28,6 +29,8 @@
 
 %ignore libcellml::When::When(When &&);
 %ignore libcellml::When::operator =;
+
+%create_constructor(When)
 
 %include "libcellml/types.h"
 %include "libcellml/when.h"
