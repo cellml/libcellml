@@ -11,9 +11,7 @@ class OrderedEntityTestCase(unittest.TestCase):
         from libcellml import When
 
         x = When()
-        y = When()
-        z = When(y)
-        del(x, y, z)
+        del x
 
     def test_set_order(self):
         from libcellml import When

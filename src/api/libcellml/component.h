@@ -39,6 +39,7 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
 {
 private:
     Component(); /**< Constructor */
+    explicit Component(const std::string &name);
 
 public:
     ~Component() override; /**< Destructor */

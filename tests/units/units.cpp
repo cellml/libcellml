@@ -20,6 +20,17 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(Units, construct)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("valid_name");
+    EXPECT_EQ("valid_name", u->name());
+
+    const std::string validName = "another_valid_name";
+    auto u2 = libcellml::Units::create(validName);
+    EXPECT_EQ("another_valid_name", u2->name());
+}
+
 TEST(Units, validName)
 {
     const std::string e =

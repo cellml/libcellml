@@ -7,6 +7,7 @@ import unittest
 class ModelTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
+        import libcellml
         from libcellml import Model
 
         x = Model()
@@ -14,6 +15,9 @@ class ModelTestCase(unittest.TestCase):
 
         y = Model('bob')
         self.assertEqual('bob', y.name())
+
+        z = libcellml.Model()
+        del z
 
     def test_inheritance(self):
         import libcellml

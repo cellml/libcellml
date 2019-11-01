@@ -11,9 +11,10 @@ class VariableTestCase(unittest.TestCase):
 
         x = Variable()
         del(x)
-        y = Variable()
-        z = Variable(y)
-        del(y, z)
+
+        y = Variable("nice")
+        self.assertEqual("nice", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
@@ -29,8 +30,6 @@ class VariableTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Variable(x)
-        self.assertEqual(y.id(), idx)
 
     def test_add_equivalence(self):
         from libcellml import Variable

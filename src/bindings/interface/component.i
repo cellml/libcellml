@@ -107,6 +107,7 @@ resets and False otherwise.";
 %}
 
 %create_constructor(Component)
+%create_name_constructor(Component)
 
 %include "libcellml/types.h"
 %include "libcellml/component.h"

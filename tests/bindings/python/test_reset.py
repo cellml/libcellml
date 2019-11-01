@@ -11,9 +11,7 @@ class OrderedEntityTestCase(unittest.TestCase):
         from libcellml import Reset
 
         x = Reset()
-        y = Reset()
-        z = Reset(y)
-        del(x, y, z)
+        del(x)
 
     def test_set_get_variable(self):
         from libcellml import Reset

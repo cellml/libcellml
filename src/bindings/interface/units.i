@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include "createconstructor.i"
+
 %import "types.i"
 %import "enumerations.i"
 %import "importedentity.i"
@@ -101,6 +103,9 @@ extract the units with the given `name`.";
     }
 }
 %ignore libcellml::Units::removeUnit(const std::string &reference);
+
+%create_constructor(Units)
+%create_name_constructor(Units)
 
 %include "libcellml/types.h"
 %include "libcellml/units.h"

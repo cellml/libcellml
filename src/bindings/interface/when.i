@@ -27,9 +27,6 @@
 #include "libcellml/when.h"
 %}
 
-%ignore libcellml::When::When(When &&);
-%ignore libcellml::When::operator =;
-
 %create_constructor(When)
 
 %include "libcellml/types.h"

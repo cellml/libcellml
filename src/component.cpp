@@ -68,6 +68,12 @@ Component::Component()
 {
 }
 
+Component::Component(const std::string &name)
+    : mPimpl(new ComponentImpl())
+{
+    setName(name);
+}
+
 Component::~Component()
 {
     if (mPimpl != nullptr) {
