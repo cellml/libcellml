@@ -48,8 +48,9 @@ public:
     Component &operator=(Component rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<Component> create(Args&&... args) noexcept {
-        return std::shared_ptr<Component>{new Component{std::forward<Args>(args)...}};
+    static std::shared_ptr<Component> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Component> {new Component {std::forward<Args>(args)...}};
     }
 
     /**

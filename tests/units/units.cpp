@@ -709,10 +709,10 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     model->addUnits(incredible_pile_of_square_apples);
     model->addUnits(bunch_of_bananas);
 
-//    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
-//    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
-//    EXPECT_EQ(100000000.0, scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
-//    EXPECT_EQ(0.0, u1->scalingFactor(model, "bunch_of_bananas", "banana")); // banana doesn't exist, returns 0
-//    EXPECT_EQ(1000.0, u1->scalingFactor(model, "kilogram", "gram"));
-//    EXPECT_EQ(0.001, u1->scalingFactor(model, "gram", "kilogram"));
+    //    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    //    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
+    //    EXPECT_EQ(100000000.0, scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
+    //    EXPECT_EQ(0.0, u1->scalingFactor(model, "bunch_of_bananas", "banana")); // banana doesn't exist, returns 0
+    //    EXPECT_EQ(1000.0, u1->scalingFactor(model, "kilogram", "gram"));
+    //    EXPECT_EQ(0.001, u1->scalingFactor(model, "gram", "kilogram"));
 }

@@ -41,8 +41,9 @@ public:
     ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<ImportSource> create(Args&&... args) noexcept {
-        return std::shared_ptr<ImportSource>{new ImportSource{std::forward<Args>(args)...}};
+    static std::shared_ptr<ImportSource> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<ImportSource> {new ImportSource {std::forward<Args>(args)...}};
     }
 
     /**

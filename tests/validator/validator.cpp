@@ -1580,7 +1580,6 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
     EXPECT_EQ_ERRORS(expectedErrors, validator);
 }
 
-
 TEST(Validator, unitIllDefinedEquivalentUnits)
 {
     const std::vector<std::string> expectedErrors = {

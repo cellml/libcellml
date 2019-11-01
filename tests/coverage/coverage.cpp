@@ -101,7 +101,7 @@ TEST(Coverage, error)
 TEST(Coverage, model)
 {
     const std::string n = "model";
-/*
+    /*
     libcellml::Model rm;
     libcellml::Model ao;
 

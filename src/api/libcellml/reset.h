@@ -41,8 +41,9 @@ public:
     Reset &operator=(Reset rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<Reset> create(Args&&... args) noexcept {
-        return std::shared_ptr<Reset>{new Reset{std::forward<Args>(args)...}};
+    static std::shared_ptr<Reset> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Reset> {new Reset {std::forward<Args>(args)...}};
     }
 
     /**

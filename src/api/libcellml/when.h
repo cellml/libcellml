@@ -41,8 +41,9 @@ public:
     When &operator=(When rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
-    static std::shared_ptr<When> create(Args&&... args) noexcept {
-        return std::shared_ptr<When>{new When{std::forward<Args>(args)...}};
+    static std::shared_ptr<When> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<When> {new When {std::forward<Args>(args)...}};
     }
 
     /**

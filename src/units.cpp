@@ -193,7 +193,7 @@ bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
         multiplier += direction * standardMultiplierList.at(unitsName);
         updated = true;
     }
-/*
+    /*
      if (model->hasUnits(uName)) {
         libcellml::UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
@@ -243,7 +243,7 @@ double doGetScalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return std::pow(10, multiplier);
 }
 
-double doGetScalingFactor(const ModelPtr &/*model*/, const std::string &/*u1Name*/, const std::string &/*u2Name*/)
+double doGetScalingFactor(const ModelPtr & /*model*/, const std::string & /*u1Name*/, const std::string & /*u2Name*/)
 {
     return 0.0;
     /*
