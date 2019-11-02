@@ -481,7 +481,7 @@ TEST(Model, copying)
     libcellml::ModelPtr m1 = std::make_shared<libcellml::Model>();
     m1->setName("my_name");
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    c1->setName("componenent_a");
+    c1->setName("component_a");
     m1->addComponent(c1);
 
     //Testing copy constructor
