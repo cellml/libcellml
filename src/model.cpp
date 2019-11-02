@@ -18,6 +18,7 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
+#include "libcellml/printer.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
@@ -349,24 +350,56 @@ bool Model::hasUnresolvedImports()
 }
 
 
-bool flattenComponent(ComponentPtr& component)
+bool addflattenedComponent(ComponentEntityPtr& parent, ComponentPtr& component)
 {
-	ComponentPtr src = component->importSource()->model()->component(component->importReference());
-	std::cout << "Flatening component: " << component->name() << "; using the source component: " << src->name() << std::endl;
-	std::cout << "Number of variables in component to flatten: " << int(component->variableCount()) << std::endl;
+    ComponentPtr src = component->importSource()->model()->component(component->importReference());
+    std::cout << "Flatening component: " << component->name() << "; using the source component: " << src->name() << std::endl;
+    std::cout << "Number of variables in component to flatten: " << int(component->variableCount()) << std::endl;
+    auto localName = component->name();
 
-	return true;
+    src->setName(localName);
+    src->clearParent();
+
+    parent->addComponent(src);
+
+    for (size_t n = 0; n < src->componentCount(); ++n) {
+        libcellml::ComponentPtr c = component->component(n);
+        if (component->isImport()) {
+            flattenComponent(component);
+        }
+    }
+
+    return true;
 }
 
 ModelPtr Model::flatten() const
 {
-	for (size_t n = 0; n < this->componentCount(); ++n) {
-		libcellml::ComponentPtr component = this->component(n);
-		if (component->isImport()) {
-			flattenComponent(component);
-		}
-	}
-	return nullptr;
+    Printer printer;
+    std::string s = printer.printModel(*this);
+    std::cout << s << std::endl;
+
+    auto name = this->name();
+    name += "__flattended";
+    ModelPtr fm = std::make_shared<Model>(*this);
+    fm->setName(name);
+    
+    for (size_t n = 0; n < componentCount(); ++n) {
+        ComponentPtr fc = std::make_shared<Component>(*(this->component(n)));
+        if (fc->isImport()) {
+            addFlattenedComponent(fm, fc);
+        }
+        else {
+            fm->addComponent(fc);
+        }
+    }
+
+    s = printer.printModel(*this);
+    std::cout << s << std::endl;
+
+    s = printer.printModel(fm);
+    std::cout << s << std::endl;
+
+    return fm;
 }
 
 } // namespace libcellml
