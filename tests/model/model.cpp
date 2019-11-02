@@ -465,6 +465,39 @@ TEST(Model, constructors)
     EXPECT_EQ("my_name", m4->name());
 }
 
+TEST(Model, copying)
+{
+    const std::string e1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">\n"
+        "  <component name=\"component_a\"/>\n"
+        "</model>\n";
+    const std::string e2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">\n"
+        "  <component name=\"component_b\"/>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m1 = std::make_shared<libcellml::Model>();
+    m1->setName("my_name");
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    c1->setName("componenent_a");
+    m1->addComponent(c1);
+
+    //Testing copy constructor
+    libcellml::ModelPtr& m2(m1);
+    libcellml::ComponentPtr c2 = m2->component(0);
+    c2->setName("component_b");
+
+    libcellml::Printer printer;
+    const std::string a1 = printer.printModel(m1);
+    EXPECT_EQ(e1, a1);
+
+    const std::string a2 = printer.printModel(m2);
+    EXPECT_EQ(e2, a2);
+}
+
+
 TEST(Model, setAndCheckIdsAllEntities)
 {
     const std::string e =
