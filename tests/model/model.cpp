@@ -474,7 +474,7 @@ TEST(Model, copying)
         "</model>\n";
     const std::string e2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name_2\">\n"
         "  <component name=\"component_b\"/>\n"
         "</model>\n";
 
@@ -486,6 +486,7 @@ TEST(Model, copying)
 
     //Testing copy constructor
     libcellml::ModelPtr& m2(m1);
+    m2->setName("my_name_2");
     libcellml::ComponentPtr c2 = m2->component(0);
     c2->setName("component_b");
 
