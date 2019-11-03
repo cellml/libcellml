@@ -5,18 +5,18 @@
 	<import xlink:href="model.cellml">
 		<component name="level1_in_level0" component_ref="my_algebraic_eqn" />
 	</import>
-	<component name="level0_component">
-        <variable name="x_level0" units="dimensionless" interface="public"/>
-        <variable name="a_level0" units="dimensionless" interface="public"/>
+	<component name="my_algebraic_eqn">
+        <variable name="x" units="dimensionless" interface="public"/>
+        <variable name="a" units="dimensionless" interface="public"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>x_level0</ci>
-                <ci>a_level0</ci>
+                <ci>x</ci>
+                <ci>a</ci>
             </apply>
 		</math>
 	</component>
-	<connection component_1="level0_component" component_2="level1_in_level0">
-		<map_variables variable_1="a_level0" variable_2="a_my_model" />
+	<connection component_1="my_algebraic_eqn" component_2="level1_in_level0">
+		<map_variables variable_1="a" variable_2="a" />
 	</connection>
 </model>
