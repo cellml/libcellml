@@ -374,11 +374,11 @@ TEST(Generator, algebraicEqnComputedVarOnRhsImport)
 	model->resolveImports(resourcePath("generator/imports/algebraic_eqn_computed_var_on_rhs/"));
 	EXPECT_FALSE(model->hasUnresolvedImports());
 
-	model->flatten();
+	libcellml::ModelPtr flatModel = model->flatten();
 
 	libcellml::Generator generator;
 
-	generator.processModel(model);
+	generator.processModel(flatModel);
 
 	EXPECT_EQ(size_t(0), generator.errorCount());
 
