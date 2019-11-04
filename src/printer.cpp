@@ -26,7 +26,6 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
-#include <iostream>
 #include <map>
 #include <sstream>
 #include <stack>

@@ -377,13 +377,14 @@ public:
     size_t unitCount() const;
 
     /**
-     * @brief Return the scaling factor difference between two units
+     * @brief Return the scaling factor difference between two units.
      * 
-     * This can be interpreted as factor, where u1 = (factor)*u2
+     * This can be interpreted as factor, where u1 = (factor)*u2.  This method
+     * does not check to see if the units are compatible.
      * 
-     * @param u1Name The first unit name
-     * @param u2Name The second unit name
-     * @return The factor u1/u2
+     * @param units1 The first units to compare.
+     * @param units2 The second units to compare.
+     * @return The factor units1/unitsf2.
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 

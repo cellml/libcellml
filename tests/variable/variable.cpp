@@ -20,6 +20,19 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(Component, construct)
+{
+    const std::string validName = "valid_name";
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName(validName);
+
+    EXPECT_EQ("valid_name", v1->name());
+
+    auto v2 = libcellml::Variable::create(validName);
+    EXPECT_EQ("valid_name", v2->name());
+}
+
 TEST(Variable, setValidVariableName)
 {
     const std::string in = "valid_name";
