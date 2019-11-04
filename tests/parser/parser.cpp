@@ -1613,6 +1613,8 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("u3id", model->units("units3")->id());
     EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
     EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("tv1id", model->component("component2")->reset(0)->testValueId());
+    EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
 
     libcellml::Printer printer;
     EXPECT_EQ(input, printer.printModel(model));

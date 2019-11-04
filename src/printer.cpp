@@ -54,6 +54,7 @@ struct Printer::PrinterImpl
     std::string printEncapsulation(const ComponentPtr &component, const std::string &indent = "") const;
     std::string printVariable(const VariablePtr &variable, const std::string &indent = "") const;
     std::string printReset(const ResetPtr &reset, const std::string &indent = "") const;
+    std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, const std::string &indent) const;
 };
 
 static const std::string tabIndent = "  ";
@@ -345,17 +346,36 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
     return repr;
 }
 
+std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, const std::string &indent) const
+{
+    std::string repr;
+
+    if (!childId.empty()  || !math.empty())
+    {
+        repr += indent + "<" + childLabel;
+        if (!childId.empty()) {
+            repr += " id=\"" + childId + "\"";
+        }
+        if (math.empty()) {
+           repr += "/>\n";
+        } else {
+            repr += ">\n";
+            repr += printMath(math, indent + tabIndent);
+            repr += indent + "</" + childLabel + ">\n";
+        }
+    }
+
+    return repr;
+}
+
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
     std::string repr = indent + "<reset";
     std::string rid = reset->id();
-    std::string tvid = reset->testValueId();
     std::string rvid = reset->resetValueId();
-    std::string s;
     VariablePtr variable = reset->variable();
     VariablePtr testVariable = reset->testVariable();
-    bool hasTestValue = false;
-    bool hasResetValue = false;
+    bool hasChild = false;
 
     if (variable) {
         repr += " variable=\"" + variable->name() + "\"";
@@ -370,35 +390,21 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
         repr += " id=\"" + rid + "\"";
     }
 
-    s = reset->testValue();
-    if (!s.empty()) {
+    std::string testValue = printResetChild("test_value", reset->testValueId(), reset->testValue(), indent + tabIndent);
+    if (!testValue.empty()) {
         repr += ">\n";
-        repr += indent + tabIndent + "<test_value";
-        if (!tvid.empty()) {
-            repr += " id=\"" + tvid + "\"";
-        }
-        repr += ">\n";
-        repr += printMath(s, indent + tabIndent + tabIndent);
-        repr += indent + tabIndent + "</test_value>\n";
-        hasTestValue = true;
+        repr += testValue;
+        hasChild = true;
     }
-    s = reset->resetValue();
-    if (!s.empty()) {
-        if (!hasTestValue) {
+    std::string resetValue = printResetChild("reset_value", reset->resetValueId(), reset->resetValue(), indent + tabIndent);
+    if (!resetValue.empty()) {
+        if (!hasChild) {
             repr += ">\n";
         }
-        repr += indent + tabIndent + "<reset_value";
-        if (!rvid.empty()) {
-            repr += " id=\"" + rvid + "\"";
-        }
-        repr += ">\n";
-
-        repr += printMath(s, indent + tabIndent + tabIndent);
-        repr += indent + tabIndent + "</reset_value>\n";
-        hasResetValue = true;
+        repr += resetValue;
+        hasChild = true;
     }
-
-    if ((hasTestValue) || (hasResetValue)) {
+    if (hasChild) {
         repr += indent + "</reset>\n";
     } else {
         repr += "/>\n";
