@@ -1193,6 +1193,71 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Imports)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator.implementationCode());
 }
 
+TEST(Generator, VPH_MIP)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/imports/VPH-MIP/experiments/periodic-stimulus.xml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("generator/imports/VPH-MIP/experiments/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    libcellml::ModelPtr flatModel = model->flatten();
+
+    libcellml::Generator generator;
+
+    generator.processModel(flatModel);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(4), generator.stateCount());
+    EXPECT_EQ(size_t(18), generator.variableCount());
+
+    EXPECT_NE(nullptr, generator.voi());
+    EXPECT_NE(nullptr, generator.state(0));
+    EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
+    EXPECT_NE(nullptr, generator.variable(0));
+    EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
+
+    const std::vector<libcellml::GeneratorVariable::Type> expectedTypes = {
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::COMPUTED_CONSTANT,
+        libcellml::GeneratorVariable::Type::COMPUTED_CONSTANT,
+        libcellml::GeneratorVariable::Type::COMPUTED_CONSTANT,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC };
+
+    for (size_t i = 0; i < generator.variableCount(); ++i) {
+        EXPECT_NE(nullptr, generator.variable(i)->variable());
+        EXPECT_EQ(expectedTypes[i], generator.variable(i)->type());
+    }
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator.interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator.implementationCode());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator.implementationCode());
+}
+
 TEST(Generator, nobleModel1962)
 {
     libcellml::Parser parser;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="IK">
+  
+  <import xlink:href="units.xml">
+    <units name="ms" units_ref="ms"/>
+    <units name="mV" units_ref="mV"/>
+    <units name="per_ms" units_ref="per_ms"/>
+    <units name="per_ms_mV" units_ref="per_ms_mV"/>
+    <units name="uA_per_cmsq" units_ref="uA_per_cmsq"/>
+    <units name="mS_per_cmsq" units_ref="mS_per_cmsq"/>
+  </import>
+  <import xlink:href="gating-variable.xml">
+    <component name="n_gate" component_ref="hh_gating_variable"/>
+  </import>
+  <import xlink:href="IK-gating-rates.xml">
+    <component name="alpha_n" component_ref="alpha_n"/>
+    <component name="beta_n" component_ref="beta_n"/>
+  </import>
+  <component name="IK">
+    <variable name="IK" units="uA_per_cmsq" interface="public_and_private"/>
+    <variable name="n_initial" units="dimensionless" interface="public_and_private"/>
+    <variable name="n" units="dimensionless" interface="public_and_private"/>
+    <variable name="time" units="ms" interface="public_and_private"/>
+    <variable name="V" units="mV" interface="public_and_private"/>
+    <variable name="VK" units="mV" interface="public_and_private"/>
+    <variable name="gK" units="mS_per_cmsq" interface="public_and_private"/>
+    <variable name="gK_max" units="mS_per_cmsq" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply id="IK_calculation"><eq/>
+        <ci>IK</ci>
+        <apply><times/>
+          <ci>gK</ci>
+          <apply><minus/>
+            <ci>V</ci>
+            <ci>VK</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply id="gK_calculation"><eq/>
+        <ci>gK</ci>
+        <apply><times/>
+          <ci>gK_max</ci>
+          <apply><power/>
+            <ci>n</ci>
+            <cn cellml:units="dimensionless">4.0</cn>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <encapsulation>
+    
+    <component_ref component="IK">
+      <component_ref component="alpha_n"/>
+      <component_ref component="beta_n"/>
+      <component_ref component="n_gate"/>
+    </component_ref>
+  </encapsulation>
+  <connection component_1="IK" component_2="n_gate">
+    
+    <map_variables variable_1="time" variable_2="time"/>
+    <map_variables variable_1="n_initial" variable_2="X_initial"/>
+    <map_variables variable_1="n" variable_2="X"/>
+  </connection>
+  <connection component_1="IK" component_2="alpha_n">
+    
+    <map_variables variable_1="V" variable_2="V"/>
+  </connection>
+  <connection component_1="IK" component_2="beta_n">
+    
+    <map_variables variable_1="V" variable_2="V"/>
+  </connection>
+  <connection component_1="n_gate" component_2="alpha_n">
+    
+    <map_variables variable_1="alpha_X" variable_2="alpha"/>
+  </connection>
+  <connection component_1="n_gate" component_2="beta_n">
+    
+    <map_variables variable_1="beta_X" variable_2="beta"/>
+  </connection>
+</model>

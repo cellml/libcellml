@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="Ileak">
+  
+  <import xlink:href="units.xml">
+    <units name="mV" units_ref="mV"/>
+    <units name="uA_per_cmsq" units_ref="uA_per_cmsq"/>
+    <units name="mS_per_cmsq" units_ref="mS_per_cmsq"/>
+  </import>
+  <component name="Ileak">
+    <variable name="Ileak" units="uA_per_cmsq" interface="public_and_private"/>
+    <variable name="V" units="mV" interface="public_and_private"/>
+    <variable name="Vleak" units="mV" interface="public_and_private"/>
+    <variable name="gleak_max" units="mS_per_cmsq" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply id="Ileak_calculation"><eq/>
+        <ci>Ileak</ci>
+        <apply><times/>
+          <ci>gleak_max</ci>
+          <apply><minus/>
+            <ci>V</ci>
+            <ci>Vleak</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>
