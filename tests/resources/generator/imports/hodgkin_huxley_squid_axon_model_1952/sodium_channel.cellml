@@ -231,12 +231,12 @@
             <component_ref component="sodium_channel_h_gate"/>
         </component_ref>
     </encapsulation>
-    <connection component_1="sodium_channel" component_2="sodium_channel_m_gate">
+    <connection component_1="sodium_channel_model" component_2="sodium_channel_m_gate">
         <map_variables variable_1="m" variable_2="m"/>
         <map_variables variable_1="time" variable_2="time"/>
         <map_variables variable_1="V" variable_2="V"/>
     </connection>
-    <connection component_1="sodium_channel" component_2="sodium_channel_h_gate">
+    <connection component_1="sodium_channel_model" component_2="sodium_channel_h_gate">
         <map_variables variable_1="h" variable_2="h"/>
         <map_variables variable_1="time" variable_2="time"/>
         <map_variables variable_1="V" variable_2="V"/>
