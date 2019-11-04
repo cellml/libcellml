@@ -1547,7 +1547,7 @@ TEST(Parser, parseIds)
     EXPECT_EQ("vid", model->component("component2")->variable("variable1")->id());
 }
 
-TEST(Parser, parseIdsOnEverything)
+TEST(Parser, parseIdsOnEverythingButMath)
 {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
