@@ -25,8 +25,8 @@ limitations under the License.
 namespace libcellml {
 
 /**
-* Vector of base units.
-*/
+ * Vector of base units.
+ */
 const std::vector<std::string> baseUnitsList = {
     "ampere",
     "candela",
@@ -38,8 +38,8 @@ const std::vector<std::string> baseUnitsList = {
     "second"};
 
 /**
-*  Map connecting standard built-in units to their base unit components and their exponents.
-*/
+ *  Map connecting standard built-in units to their base unit components and their exponents.
+ */
 const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"ampere", {{"ampere", 1.0}}},
     {"becquerel", {{"second", -1.0}}},
@@ -74,8 +74,8 @@ const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"weber", {{"ampere", -1.0}, {"kilogram", 1.0}, {"metre", 2.0}, {"second", -2.0}}}};
 
 /**
-* Map connecting standard built-in units to the multiplier exponent of their base unit components.
-*/
+ * Map connecting standard built-in units to the multiplier exponent of their base unit components.
+ */
 const std::map<std::string, double> standardMultiplierList = {
     {"ampere", 0.0},
     {"becquerel", 0.0},
@@ -110,8 +110,8 @@ const std::map<std::string, double> standardMultiplierList = {
     {"weber", 0.0}};
 
 /**
-* Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
-*/
+ * Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
+ */
 const std::map<std::string, int> standardPrefixList = {
     {"yotta", 24},
     {"zetta", 21},
@@ -184,9 +184,9 @@ const std::map<std::string, int> standardPrefixList = {
     {"-23", -23},
     {"-24", -24}};
 
-/*
-* List of MathML elements supported by CellML.
-*/
+/**
+ * List of MathML elements supported by CellML.
+ */
 const std::vector<std::string> supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",

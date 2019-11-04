@@ -649,9 +649,37 @@ TEST(Units, compareMultiplierSimple)
     u2->setName("u2");
     u2->addUnit("metre", 0, 1.0, 1.0);
 
-    double factor = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u1, u2)); // 10^3.0 factor difference
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u2, u1)); // 10^-3.0 factor difference
+}
 
-    EXPECT_EQ(1000.0, factor); // 10^3.0 factor difference
+TEST(Units, compareMultiplierStandardUnit)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::BECQUEREL, 0, 1.0, 500.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u1, u2), 1e-12);
+    EXPECT_NEAR(0.002, libcellml::Units::scalingFactor(u2, u1), 1e-12);
+}
+
+TEST(Units, compareIncompatiableMultiplierSimple)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 1.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("second", 0, 1.0, 1.0);
+
+    // Incompatible units but return a scaling factor of 1.0.
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
 TEST(Units, complicatedMultiplicationFactorUnits)
@@ -673,7 +701,7 @@ TEST(Units, complicatedMultiplicationFactorUnits)
 
     libcellml::UnitsPtr u3 = libcellml::Units::create();
     u3->setName("u3");
-    u3->addUnit("1", "kilo", 4.0, 0.001); // standard, exponent.
+    u3->addUnit("u", "kilo", 4.0, 0.001); // standard, exponent.
 
     libcellml::UnitsPtr u4 = libcellml::Units::create();
     u4->setName("u4");
@@ -681,6 +709,9 @@ TEST(Units, complicatedMultiplicationFactorUnits)
 
     libcellml::UnitsPtr apple = libcellml::Units::create();
     apple->setName("apple");
+
+    libcellml::UnitsPtr banana = libcellml::Units::create();
+    banana->setName("banana");
 
     libcellml::UnitsPtr u5 = libcellml::Units::create();
     u5->setName("bushell_of_apples");
@@ -699,20 +730,21 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     bunch_of_bananas->addUnit("banana", 1, 1, 1.0); // 10 bananas
 
     model->setName("model");
+    model->addUnits(u);
     model->addUnits(u1);
     model->addUnits(u2);
     model->addUnits(u3);
     model->addUnits(u4);
     model->addUnits(u5);
     model->addUnits(apple);
+    model->addUnits(banana);
     model->addUnits(square_apple);
     model->addUnits(incredible_pile_of_square_apples);
     model->addUnits(bunch_of_bananas);
 
-    //    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
-    //    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
-    //    EXPECT_EQ(100000000.0, scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
-    //    EXPECT_EQ(0.0, u1->scalingFactor(model, "bunch_of_bananas", "banana")); // banana doesn't exist, returns 0
-    //    EXPECT_EQ(1000.0, u1->scalingFactor(model, "kilogram", "gram"));
-    //    EXPECT_EQ(0.001, u1->scalingFactor(model, "gram", "kilogram"));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
+    EXPECT_EQ(100000000.0, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
+    // Incompatible units but return a scaling factor.
+    EXPECT_EQ(1e+07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
 }

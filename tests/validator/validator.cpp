@@ -20,7 +20,6 @@ limitations under the License.
 
 #include <libcellml>
 
-#include <iostream>
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
