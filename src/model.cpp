@@ -378,19 +378,13 @@ bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
                 Variable::addEquivalence(srcV, ev);
             }
         }
-
         parent->removeComponent(cname, false);
         parent->addComponent(src);
-    }
-
-    /*
-    for (size_t n = 0; n < src->componentCount(); ++n) {
-        libcellml::ComponentPtr c = component->component(n);
-        if (component->isImport()) {
-            flattenComponent(component);
+        for (auto n = 0; n < src->componentCount(); ++n) {
+            ComponentPtr c = src->component(n);
+            flattenComponent(src, c);
         }
     }
-    */
     return true;
 }
 
