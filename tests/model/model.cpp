@@ -480,7 +480,10 @@ TEST(Model, setAndCheckIdsAllEntities)
         "  <units name=\"u3name\" id=\"u3id\"/>\n"
         "  <component name=\"c2name\" id=\"c2id\">\n"
         "    <variable name=\"vname\" units=\"u1name\" id=\"vid\"/>\n"
-        "    <reset id=\"r1id\"/>\n"
+        "    <reset id=\"r1id\">\n"
+        "      <test_value id=\"tvid\"/>\n"
+        "      <reset_value id=\"rvid\"/>\n"
+        "    </reset>\n"
         "  </component>\n"
         "</model>\n";
 
@@ -519,6 +522,9 @@ TEST(Model, setAndCheckIdsAllEntities)
     u2->setId("u2id");
     u3->setId("u3id");
     r1->setId("r1id");
+
+    r1->setTestValueId("tvid");
+    r1->setResetValueId("rvid");
 
     v->setUnits(u1);
     c2->addReset(r1);
