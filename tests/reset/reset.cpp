@@ -297,6 +297,8 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     // Add them both back in and use removeAllResets to remove them
     c->addReset(r1);
     c->addReset(r2);
+    EXPECT_EQ(size_t(2), c->resetCount());
+
     c->removeAllResets();
     a = printer.printModel(m);
     EXPECT_EQ(e3, a);
