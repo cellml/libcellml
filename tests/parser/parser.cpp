@@ -1749,10 +1749,12 @@ TEST(Parser, parseResetsWithErrors)
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the reset_value block of 'another_invalid_attribute'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has 3 test_value blocks.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has 2 reset_value blocks.",
+        "Reset in component 'component2' does not have its order set.",
         "Reset has an invalid non-whitespace child text element '\n      lost text here\n      '. Either a test_value block or a reset_value block is expected.",
         "The test_value in the reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' should have a MathML block as a child.",
         "The reset_value in the reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' should have a MathML block as a child.",
         "Reset in component 'component2' has an invalid attribute 'i_dont_belong_here'.",
+        "Reset in component 'component2' does not have its order set.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined.",
     };
@@ -1887,10 +1889,7 @@ TEST(Parser, repeatedMathParsePrintBehaviour)
     libcellml::ModelPtr model2 = parser.parseModel(output1);
     std::string output2 = printer.printModel(model2);
 
-    libcellml::ModelPtr model3 = parser.parseModel(output2);
-    std::string output3 = printer.printModel(model3);
-
-    EXPECT_EQ(input, output3);
+    EXPECT_EQ(input, output2);
 }
 
 TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
@@ -1933,8 +1932,5 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     libcellml::ModelPtr model2 = parser.parseModel(output1);
     std::string output2 = printer.printModel(model2);
 
-    libcellml::ModelPtr model3 = parser.parseModel(output2);
-    std::string output3 = printer.printModel(model3);
-
-    EXPECT_EQ(input, output3);
+    EXPECT_EQ(input, output2);
 }
