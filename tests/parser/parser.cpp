@@ -1747,16 +1747,15 @@ TEST(Parser, parseResetsWithErrors)
         "Reset referencing test_variable 'variable1' is not a valid reference for a variable in component 'component2'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the test_value block of 'one_invalid_attribute'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the reset_value block of 'another_invalid_attribute'.",
-        "Reset in component 'component2' referencing variable '' and test_variable '' has multiple test_value blocks.",
-        "Reset in component 'component2' referencing variable '' and test_variable '' has multiple reset_value blocks.",
+        "Reset in component 'component2' referencing variable '' and test_variable '' has 3 test_value blocks.",
+        "Reset in component 'component2' referencing variable '' and test_variable '' has 2 reset_value blocks.",
         "Reset has an invalid non-whitespace child text element '\n      lost text here\n      '. Either a test_value block or a reset_value block is expected.",
-        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' has a non-whitespace test_value child. MathML block expected.",
-        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' has a non-whitespace reset_value child. MathML block expected.",
-        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
-        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined.",
+        "The test_value in the reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' should have a MathML block as a child.",
+        "The reset_value in the reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' should have a MathML block as a child.",
         "Reset in component 'component2' has an invalid attribute 'i_dont_belong_here'.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
-        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined."};
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined.",
+    };
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(input);
