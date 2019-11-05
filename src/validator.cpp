@@ -699,7 +699,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     std::string description = "Reset in component '" + component->name() + "' ";
 
     if (reset->isOrderSet()) {
-        description += "with order '" + convertIntToString(reset->order()) + "', ";
+        description += "with order '" + convertToString(reset->order()) + "', ";
     } else {
         noOrder = true;
     }

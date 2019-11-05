@@ -224,10 +224,10 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
                 units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
                 repr += indent + tabIndent + "<unit";
                 if (exponent != 1.0) {
-                    repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
+                    repr += " exponent=\"" + convertToString(exponent) + "\"";
                 }
                 if (multiplier != 1.0) {
-                    repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
+                    repr += " multiplier=\"" + convertToString(multiplier) + "\"";
                 }
                 if (!prefix.empty()) {
                     repr += " prefix=\"" + prefix + "\"";
@@ -383,7 +383,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
         repr += " test_variable=\"" + testVariable->name() + "\"";
     }
     if (reset->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(reset->order()) + "\"";
+        repr += " order=\"" + convertToString(reset->order()) + "\"";
     }
     if (!rid.empty()) {
         repr += " id=\"" + rid + "\"";
