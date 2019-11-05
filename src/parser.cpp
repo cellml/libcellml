@@ -1183,7 +1183,7 @@ void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::st
     if (count > 1) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
-                            + variableName + "' and test_variable '" + testVariableName + "' has " + convertSizeTToString(count) + " " + childType + " blocks.");
+                            + variableName + "' and test_variable '" + testVariableName + "' has " + convertToString(count) + " " + childType + " blocks.");
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_TEST_VALUE);
         mParser->addError(err);
