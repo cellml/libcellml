@@ -1237,7 +1237,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Reset has an invalid non-whitespace child text element '" + textNode + "'.  Expected either test_value or reset_value block.");
+                err->setDescription("Reset has an invalid non-whitespace child text element '" + textNode + "'. Either a test_value block or a reset_value block is expected.");
                 err->setReset(reset);
                 err->setRule(SpecificationRule::RESET_CHILD);
                 mParser->addError(err);
