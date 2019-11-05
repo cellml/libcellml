@@ -24,9 +24,7 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 
-#include <iostream>
 #include <map>
 #include <sstream>
 #include <stack>
@@ -56,7 +54,7 @@ struct Printer::PrinterImpl
     std::string printEncapsulation(const ComponentPtr &component, const std::string &indent = "") const;
     std::string printVariable(const VariablePtr &variable, const std::string &indent = "") const;
     std::string printReset(const ResetPtr &reset, const std::string &indent = "") const;
-    std::string printWhen(const WhenPtr &when, const std::string &indent) const;
+    std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, const std::string &indent) const;
 };
 
 static const std::string tabIndent = "  ";
@@ -226,10 +224,10 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
                 units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
                 repr += indent + tabIndent + "<unit";
                 if (exponent != 1.0) {
-                    repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
+                    repr += " exponent=\"" + convertToString(exponent) + "\"";
                 }
                 if (multiplier != 1.0) {
-                    repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
+                    repr += " multiplier=\"" + convertToString(multiplier) + "\"";
                 }
                 if (!prefix.empty()) {
                     repr += " prefix=\"" + prefix + "\"";
@@ -348,59 +346,65 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
     return repr;
 }
 
-std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
+std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, const std::string &indent) const
 {
-    std::string repr = indent + "<reset";
-    std::string id = reset->id();
-    VariablePtr variable = reset->variable();
-    if (variable) {
-        repr += " variable=\"" + variable->name() + "\"";
-    }
-    if (reset->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(reset->order()) + "\"";
-    }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
-    }
-    size_t when_count = reset->whenCount();
-    if (when_count > 0) {
-        repr += ">\n";
-        for (size_t i = 0; i < when_count; ++i) {
-            repr += printWhen(reset->when(i), indent + tabIndent);
+    std::string repr;
+
+    if (!childId.empty() || !math.empty()) {
+        repr += indent + "<" + childLabel;
+        if (!childId.empty()) {
+            repr += " id=\"" + childId + "\"";
         }
-        repr += indent + "</reset>\n";
-    } else {
-        repr += "/>\n";
+        if (math.empty()) {
+            repr += "/>\n";
+        } else {
+            repr += ">\n";
+            repr += printMath(math, indent + tabIndent);
+            repr += indent + "</" + childLabel + ">\n";
+        }
     }
+
     return repr;
 }
 
-std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::string &indent) const
+std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
-    std::string repr = indent + "<when";
-    std::string id = when->id();
-    if (when->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(when->order()) + "\"";
+    std::string repr = indent + "<reset";
+    std::string rid = reset->id();
+    std::string rvid = reset->resetValueId();
+    VariablePtr variable = reset->variable();
+    VariablePtr testVariable = reset->testVariable();
+    bool hasChild = false;
+
+    if (variable) {
+        repr += " variable=\"" + variable->name() + "\"";
     }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
+    if (testVariable) {
+        repr += " test_variable=\"" + testVariable->name() + "\"";
     }
-    std::string condition = when->condition();
-    bool hasCondition = !condition.empty();
-    if (hasCondition) {
+    if (reset->isOrderSet()) {
+        repr += " order=\"" + convertToString(reset->order()) + "\"";
+    }
+    if (!rid.empty()) {
+        repr += " id=\"" + rid + "\"";
+    }
+
+    std::string testValue = printResetChild("test_value", reset->testValueId(), reset->testValue(), indent + tabIndent);
+    if (!testValue.empty()) {
         repr += ">\n";
-        repr += printMath(condition, indent + tabIndent);
+        repr += testValue;
+        hasChild = true;
     }
-    std::string value = when->value();
-    bool hasValue = !value.empty();
-    if (hasValue) {
-        if (!hasCondition) {
+    std::string resetValue = printResetChild("reset_value", reset->resetValueId(), reset->resetValue(), indent + tabIndent);
+    if (!resetValue.empty()) {
+        if (!hasChild) {
             repr += ">\n";
         }
-        repr += printMath(value, indent + tabIndent);
+        repr += resetValue;
+        hasChild = true;
     }
-    if (hasCondition || hasValue) {
-        repr += indent + "</when>\n";
+    if (hasChild) {
+        repr += indent + "</reset>\n";
     } else {
         repr += "/>\n";
     }
@@ -472,7 +476,6 @@ std::string Printer::printModel(const ModelPtr &model) const
             } else if (comp->componentCount() != 0) {
                 // If the current component is a model component
                 // let the 'for' loop take care of the stack.
-
                 if (modelComponent != comp) {
                     componentStack.push(comp);
                     indeciesStack.push(index);
@@ -540,7 +543,6 @@ std::string Printer::printModel(const ModelPtr &model) const
 
     std::string componentEncapsulation;
     // Serialise components of the model, imported components have already been dealt with at this point.
-
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->component(i);
         repr += mPimpl->printComponent(component, tabIndent);

@@ -16,13 +16,12 @@ limitations under the License.
 
 #include "libcellml/componententity.h"
 
-#include "libcellml/component.h"
-#include "libcellml/model.h"
-#include "libcellml/units.h"
-
 #include <algorithm>
 #include <memory>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 

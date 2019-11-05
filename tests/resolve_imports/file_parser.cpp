@@ -19,10 +19,10 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <libcellml>
+
 #include <algorithm>
 #include <fstream>
-#include <iostream>
-#include <libcellml>
 #include <sstream>
 #include <vector>
 
