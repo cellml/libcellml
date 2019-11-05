@@ -35,7 +35,6 @@ const std::string NON_EMPTY_MATH =
     "  </apply>\n"
     "</math>\n";
 
-
 void TEST_EXPORT dbg(const std::string &text, bool newLine = true);
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");

@@ -350,14 +350,13 @@ std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel,
 {
     std::string repr;
 
-    if (!childId.empty()  || !math.empty())
-    {
+    if (!childId.empty() || !math.empty()) {
         repr += indent + "<" + childLabel;
         if (!childId.empty()) {
             repr += " id=\"" + childId + "\"";
         }
         if (math.empty()) {
-           repr += "/>\n";
+            repr += "/>\n";
         } else {
             repr += ">\n";
             repr += printMath(math, indent + tabIndent);
