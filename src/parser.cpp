@@ -101,6 +101,16 @@ struct Parser::ParserImpl
      */
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
+    /**
+     * @brief Recursively update the @p model with the encapsulation parsed from the @p node.
+     *
+     * Recusively parse through the @p node to create the component hierarchy.  Returns the
+     * root component of the hierarchy to the calling method.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param nodee The @c XmlNodePtr to parse and update the model with.
+     * @return A @c ComponentPtr which is the root of the component hierarchy.
+     */
     ComponentPtr loadComponentRef(const ModelPtr &model, const XmlNodePtr &node);
 
     /**
@@ -168,8 +178,32 @@ struct Parser::ParserImpl
      */
     void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
 
+    /**
+     * @brief Update the @p reset with the child parsed from the @p node.
+     *
+     * Takes either a 'test_value' node or a 'reset_value' node that is
+     * a child of a @c Reset.  Updates the @p reset with the information in the
+     * @p node.
+     *
+     * @param childType The @c std::string type of child which is either 'test_value' or 'reset_value'.
+     * @param reset The @c ResetPtr to update.
+     * @param component The @c ComponentPtr the reset belongs to.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
     void loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
 
+    /**
+     * @brief Checks the multiplicity of the @p childType.
+     *
+     * Checks to determine if the @p childType has the correct number of entries
+     * for a @c Reset.  Adds an error to the @c Parser if the @p count is not correct
+     * for the @p childType.
+     *
+     * @param count The number of children of the type defined by @p childType.
+     * @param childType The @c std::string type of child which is either 'test_value' or 'reset_value'.
+     * @param reset The @c ResetPtr to update.
+     * @param component The @c ComponentPtr the reset belongs to.
+     */
     void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component);
 };
 
