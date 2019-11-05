@@ -38,7 +38,7 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void dbg(const std::string &text, bool newLine)
+void debug(const std::string &text, bool newLine)
 {
     std::cout << text;
     if (newLine) {
