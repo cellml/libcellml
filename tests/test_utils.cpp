@@ -38,6 +38,14 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
+void debug(const std::string &text, bool newLine)
+{
+    std::cout << text;
+    if (newLine) {
+        std::cout << std::endl;
+    }
+}
+
 void printErrors(const libcellml::Validator &v)
 {
     for (size_t i = 0; i < v.errorCount(); ++i) {
