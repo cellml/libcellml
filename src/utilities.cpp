@@ -66,6 +66,13 @@ std::string convertIntToString(int value)
     return strs.str();
 }
 
+std::string convertSizeTToString(size_t value)
+{
+    std::ostringstream strs;
+    strs << value;
+    return strs.str();
+}
+
 bool isEuropeanNumericCharacter(char c)
 {
     const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
