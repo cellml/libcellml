@@ -249,6 +249,7 @@ int convertToInt(const std::string &candidate);
  * @return @c std::string representation of the @p value.
  */
 std::string convertIntToString(int value);
+std::string convertSizeTToString(size_t value);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.

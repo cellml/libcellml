@@ -167,6 +167,10 @@ struct Parser::ParserImpl
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
     void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+
+    void loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+
+    void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component);
 };
 
 Parser::Parser()
@@ -1071,6 +1075,95 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     }
 }
 
+void Parser::ParserImpl::loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
+{
+    // TODO The spec. has not yet defined the test_value and reset_value specification elements.
+    std::string variableName;
+    std::string testVariableName;
+
+    if (reset->variable() != nullptr) {
+        variableName = reset->variable()->name();
+    }
+
+    if (reset->testVariable() != nullptr) {
+        testVariableName = reset->testVariable()->name();
+    }
+
+    XmlAttributePtr childAttribute = node->firstAttribute();
+    while (childAttribute) {
+        if (childAttribute->isType("id")) {
+            if (childType == "test_value") {
+                reset->setTestValueId(childAttribute->value());
+            } else {
+                reset->setResetValueId(childAttribute->value());
+            }
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the " + childType + " block of '" + childAttribute->name() + "'.");
+            err->setReset(reset);
+            err->setRule(SpecificationRule::RESET_TEST_VALUE);
+            mParser->addError(err);
+        }
+        childAttribute = childAttribute->next();
+    }
+
+    XmlNodePtr mathNode = node->firstChild();
+    while (mathNode) {
+        if (mathNode->isMathmlElement("math")) {
+            std::string math = mathNode->convertToString(true) + "\n";
+            if (childType == "test_value") {
+                reset->appendTestValue(math);
+            } else {
+                reset->appendResetValue(math);
+            }
+        } else if (mathNode->isComment()) {
+            // Do nothing
+        } else {
+            std::string textNode = mathNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("The " + childType + " in the reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' should have a MathML block as a child.");
+                err->setReset(reset);
+                err->setRule(SpecificationRule::RESET_TEST_VALUE);
+                mParser->addError(err);
+            }
+        }
+        mathNode = mathNode->next();
+    }
+}
+
+void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component)
+{
+    std::string variableName;
+    std::string testVariableName;
+
+    if (reset->variable() != nullptr) {
+        variableName = reset->variable()->name();
+    }
+
+    if (reset->testVariable() != nullptr) {
+        testVariableName = reset->testVariable()->name();
+    }
+
+    if (count > 1) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
+                            + variableName + "' and test_variable '" + testVariableName + "' has " + convertSizeTToString(count) + " " + childType + " blocks.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        mParser->addError(err);
+    }
+    if (count == 0) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
+                            + variableName + "' and test_variable '" + testVariableName + "' does not have a " + childType + " block defined.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        mParser->addError(err);
+    }
+}
+
 void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
 {
     int order = 0;
@@ -1134,104 +1227,21 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         attribute = attribute->next();
     }
 
-    if (reset->variable() != nullptr) {
-        variableName = reset->variable()->name();
-    }
-
-    if (reset->testVariable() != nullptr) {
-        testVariableName = reset->testVariable()->name();
-    }
-
     if (orderValid) {
         reset->setOrder(order);
     }
 
     XmlNodePtr childNode = node->firstChild();
-    int testValueCount = 0;
-    int resetValueCount = 0;
 
+    size_t testValueCount = 0;
+    size_t resetValueCount = 0;
     while (childNode) {
         if (childNode->isCellmlElement("test_value")) {
-            XmlAttributePtr childAttribute = childNode->firstAttribute();
-            while (childAttribute) {
-                if (childAttribute->isType("id")) {
-                    reset->setTestValueId(childAttribute->value());
-                } else {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the test_value block of '" + childAttribute->name() + "'.");
-                    err->setReset(reset);
-                    err->setRule(SpecificationRule::RESET_TEST_VALUE);
-                    mParser->addError(err);
-                }
-                childAttribute = childAttribute->next();
-            }
-
-            if (testValueCount == 0) {
-                XmlNodePtr mathNode = childNode->firstChild();
-                while (mathNode) {
-                    if (mathNode->isMathmlElement("math")) {
-                        std::string math = mathNode->convertToString(true) + "\n";
-                        reset->appendTestValue(math);
-                        testValueCount++;
-                    } else if (mathNode->isComment()) {
-                        // Do nothing
-                    } else {
-                        std::string textNode = mathNode->convertToString();
-                        // Ignore whitespace when parsing.
-                        if (hasNonWhitespaceCharacters(textNode)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has a non-whitespace test_value child. MathML block expected.");
-                            err->setReset(reset);
-                            err->setRule(SpecificationRule::RESET_TEST_VALUE);
-                            mParser->addError(err);
-                        }
-                    }
-                    mathNode = mathNode->next();
-                }
-            } else {
-                testValueCount++;
-            }
-
+            loadResetChild("test_value", reset, component, childNode);
+            testValueCount++;
         } else if (childNode->isCellmlElement("reset_value")) {
-            XmlAttributePtr childAttribute = childNode->firstAttribute();
-            while (childAttribute) {
-                if (childAttribute->isType("id")) {
-                    reset->setResetValueId(childAttribute->value());
-                } else {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the reset_value block of '" + childAttribute->name() + "'.");
-                    err->setReset(reset);
-                    err->setRule(SpecificationRule::RESET_RESET_VALUE);
-                    mParser->addError(err);
-                }
-                childAttribute = childAttribute->next();
-            }
-
-            if (resetValueCount == 0) {
-                XmlNodePtr mathNode = childNode->firstChild();
-                while (mathNode) {
-                    if (mathNode->isMathmlElement("math")) {
-                        std::string math = mathNode->convertToString(true) + "\n";
-                        reset->appendResetValue(math);
-                        resetValueCount++;
-                    } else if (mathNode->isComment()) {
-                        // Do nothing
-                    } else {
-                        std::string textNode = mathNode->convertToString();
-                        // Ignore whitespace when parsing.
-                        if (hasNonWhitespaceCharacters(textNode)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has a non-whitespace reset_value child. MathML block expected.");
-                            err->setReset(reset);
-                            err->setRule(SpecificationRule::RESET_RESET_VALUE);
-                            mParser->addError(err);
-                        }
-                    }
-                    mathNode = mathNode->next();
-                }
-            } else {
-                resetValueCount++;
-            }
+            loadResetChild("reset_value", reset, component, childNode);
+            resetValueCount++;
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
@@ -1248,37 +1258,8 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         childNode = childNode->next();
     }
 
-    // TODO Not sure if these should be removed or not?
-    if (testValueCount > 1) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
-                            + variableName + "' and test_variable '" + testVariableName + "' has multiple test_value blocks.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_TEST_VALUE);
-        mParser->addError(err);
-    } else if (testValueCount == 0) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
-                            + variableName + "' and test_variable '" + testVariableName + "' does not have a test_value block defined.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_TEST_VALUE);
-        mParser->addError(err);
-    }
-    if (resetValueCount > 1) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
-                            + variableName + "' and test_variable '" + testVariableName + "' has multiple reset_value blocks.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_RESET_VALUE);
-        mParser->addError(err);
-    } else if (resetValueCount == 0) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
-                            + variableName + "' and test_variable '" + testVariableName + "' does not have a reset_value block defined.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_RESET_VALUE);
-        mParser->addError(err);
-    }
+    checkResetChildMultiplicity(testValueCount, "test_value", reset, component);
+    checkResetChildMultiplicity(resetValueCount, "reset_value", reset, component);
 }
 
 } // namespace libcellml
