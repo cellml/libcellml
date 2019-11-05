@@ -22,6 +22,20 @@ limitations under the License.
 
 const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
+const std::string NON_EMPTY_MATH =
+    "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+    "  <apply>\n"
+    "    <eq/>\n"
+    "    <ci>var</ci>\n"
+    "    <apply>\n"
+    "      <plus/>\n"
+    "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+    "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+    "    </apply>\n"
+    "  </apply>\n"
+    "</math>\n";
+
+
 void TEST_EXPORT dbg(const std::string &text, bool newLine = true);
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
