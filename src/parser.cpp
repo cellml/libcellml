@@ -1168,6 +1168,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 {
     int order = 0;
     bool orderValid = false;
+    bool orderDefined = false;
     VariablePtr referencedVariable = nullptr;
     VariablePtr testVariable = nullptr;
     std::string variableName;
@@ -1203,10 +1204,11 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 reset->setTestVariable(testVariable);
             }
         } else if (attribute->isType("order")) {
+            orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
                 order = convertToInt(attribute->value());
-            } else { // TODO This value won't be saved for validation later, so it does need to be reported now
+            } else { // This value won't be saved for validation later, so it does need to be reported now.
                 if (reset->variable() != nullptr) {
                     variableName = reset->variable()->name();
                 }
@@ -1229,6 +1231,12 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 
     if (orderValid) {
         reset->setOrder(order);
+    } else if (!orderDefined) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->name() + "' does not have its order set.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_ORDER);
+        mParser->addError(err);
     }
 
     XmlNodePtr childNode = node->firstChild();
