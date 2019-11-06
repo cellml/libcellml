@@ -38,6 +38,14 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
+void debug(const std::string &text, bool newLine)
+{
+    std::cout << text;
+    if (newLine) {
+        std::cout << std::endl;
+    }
+}
+
 void printErrors(const libcellml::Validator &v)
 {
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -100,4 +108,13 @@ libcellml::ModelPtr createModelWithComponent(const std::string &name)
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
     model->addComponent(component);
     return model;
+}
+
+libcellml::VariablePtr createVariableWithUnits(const std::string &name, const std::string &units)
+{
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(name);
+    v->setUnits(units);
+
+    return v;
 }
