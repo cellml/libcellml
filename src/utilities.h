@@ -213,17 +213,6 @@ const std::vector<std::string> supportedMathMLElements = {
 double convertToDouble(const std::string &candidate);
 
 /**
- * @brief Convert a @c double to @c std::string format.
- *
- * Convert the @p value to @c std::string representation.
- *
- * @param value The @c double value number to convert.
- *
- * @return @c std::string representation of the @p value.
- */
-std::string convertDoubleToString(double value);
-
-/**
  * @brief Convert the @p candidate @c std::string to an @c int.
  *
  * Convert the @p candidate @c std::string to an @c int. If @p candidate
@@ -248,7 +237,31 @@ int convertToInt(const std::string &candidate);
  *
  * @return @c std::string representation of the @p value.
  */
-std::string convertIntToString(int value);
+std::string convertToString(int value);
+
+/**
+ * @brief Convert a @c size_t to @c std::string format.
+ *
+ * Convert the @p value to @c std::string representation.
+ *
+ * @overload
+ *
+ * @param value The @c size_t value of the integer to convert.
+ *
+ * @return @c std::string representation of the @p value.
+ */
+std::string convertToString(size_t value);
+
+/**
+ * @brief Convert a @c double to @c std::string format.
+ *
+ * Convert the @p value to @c std::string representation.
+ *
+ * @param value The @c double value number to convert.
+ *
+ * @return @c std::string representation of the @p value.
+ */
+std::string convertToString(double value);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.

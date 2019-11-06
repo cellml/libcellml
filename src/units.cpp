@@ -276,10 +276,10 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
-        u.mExponent = convertDoubleToString(exponent);
+        u.mExponent = convertToString(exponent);
     }
     if (multiplier != 1.0) {
-        u.mMultiplier = convertDoubleToString(multiplier);
+        u.mMultiplier = convertToString(multiplier);
     }
     if (!id.empty()) {
         u.mId = id;
@@ -298,7 +298,7 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
 void Units::addUnit(const std::string &reference, int prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    const std::string prefixString = convertIntToString(prefix);
+    const std::string prefixString = convertToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
@@ -331,7 +331,7 @@ void Units::addUnit(StandardUnit standardRef, int prefix, double exponent,
                     double multiplier, const std::string &id)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    const std::string prefixString = convertIntToString(prefix);
+    const std::string prefixString = convertToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 

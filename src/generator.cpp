@@ -16,8 +16,12 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 
-#include "utilities.h"
-#include "xmldoc.h"
+#include <algorithm>
+#include <limits>
+#include <list>
+#include <regex>
+#include <sstream>
+#include <vector>
 
 #include "libcellml/component.h"
 #include "libcellml/generatorprofile.h"
@@ -26,13 +30,8 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
-
-#include <algorithm>
-#include <limits>
-#include <list>
-#include <regex>
-#include <sstream>
-#include <vector>
+#include "utilities.h"
+#include "xmldoc.h"
 
 #undef NAN
 
@@ -1067,7 +1066,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 equation->addVariable(generatorVariable);
             }
         } else {
-            std::string modelName = entityName(component->parent());
+            std::string modelName = entityName(owningModel(component));
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variableName
@@ -1181,9 +1180,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         } else if ((variable != generatorVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
-            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+            ModelPtr model = owningModel(component);
             ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
-            ModelPtr trackedVariableModel = std::dynamic_pointer_cast<Model>(trackedVariableComponent->parent());
+            ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variable->name()
@@ -1233,7 +1232,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                std::string modelName = entityName(component->parent());
+                std::string modelName = entityName(owningModel(component));
                 ErrorPtr err = std::make_shared<Error>();
 
                 err->setDescription("Variable '" + variable->name()
@@ -1249,10 +1248,9 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         } else if ((variable != mVoi)
                    && !variable->hasEquivalentVariable(mVoi)) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
-            ModelPtr voiModel = std::dynamic_pointer_cast<Model>(voiComponent->parent());
+            ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
-            ComponentPtr c1 = std::dynamic_pointer_cast<Component>(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + mVoi->name()
@@ -1457,7 +1455,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 ErrorPtr err = std::make_shared<Error>();
                 VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
-                ModelPtr realModel = std::dynamic_pointer_cast<Model>(realComponent->parent());
+                ModelPtr realModel = owningModel(realComponent);
 
                 err->setDescription("Variable '" + realVariable->name()
                                     + "' in component '" + realComponent->name()

@@ -485,7 +485,8 @@ TEST(Model, setAndCheckIdsAllEntities)
         "  <component name=\"c2name\" id=\"c2id\">\n"
         "    <variable name=\"vname\" units=\"u1name\" id=\"vid\"/>\n"
         "    <reset id=\"r1id\">\n"
-        "      <when id=\"w1id\"/>\n"
+        "      <test_value id=\"tvid\"/>\n"
+        "      <reset_value id=\"rvid\"/>\n"
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
@@ -500,7 +501,6 @@ TEST(Model, setAndCheckIdsAllEntities)
     libcellml::UnitsPtr u2 = libcellml::Units::create();
     libcellml::UnitsPtr u3 = libcellml::Units::create();
     libcellml::ResetPtr r1 = libcellml::Reset::create();
-    libcellml::WhenPtr w1 = libcellml::When::create();
 
     i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
@@ -526,10 +526,11 @@ TEST(Model, setAndCheckIdsAllEntities)
     u2->setId("u2id");
     u3->setId("u3id");
     r1->setId("r1id");
-    w1->setId("w1id");
+
+    r1->setTestValueId("tvid");
+    r1->setResetValueId("rvid");
 
     v->setUnits(u1);
-    r1->addWhen(w1);
     c2->addReset(r1);
     c2->addVariable(v);
 

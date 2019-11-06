@@ -385,7 +385,7 @@ TEST(Variable, addVariable)
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, parentComponent)
+TEST(Variable, parentOfVariable)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::VariablePtr v = libcellml::Variable::create();
@@ -393,7 +393,7 @@ TEST(Variable, parentComponent)
     EXPECT_EQ(c, v->parent());
 }
 
-TEST(Variable, nullParentComponent)
+TEST(Variable, nullParentOfVariable)
 {
     libcellml::VariablePtr v = libcellml::Variable::create();
     EXPECT_EQ(nullptr, v->parent());

@@ -66,14 +66,6 @@ TEST(Error, createResetError)
     EXPECT_EQ(libcellml::Error::Kind::RESET, e->kind());
 }
 
-TEST(Error, createWhenError)
-{
-    libcellml::WhenPtr w = libcellml::When::create();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(w);
-
-    EXPECT_EQ(libcellml::Error::Kind::WHEN, e->kind());
-}
-
 void testSpecificationRule(const libcellml::Error &e)
 {
     switch (e.rule()) {
@@ -188,8 +180,17 @@ void testSpecificationRule(const libcellml::Error &e)
     case libcellml::SpecificationRule::RESET_VARIABLE_REFERENCE:
         EXPECT_EQ("12.1.1.1", e.specificationHeading());
         break;
+    case libcellml::SpecificationRule::RESET_TEST_VARIABLE_REFERENCE:
+        EXPECT_EQ("12.1.1.1", e.specificationHeading());
+        break;
     case libcellml::SpecificationRule::RESET_ORDER:
         EXPECT_EQ("12.1.1.2", e.specificationHeading());
+        break;
+    case libcellml::SpecificationRule::RESET_TEST_VALUE:
+        EXPECT_EQ("12.1.2", e.specificationHeading());
+        break;
+    case libcellml::SpecificationRule::RESET_RESET_VALUE:
+        EXPECT_EQ("12.1.2", e.specificationHeading());
         break;
     case libcellml::SpecificationRule::UNITS_CHILD:
         EXPECT_EQ("8.1.4", e.specificationHeading());
@@ -235,12 +236,6 @@ void testSpecificationRule(const libcellml::Error &e)
         break;
     case libcellml::SpecificationRule::VARIABLE_UNITS:
         EXPECT_EQ("11.1.1.2", e.specificationHeading());
-        break;
-    case libcellml::SpecificationRule::WHEN_ORDER:
-        EXPECT_EQ("13.1.1", e.specificationHeading());
-        break;
-    case libcellml::SpecificationRule::WHEN_CHILD:
-        EXPECT_EQ("13.1.2", e.specificationHeading());
         break;
     case libcellml::SpecificationRule::UNDEFINED:
         EXPECT_EQ("", e.specificationHeading());
@@ -354,6 +349,9 @@ TEST(Error, specificationRule)
     e.setRule(libcellml::SpecificationRule::RESET_VARIABLE_REFERENCE);
     ++count;
     testSpecificationRule(e);
+    e.setRule(libcellml::SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
+    ++count;
+    testSpecificationRule(e);
     e.setRule(libcellml::SpecificationRule::RESET_ORDER);
     ++count;
     testSpecificationRule(e);
@@ -402,11 +400,5 @@ TEST(Error, specificationRule)
     e.setRule(libcellml::SpecificationRule::VARIABLE_UNITS);
     ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::WHEN_CHILD);
-    ++count;
-    testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::WHEN_ORDER);
-    ++count;
-    testSpecificationRule(e);
-    EXPECT_EQ(size_t(52), count);
+    EXPECT_EQ(size_t(51), count);
 }
