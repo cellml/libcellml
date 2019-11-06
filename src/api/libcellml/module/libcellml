@@ -38,4 +38,3 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
-#include "libcellml/when.h"

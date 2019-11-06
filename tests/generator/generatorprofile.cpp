@@ -26,7 +26,7 @@ limitations under the License.
 
 #include <cmath>
 
-std::string convertDoubleToString(double value)
+std::string convertToString(double value)
 {
     std::ostringstream strs;
     strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
@@ -142,8 +142,8 @@ TEST(GeneratorProfile, defaultConstantValues)
 
     EXPECT_EQ("1.0", generatorProfile->trueString());
     EXPECT_EQ("0.0", generatorProfile->falseString());
-    EXPECT_EQ(convertDoubleToString(exp(1.0)), generatorProfile->eString());
-    EXPECT_EQ(convertDoubleToString(M_PI), generatorProfile->piString());
+    EXPECT_EQ(convertToString(exp(1.0)), generatorProfile->eString());
+    EXPECT_EQ(convertToString(M_PI), generatorProfile->piString());
     EXPECT_EQ("1.0/0.0", generatorProfile->infString());
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
 }

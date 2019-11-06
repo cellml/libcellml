@@ -18,10 +18,10 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <libcellml>
+
 #include <algorithm>
 #include <fstream>
-#include <iostream>
-#include <libcellml>
 #include <sstream>
 #include <vector>
 
@@ -87,7 +87,6 @@ TEST(Parser, parseComplexEncapsulationModelFromFile)
 TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
 {
     // This test resulted from https://github.com/cellml/libcellml/issues/183
-
     const std::string e1 =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
