@@ -1858,7 +1858,6 @@ TEST(Parser, xmlComments)
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
-
 TEST(Parser, mathWithNamespacesDefinedOnTheMathNode)
 {
     const std::string input =
