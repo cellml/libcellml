@@ -44,6 +44,23 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
+TEST(Generator, generatorErrors)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr invalidModel = parser.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::Generator generator;
+
+    generator.processModel(invalidModel);
+
+    EXPECT_EQ(size_t(1), generator.errorCount());
+
+    libcellml::ModelPtr emptyModel = std::make_shared<libcellml::Model>();
+
+    generator.processModel(emptyModel);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+}
+
 TEST(Generator, initializedVariableOfIntegration)
 {
     libcellml::Parser parser;
