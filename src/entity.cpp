@@ -30,8 +30,7 @@ using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entit
  */
 struct Entity::EntityImpl
 {
-    EntityWeakPtr mParent;
-
+    EntityWeakPtr mParent; /**< Pointer to parent. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
