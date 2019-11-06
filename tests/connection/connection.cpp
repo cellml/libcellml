@@ -1004,6 +1004,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
         "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
         "  </component>\n"
         "</model>\n";
+
     const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse

@@ -16,8 +16,12 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 
-#include "utilities.h"
-#include "xmldoc.h"
+#include <algorithm>
+#include <limits>
+#include <list>
+#include <regex>
+#include <sstream>
+#include <vector>
 
 #include "libcellml/component.h"
 #include "libcellml/generatorprofile.h"
@@ -25,13 +29,8 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
-
-#include <algorithm>
-#include <limits>
-#include <list>
-#include <regex>
-#include <sstream>
-#include <vector>
+#include "utilities.h"
+#include "xmldoc.h"
 
 #undef NAN
 
@@ -1065,7 +1064,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 equation->addVariable(generatorVariable);
             }
         } else {
-            std::string modelName = entityName(component->parent());
+            std::string modelName = entityName(owningModel(component));
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variableName
@@ -1230,7 +1229,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                std::string modelName = entityName(component->parent());
+                std::string modelName = entityName(owningModel(component));
                 ErrorPtr err = std::make_shared<Error>();
 
                 err->setDescription("Variable '" + variable->name()
@@ -1249,7 +1248,6 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
-            ComponentPtr c1 = std::dynamic_pointer_cast<Component>(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + mVoi->name()

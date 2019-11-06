@@ -16,10 +16,6 @@ limitations under the License.
 
 #include "utilities.h"
 
-#include "libcellml/component.h"
-#include "libcellml/model.h"
-#include "libcellml/namedentity.h"
-
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -28,6 +24,10 @@ limitations under the License.
 #include <set>
 #include <sstream>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/model.h"
+#include "libcellml/namedentity.h"
 
 namespace libcellml {
 
@@ -47,7 +47,7 @@ bool hasNonWhitespaceCharacters(const std::string &input)
     return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
-std::string convertDoubleToString(double value)
+std::string convertToString(double value)
 {
     std::ostringstream strs;
     strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
@@ -59,7 +59,14 @@ int convertToInt(const std::string &candidate)
     return std::stoi(candidate);
 }
 
-std::string convertIntToString(int value)
+std::string convertToString(size_t value)
+{
+    std::ostringstream strs;
+    strs << value;
+    return strs.str();
+}
+
+std::string convertToString(int value)
 {
     std::ostringstream strs;
     strs << value;

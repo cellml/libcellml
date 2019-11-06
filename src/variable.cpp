@@ -395,7 +395,7 @@ void Variable::setInitialValue(const std::string &initialValue)
 
 void Variable::setInitialValue(double initialValue)
 {
-    mPimpl->mInitialValue = convertDoubleToString(initialValue);
+    mPimpl->mInitialValue = convertToString(initialValue);
 }
 
 void Variable::setInitialValue(const VariablePtr &variable)
