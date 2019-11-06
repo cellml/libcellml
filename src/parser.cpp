@@ -314,7 +314,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
-            ComponentPtr component = libcellml::Component::create();
+            const std::string name;
+            ComponentPtr component = libcellml::Component::create(name);
             loadComponent(component, childNode);
             model->addComponent(component);
         } else if (childNode->isCellmlElement("units")) {
