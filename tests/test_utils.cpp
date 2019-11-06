@@ -54,6 +54,14 @@ void printErrors(const libcellml::Logger &l, bool headings, bool kinds, bool rul
         if (rule) {
             std::cout << ", " << static_cast<int>(l.error(i)->rule());
         }
+
+    }
+}
+
+void debug(const std::string &text, bool newLine)
+{
+    std::cout << text;
+    if (newLine) {
         std::cout << std::endl;
     }
 }
