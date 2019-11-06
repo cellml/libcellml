@@ -54,7 +54,7 @@ TEST(Generator, generatorErrors)
 
     EXPECT_EQ(size_t(1), generator.errorCount());
 
-    libcellml::ModelPtr emptyModel = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr emptyModel = libcellml::Model::create();
 
     generator.processModel(emptyModel);
 
