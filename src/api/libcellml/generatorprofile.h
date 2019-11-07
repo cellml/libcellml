@@ -42,6 +42,12 @@ public:
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<GeneratorProfile> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<GeneratorProfile> {new GeneratorProfile {std::forward<Args>(args)...}};
+    }
+
     // Whether the profile is official.
 
     /**
