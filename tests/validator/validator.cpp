@@ -450,7 +450,7 @@ TEST(Validator, invalidMath)
         "</math>\n";
     const std::string math2 = "<invalid_math/>\n";
     const std::vector<std::string> expectedErrors = {
-        "Opening and ending tag mismatch: invalid_xml line 2 and not_valid.",
+        "LibXml2 error: Opening and ending tag mismatch: invalid_xml line 2 and not_valid.",
         "Could not get a valid XML root node from the math on component 'componentName1'.",
         "Math root node is of invalid type 'invalid_math' on component 'componentName2'. A valid math root node should be of type 'math'.",
     };
@@ -1391,8 +1391,8 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "</math>\n";
 
     const std::vector<std::string> expectedErrors {
-        "Namespace prefix cellml for units on cn is not defined.",
-        "Namespace prefix cellml for units on cn is not defined.",
+        "LibXml2 error: Namespace prefix cellml for units on cn is not defined.",
+        "LibXml2 error: Namespace prefix cellml for units on cn is not defined.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '3.44' does not have a valid cellml:units attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -2112,7 +2112,7 @@ TEST(Validator, duplicatedCellMLUnitsOnCiElement)
         "</math>\n";
 
     const std::vector<std::string> expectedErrors = {
-        "Attribute cellml:units redefined.",
+        "LibXml2 error: Attribute cellml:units redefined.",
         "Could not get a valid XML root node from the math on component 'componentName'.",
     };
 

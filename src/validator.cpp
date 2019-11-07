@@ -766,7 +766,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(doc->xmlError(i));
+            err->setDescription("LibXml2 error: " + doc->xmlError(i));
             err->setKind(Error::Kind::XML);
             mValidator->addError(err);
         }
