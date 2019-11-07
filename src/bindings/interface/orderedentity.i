@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include "createconstructor.i"
+
 %import "types.i"
 %import "entity.i"
 
@@ -25,8 +27,7 @@
 #include "libcellml/orderedentity.h"
 %}
 
-%ignore libcellml::OrderedEntity::OrderedEntity(OrderedEntity &&);
-%ignore libcellml::OrderedEntity::operator =;
+%ignore libcellml::OrderedEntity::OrderedEntity();
 
 %include "libcellml/types.h"
 %include "libcellml/orderedentity.h"

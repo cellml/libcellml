@@ -11,9 +11,7 @@ class ImportSourceTestCase(unittest.TestCase):
 
         # Test create/copy/destroy
         x = ImportSource()
-        y = ImportSource()
-        z = ImportSource(y)
-        del(x, y, z)
+        del(x)
 
     def test_inheritance(self):
         import libcellml

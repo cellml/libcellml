@@ -53,7 +53,7 @@ struct Variable::VariableImpl
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
-    std::string mUnits; /**< The name of the units defined for this Variable.*/
+    UnitsPtr mUnits = nullptr; /**< The units defined for this Variable.*/
 
     /**
      * @brief Private function to add an equivalent variable to the set for this variable.
@@ -180,11 +180,19 @@ Variable::Variable()
     mPimpl->mVariable = this;
 }
 
+Variable::Variable(const std::string &name)
+    : mPimpl(new VariableImpl())
+{
+    mPimpl->mVariable = this;
+    setName(name);
+}
+
 Variable::~Variable()
 {
     delete mPimpl;
 }
 
+/*
 Variable::Variable(const Variable &rhs)
     : NamedEntity(rhs)
     , mPimpl(new VariableImpl())
@@ -216,7 +224,7 @@ void Variable::swap(Variable &rhs)
 {
     std::swap(mPimpl, rhs.mPimpl);
 }
-
+*/
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     variable1->mPimpl->setEquivalentTo(variable2);
@@ -375,15 +383,17 @@ std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &eq
 
 void Variable::setUnits(const std::string &name)
 {
-    mPimpl->mUnits = name;
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName(name);
+    mPimpl->mUnits = u;
 }
 
 void Variable::setUnits(const UnitsPtr &units)
 {
-    mPimpl->mUnits = units->name();
+    mPimpl->mUnits = units;
 }
 
-std::string Variable::units() const
+UnitsPtr Variable::units() const
 {
     return mPimpl->mUnits;
 }

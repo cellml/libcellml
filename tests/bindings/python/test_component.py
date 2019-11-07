@@ -12,9 +12,10 @@ class ComponentTestCase(unittest.TestCase):
         # Test create/copy/destroy
         x = Component()
         del(x)
-        y = Component()
-        z = Component(y)
-        del(y, z)
+
+        y = Component("c3")
+        self.assertEqual("c3", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
@@ -34,8 +35,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Component(x)
-        self.assertEqual(y.id(), idx)
 
     def test_set_source(self):
         from libcellml import Component, ImportSource

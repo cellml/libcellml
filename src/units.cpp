@@ -17,12 +17,15 @@ limitations under the License.
 #include "utilities.h"
 
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/units.h"
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <map>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace libcellml {
@@ -118,6 +121,17 @@ struct Units::UnitsImpl
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 
     std::vector<Unit>::iterator findUnit(const std::string &reference);
+    /**
+     * @brief Returns the log of the scaling factor between two similar units
+     * 
+     *  The factor returned can be interpreted as u1 = (factor)*u2
+     * 
+     * @param model The @c ModelPtr containing the units
+     * @param u1 The first @c UnitsPtr to compare
+     * @param u2 The second @c UnitsPtr to compare
+     * @return factor The scaling factor between u1 and u2
+     */
+    double doGetScalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
@@ -126,43 +140,118 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
 }
 
+/*
+
+//TDOD: This code is progress towards checking that units are compatible.
+using UnitMultiplierMap = std::map<std::string, double>;
+
+    UnitMultiplierMap unitMap = {};
+    for (const auto &baseUnits : baseUnitsList) {
+        unitMap[baseUnits] = 0.0;
+    }
+bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
+                           double &multiplier,
+                           const UnitsPtr &units,
+                           double uExp, double logMult,
+                           int direction)
+{
+    bool updated = false;
+    auto unitsName = units->name();
+    if (!units->isBaseUnit()) {
+        std::string ref;
+        std::string pre;
+        std::string id;
+        double exp;
+        double mult;
+        double expMult;
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            mult = std::log10(expMult);
+            if (!isStandardUnitName(ref)) {
+                auto model = owningModel(units);
+                auto refUnits = model->units(ref);
+                updated = updateUnitMultipliers(unitMultiplierMap, multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+            } else {
+                for (const auto &iter : standardUnitsList.at(ref)) {
+                    unitMultiplierMap.at(iter.first) += direction * (iter.second * exp * uExp);
+                }
+                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+            }
+        }
+    } else if (unitMultiplierMap.find(unitsName) == unitMultiplierMap.end()) {
+        unitMultiplierMap.emplace(std::pair<std::string, double>(unitsName, direction * uExp));
+        multiplier += direction * logMult;
+        updated = true;
+    } else if (isStandardUnitName(unitsName)) {
+        for (const auto &iter : standardUnitsList.at(unitsName)) {
+            unitMultiplierMap.at(iter.first) += direction * (iter.second * uExp);
+        }
+        multiplier += direction * logMult;
+        multiplier += direction * standardMultiplierList.at(unitsName);
+        updated = true;
+    }
+
+    return updated;
+}
+*/
+
+bool updateUnitMultipliers(double &multiplier,
+                           const UnitsPtr &units,
+                           double uExp, double logMult,
+                           int direction)
+{
+    bool updated = false;
+    auto unitsName = units->name();
+    if (units->isBaseUnit()) {
+        multiplier += direction * logMult;
+        updated = true;
+    } else {
+        std::string ref;
+        std::string pre;
+        std::string id;
+        double exp;
+        double mult;
+        double expMult;
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            mult = std::log10(expMult);
+            if (isStandardUnitName(ref)) {
+                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+            } else {
+                auto model = owningModel(units);
+                auto refUnits = model->units(ref);
+                updated = updateUnitMultipliers(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+            }
+        }
+    }
+
+    return updated;
+}
+
+double doGetScalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+    double multiplier = 0.0;
+
+    updateUnitMultipliers(multiplier, units1, 1, 0, 1);
+    updateUnitMultipliers(multiplier, units2, 1, 0, -1);
+
+    return std::pow(10, multiplier);
+}
+
 Units::Units()
     : mPimpl(new UnitsImpl())
 {
 }
 
+Units::Units(const std::string &name)
+    : mPimpl(new UnitsImpl())
+{
+    setName(name);
+}
+
 Units::~Units()
 {
     delete mPimpl;
-}
-
-Units::Units(const Units &rhs)
-    : NamedEntity(rhs)
-    , ImportedEntity(rhs)
-    , mPimpl(new UnitsImpl())
-{
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-}
-
-Units::Units(Units &&rhs) noexcept
-    : NamedEntity(std::move(rhs))
-    , ImportedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Units &Units::operator=(Units rhs)
-{
-    NamedEntity::operator=(rhs);
-    ImportedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Units::swap(Units &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool Units::isBaseUnit() const
@@ -337,6 +426,11 @@ void Units::setSourceUnits(const ImportSourcePtr &importSource, const std::strin
 size_t Units::unitCount() const
 {
     return mPimpl->mUnits.size();
+}
+
+double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+    return doGetScalingFactor(units1, units2);
 }
 
 } // namespace libcellml

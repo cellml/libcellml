@@ -31,12 +31,14 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Entity
 {
-public:
+protected:
     Entity(); /**< Constructor */
+
+public:
     virtual ~Entity(); /**< Destructor */
-    Entity(const Entity &rhs); /**< Copy constructor */
-    Entity(Entity &&rhs) noexcept; /**< Move constructor */
-    Entity &operator=(Entity rhs); /**< Assignment operator */
+    Entity(const Entity &rhs) = delete; /**< Copy constructor */
+    Entity(Entity &&rhs) noexcept = delete; /**< Move constructor */
+    Entity &operator=(Entity rhs) = delete; /**< Assignment operator */
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -112,8 +114,6 @@ public:
     bool hasAncestor(const EntityPtr &entity) const;
 
 private:
-    void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct EntityImpl;
     EntityImpl *mPimpl;
 };

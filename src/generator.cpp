@@ -26,6 +26,7 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
+#include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
@@ -1626,7 +1627,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 {
     auto variableComponentSize = entityName(variable->parent()).length() + 1;
     auto variableNameSize = variable->name().length() + 1;
-    auto variableUnitsSize = variable->units().length() + 1;
+    auto variableUnitsSize = variable->units()->name().length() + 1;
     // Note: +1 to account for the end of string termination.
 
     componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
@@ -2114,7 +2115,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
         }
 
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
-        std::string units = (mVoi != nullptr) ? mVoi->units() : "";
+        std::string units = (mVoi != nullptr) ? mVoi->units()->name() : "";
         std::string component = (mVoi != nullptr) ? entityName(mVoi->parent()) : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
@@ -2140,7 +2141,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
 
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->name(),
-                                                                state->units(),
+                                                                state->units()->name(),
                                                                 entityName(state->parent()));
         }
 
@@ -2192,7 +2193,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
             infoElementsCode += mProfile->indentString()
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
-                                                          "<UNITS>", variable->variable()->units()),
+                                                          "<UNITS>", variable->variable()->units()->name()),
                                                   "<COMPONENT>", entityName(variable->variable()->parent())),
                                           "<TYPE>", variableType);
         }
