@@ -37,11 +37,11 @@ TEST(Parser, invalidXMLElements)
     const std::vector<std::string> expectedErrors = {
         "Specification mandate value for attribute bearded.",
         "Specification mandates value for attribute bearded.",
-        "Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
-        "Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
-        "Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
-        "Opening and ending tag mismatch: Elf line 6 and fellows.",
-        "Premature end of data in tag fellowship line 2.",
+        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
+        "LibXml2 error: Opening and ending tag mismatch: Elf line 6 and fellows.",
+        "LibXml2 error: Premature end of data in tag fellowship line 2.",
         "Could not get a valid XML root node from the provided input.",
     };
 
@@ -112,7 +112,7 @@ TEST(Parser, emptyModelString)
 {
     const std::string ex;
     const std::vector<std::string> expectedErrors = {
-        "Document is empty.",
+        "LibXml2 error: Document is empty.",
         "Could not get a valid XML root node from the provided input.",
     };
 
@@ -125,7 +125,7 @@ TEST(Parser, nonXmlString)
 {
     const std::string ex = "Not an xml string.";
     const std::vector<std::string> expectedErrors = {
-        "Start tag expected, '<' not found.",
+        "LibXml2 error: Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
 
@@ -1432,7 +1432,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     // Trigger an XML error
     const std::string input3 = "jarjarbinks";
     const std::vector<std::string> expectedErrors3 = {
-        "Start tag expected, '<' not found.",
+        "LibXml2 error: Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
     libcellml::Parser parser3;
