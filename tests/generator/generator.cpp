@@ -24,7 +24,7 @@ static const std::string EMPTY_STRING;
 
 TEST(Generator, emptyModel)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::Generator generator;
 
     generator.processModel(model);
@@ -54,7 +54,7 @@ TEST(Generator, generatorErrors)
 
     EXPECT_EQ(size_t(1), generator.errorCount());
 
-    libcellml::ModelPtr emptyModel = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr emptyModel = libcellml::Model::create();
 
     generator.processModel(emptyModel);
 

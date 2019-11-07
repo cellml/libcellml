@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include "createconstructor.i"
+
 %import "types.i"
 %import "componententity.i"
 
@@ -104,8 +106,8 @@ resets and False otherwise.";
 #include "libcellml/component.h"
 %}
 
-%ignore libcellml::Component::Component(Component &&);
-%ignore libcellml::Component::operator =;
+%create_constructor(Component)
+%create_name_constructor(Component)
 
 %include "libcellml/types.h"
 %include "libcellml/component.h"

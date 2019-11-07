@@ -25,27 +25,13 @@ TEST(Printer, printEmptyModel)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
 
     libcellml::Printer p;
 
     const std::string a = p.printModel(m);
 
     EXPECT_EQ(e, a);
-}
-
-TEST(Printer, printEmptyModelAllocatePointer)
-{
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
-    auto m = new libcellml::Model();
-
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
-
-    EXPECT_EQ(e, a);
-    delete m;
 }
 
 TEST(Printer, printEmptyUnits)
@@ -55,8 +41,8 @@ TEST(Printer, printEmptyUnits)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <units/>\n"
         "</model>\n";
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
     m->addUnits(u);
 
@@ -76,7 +62,7 @@ TEST(Printer, printEmptyVariable)
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     c->addVariable(v);
 
     libcellml::Printer printer;
@@ -111,7 +97,7 @@ TEST(Printer, printEmptyReset)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     c->addReset(r);
 
@@ -134,9 +120,9 @@ TEST(Printer, printEncapsulation)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
+    libcellml::ComponentPtr child = libcellml::Component::create();
     parent->addComponent(child);
 
     model->addComponent(parent);
@@ -160,10 +146,10 @@ TEST(Printer, printEncapsulationWithNames)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr parent = libcellml::Component::create();
     parent->setName("parent_component");
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child = libcellml::Component::create();
     child->setName("child_component");
     parent->addComponent(child);
 

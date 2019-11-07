@@ -7,13 +7,17 @@ import unittest
 class ModelTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
+        import libcellml
         from libcellml import Model
 
         x = Model()
         del(x)
-        y = Model()
-        z = Model(y)
-        del(y, z)
+
+        y = Model('bob')
+        self.assertEqual('bob', y.name())
+
+        z = libcellml.Model()
+        del z
 
     def test_inheritance(self):
         import libcellml
@@ -30,8 +34,6 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Model(x)
-        self.assertEqual(y.id(), idx)
 
     def test_add_units(self):
         from libcellml import Model, Units
@@ -75,7 +77,6 @@ class ModelTestCase(unittest.TestCase):
         self.assertFalse(m.removeUnits(u1))
         m.addUnits(u1)
         self.assertFalse(m.removeUnits(u2))
-        self.assertTrue(m.removeUnits(u1))
         self.assertFalse(m.removeUnits(u1))
         del(m, u1, u2)
 
@@ -167,7 +168,7 @@ class ModelTestCase(unittest.TestCase):
         u.setName(name)
         self.assertIsNone(m.takeUnits(name))
         m.addUnits(u)
-        self.assertEquals(m.takeUnits(name).name(), name)
+        self.assertEqual(m.takeUnits(name).name(), name)
         self.assertIsNone(m.takeUnits(name))
         del(m, u, name)
 
@@ -206,8 +207,7 @@ class ModelTestCase(unittest.TestCase):
         m.addUnits(a)
         b = Units()
         self.assertFalse(m.replaceUnits(b, a))
-        self.assertTrue(m.replaceUnits(a, b))
-        self.assertTrue(m.replaceUnits(b, a))
+        self.assertFalse(m.replaceUnits(a, b))
         self.assertFalse(m.replaceUnits(b, a))
         del(m, a, b)
 

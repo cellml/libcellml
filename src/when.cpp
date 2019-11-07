@@ -39,33 +39,6 @@ When::~When()
     delete mPimpl;
 }
 
-When::When(const When &rhs)
-    : OrderedEntity(rhs)
-    , mPimpl(new WhenImpl())
-{
-    mPimpl->mCondition = rhs.mPimpl->mCondition;
-    mPimpl->mValue = rhs.mPimpl->mValue;
-}
-
-When::When(When &&rhs) noexcept
-    : OrderedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-When &When::operator=(When rhs)
-{
-    OrderedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void When::swap(When &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void When::setCondition(const std::string &condition)
 {
     mPimpl->mCondition = condition;

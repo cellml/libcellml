@@ -31,12 +31,14 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT NamedEntity: public Entity
 {
-public:
+protected:
     NamedEntity(); /**< Constructor */
+
+public:
     ~NamedEntity() override; /**< Destructor */
-    NamedEntity(const NamedEntity &rhs); /**< Copy constructor */
-    NamedEntity(NamedEntity &&rhs) noexcept; /**< Move constructor */
-    NamedEntity &operator=(NamedEntity rhs); /**< Assignment operator */
+    NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor */
+    NamedEntity(NamedEntity &&rhs) noexcept = delete; /**< Move constructor */
+    NamedEntity &operator=(NamedEntity rhs) = delete; /**< Assignment operator */
 
     /**
      * @brief Set the name for the Entity.
@@ -58,8 +60,6 @@ public:
     std::string name() const;
 
 private:
-    void swap(NamedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */
     NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };

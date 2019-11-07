@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include "createconstructor.i"
+
 %import "types.i"
 %import "namedentity.i"
 
@@ -93,6 +95,9 @@ not equivalent the connection id is not set.";
 
 %ignore libcellml::Variable::Variable(Variable &&);
 %ignore libcellml::Variable::operator =;
+
+%create_constructor(Variable)
+%create_name_constructor(Variable)
 
 %include "libcellml/types.h"
 %include "libcellml/variable.h"

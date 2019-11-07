@@ -198,32 +198,6 @@ struct Validator::ValidatorImpl
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
 
     /**
-     * @brief Check if the provided @p name is a standard unit.
-     *
-     * Checks if the provided @p name is one of the standard units in the
-     * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard units.
-     *
-     * @return @c true if @name is a standard unit and @c false otherwise.
-     */
-    bool isStandardUnitName(const std::string &name);
-
-    /**
-     * @brief Check if the provided @p name is a standard prefix.
-     *
-     * Checks if the provided @p name is one of the standard prefixes in the
-     * @c Prefix @c enum. Returns @c true if @name is a standard prefix
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard prefixes.
-     *
-     * @return @c true if @name is a standard prefix and @c false otherwise.
-     */
-    bool isStandardPrefixName(const std::string &name);
-
-    /**
      * @brief Check if the provided @p node is a supported MathML element.
      *
      * Checks if the provided @p node is one of the supported MathML elements defined in the table
@@ -238,13 +212,17 @@ struct Validator::ValidatorImpl
     * @brief Validate that equivalent variable pairs in the @p model
     * have equivalent units.
     * Any errors will be logged in the @c Validator.
+    * 
+    * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.  
+    * Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
     *
     * @param model The model containing the variables
     * @param v1 The variable which may contain units.
     * @param v2 The equivalent variable which may contain units.
     * @param hints String containing error messages to be passed back to the calling function for logging.
+    * @param multiplier Double returning the effective multiplier mismatch between the units.  
     */
-    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints);
+    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
 
     /**
     * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
@@ -258,6 +236,7 @@ struct Validator::ValidatorImpl
     */
     void updateBaseUnitCount(const ModelPtr &model,
                              std::map<std::string, double> &unitMap,
+                             double &multiplier,
                              const std::string &uName,
                              double uExp, double logMult, int direction);
 
@@ -621,18 +600,19 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addError(err);
     }
     // Check for a valid units attribute.
-    if (!isCellmlIdentifier(variable->units())) {
+    std::string unitsName = variable->units() != nullptr ? variable->units()->name() : "";
+    if (!isCellmlIdentifier(unitsName)) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
         err->setVariable(variable);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
-    } else if (!isStandardUnitName(variable->units())) {
+    } else if (!isStandardUnitName(unitsName)) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + variable->units() + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
+            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + unitsName + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
@@ -1019,10 +999,12 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
                             // TODO: validate variable interfaces according to 17.10.8.
                             // TODO: add check for cyclical connections (17.10.5).
-
-                            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+                            double multiplier = 0.0;
+                            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
+                                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                                 err->setModel(model);
                                 err->setKind(Error::Kind::UNITS);
                                 mValidator->addError(err);
@@ -1057,24 +1039,6 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
     return (node->namespaceUri() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
-}
-
-bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
-{
-    bool result = false;
-    if (standardUnitsList.count(name) != 0) {
-        result = true;
-    }
-    return result;
-}
-
-bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
-{
-    bool result = false;
-    if (standardPrefixList.count(name) != 0) {
-        result = true;
-    }
-    return result;
 }
 
 bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
@@ -1112,7 +1076,8 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
                                                   const VariablePtr &v1,
                                                   const VariablePtr &v2,
-                                                  std::string &hints)
+                                                  std::string &hints,
+                                                  double &multiplier)
 {
     std::map<std::string, double> unitMap = {};
 
@@ -1122,27 +1087,32 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
 
     std::string ref;
     hints = "";
+    multiplier = 0.0;
 
-    if (model->hasUnits(v1->units())) {
-        libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-        u1 = model->units(v1->units());
-        updateBaseUnitCount(model, unitMap, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()) != unitMap.end()) {
-        ref = v1->units();
-        unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units())) {
-        updateBaseUnitCount(model, unitMap, v1->units(), 1, 0, 1);
+    if (v1->units() == nullptr || v2->units() == nullptr) {
+        return false;
     }
 
-    if (model->hasUnits(v2->units())) {
-        libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-        u2 = model->units(v2->units());
-        updateBaseUnitCount(model, unitMap, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()) != unitMap.end()) {
-        ref = v2->units();
-        unitMap.at(v2->units()) -= 1.0;
-    } else if (isStandardUnitName(v2->units())) {
-        updateBaseUnitCount(model, unitMap, v2->units(), 1, 0, -1);
+    if (model->hasUnits(v1->units()->name())) {
+        libcellml::UnitsPtr u1 = libcellml::Units::create();
+        u1 = model->units(v1->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
+    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
+        ref = v1->units()->name();
+        unitMap.at(ref) += 1.0;
+    } else if (isStandardUnitName(v1->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
+    }
+
+    if (model->hasUnits(v2->units()->name())) {
+        libcellml::UnitsPtr u2 = libcellml::Units::create();
+        u2 = model->units(v2->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
+    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
+        ref = v2->units()->name();
+        unitMap.at(v2->units()->name()) -= 1.0;
+    } else if (isStandardUnitName(v2->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
     }
 
     // Remove "dimensionless" from base unit testing.
@@ -1161,6 +1131,17 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         }
     }
 
+    if (multiplier != 0.0) {
+        // NB: multiplication errors are only reported when there is a base error mismatch too, does not trigger it alone.
+        // The multiplication mismatch will be returned through the multiplier argument in all cases.
+        std::string num = std::to_string(multiplier);
+        num.erase(num.find_last_not_of('0') + 1, num.length());
+        if (num.back() == '.') {
+            num.pop_back();
+        }
+        hints += "multiplication factor of 10^" + num + ", ";
+    }
+
     // Remove the final trailing comma from the hints string.
     if (hints.length() > 2) {
         hints.pop_back();
@@ -1172,6 +1153,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
 
 void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
                                                    std::map<std::string, double> &unitMap,
+                                                   double &multiplier,
                                                    const std::string &uName,
                                                    double uExp, double logMult,
                                                    int direction)
@@ -1189,20 +1171,23 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, ref, pre, exp, expMult, id);
                 mult = std::log10(expMult);
                 if (!isStandardUnitName(ref)) {
-                    updateBaseUnitCount(model, unitMap, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                    updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 } else {
                     for (const auto &iter : standardUnitsList.at(ref)) {
                         unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
+                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+            multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
         for (const auto &iter : standardUnitsList.at(uName)) {
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
+        multiplier += direction * logMult;
     }
 }
 
