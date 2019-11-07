@@ -144,6 +144,8 @@ TEST(Coverage, generatorProfile)
 
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
+
+    auto gp = libcellml::GeneratorProfile::create();
 }
 
 TEST(Coverage, generatorVariable)
