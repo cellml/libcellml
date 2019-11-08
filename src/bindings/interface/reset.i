@@ -2,10 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%include "createconstructor.i"
-
-%import "types.i"
+%import "createconstructor.i"
 %import "orderedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Reset
 "The Reset class is for describing a CellML reset.";

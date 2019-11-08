@@ -2,11 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
-%include "std_string.i"
-%include "createconstructor.i"
+%include <std_string.i>
 
-%import "types.i"
+%import "createconstructor.i"
 %import "orderedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::When
 "Class for determining when a reset will occur.";
