@@ -2,10 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%include "createconstructor.i"
-
-%import "types.i"
+%import "createconstructor.i"
 %import "namedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Variable
 "Represents a CellML Variable entity";

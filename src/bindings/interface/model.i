@@ -3,10 +3,10 @@
 #define LIBCELLML_EXPORT
 
 %include <std_shared_ptr.i>
-%include "createconstructor.i"
 
-%import "types.i"
 %import "componententity.i"
+%import "createconstructor.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Model
 "Represents a CellML model.";

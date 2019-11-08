@@ -2,10 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%include "createconstructor.i"
-
-%import "types.i"
+%import "createconstructor.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::ImportSource
 "The `ImportSource` class is for defining a location at which a CellML model is
