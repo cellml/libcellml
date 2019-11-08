@@ -18,7 +18,7 @@ class ImportSourceTestCase(unittest.TestCase):
         from libcellml import ImportSource
 
         x = ImportSource()
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
     def test_set_url(self):
         from libcellml import ImportSource

@@ -21,9 +21,9 @@ class UnitsTestCase(unittest.TestCase):
         from libcellml import Units
 
         x = Units()
-        self.assertIsInstance(x, libcellml.ImportedEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.importedentity.ImportedEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
         # Test access to inherited methods
         x = Units()
