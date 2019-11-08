@@ -315,15 +315,15 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             const std::string name;
-            ComponentPtr component = libcellml::Component::create(name);
+            ComponentPtr component = Component::create(name);
             loadComponent(component, childNode);
             model->addComponent(component);
         } else if (childNode->isCellmlElement("units")) {
-            UnitsPtr units = libcellml::Units::create();
+            UnitsPtr units = Units::create();
             loadUnits(units, childNode);
             model->addUnits(units);
         } else if (childNode->isCellmlElement("import")) {
-            ImportSourcePtr importSource = libcellml::ImportSource::create();
+            ImportSourcePtr importSource = ImportSource::create();
             loadImport(importSource, model, childNode);
         } else if (childNode->isCellmlElement("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
@@ -416,11 +416,11 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("variable")) {
-            VariablePtr variable = libcellml::Variable::create();
+            VariablePtr variable = Variable::create();
             loadVariable(variable, childNode);
             component->addVariable(variable);
         } else if (childNode->isCellmlElement("reset")) {
-            ResetPtr reset = libcellml::Reset::create();
+            ResetPtr reset = Reset::create();
             loadReset(reset, component, childNode);
             component->addReset(reset);
         } else if (childNode->isMathmlElement("math")) {
@@ -818,7 +818,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable1 = component1->variable(iterPair.first);
                 } else if (component1->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
-                    variable1 = libcellml::Variable::create();
+                    variable1 = Variable::create();
                     variable1->setName(iterPair.first);
                     component1->addVariable(variable1);
                 } else {
@@ -844,7 +844,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable2 = component2->variable(iterPair.second);
                 } else if (component2->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
-                    variable2 = libcellml::Variable::create();
+                    variable2 = Variable::create();
                     variable2->setName(iterPair.second);
                     component2->addVariable(variable2);
                 } else {
@@ -1042,7 +1042,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
-            ComponentPtr importedComponent = libcellml::Component::create();
+            ComponentPtr importedComponent = Component::create();
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
@@ -1065,7 +1065,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 model->addComponent(importedComponent);
             }
         } else if (childNode->isCellmlElement("units")) {
-            UnitsPtr importedUnits = libcellml::Units::create();
+            UnitsPtr importedUnits = Units::create();
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
