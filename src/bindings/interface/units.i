@@ -4,9 +4,9 @@
 
 %include "createconstructor.i"
 
-%import "types.i"
 %import "enumerations.i"
 %import "importedentity.i"
+%import "types.i"
 
 %ignore libcellml::Units::Units(Units &&);
 %ignore libcellml::Units::operator =;
@@ -78,7 +78,7 @@ StandardUnit.";
 extract the units with the given `name`.";
 
 %feature("docstring") libcellml::Units::scalingFactor
-"Returns the log10 of the scaling factor between two Units objects.";
+"Returns the scaling factor between two Units objects.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
