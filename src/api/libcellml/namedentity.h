@@ -31,9 +31,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT NamedEntity: public Entity
 {
-protected:
-    NamedEntity(); /**< Constructor */
-
 public:
     ~NamedEntity() override; /**< Destructor */
     NamedEntity(const NamedEntity &rhs) = delete; /**< Copy constructor */
@@ -58,6 +55,9 @@ public:
      * @return @c std::string representation of the Entity name.
      */
     std::string name() const;
+
+protected:
+    NamedEntity(); /**< Constructor */
 
 private:
     struct NamedEntityImpl; /**< Forward declaration for pImpl idiom. */

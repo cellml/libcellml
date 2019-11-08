@@ -31,9 +31,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Entity
 {
-protected:
-    Entity(); /**< Constructor */
-
 public:
     virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs) = delete; /**< Copy constructor */
@@ -112,6 +109,9 @@ public:
      * @return @c true if this entity has the given entity as a parent, @c false otherwise.
      */
     bool hasAncestor(const EntityPtr &entity) const;
+
+protected:
+    Entity(); /**< Constructor */
 
 private:
     struct EntityImpl;

@@ -31,9 +31,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT ImportedEntity
 {
-protected:
-    ImportedEntity(); /**< Constructor */
-
 public:
     virtual ~ImportedEntity(); /**< Destructor */
     ImportedEntity(const ImportedEntity &rhs) = delete; /**< Copy constructor */
@@ -97,6 +94,9 @@ public:
      * @param reference The name of the reference to refer to in the import model.
      */
     void setImportReference(const std::string &reference);
+
+protected:
+    ImportedEntity(); /**< Constructor */
 
 private:
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */

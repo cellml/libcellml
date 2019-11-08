@@ -38,10 +38,6 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
                               public std::enable_shared_from_this<Model>
 #endif
 {
-private:
-    Model(); /**< Constructor */
-    explicit Model(const std::string &name);
-
 public:
     ~Model() override; /**< Destructor */
     Model(const Model &rhs) = delete; /**< Copy constructor */
@@ -261,6 +257,9 @@ public:
     bool hasUnresolvedImports();
 
 private:
+    Model(); /**< Constructor */
+    explicit Model(const std::string &name);
+
     bool doAddComponent(const ComponentPtr &component) override;
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */

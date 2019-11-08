@@ -28,9 +28,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT OrderedEntity: public Entity
 {
-protected:
-    OrderedEntity(); /**< Constructor */
-
 public:
     ~OrderedEntity() override; /**< Destructor */
     OrderedEntity(const OrderedEntity &rhs) = delete; /**< Copy constructor */
@@ -70,6 +67,9 @@ public:
      * @return @c true if the order is set, @c false otherwise.
      */
     bool isOrderSet();
+
+protected:
+    OrderedEntity(); /**< Constructor */
 
 private:
     struct OrderedEntityImpl; /**< Forward declaration for pImpl idiom. */
