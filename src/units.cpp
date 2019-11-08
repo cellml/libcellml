@@ -411,8 +411,8 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     double multiplier = 0.0;
 
-    updateUnitMultipliers(multiplier, units1, 1, 0, 1);
-    updateUnitMultipliers(multiplier, units2, 1, 0, -1);
+    updateUnitMultipliers(multiplier, units2, 1, 0, 1);
+    updateUnitMultipliers(multiplier, units1, 1, 0, -1);
 
     return std::pow(10, multiplier);
 }
