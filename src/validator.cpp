@@ -1043,7 +1043,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
     std::string hints;
-    std::vector<std::pair<libcellml::VariablePtr, libcellml::VariablePtr>> checkedPairs;
+    std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
 
     // Check the components in this model.
     if (model->componentCount() > 0) {
@@ -1172,7 +1172,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     }
 
     if (model->hasUnits(v1->units()->name())) {
-        libcellml::UnitsPtr u1 = libcellml::Units::create();
+        UnitsPtr u1 = Units::create();
         u1 = model->units(v1->units()->name());
         updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
     } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
@@ -1183,7 +1183,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     }
 
     if (model->hasUnits(v2->units()->name())) {
-        libcellml::UnitsPtr u2 = libcellml::Units::create();
+        UnitsPtr u2 = Units::create();
         u2 = model->units(v2->units()->name());
         updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
     } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
@@ -1237,7 +1237,7 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
                                                    int direction)
 {
     if (model->hasUnits(uName)) {
-        libcellml::UnitsPtr u = model->units(uName);
+        UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
             std::string ref;
             std::string pre;
