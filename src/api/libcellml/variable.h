@@ -31,10 +31,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Variable: public NamedEntity
 {
-private:
-    Variable(); /**< Constructor */
-    explicit Variable(const std::string &name);
-
 public:
     ~Variable() override; /**< Destructor */
     Variable(const Variable &rhs) = delete; /**< Copy constructor */
@@ -354,6 +350,9 @@ public:
     std::string interfaceType() const;
 
 private:
+    Variable(); /**< Constructor */
+    explicit Variable(const std::string &name);
+
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */
 };

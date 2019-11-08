@@ -31,9 +31,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT ImportSource: public Entity
 {
-private:
-    ImportSource(); /**< Constructor */
-
 public:
     ~ImportSource() override; /**< Destructor */
     ImportSource(const ImportSource &rhs) = delete; /**< Copy constructor */
@@ -97,6 +94,8 @@ public:
     bool hasModel() const;
 
 private:
+    ImportSource(); /**< Constructor */
+
     struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
