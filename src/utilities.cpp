@@ -428,20 +428,12 @@ ModelPtr owningModel(const EntityPtr &entity)
 
 bool isStandardUnitName(const std::string &name)
 {
-    bool result = false;
-    if (standardUnitsList.count(name) != 0) {
-        result = true;
-    }
-    return result;
+    return standardUnitsList.count(name) != 0;
 }
 
 bool isStandardPrefixName(const std::string &name)
 {
-    bool result = false;
-    if (standardPrefixList.count(name) != 0) {
-        result = true;
-    }
-    return result;
+    return standardPrefixList.count(name) != 0;
 }
 
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component)
