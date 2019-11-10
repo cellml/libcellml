@@ -134,7 +134,7 @@ public:
      *
      * @sa setTestValueId
      */
-    void clearTestValueId();
+    void removeTestValueId();
 
     /**
      * @brief Return the identifier of the test value for this reset.
