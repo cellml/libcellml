@@ -199,7 +199,7 @@ public:
      *
      * @sa setResetValueId
      */
-    void clearResetValueId();
+    void removeResetValueId();
 
     /**
      * @brief Return the identifier of the reset value for this reset.

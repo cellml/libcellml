@@ -127,7 +127,7 @@ void Reset::setResetValueId(const std::string &id)
     mPimpl->mResetValueId = id;
 }
 
-void Reset::clearResetValueId()
+void Reset::removeResetValueId()
 {
     mPimpl->mResetValueId = "";
 }
