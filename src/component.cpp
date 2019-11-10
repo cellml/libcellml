@@ -124,7 +124,7 @@ void Component::setMath(const std::string &math)
 
 void Component::removeMath()
 {
-
+    mPimpl->mMath.clear();
 }
 
 void Component::addVariable(const VariablePtr &variable)
