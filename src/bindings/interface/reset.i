@@ -36,7 +36,7 @@
 %feature("docstring") libcellml::Reset::setResetValue
 "Sets the :class: reset_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearResetValue
+%feature("docstring") libcellml::Reset::removeResetValue
 "Clears the :class: reset_value MathML string of this reset.";
 
 %feature("docstring") libcellml::Reset::appendTestValue

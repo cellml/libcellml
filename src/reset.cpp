@@ -117,7 +117,7 @@ void Reset::setResetValue(const std::string &math)
     mPimpl->mResetValue = math;
 }
 
-void Reset::clearResetValue()
+void Reset::removeResetValue()
 {
     mPimpl->mResetValue = "";
 }

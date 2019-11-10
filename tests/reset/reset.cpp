@@ -510,7 +510,7 @@ TEST(Reset, resetValueSetClear)
     EXPECT_EQ(test2, out2);
 
     // Test clearing of reset_value block
-    r->clearResetValue();
+    r->removeResetValue();
     const std::string out3 = p.printModel(m);
     EXPECT_EQ(test1, out3);
 }
@@ -571,7 +571,7 @@ TEST(Reset, resetClearTestValue)
     EXPECT_EQ("", r->testValue());
 }
 
-TEST(Reset, resetClearResetValue)
+TEST(Reset, resetremoveResetValue)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -581,7 +581,7 @@ TEST(Reset, resetClearResetValue)
 
     EXPECT_EQ("some reset sort of math", r->resetValue());
 
-    r->clearResetValue();
+    r->removeResetValue();
 
     EXPECT_EQ("", r->resetValue());
 }
