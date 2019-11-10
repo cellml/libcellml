@@ -54,7 +54,7 @@
 %feature("docstring") libcellml::Reset::setResetValueId
 "Sets the :class: reset_value id string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearResetValueId
+%feature("docstring") libcellml::Reset::removeResetValueId
 "Clears the :class: reset_value id string of this reset.";
 
 %feature("docstring") libcellml::Reset::testValueId
