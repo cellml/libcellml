@@ -118,7 +118,7 @@ TEST(Connection, componentlessVariableInvalidConnection)
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
+TEST(Connection, componentlessVariableInvalidConnectionRemoveParentCheck)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
