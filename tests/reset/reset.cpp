@@ -410,7 +410,7 @@ TEST(Reset, testValueSetClear)
     EXPECT_EQ(test2, out2);
 
     // Test clearing of test_value block
-    r->clearTestValue();
+    r->removeTestValue();
     const std::string out3 = p.printModel(m);
     EXPECT_EQ(test1, out3);
 }
@@ -556,7 +556,7 @@ TEST(Reset, resetValueAppend)
     EXPECT_EQ(test, out);
 }
 
-TEST(Reset, resetClearTestValue)
+TEST(Reset, resetRemoveTestValue)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -566,12 +566,12 @@ TEST(Reset, resetClearTestValue)
 
     EXPECT_EQ("some test condition math", r->testValue());
 
-    r->clearTestValue();
+    r->removeTestValue();
 
     EXPECT_EQ("", r->testValue());
 }
 
-TEST(Reset, resetremoveResetValue)
+TEST(Reset, resetRemoveResetValue)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -608,7 +608,7 @@ TEST(Reset, resetSetResetValueId)
     EXPECT_EQ("id1", r->resetValueId());
 }
 
-TEST(Reset, resetremoveTestValueId)
+TEST(Reset, resetRemoveTestValueId)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -623,7 +623,7 @@ TEST(Reset, resetremoveTestValueId)
     EXPECT_EQ("", r->testValueId());
 }
 
-TEST(Reset, resetremoveResetValueId)
+TEST(Reset, resetRemoveResetValueId)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 

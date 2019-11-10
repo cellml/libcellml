@@ -97,7 +97,7 @@ void Reset::setTestValue(const std::string &math)
     mPimpl->mTestValue = math;
 }
 
-void Reset::clearTestValue()
+void Reset::removeTestValue()
 {
     mPimpl->mTestValue = "";
 }
