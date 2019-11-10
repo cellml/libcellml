@@ -608,7 +608,7 @@ TEST(Reset, resetSetResetValueId)
     EXPECT_EQ("id1", r->resetValueId());
 }
 
-TEST(Reset, resetClearTestValueId)
+TEST(Reset, resetremoveTestValueId)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -618,7 +618,7 @@ TEST(Reset, resetClearTestValueId)
 
     EXPECT_EQ("id1", r->testValueId());
 
-    r->clearTestValueId();
+    r->removeTestValueId();
 
     EXPECT_EQ("", r->testValueId());
 }

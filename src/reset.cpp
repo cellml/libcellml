@@ -82,7 +82,7 @@ void Reset::setTestValueId(const std::string &id)
     mPimpl->mTestValueId = id;
 }
 
-void Reset::clearTestValueId()
+void Reset::removeTestValueId()
 {
     mPimpl->mTestValueId = "";
 }
