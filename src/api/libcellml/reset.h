@@ -181,7 +181,7 @@ public:
      *
      * @sa setResetValue
      */
-    void clearResetValue();
+    void removeResetValue();
 
     /**
      * @brief Set an identifier to the reset value for this reset.
