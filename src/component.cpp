@@ -77,7 +77,7 @@ Component::~Component()
 {
     if (mPimpl != nullptr) {
         for (const auto &variable : mPimpl->mVariables) {
-            variable->clearParent();
+            variable->removeParent();
         }
     }
     delete mPimpl;

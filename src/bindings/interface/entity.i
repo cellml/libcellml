@@ -17,7 +17,7 @@ not set.";
 "Set the `id` document identifier for this entity (use empty string to
 unset).";
 
-%feature("docstring") libcellml::Entity::clearParent
+%feature("docstring") libcellml::Entity::removeParent
 "Removes any parent set for this entity.";
 
 %feature("docstring") libcellml::Entity::parent
