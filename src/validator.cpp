@@ -318,7 +318,7 @@ void Validator::swap(Validator &rhs)
 void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing errors in ths validator instance.
-    clearErrors();
+    removeAllErrors();
     // Check for a valid name attribute.
     if (!mPimpl->isCellmlIdentifier(model->name())) {
         ErrorPtr err = std::make_shared<Error>();
