@@ -122,6 +122,11 @@ void Component::setMath(const std::string &math)
     mPimpl->mMath = math;
 }
 
+void Component::removeMath()
+{
+
+}
+
 void Component::addVariable(const VariablePtr &variable)
 {
     mPimpl->mVariables.push_back(variable);

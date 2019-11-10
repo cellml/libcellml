@@ -90,6 +90,13 @@ public:
     void setMath(const std::string &math);
 
     /**
+     * @brief Clear the math from this component.
+     *
+     * Clears the math string from this component.
+     */
+    void removeMath();
+
+    /**
      * @brief Add a variable by reference as part of this component.
      *
      * Add a variable by reference as part of the given component.
