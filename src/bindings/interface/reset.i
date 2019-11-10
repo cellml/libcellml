@@ -30,7 +30,7 @@
 %feature("docstring") libcellml::Reset::setTestValue
 "Sets the :class: test_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearTestValue
+%feature("docstring") libcellml::Reset::removeTestValue
 "Clears the :class: test_value MathML string of this reset.";
 
 %feature("docstring") libcellml::Reset::setResetValue
