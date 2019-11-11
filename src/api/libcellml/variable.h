@@ -363,6 +363,14 @@ public:
      */
     std::string interfaceType() const;
 
+    /**
+     * @brief Set the interface type to InterfaceType::None.
+     *
+     * Clear the interface type by setting the interface type
+     * to InterfaceType::None.
+     */
+    void removeInterfaceType();
+
 private:
     Variable(); /**< Constructor */
     explicit Variable(const std::string &name);

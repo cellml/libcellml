@@ -55,6 +55,9 @@ reference.";
 %feature("docstring") libcellml::Variable::interfaceType
 "Returns this variable's interface type as string.";
 
+%feature("docstring") libcellml::Variable::removeInterfaceType
+"Clear the interface type for this variable.";
+
 %feature("docstring") libcellml::Variable::removeInitialValue
 "Clears the intial value for this variable.";
 
