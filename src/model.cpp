@@ -60,7 +60,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return u == units; });
+                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name(); });
 }
 
 Model::Model()
@@ -68,38 +68,15 @@ Model::Model()
 {
 }
 
+Model::Model(const std::string &name)
+    : mPimpl(new ModelImpl())
+{
+    setName(name);
+}
+
 Model::~Model()
 {
     delete mPimpl;
-}
-
-Model::Model(const Model &rhs)
-    : ComponentEntity(rhs)
-#ifndef SWIG
-    , std::enable_shared_from_this<Model>(rhs)
-#endif
-    , mPimpl(new ModelImpl())
-{
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-}
-
-Model::Model(Model &&rhs) noexcept
-    : ComponentEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Model &Model::operator=(Model rhs)
-{
-    ComponentEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Model::swap(Model &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool Model::doAddComponent(const ComponentPtr &component)
@@ -115,6 +92,7 @@ bool Model::doAddComponent(const ComponentPtr &component)
 void Model::addUnits(const UnitsPtr &units)
 {
     mPimpl->mUnits.push_back(units);
+    units->setParent(shared_from_this());
 }
 
 bool Model::removeUnits(size_t index)
@@ -395,12 +373,12 @@ bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
 ModelPtr Model::flatten() const
 {
     Printer printer;
-    std::string s = printer.printModel(*this);
+    //std::string s = printer.printModel(this);
     std::cout << s << std::endl;
 
     auto name = this->name();
     name += "__flattended";
-    ModelPtr fm = std::make_shared<Model>(*this);
+    ModelPtr fm = Model::create();
     fm->setName(name);
     
     for (size_t n = 0; n < componentCount(); ++n) {

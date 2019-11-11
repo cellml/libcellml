@@ -38,6 +38,12 @@ public:
     Printer(Printer &&rhs) noexcept; /**< Move constructor */
     Printer &operator=(Printer rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<Printer> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Printer> {new Printer {std::forward<Args>(args)...}};
+    }
+
     /**
      * @brief Serialise the @c Model to @c std::string.
      *
@@ -48,32 +54,6 @@ public:
      * @return The @c std::string representation of the @c Model.
      */
     std::string printModel(const ModelPtr &model) const;
-
-    /**
-     * @brief Serialise the @c Model to @c std::string.
-     *
-     * Serialise the given @p model to a std::string.
-     *
-     * @overload
-     *
-     * @param model The @c Model to serialise.
-     *
-     * @return The @c std::string representation of the @c Model.
-     */
-    std::string printModel(Model model) const;
-
-    /**
-     * @brief Serialise the @c Model to @c std::string.
-     *
-     * Serialise the given @p model to a std::string.
-     *
-     * @overload
-     *
-     * @param model The @c Model to serialise.
-     *
-     * @return The @c std::string representation of the @c Model.
-     */
-    std::string printModel(Model *model) const;
 
 private:
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -2,8 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
+
 %import "types.i"
-%import "std_string.i"
 
 %feature("docstring") libcellml::Entity
 "Abstract base class for all libCellML core classes."
@@ -23,20 +24,19 @@ unset).";
 "Returns the parent of the CellML Entity (or `None` if not set).";
 
 %feature("docstring") libcellml::Entity::hasParent
-"Tests if this entity have the given entity as a parent.";
+"Tests if this entity has a parent. Returns true if it has a parent and false otherwise.";
 
 %feature("docstring") libcellml::Entity::hasAncestor
-"Tests if this entity or any of its ancestors have the given entity as a parent.";
+"Tests if any of the ancestors of this entity have the given entity as a parent.";
 
 %feature("docstring") libcellml::Entity::setParent
-"Set the parent of the entity to the given Model or Component.";
+"Set the parent of the entity to the given entity.  This should ostensibly be a Model or a Component.";
 
 %{
 #include "libcellml/entity.h"
 %}
 
-%ignore libcellml::Entity::Entity(Entity &&);
-%ignore libcellml::Entity::operator =;
+%ignore libcellml::Entity::Entity();
 
 %include "libcellml/types.h"
 %include "libcellml/entity.h"

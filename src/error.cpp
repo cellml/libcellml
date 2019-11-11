@@ -38,7 +38,6 @@ struct Error::ErrorImpl
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
     ResetPtr mReset; /**< Pointer to the reset that the error ocurred in. */
-    WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
 };
 
 Error::Error()
@@ -63,7 +62,6 @@ Error::Error(const Error &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
     mPimpl->mVariable = rhs.mPimpl->mVariable;
     mPimpl->mReset = rhs.mPimpl->mReset;
-    mPimpl->mWhen = rhs.mPimpl->mWhen;
 }
 
 Error::Error(Error &&rhs) noexcept
@@ -123,13 +121,6 @@ Error::Error(const ResetPtr &reset)
 {
     mPimpl->mReset = reset;
     mPimpl->mKind = Error::Kind::RESET;
-}
-
-Error::Error(const WhenPtr &when)
-    : mPimpl(new ErrorImpl())
-{
-    mPimpl->mWhen = when;
-    mPimpl->mKind = Error::Kind::WHEN;
 }
 
 void Error::setDescription(const std::string &description)
@@ -237,17 +228,6 @@ ResetPtr Error::reset() const
     return mPimpl->mReset;
 }
 
-void Error::setWhen(const WhenPtr &when)
-{
-    mPimpl->mWhen = when;
-    mPimpl->mKind = Error::Kind::WHEN;
-}
-
-WhenPtr Error::when() const
-{
-    return mPimpl->mWhen;
-}
-
 /**
  * @brief Map SpecificationRules to their section titles.
  *
@@ -291,10 +271,11 @@ static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::VARIABLE_INTERFACE, "11.1.2.1"},
     {SpecificationRule::VARIABLE_INITIAL_VALUE, "11.1.2.2"},
     {SpecificationRule::RESET_VARIABLE_REFERENCE, "12.1.1.1"},
+    {SpecificationRule::RESET_TEST_VARIABLE_REFERENCE, "12.1.1.1"},
     {SpecificationRule::RESET_ORDER, "12.1.1.2"},
     {SpecificationRule::RESET_CHILD, "12.1.2"},
-    {SpecificationRule::WHEN_ORDER, "13.1.1"},
-    {SpecificationRule::WHEN_CHILD, "13.1.2"},
+    {SpecificationRule::RESET_TEST_VALUE, "12.1.2"},
+    {SpecificationRule::RESET_RESET_VALUE, "12.1.2"},
     {SpecificationRule::MATH_MATHML, "14.1.1"},
     {SpecificationRule::MATH_CHILD, "14.1.2"},
     {SpecificationRule::MATH_CI_VARIABLE_REFERENCE, "14.1.3"},
