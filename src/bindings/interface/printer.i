@@ -2,11 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
-%include "std_string.i"
+%include <std_string.i>
 
-%import "types.i"
-%import "logger.i"
 %import "enumerations.i"
+%import "logger.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Printer
 "Prints CellML models to an XML string.";

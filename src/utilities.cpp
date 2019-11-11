@@ -426,6 +426,16 @@ ModelPtr owningModel(const EntityPtr &entity)
     return model;
 }
 
+bool isStandardUnitName(const std::string &name)
+{
+    return standardUnitsList.count(name) != 0;
+}
+
+bool isStandardPrefixName(const std::string &name)
+{
+    return standardPrefixList.count(name) != 0;
+}
+
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component)
 {
     auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);

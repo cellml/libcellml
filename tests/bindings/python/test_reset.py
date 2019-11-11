@@ -11,9 +11,7 @@ class ResetTestCase(unittest.TestCase):
         from libcellml import Reset
 
         x = Reset()
-        y = Reset()
-        z = Reset(y)
-        del(x, y, z)
+        del(x)
 
     def test_set_get_variable(self):
         from libcellml import Reset
@@ -42,14 +40,6 @@ class ResetTestCase(unittest.TestCase):
         r.setTestVariable(v)
 
         self.assertEqual("glucose", r.testVariable().name())
-
-    def test_create_destroy(self):
-        from libcellml import Reset
-
-        x = Reset()
-        y = Reset()
-        z = Reset(y)
-        del(x, y, z)
 
     def test_set_order(self):
         from libcellml import Reset

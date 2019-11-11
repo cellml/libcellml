@@ -20,7 +20,7 @@ limitations under the License.
 
 TEST(Error, createModelError)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(m);
 
     EXPECT_EQ(libcellml::Error::Kind::MODEL, e->kind());
@@ -28,7 +28,7 @@ TEST(Error, createModelError)
 
 TEST(Error, createComponemntError)
 {
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(c);
 
     EXPECT_EQ(libcellml::Error::Kind::COMPONENT, e->kind());
@@ -36,7 +36,7 @@ TEST(Error, createComponemntError)
 
 TEST(Error, createVariableError)
 {
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(v);
 
     EXPECT_EQ(libcellml::Error::Kind::VARIABLE, e->kind());
@@ -44,7 +44,7 @@ TEST(Error, createVariableError)
 
 TEST(Error, createUnitsError)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(u);
 
     EXPECT_EQ(libcellml::Error::Kind::UNITS, e->kind());
@@ -52,7 +52,7 @@ TEST(Error, createUnitsError)
 
 TEST(Error, createImportSourceError)
 {
-    libcellml::ImportSourcePtr i = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(i);
 
     EXPECT_EQ(libcellml::Error::Kind::IMPORT, e->kind());
@@ -60,7 +60,7 @@ TEST(Error, createImportSourceError)
 
 TEST(Error, createResetError)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(r);
 
     EXPECT_EQ(libcellml::Error::Kind::RESET, e->kind());
