@@ -26,8 +26,10 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/namedentity.h"
+#include "libcellml/variable.h"
 #include <iostream>
 
 namespace libcellml {
@@ -461,10 +463,9 @@ std::string uniqueComponentName(const ModelPtr& model, const std::string& name)
     return uniqueName;
 }
 
-/*
-bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
+bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr &component)
 {
-    const ModelPtr& parentModel = owningModel(parent);
+    const ModelPtr &parentModel = owningModel(parent);
     std::cout << "parent->name: " << parent->name() << std::endl;
     std::cout << "parentModel->name: " << parentModel->name() << std::endl;
     auto cname = component->name();
@@ -498,12 +499,12 @@ bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
         parent->addComponent(src);
         for (auto n = 0; n < src->componentCount(); ++n) {
             ComponentPtr c = src->component(n);
-            flattenComponent(src, c);
+            addflattenedComponent(src, c);
         }
     }
     return true;
 }
-*/
+
 ModelPtr flattenModel(const ModelPtr &sourceModel)
 {
     ModelPtr flatModel = Model::create();
@@ -511,12 +512,12 @@ ModelPtr flattenModel(const ModelPtr &sourceModel)
     auto name = sourceModel->name();
     name += "__flattended";
     flatModel->setName(name);
-    /*
-    for (size_t n = 0; n < componentCount(); ++n) {
-        ComponentPtr fc = this->component(n);
-        flattenComponent(fm, fc);
+    
+    for (size_t n = 0; n < sourceModel->componentCount(); ++n) {
+        ComponentPtr sourceComponent = sourceModel->component(n);
+        addflattenedComponent(flatModel, sourceComponent);
     }
-    */
+    
     return flatModel;
 }
 
