@@ -352,6 +352,9 @@ bool Model::hasUnresolvedImports()
 
 bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
 {
+    const ModelPtr& parentModel = owningModel(parent);
+    std::cout << "parent->name: " << parent->name() << std::endl;
+    std::cout << "parentModel->name: " << parentModel->name() << std::endl;
     auto cname = component->name();
     auto label = parent->name();
     label += "/";
@@ -362,6 +365,7 @@ bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
         std::cout << "**F** " << label << ": using the source component: " << src->name() << std::endl;
         auto localName = src->name();
         localName += "_flattened";
+        localName = uniqueComponentName(parentModel, localName);
         src->setName(localName);
         src->clearParent();
 

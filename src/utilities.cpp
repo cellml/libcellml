@@ -416,7 +416,9 @@ ModelPtr owningModel(const EntityPtr &entity)
         model = std::dynamic_pointer_cast<Model>(component->parent());
         component = std::dynamic_pointer_cast<Component>(component->parent());
     }
-
+    if (model == nullptr) {
+        model = std::dynamic_pointer_cast<Model>(entity);
+    }
     return model;
 }
 
@@ -424,6 +426,22 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
 {
     auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);
     componentEntity->removeComponent(component, false);
+}
+
+std::string uniqueComponentName(const ModelPtr& model, const std::string& name)
+{
+    std::string uniqueName = name;
+    std::cout << "unique name: " << name << std::endl;
+    std::cout << "model name: " << model->name() << std::endl;
+    std::cout << "checking for uniqueness..." << std::endl;
+    int i = 1;
+    while (model->component(uniqueName, true) != nullptr) {
+        uniqueName = name;
+        uniqueName += "_";
+        uniqueName += std::to_string(i++);
+        std::cout << "unique name: " << uniqueName << std::endl;
+    }
+    return uniqueName;
 }
 
 } // namespace libcellml

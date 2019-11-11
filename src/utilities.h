@@ -362,4 +362,17 @@ ModelPtr owningModel(const EntityPtr &entity);
  */
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
 
+/**
+ * @brief Return a component name that is unique within the given model.
+ * 
+ * Check the provided @c name to see if it is unique within the given
+ * @c model. If a component with that name already exists, make the name
+ * unique by appending a number.
+ *
+ * @param model The model in which to check for uniqueness.
+ * @param name The base component name to check.
+ * @return A component name based on @c name which is unique within the given @c model.
+ */
+std::string uniqueComponentName(const ModelPtr& model, const std::string& name);
+
 } // namespace libcellml
