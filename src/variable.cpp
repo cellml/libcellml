@@ -362,7 +362,7 @@ void Variable::setUnits(const UnitsPtr &units)
 
 void Variable::removeUnits()
 {
-
+    mPimpl->mUnits = nullptr;
 }
 
 UnitsPtr Variable::units() const
