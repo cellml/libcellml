@@ -40,32 +40,6 @@ NamedEntity::~NamedEntity()
     delete mPimpl;
 }
 
-NamedEntity::NamedEntity(const NamedEntity &rhs)
-    : Entity(rhs)
-    , mPimpl(new NamedEntityImpl())
-{
-    mPimpl->mName = rhs.mPimpl->mName;
-}
-
-NamedEntity::NamedEntity(NamedEntity &&rhs) noexcept
-    : Entity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-NamedEntity &NamedEntity::operator=(NamedEntity rhs)
-{
-    Entity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void NamedEntity::swap(NamedEntity &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void NamedEntity::setName(const std::string &name)
 {
     mPimpl->mName = name;

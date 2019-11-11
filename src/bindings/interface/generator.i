@@ -2,10 +2,10 @@
 
 #define LIBCELLML_EXPORT
 
-%include "std_string.i"
+%include <std_string.i>
 
-%import "types.i"
 %import "logger.i"
+%import "types.i"
 
 #ifdef SWIGPYTHON
 %import "generatorprofile.i"

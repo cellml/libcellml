@@ -49,6 +49,12 @@ public:
     GeneratorVariable(GeneratorVariable &&rhs) noexcept; /**< Move constructor */
     GeneratorVariable &operator=(GeneratorVariable rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<GeneratorVariable> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {std::forward<Args>(args)...}};
+    }
+
     /**
      * @brief Get the @c Variable for this @c GeneratorVariable.
      *
@@ -98,6 +104,12 @@ public:
     Generator(const Generator &rhs); /**< Copy constructor */
     Generator(Generator &&rhs) noexcept; /**< Move constructor */
     Generator &operator=(Generator rhs); /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Generator> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Generator> {new Generator {std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Get the @c GeneratorProfile.
