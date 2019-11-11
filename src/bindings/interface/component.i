@@ -27,6 +27,9 @@ if not).";
 "Sets the math string for this component.
 If `math` is an empty string, math will be removed from the component.";
 
+%feature("docstring") libcellml::Component::removeMath
+"Clears the math from this component.";
+
 %feature("docstring") libcellml::Component::addVariable
 "Adds variable `variable` to this component.";
 
