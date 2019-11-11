@@ -32,11 +32,16 @@ namespace libcellml {
 class LIBCELLML_EXPORT ImportSource: public Entity
 {
 public:
-    ImportSource(); /**< Constructor */
     ~ImportSource() override; /**< Destructor */
-    ImportSource(const ImportSource &rhs); /**< Copy constructor */
-    ImportSource(ImportSource &&rhs) noexcept; /**< Move constructor */
-    ImportSource &operator=(ImportSource rhs); /**< Assignment operator */
+    ImportSource(const ImportSource &rhs) = delete; /**< Copy constructor */
+    ImportSource(ImportSource &&rhs) noexcept = delete; /**< Move constructor */
+    ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<ImportSource> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<ImportSource> {new ImportSource {std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Get the source @c Model's URL.
@@ -89,7 +94,7 @@ public:
     bool hasModel() const;
 
 private:
-    void swap(ImportSource &rhs); /**< Swap method required for C++ 11 move semantics. */
+    ImportSource(); /**< Constructor */
 
     struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */

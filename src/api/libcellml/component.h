@@ -38,11 +38,16 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
 #endif
 {
 public:
-    Component(); /**< Constructor */
     ~Component() override; /**< Destructor */
-    Component(const Component &rhs); /**< Copy constructor */
-    Component(Component &&rhs) noexcept; /**< Move constructor */
-    Component &operator=(Component rhs); /**< Assignment operator */
+    Component(const Component &rhs) = delete; /**< Copy constructor */
+    Component(Component &&rhs) noexcept = delete; /**< Move constructor */
+    Component &operator=(Component rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Component> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Component> {new Component {std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Set the source component for this component.
@@ -334,7 +339,8 @@ public:
     bool hasReset(const ResetPtr &reset) const;
 
 private:
-    void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Component(); /**< Constructor */
+    explicit Component(const std::string &name);
 
     bool doAddComponent(const ComponentPtr &component) override;
 

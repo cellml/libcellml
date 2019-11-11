@@ -38,6 +38,12 @@ public:
     Error(Error &&rhs) noexcept; /**< Move constructor */
     Error &operator=(Error rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<Error> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Error> {new Error {std::forward<Args>(args)...}};
+    }
+
     /**
      * @brief Constructs an Error for the model.
      *
