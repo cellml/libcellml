@@ -414,7 +414,7 @@ std::string Variable::interfaceType() const
 
 void Variable::removeInterfaceType()
 {
-
+    mPimpl->mInterfaceType.clear();
 }
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
