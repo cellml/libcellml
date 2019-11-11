@@ -390,6 +390,11 @@ std::string Variable::initialValue() const
     return mPimpl->mInitialValue;
 }
 
+void Variable::removeInitialValue()
+{
+
+}
+
 void Variable::setInterfaceType(const std::string &interfaceType)
 {
     mPimpl->mInterfaceType = interfaceType;

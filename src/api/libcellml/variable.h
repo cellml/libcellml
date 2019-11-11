@@ -323,6 +323,13 @@ public:
     std::string initialValue() const;
 
     /**
+     * @brief Clear the initial value for this variable.
+     *
+     * Clears the initial value for this variable.
+     */
+    void removeInitialValue();
+
+    /**
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable using a string.

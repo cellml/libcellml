@@ -240,6 +240,11 @@ TEST(Variable, setInitialValueByReference)
 TEST(Variable, unsetInitialValue)
 {
     libcellml::VariablePtr v = libcellml::Variable::create();
+    v->setInitialValue("3.0");
+
+    EXPECT_EQ(v->initialValue(), "3.0");
+
+    v->removeInitialValue();
     EXPECT_EQ(v->initialValue(), "");
 }
 
