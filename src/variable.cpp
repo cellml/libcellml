@@ -459,12 +459,20 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
     return id;
 }
 
-void Variable::removeEquivalenceConnectionId(const VariablePtr &/*variable1*/, const VariablePtr &/*variable2*/)
+void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
+        variable1->mPimpl->setEquivalentConnectionId(variable2, "");
+        variable2->mPimpl->setEquivalentConnectionId(variable1, "");
+    }
 }
 
-void Variable::removeEquivalenceMappingId(const VariablePtr &/*variable1*/, const VariablePtr &/*variable2*/)
+void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
+        variable1->mPimpl->setEquivalentMappingId(variable2, "");
+        variable2->mPimpl->setEquivalentMappingId(variable1, "");
+    }
 }
 
 } // namespace libcellml

@@ -621,7 +621,6 @@ TEST(Connection, removeConnectionIdFromConnection)
     std::string a = printer.printModel(m);
     EXPECT_EQ(eWithConnectionId, a);
 
-
     libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
 
     a = printer.printModel(m);
@@ -678,7 +677,6 @@ TEST(Connection, removeMappingIdFromConnection)
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(eWithMappingId, a);
-
 
     libcellml::Variable::removeEquivalenceMappingId(v1, v2);
 
