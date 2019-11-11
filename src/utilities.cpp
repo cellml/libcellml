@@ -461,6 +461,7 @@ std::string uniqueComponentName(const ModelPtr& model, const std::string& name)
     return uniqueName;
 }
 
+/*
 bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
 {
     const ModelPtr& parentModel = owningModel(parent);
@@ -502,30 +503,21 @@ bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
     }
     return true;
 }
-
+*/
 ModelPtr flattenModel(const ModelPtr &sourceModel)
 {
-    Printer printer;
-    //std::string s = printer.printModel(this);
-    std::cout << s << std::endl;
+    ModelPtr flatModel = Model::create();
 
-    auto name = this->name();
+    auto name = sourceModel->name();
     name += "__flattended";
-    ModelPtr fm = Model::create();
-    fm->setName(name);
-
+    flatModel->setName(name);
+    /*
     for (size_t n = 0; n < componentCount(); ++n) {
         ComponentPtr fc = this->component(n);
         flattenComponent(fm, fc);
     }
-
-    s = printer.printModel(*this);
-    std::cout << "Original model:\n" << s << std::endl;
-
-    s = printer.printModel(fm);
-    std::cout << "Flattened model:\n" << s << std::endl;
-
-    return fm;
+    */
+    return flatModel;
 }
 
 } // namespace libcellml

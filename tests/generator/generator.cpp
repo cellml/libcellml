@@ -391,7 +391,15 @@ TEST(Generator, algebraicEqnComputedVarOnRhsImport)
 	model->resolveImports(resourcePath("generator/imports/algebraic_eqn_computed_var_on_rhs/"));
 	EXPECT_FALSE(model->hasUnresolvedImports());
 
+    libcellml::Printer printer;
+    std::string s = printer.printModel(model);
+    debug("Source model:");
+    debug(s);
+
 	libcellml::ModelPtr flatModel = libcellml::Model::flatCopy(model);
+    debug("Flat copy:");
+    s = printer.printModel(flatModel);
+    debug(s);
 
 	libcellml::Generator generator;
 
