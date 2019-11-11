@@ -31,12 +31,20 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT When: public OrderedEntity
 {
-public:
+private:
     When(); /**< Constructor */
+
+public:
     ~When() override; /**< Destructor */
-    When(const When &rhs); /**< Copy constructor */
-    When(When &&rhs) noexcept; /**< Move constructor */
-    When &operator=(When rhs); /**< Assignment operator */
+    When(const When &rhs) = delete; /**< Copy constructor */
+    When(When &&rhs) noexcept = delete; /**< Move constructor */
+    When &operator=(When rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<When> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<When> {new When {std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Set the condition term for this when.
@@ -76,8 +84,6 @@ public:
     std::string value() const;
 
 private:
-    void swap(When &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct WhenImpl; /**< Forward declaration for pImpl idiom. */
     WhenImpl *mPimpl; /**< Private member to implementation pointer */
 };
