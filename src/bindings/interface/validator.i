@@ -2,8 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "logger.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Validator
 "Validates CellML objects.";

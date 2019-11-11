@@ -39,6 +39,12 @@ public:
     Parser(Parser &&rhs) noexcept; /**< Move constructor */
     Parser &operator=(Parser rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<Parser> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Parser> {new Parser {std::forward<Args>(args)...}};
+    }
+
     /**
      * @brief Create and populate a new model from a @c std::string.
      *

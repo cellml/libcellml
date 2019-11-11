@@ -22,14 +22,14 @@ limitations under the License.
 
 TEST(Reset, create)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_NE(nullptr, r);
 }
 
 TEST(Reset, order)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_FALSE(r->isOrderSet());
     r->setOrder(1);
@@ -39,26 +39,6 @@ TEST(Reset, order)
 
     r->unsetOrder();
     EXPECT_FALSE(r->isOrderSet());
-}
-
-TEST(Reset, constructors)
-{
-    libcellml::Reset r;
-    libcellml::Reset r1;
-    libcellml::Reset r2;
-
-    r.setOrder(1);
-    // Testing assignment for Reset
-    r1 = r;
-    EXPECT_EQ(1, r1.order());
-
-    // Testing move assignment for Reset
-    r2 = std::move(r1);
-    EXPECT_EQ(1, r2.order());
-
-    // Testing move constructor for Reset
-    libcellml::Reset r3 = std::move(r2);
-    EXPECT_EQ(1, r3.order());
 }
 
 TEST(Reset, printResetWithVariable)
@@ -73,8 +53,8 @@ TEST(Reset, printResetWithVariable)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
 
     v->setName("A");
 
@@ -107,10 +87,10 @@ TEST(Reset, printResetWithoutTestValue)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::Printer printer;
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
 
     m->setName("model");
     c->setName("component");
@@ -126,7 +106,8 @@ TEST(Reset, printResetWithoutTestValue)
     c->addVariable(v1);
     c->addVariable(v2);
 
-    a = printer.printModel(m);
+    libcellml::Printer p;
+    a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -142,7 +123,7 @@ TEST(Reset, printResetWithOrder)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     r->setOrder(1);
     c->addReset(r);
@@ -165,7 +146,7 @@ TEST(Reset, printResetWithNegativeOrder)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     r->setOrder(-1);
     c->addReset(r);
@@ -188,9 +169,8 @@ TEST(Reset, printResetWithOrderAndVariable)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
 
     v->setName("B");
 
@@ -252,11 +232,11 @@ TEST(Reset, addRemoveResetFromComponentMethods)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
     libcellml::Printer printer;
 
     c->setName(in);
@@ -311,46 +291,46 @@ TEST(Reset, addRemoveResetFromComponentMethods)
 TEST(Reset, resetFromComponentMethod)
 {
     const std::string in = "valid_name";
-    libcellml::Component c;
-    c.setName(in);
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    c->setName(in);
 
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    c.addReset(r1);
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    c.addReset(r2);
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    c.addReset(r3);
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    c.addReset(r4);
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    c->addReset(r1);
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    c->addReset(r2);
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
+    c->addReset(r3);
+    libcellml::ResetPtr r4 = libcellml::Reset::create();
+    c->addReset(r4);
 
-    EXPECT_EQ(size_t(4), c.resetCount());
+    EXPECT_EQ(size_t(4), c->resetCount());
 
     // Get by index
-    libcellml::ResetPtr rMethod1 = c.reset(1);
+    libcellml::ResetPtr rMethod1 = c->reset(1);
     EXPECT_EQ(r2.get(), rMethod1.get());
 
     // Get const by index
-    const libcellml::ResetPtr vMethod2 = c.reset(3);
+    const libcellml::ResetPtr vMethod2 = c->reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, c.reset(7));
+    EXPECT_EQ(nullptr, c->reset(7));
 }
 
 TEST(Reset, hasResetFromComponentMethod)
 {
     const std::string in = "valid_name";
-    libcellml::Component c;
-    c.setName(in);
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    c->setName(in);
 
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    c.addReset(r1);
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    c.addReset(r2);
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
+    c->addReset(r1);
+    libcellml::ResetPtr r2 = libcellml::Reset::create();
+    c->addReset(r2);
+    libcellml::ResetPtr r3 = libcellml::Reset::create();
 
-    EXPECT_TRUE(c.hasReset(r2));
-    EXPECT_FALSE(c.hasReset(r3));
+    EXPECT_TRUE(c->hasReset(r2));
+    EXPECT_FALSE(c->hasReset(r3));
 }
 
 TEST(Reset, printResetWithVariableAndTestVariable)
@@ -365,10 +345,10 @@ TEST(Reset, printResetWithVariableAndTestVariable)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
 
     v1->setName("A");
     v2->setName("B");
@@ -408,9 +388,9 @@ TEST(Reset, testValueSetClear)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::Printer p;
 
     v1->setName("A");
@@ -463,9 +443,9 @@ TEST(Reset, testValueAppend)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::Printer p;
 
     v1->setName("A");
@@ -508,9 +488,9 @@ TEST(Reset, resetValueSetClear)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::Printer p;
 
     v1->setName("A");
@@ -555,9 +535,9 @@ TEST(Reset, resetValueAppend)
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::Printer p;
 
     v1->setName("A");
@@ -578,7 +558,7 @@ TEST(Reset, resetValueAppend)
 
 TEST(Reset, resetClearTestValue)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_EQ("", r->testValue());
 
@@ -593,7 +573,7 @@ TEST(Reset, resetClearTestValue)
 
 TEST(Reset, resetClearResetValue)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_EQ("", r->resetValue());
 
@@ -608,7 +588,7 @@ TEST(Reset, resetClearResetValue)
 
 TEST(Reset, resetSetTestValueId)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_EQ("", r->testValueId());
 
@@ -619,7 +599,7 @@ TEST(Reset, resetSetTestValueId)
 
 TEST(Reset, resetSetResetValueId)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_EQ("", r->resetValueId());
 
@@ -630,7 +610,7 @@ TEST(Reset, resetSetResetValueId)
 
 TEST(Reset, resetClearTestValueId)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_EQ("", r->testValueId());
 
@@ -645,7 +625,7 @@ TEST(Reset, resetClearTestValueId)
 
 TEST(Reset, resetClearResetValueId)
 {
-    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_EQ("", r->resetValueId());
 

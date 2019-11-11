@@ -33,7 +33,7 @@ class GeneratorTestCase(unittest.TestCase):
         from libcellml import Generator
 
         x = Generator()
-        self.assertIsInstance(x, libcellml.Logger)
+        self.assertIsInstance(x, libcellml.logger.Logger)
 
         # Test access to inherited methods
         self.assertIsNone(x.error(0))

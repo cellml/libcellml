@@ -323,7 +323,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
     repr += indent + "<variable";
     std::string name = variable->name();
     std::string id = variable->id();
-    std::string units = variable->units();
+    std::string units = variable->units() != nullptr ? variable->units()->name() : "";
     std::string intial_value = variable->initialValue();
     std::string interface_type = variable->interfaceType();
     if (!name.empty()) {
@@ -573,16 +573,6 @@ std::string Printer::printModel(const ModelPtr &model) const
     }
 
     return repr;
-}
-
-std::string Printer::printModel(Model model) const
-{
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, &model));
-}
-
-std::string Printer::printModel(Model *model) const
-{
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, model));
 }
 
 } // namespace libcellml

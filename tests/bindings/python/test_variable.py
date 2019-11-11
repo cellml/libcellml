@@ -11,17 +11,18 @@ class VariableTestCase(unittest.TestCase):
 
         x = Variable()
         del(x)
-        y = Variable()
-        z = Variable(y)
-        del(y, z)
+
+        y = Variable("nice")
+        self.assertEqual("nice", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
         from libcellml import Variable
 
         x = Variable()
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
         # Test access to inherited methods
         x = Variable()
@@ -29,8 +30,6 @@ class VariableTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Variable(x)
-        self.assertEqual(y.id(), idx)
 
     def test_add_equivalence(self):
         from libcellml import Variable
@@ -190,7 +189,7 @@ class VariableTestCase(unittest.TestCase):
         u.setName(name)
         v = Variable()
         v.setUnits(u)
-        self.assertEqual(v.units(), name)
+        self.assertEqual(v.units().name(), name)
 
     def test_units(self):
         from libcellml import Variable
@@ -198,11 +197,11 @@ class VariableTestCase(unittest.TestCase):
         # std::string units()
         name = 'testo'
         v = Variable()
-        self.assertEqual(v.units(), '')
+        self.assertEqual(v.units(), None)
         v.setUnits(name)
-        self.assertEqual(v.units(), name)
+        self.assertEqual(v.units().name(), name)
         v.setUnits('')
-        self.assertEqual(v.units(), '')
+        self.assertEqual(v.units().name(), '')
         del(v, name)
 
     def test_set_initial_value(self):

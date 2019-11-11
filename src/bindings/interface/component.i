@@ -2,8 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%include <std_shared_ptr.i>
+
 %import "componententity.i"
+%import "createconstructor.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Component
 "Represents a CellML component.";
@@ -104,8 +107,9 @@ resets and False otherwise.";
 #include "libcellml/component.h"
 %}
 
-%ignore libcellml::Component::Component(Component &&);
-%ignore libcellml::Component::operator =;
+%shared_ptr(libcellml::Component);
+%create_constructor(Component)
+%create_name_constructor(Component)
 
 %include "libcellml/types.h"
 %include "libcellml/component.h"

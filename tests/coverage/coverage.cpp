@@ -43,22 +43,6 @@ TEST(Coverage, connectionComment)
     EXPECT_EQ(size_t(4), p.errorCount());
 }
 
-TEST(Coverage, import)
-{
-    const std::string id = "id";
-
-    libcellml::ImportSource i;
-    libcellml::ImportSource im;
-
-    i.setId(id);
-
-    im = std::move(i);
-
-    libcellml::ImportSource ic(im);
-
-    EXPECT_EQ(id, ic.id());
-}
-
 TEST(Coverage, importWithNonHrefXlink)
 {
     const std::string e =
@@ -98,144 +82,6 @@ TEST(Coverage, printer)
     EXPECT_EQ(size_t(1), pc.errorCount());
 }
 
-TEST(Coverage, units)
-{
-    const std::string n = "dimensionless";
-
-    libcellml::Units u;
-    libcellml::Units um;
-
-    u.setName("dimensionless");
-
-    um = std::move(u);
-
-    libcellml::Units uc(um);
-
-    EXPECT_EQ(n, uc.name());
-}
-
-TEST(Coverage, unitsGetVariations)
-{
-    libcellml::Model m;
-
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("a_unit");
-
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u);
-
-    libcellml::UnitsPtr un = m.units(0);
-    EXPECT_EQ("a_unit", un->name());
-    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).units(0);
-    EXPECT_EQ("a_unit", uSn->name());
-
-    libcellml::UnitsPtr uns = m.units("a_unit");
-    EXPECT_EQ("a_unit", uns->name());
-    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).units("a_unit");
-    EXPECT_EQ("a_unit", uSns->name());
-
-    EXPECT_EQ(nullptr, m.units("b_unit"));
-    EXPECT_EQ(nullptr, m.units(4));
-}
-
-TEST(Coverage, prefixToString)
-{
-    libcellml::Model m;
-    libcellml::Printer printer;
-
-    std::vector<std::string> prefixString =
-        {"atto",
-         "centi",
-         "deca",
-         "deci",
-         "exa",
-         "femto",
-         "giga",
-         "hecto",
-         "kilo",
-         "mega",
-         "micro",
-         "milli",
-         "nano",
-         "peta",
-         "pico",
-         "tera",
-         "yocto",
-         "yotta",
-         "zepto",
-         "zetta"};
-    std::vector<libcellml::Prefix> prefixEnum =
-        {libcellml::Prefix::ATTO,
-         libcellml::Prefix::CENTI,
-         libcellml::Prefix::DECA,
-         libcellml::Prefix::DECI,
-         libcellml::Prefix::EXA,
-         libcellml::Prefix::FEMTO,
-         libcellml::Prefix::GIGA,
-         libcellml::Prefix::HECTO,
-         libcellml::Prefix::KILO,
-         libcellml::Prefix::MEGA,
-         libcellml::Prefix::MICRO,
-         libcellml::Prefix::MILLI,
-         libcellml::Prefix::NANO,
-         libcellml::Prefix::PETA,
-         libcellml::Prefix::PICO,
-         libcellml::Prefix::TERA,
-         libcellml::Prefix::YOCTO,
-         libcellml::Prefix::YOTTA,
-         libcellml::Prefix::ZEPTO,
-         libcellml::Prefix::ZETTA};
-    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
-        libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-        u->setName("abcdefg");
-        u->addUnit("empty", prefixEnum[i]);
-
-        m.addUnits(u);
-
-        const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefixString[i]);
-        EXPECT_NE(std::string::npos, found);
-        m.removeAllUnits();
-    }
-}
-
-TEST(Coverage, variable)
-{
-    const std::string n = "dimensionless";
-
-    libcellml::Variable v;
-    libcellml::Variable vm;
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-
-    u->setName(n);
-    v.setUnits(u);
-
-    vm = std::move(v);
-
-    libcellml::Variable vc(vm);
-
-    EXPECT_EQ(n, vc.units());
-}
-
-TEST(Coverage, component)
-{
-    const std::string n = "name";
-
-    libcellml::Component rc;
-    libcellml::Component ao;
-
-    rc.setName(n);
-
-    ao = rc;
-
-    EXPECT_EQ(n, ao.name());
-
-    std::vector<libcellml::Component> vec;
-
-    vec.push_back(rc);
-    vec.insert(vec.begin(), ao);
-}
-
 TEST(Coverage, error)
 {
     const std::string description = "test";
@@ -250,25 +96,6 @@ TEST(Coverage, error)
     libcellml::Error ec(em);
 
     EXPECT_EQ(description, ec.description());
-}
-
-TEST(Coverage, model)
-{
-    const std::string n = "model";
-
-    libcellml::Model rm;
-    libcellml::Model ao;
-
-    rm.setName(n);
-
-    ao = rm;
-
-    EXPECT_EQ(n, ao.name());
-
-    std::vector<libcellml::Model> vec;
-
-    vec.push_back(rm);
-    vec.insert(vec.begin(), ao);
 }
 
 TEST(Coverage, generator)
@@ -297,6 +124,8 @@ TEST(Coverage, generatorProfile)
 
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
+
+    auto gp = libcellml::GeneratorProfile::create();
 }
 
 TEST(Coverage, generatorVariable)
@@ -310,4 +139,23 @@ TEST(Coverage, generatorVariable)
 
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
+}
+
+TEST(Coverage, entityHasParent)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
+
+    c2->addVariable(v);
+    c1->addComponent(c2);
+    m->addComponent(c1);
+
+    EXPECT_TRUE(v->hasParent());
+    EXPECT_TRUE(c2->hasParent());
+    EXPECT_TRUE(c1->hasParent());
+    EXPECT_TRUE(c2->hasParent());
+    EXPECT_FALSE(c3->hasParent());
 }
