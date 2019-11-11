@@ -42,6 +42,9 @@ updated).";
 %feature("docstring") libcellml::Variable::setUnits
 "Sets the units for this variable to the given string (name) or Units object.";
 
+%feature("docstring") libcellml::Variable::removeUnits
+"Clears the units for this variable.";
+
 %feature("docstring") libcellml::Variable::initialValue
 "Returns the string corresponding to the initial value for this variable.";
 
