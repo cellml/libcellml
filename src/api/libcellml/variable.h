@@ -268,6 +268,13 @@ public:
     UnitsPtr units() const;
 
     /**
+     * @brief Clear the units from this variable.
+     *
+     * Clears the units from this variable.
+     */
+    void removeUnits();
+
+    /**
      * @brief Set the initial value for this variable using a string.
      *
      * Set the initial value for this variable using a string.
