@@ -360,6 +360,11 @@ void Variable::setUnits(const UnitsPtr &units)
     mPimpl->mUnits = units;
 }
 
+void Variable::removeUnits()
+{
+
+}
+
 UnitsPtr Variable::units() const
 {
     return mPimpl->mUnits;
