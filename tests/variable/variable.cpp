@@ -398,6 +398,8 @@ TEST(Variable, removeInterfaceTypePublicAndPrivate)
     EXPECT_EQ(eWithInterfaceType, a);
 
     v->removeInterfaceType();
+
+    a = printer.printModel(m);
     EXPECT_EQ(eWithOutInterfaceType, a);
 }
 
