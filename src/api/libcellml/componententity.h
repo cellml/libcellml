@@ -30,22 +30,8 @@ class Component;
  */
 class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
-protected:
-    /**
-     * @brief ComponentEntity Constructor.
-     *
-     * Default ComponentEntity constructor.
-     */
-    ComponentEntity();
-
 public:
-    /**
-     * @brief ComponentEntity Destructor.
-     *
-     * Default ComponentEntity destructor.
-     */
-    ~ComponentEntity() override;
-
+    ~ComponentEntity() override; /**< ComponentEntity Destructor. */
     ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor */
     ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor */
     ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator */
@@ -319,6 +305,8 @@ protected:
      * @return True if the component was added, false otherwise.
      */
     virtual bool doAddComponent(const ComponentPtr &component);
+
+    ComponentEntity(); /**< ComponentEntity Constructor. */
 
 private:
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */

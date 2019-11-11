@@ -192,39 +192,6 @@ Variable::~Variable()
     delete mPimpl;
 }
 
-/*
-Variable::Variable(const Variable &rhs)
-    : NamedEntity(rhs)
-    , mPimpl(new VariableImpl())
-{
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
-    mPimpl->mConnectionIdMap = rhs.mPimpl->mConnectionIdMap;
-    mPimpl->mMappingIdMap = rhs.mPimpl->mMappingIdMap;
-    mPimpl->mInitialValue = rhs.mPimpl->mInitialValue;
-    mPimpl->mInterfaceType = rhs.mPimpl->mInterfaceType;
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-}
-
-Variable::Variable(Variable &&rhs) noexcept
-    : NamedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Variable &Variable::operator=(Variable rhs)
-{
-    NamedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Variable::swap(Variable &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-*/
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     variable1->mPimpl->setEquivalentTo(variable2);

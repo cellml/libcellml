@@ -2,8 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::NamedEntity
 "Abstract base class for all nameable libCellML classes.";

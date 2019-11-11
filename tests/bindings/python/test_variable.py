@@ -21,8 +21,8 @@ class VariableTestCase(unittest.TestCase):
         from libcellml import Variable
 
         x = Variable()
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
         # Test access to inherited methods
         x = Variable()

@@ -37,10 +37,6 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
                                   public std::enable_shared_from_this<Component>
 #endif
 {
-private:
-    Component(); /**< Constructor */
-    explicit Component(const std::string &name);
-
 public:
     ~Component() override; /**< Destructor */
     Component(const Component &rhs) = delete; /**< Copy constructor */
@@ -343,6 +339,9 @@ public:
     bool hasReset(const ResetPtr &reset) const;
 
 private:
+    Component(); /**< Constructor */
+    explicit Component(const std::string &name);
+
     bool doAddComponent(const ComponentPtr &component) override;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
