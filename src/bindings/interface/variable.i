@@ -87,6 +87,12 @@ not equivalent the connection id is not set.";
 %feature("docstring") libcellml::Variable::equivalenceConnectionId
 "Get the connection id set for the equivalence defined with the given variables.";
 
+%feature("docstring") libcellml::Variable::removeEquivalenceConnectionId
+"Remove the connection id for the equivalence defined with the given variables.";
+
+%feature("docstring") libcellml::Variable::removeEquivalenceMappingId
+"Remove the mapping id for the equivalence defined with the given variables.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {

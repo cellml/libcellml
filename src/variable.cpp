@@ -459,4 +459,12 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
     return id;
 }
 
+void Variable::removeEquivalenceConnectionId(const VariablePtr &/*variable1*/, const VariablePtr &/*variable2*/)
+{
+}
+
+void Variable::removeEquivalenceMappingId(const VariablePtr &/*variable1*/, const VariablePtr &/*variable2*/)
+{
+}
+
 } // namespace libcellml
