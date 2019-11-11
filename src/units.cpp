@@ -121,17 +121,6 @@ struct Units::UnitsImpl
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 
     std::vector<Unit>::iterator findUnit(const std::string &reference);
-    /**
-     * @brief Returns the log of the scaling factor between two similar units
-     * 
-     *  The factor returned can be interpreted as u1 = (factor)*u2
-     * 
-     * @param model The @c ModelPtr containing the units
-     * @param u1 The first @c UnitsPtr to compare
-     * @param u2 The second @c UnitsPtr to compare
-     * @return factor The scaling factor between u1 and u2
-     */
-    double doGetScalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
@@ -226,16 +215,6 @@ bool updateUnitMultipliers(double &multiplier,
     }
 
     return updated;
-}
-
-double doGetScalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
-{
-    double multiplier = 0.0;
-
-    updateUnitMultipliers(multiplier, units1, 1, 0, 1);
-    updateUnitMultipliers(multiplier, units2, 1, 0, -1);
-
-    return std::pow(10, multiplier);
 }
 
 Units::Units()
@@ -430,7 +409,12 @@ size_t Units::unitCount() const
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    return doGetScalingFactor(units1, units2);
+    double multiplier = 0.0;
+
+    updateUnitMultipliers(multiplier, units2, 1, 0, 1);
+    updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+
+    return std::pow(10, multiplier);
 }
 
 } // namespace libcellml

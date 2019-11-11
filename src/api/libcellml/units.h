@@ -38,10 +38,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
-private:
-    Units(); /**< Constructor */
-    explicit Units(const std::string &name);
-
 public:
     ~Units() override; /**< Destructor */
     Units(const Units &rhs) = delete; /**< Copy constructor */
@@ -379,16 +375,20 @@ public:
     /**
      * @brief Return the scaling factor difference between two units.
      * 
-     * This can be interpreted as factor, where u1 = (factor)*u2.  This method
+     * This can be interpreted as factor, where units2 = (factor)*units1.  This method
      * does not check to see if the units are compatible.
      * 
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
-     * @return The factor units1/unitsf2.
+     *
+     * @return The factor units1/units2.
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
 private:
+    Units(); /**< Constructor */
+    explicit Units(const std::string &name);
+
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl *mPimpl; /**< Private member to implementation pointer */
 };

@@ -401,15 +401,4 @@ bool isStandardUnitName(const std::string &name);
  */
 bool isStandardPrefixName(const std::string &name);
 
-/**
- * @brief Check if the provided @p node is a supported MathML element.
- *
- * Checks if the provided @p node is one of the supported MathML elements defined in the table
- * of supported MathML elements from the CellML specification version 2.0 document.
- *
- * @param node The @c XmlNode node to check against the list of supported MathML elements.
- * @return @c true if @node is a supported MathML element and @c false otherwise.
- */
-//bool isSupportedMathMLElement(const XmlNodePtr &node);
-
 } // namespace libcellml

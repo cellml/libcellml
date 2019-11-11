@@ -2,10 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%include "createconstructor.i"
-
-%import "types.i"
+%import "createconstructor.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::OrderedEntity
 "Abstract base class for entities that can be ordered relative to others.";

@@ -38,6 +38,12 @@ public:
     Printer(Printer &&rhs) noexcept; /**< Move constructor */
     Printer &operator=(Printer rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<Printer> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Printer> {new Printer {std::forward<Args>(args)...}};
+    }
+
     /**
      * @brief Serialise the @c Model to @c std::string.
      *

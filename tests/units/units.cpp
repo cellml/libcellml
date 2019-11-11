@@ -634,9 +634,7 @@ TEST(Units, compareEqualMultiplierSimple)
     u2->setName("u2");
     u2->addUnit("metre", 0, 1.0, 113.0);
 
-    double factor = libcellml::Units::scalingFactor(u1, u2);
-
-    EXPECT_EQ(1.0, factor);
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
 }
 
 TEST(Units, compareMultiplierSimple)
@@ -649,8 +647,8 @@ TEST(Units, compareMultiplierSimple)
     u2->setName("u2");
     u2->addUnit("metre", 0, 1.0, 1.0);
 
-    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u1, u2)); // 10^3.0 factor difference
-    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u2, u1)); // 10^-3.0 factor difference
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2)); // 10^-3.0 factor difference
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1)); // 10^3.0 factor difference
 }
 
 TEST(Units, compareMultiplierStandardUnit)
@@ -663,8 +661,8 @@ TEST(Units, compareMultiplierStandardUnit)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
 
-    EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u1, u2), 1e-12);
-    EXPECT_NEAR(0.002, libcellml::Units::scalingFactor(u2, u1), 1e-12);
+    EXPECT_NEAR(0.002, libcellml::Units::scalingFactor(u1, u2), 1e-12);
+    EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
 }
 
 TEST(Units, compareIncompatiableMultiplierSimple)
@@ -744,7 +742,7 @@ TEST(Units, complicatedMultiplicationFactorUnits)
 
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
-    EXPECT_EQ(100000000.0, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
+    EXPECT_EQ(1e-08, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
     // Incompatible units but return a scaling factor.
-    EXPECT_EQ(1e+07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
+    EXPECT_EQ(1e-07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
 }

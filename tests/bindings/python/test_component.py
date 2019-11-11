@@ -22,10 +22,10 @@ class ComponentTestCase(unittest.TestCase):
         from libcellml import Component
 
         x = Component()
-        self.assertIsInstance(x, libcellml.ComponentEntity)
-        self.assertIsInstance(x, libcellml.ImportedEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.componententity.ComponentEntity)
+        self.assertIsInstance(x, libcellml.importedentity.ImportedEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
     def test_inherited_methods(self):
         from libcellml import Component

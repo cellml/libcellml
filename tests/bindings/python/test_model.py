@@ -24,9 +24,9 @@ class ModelTestCase(unittest.TestCase):
         from libcellml import Model
 
         x = Model()
-        self.assertIsInstance(x, libcellml.ComponentEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.componententity.ComponentEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
         # Test access to inherited methods
         x = Model()

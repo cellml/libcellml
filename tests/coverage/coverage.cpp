@@ -98,26 +98,6 @@ TEST(Coverage, error)
     EXPECT_EQ(description, ec.description());
 }
 
-TEST(Coverage, model)
-{
-    const std::string n = "model";
-    /*
-    libcellml::Model rm;
-    libcellml::Model ao;
-
-    rm.setName(n);
-
-    ao = rm;
-
-    EXPECT_EQ(n, ao.name());
-
-    std::vector<libcellml::Model> vec;
-
-    vec.push_back(rm);
-    vec.insert(vec.begin(), ao);
-    */
-}
-
 TEST(Coverage, generator)
 {
     libcellml::Generator rg;
@@ -144,6 +124,8 @@ TEST(Coverage, generatorProfile)
 
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
+
+    auto gp = libcellml::GeneratorProfile::create();
 }
 
 TEST(Coverage, generatorVariable)

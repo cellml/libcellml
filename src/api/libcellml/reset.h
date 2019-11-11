@@ -31,9 +31,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Reset: public OrderedEntity
 {
-private:
-    Reset(); /**< Constructor */
-
 public:
     ~Reset() override; /**< Destructor */
     Reset(const Reset &rhs) = delete; /**< Copy constructor */
@@ -214,6 +211,8 @@ public:
     std::string resetValueId() const;
 
 private:
+    Reset(); /**< Constructor */
+
     struct ResetImpl; /**< Forward declaration for pImpl idiom. */
     ResetImpl *mPimpl; /**< Private member to implementation pointer */
 };
