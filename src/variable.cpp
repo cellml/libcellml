@@ -392,7 +392,7 @@ std::string Variable::initialValue() const
 
 void Variable::removeInitialValue()
 {
-
+    mPimpl->mInitialValue.clear();
 }
 
 void Variable::setInterfaceType(const std::string &interfaceType)
