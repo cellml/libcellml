@@ -12,19 +12,20 @@ class ComponentTestCase(unittest.TestCase):
         # Test create/copy/destroy
         x = Component()
         del(x)
-        y = Component()
-        z = Component(y)
-        del(y, z)
+
+        y = Component("c3")
+        self.assertEqual("c3", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
         from libcellml import Component
 
         x = Component()
-        self.assertIsInstance(x, libcellml.ComponentEntity)
-        self.assertIsInstance(x, libcellml.ImportedEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.componententity.ComponentEntity)
+        self.assertIsInstance(x, libcellml.importedentity.ImportedEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
     def test_inherited_methods(self):
         from libcellml import Component
@@ -34,8 +35,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Component(x)
-        self.assertEqual(y.id(), idx)
 
     def test_set_source(self):
         from libcellml import Component, ImportSource

@@ -2,8 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
+
 %import "types.i"
-%import "std_string.i"
 
 %feature("docstring") libcellml::Entity
 "Abstract base class for all libCellML core classes."
@@ -37,8 +38,7 @@ unset).";
 #include "libcellml/component.h"
 %}
 
-%ignore libcellml::Entity::Entity(Entity &&);
-%ignore libcellml::Entity::operator =;
+%ignore libcellml::Entity::Entity();
 
 %typemap(out) libcellml::EntityPtr parent {
     auto isAModel = std::dynamic_pointer_cast<libcellml::Model>($1);

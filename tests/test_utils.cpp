@@ -96,25 +96,49 @@ void expectEqualErrorsKinds(const std::vector<std::string> &errors,
 
 libcellml::ModelPtr createModel(const std::string &name)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     model->setName(name);
     return model;
 }
 
+libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model, const std::string &componentName)
+{
+    libcellml::ComponentPtr component = libcellml::Component::create();
+    component->setName(componentName);
+    model->addComponent(component);
+    return component;
+}
+
 libcellml::ModelPtr createModelWithComponent(const std::string &name)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     model->setName(name);
-    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    model->addComponent(component);
+    createComponentInModel(model, "");
     return model;
 }
 
 libcellml::VariablePtr createVariableWithUnits(const std::string &name, const std::string &units)
 {
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     v->setName(name);
     v->setUnits(units);
 
     return v;
+}
+
+libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::string &modelName, const std::string &c1Name, const std::string &c2Name, const std::string &v1Name, const std::string &v2Name)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName(modelName);
+    auto c1 = createComponentInModel(model, c1Name);
+    auto c2 = createComponentInModel(model, c2Name);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName(v1Name);
+    c1->addVariable(v1);
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName(v2Name);
+    c2->addVariable(v2);
+
+    return model;
 }

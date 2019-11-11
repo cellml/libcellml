@@ -31,6 +31,8 @@ class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */
 using GeneratorVariablePtr = std::shared_ptr<GeneratorVariable>; /**< Type definition for shared generator variable pointer. */
 class Parser; /**< Forward declaration of Parser class. */
 using ParserPtr = std::shared_ptr<Parser>; /**< Type definition for shared parser pointer. */
+class Printer; /**< Forward declaration of Printer class. */
+using PrinterPtr = std::shared_ptr<Printer>; /**< Type definition for shared printer pointer. */
 class Validator; /**< Forward declaration of Validator class. */
 using ValidatorPtr = std::shared_ptr<Validator>; /**< Type definition for shared validator pointer. */
 

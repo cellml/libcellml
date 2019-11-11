@@ -2,8 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%import "createconstructor.i"
 %import "namedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Variable
 "Represents a CellML Variable entity";
@@ -93,6 +94,9 @@ not equivalent the connection id is not set.";
 
 %ignore libcellml::Variable::Variable(Variable &&);
 %ignore libcellml::Variable::operator =;
+
+%create_constructor(Variable)
+%create_name_constructor(Variable)
 
 %include "libcellml/types.h"
 %include "libcellml/variable.h"
