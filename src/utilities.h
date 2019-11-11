@@ -414,4 +414,12 @@ bool isStandardPrefixName(const std::string &name);
  */
 std::string uniqueComponentName(const ModelPtr& model, const std::string& name);
 
+/**
+ * @brief Return a flattened instance of the given @p sourceModel.
+ *
+ * @param sourceModel The model to flatten.
+ * @return The flattened model if successful; @c nullptr otherwise.
+ */
+ModelPtr flattenModel(const ModelPtr& sourceModel);
+
 } // namespace libcellml

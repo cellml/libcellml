@@ -257,15 +257,16 @@ public:
     bool hasUnresolvedImports();
 
 	/**
-	 * @brief Create a self-contained (flat) version of this @c Model.
+	 * @brief Create a self-contained (flat) version of the @p sourceModel.
 	 *
-	 * Create a new model which is an entirely self-contained instance of this model. All imported
-	 * entities are instantiated directly in the flattened version of the this @c Model, including all imported
-	 * entities throughout the model hierarchy.
+	 * Create a new model which is an entirely self-contained copy of the given @p sourceModel. All imported
+	 * entities are instantiated directly in the flattened version of the given @p sourceModel, including all imported
+	 * entities throughout the model's hierarchy.
 	 *
-	 * @return The flattened version of this @c Model if flattening has been successful. @c nullptr otherwise.
+     * @param sourceModel The model from which to create a flat copy.
+	 * @return The flat copy of the given @p sourceModel if flattening has been successful. @c nullptr otherwise.
 	 */
-	ModelPtr flatten() const;
+	static ModelPtr flatCopy(const ModelPtr &sourceModel);
 
 private:
     Model(); /**< Constructor */

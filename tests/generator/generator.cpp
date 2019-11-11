@@ -391,7 +391,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhsImport)
 	model->resolveImports(resourcePath("generator/imports/algebraic_eqn_computed_var_on_rhs/"));
 	EXPECT_FALSE(model->hasUnresolvedImports());
 
-	libcellml::ModelPtr flatModel = model->flatten();
+	libcellml::ModelPtr flatModel = libcellml::Model::flatCopy(model);
 
 	libcellml::Generator generator;
 
@@ -1154,7 +1154,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952Imports)
     EXPECT_FALSE(model->hasUnresolvedImports());
     
     std::cout << "Model about to be flattened" << std::endl;
-    libcellml::ModelPtr flatModel = model->flatten();
+    libcellml::ModelPtr flatModel = libcellml::Model::flatCopy(model);
     std::cout << "Model flattened" << std::endl;
     
     libcellml::Generator generator;
@@ -1220,7 +1220,7 @@ TEST(Generator, VPH_MIP)
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("generator/imports/VPH-MIP/experiments/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
-    libcellml::ModelPtr flatModel = model->flatten();
+    libcellml::ModelPtr flatModel = libcellml::Model::flatCopy(model);
 
     libcellml::Generator generator;
 

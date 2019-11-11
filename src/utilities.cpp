@@ -461,4 +461,71 @@ std::string uniqueComponentName(const ModelPtr& model, const std::string& name)
     return uniqueName;
 }
 
+bool flattenComponent(const ComponentEntityPtr& parent, ComponentPtr& component)
+{
+    const ModelPtr& parentModel = owningModel(parent);
+    std::cout << "parent->name: " << parent->name() << std::endl;
+    std::cout << "parentModel->name: " << parentModel->name() << std::endl;
+    auto cname = component->name();
+    auto label = parent->name();
+    label += "/";
+    label += cname;
+    std::cout << "Flattening component: " << label << std::endl;
+    if (component->isImport()) {
+        ComponentPtr src = component->importSource()->model()->component(component->importReference());
+        std::cout << "**F** " << label << ": using the source component: " << src->name() << std::endl;
+        auto localName = src->name();
+        localName += "_flattened";
+        localName = uniqueComponentName(parentModel, localName);
+        src->setName(localName);
+        src->clearParent();
+
+        std::cout << "**F** " << label << ": Number of variables in component to flatten: " << int(component->variableCount()) << std::endl;
+        for (auto n = 0; n < component->variableCount(); ++n) {
+            const VariablePtr& v = component->variable(n);
+            auto vname = v->name();
+            const VariablePtr& srcV = src->variable(vname);
+            for (auto e = 0; e < v->equivalentVariableCount(); ++e) {
+                const VariablePtr& ev = v->equivalentVariable(e);
+                std::cout << "**F** " << label << ": moving connection: " << vname << " ==> "
+                    << entityName(ev->parent()) << "/" << ev->name() << std::endl;
+                Variable::removeEquivalence(v, ev);
+                Variable::addEquivalence(srcV, ev);
+            }
+        }
+        parent->removeComponent(cname, false);
+        parent->addComponent(src);
+        for (auto n = 0; n < src->componentCount(); ++n) {
+            ComponentPtr c = src->component(n);
+            flattenComponent(src, c);
+        }
+    }
+    return true;
+}
+
+ModelPtr flattenModel(const ModelPtr &sourceModel)
+{
+    Printer printer;
+    //std::string s = printer.printModel(this);
+    std::cout << s << std::endl;
+
+    auto name = this->name();
+    name += "__flattended";
+    ModelPtr fm = Model::create();
+    fm->setName(name);
+
+    for (size_t n = 0; n < componentCount(); ++n) {
+        ComponentPtr fc = this->component(n);
+        flattenComponent(fm, fc);
+    }
+
+    s = printer.printModel(*this);
+    std::cout << "Original model:\n" << s << std::endl;
+
+    s = printer.printModel(fm);
+    std::cout << "Flattened model:\n" << s << std::endl;
+
+    return fm;
+}
+
 } // namespace libcellml
