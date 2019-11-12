@@ -85,10 +85,7 @@ bool XmlAttribute::isCellmlType(const char *name) const
 
 std::string XmlAttribute::name() const
 {
-    if (mPimpl->mXmlAttributePtr->name != nullptr) {
-        return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name);
-    }
-    return {};
+    return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name);
 }
 
 std::string XmlAttribute::value() const
