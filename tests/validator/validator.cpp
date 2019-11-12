@@ -570,11 +570,8 @@ TEST(Validator, invalidMathMLVariables)
     const std::vector<std::string> expectedErrors = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
-        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
-        "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        "MathML ci element has an empty child element.",
-        "MathML ci element has no child.",
-        "MathML ci element has an empty child element.",
+        "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName'.",
+        "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
         "W3C MathML DTD error: No declaration for element nonsense.",
         "W3C MathML DTD error: Element nonsense is not declared in ci list of possible children.",
     };
@@ -608,20 +605,67 @@ TEST(Validator, invalidMathMLVariables)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
+TEST(Validator, invalidSimpleMathmlCellMLUnits)
+{
+    const std::string math =
+        "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply><bvar><ci cellml:units=\"dimensionless\">B</ci></bvar></apply></math>";
+    const std::vector<std::string> expectedErrors = {
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Model does not have a valid name attribute.",
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Component does not have a valid name attribute.",
+        "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
+        "W3C MathML DTD error: No declaration for attribute units of element ci.",
+    };
+    libcellml::Validator v;
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, invalidMathmlCellMLNsOnNode)
+{
+    const std::string math =
+        "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply><cellml:bvar><ci cellml:units=\"dimensionless\">B</ci></cellml:bvar></apply></math>";
+    const std::vector<std::string> expectedErrors = {
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Model does not have a valid name attribute.",
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Component does not have a valid name attribute.",
+        "Math has a 'bvar' element that is not a supported MathML element.",
+        "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
+        "W3C MathML DTD error: No declaration for attribute units of element ci.",
+    };
+    libcellml::Validator v;
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
 {
     const std::string math =
         "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
         "    <eq/>\n"
-        "    <cn cellml:units=\"invalid\">oops</cn>\n"
+        "    <cn cellml:units=\"invalid\" cellml:value=\"zero\">oops</cn>\n"
         "    <apply>\n"
         "      <plus/>\n"
         "      <ci>A</ci>\n"
         "      <apply>\n"
         "        <plus/>\n"
         "        <bvar>\n"
-        "          <ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>\n"
+        "          <ci cellml:units=\"dimensionless\">new_bvar</ci>\n"
         "        </bvar>\n"
         "        <apply>\n"
         "          <plus/>\n"
@@ -647,16 +691,14 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "  </apply>\n"
         "</math>\n";
     const std::vector<std::string> expectedErrors = {
-        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
-        "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
-        "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
-        "MathML ci element has an empty child element.",
-        "MathML ci element has the child text 'undefined_variable' which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        "MathML ci element has no child.",
+        "Math cn element has an invalid attribute type 'value' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.",
+        "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in the model 'modelName' or a standard unit.",
+        "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
+        "MathML ci element has the child text 'undefined_variable' which does not correspond with any variable names present in component 'componentName'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Math cn element with the value '2.0' does not have a valid cellml:units attribute.",
-        "W3C MathML DTD error: Namespace prefix cellml for value on ci is not defined.",
-        "No declaration for attribute cellml:value of element ci.",
+        "W3C MathML DTD error: No declaration for attribute units of element ci.",
+        "W3C MathML DTD error: No declaration for attribute units of element ci.",
     };
 
     libcellml::Validator v;
@@ -684,14 +726,8 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    // Note: we are not checking the exact message of the last error as older
-    //       versions of libxml may not include the namespace in the error
-    //       message.
-    for (size_t i = 0; i < v.errorCount() - 1; ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
@@ -707,7 +743,7 @@ TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
         "      <ci>A</ci>\n"
         "      <apply>\n"
         "        <plus/>\n"
-        "        <ci cellml:units=\"dimensionless\">C</ci>\n"
+        "        <ci>C</ci>\n"
         "        <cn cellml:units=\"dimensionless\">7</cn>\n"
         "      </apply>\n"
         "    </apply>\n"
@@ -1354,6 +1390,19 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "  </apply>\n"
         "</math>\n";
 
+    const std::vector<std::string> expectedErrors {
+        "Namespace prefix cellml for units on cn is not defined.",
+        "Namespace prefix cellml for units on cn is not defined.",
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Math cn element with the value '3.44' does not have a valid cellml:units attribute.",
+        "CellML identifiers must contain one or more basic Latin alphabetic characters.",
+        "Math cn element with the value '-9.612' does not have a valid cellml:units attribute.",
+        "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
+        "W3C MathML DTD error: Namespace prefix cellml for units on cn is not defined.",
+        "W3C MathML DTD error: No declaration for attribute cellml:units of element cn.",
+    };
+
     libcellml::Validator v;
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -1370,7 +1419,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(size_t(0), v.errorCount());
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
@@ -2053,6 +2102,51 @@ TEST(Validator, unitComplexCycle)
     v.validateModel(m);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, duplicatedCellMLUnitsOnCiElement)
+{
+    const std::string math =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <ci cellml:units=\"dimensionless\" cellml:units=\"second\">B</ci>\n"
+        "</math>\n";
+
+    const std::vector<std::string> expectedErrors = {
+        "Attribute cellml:units redefined.",
+        "Could not get a valid XML root node from the math on component 'componentName'.",
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("B");
+    v1->setUnits("second");
+    c->addVariable(v1);
+
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, multipleDefinitionsOfCellMLNamespace)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("multiplecellmlnamespaces.cellml"));
+    printErrors(parser);
+
+    libcellml::Validator validator;
+    validator.validateModel(model);
+
+    printErrors(validator);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
 TEST(Validator, unitEquivalenceMultiplier)
