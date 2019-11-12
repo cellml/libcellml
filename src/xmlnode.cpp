@@ -122,21 +122,20 @@ void XmlNode::removeNamespaceDefinition(const std::string &uri)
 
 bool XmlNode::hasNamespaceDefinition(const std::string &uri)
 {
-    bool has = false;
     if (mPimpl->mXmlNodePtr->nsDef != nullptr) {
         auto next = mPimpl->mXmlNodePtr->nsDef;
-        while (next != nullptr && !has) {
+        while (next != nullptr) {
             std::string href;
             if (next->href != nullptr) {
                 href = std::string(reinterpret_cast<const char *>(next->href));
             }
             if (href == uri) {
-                has = true;
+                return true;
             }
             next = next->next;
         }
     }
-    return has;
+    return false;
 }
 
 XmlNamespaceMap XmlNode::definedNamespaces() const
