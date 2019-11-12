@@ -68,6 +68,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlutils.cpp
 )
 
 set(GIT_API_HEADER_FILES
@@ -105,11 +106,13 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlutils.h
 )
 
 set(HEADER_FILES
