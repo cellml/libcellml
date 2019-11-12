@@ -212,15 +212,15 @@ struct Validator::ValidatorImpl
     * @brief Validate that equivalent variable pairs in the @p model
     * have equivalent units.
     * Any errors will be logged in the @c Validator.
-    * 
-    * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.  
+    *
+    * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
     * Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
     *
     * @param model The model containing the variables
     * @param v1 The variable which may contain units.
     * @param v2 The equivalent variable which may contain units.
     * @param hints String containing error messages to be passed back to the calling function for logging.
-    * @param multiplier Double returning the effective multiplier mismatch between the units.  
+    * @param multiplier Double returning the effective multiplier mismatch between the units.
     */
     bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
 
