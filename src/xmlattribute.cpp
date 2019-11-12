@@ -54,9 +54,9 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
 std::string XmlAttribute::namespaceUri() const
 {
     if (mPimpl->mXmlAttributePtr->ns == nullptr) {
-        return std::string();
+        return {};
     }
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href));
+    return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href);
 }
 
 std::string XmlAttribute::namespacePrefix() const
@@ -92,7 +92,7 @@ bool XmlAttribute::isCellmlType(const char *name) const
 std::string XmlAttribute::name() const
 {
     if (mPimpl->mXmlAttributePtr->name != nullptr) {
-        return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
+        return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name);
     }
     return {};
 }
