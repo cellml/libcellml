@@ -2149,7 +2149,7 @@ TEST(Validator, multipleDefinitionsOfCellMLNamespace)
     EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
-TEST(Validator, mathInEncapsulatedComponentSegfault)
+TEST(Validator, validateModelWithoutAndWithMath)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::ComponentPtr c1 = libcellml::Component::create();
@@ -2167,6 +2167,14 @@ TEST(Validator, mathInEncapsulatedComponentSegfault)
     model->addComponent(c2);
     c2->addComponent(c3);
 
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    v->setName("v");
+    v->setUnits("dimensionless");
+    c3->addVariable(v);
+
+    validator.validateModel(model);
+    EXPECT_EQ(size_t(0), validator.errorCount());
+
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <apply>\n"
@@ -2176,17 +2184,9 @@ TEST(Validator, mathInEncapsulatedComponentSegfault)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::VariablePtr v = libcellml::Variable::create();
-    v->setName("v");
-    v->setUnits("dimensionless");
-    c3->addVariable(v);
-
-    validator.validateModel(model);
-    EXPECT_EQ(size_t(0), validator.errorCount()); // passes fine ...
-
     c3->setMath(math);
 
-    validator.validateModel(model); // SEGFAULTS HERE
+    validator.validateModel(model);
     EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
