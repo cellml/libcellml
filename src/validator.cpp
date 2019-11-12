@@ -946,7 +946,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (childNode != nullptr) {
         if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + childNode->name() + "' element" + " that is not a supported MathML element.");
+            err->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -958,7 +958,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (nextNode != nullptr) {
         if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + nextNode->name() + "' element" + " that is not a supported MathML element.");
+            err->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
