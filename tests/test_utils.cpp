@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
@@ -23,9 +22,11 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
+#include "test_resources.h"
+
 std::string resourcePath(const std::string &resourceRelativePath)
 {
-    return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
+    return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
 }
 
 std::string fileContents(const std::string &fileName)
