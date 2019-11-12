@@ -780,6 +780,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            const GeneratorEquationPtr &equation)
 {
     // Basic content elements.
+
     if (node->isMathmlElement("apply")) {
         // We may have 2, 3 or more child nodes, e.g.
         //
@@ -1079,6 +1080,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
+
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
