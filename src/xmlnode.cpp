@@ -56,9 +56,9 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
 std::string XmlNode::namespaceUri() const
 {
     if (mPimpl->mXmlNodePtr->ns == nullptr) {
-        return std::string();
+        return {};
     }
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
+    return reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href);
 }
 
 void XmlNode::addNamespaceDefinition(const std::string &uri, const std::string &prefix)
@@ -192,7 +192,7 @@ bool XmlNode::isComment() const
 
 std::string XmlNode::name() const
 {
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
+    return reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name);
 }
 
 bool XmlNode::hasAttribute(const char *attributeName) const
