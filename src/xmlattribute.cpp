@@ -69,19 +69,13 @@ std::string XmlAttribute::namespacePrefix() const
 
 bool XmlAttribute::inNamespaceUri(const char *ns) const
 {
-    if (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0) {
-        return true;
-    }
-    return false;
+    return xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0;
 }
 
 bool XmlAttribute::isType(const char *name, const char *ns) const
 {
-    if ((xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
-        && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
-        return true;
-    }
-    return false;
+    return (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+           && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0);
 }
 
 bool XmlAttribute::isCellmlType(const char *name) const
