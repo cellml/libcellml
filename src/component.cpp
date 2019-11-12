@@ -154,6 +154,7 @@ bool Component::removeVariable(const VariablePtr &variable)
     auto result = mPimpl->findVariable(variable);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
+        variable->clearParent();
         return true;
     }
 
@@ -162,6 +163,9 @@ bool Component::removeVariable(const VariablePtr &variable)
 
 void Component::removeAllVariables()
 {
+    for(const auto &variable : mPimpl->mVariables) {
+        variable->clearParent();
+    }
     mPimpl->mVariables.clear();
 }
 
