@@ -31,22 +31,10 @@ class Component;
 class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
-    /**
-     * @brief ComponentEntity Constructor.
-     *
-     * Default ComponentEntity constructor.
-     */
-    ComponentEntity();
-    /**
-     * @brief ComponentEntity Destructor.
-     *
-     * Default ComponentEntity destructor.
-     */
-    ~ComponentEntity() override;
-
-    ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
-    ComponentEntity(ComponentEntity &&rhs) noexcept; /**< Move constructor */
-    ComponentEntity &operator=(ComponentEntity rhs); /**< Assignment operator */
+    ~ComponentEntity() override; /**< ComponentEntity Destructor. */
+    ComponentEntity(const ComponentEntity &rhs) = delete; /**< Copy constructor */
+    ComponentEntity(ComponentEntity &&rhs) noexcept = delete; /**< Move constructor */
+    ComponentEntity &operator=(ComponentEntity rhs) = delete; /**< Assignment operator */
 
     /**
      * @brief Add a child component to this component entity.
@@ -318,9 +306,9 @@ protected:
      */
     virtual bool doAddComponent(const ComponentPtr &component);
 
-private:
-    void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
+    ComponentEntity(); /**< ComponentEntity Constructor. */
 
+private:
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
     ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer */
 };

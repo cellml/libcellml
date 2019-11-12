@@ -28,11 +28,11 @@ TEST(UnitsImport, basics)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("a-model.xml");
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
     EXPECT_EQ(u->importSource(), nullptr);
     EXPECT_EQ(u->importReference(), "");
@@ -43,7 +43,7 @@ TEST(UnitsImport, basics)
     EXPECT_EQ(u->importSource(), imp);
     EXPECT_EQ(u->importReference(), "bob");
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -60,11 +60,11 @@ TEST(UnitsImport, importValidName)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnits = libcellml::Units::create();
 
     EXPECT_EQ(importedUnits->importSource(), nullptr);
 
@@ -77,7 +77,7 @@ TEST(UnitsImport, importValidName)
 
     EXPECT_TRUE(importedUnits->isImport());
 
-    m.addUnits(importedUnits);
+    m->addUnits(importedUnits);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -94,11 +94,11 @@ TEST(UnitsImport, importInvalidName)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnits = libcellml::Units::create();
 
     EXPECT_EQ(importedUnits->importSource(), nullptr);
 
@@ -107,7 +107,7 @@ TEST(UnitsImport, importInvalidName)
 
     EXPECT_EQ(importedUnits->importSource(), imp);
 
-    m.addUnits(importedUnits);
+    m->addUnits(importedUnits);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -124,11 +124,11 @@ TEST(UnitsImport, nonExistentURL)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("http://someplace.world/cellml/model.xml");
 
-    libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnits = libcellml::Units::create();
 
     EXPECT_EQ(importedUnits->importSource(), nullptr);
 
@@ -137,9 +137,9 @@ TEST(UnitsImport, nonExistentURL)
 
     EXPECT_EQ(importedUnits->importSource(), imp);
 
-    EXPECT_EQ(size_t(0), m.unitsCount());
-    m.addUnits(importedUnits);
-    EXPECT_EQ(size_t(1), m.unitsCount());
+    EXPECT_EQ(size_t(0), m->unitsCount());
+    m->addUnits(importedUnits);
+    EXPECT_EQ(size_t(1), m->unitsCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -168,39 +168,39 @@ TEST(UnitsImport, importModifyAndParse)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
 
-    libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnits = libcellml::Units::create();
     importedUnits->setName("units_in_this_model");
     importedUnits->setSourceUnits(imp, "a_units_in_that_model");
 
-    m.addUnits(importedUnits);
+    m->addUnits(importedUnits);
 
-    libcellml::UnitsPtr importedUnitsMultiplied = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnitsMultiplied = libcellml::Units::create();
     importedUnitsMultiplied->setName("multiplied_import");
     importedUnitsMultiplied->addUnit("units_in_this_model", 0, 1.0, 5.6);
 
-    m.addUnits(importedUnitsMultiplied);
+    m->addUnits(importedUnitsMultiplied);
 
-    libcellml::UnitsPtr importedUnitsPrefixed = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnitsPrefixed = libcellml::Units::create();
     importedUnitsPrefixed->setName("prefixed_import");
     importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::Prefix::YOTTA);
 
-    m.addUnits(importedUnitsPrefixed);
+    m->addUnits(importedUnitsPrefixed);
 
-    libcellml::UnitsPtr importedUnitsExponented = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnitsExponented = libcellml::Units::create();
     importedUnitsExponented->setName("exponented_import");
     importedUnitsExponented->addUnit("units_in_this_model", 3.0);
 
-    m.addUnits(importedUnitsExponented);
+    m->addUnits(importedUnitsExponented);
 
-    libcellml::UnitsPtr importedUnitsAll = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr importedUnitsAll = libcellml::Units::create();
     importedUnitsAll->setName("all_import");
     importedUnitsAll->addUnit("units_in_this_model", -17, -4.0, -1.3);
 
-    m.addUnits(importedUnitsAll);
+    m->addUnits(importedUnitsAll);
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);

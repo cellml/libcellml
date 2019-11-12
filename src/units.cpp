@@ -17,12 +17,15 @@ limitations under the License.
 #include "utilities.h"
 
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/units.h"
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <map>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace libcellml {
@@ -126,43 +129,108 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
 }
 
+/*
+
+//TDOD: This code is progress towards checking that units are compatible.
+using UnitMultiplierMap = std::map<std::string, double>;
+
+    UnitMultiplierMap unitMap = {};
+    for (const auto &baseUnits : baseUnitsList) {
+        unitMap[baseUnits] = 0.0;
+    }
+bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
+                           double &multiplier,
+                           const UnitsPtr &units,
+                           double uExp, double logMult,
+                           int direction)
+{
+    bool updated = false;
+    auto unitsName = units->name();
+    if (!units->isBaseUnit()) {
+        std::string ref;
+        std::string pre;
+        std::string id;
+        double exp;
+        double mult;
+        double expMult;
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            mult = std::log10(expMult);
+            if (!isStandardUnitName(ref)) {
+                auto model = owningModel(units);
+                auto refUnits = model->units(ref);
+                updated = updateUnitMultipliers(unitMultiplierMap, multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+            } else {
+                for (const auto &iter : standardUnitsList.at(ref)) {
+                    unitMultiplierMap.at(iter.first) += direction * (iter.second * exp * uExp);
+                }
+                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+            }
+        }
+    } else if (unitMultiplierMap.find(unitsName) == unitMultiplierMap.end()) {
+        unitMultiplierMap.emplace(std::pair<std::string, double>(unitsName, direction * uExp));
+        multiplier += direction * logMult;
+        updated = true;
+    } else if (isStandardUnitName(unitsName)) {
+        for (const auto &iter : standardUnitsList.at(unitsName)) {
+            unitMultiplierMap.at(iter.first) += direction * (iter.second * uExp);
+        }
+        multiplier += direction * logMult;
+        multiplier += direction * standardMultiplierList.at(unitsName);
+        updated = true;
+    }
+
+    return updated;
+}
+*/
+
+bool updateUnitMultipliers(double &multiplier,
+                           const UnitsPtr &units,
+                           double uExp, double logMult,
+                           int direction)
+{
+    bool updated = false;
+    auto unitsName = units->name();
+    if (units->isBaseUnit()) {
+        multiplier += direction * logMult;
+        updated = true;
+    } else {
+        std::string ref;
+        std::string pre;
+        std::string id;
+        double exp;
+        double mult;
+        double expMult;
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            mult = std::log10(expMult);
+            if (isStandardUnitName(ref)) {
+                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+            } else {
+                auto model = owningModel(units);
+                auto refUnits = model->units(ref);
+                updated = updateUnitMultipliers(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+            }
+        }
+    }
+
+    return updated;
+}
+
 Units::Units()
     : mPimpl(new UnitsImpl())
 {
 }
 
+Units::Units(const std::string &name)
+    : mPimpl(new UnitsImpl())
+{
+    setName(name);
+}
+
 Units::~Units()
 {
     delete mPimpl;
-}
-
-Units::Units(const Units &rhs)
-    : NamedEntity(rhs)
-    , ImportedEntity(rhs)
-    , mPimpl(new UnitsImpl())
-{
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-}
-
-Units::Units(Units &&rhs) noexcept
-    : NamedEntity(std::move(rhs))
-    , ImportedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Units &Units::operator=(Units rhs)
-{
-    NamedEntity::operator=(rhs);
-    ImportedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Units::swap(Units &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool Units::isBaseUnit() const
@@ -187,10 +255,10 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
-        u.mExponent = convertDoubleToString(exponent);
+        u.mExponent = convertToString(exponent);
     }
     if (multiplier != 1.0) {
-        u.mMultiplier = convertDoubleToString(multiplier);
+        u.mMultiplier = convertToString(multiplier);
     }
     if (!id.empty()) {
         u.mId = id;
@@ -209,7 +277,7 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
 void Units::addUnit(const std::string &reference, int prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    const std::string prefixString = convertIntToString(prefix);
+    const std::string prefixString = convertToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
@@ -242,7 +310,7 @@ void Units::addUnit(StandardUnit standardRef, int prefix, double exponent,
                     double multiplier, const std::string &id)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    const std::string prefixString = convertIntToString(prefix);
+    const std::string prefixString = convertToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
@@ -337,6 +405,16 @@ void Units::setSourceUnits(const ImportSourcePtr &importSource, const std::strin
 size_t Units::unitCount() const
 {
     return mPimpl->mUnits.size();
+}
+
+double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+    double multiplier = 0.0;
+
+    updateUnitMultipliers(multiplier, units2, 1, 0, 1);
+    updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+
+    return std::pow(10, multiplier);
 }
 
 } // namespace libcellml

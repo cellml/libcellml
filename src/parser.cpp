@@ -17,6 +17,7 @@ limitations under the License.
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
+#include "xmlutils.h"
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -25,7 +26,6 @@ limitations under the License.
 #include "libcellml/parser.h"
 #include "libcellml/reset.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 
 #include <string>
 #include <vector>
@@ -102,6 +102,16 @@ struct Parser::ParserImpl
      */
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
+    /**
+     * @brief Recursively update the @p model with the encapsulation parsed from the @p node.
+     *
+     * Recusively parse through the @p node to create the component hierarchy.  Returns the
+     * root component of the hierarchy to the calling method.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param nodee The @c XmlNodePtr to parse and update the model with.
+     * @return A @c ComponentPtr which is the root of the component hierarchy.
+     */
     ComponentPtr loadComponentRef(const ModelPtr &model, const XmlNodePtr &node);
 
     /**
@@ -170,17 +180,32 @@ struct Parser::ParserImpl
     void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
 
     /**
-     * @brief Update the @p when with attributes parsed from the @p node.
+     * @brief Update the @p reset with the child parsed from the @p node.
      *
-     * Update the @p when with attributes parsed from
-     * the XML @p node. Existing attributes in @p when with names
-     * matching those in @p node will be overwritten.
+     * Takes either a 'test_value' node or a 'reset_value' node that is
+     * a child of a @c Reset.  Updates the @p reset with the information in the
+     * @p node.
      *
-     * @param when The @c WhenPtr to update.
-     * @param reset The @c ResetPtr the when belongs to.
+     * @param childType The @c std::string type of child which is either 'test_value' or 'reset_value'.
+     * @param reset The @c ResetPtr to update.
+     * @param component The @c ComponentPtr the reset belongs to.
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
-    void loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node);
+    void loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+
+    /**
+     * @brief Checks the multiplicity of the @p childType.
+     *
+     * Checks to determine if the @p childType has the correct number of entries
+     * for a @c Reset.  Adds an error to the @c Parser if the @p count is not correct
+     * for the @p childType.
+     *
+     * @param count The number of children of the type defined by @p childType.
+     * @param childType The @c std::string type of child which is either 'test_value' or 'reset_value'.
+     * @param reset The @c ResetPtr to update.
+     * @param component The @c ComponentPtr the reset belongs to.
+     */
+    void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component);
 };
 
 Parser::Parser()
@@ -222,7 +247,7 @@ void Parser::swap(Parser &rhs)
 
 ModelPtr Parser::parseModel(const std::string &input)
 {
-    ModelPtr model = std::make_shared<Model>();
+    ModelPtr model = Model::create();
     mPimpl->updateModel(model, input);
     return model;
 }
@@ -290,15 +315,16 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
-            ComponentPtr component = std::make_shared<Component>();
+            const std::string name;
+            ComponentPtr component = Component::create(name);
             loadComponent(component, childNode);
             model->addComponent(component);
         } else if (childNode->isCellmlElement("units")) {
-            UnitsPtr units = std::make_shared<Units>();
+            UnitsPtr units = Units::create();
             loadUnits(units, childNode);
             model->addUnits(units);
         } else if (childNode->isCellmlElement("import")) {
-            ImportSourcePtr importSource = std::make_shared<ImportSource>();
+            ImportSourcePtr importSource = ImportSource::create();
             loadImport(importSource, model, childNode);
         } else if (childNode->isCellmlElement("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
@@ -324,6 +350,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 // and error-checked in loadEncapsulation().
                 encapsulationNodes.push_back(componentRefNode);
             } else {
+                // TODO Should this be removed?
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->name() + "' does not contain any child elements.");
                 err->setModel(model);
@@ -390,16 +417,25 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("variable")) {
-            VariablePtr variable = std::make_shared<Variable>();
+            VariablePtr variable = Variable::create();
             loadVariable(variable, childNode);
             component->addVariable(variable);
         } else if (childNode->isCellmlElement("reset")) {
-            ResetPtr reset = std::make_shared<Reset>();
+            ResetPtr reset = Reset::create();
             loadReset(reset, component, childNode);
             component->addReset(reset);
         } else if (childNode->isMathmlElement("math")) {
-            // TODO: copy any namespaces declared in parents into the math element
-            //       so math is a valid subdocument.
+            // Copy any namespaces that do not feature as a namespace definition
+            // of the math node into the math node.
+            auto mathElementDefinedNamespaces = childNode->definedNamespaces();
+            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode);
+            auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamespaces, mathElementDefinedNamespaces);
+            XmlNamespaceMap::const_iterator it;
+            for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
+                childNode->addNamespaceDefinition(it->second, it->first);
+            }
+
+            // Append a self contained math XML document to the component.
             std::string math = childNode->convertToString(true) + "\n";
             component->appendMath(math);
         } else if (childNode->isText()) {
@@ -508,6 +544,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (isCellMLReal(attribute->value())) {
                 exponent = convertToDouble(attribute->value());
             } else {
+                // TODO This value won't be saved for validation later, so it does need to be reported now
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
@@ -518,6 +555,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (isCellMLReal(attribute->value())) {
                 multiplier = convertToDouble(attribute->value());
             } else {
+                // TODO his value won't be saved for validation later, so it does need to be reported now
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
@@ -645,7 +683,9 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     componentNamePair = std::make_pair(component1Name, component2Name);
 
     XmlNodePtr childNode = node->firstChild();
+
     if (!childNode) {
+        // TODO Should this be removed too?
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->name() + "' must contain one or more 'map_variables' elements.");
         err->setModel(model);
@@ -745,13 +785,14 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             err->setKind(Error::Kind::CONNECTION);
             mParser->addError(err);
         }
+
         childNode = childNode->next();
     }
 
     // If we have a component name pair, check that the components exist in the model.
     ComponentPtr component1 = nullptr;
     ComponentPtr component2 = nullptr;
-    // Now check the objects exist in the model.
+    // Now check the objects exist in the model. TODO Remove as is validation?
     if (model->containsComponent(componentNamePair.first)) {
         component1 = model->component(componentNamePair.first);
     } else {
@@ -777,7 +818,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         }
     }
 
-    // If we have a map_variables, check that the variables exist in the named components.
+    // If we have a map_variables, check that the variables exist in the named components. TODO Remove as is validation?
     if (mapVariablesFound) {
         for (const auto &iterPair : variableNameMap) {
             VariablePtr variable1 = nullptr;
@@ -787,7 +828,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable1 = component1->variable(iterPair.first);
                 } else if (component1->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
-                    variable1 = std::make_shared<Variable>();
+                    variable1 = Variable::create();
                     variable1->setName(iterPair.first);
                     component1->addVariable(variable1);
                 } else {
@@ -813,7 +854,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable2 = component2->variable(iterPair.second);
                 } else if (component2->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
-                    variable2 = std::make_shared<Variable>();
+                    variable2 = Variable::create();
                     variable2->setName(iterPair.second);
                     component2->addVariable(variable2);
                 } else {
@@ -1011,7 +1052,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
-            ComponentPtr importedComponent = std::make_shared<Component>();
+            ComponentPtr importedComponent = Component::create();
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
@@ -1034,7 +1075,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 model->addComponent(importedComponent);
             }
         } else if (childNode->isCellmlElement("units")) {
-            UnitsPtr importedUnits = std::make_shared<Units>();
+            UnitsPtr importedUnits = Units::create();
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
@@ -1079,19 +1120,112 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     }
 }
 
+void Parser::ParserImpl::loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
+{
+    // TODO The spec. has not yet defined the test_value and reset_value specification elements.
+    std::string variableName;
+    std::string testVariableName;
+
+    if (reset->variable() != nullptr) {
+        variableName = reset->variable()->name();
+    }
+
+    if (reset->testVariable() != nullptr) {
+        testVariableName = reset->testVariable()->name();
+    }
+
+    XmlAttributePtr childAttribute = node->firstAttribute();
+    while (childAttribute) {
+        if (childAttribute->isType("id")) {
+            if (childType == "test_value") {
+                reset->setTestValueId(childAttribute->value());
+            } else {
+                reset->setResetValueId(childAttribute->value());
+            }
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the " + childType + " block of '" + childAttribute->name() + "'.");
+            err->setReset(reset);
+            err->setRule(SpecificationRule::RESET_TEST_VALUE);
+            mParser->addError(err);
+        }
+        childAttribute = childAttribute->next();
+    }
+
+    XmlNodePtr mathNode = node->firstChild();
+    while (mathNode) {
+        if (mathNode->isMathmlElement("math")) {
+            std::string math = mathNode->convertToString(true) + "\n";
+            if (childType == "test_value") {
+                reset->appendTestValue(math);
+            } else {
+                reset->appendResetValue(math);
+            }
+        } else if (mathNode->isComment()) {
+            // Do nothing
+        } else {
+            std::string textNode = mathNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("The " + childType + " in the reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' should have a MathML block as a child.");
+                err->setReset(reset);
+                err->setRule(SpecificationRule::RESET_TEST_VALUE);
+                mParser->addError(err);
+            }
+        }
+        mathNode = mathNode->next();
+    }
+}
+
+void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component)
+{
+    std::string variableName;
+    std::string testVariableName;
+
+    if (reset->variable() != nullptr) {
+        variableName = reset->variable()->name();
+    }
+
+    if (reset->testVariable() != nullptr) {
+        testVariableName = reset->testVariable()->name();
+    }
+
+    if (count > 1) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
+                            + variableName + "' and test_variable '" + testVariableName + "' has " + convertToString(count) + " " + childType + " blocks.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        mParser->addError(err);
+    }
+    if (count == 0) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
+                            + variableName + "' and test_variable '" + testVariableName + "' does not have a " + childType + " block defined.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        mParser->addError(err);
+    }
+}
+
 void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
 {
     int order = 0;
-    bool orderDefined = false;
     bool orderValid = false;
+    bool orderDefined = false;
     VariablePtr referencedVariable = nullptr;
+    VariablePtr testVariable = nullptr;
     std::string variableName;
+    std::string testVariableName;
 
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("variable")) {
             const std::string variableReference = attribute->value();
             referencedVariable = component->variable(variableReference);
+
+            // TODO This follows the same pattern as the errors returned from parsing the encapsulations
             if (referencedVariable == nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
@@ -1101,12 +1235,25 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             } else {
                 reset->setVariable(referencedVariable);
             }
+        } else if (attribute->isType("test_variable")) {
+            const std::string testVariableReference = attribute->value();
+            testVariable = component->variable(testVariableReference);
+            if (testVariable == nullptr) {
+                // TODO This follows the same pattern as the errors returned from parsing the encapsulations
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
+                err->setReset(reset);
+                err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
+                mParser->addError(err);
+            } else {
+                reset->setTestVariable(testVariable);
+            }
         } else if (attribute->isType("order")) {
             orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
                 order = convertToInt(attribute->value());
-            } else {
+            } else { // This value won't be saved for validation later, so it does need to be reported now.
                 if (reset->variable() != nullptr) {
                     variableName = reset->variable()->name();
                 }
@@ -1127,151 +1274,45 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         attribute = attribute->next();
     }
 
-    if (referencedVariable == nullptr) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' does not reference a variable in the component.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
-        mParser->addError(err);
-    }
-
-    if (reset->variable() != nullptr) {
-        variableName = reset->variable()->name();
-    }
     if (orderValid) {
         reset->setOrder(order);
     } else if (!orderDefined) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' does not have an order defined.");
+        err->setDescription("Reset in component '" + component->name() + "' does not have its order set.");
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_ORDER);
         mParser->addError(err);
     }
 
     XmlNodePtr childNode = node->firstChild();
+
+    size_t testValueCount = 0;
+    size_t resetValueCount = 0;
     while (childNode) {
-        if (childNode->isCellmlElement("when")) {
-            WhenPtr when = std::make_shared<When>();
-            loadWhen(when, reset, childNode);
-            reset->addWhen(when);
+        if (childNode->isCellmlElement("test_value")) {
+            loadResetChild("test_value", reset, component, childNode);
+            testValueCount++;
+        } else if (childNode->isCellmlElement("reset_value")) {
+            loadResetChild("reset_value", reset, component, childNode);
+            resetValueCount++;
         } else if (childNode->isText()) {
-            const std::string textNode = childNode->convertToString();
+            std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setDescription("Reset has an invalid non-whitespace child text element '" + textNode + "'. Either a test_value block or a reset_value block is expected.");
                 err->setReset(reset);
                 err->setRule(SpecificationRule::RESET_CHILD);
                 mParser->addError(err);
             }
         } else if (childNode->isComment()) {
             // Do nothing.
-        } else {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has an invalid child element '" + childNode->name() + "'.");
-            err->setReset(reset);
-            err->setRule(SpecificationRule::RESET_CHILD);
-            mParser->addError(err);
-        }
-        childNode = childNode->next();
-    }
-}
-
-void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node)
-{
-    std::string referencedVariableName;
-    VariablePtr referencedVariable = reset->variable();
-    if (referencedVariable != nullptr) {
-        referencedVariableName = referencedVariable->name();
-    }
-    std::string resetOrder;
-    if (reset->isOrderSet()) {
-        resetOrder = convertIntToString(reset->order());
-    }
-    int order = 0;
-    bool orderDefined = false;
-    bool orderValid = false;
-    XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
-        if (attribute->isType("order")) {
-            orderValid = isCellMLInteger(attribute->value());
-            if (orderValid) {
-                order = convertToInt(attribute->value());
-            }
-        } else if (attribute->isType("id")) {
-            when->setId(attribute->value());
-        } else {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid attribute '" + attribute->name() + "'.");
-            err->setWhen(when);
-            mParser->addError(err);
-        }
-        attribute = attribute->next();
-    }
-
-    if (orderValid) {
-        when->setOrder(order);
-    } else if (!orderDefined) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' does not have an order defined.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_ORDER);
-        mParser->addError(err);
-    }
-
-    size_t mathNodeCount = 0;
-    XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
-        if (childNode->isMathmlElement("math")) {
-            // TODO: copy any namespaces declared in parents into the math element
-            //       so math is a valid subdocument.
-            std::string math = childNode->convertToString(true) + "\n";
-            ++mathNodeCount;
-            if (mathNodeCount == 1) {
-                when->setCondition(math);
-            } else if (mathNodeCount == 2) {
-                when->setValue(math);
-            } else {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' contains more than two MathML child elements.");
-                err->setWhen(when);
-                err->setRule(SpecificationRule::WHEN_CHILD);
-                mParser->addError(err);
-            }
-        } else if (childNode->isText()) {
-            const std::string textNode = childNode->convertToString();
-            // Ignore whitespace when parsing.
-            if (hasNonWhitespaceCharacters(textNode)) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                err->setWhen(when);
-                err->setRule(SpecificationRule::WHEN_CHILD);
-                mParser->addError(err);
-            }
-        } else if (childNode->isComment()) {
-            // Do nothing.
-        } else {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid child element '" + childNode->name() + "'.");
-            err->setWhen(when);
-            err->setRule(SpecificationRule::WHEN_CHILD);
-            mParser->addError(err);
         }
         childNode = childNode->next();
     }
 
-    if (mathNodeCount == 0 || mathNodeCount == 1) {
-        std::string mathNodeCountString = "zero";
-        std::string plural = "s";
-        if (mathNodeCount == 1) {
-            mathNodeCountString = "only one";
-            plural = "";
-        }
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' contains " + mathNodeCountString + " MathML child element" + plural + ".");
-        err->setWhen(when);
-        mParser->addError(err);
-    }
+    checkResetChildMultiplicity(testValueCount, "test_value", reset, component);
+    checkResetChildMultiplicity(resetValueCount, "reset_value", reset, component);
 }
 
 } // namespace libcellml

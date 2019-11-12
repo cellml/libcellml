@@ -2,8 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%import "createconstructor.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::ImportSource
 "The `ImportSource` class is for defining a location at which a CellML model is
@@ -31,8 +32,7 @@ unset).";
 #include "libcellml/importsource.h"
 %}
 
-%ignore libcellml::ImportSource::ImportSource(ImportSource &&);
-%ignore libcellml::ImportSource::operator =;
+%create_constructor(ImportSource)
 
 %include "libcellml/types.h"
 %include "libcellml/importsource.h"

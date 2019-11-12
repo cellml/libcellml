@@ -14,40 +14,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
-#include "libcellml/componententity.h"
-#include "libcellml/namedentity.h"
+#pragma once
+
+#include <iostream>
+#include <sstream>
 
 namespace libcellml {
 
-/**
- * @brief The NamedEntity::NamedEntityImpl struct.
- *
- * The private implementation for the NamedEntity class.
- */
-struct NamedEntity::NamedEntityImpl
+struct Debug
 {
-    std::string mName; /**< Entity name represented as a std::string. */
+    Debug() = default;
+
+    ~Debug()
+    {
+        std::cout << mSS.str() << std::endl;
+    }
+
+    Debug &operator<<(const void *p)
+    {
+        std::ostringstream ss;
+        ss << static_cast<const void *>(p);
+        mSS << ss.str();
+        return *this;
+    }
+
+    // Accept just about anything.
+    template<class T>
+    Debug &operator<<(const T &x)
+    {
+        mSS << x;
+        return *this;
+    }
+
+private:
+    std::ostringstream mSS;
 };
-
-NamedEntity::NamedEntity()
-    : mPimpl(new NamedEntityImpl())
-{
-}
-
-NamedEntity::~NamedEntity()
-{
-    delete mPimpl;
-}
-
-void NamedEntity::setName(const std::string &name)
-{
-    mPimpl->mName = name;
-}
-
-std::string NamedEntity::name() const
-{
-    return mPimpl->mName;
-}
 
 } // namespace libcellml
