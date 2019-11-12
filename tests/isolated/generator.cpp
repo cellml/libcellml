@@ -24,72 +24,72 @@ TEST(Generator, isolatedFirstOrderModel)
 {
     // This test resulted from https://github.com/cellml/libcellml/issues/432
 
-    //  1.a   Create the model instance
+    //  1.a   Create the model instance.
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("Tutorial4_FirstOrderModel");
 
-    //  1.b   Create a component and add it into the model
+    //  1.b   Create a component and add it into the model.
     libcellml::ComponentPtr component = libcellml::Component::create();
     component->setName("IonChannel");
     model->addComponent(component);
 
     //  2.a   Define the mathematics.
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    const std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
 
     // dy/dt = alpha_y*(1-y) - beta_y*y
-    std::string equation1 =
-        "<apply>\
-            <eq/>\
-            <apply>\
-                <diff/>\
-                <bvar>\
-                    <ci>t</ci>\
-                </bvar>\
-                <ci>y</ci>\
-            </apply>\
-            <apply>\
-                <minus/>\
-                <apply>\
-                    <times/>\
-                    <ci>alpha_y</ci>\
-                    <apply>\
-                        <minus/>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                        <ci>y</ci>\
-                    </apply>\
-                </apply>\
-                <apply>\
-                    <times/>\
-                    <ci>beta_y</ci>\
-                    <ci>y</ci>\
-                </apply>\
-            </apply>\
-        </apply>";
+    const std::string equation1 =
+        "<apply>\n"
+        "  <eq/>\n"
+        "  <apply>\n"
+        "    <diff/>\n"
+        "    <bvar>\n"
+        "      <ci>t</ci>\n"
+        "    </bvar>\n"
+        "    <ci>y</ci>\n"
+        "  </apply>\n"
+        "  <apply>\n"
+        "    <minus/>\n"
+        "    <apply>\n"
+        "      <times/>\n"
+        "      <ci>alpha_y</ci>\n"
+        "      <apply>\n"
+        "        <minus/>\n"
+        "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "        <ci>y</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "    <apply>\n"
+        "      <times/>\n"
+        "      <ci>beta_y</ci>\n"
+        "      <ci>y</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</apply>\n";
     // i_y = g_y*power(y,gamma)*(V-E_y)
-    std::string equation2 =
-        "<apply>\
-            <eq/>\
-            <ci>i_y</ci>\
-            <apply>\
-                <times/>\
-                <ci>g_y</ci>\
-                <apply>\
-                    <minus/>\
-                    <ci>V</ci>\
-                    <ci>E_y</ci>\
-                </apply>\
-                <apply>\
-                    <power/>\
-                    <ci>y</ci>\
-                    <ci>gamma</ci>\
-                </apply>\
-            </apply>\
-        </apply>";
-    std::string mathFooter = "</math>";
+    const std::string equation2 =
+        "<apply>\n"
+        "  <eq/>\n"
+        "  <ci>i_y</ci>\n"
+        "  <apply>\n"
+        "    <times/>\n"
+        "    <ci>g_y</ci>\n"
+        "    <apply>\n"
+        "      <minus/>\n"
+        "      <ci>V</ci>\n"
+        "      <ci>E_y</ci>\n"
+        "    </apply>\n"
+        "    <apply>\n"
+        "      <power/>\n"
+        "      <ci>y</ci>\n"
+        "      <ci>gamma</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</apply>";
+    const std::string mathFooter = "</math>";
 
-    //  2.b   Add the maths to the component.  Note that there is only one maths
+    //  2.b   Add the maths to the component. Note that there is only one maths
     //        string stored, so parts which are appended must create a viable
-    //        MathML2 string when concantenated.  To clear any string which is
+    //        MathML string when concantenated. To clear any string, which is
     //        already stored, simply call setMath("") with an empty string.
     component->setMath(mathHeader);
     component->appendMath(equation1);
@@ -103,7 +103,7 @@ TEST(Generator, isolatedFirstOrderModel)
     libcellml::VariablePtr t = libcellml::Variable::create();
     t->setName("t");
     t->setUnits("millisecond");
-    // Note: time is our integration base variable so is not initialised
+    // Note: time is our integration base variable so it is not initialised.
 
     libcellml::VariablePtr V = libcellml::Variable::create();
     V->setName("V");
@@ -134,7 +134,7 @@ TEST(Generator, isolatedFirstOrderModel)
     i_y->setName("i_y");
     i_y->setUnits("microA_per_cm2");
     // Note that no initial value is needed for this variable as its value
-    // is defined by equation2
+    // is defined by equation2.
 
     libcellml::VariablePtr g_y = libcellml::Variable::create();
     g_y->setName("g_y");
@@ -146,8 +146,8 @@ TEST(Generator, isolatedFirstOrderModel)
     gamma->setUnits("dimensionless");
     gamma->setInitialValue(4.0);
 
-    //  3.c Adding the variables to the component.  Note that Variables are
-    //      added by their pointer (cf. their name)
+    //  3.c   Adding the variables to the component. Note that Variables are
+    //        added by their pointer (cf. their name).
     component->addVariable(t);
     component->addVariable(V);
     component->addVariable(E_y);
@@ -158,10 +158,10 @@ TEST(Generator, isolatedFirstOrderModel)
     component->addVariable(beta_y);
     component->addVariable(y);
 
-    //  4.a Defining the units of millisecond, millivolt, per_millisecond,
-    //      microA_per_cm2, and milliS_per_cm2. Note that the dimensionless
-    //      units are part of those built-in already, so do not need to be
-    //      defined here.
+    //  4.a   Defining the units of millisecond, millivolt, per_millisecond,
+    //        microA_per_cm2, and milliS_per_cm2. Note that the dimensionless
+    //        units are part of those built-in already, so they don't need to be
+    //        defined here.
     libcellml::UnitsPtr ms = libcellml::Units::create();
     ms->setName("millisecond");
     ms->addUnit("second", "milli");
@@ -184,27 +184,27 @@ TEST(Generator, isolatedFirstOrderModel)
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
 
-    //  4.b Add these units into the model
+    //  4.b   Add these units into the model.
     model->addUnits(ms);
     model->addUnits(mV);
     model->addUnits(per_ms);
     model->addUnits(microA_per_cm2);
     model->addUnits(mS_per_cm2);
 
-    //  4.c Validate the final arrangement.  No errors are expected at this stage.
+    //  4.c   Validate the final arrangement. No errors are expected at this stage.
     libcellml::Validator validator;
     validator.validateModel(model);
     printErrors(validator);
 
-    //  5.a   Create a Generator instance.  By default the options set in the
+    //  5.a   Create a Generator instance. By default the options set in the
     //        generator constructor are:
-    //          - profile() return "C" (cf "PYTHON")
-    //          - modelType() returns "ODE"
+    //          - profile() return "C" (cf "PYTHON"); and
+    //          - modelType() returns "ODE".
 
     libcellml::Generator generator;
     generator.processModel(model);
 
-    //  5.b Check whether the generator has encountered any errors
+    //  5.b   Check whether the generator has encountered any errors.
     printErrors(generator);
 
     EXPECT_EQ(size_t(0), generator.errorCount());
