@@ -1910,7 +1910,7 @@ TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
-TEST(Parser, mathWithNamespacesDefinedOnTheMathNodeNonStandardPrefix)
+TEST(Parser, mathWithNonStandardCellMLPrefix)
 {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
