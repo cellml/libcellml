@@ -212,15 +212,15 @@ struct Validator::ValidatorImpl
     * @brief Validate that equivalent variable pairs in the @p model
     * have equivalent units.
     * Any errors will be logged in the @c Validator.
-    * 
-    * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.  
+    *
+    * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
     * Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
     *
     * @param model The model containing the variables
     * @param v1 The variable which may contain units.
     * @param v2 The equivalent variable which may contain units.
     * @param hints String containing error messages to be passed back to the calling function for logging.
-    * @param multiplier Double returning the effective multiplier mismatch between the units.  
+    * @param multiplier Double returning the effective multiplier mismatch between the units.
     */
     bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
 
@@ -829,29 +829,27 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
 
 bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode)
 {
-    bool checkUnitsIsInModel = false;
     if (isCellmlIdentifier(unitsName)) {
-        checkUnitsIsInModel = true;
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
-        err->setComponent(component);
-        err->setKind(Error::Kind::MATHML);
-        mValidator->addError(err);
+        return true;
     }
 
-    return checkUnitsIsInModel;
+    ErrorPtr err = std::make_shared<Error>();
+    err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
+    err->setComponent(component);
+    err->setKind(Error::Kind::MATHML);
+    mValidator->addError(err);
+
+    return false;
 }
 
 std::string text(const XmlNodePtr &node)
 {
-    std::string t;
     if (node != nullptr) {
         if (node->isText()) {
-            t = node->convertToStrippedString();
+            return node->convertToStrippedString();
         }
     }
-    return t;
+    return {};
 }
 
 void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component)
@@ -951,7 +949,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (childNode != nullptr) {
         if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + childNode->name() + "' element" + " that is not a supported MathML element.");
+            err->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -963,7 +961,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (nextNode != nullptr) {
         if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + nextNode->name() + "' element" + " that is not a supported MathML element.");
+            err->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);

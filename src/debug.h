@@ -21,28 +21,26 @@ limitations under the License.
 
 namespace libcellml {
 
-struct dbg
+struct Debug
 {
-    dbg() = default;
+    Debug() = default;
 
-    ~dbg()
+    ~Debug()
     {
         std::cout << mSS.str() << std::endl;
     }
 
-public:
-    dbg &operator<<(const void *p)
+    Debug &operator<<(const void *p)
     {
-        const void *address = static_cast<const void *>(p);
         std::ostringstream ss;
-        ss << address;
+        ss << static_cast<const void *>(p);
         mSS << ss.str();
         return *this;
     }
 
-    // accepts just about anything
+    // Accept just about anything.
     template<class T>
-    dbg &operator<<(const T &x)
+    Debug &operator<<(const T &x)
     {
         mSS << x;
         return *this;

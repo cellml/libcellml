@@ -17,6 +17,7 @@ limitations under the License.
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
+#include "xmlutils.h"
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -256,55 +257,6 @@ void Parser::ParserImpl::updateModel(const ModelPtr &model, const std::string &i
     loadModel(model, input);
 }
 
-XmlNamespaceMap attributeNamespaces(const XmlNodePtr &node)
-{
-    XmlNamespaceMap namespaceMap;
-    auto tempAttribute = node->firstAttribute();
-    while (tempAttribute != nullptr) {
-        namespaceMap[tempAttribute->namespacePrefix()] = tempAttribute->namespaceUri();
-        tempAttribute = tempAttribute->next();
-    }
-    return namespaceMap;
-}
-
-XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1, const XmlNamespaceMap &namespaceMap2)
-{
-    XmlNamespaceMap undefinedNamespaces;
-    XmlNamespaceMap::const_iterator it;
-    for (it = namespaceMap1.begin(); it != namespaceMap1.end(); ++it) {
-        auto result = namespaceMap2.find(it->first);
-        if (result == namespaceMap2.end()) {
-            undefinedNamespaces[it->first] = it->second;
-        }
-    }
-    return undefinedNamespaces;
-}
-
-XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
-{
-    XmlNamespaceMap undefinedNamespaces;
-    auto tempNode = node;
-    while (tempNode != nullptr) {
-        auto definedNamespaces = tempNode->definedNamespaces();
-        auto usedNamespaces = attributeNamespaces(tempNode);
-        auto missingNamespaces = determineMissingNamespaces(usedNamespaces, definedNamespaces);
-
-        // Update undefined namespaces with missing namespaces.
-        missingNamespaces.insert(undefinedNamespaces.begin(), undefinedNamespaces.end());
-        std::swap(undefinedNamespaces, missingNamespaces);
-
-        auto subUndefineNamespaces = traverseTreeForUndefinedNamespaces(tempNode->firstChild());
-
-        // Update undefined namespaces with undefined namespaces in children.
-        subUndefineNamespaces.insert(undefinedNamespaces.begin(), undefinedNamespaces.end());
-        std::swap(undefinedNamespaces, subUndefineNamespaces);
-
-        tempNode = tempNode->next();
-    }
-
-    return undefinedNamespaces;
-}
-
 void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input)
 {
     XmlDocPtr doc = std::make_shared<XmlDoc>();
@@ -476,8 +428,8 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // Copy any namespaces that do not feature as a namespace definition
             // of the math node into the math node.
             auto mathElementDefinedNamespaces = childNode->definedNamespaces();
-            auto possiblyUndefinedNamspaces = traverseTreeForUndefinedNamespaces(childNode);
-            auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamspaces, mathElementDefinedNamespaces);
+            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode);
+            auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamespaces, mathElementDefinedNamespaces);
             XmlNamespaceMap::const_iterator it;
             for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
                 childNode->addNamespaceDefinition(it->second, it->first);

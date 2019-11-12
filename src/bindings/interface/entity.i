@@ -34,9 +34,26 @@ unset).";
 
 %{
 #include "libcellml/entity.h"
+#include "libcellml/model.h"
+#include "libcellml/component.h"
 %}
 
 %ignore libcellml::Entity::Entity();
+
+%typemap(out) libcellml::EntityPtr parent {
+    auto isAModel = std::dynamic_pointer_cast<libcellml::Model>($1);
+    auto isAComponent = std::dynamic_pointer_cast<libcellml::Component>($1);
+    if (isAModel != nullptr) {
+        std::shared_ptr<  libcellml::Model > *smartresult = result ? new std::shared_ptr<  libcellml::Model >(isAModel) : nullptr;
+        $result = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__Model_t, SWIG_POINTER_OWN);
+    } else if (isAComponent != nullptr) {
+        std::shared_ptr<  libcellml::Component > *smartresult = result ? new std::shared_ptr<  libcellml::Component >(isAComponent) : nullptr;
+        $result = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_libcellml__Component_t, SWIG_POINTER_OWN);
+    } else {
+        $result = Py_None;
+        Py_INCREF($result);
+    }
+}
 
 %include "libcellml/types.h"
 %include "libcellml/entity.h"
