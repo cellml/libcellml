@@ -16,13 +16,12 @@ limitations under the License.
 
 #include "libcellml/componententity.h"
 
-#include "libcellml/component.h"
-#include "libcellml/model.h"
-#include "libcellml/units.h"
-
 #include <algorithm>
 #include <memory>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -63,33 +62,6 @@ ComponentEntity::ComponentEntity()
 ComponentEntity::~ComponentEntity()
 {
     delete mPimpl;
-}
-
-ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
-    : NamedEntity(rhs)
-    , mPimpl(new ComponentEntityImpl())
-{
-    mPimpl->mComponents = rhs.mPimpl->mComponents;
-    mPimpl->mEncapsulationId = rhs.mPimpl->mEncapsulationId;
-}
-
-ComponentEntity::ComponentEntity(ComponentEntity &&rhs) noexcept
-    : NamedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-ComponentEntity &ComponentEntity::operator=(ComponentEntity rhs)
-{
-    NamedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void ComponentEntity::swap(ComponentEntity &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool ComponentEntity::addComponent(const ComponentPtr &component)

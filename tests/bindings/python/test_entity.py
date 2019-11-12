@@ -45,7 +45,6 @@ class EntityTestCase(unittest.TestCase):
     def test_set_parent(self):
         from libcellml import Entity, Model, Component
 
-        # void setParent(Model *parent)
         m = Model()
         x = Entity()
         x.setParent(m)

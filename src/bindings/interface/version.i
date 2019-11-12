@@ -2,7 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
-%include "std_string.i"
+%include <std_string.i>
 
 %feature("docstring") libcellml::version
 "Returns the version of the library as a number.";

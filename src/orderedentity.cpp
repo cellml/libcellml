@@ -43,33 +43,6 @@ OrderedEntity::~OrderedEntity()
     delete mPimpl;
 }
 
-OrderedEntity::OrderedEntity(const OrderedEntity &rhs)
-    : Entity(rhs)
-    , mPimpl(new OrderedEntityImpl())
-{
-    mPimpl->mOrder = rhs.mPimpl->mOrder;
-    mPimpl->mOrderSet = rhs.mPimpl->mOrderSet;
-}
-
-OrderedEntity::OrderedEntity(OrderedEntity &&rhs) noexcept
-    : Entity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-OrderedEntity &OrderedEntity::operator=(OrderedEntity rhs)
-{
-    Entity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void OrderedEntity::swap(OrderedEntity &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void OrderedEntity::setOrder(int order)
 {
     mPimpl->mOrder = order;

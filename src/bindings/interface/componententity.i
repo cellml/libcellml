@@ -2,8 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "importedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::ComponentEntity
 "Abstract class that provides component managing functionality.";
@@ -108,8 +108,7 @@ the structure."
 #include "libcellml/componententity.h"
 %}
 
-%ignore libcellml::ComponentEntity::ComponentEntity(ComponentEntity &&);
-%ignore libcellml::ComponentEntity::operator =;
+%ignore libcellml::ComponentEntity::ComponentEntity();
 
 %include "libcellml/types.h"
 %include "libcellml/componententity.h"

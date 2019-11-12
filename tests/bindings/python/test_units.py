@@ -11,18 +11,19 @@ class UnitsTestCase(unittest.TestCase):
 
         x = Units()
         del(x)
-        y = Units()
-        z = Units(y)
-        del(y, z)
+
+        y = Units("mine")
+        self.assertEqual("mine", y.name())
+        del y
 
     def test_inheritance(self):
         import libcellml
         from libcellml import Units
 
         x = Units()
-        self.assertIsInstance(x, libcellml.ImportedEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.importedentity.ImportedEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
         # Test access to inherited methods
         x = Units()
@@ -30,8 +31,6 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
-        y = Units(x)
-        self.assertEqual(y.id(), idx)
 
     def test_standard_unit(self):
         from libcellml import Units

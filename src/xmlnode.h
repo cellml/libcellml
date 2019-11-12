@@ -16,17 +16,21 @@ limitations under the License.
 
 #pragma once
 
-#include "xmlattribute.h"
-
+#include <map>
 #include <memory>
 #include <string>
 
-#include <libxml/parser.h>
+#include "xmlattribute.h"
 
 namespace libcellml {
 
 class XmlNode; /**< Forward declaration of the internal XmlNode class. */
 using XmlNodePtr = std::shared_ptr<XmlNode>; /**< Type definition for shared XML node pointer. */
+/**
+ * Type definition for the XML namespace map using XML namespace prefix
+ * for the key and the XML namespace URI for the value.
+ */
+using XmlNamespaceMap = std::map<std::string, std::string>;
 
 /**
  * @brief The XmlNode class.
@@ -57,8 +61,56 @@ public:
      *
      * @return A @c std::string representation of the XML namespace URI.
      */
-
     std::string namespaceUri() const;
+
+    /**
+     * @brief Add a namespace definition to this XML element.
+     *
+     * Add a libXml2 namespace definition to this XML element using the given URI
+     * and prefix.
+     *
+     * @param uri The @c std::string representation of the XML namespace URI.
+     * @param prefix The @c std::string representation of the XML namespace prefix.
+     */
+    void addNamespaceDefinition(const std::string &uri, const std::string &prefix);
+
+    /**
+     * @brief Remove the namespace definition from this XML element.
+     *
+     * Remove all matching namespace definitions that match the given URI.
+     * The URI is compared against the namespace href attribute and if
+     * a match is found the namespace definition is removed from this XML
+     * elements list of namespace definitions.
+     *
+     * If the given XML namespace URI does not match any of the namespaces
+     * in the namespace definition list then nothing is changed.
+     *
+     * @param uri The @c std::string representation of the XML namespace URI.
+     */
+    void removeNamespaceDefinition(const std::string &uri);
+
+    /**
+     * @brief Test if this XML element has the given namespace definition.
+     *
+     * Test to see if this XML element has the given namespace definition defined
+     * on it.  The URI is compared against the namespace definition href attribute.
+     * If a match is found true is returned, otherwise false is.
+     *
+     * @param uri The @c std::string representation of the XML namespace URI.
+     * @return true if this element has the given namespace definition, false otherwise.
+     */
+    bool hasNamespaceDefinition(const std::string &uri);
+
+    /**
+     * @brief Get the namespaces defined on this XML element.
+     *
+     * Get the namespaces defined on this XML element as a map.  The map is constructed
+     * from the XML namespace prefix and XML namespace URI as key and value for the map
+     * respectively.
+     *
+     * @return A map with a key of an XML namespace prefix and a value of an XML namespace URI.
+     */
+    XmlNamespaceMap definedNamespaces() const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the given
@@ -76,7 +128,7 @@ public:
      * given namespace @p ns with the given local name @p name;
      * and @c false otherwise.
      */
-    bool isElement(const char *name, const char *ns);
+    bool isElement(const char *name, const char *ns) const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
@@ -92,7 +144,7 @@ public:
      * CellML 2.0 namespace with the given local name @p name; and
      * @c false otherwise.
      */
-    bool isCellmlElement(const char *name = nullptr);
+    bool isCellmlElement(const char *name = nullptr) const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
@@ -108,7 +160,7 @@ public:
      * MathML namespace with the given local name @p name; and
      * @c false otherwise.
      */
-    bool isMathmlElement(const char *name = nullptr);
+    bool isMathmlElement(const char *name = nullptr) const;
 
     /**
      * @brief Check if this @c XmlNode is a text node.
@@ -118,7 +170,7 @@ public:
      *
      * @return @c true if this @c XmlNode is a text node and @c false otherwise.
      */
-    bool isText();
+    bool isText() const;
 
     /**
      * @brief Check if this @c XmlNode is a comment node.
@@ -129,7 +181,7 @@ public:
      * @return @c true if this @c XmlNode is a comment node and @c false
      * otherwise.
      */
-    bool isComment();
+    bool isComment() const;
 
     /**
      * @brief Get the name of the XML element.
@@ -152,7 +204,7 @@ public:
      * @return @c true if this @c XmlNode has an attribute of the type
      * specified by the @p attributeName and @c false otherwise.
      */
-    bool hasAttribute(const char *attributeName);
+    bool hasAttribute(const char *attributeName) const;
 
     /**
      * @brief Get the attribute of the specified type for this @c XmlNode
@@ -165,7 +217,7 @@ public:
      * @return The @c std::string form of the attribute value of the
      * specified type.
      */
-    std::string attribute(const char *attributeName);
+    std::string attribute(const char *attributeName) const;
 
     /**
      * @brief Get the first attribute for this @c XmlNode
@@ -176,7 +228,7 @@ public:
      * @return The @c XmlAttributePtr form of the first attribute
      * for this @c XmlNode.
      */
-    XmlAttributePtr firstAttribute();
+    XmlAttributePtr firstAttribute() const;
 
     /**
      * @brief Get the first child for this @c XmlNode.
@@ -187,7 +239,7 @@ public:
      *
      * @return The @c XmlNodePtr to the first child node for this @c XmlNode.
      */
-    XmlNodePtr firstChild();
+    XmlNodePtr firstChild() const;
 
     /**
      * @brief Get the @c XmlNode immediately following this @c XmlNode.
@@ -198,7 +250,7 @@ public:
      *
      * @return The @c XmlNodePtr to the next node following this @c XmlNode.
      */
-    XmlNodePtr next();
+    XmlNodePtr next() const;
 
     /**
      * @brief Get the @c XmlNode parent of this @c XmlNode.
@@ -209,7 +261,7 @@ public:
      *
      * @return The @c XmlNodePtr to the parent of this @c XmlNode.
      */
-    XmlNodePtr parent();
+    XmlNodePtr parent() const;
 
     /**
      * @brief Convert this @c XmlNode content into a @c std::string.
@@ -222,7 +274,7 @@ public:
      *
      * @return The @c std::string representation of the content for this @c XmlNode.
      */
-    std::string convertToString(bool format = false);
+    std::string convertToString(bool format = false) const;
 
     /**
      * @brief Convert this @c XmlNode content into a stripped @c std::string.
@@ -232,7 +284,7 @@ public:
      *
      * @return The stripped @c std::string representation of the content for this @c XmlNode.
      */
-    std::string convertToStrippedString();
+    std::string convertToStrippedString() const;
 
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */

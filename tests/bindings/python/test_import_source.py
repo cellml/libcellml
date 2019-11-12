@@ -11,16 +11,14 @@ class ImportSourceTestCase(unittest.TestCase):
 
         # Test create/copy/destroy
         x = ImportSource()
-        y = ImportSource()
-        z = ImportSource(y)
-        del(x, y, z)
+        del(x)
 
     def test_inheritance(self):
         import libcellml
         from libcellml import ImportSource
 
         x = ImportSource()
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
     def test_set_url(self):
         from libcellml import ImportSource

@@ -43,22 +43,6 @@ TEST(Coverage, connectionComment)
     EXPECT_EQ(size_t(4), p.errorCount());
 }
 
-TEST(Coverage, import)
-{
-    const std::string id = "id";
-
-    libcellml::ImportSource i;
-    libcellml::ImportSource im;
-
-    i.setId(id);
-
-    im = std::move(i);
-
-    libcellml::ImportSource ic(im);
-
-    EXPECT_EQ(id, ic.id());
-}
-
 TEST(Coverage, importWithNonHrefXlink)
 {
     const std::string e =
@@ -98,75 +82,6 @@ TEST(Coverage, printer)
     EXPECT_EQ(size_t(1), pc.errorCount());
 }
 
-TEST(Coverage, units)
-{
-    const std::string n = "dimensionless";
-
-    libcellml::Units u;
-    libcellml::Units um;
-
-    u.setName("dimensionless");
-
-    um = std::move(u);
-
-    libcellml::Units uc(um);
-
-    EXPECT_EQ(n, uc.name());
-}
-
-TEST(Coverage, when)
-{
-    const std::string id = "id";
-
-    libcellml::When w;
-    libcellml::When wm;
-
-    w.setId(id);
-
-    wm = std::move(w);
-
-    libcellml::When wc(wm);
-
-    EXPECT_EQ(id, wc.id());
-}
-
-TEST(Coverage, variable)
-{
-    const std::string n = "dimensionless";
-
-    libcellml::Variable v;
-    libcellml::Variable vm;
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-
-    u->setName(n);
-    v.setUnits(u);
-
-    vm = std::move(v);
-
-    libcellml::Variable vc(vm);
-
-    EXPECT_EQ(n, vc.units());
-}
-
-TEST(Coverage, component)
-{
-    const std::string n = "name";
-
-    libcellml::Component rc;
-    libcellml::Component ao;
-
-    rc.setName(n);
-
-    ao = rc;
-
-    EXPECT_EQ(n, ao.name());
-
-    std::vector<libcellml::Component> vec;
-
-    vec.push_back(rc);
-    vec.insert(vec.begin(), ao);
-}
-
 TEST(Coverage, error)
 {
     const std::string description = "test";
@@ -181,25 +96,6 @@ TEST(Coverage, error)
     libcellml::Error ec(em);
 
     EXPECT_EQ(description, ec.description());
-}
-
-TEST(Coverage, model)
-{
-    const std::string n = "model";
-
-    libcellml::Model rm;
-    libcellml::Model ao;
-
-    rm.setName(n);
-
-    ao = rm;
-
-    EXPECT_EQ(n, ao.name());
-
-    std::vector<libcellml::Model> vec;
-
-    vec.push_back(rm);
-    vec.insert(vec.begin(), ao);
 }
 
 TEST(Coverage, generator)
@@ -228,6 +124,8 @@ TEST(Coverage, generatorProfile)
 
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
+
+    auto gp = libcellml::GeneratorProfile::create();
 }
 
 TEST(Coverage, generatorVariable)
@@ -245,11 +143,11 @@ TEST(Coverage, generatorVariable)
 
 TEST(Coverage, entityHasParent)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
 
     c2->addVariable(v);
     c1->addComponent(c2);
