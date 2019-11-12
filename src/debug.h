@@ -32,14 +32,13 @@ struct Debug
 
     Debug &operator<<(const void *p)
     {
-        const void *address = static_cast<const void *>(p);
         std::ostringstream ss;
-        ss << address;
+        ss << static_cast<const void *>(p);
         mSS << ss.str();
         return *this;
     }
 
-    // accepts just about anything
+    // Accept just about anything.
     template<class T>
     Debug &operator<<(const T &x)
     {
