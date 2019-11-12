@@ -163,7 +163,7 @@ bool Component::removeVariable(const VariablePtr &variable)
 
 void Component::removeAllVariables()
 {
-    for(const auto &variable : mPimpl->mVariables) {
+    for (const auto &variable : mPimpl->mVariables) {
         variable->clearParent();
     }
     mPimpl->mVariables.clear();
