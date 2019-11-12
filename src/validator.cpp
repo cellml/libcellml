@@ -829,29 +829,27 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
 
 bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode)
 {
-    bool checkUnitsIsInModel = false;
     if (isCellmlIdentifier(unitsName)) {
-        checkUnitsIsInModel = true;
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
-        err->setComponent(component);
-        err->setKind(Error::Kind::MATHML);
-        mValidator->addError(err);
+        return true;
     }
 
-    return checkUnitsIsInModel;
+    ErrorPtr err = std::make_shared<Error>();
+    err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
+    err->setComponent(component);
+    err->setKind(Error::Kind::MATHML);
+    mValidator->addError(err);
+
+    return false;
 }
 
 std::string text(const XmlNodePtr &node)
 {
-    std::string t;
     if (node != nullptr) {
         if (node->isText()) {
-            t = node->convertToStrippedString();
+            return node->convertToStrippedString();
         }
     }
-    return t;
+    return {};
 }
 
 void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component)

@@ -62,28 +62,26 @@ std::string XmlAttribute::namespaceUri() const
 std::string XmlAttribute::namespacePrefix() const
 {
     if (mPimpl->mXmlAttributePtr->ns == nullptr || mPimpl->mXmlAttributePtr->ns->prefix == nullptr) {
-        return std::string();
+        return {};
     }
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->prefix));
+    return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->prefix);
 }
 
 bool XmlAttribute::inNamespaceUri(const char *ns) const
 {
-    bool in = false;
     if (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0) {
-        in = true;
+        return true;
     }
-    return in;
+    return false;
 }
 
 bool XmlAttribute::isType(const char *name, const char *ns) const
 {
-    bool found = false;
     if ((xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
-        found = true;
+        return true;
     }
-    return found;
+    return false;
 }
 
 bool XmlAttribute::isCellmlType(const char *name) const
@@ -93,11 +91,10 @@ bool XmlAttribute::isCellmlType(const char *name) const
 
 std::string XmlAttribute::name() const
 {
-    std::string type;
     if (mPimpl->mXmlAttributePtr->name != nullptr) {
-        type = std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
+        return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
     }
-    return type;
+    return {};
 }
 
 std::string XmlAttribute::value() const
