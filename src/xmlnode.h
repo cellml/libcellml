@@ -70,7 +70,7 @@ public:
      * and prefix.
      *
      * @param uri The @c std::string representation of the XML namespace URI.
-     * @param prefix The @c std::string representatin of the XML namespace prefix.
+     * @param prefix The @c std::string representation of the XML namespace prefix.
      */
     void addNamespaceDefinition(const std::string &uri, const std::string &prefix);
 

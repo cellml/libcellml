@@ -1910,7 +1910,7 @@ TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
-TEST(Parser, mathWithNamespacesDefinedOnTheMathNodeNonStandardPrefix)
+TEST(Parser, mathWithNonStandardCellMLPrefix)
 {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1927,6 +1927,32 @@ TEST(Parser, mathWithNamespacesDefinedOnTheMathNodeNonStandardPrefix)
         "        </apply>\n"
         "      </apply>\n"
         "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithMathmlNamespaceOnModel)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_2=\"http://www.w3.org/1998/Math/MathML\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component>\n"
+        "    <ns_2:math>\n"
+        "      <ns_2:apply>\n"
+        "        <ns_2:eq/>\n"
+        "        <ns_2:ci>b2</ns_2:ci>\n"
+        "        <ns_2:apply>\n"
+        "          <ns_2:times/>\n"
+        "          <ns_2:cn ns_1:units=\"dimensionless\">2.0</ns_2:cn>\n"
+        "          <ns_2:ci>d</ns_2:ci>\n"
+        "        </ns_2:apply>\n"
+        "      </ns_2:apply>\n"
+        "    </ns_2:math>\n"
         "  </component>\n"
         "</model>\n";
 

@@ -2143,6 +2143,7 @@ TEST(Validator, multipleDefinitionsOfCellMLNamespace)
 
     libcellml::Validator validator;
     validator.validateModel(model);
+
     printErrors(validator);
 
     EXPECT_EQ(size_t(0), validator.errorCount());
