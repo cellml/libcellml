@@ -1094,18 +1094,42 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
-TEST(Variable, parentlessVariable)
+TEST(Variable, parentlessUsingRemoveVariable)
 {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
 
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
 
     m->setName("modelName");
     comp1->setName("component1");
-    comp2->setName("component2");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    m->addComponent(comp1);
+
+    EXPECT_TRUE(v1->hasParent());
+    // Make a variable without a parent component.
+    comp1->removeVariable(v1);
+
+    EXPECT_EQ(size_t(0), comp1->variableCount());
+    EXPECT_FALSE(v1->hasParent());
+    EXPECT_EQ(nullptr, v1->parent());
+}
+
+TEST(Variable, parentlessUsingRemoveAllVariables)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
 
     v1->setName("variable1");
     v2->setName("variable2");
@@ -1113,21 +1137,19 @@ TEST(Variable, parentlessVariable)
     v1->setUnits("dimensionless");
     v2->setUnits("dimensionless");
 
-    v1->setInterfaceType("public");
-    v2->setInterfaceType("public");
-
     comp1->addVariable(v1);
-    comp2->addVariable(v2);
+    comp1->addVariable(v2);
     m->addComponent(comp1);
-    m->addComponent(comp2);
 
-    // Valid connections.
-    libcellml::Variable::addEquivalence(v1, v2);
+    EXPECT_TRUE(v1->hasParent());
+    EXPECT_TRUE(v2->hasParent());
 
     // Make a variable without a parent component.
-    comp2->removeVariable(v2);
+    comp1->removeAllVariables();
 
-    EXPECT_EQ(size_t(0), comp2->variableCount());
+    EXPECT_EQ(size_t(0), comp1->variableCount());
+    EXPECT_FALSE(v1->hasParent());
     EXPECT_FALSE(v2->hasParent());
-    EXPECT_EQ(v2->parent(), nullptr);
+    EXPECT_EQ(nullptr, v1->parent());
+    EXPECT_EQ(nullptr, v2->parent());
 }
