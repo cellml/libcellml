@@ -44,7 +44,7 @@ TEST(Parser, parseSineImportsModelFromFile)
 TEST(Parser, parseInvalidModelFromFile)
 {
     const std::vector<std::string> expectedErrors = {
-        "Start tag expected, '<' not found.",
+        "LibXml2 error: Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
 

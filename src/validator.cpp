@@ -766,7 +766,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(doc->xmlError(i));
+            err->setDescription("LibXml2 error: " + doc->xmlError(i));
             err->setKind(Error::Kind::XML);
             mValidator->addError(err);
         }
@@ -788,8 +788,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         mValidator->addError(err);
         return;
     }
+
     XmlNodePtr nodeCopy = node;
-    std::vector<std::string> bvarNames;
     std::vector<std::string> variableNames;
     for (size_t i = 0; i < component->variableCount(); ++i) {
         std::string variableName = component->variable(i)->name();
@@ -926,14 +926,17 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
 
 void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames)
 {
-    XmlNodePtr childNode = node->firstChild();
     if (node->isMathmlElement("cn")) {
         validateAndCleanCnNode(node, component);
     } else if (node->isMathmlElement("ci")) {
         validateAndCleanCiNode(node, component, variableNames);
-    } else if (childNode != nullptr) {
+    }
+    // Check children for ci/cn.
+    XmlNodePtr childNode = node->firstChild();
+    if (childNode != nullptr) {
         validateAndCleanMathCiCnNodes(childNode, component, variableNames);
-    } // Check siblings for ci/cn.
+    }
+    // Check siblings for ci/cn.
     node = node->next();
     if (node != nullptr) {
         validateAndCleanMathCiCnNodes(node, component, variableNames);
