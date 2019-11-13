@@ -280,7 +280,8 @@ public:
      * @brief Convert this @c XmlNode content into a stripped @c std::string.
      *
      * Converts the content in this @c XmlNode (including all children and
-     * attributes) into a @c std::string.
+     * attributes) into a @c std::string stripping away any whitespace from the
+     * beginning and the end of the @c XmlNode.
      *
      * @return The stripped @c std::string representation of the content for this @c XmlNode.
      */
