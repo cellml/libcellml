@@ -1373,7 +1373,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mNeedAcsch = false;
     mNeedAcoth = false;
 
-    mGenerator->clearErrors();
+    mGenerator->removeAllErrors();
 
     // Recursively process the model's components, so that we end up with an AST
     // for each of the model's equations.

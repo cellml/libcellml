@@ -115,7 +115,7 @@ public:
      *
      * @sa setTestValue
      */
-    void clearTestValue();
+    void removeTestValue();
 
     /**
      * @brief Set an identifier to the test value for this reset.
@@ -134,7 +134,7 @@ public:
      *
      * @sa setTestValueId
      */
-    void clearTestValueId();
+    void removeTestValueId();
 
     /**
      * @brief Return the identifier of the test value for this reset.
@@ -181,7 +181,7 @@ public:
      *
      * @sa setResetValue
      */
-    void clearResetValue();
+    void removeResetValue();
 
     /**
      * @brief Set an identifier to the reset value for this reset.
@@ -199,7 +199,7 @@ public:
      *
      * @sa setResetValueId
      */
-    void clearResetValueId();
+    void removeResetValueId();
 
     /**
      * @brief Return the identifier of the reset value for this reset.
