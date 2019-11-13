@@ -265,7 +265,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(doc->xmlError(i));
+            err->setDescription("LibXml2 error: " + doc->xmlError(i));
             err->setKind(Error::Kind::XML);
             mParser->addError(err);
         }
