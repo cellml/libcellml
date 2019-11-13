@@ -189,7 +189,7 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
-        component->clearParent();
+        component->removeParent();
     }
 
     return component;
@@ -202,7 +202,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
         mPimpl->mComponents.erase(result);
-        foundComponent->clearParent();
+        foundComponent->removeParent();
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = component(i)->takeComponent(name, searchEncapsulated);
