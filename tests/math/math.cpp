@@ -46,7 +46,7 @@ TEST(Maths, appendAndSerialiseMathComponent)
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndRemoveMathComponent)
+TEST(Maths, appendAndRemoveMathFromComponent)
 {
     const std::string eNoMath =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -81,7 +81,7 @@ TEST(Maths, appendAndRemoveMathComponent)
     EXPECT_EQ(eNoMath, a);
 }
 
-TEST(Maths, appendSerialiseAndParseMathModel)
+TEST(Maths, appendSerialiseAndParseMathInComponent)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
