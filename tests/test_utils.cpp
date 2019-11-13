@@ -19,6 +19,7 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 
@@ -37,6 +38,23 @@ std::string fileContents(const std::string &fileName)
     buffer << file.rdbuf();
 
     return buffer.str();
+}
+
+void printErrors(const libcellml::Logger &l, bool headings, bool kinds, bool rule)
+{
+    for (size_t i = 0; i < l.errorCount(); ++i) {
+        std::cout << "Error " << std::setw(3) << i + 1 << ": ";
+        std::cout << l.error(i)->description();
+        if (headings) {
+            std::cout << ", " << l.error(i)->specificationHeading();
+        }
+        if (kinds) {
+            std::cout << ", " << static_cast<int>(l.error(i)->kind());
+        }
+        if (rule) {
+            std::cout << ", " << static_cast<int>(l.error(i)->rule());
+        }
+    }
 }
 
 void debug(const std::string &text, bool newLine)
