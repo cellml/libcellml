@@ -21,15 +21,42 @@ limitations under the License.
 
 namespace libcellml {
 
+/**
+ * @brief Internal class for printing output to the terminal.
+ *
+ * Internal class intended to be used for debugging purposes where
+ * information can be printed to the standard output.
+ *
+ * Use:
+ *   Debug() << "debug information";
+ *
+ * This class automatically adds a new line to the end of a statement.
+ * Note: This class can not be used over multiple lines, it is designed
+ * for single line statements only.
+ */
 struct Debug
 {
-    Debug() = default;
+    Debug() = default; /**< Constructor */
 
+    /**
+     * @brief Destructor writes stream to standard output when deleted.
+     *
+     * Writes out the contents of the buffer to standard output when deleted.
+     */
     ~Debug()
     {
         std::cout << mSS.str() << std::endl;
     }
 
+    /**
+     * @brief Overload the operator <<.
+     *
+     * Overload the operator << to accept pointers.  Returns itself
+     * so that the operator can be chained.
+     *
+     * @param p A castable to const void pointer parameter.
+     * @return This object.
+     */
     Debug &operator<<(const void *p)
     {
         std::ostringstream ss;
@@ -38,7 +65,14 @@ struct Debug
         return *this;
     }
 
-    // Accept just about anything.
+    /**
+     * @brief Overload the operator << to accept just about anything.
+     *
+     * Accept just about anything and add it to the buffer.  Returns itself
+     * so that the operator can be chained.
+     *
+     * @return This object.
+     */
     template<class T>
     Debug &operator<<(const T &x)
     {
