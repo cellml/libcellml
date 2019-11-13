@@ -82,7 +82,7 @@ public:
      *
      * Clears the pointer to the parent entity.
      */
-    void clearParent();
+    void removeParent();
 
     /**
      * @brief Test to see if the given entity has a parent.

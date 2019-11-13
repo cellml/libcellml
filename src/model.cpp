@@ -169,7 +169,7 @@ UnitsPtr Model::takeUnits(size_t index)
     if (index < mPimpl->mUnits.size()) {
         units = mPimpl->mUnits.at(index);
         removeUnits(index);
-        units->clearParent();
+        units->removeParent();
     }
 
     return units;

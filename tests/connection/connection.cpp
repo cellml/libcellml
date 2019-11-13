@@ -118,7 +118,7 @@ TEST(Connection, componentlessVariableInvalidConnection)
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
+TEST(Connection, componentlessVariableInvalidConnectionRemoveParentCheck)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1013,7 +1013,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     EXPECT_EQ(size_t(1), parser.errorCount());
 
     EXPECT_EQ(expectError, parser.error(0)->description());
-    parser.clearErrors();
+    parser.removeAllErrors();
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     libcellml::Printer printer;

@@ -410,7 +410,7 @@ TEST(Reset, testValueSetClear)
     EXPECT_EQ(test2, out2);
 
     // Test clearing of test_value block
-    r->clearTestValue();
+    r->removeTestValue();
     const std::string out3 = p.printModel(m);
     EXPECT_EQ(test1, out3);
 }
@@ -510,7 +510,7 @@ TEST(Reset, resetValueSetClear)
     EXPECT_EQ(test2, out2);
 
     // Test clearing of reset_value block
-    r->clearResetValue();
+    r->removeResetValue();
     const std::string out3 = p.printModel(m);
     EXPECT_EQ(test1, out3);
 }
@@ -556,7 +556,7 @@ TEST(Reset, resetValueAppend)
     EXPECT_EQ(test, out);
 }
 
-TEST(Reset, resetClearTestValue)
+TEST(Reset, resetRemoveTestValue)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -566,12 +566,12 @@ TEST(Reset, resetClearTestValue)
 
     EXPECT_EQ("some test condition math", r->testValue());
 
-    r->clearTestValue();
+    r->removeTestValue();
 
     EXPECT_EQ("", r->testValue());
 }
 
-TEST(Reset, resetClearResetValue)
+TEST(Reset, resetRemoveResetValue)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -581,7 +581,7 @@ TEST(Reset, resetClearResetValue)
 
     EXPECT_EQ("some reset sort of math", r->resetValue());
 
-    r->clearResetValue();
+    r->removeResetValue();
 
     EXPECT_EQ("", r->resetValue());
 }
@@ -608,7 +608,7 @@ TEST(Reset, resetSetResetValueId)
     EXPECT_EQ("id1", r->resetValueId());
 }
 
-TEST(Reset, resetClearTestValueId)
+TEST(Reset, resetRemoveTestValueId)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -618,12 +618,12 @@ TEST(Reset, resetClearTestValueId)
 
     EXPECT_EQ("id1", r->testValueId());
 
-    r->clearTestValueId();
+    r->removeTestValueId();
 
     EXPECT_EQ("", r->testValueId());
 }
 
-TEST(Reset, resetClearResetValueId)
+TEST(Reset, resetRemoveResetValueId)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
 
@@ -633,7 +633,7 @@ TEST(Reset, resetClearResetValueId)
 
     EXPECT_EQ("id1", r->resetValueId());
 
-    r->clearResetValueId();
+    r->removeResetValueId();
 
     EXPECT_EQ("", r->resetValueId());
 }

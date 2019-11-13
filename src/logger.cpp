@@ -67,7 +67,7 @@ void Logger::swap(Logger &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-void Logger::clearErrors()
+void Logger::removeAllErrors()
 {
     mPimpl->mErrors.clear();
 }

@@ -230,7 +230,7 @@ TEST(Parser, modelWithInvalidElement)
     p.parseModel(input1);
     EXPECT_EQ_ERRORS(expectedErrors1, p);
 
-    p.clearErrors();
+    p.removeAllErrors();
     p.parseModel(input2);
     EXPECT_EQ_ERRORS(expectedErrors2, p);
 }
@@ -342,7 +342,7 @@ TEST(Parser, unitsElementErrors)
     p.parseModel(input1);
     EXPECT_EQ_ERRORS(expectedErrors1, p);
 
-    p.clearErrors();
+    p.removeAllErrors();
     p.parseModel(input2);
     EXPECT_EQ_ERRORS(expectedErrors2, p);
 }
@@ -437,11 +437,11 @@ TEST(Parser, componentAttributeErrors)
     p.parseModel(input1);
     EXPECT_EQ_ERRORS(expectedErrors1, p);
 
-    p.clearErrors();
+    p.removeAllErrors();
     p.parseModel(input2);
     EXPECT_EQ_ERRORS(expectedErrors2, p);
 
-    p.clearErrors();
+    p.removeAllErrors();
     p.parseModel(input3);
     EXPECT_EQ_ERRORS(expectedErrors3, p);
 }
@@ -470,7 +470,7 @@ TEST(Parser, componentElementErrors)
     EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.removeAllErrors();
     p.parseModel(input2);
     EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
@@ -968,7 +968,7 @@ TEST(Parser, variableAttributeAndChildErrors)
     EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.removeAllErrors();
     p.parseModel(input2);
     EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
