@@ -1011,9 +1011,9 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
                                 auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-                                if (!component2->hasVariable(equivalentVariable)) {
+                                if (component2 == nullptr || !component2->hasVariable(equivalentVariable)) {
                                     ErrorPtr err = std::make_shared<Error>();
-                                    err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
+                                    err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
                                     err->setModel(model);
                                     err->setKind(Error::Kind::CONNECTION);
                                     mValidator->addError(err);

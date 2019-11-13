@@ -810,10 +810,44 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-TEST(Validator, validateInvalidConnections)
+TEST(Validator, validateInvalidConnectionsVariableWithoutParentComponent)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
+        "Variable 'variable2' is an equivalent variable to 'variable1' but 'variable2' has no parent component.",
+    };
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    comp2->removeVariable(v2);
+
+    libcellml::Validator v;
+    v.validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateInvalidConnectionsDanglingReciprocalEquivalence)
+    {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'variable2' has an equivalent variable 'variable1_2' which does not reciprocally have 'variable2' set as an equivalent variable.",
     };
 
@@ -863,8 +897,7 @@ TEST(Validator, validateInvalidConnections)
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::addEquivalence(v2, v3);
     libcellml::Variable::addEquivalence(v1_1, v3);
-    // Make v4 a variable without a parent component.
-    comp4->removeVariable(v4);
+
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
