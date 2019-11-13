@@ -27,7 +27,6 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
@@ -160,18 +159,6 @@ struct Validator::ValidatorImpl
     void validateReset(const ResetPtr &reset, const ComponentPtr &component);
 
     /**
-     * @brief Validate the @p when using the CellML 2.0 specification.
-     *
-     * Examine the @p when for conformance to the CellML 2.0 specification.  Any
-     * errors will be logged in the @c Validator.
-     *
-     * @param when The when to validate.
-     * @param reset The reset the when belongs to.
-     * @param component The component the reset belongs to.
-     */
-    void validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component);
-
-    /**
      * @brief Validate the math @p input @c std::string.
      *
      * Validate the math @p input @c std::string using the CellML 2.0 Specification and
@@ -181,17 +168,6 @@ struct Validator::ValidatorImpl
      * @param component The component containing the math @c std::string to be validated.
      */
     void validateMath(const std::string &input, const ComponentPtr &component);
-
-    /**
-     * @brief Populate @p bvarNames with new variables declared in MathML @c bvar elements.
-     *
-     * Populate @p bvarNames with new variables declared in MathML @c bvar elements found within
-     * the XmlNode @p node.
-     *
-     * @param node The @c XmlNode to search for @c bvar element names.
-     * @param bvarNames The @c std::string @c vector to populate with MathML @c bvar element names.
-     */
-    void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
 
     /**
      * @brief Traverse the node tree for invalid MathML elements.
@@ -204,55 +180,22 @@ struct Validator::ValidatorImpl
      */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
 
+    void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component);
+    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
+    bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode);
+
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
      *
-     * Validates CellML variables found in MathML @c ci elements and new variables from @c bvar elements. Validates @c cellml:units
-     * attributes found on @c ci and @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
+     * Validates CellML variables found in MathML @c ci elements. Validates @c cellml:units
+     * attributes found on @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
      * be validated using the MathML DTD.
      *
      * @param node The @c XmlNode to validate CellML entities on and remove @c cellml:units from.
      * @param component The component that the math @c XmlNode @p node is contained within.
      * @param variableNames A @c vector list of the names of variables found within the @p component.
-     * @param bvarNames A @c vector list of the names of new MathML @c bvar variables in this @c XmlNode @p node.
      */
-    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
-
-    /**
-     * @brief Remove the @c std::string @p pattern from the @c std::string @p input.
-     *
-     * Remove all occurrences of the @c std::string @p pattern from the @c std::string @p input.
-     *
-     * @param input The @c std::string to remove all occurrences of the @p pattern from.
-     * @param pattern The @c std::string to remove from the @c std::string @p input.
-     */
-    void removeSubstring(std::string &input, const std::string &pattern);
-
-    /**
-     * @brief Check if the provided @p name is a standard unit.
-     *
-     * Checks if the provided @p name is one of the standard units in the
-     * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard units.
-     *
-     * @return @c true if @name is a standard unit and @c false otherwise.
-     */
-    bool isStandardUnitName(const std::string &name);
-
-    /**
-     * @brief Check if the provided @p name is a standard prefix.
-     *
-     * Checks if the provided @p name is one of the standard prefixes in the
-     * @c Prefix @c enum. Returns @c true if @name is a standard prefix
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard prefixes.
-     *
-     * @return @c true if @name is a standard prefix and @c false otherwise.
-     */
-    bool isStandardPrefixName(const std::string &name);
+    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
 
     /**
      * @brief Check if the provided @p node is a supported MathML element.
@@ -270,12 +213,16 @@ struct Validator::ValidatorImpl
     * have equivalent units.
     * Any errors will be logged in the @c Validator.
     *
+    * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
+    * Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
+    *
     * @param model The model containing the variables
     * @param v1 The variable which may contain units.
     * @param v2 The equivalent variable which may contain units.
     * @param hints String containing error messages to be passed back to the calling function for logging.
+    * @param multiplier Double returning the effective multiplier mismatch between the units.
     */
-    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints);
+    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
 
     /**
     * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
@@ -289,6 +236,7 @@ struct Validator::ValidatorImpl
     */
     void updateBaseUnitCount(const ModelPtr &model,
                              std::map<std::string, double> &unitMap,
+                             double &multiplier,
                              const std::string &uName,
                              double uExp, double logMult, int direction);
 
@@ -550,30 +498,11 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         }
     }
     // Check for resets in this component
-    if (component->resetCount() > 0) {
-        // Check for duplicate order values in resets
-        std::vector<int> resetOrders;
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            int resetOrder = reset->order();
-            if (reset->isOrderSet()) {
-                if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->name() + "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    resetOrders.push_back(resetOrder);
-                }
-            }
-        }
-
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            validateReset(reset, component);
-        }
+    for (size_t i = 0; i < component->resetCount(); ++i) {
+        ResetPtr reset = component->reset(i);
+        validateReset(reset, component);
     }
+
     // Validate math through the private implementation (for XML handling).
     if (!component->math().empty()) {
         validateMath(component->math(), component);
@@ -671,18 +600,19 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addError(err);
     }
     // Check for a valid units attribute.
-    if (!isCellmlIdentifier(variable->units())) {
+    std::string unitsName = variable->units() != nullptr ? variable->units()->name() : "";
+    if (!isCellmlIdentifier(unitsName)) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
         err->setVariable(variable);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
-    } else if (!isStandardUnitName(variable->units())) {
+    } else if (!isStandardUnitName(unitsName)) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + variable->units() + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
+            err->setDescription("Variable '" + variable->name() + "' has a units reference '" + unitsName + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
@@ -718,142 +648,125 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
-    std::string orderString;
+    bool noOrder = false;
+    bool noVariable = false;
+    bool noTestVariable = false;
+    bool noTestValue = false;
+    bool noResetValue = false;
+    bool varOutsideComponent = false;
+    bool testVarOutsideComponent = false;
+    std::string varParentName;
+    std::string testVarParentName;
+
+    std::string description = "Reset in component '" + component->name() + "' ";
+
     if (reset->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(reset->order()) + "'";
+        description += "with order '" + convertToString(reset->order()) + "', ";
     } else {
-        orderString = "does not have an order set,";
+        noOrder = true;
     }
 
-    std::string variableString;
-    std::string variableContinuation;
     if (reset->variable() == nullptr) {
-        variableString = "does not reference a variable";
-        variableContinuation = ",";
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
-        mValidator->addError(err);
+        noVariable = true;
     } else {
-        variableString = "referencing variable '" + reset->variable()->name() + "'";
+        description += "with variable '" + reset->variable()->name() + "', ";
+        auto var = reset->variable();
+        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        varParentName = varParent->name();
+        if (varParentName != component->name()) {
+            varOutsideComponent = true;
+        }
     }
 
-    if (!reset->isOrderSet()) {
+    if (reset->testVariable() == nullptr) {
+        noTestVariable = true;
+    } else {
+        description += "with test_variable '" + reset->testVariable()->name() + "', ";
+
+        auto var = reset->testVariable();
+        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        testVarParentName = varParent->name();
+        if (testVarParentName != component->name()) {
+            testVarOutsideComponent = true;
+        }
+    }
+
+    // Check that the contents of test_value and reset_value are valid MathML
+    std::string testValueString = reset->testValue();
+    std::string resetValueString = reset->resetValue();
+
+    if ((testValueString.empty()) || (std::all_of(testValueString.begin(), testValueString.end(), isspace))) {
+        noTestValue = true;
+    } else {
+        validateMath(testValueString, component);
+    }
+    if ((resetValueString.empty()) || (std::all_of(resetValueString.begin(), resetValueString.end(), isspace))) {
+        noResetValue = true;
+    } else {
+        validateMath(resetValueString, component);
+    }
+
+    if (noOrder) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
+        err->setDescription(description + "does not have an order set.");
         err->setComponent(component);
         err->setRule(SpecificationRule::RESET_ORDER);
         mValidator->addError(err);
     }
-
-    if (reset->whenCount() > 0) {
-        // Check for duplicate when order values.
-        std::vector<int> whenOrders;
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->when(i);
-            if (when->isOrderSet()) {
-                int whenOrder = when->order();
-                if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    whenOrders.push_back(whenOrder);
-                }
-            }
-        }
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->when(i);
-            validateWhen(when, reset, component);
-        }
-    } else {
+    if (noVariable) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " does not have at least one child When.");
+        err->setDescription(description + "does not reference a variable.");
         err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_CHILD);
+        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
-}
-
-void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component)
-{
-    std::string orderString;
-    std::string resetOrderString;
-    std::string resetVariableString;
-    std::string resetVariableContinuation;
-    if (when->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(when->order()) + "'";
-    } else {
-        orderString = "does not have an order set,";
-    }
-
-    if (reset->isOrderSet()) {
-        resetOrderString = "with order '" + convertIntToString(reset->order()) + "'";
-    } else {
-        resetOrderString = "which does not have an order set,";
-    }
-
-    if (reset->variable() == nullptr) {
-        resetVariableString = "which does not reference a variable";
-        resetVariableContinuation = ",";
-    } else {
-        resetVariableContinuation = "";
-        resetVariableString = "referencing variable '" + reset->variable()->name() + "'";
-    }
-
-    if (!when->isOrderSet()) {
+    if (noTestVariable) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " does not have an order set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_ORDER);
+        err->setDescription(description + "does not reference a test_variable.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
-
-    if (!when->condition().empty()) {
-        validateMath(when->condition(), component);
-    } else {
+    if (noTestValue) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML condition set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
+        err->setDescription(description + "does not have a test_value specified.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
         mValidator->addError(err);
     }
-
-    if (!when->value().empty()) {
-        validateMath(when->value(), component);
-    } else {
+    if (noResetValue) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML value set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
+        err->setDescription(description + "does not have a reset_value specified.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_RESET_VALUE);
+        mValidator->addError(err);
+    }
+    if (varOutsideComponent) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+        mValidator->addError(err);
+    }
+    if (testVarOutsideComponent) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
 }
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
-    std::string modifiedInput = input;
-
-    // It may be that we need to copy over the cellml namespace from the enclosing document.
-    auto cellmlNamespaceText = " xmlns:cellml=\"" + std::string(CELLML_2_0_NS);
-    if (input.find("cellml:units") != std::string::npos && input.find(cellmlNamespaceText) == std::string::npos) {
-        auto foundIndex = input.find(MATHML_NS);
-        if (foundIndex != std::string::npos) {
-            modifiedInput.replace(foundIndex, std::string(MATHML_NS).length(), std::string(MATHML_NS) + "\"" + cellmlNamespaceText);
-        }
-    }
-
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
-    doc->parse(modifiedInput);
+    doc->parse(input);
     // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(doc->xmlError(i));
+            err->setDescription("LibXml2 error: " + doc->xmlError(i));
             err->setKind(Error::Kind::XML);
             mValidator->addError(err);
         }
@@ -875,8 +788,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         mValidator->addError(err);
         return;
     }
+
     XmlNodePtr nodeCopy = node;
-    std::vector<std::string> bvarNames;
     std::vector<std::string> variableNames;
     for (size_t i = 0; i < component->variableCount(); ++i) {
         std::string variableName = component->variable(i)->name();
@@ -886,27 +799,18 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     }
 
     validateMathMLElements(nodeCopy, component);
-    // Get the bvar names in this math element.
-    // TODO: may want to do this with XPath instead...
-    gatherMathBvarVariableNames(nodeCopy, bvarNames);
-    // Check that no variable names match new bvar names.
-    for (const std::string &variableName : variableNames) {
-        if (std::find(bvarNames.begin(), bvarNames.end(), variableName) != bvarNames.end()) {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math in component '" + component->name() + "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
-            err->setComponent(component);
-            err->setKind(Error::Kind::MATHML);
-            mValidator->addError(err);
-        }
-    }
+
     // Iterate through ci/cn elements and remove cellml units attributes.
     XmlNodePtr mathNode = node;
-    validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
-    // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
-    // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
-    // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
+    validateAndCleanMathCiCnNodes(node, component, variableNames);
+
+    // Remove the cellml namespace definition.
+    if (mathNode->hasNamespaceDefinition(CELLML_2_0_NS)) {
+        mathNode->removeNamespaceDefinition(CELLML_2_0_NS);
+    }
+
+    // Get the MathML string with cellml:units attributes and namespace already removed.
     std::string cleanMathml = mathNode->convertToString();
-    removeSubstring(cleanMathml, cellmlNamespaceText + "\"");
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -923,113 +827,119 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames,
-                                                             const std::vector<std::string> &bvarNames)
+bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode)
 {
-    XmlNodePtr childNode = node->firstChild();
-    std::string textNode;
-    bool ciType = node->isMathmlElement("ci");
-    bool cnType = node->isMathmlElement("cn");
-    if (ciType || cnType) {
-        if (childNode != nullptr) {
-            if (childNode->isText()) {
-                textNode = childNode->convertToStrippedString();
-                if (!textNode.empty()) {
-                    if (ciType) {
-                        // Check whether we can find this text as a variable name in this component.
-                        if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) && (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("MathML ci element has the child text '" + textNode + "' which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
-                            err->setComponent(component);
-                            err->setKind(Error::Kind::MATHML);
-                            mValidator->addError(err);
-                        }
-                    }
-                } else {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("MathML " + node->name() + " element has an empty child element.");
-                    err->setComponent(component);
-                    err->setKind(Error::Kind::MATHML);
-                    mValidator->addError(err);
-                }
-            }
-        } else {
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("MathML " + node->name() + " element has no child.");
-            err->setComponent(component);
-            err->setKind(Error::Kind::MATHML);
-            mValidator->addError(err);
-        }
-        // Get cellml:units attribute.
-        XmlAttributePtr attribute = node->firstAttribute();
-        std::string unitsName;
-        XmlAttributePtr unitsAttribute = nullptr;
-        while (attribute) {
-            if (!attribute->value().empty()) {
-                if (attribute->isCellmlType("units")) {
-                    unitsName = attribute->value();
-                    unitsAttribute = attribute;
-                } else {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.");
-                    err->setComponent(component);
-                    err->setKind(Error::Kind::MATHML);
-                    mValidator->addError(err);
-                }
-            }
-            attribute = attribute->next();
-        }
+    if (isCellmlIdentifier(unitsName)) {
+        return true;
+    }
 
-        bool checkUnitsIsInComponent = false;
-        // Check that cellml:units has been set.
-        if (ciType) {
-            if (unitsAttribute != nullptr) {
+    ErrorPtr err = std::make_shared<Error>();
+    err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
+    err->setComponent(component);
+    err->setKind(Error::Kind::MATHML);
+    mValidator->addError(err);
+
+    return false;
+}
+
+std::string text(const XmlNodePtr &node)
+{
+    if (node != nullptr) {
+        if (node->isText()) {
+            return node->convertToStrippedString();
+        }
+    }
+    return {};
+}
+
+void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component)
+{
+    // Get cellml:units attribute.
+    XmlAttributePtr attribute = node->firstAttribute();
+    std::string unitsName;
+    XmlAttributePtr unitsAttribute = nullptr;
+    std::vector<XmlAttributePtr> cellmlAttributesToRemove;
+    while (attribute) {
+        if (!attribute->value().empty()) {
+            if (attribute->isCellmlType("units")) {
+                unitsName = attribute->value();
+                unitsAttribute = attribute;
+                cellmlAttributesToRemove.push_back(attribute);
+            } else if (attribute->inNamespaceUri(CELLML_2_0_NS)) {
+                cellmlAttributesToRemove.push_back(attribute);
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math ci element with value '" + textNode + "' has a cellml:units attribute with name '" + unitsAttribute->value() + "'.");
-            }
-        } else if (cnType) {
-            if (isCellmlIdentifier(unitsName)) {
-                checkUnitsIsInComponent = true;
-            } else {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
+                err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.");
                 err->setComponent(component);
                 err->setKind(Error::Kind::MATHML);
                 mValidator->addError(err);
             }
         }
+        attribute = attribute->next();
+    }
 
-        // Check that a specified units is valid.
-        if (checkUnitsIsInComponent) {
-            // Check for a matching units in this component.
-            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
-            if (!model->hasUnits(unitsName)) {
-                // Check for a matching standard units.
-                if (!isStandardUnitName(unitsName)) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in component '" + component->name() + "' or a standard unit.");
-                    err->setComponent(component);
-                    err->setKind(Error::Kind::MATHML);
-                    mValidator->addError(err);
-                }
+    XmlNodePtr childNode = node->firstChild();
+    std::string textInNode = text(childNode);
+    // Check that cellml:units has been set.
+    bool checkUnitsIsInModel = validateCnUnits(component, unitsName, textInNode);
+
+    // Check that a specified units is valid.
+    if (checkUnitsIsInModel) {
+        // Check for a matching units in this model.
+        ModelPtr model = owningModel(component);
+        if (!model->hasUnits(unitsName)) {
+            // Check for a matching standard units.
+            if (!isStandardUnitName(unitsName)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in the model '" + model->name() + "' or a standard unit.");
+                err->setComponent(component);
+                err->setKind(Error::Kind::MATHML);
+                mValidator->addError(err);
             }
         }
-        // Now that we've validated this XML node's cellml:units attribute, remove it from the node.
-        // This is done so we can validate a "clean" MathML string using the MathML DTD. The math
-        // string stored on the component will not be affected.
-        if (unitsAttribute) {
-            unitsAttribute->removeAttribute();
+    }
+    // Now that we've validated this XML node's cellml:units attribute, remove it from the node.
+    // This is done so we can validate a "clean" MathML string using the MathML DTD. The math
+    // string stored on the component will not be affected.
+    for (const auto &cellmlAttribute : cellmlAttributesToRemove) {
+        cellmlAttribute->removeAttribute();
+    }
+    if (node->hasNamespaceDefinition(CELLML_2_0_NS)) {
+        node->removeNamespaceDefinition(CELLML_2_0_NS);
+    }
+}
+
+void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames)
+{
+    XmlNodePtr childNode = node->firstChild();
+    std::string textInNode = text(childNode);
+    if (!textInNode.empty()) {
+        // Check whether we can find this text as a variable name in this component.
+        if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
+            err->setComponent(component);
+            err->setKind(Error::Kind::MATHML);
+            mValidator->addError(err);
         }
-    } else {
-        // Check children for ci/cn elements.
-        if (childNode != nullptr) {
-            validateAndCleanMathCiCnNodes(childNode, component, variableNames, bvarNames);
-        }
+    }
+}
+
+void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames)
+{
+    if (node->isMathmlElement("cn")) {
+        validateAndCleanCnNode(node, component);
+    } else if (node->isMathmlElement("ci")) {
+        validateAndCleanCiNode(node, component, variableNames);
+    }
+    // Check children for ci/cn.
+    XmlNodePtr childNode = node->firstChild();
+    if (childNode != nullptr) {
+        validateAndCleanMathCiCnNodes(childNode, component, variableNames);
     }
     // Check siblings for ci/cn.
     node = node->next();
     if (node != nullptr) {
-        validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
+        validateAndCleanMathCiCnNodes(node, component, variableNames);
     }
 }
 
@@ -1039,7 +949,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (childNode != nullptr) {
         if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + childNode->name() + "' element" + " that is not a supported MathML element.");
+            err->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -1051,7 +961,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (nextNode != nullptr) {
         if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + nextNode->name() + "' element" + " that is not a supported MathML element.");
+            err->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -1060,48 +970,10 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
-{
-    XmlNodePtr childNode = node->firstChild();
-    if (node->isMathmlElement("bvar")) {
-        while (childNode != nullptr) {
-            if (childNode->isMathmlElement("ci")) {
-                XmlNodePtr grandchildNode = childNode->firstChild();
-                bool hasBvarName = false;
-                while (grandchildNode != nullptr) {
-                    if (grandchildNode->isText()) {
-                        std::string textNode = grandchildNode->convertToStrippedString();
-                        if (!textNode.empty()) {
-                            bvarNames.push_back(textNode);
-                            hasBvarName = true;
-                            break;
-                        }
-                    }
-                    grandchildNode = grandchildNode->next();
-                }
-                if (hasBvarName) {
-                    break;
-                }
-            }
-            childNode = childNode->next();
-        }
-    } else {
-        // Check children for bvars.
-        if (childNode != nullptr) {
-            gatherMathBvarVariableNames(childNode, bvarNames);
-        }
-    }
-    // Check siblings for bvars.
-    node = node->next();
-    if (node != nullptr) {
-        gatherMathBvarVariableNames(node, bvarNames);
-    }
-}
-
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
     std::string hints;
-    std::vector<std::pair<libcellml::VariablePtr, libcellml::VariablePtr>> checkedPairs;
+    std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
 
     // Check the components in this model.
     if (model->componentCount() > 0) {
@@ -1125,10 +997,12 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
                             // TODO: validate variable interfaces according to 17.10.8.
                             // TODO: add check for cyclical connections (17.10.5).
-
-                            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+                            double multiplier = 0.0;
+                            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
+                                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                                 err->setModel(model);
                                 err->setKind(Error::Kind::UNITS);
                                 mValidator->addError(err);
@@ -1159,40 +1033,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 }
 
-// TODO: validateEncapsulations.
-
-void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
-{
-    std::string::size_type n = pattern.length();
-    for (std::string::size_type i = input.find(pattern);
-         i != std::string::npos;
-         i = input.find(pattern)) {
-        input.erase(i, n);
-    }
-}
-
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
     return (node->namespaceUri() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
-}
-
-bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
-{
-    bool result = false;
-    if (standardUnitsList.count(name) != 0) {
-        result = true;
-    }
-    return result;
-}
-
-bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
-{
-    bool result = false;
-    if (standardPrefixList.count(name) != 0) {
-        result = true;
-    }
-    return result;
 }
 
 bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
@@ -1230,7 +1074,8 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
                                                   const VariablePtr &v1,
                                                   const VariablePtr &v2,
-                                                  std::string &hints)
+                                                  std::string &hints,
+                                                  double &multiplier)
 {
     std::map<std::string, double> unitMap = {};
 
@@ -1240,27 +1085,32 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
 
     std::string ref;
     hints = "";
+    multiplier = 0.0;
 
-    if (model->hasUnits(v1->units())) {
-        libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-        u1 = model->units(v1->units());
-        updateBaseUnitCount(model, unitMap, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()) != unitMap.end()) {
-        ref = v1->units();
-        unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units())) {
-        updateBaseUnitCount(model, unitMap, v1->units(), 1, 0, 1);
+    if (v1->units() == nullptr || v2->units() == nullptr) {
+        return false;
     }
 
-    if (model->hasUnits(v2->units())) {
-        libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-        u2 = model->units(v2->units());
-        updateBaseUnitCount(model, unitMap, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()) != unitMap.end()) {
-        ref = v2->units();
-        unitMap.at(v2->units()) -= 1.0;
-    } else if (isStandardUnitName(v2->units())) {
-        updateBaseUnitCount(model, unitMap, v2->units(), 1, 0, -1);
+    if (model->hasUnits(v1->units()->name())) {
+        UnitsPtr u1 = Units::create();
+        u1 = model->units(v1->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
+    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
+        ref = v1->units()->name();
+        unitMap.at(ref) += 1.0;
+    } else if (isStandardUnitName(v1->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
+    }
+
+    if (model->hasUnits(v2->units()->name())) {
+        UnitsPtr u2 = Units::create();
+        u2 = model->units(v2->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
+    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
+        ref = v2->units()->name();
+        unitMap.at(v2->units()->name()) -= 1.0;
+    } else if (isStandardUnitName(v2->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
     }
 
     // Remove "dimensionless" from base unit testing.
@@ -1279,6 +1129,17 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         }
     }
 
+    if (multiplier != 0.0) {
+        // NB: multiplication errors are only reported when there is a base error mismatch too, does not trigger it alone.
+        // The multiplication mismatch will be returned through the multiplier argument in all cases.
+        std::string num = std::to_string(multiplier);
+        num.erase(num.find_last_not_of('0') + 1, num.length());
+        if (num.back() == '.') {
+            num.pop_back();
+        }
+        hints += "multiplication factor of 10^" + num + ", ";
+    }
+
     // Remove the final trailing comma from the hints string.
     if (hints.length() > 2) {
         hints.pop_back();
@@ -1290,12 +1151,13 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
 
 void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
                                                    std::map<std::string, double> &unitMap,
+                                                   double &multiplier,
                                                    const std::string &uName,
                                                    double uExp, double logMult,
                                                    int direction)
 {
     if (model->hasUnits(uName)) {
-        libcellml::UnitsPtr u = model->units(uName);
+        UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
             std::string ref;
             std::string pre;
@@ -1307,20 +1169,23 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, ref, pre, exp, expMult, id);
                 mult = std::log10(expMult);
                 if (!isStandardUnitName(ref)) {
-                    updateBaseUnitCount(model, unitMap, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                    updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 } else {
                     for (const auto &iter : standardUnitsList.at(ref)) {
                         unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
+                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+            multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
         for (const auto &iter : standardUnitsList.at(uName)) {
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
+        multiplier += direction * logMult;
     }
 }
 

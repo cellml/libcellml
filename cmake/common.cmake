@@ -150,6 +150,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -fuchsia-default-arguments-calls
       -fuchsia-default-arguments-declarations
       -fuchsia-multiple-inheritance
+      -fuchsia-overloaded-operator
       -fuchsia-statically-constructed-objects
       google-*
       -google-readability-todo
@@ -162,6 +163,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
+      -modernize-make-shared
       -modernize-pass-by-value
       -modernize-raw-string-literal
       -modernize-use-trailing-return-type

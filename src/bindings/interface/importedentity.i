@@ -2,8 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "namedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::ImportedEntity
 "Abstract base class for entities that can be imported.";
@@ -29,8 +29,7 @@ string to unset).";
 #include "libcellml/importedentity.h"
 %}
 
-%ignore libcellml::ImportedEntity::ImportedEntity(ImportedEntity &&);
-%ignore libcellml::ImportedEntity::operator =;
+%ignore libcellml::ImportedEntity::ImportedEntity();
 
 %include "libcellml/types.h"
 %include "libcellml/importedentity.h"

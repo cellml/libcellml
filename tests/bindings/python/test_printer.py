@@ -20,7 +20,7 @@ class PrinterTestCase(unittest.TestCase):
         from libcellml import Printer
 
         x = Printer()
-        self.assertIsInstance(x, libcellml.Logger)
+        self.assertIsInstance(x, libcellml.logger.Logger)
 
         # Test access to inherited methods
         self.assertIsNone(x.error(0))
