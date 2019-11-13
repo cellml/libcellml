@@ -37,11 +37,11 @@ TEST(Parser, invalidXMLElements)
     const std::vector<std::string> expectedErrors = {
         "Specification mandate value for attribute bearded.",
         "Specification mandates value for attribute bearded.",
-        "Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
-        "Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
-        "Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
-        "Opening and ending tag mismatch: Elf line 6 and fellows.",
-        "Premature end of data in tag fellowship line 2.",
+        "LibXml2 error: Opening and ending tag mismatch: Dwarf line 3 and ShortGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Hobbit line 4 and EvenShorterGuy.",
+        "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
+        "LibXml2 error: Opening and ending tag mismatch: Elf line 6 and fellows.",
+        "LibXml2 error: Premature end of data in tag fellowship line 2.",
         "Could not get a valid XML root node from the provided input.",
     };
 
@@ -112,7 +112,7 @@ TEST(Parser, emptyModelString)
 {
     const std::string ex;
     const std::vector<std::string> expectedErrors = {
-        "Document is empty.",
+        "LibXml2 error: Document is empty.",
         "Could not get a valid XML root node from the provided input.",
     };
 
@@ -125,7 +125,7 @@ TEST(Parser, nonXmlString)
 {
     const std::string ex = "Not an xml string.";
     const std::vector<std::string> expectedErrors = {
-        "Start tag expected, '<' not found.",
+        "LibXml2 error: Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
 
@@ -1432,7 +1432,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     // Trigger an XML error
     const std::string input3 = "jarjarbinks";
     const std::vector<std::string> expectedErrors3 = {
-        "Start tag expected, '<' not found.",
+        "LibXml2 error: Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
     libcellml::Parser parser3;
@@ -1850,6 +1850,110 @@ TEST(Parser, xmlComments)
         "       <component_ref component=\"child\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithNamespacesDefinedOnTheMathNode)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component>\n"
+        "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "    <apply>\n"
+        "      <eq/>\n"
+        "      <ci>b2</ci>\n"
+        "      <apply>\n"
+        "        <times/>\n"
+        "        <cn cellml:units=\"dimensionless\">2.0</cn>\n"
+        "        <ci>d</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component>\n"
+        "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "    <apply>\n"
+        "      <eq/>\n"
+        "      <ci>b2</ci>\n"
+        "      <apply>\n"
+        "        <times/>\n"
+        "        <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
+        "        <ci>d</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithNonStandardCellMLPrefix)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>b2</ci>\n"
+        "        <apply>\n"
+        "          <times/>\n"
+        "          <cn ns_1:units=\"dimensionless\">2.0</cn>\n"
+        "          <ci>d</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, mathWithMathmlNamespaceOnModel)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_2=\"http://www.w3.org/1998/Math/MathML\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component>\n"
+        "    <ns_2:math>\n"
+        "      <ns_2:apply>\n"
+        "        <ns_2:eq/>\n"
+        "        <ns_2:ci>b2</ns_2:ci>\n"
+        "        <ns_2:apply>\n"
+        "          <ns_2:times/>\n"
+        "          <ns_2:cn ns_1:units=\"dimensionless\">2.0</ns_2:cn>\n"
+        "          <ns_2:ci>d</ns_2:ci>\n"
+        "        </ns_2:apply>\n"
+        "      </ns_2:apply>\n"
+        "    </ns_2:math>\n"
+        "  </component>\n"
         "</model>\n";
 
     libcellml::Parser parser;

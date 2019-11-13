@@ -14,18 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 
+#include "test_resources.h"
+
 std::string resourcePath(const std::string &resourceRelativePath)
 {
-    return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
+    return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
 }
 
 std::string fileContents(const std::string &fileName)
@@ -36,6 +38,23 @@ std::string fileContents(const std::string &fileName)
     buffer << file.rdbuf();
 
     return buffer.str();
+}
+
+void printErrors(const libcellml::Logger &l, bool headings, bool kinds, bool rule)
+{
+    for (size_t i = 0; i < l.errorCount(); ++i) {
+        std::cout << "Error " << std::setw(3) << i + 1 << ": ";
+        std::cout << l.error(i)->description();
+        if (headings) {
+            std::cout << ", " << l.error(i)->specificationHeading();
+        }
+        if (kinds) {
+            std::cout << ", " << static_cast<int>(l.error(i)->kind());
+        }
+        if (rule) {
+            std::cout << ", " << static_cast<int>(l.error(i)->rule());
+        }
+    }
 }
 
 void debug(const std::string &text, bool newLine)

@@ -17,6 +17,7 @@ limitations under the License.
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
+#include "xmlutils.h"
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -264,7 +265,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(doc->xmlError(i));
+            err->setDescription("LibXml2 error: " + doc->xmlError(i));
             err->setKind(Error::Kind::XML);
             mParser->addError(err);
         }
@@ -424,8 +425,17 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             loadReset(reset, component, childNode);
             component->addReset(reset);
         } else if (childNode->isMathmlElement("math")) {
-            // TODO: copy any namespaces declared in parents into the math element
-            //       so math is a valid subdocument.
+            // Copy any namespaces that do not feature as a namespace definition
+            // of the math node into the math node.
+            auto mathElementDefinedNamespaces = childNode->definedNamespaces();
+            auto possiblyUndefinedNamespaces = traverseTreeForUndefinedNamespaces(childNode);
+            auto undefinedNamespaces = determineMissingNamespaces(possiblyUndefinedNamespaces, mathElementDefinedNamespaces);
+            XmlNamespaceMap::const_iterator it;
+            for (it = undefinedNamespaces.begin(); it != undefinedNamespaces.end(); ++it) {
+                childNode->addNamespaceDefinition(it->second, it->first);
+            }
+
+            // Append a self contained math XML document to the component.
             std::string math = childNode->convertToString(true) + "\n";
             component->appendMath(math);
         } else if (childNode->isText()) {
