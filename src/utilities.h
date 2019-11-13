@@ -25,8 +25,8 @@ limitations under the License.
 namespace libcellml {
 
 /**
-* Vector of base units.
-*/
+ * Vector of base units.
+ */
 const std::vector<std::string> baseUnitsList = {
     "ampere",
     "candela",
@@ -38,8 +38,8 @@ const std::vector<std::string> baseUnitsList = {
     "second"};
 
 /**
-*  Map connecting standard built-in units to their base unit components and their exponents.
-*/
+ *  Map connecting standard built-in units to their base unit components and their exponents.
+ */
 const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"ampere", {{"ampere", 1.0}}},
     {"becquerel", {{"second", -1.0}}},
@@ -74,8 +74,8 @@ const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"weber", {{"ampere", -1.0}, {"kilogram", 1.0}, {"metre", 2.0}, {"second", -2.0}}}};
 
 /**
-* Map connecting standard built-in units to the multiplier exponent of their base unit components.
-*/
+ * Map connecting standard built-in units to the multiplier exponent of their base unit components.
+ */
 const std::map<std::string, double> standardMultiplierList = {
     {"ampere", 0.0},
     {"becquerel", 0.0},
@@ -110,8 +110,8 @@ const std::map<std::string, double> standardMultiplierList = {
     {"weber", 0.0}};
 
 /**
-* Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
-*/
+ * Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
+ */
 const std::map<std::string, int> standardPrefixList = {
     {"yotta", 24},
     {"zetta", 21},
@@ -184,9 +184,9 @@ const std::map<std::string, int> standardPrefixList = {
     {"-23", -23},
     {"-24", -24}};
 
-/*
-* List of MathML elements supported by CellML.
-*/
+/**
+ * List of MathML elements supported by CellML.
+ */
 const std::vector<std::string> supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
@@ -213,17 +213,6 @@ const std::vector<std::string> supportedMathMLElements = {
 double convertToDouble(const std::string &candidate);
 
 /**
- * @brief Convert a @c double to @c std::string format.
- *
- * Convert the @p value to @c std::string representation.
- *
- * @param value The @c double value number to convert.
- *
- * @return @c std::string representation of the @p value.
- */
-std::string convertDoubleToString(double value);
-
-/**
  * @brief Convert the @p candidate @c std::string to an @c int.
  *
  * Convert the @p candidate @c std::string to an @c int. If @p candidate
@@ -248,7 +237,31 @@ int convertToInt(const std::string &candidate);
  *
  * @return @c std::string representation of the @p value.
  */
-std::string convertIntToString(int value);
+std::string convertToString(int value);
+
+/**
+ * @brief Convert a @c size_t to @c std::string format.
+ *
+ * Convert the @p value to @c std::string representation.
+ *
+ * @overload
+ *
+ * @param value The @c size_t value of the integer to convert.
+ *
+ * @return @c std::string representation of the @p value.
+ */
+std::string convertToString(size_t value);
+
+/**
+ * @brief Convert a @c double to @c std::string format.
+ *
+ * Convert the @p value to @c std::string representation.
+ *
+ * @param value The @c double value number to convert.
+ *
+ * @return @c std::string representation of the @p value.
+ */
+std::string convertToString(double value);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
@@ -361,5 +374,31 @@ ModelPtr owningModel(const EntityPtr &entity);
  * @param component The component to remove from the entity.
  */
 void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
+
+/**
+ * @brief Check if the provided @p name is a standard unit.
+ *
+ * Checks if the provided @p name is one of the standard units in the
+ * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
+ * and @c false otherwise.
+ *
+ * @param name The @c std::string name to check against the list of standard units.
+ *
+ * @return @c true if @name is a standard unit and @c false otherwise.
+ */
+bool isStandardUnitName(const std::string &name);
+
+/**
+ * @brief Check if the provided @p name is a standard prefix.
+ *
+ * Checks if the provided @p name is one of the standard prefixes in the
+ * @c Prefix @c enum. Returns @c true if @name is a standard prefix
+ * and @c false otherwise.
+ *
+ * @param name The @c std::string name to check against the list of standard prefixes.
+ *
+ * @return @c true if @name is a standard prefix and @c false otherwise.
+ */
+bool isStandardPrefixName(const std::string &name);
 
 } // namespace libcellml

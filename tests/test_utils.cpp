@@ -14,18 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 
+#include "test_resources.h"
+
 std::string resourcePath(const std::string &resourceRelativePath)
 {
-    return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
+    return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
 }
 
 std::string fileContents(const std::string &fileName)
@@ -36,6 +38,31 @@ std::string fileContents(const std::string &fileName)
     buffer << file.rdbuf();
 
     return buffer.str();
+}
+
+void printErrors(const libcellml::Logger &l, bool headings, bool kinds, bool rule)
+{
+    for (size_t i = 0; i < l.errorCount(); ++i) {
+        std::cout << "Error " << std::setw(3) << i + 1 << ": ";
+        std::cout << l.error(i)->description();
+        if (headings) {
+            std::cout << ", " << l.error(i)->specificationHeading();
+        }
+        if (kinds) {
+            std::cout << ", " << static_cast<int>(l.error(i)->kind());
+        }
+        if (rule) {
+            std::cout << ", " << static_cast<int>(l.error(i)->rule());
+        }
+    }
+}
+
+void debug(const std::string &text, bool newLine)
+{
+    std::cout << text;
+    if (newLine) {
+        std::cout << std::endl;
+    }
 }
 
 void printErrors(const libcellml::Validator &v)
@@ -88,25 +115,49 @@ void expectEqualErrorsKinds(const std::vector<std::string> &errors,
 
 libcellml::ModelPtr createModel(const std::string &name)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     model->setName(name);
     return model;
 }
 
+libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model, const std::string &componentName)
+{
+    libcellml::ComponentPtr component = libcellml::Component::create();
+    component->setName(componentName);
+    model->addComponent(component);
+    return component;
+}
+
 libcellml::ModelPtr createModelWithComponent(const std::string &name)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     model->setName(name);
-    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    model->addComponent(component);
+    createComponentInModel(model, "");
     return model;
 }
 
 libcellml::VariablePtr createVariableWithUnits(const std::string &name, const std::string &units)
 {
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     v->setName(name);
     v->setUnits(units);
 
     return v;
+}
+
+libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::string &modelName, const std::string &c1Name, const std::string &c2Name, const std::string &v1Name, const std::string &v2Name)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName(modelName);
+    auto c1 = createComponentInModel(model, c1Name);
+    auto c2 = createComponentInModel(model, c2Name);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName(v1Name);
+    c1->addVariable(v1);
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName(v2Name);
+    c2->addVariable(v2);
+
+    return model;
 }

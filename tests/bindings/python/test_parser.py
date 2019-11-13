@@ -20,7 +20,7 @@ class ParserTestCase(unittest.TestCase):
         from libcellml import Parser
 
         x = Parser()
-        self.assertIsInstance(x, libcellml.Logger)
+        self.assertIsInstance(x, libcellml.logger.Logger)
 
         # Test access to inherited methods
         self.assertIsNone(x.error(0))

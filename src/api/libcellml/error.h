@@ -38,6 +38,12 @@ public:
     Error(Error &&rhs) noexcept; /**< Move constructor */
     Error &operator=(Error rhs); /**< Assignment operator */
 
+    template<typename... Args>
+    static std::shared_ptr<Error> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Error> {new Error {std::forward<Args>(args)...}};
+    }
+
     /**
      * @brief Constructs an Error for the model.
      *
@@ -46,15 +52,6 @@ public:
      * @param model The model the error references.
      */
     explicit Error(const ModelPtr &model);
-
-    /**
-     * @brief Constructs an Error for the when.
-     *
-     * Convenience constructor for creating an error for the when.
-     *
-     * @param when The when the error references.
-     */
-    explicit Error(const WhenPtr &when);
 
     /**
      * @brief Constructs an Error for the component.
@@ -118,7 +115,6 @@ public:
         UNDEFINED,
         UNITS,
         VARIABLE,
-        WHEN,
         XML,
         GENERATOR
     };
@@ -317,25 +313,6 @@ public:
      * If no reset has been set for this error, return a @c nullptr.
      */
     ResetPtr reset() const;
-
-    /**
-     * @brief Set the when for this error.
-     *
-     * Set the @p when that this error is relevant to.
-     *
-     * @param when A pointer to the when this error is relevant to.
-     */
-    void setWhen(const WhenPtr &when);
-
-    /**
-     * @brief Get the when for this error.
-     *
-     * Get the when that this error is relevant to.
-     *
-     * @return A pointer to the when this when error was raised on.
-     * If no when has been set for this error, return a @c nullptr.
-     */
-    WhenPtr when() const;
 
 private:
     void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
