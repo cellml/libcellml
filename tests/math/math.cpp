@@ -46,24 +46,42 @@ TEST(Maths, appendAndSerialiseMathComponent)
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndResetMathComponent)
+TEST(Maths, appendAndRemoveMathFromComponent)
 {
-    const std::string e =
+    const std::string eNoMath =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component/>\n"
         "</model>\n";
+    const std::string eWithMath =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    c->appendMath(EMPTY_MATH);
-    c->setMath("");
-
     libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
-    EXPECT_EQ(e, a);
+
+    c->appendMath(EMPTY_MATH);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eWithMath, a);
+
+    c->removeMath();
+    a = printer.printModel(m);
+    EXPECT_EQ(eNoMath, a);
+
+    c->appendMath(EMPTY_MATH);
+    a = printer.printModel(m);
+    EXPECT_EQ(eWithMath, a);
+
+    c->setMath("");
+    a = printer.printModel(m);
+    EXPECT_EQ(eNoMath, a);
 }
 
-TEST(Maths, appendSerialiseAndParseMathModel)
+TEST(Maths, appendSerialiseAndParseMathInComponent)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
