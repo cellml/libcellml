@@ -217,6 +217,12 @@ bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr
 
 void Variable::removeAllEquivalences()
 {
+    auto thisVariable = shared_from_this();
+    for (const auto &variable : mPimpl->mEquivalentVariables) {
+        if (!variable.expired()) {
+            removeEquivalence(thisVariable, variable.lock());
+        }
+    }
     mPimpl->mEquivalentVariables.clear();
 }
 
