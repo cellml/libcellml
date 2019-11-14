@@ -846,11 +846,7 @@ TEST(Validator, validateInvalidConnectionsVariableWithoutParentComponent)
 }
 
 TEST(Validator, validateInvalidConnectionsDanglingReciprocalEquivalence)
-    {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'variable2' has an equivalent variable 'variable1_2' which does not reciprocally have 'variable2' set as an equivalent variable.",
-    };
-
+{
     libcellml::Validator v;
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr comp1 = libcellml::Component::create();
@@ -898,11 +894,11 @@ TEST(Validator, validateInvalidConnectionsDanglingReciprocalEquivalence)
     libcellml::Variable::addEquivalence(v2, v3);
     libcellml::Variable::addEquivalence(v1_1, v3);
 
-    // Remove all connections on v1_2, leaving dangling reciprocal connections.
+    // Remove all connections on v1_2, leaving no dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
     v.validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ(size_t(0), v.errorCount());
 }
 
 TEST(Validator, integerStrings)
