@@ -31,7 +31,8 @@ endfunction()
 
 function(INTERNALISE_CMAKE_VARIABLES)
   # internalise some CMake variables
-  set(CMAKE_INSTALL_PREFIX ${LIBCELLML_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE)
+  file(TO_CMAKE_PATH ${LIBCELLML_INSTALL_PREFIX} _CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX ${_CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE)
   set(CMAKE_BUILD_TYPE ${LIBCELLML_BUILD_TYPE} CACHE INTERNAL "Internalise CMAKE_BUILD_TYPE, manipulate via LIBCELLML_BUILD_TYPE" FORCE)
   set(BUILD_SHARED_LIBS ${LIBCELLML_BUILD_SHARED} CACHE INTERNAL "Internalise BUILD_SHARED_LIBS, manipulate via LIBCELLML_BUILD_SHARED" FORCE)
 endfunction()
@@ -149,6 +150,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -fuchsia-default-arguments-calls
       -fuchsia-default-arguments-declarations
       -fuchsia-multiple-inheritance
+      -fuchsia-overloaded-operator
       -fuchsia-statically-constructed-objects
       google-*
       -google-readability-todo
@@ -161,6 +163,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
+      -modernize-make-shared
       -modernize-pass-by-value
       -modernize-raw-string-literal
       -modernize-use-trailing-return-type

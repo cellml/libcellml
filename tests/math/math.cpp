@@ -20,13 +20,11 @@ limitations under the License.
 
 #include <libcellml>
 
-static const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
-
 TEST(Maths, setAndGetMath)
 {
-    libcellml::Component c;
-    c.setMath(EMPTY_MATH);
-    EXPECT_EQ(EMPTY_MATH, c.math());
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    c->setMath(EMPTY_MATH);
+    EXPECT_EQ(EMPTY_MATH, c->math());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent)
@@ -48,24 +46,42 @@ TEST(Maths, appendAndSerialiseMathComponent)
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndResetMathComponent)
+TEST(Maths, appendAndRemoveMathFromComponent)
 {
-    const std::string e =
+    const std::string eNoMath =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component/>\n"
         "</model>\n";
+    const std::string eWithMath =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    c->appendMath(EMPTY_MATH);
-    c->setMath("");
-
     libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
-    EXPECT_EQ(e, a);
+
+    c->appendMath(EMPTY_MATH);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eWithMath, a);
+
+    c->removeMath();
+    a = printer.printModel(m);
+    EXPECT_EQ(eNoMath, a);
+
+    c->appendMath(EMPTY_MATH);
+    a = printer.printModel(m);
+    EXPECT_EQ(eWithMath, a);
+
+    c->setMath("");
+    a = printer.printModel(m);
+    EXPECT_EQ(eNoMath, a);
 }
 
-TEST(Maths, appendSerialiseAndParseMathModel)
+TEST(Maths, appendSerialiseAndParseMathInComponent)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -75,8 +91,8 @@ TEST(Maths, appendSerialiseAndParseMathModel)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     m->addComponent(c);
     c->appendMath(EMPTY_MATH);
 
@@ -104,10 +120,10 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     c->setName("component");
     v1->setName("variable1");
     v2->setName("variable2");
@@ -134,10 +150,10 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     c->setName("component");
     v1->setName("variable1");
     v2->setName("variable2");
@@ -188,10 +204,10 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
     c->setName("component");
     v1->setName("A");
     v2->setName("B");
@@ -272,13 +288,13 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v21 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v22 = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v11 = libcellml::Variable::create();
+    libcellml::VariablePtr v12 = libcellml::Variable::create();
+    libcellml::VariablePtr v21 = libcellml::Variable::create();
+    libcellml::VariablePtr v22 = libcellml::Variable::create();
 
     comp1->setName("component1");
     comp2->setName("component2");

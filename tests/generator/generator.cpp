@@ -24,7 +24,7 @@ static const std::string EMPTY_STRING;
 
 TEST(Generator, emptyModel)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     libcellml::Generator generator;
 
     generator.processModel(model);
@@ -42,6 +42,23 @@ TEST(Generator, emptyModel)
 
     EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
+}
+
+TEST(Generator, generatorErrors)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr invalidModel = parser.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::Generator generator;
+
+    generator.processModel(invalidModel);
+
+    EXPECT_EQ(size_t(1), generator.errorCount());
+
+    libcellml::ModelPtr emptyModel = libcellml::Model::create();
+
+    generator.processModel(emptyModel);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
 }
 
 TEST(Generator, initializedVariableOfIntegration)

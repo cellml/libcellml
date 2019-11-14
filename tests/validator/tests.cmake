@@ -15,5 +15,3 @@ set(${CURRENT_TEST}_SRCS
 #set(${CURRENT_TEST}_HDRS
 #  ${CMAKE_CURRENT_LIST_DIR}/<test_header_files.h>
 #)
-
-

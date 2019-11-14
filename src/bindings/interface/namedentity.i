@@ -2,8 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::NamedEntity
 "Abstract base class for all nameable libCellML classes.";
@@ -18,7 +18,6 @@
 #include "libcellml/namedentity.h"
 %}
 
-%ignore libcellml::NamedEntity::NamedEntity(NamedEntity &&);
-%ignore libcellml::NamedEntity::operator =;
+%ignore libcellml::NamedEntity::NamedEntity();
 
 %include "libcellml/namedentity.h"

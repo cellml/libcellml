@@ -2,7 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
-%import "std_string.i"
+%include <std_string.i>
 
 %import "types.i"
 
@@ -70,12 +70,6 @@ return Kind::UNDEFINED.";
 
 %feature("docstring") libcellml::Error::setReset
 "Sets the :class:`Reset` that this error is relevant to (``None`` to unset).";
-
-%feature("docstring") libcellml::Error::when
-"Get the :class:`When` that this error is relevant to (or ``None``).";
-
-%feature("docstring") libcellml::Error::setWhen
-"Sets the :class:`When` that this error is relevant to (``None`` to unset).";
 
 %{
 #include "libcellml/error.h"

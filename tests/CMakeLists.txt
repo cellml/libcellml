@@ -32,6 +32,7 @@ include(connection/tests.cmake)
 include(coverage/tests.cmake)
 include(error/tests.cmake)
 include(generator/tests.cmake)
+include(isolated/tests.cmake)
 include(math/tests.cmake)
 include(model/tests.cmake)
 include(parser/tests.cmake)
@@ -42,7 +43,6 @@ include(units/tests.cmake)
 include(validator/tests.cmake)
 include(variable/tests.cmake)
 include(version/tests.cmake)
-include(when/tests.cmake)
 
 set(TEST_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/test_exportdefinitions.h")
 
@@ -53,8 +53,6 @@ add_library(test_utils SHARED ${TEST_UTILS_SRC} ${TEST_UTILS_HDR} ${TEST_EXPORTD
 target_link_libraries(test_utils PUBLIC cellml gtest)
 target_include_directories(test_utils PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(test_utils PROPERTIES
-  CXX_STANDARD 11
-  CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
   FOLDER tests)
@@ -79,10 +77,7 @@ foreach(TEST ${LIBCELLML_TESTS})
   target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main test_utils)
 
-  set_target_properties(${CURRENT_TEST} PROPERTIES
-    CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED ON
-    FOLDER tests)
+  set_target_properties(${CURRENT_TEST} PROPERTIES FOLDER tests)
 
   configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
 
@@ -105,6 +100,9 @@ foreach(TEST ${LIBCELLML_TESTS})
   list(APPEND TEST_LIST ${CURRENT_TEST})
   unset(CURRENT_CATEGORY)
 endforeach()
+
+# Generate tests for header files.
+include(api_headers/tests.cmake)
 
 add_subdirectory(bindings)
 

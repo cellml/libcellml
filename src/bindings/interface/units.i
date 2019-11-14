@@ -2,9 +2,10 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
 %import "enumerations.i"
+%import "createconstructor.i"
 %import "importedentity.i"
+%import "types.i"
 
 %ignore libcellml::Units::Units(Units &&);
 %ignore libcellml::Units::operator =;
@@ -75,6 +76,9 @@ StandardUnit.";
 "Makes this Units an imported units by defining an `ImportSource` from which to
 extract the units with the given `name`.";
 
+%feature("docstring") libcellml::Units::scalingFactor
+"Returns the scaling factor between two Units objects.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
@@ -98,6 +102,9 @@ extract the units with the given `name`.";
     }
 }
 %ignore libcellml::Units::removeUnit(const std::string &reference);
+
+%create_constructor(Units)
+%create_name_constructor(Units)
 
 %include "libcellml/types.h"
 %include "libcellml/units.h"

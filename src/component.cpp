@@ -16,14 +16,13 @@ limitations under the License.
 
 #include "libcellml/component.h"
 
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
-
-#include "utilities.h"
-
 #include <algorithm>
 #include <string>
 #include <vector>
+
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -68,48 +67,20 @@ Component::Component()
 {
 }
 
+Component::Component(const std::string &name)
+    : mPimpl(new ComponentImpl())
+{
+    setName(name);
+}
+
 Component::~Component()
 {
     if (mPimpl != nullptr) {
         for (const auto &variable : mPimpl->mVariables) {
-            variable->clearParent();
+            variable->removeParent();
         }
     }
     delete mPimpl;
-}
-
-Component::Component(const Component &rhs)
-    : ComponentEntity(rhs)
-    , ImportedEntity(rhs)
-#ifndef SWIG
-    , std::enable_shared_from_this<Component>(rhs)
-#endif
-    , mPimpl(new ComponentImpl())
-{
-    mPimpl->mVariables = rhs.mPimpl->mVariables;
-    mPimpl->mResets = rhs.mPimpl->mResets;
-    mPimpl->mMath = rhs.mPimpl->mMath;
-}
-
-Component::Component(Component &&rhs) noexcept
-    : ComponentEntity(std::move(rhs))
-    , ImportedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Component &Component::operator=(Component rhs)
-{
-    ComponentEntity::operator=(rhs);
-    ImportedEntity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Component::swap(Component &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool Component::doAddComponent(const ComponentPtr &component)
@@ -149,6 +120,11 @@ std::string Component::math() const
 void Component::setMath(const std::string &math)
 {
     mPimpl->mMath = math;
+}
+
+void Component::removeMath()
+{
+    mPimpl->mMath.clear();
 }
 
 void Component::addVariable(const VariablePtr &variable)
