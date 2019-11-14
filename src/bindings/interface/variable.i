@@ -2,8 +2,9 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%import "createconstructor.i"
 %import "namedentity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Variable
 "Represents a CellML Variable entity";
@@ -41,6 +42,9 @@ updated).";
 %feature("docstring") libcellml::Variable::setUnits
 "Sets the units for this variable to the given string (name) or Units object.";
 
+%feature("docstring") libcellml::Variable::removeUnits
+"Clears the units for this variable.";
+
 %feature("docstring") libcellml::Variable::initialValue
 "Returns the string corresponding to the initial value for this variable.";
 
@@ -50,6 +54,12 @@ reference.";
 
 %feature("docstring") libcellml::Variable::interfaceType
 "Returns this variable's interface type as string.";
+
+%feature("docstring") libcellml::Variable::removeInterfaceType
+"Clear the interface type for this variable.";
+
+%feature("docstring") libcellml::Variable::removeInitialValue
+"Clears the intial value for this variable.";
 
 %feature("docstring") libcellml::Variable::setInterfaceType
 "Sets this variable's interfacetype to the given type specified as string or
@@ -77,6 +87,12 @@ not equivalent the connection id is not set.";
 %feature("docstring") libcellml::Variable::equivalenceConnectionId
 "Get the connection id set for the equivalence defined with the given variables.";
 
+%feature("docstring") libcellml::Variable::removeEquivalenceConnectionId
+"Remove the connection id for the equivalence defined with the given variables.";
+
+%feature("docstring") libcellml::Variable::removeEquivalenceMappingId
+"Remove the mapping id for the equivalence defined with the given variables.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {
@@ -93,6 +109,9 @@ not equivalent the connection id is not set.";
 
 %ignore libcellml::Variable::Variable(Variable &&);
 %ignore libcellml::Variable::operator =;
+
+%create_constructor(Variable)
+%create_name_constructor(Variable)
 
 %include "libcellml/types.h"
 %include "libcellml/variable.h"

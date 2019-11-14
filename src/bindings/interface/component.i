@@ -2,8 +2,11 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%include <std_shared_ptr.i>
+
 %import "componententity.i"
+%import "createconstructor.i"
+%import "types.i"
 
 %feature("docstring") libcellml::Component
 "Represents a CellML component.";
@@ -23,6 +26,9 @@ if not).";
 %feature("docstring") libcellml::Component::setMath
 "Sets the math string for this component.
 If `math` is an empty string, math will be removed from the component.";
+
+%feature("docstring") libcellml::Component::removeMath
+"Clears the math from this component.";
 
 %feature("docstring") libcellml::Component::addVariable
 "Adds variable `variable` to this component.";
@@ -104,8 +110,9 @@ resets and False otherwise.";
 #include "libcellml/component.h"
 %}
 
-%ignore libcellml::Component::Component(Component &&);
-%ignore libcellml::Component::operator =;
+%shared_ptr(libcellml::Component);
+%create_constructor(Component)
+%create_name_constructor(Component)
 
 %include "libcellml/types.h"
 %include "libcellml/component.h"

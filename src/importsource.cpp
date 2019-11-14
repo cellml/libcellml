@@ -41,33 +41,6 @@ ImportSource::~ImportSource()
     delete mPimpl;
 }
 
-ImportSource::ImportSource(const ImportSource &rhs)
-    : Entity(rhs)
-    , mPimpl(new ImportSourceImpl())
-{
-    mPimpl->mUrl = rhs.mPimpl->mUrl;
-    mPimpl->mModel = rhs.mPimpl->mModel;
-}
-
-ImportSource::ImportSource(ImportSource &&rhs) noexcept
-    : Entity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-ImportSource &ImportSource::operator=(ImportSource rhs)
-{
-    Entity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void ImportSource::swap(ImportSource &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 std::string ImportSource::url() const
 {
     return mPimpl->mUrl;

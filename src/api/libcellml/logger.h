@@ -32,7 +32,6 @@ namespace libcellml {
 class LIBCELLML_EXPORT Logger
 {
 public:
-    Logger(); /**< Constructor */
     virtual ~Logger(); /**< Destructor */
     Logger(const Logger &rhs); /**< Copy constructor */
     Logger(Logger &&rhs) noexcept; /**< Move constructor */
@@ -43,7 +42,7 @@ public:
      *
      * Clear the errors from the logger.
      */
-    void clearErrors();
+    void removeAllErrors();
 
     /**
      * @brief Add an error to the logger.
@@ -75,6 +74,9 @@ public:
      * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */
     ErrorPtr error(size_t index) const;
+
+protected:
+    Logger(); /**< Constructor */
 
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */

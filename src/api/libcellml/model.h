@@ -32,18 +32,23 @@ namespace libcellml {
  *
  * The Model class is for representing a CellML Model.
  */
-#ifdef SWIG
 class LIBCELLML_EXPORT Model: public ComponentEntity
-#else
-class LIBCELLML_EXPORT Model: public ComponentEntity, public std::enable_shared_from_this<Model>
+#ifndef SWIG
+    ,
+                              public std::enable_shared_from_this<Model>
 #endif
 {
 public:
-    Model(); /**< Constructor */
     ~Model() override; /**< Destructor */
-    Model(const Model &rhs); /**< Copy constructor */
-    Model(Model && rhs) noexcept; /**< Move constructor */
-    Model &operator=(Model rhs); /**< Assignment operator */
+    Model(const Model &rhs) = delete; /**< Copy constructor */
+    Model(Model &&rhs) noexcept = delete; /**< Move constructor */
+    Model &operator=(Model rhs) = delete; /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Model> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Model> {new Model {std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Add a child units to this model.
@@ -252,7 +257,8 @@ public:
     bool hasUnresolvedImports();
 
 private:
-    void swap(Model & rhs); /**< Swap method required for C++ 11 move semantics. */
+    Model(); /**< Constructor */
+    explicit Model(const std::string &name);
 
     bool doAddComponent(const ComponentPtr &component) override;
 

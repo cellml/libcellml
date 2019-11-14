@@ -17,9 +17,7 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/logger.h"
-#include "libcellml/model.h"
 #include "libcellml/types.h"
-#include "libcellml/units.h"
 
 #include <string>
 #include <vector>
@@ -39,6 +37,12 @@ public:
     Validator(const Validator &rhs); /**< Copy constructor */
     Validator(Validator &&rhs) noexcept; /**< Move constructor */
     Validator &operator=(Validator rhs); /**< Assignment operator */
+
+    template<typename... Args>
+    static std::shared_ptr<Validator> create(Args &&... args) noexcept
+    {
+        return std::shared_ptr<Validator> {new Validator {std::forward<Args>(args)...}};
+    }
 
     /**
      * @brief Validate the @p model using the CellML 2.0 Specification.

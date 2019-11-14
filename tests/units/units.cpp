@@ -20,6 +20,17 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(Units, construct)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("valid_name");
+    EXPECT_EQ("valid_name", u->name());
+
+    const std::string validName = "another_valid_name";
+    auto u2 = libcellml::Units::create(validName);
+    EXPECT_EQ("another_valid_name", u2->name());
+}
+
 TEST(Units, validName)
 {
     const std::string e =
@@ -28,12 +39,12 @@ TEST(Units, validName)
         "  <units name=\"valid_name\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("valid_name");
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -49,12 +60,12 @@ TEST(Units, invalidName)
         "  <units name=\"invalid name\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("invalid name");
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -74,16 +85,16 @@ TEST(Units, compoundUnitsRaw)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit("ampere", -6, 1.0);
     u->addUnit("kelvin");
     u->addUnit("siemens", -3, -1.0);
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -92,7 +103,7 @@ TEST(Units, compoundUnitsRaw)
 
 TEST(Units, addUnitsVariations)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
@@ -113,16 +124,16 @@ TEST(Units, compoundUnitsUsingDefines)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
     u->addUnit(libcellml::Units::StandardUnit::KELVIN);
     u->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -142,9 +153,9 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
@@ -152,7 +163,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
     u->addUnit("siemens", "milli", -1.0);
     u->addUnit("metre", "1.7e310");
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -192,13 +203,13 @@ TEST(Units, removeUnitsMethodsAndCount)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
     u1->setName("compound_unit");
     u2->setName("simple_unit_2");
     u3->setName("simple_unit_3");
@@ -208,10 +219,10 @@ TEST(Units, removeUnitsMethodsAndCount)
     u1->addUnit("kelvin");
     u1->addUnit("siemens", "milli", -1.0);
     u1->addUnit("metre", "1.7e10");
-    m.addUnits(u1);
-    m.addUnits(u2);
-    m.addUnits(u3);
-    m.addUnits(u4);
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+    m->addUnits(u4);
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -221,117 +232,117 @@ TEST(Units, removeUnitsMethodsAndCount)
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
-    EXPECT_TRUE(m.removeUnits("simple_unit_2"));
-    EXPECT_TRUE(m.removeUnits(u3));
+    EXPECT_TRUE(m->removeUnits("simple_unit_2"));
+    EXPECT_TRUE(m->removeUnits(u3));
     a = printer.printModel(m);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(size_t(2), m.unitsCount());
+    EXPECT_EQ(size_t(2), m->unitsCount());
 
-    EXPECT_FALSE(m.removeUnits("gram"));
-    EXPECT_FALSE(m.removeUnits(u5));
-    EXPECT_FALSE(m.removeUnits(3));
-    EXPECT_EQ(size_t(2), m.unitsCount());
+    EXPECT_FALSE(m->removeUnits("gram"));
+    EXPECT_FALSE(m->removeUnits(u5));
+    EXPECT_FALSE(m->removeUnits(3));
+    EXPECT_EQ(size_t(2), m->unitsCount());
 
-    EXPECT_TRUE(m.removeUnits(1));
-    EXPECT_EQ(size_t(1), m.unitsCount());
+    EXPECT_TRUE(m->removeUnits(1));
+    EXPECT_EQ(size_t(1), m->unitsCount());
 
-    m.removeAllUnits();
+    m->removeAllUnits();
     a = printer.printModel(m);
     EXPECT_EQ(e4, a);
 }
 
 TEST(Units, hasUnitsName)
 {
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("a_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u);
-    EXPECT_TRUE(m.hasUnits("a_unit"));
+    m->addUnits(u);
+    EXPECT_TRUE(m->hasUnits("a_unit"));
 }
 
 TEST(Units, hasUnitsPtr)
 {
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("a_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u);
-    EXPECT_TRUE(m.hasUnits(u));
+    m->addUnits(u);
+    EXPECT_TRUE(m->hasUnits(u));
 }
 
 TEST(Units, takeUnits)
 {
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
 
     u1->setName("a_unit");
     u2->setName("b_unit");
     u3->setName("c_unit");
 
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u1);
-    m.addUnits(u2);
-    m.addUnits(u3);
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
 
-    libcellml::UnitsPtr u4 = m.takeUnits("b_unit");
+    libcellml::UnitsPtr u4 = m->takeUnits("b_unit");
     EXPECT_EQ("b_unit", u4->name());
-    EXPECT_EQ(size_t(2), m.unitsCount());
+    EXPECT_EQ(size_t(2), m->unitsCount());
 
-    libcellml::UnitsPtr u5 = m.takeUnits(1);
+    libcellml::UnitsPtr u5 = m->takeUnits(1);
     EXPECT_EQ("c_unit", u5->name());
-    EXPECT_EQ(size_t(1), m.unitsCount());
+    EXPECT_EQ(size_t(1), m->unitsCount());
 
-    EXPECT_EQ(nullptr, m.takeUnits(7));
+    EXPECT_EQ(nullptr, m->takeUnits(7));
 
-    EXPECT_EQ(nullptr, m.takeUnits("d_unit"));
+    EXPECT_EQ(nullptr, m->takeUnits("d_unit"));
 }
 
 TEST(Units, replaceUnits)
 {
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
 
     u1->setName("a_unit");
     u2->setName("b_unit");
     u3->setName("c_unit");
 
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u1);
-    m.addUnits(u2);
+    m->addUnits(u1);
+    m->addUnits(u2);
 
-    EXPECT_TRUE(m.replaceUnits("b_unit", u3));
-    EXPECT_EQ(size_t(2), m.unitsCount());
+    EXPECT_TRUE(m->replaceUnits("b_unit", u3));
+    EXPECT_EQ(size_t(2), m->unitsCount());
 
-    libcellml::UnitsPtr u4 = m.takeUnits(1);
+    libcellml::UnitsPtr u4 = m->takeUnits(1);
     EXPECT_EQ("c_unit", u4->name());
-    EXPECT_EQ(size_t(1), m.unitsCount());
+    EXPECT_EQ(size_t(1), m->unitsCount());
 
-    EXPECT_TRUE(m.replaceUnits(0, u4));
+    EXPECT_TRUE(m->replaceUnits(0, u4));
 
-    u1 = m.units(0);
+    u1 = m->units(0);
     EXPECT_EQ("c_unit", u1->name());
-    EXPECT_EQ(size_t(1), m.unitsCount());
+    EXPECT_EQ(size_t(1), m->unitsCount());
 
     // Replace non-existent units.
-    EXPECT_FALSE(m.replaceUnits("d_unit", u2));
-    EXPECT_FALSE(m.replaceUnits(5, u1));
+    EXPECT_FALSE(m->replaceUnits("d_unit", u2));
+    EXPECT_FALSE(m->replaceUnits(5, u1));
 
     // Replace with pointers
-    EXPECT_FALSE(m.replaceUnits(u2, u1));
-    EXPECT_TRUE(m.replaceUnits(u1, u2));
-    EXPECT_FALSE(m.replaceUnits(u1, u2));
-    EXPECT_TRUE(m.replaceUnits(u2, u1));
+    EXPECT_FALSE(m->replaceUnits(u2, u1));
+    EXPECT_TRUE(m->replaceUnits(u1, u2));
+    EXPECT_FALSE(m->replaceUnits(u1, u2));
+    EXPECT_TRUE(m->replaceUnits(u2, u1));
 }
 
 TEST(Units, multiply)
@@ -351,28 +362,28 @@ TEST(Units, multiply)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("compound_unit");
 
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
     u1->addUnit(libcellml::Units::StandardUnit::KELVIN);
     u1->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
 
-    m.addUnits(u1);
+    m->addUnits(u1);
 
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("valid_name");
 
-    m.addUnits(u2);
+    m->addUnits(u2);
 
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
     u3->setName("multiplied");
     u3->addUnit("compound_unit");
     u3->addUnit("valid_name");
 
-    m.addUnits(u3);
+    m->addUnits(u3);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -387,12 +398,12 @@ TEST(Units, newBaseUnit)
         "  <units name=\"pH\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("pH");
 
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -402,7 +413,7 @@ TEST(Units, newBaseUnit)
 
 TEST(Units, isBaseUnit)
 {
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("pH");
 
     EXPECT_TRUE(u->isBaseUnit());
@@ -422,14 +433,14 @@ TEST(Units, farhenheit)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
     u->addUnit("kelvin", 0, 1.0, 1.8);
-    m.addUnits(u);
+    m->addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -439,14 +450,14 @@ TEST(Units, farhenheit)
 
 TEST(Units, unitAttributes)
 {
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
     u->addUnit("kelvin", 0, 1.0, 1.8);
-    m.addUnits(u);
+    m->addUnits(u);
 
     std::string reference;
     std::string prefix;
@@ -490,57 +501,57 @@ TEST(Units, unitAttributes)
 
 TEST(Units, multipleUnitUsingStandardRef)
 {
-    libcellml::Units u;
+    auto u = libcellml::Units::create();
 
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
 
-    EXPECT_EQ(size_t(4), u.unitCount());
+    EXPECT_EQ(size_t(4), u->unitCount());
 
-    u.removeUnit(libcellml::Units::StandardUnit::AMPERE);
+    u->removeUnit(libcellml::Units::StandardUnit::AMPERE);
 
-    EXPECT_EQ(size_t(3), u.unitCount());
+    EXPECT_EQ(size_t(3), u->unitCount());
 
     std::string prefix;
     std::string reference;
     std::string id;
     double exponent;
     double multiplier;
-    u.unitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
+    u->unitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.unitAttributes(0, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.unitAttributes(1, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("centi", prefix);
-    u.unitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
 }
 
 TEST(Units, removeUnit)
 {
-    libcellml::Units u;
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
-    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    u.addUnit("kelvin");
-    u.addUnit("siemens", "milli", -1.0);
-    u.addUnit("metre", "1.7e10");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    u->addUnit("kelvin");
+    u->addUnit("siemens", "milli", -1.0);
+    u->addUnit("metre", "1.7e10");
 
-    EXPECT_EQ(size_t(4), u.unitCount());
-    EXPECT_TRUE(u.removeUnit("siemens"));
-    EXPECT_TRUE(u.removeUnit(libcellml::Units::StandardUnit::KELVIN));
-    EXPECT_TRUE(u.removeUnit(1));
-    EXPECT_EQ(size_t(1), u.unitCount());
+    EXPECT_EQ(size_t(4), u->unitCount());
+    EXPECT_TRUE(u->removeUnit("siemens"));
+    EXPECT_TRUE(u->removeUnit(libcellml::Units::StandardUnit::KELVIN));
+    EXPECT_TRUE(u->removeUnit(1));
+    EXPECT_EQ(size_t(1), u->unitCount());
 
     // Remove non-existent unit
-    EXPECT_FALSE(u.removeUnit("gram"));
-    EXPECT_FALSE(u.removeUnit(libcellml::Units::StandardUnit::BECQUEREL));
-    EXPECT_FALSE(u.removeUnit(3));
-    EXPECT_EQ(size_t(1), u.unitCount());
+    EXPECT_FALSE(u->removeUnit("gram"));
+    EXPECT_FALSE(u->removeUnit(libcellml::Units::StandardUnit::BECQUEREL));
+    EXPECT_FALSE(u->removeUnit(3));
+    EXPECT_EQ(size_t(1), u->unitCount());
 
-    u.removeAllUnits();
-    EXPECT_EQ(size_t(0), u.unitCount());
+    u->removeAllUnits();
+    EXPECT_EQ(size_t(0), u->unitCount());
 }
 
 TEST(Units, multipleAndParse)
@@ -557,21 +568,21 @@ TEST(Units, multipleAndParse)
         "  </units>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
     u1->addUnit("kelvin", 0, 1.0, 1.8);
 
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("metres_per_second");
     u2->addUnit(libcellml::Units::StandardUnit::METRE);
     u2->addUnit(libcellml::Units::StandardUnit::SECOND, -1.0);
 
-    m.addUnits(u1);
-    m.addUnits(u2);
+    m->addUnits(u1);
+    m->addUnits(u2);
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -591,13 +602,13 @@ TEST(Units, unitsWithPrefixOutOfRange)
     const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
 
     libcellml::Validator validator;
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr m = libcellml::Model::create();
     m->setName("myModel");
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     c->setName("myComponent");
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = libcellml::Variable::create();
     v->setName("myVariable");
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
 
     u->setName("myUnits");
     u->addUnit("second", "18446744073709551616");
@@ -613,16 +624,140 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(e, validator.error(0)->description());
 }
 
-TEST(Units, parentsOfUnits)
+TEST(Units, parentOfUnits)
 {
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("I_am_a_model");
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
 
     model->addUnits(u);  
 
     libcellml::ModelPtr parent = std::dynamic_pointer_cast<libcellml::Model>(u->parent());
     EXPECT_FALSE(parent == nullptr);
+    EXPECT_EQ(model, parent);
+}
+
+TEST(Units, compareEqualMultiplierSimple)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 113.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("metre", 0, 1.0, 113.0);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
+TEST(Units, compareMultiplierSimple)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 1000.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("metre", 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2)); // 10^-3.0 factor difference
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1)); // 10^3.0 factor difference
+}
+
+TEST(Units, compareMultiplierStandardUnit)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::BECQUEREL, 0, 1.0, 500.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_NEAR(0.002, libcellml::Units::scalingFactor(u1, u2), 1e-12);
+    EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
+}
+
+TEST(Units, compareIncompatiableMultiplierSimple)
+{
+    // u1 = 1000*u2
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 1.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("second", 0, 1.0, 1.0);
+
+    // Incompatible units but return a scaling factor of 1.0.
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, complicatedMultiplicationFactorUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
+    u1->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    u2->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("u3");
+    u3->addUnit("u", "kilo", 4.0, 0.001); // standard, exponent.
+
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    u4->setName("u4");
+    u4->addUnit("u2", "milli", 4.0, 1000.0);
+
+    libcellml::UnitsPtr apple = libcellml::Units::create();
+    apple->setName("apple");
+
+    libcellml::UnitsPtr banana = libcellml::Units::create();
+    banana->setName("banana");
+
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    u5->setName("bushell_of_apples");
+    u5->addUnit("apple", "mega", 1.0, 1000.0); // 1000*mega*apple^1
+
+    libcellml::UnitsPtr square_apple = libcellml::Units::create();
+    square_apple->setName("square_apple");
+    square_apple->addUnit("apple", 2);
+
+    libcellml::UnitsPtr incredible_pile_of_square_apples = libcellml::Units::create();
+    incredible_pile_of_square_apples->setName("incredible_pile_of_square_apples");
+    incredible_pile_of_square_apples->addUnit("square_apple", "mega", 1, 100.0);
+
+    libcellml::UnitsPtr bunch_of_bananas = libcellml::Units::create();
+    bunch_of_bananas->setName("bunch_of_bananas");
+    bunch_of_bananas->addUnit("banana", 1, 1, 1.0); // 10 bananas
+
+    model->setName("model");
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
+    model->addUnits(apple);
+    model->addUnits(banana);
+    model->addUnits(square_apple);
+    model->addUnits(incredible_pile_of_square_apples);
+    model->addUnits(bunch_of_bananas);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
+    EXPECT_EQ(1e-08, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
+    // Incompatible units but return a scaling factor.
+    EXPECT_EQ(1e-07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
 }

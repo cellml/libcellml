@@ -65,10 +65,10 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/when.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlutils.cpp
 )
 
 set(GIT_API_HEADER_FILES
@@ -94,7 +94,6 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/when.h
 )
 
 set(API_HEADER_FILES
@@ -107,11 +106,13 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlutils.h
 )
 
 set(HEADER_FILES
@@ -156,9 +157,10 @@ else()
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
+# Use target compile features to propogate features to consuming projects.
+target_compile_features(cellml PUBLIC cxx_std_11)
+
 set_target_properties(cellml PROPERTIES
-  CXX_STANDARD 11
-  CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
   DEBUG_POSTFIX d
@@ -245,14 +247,22 @@ set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
 list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
 
+if (HAVE_LIBXML2_CONFIG)
+  file(TO_CMAKE_PATH ${LibXml2_DIR} _NORMALISED_PATH)
+  set(LIBXML2_CONFIG_MODE_INFORMATION "include(CMakeFindDependencyMacro)\n\nset(LibXml2_DIR \"${_NORMALISED_PATH}\")\nfind_dependency(LibXml2 CONFIG)\n")
+endif()
 set(LIBCELLML_CONFIG_CMAKE_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config.cmake")
 configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
   ${LIBCELLML_CONFIG_CMAKE_FILE}
-  COPYONLY
+  @ONLY
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_CMAKE_FILE})
 
-set(ConfigPackageLocation lib/cmake)
+if(WIN32)
+  set(ConfigPackageLocation ${PROJECT_NAME}/CMake)
+else()
+  set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
+endif()
 install(EXPORT libcellml-targets
   FILE libcellml-targets.cmake
   DESTINATION ${ConfigPackageLocation}
