@@ -653,6 +653,17 @@ TEST(Units, parentlessUsingRemoveUnits)
     model->removeUnits(0);
     EXPECT_FALSE(u->hasParent());
 
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits("u");
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(u);
+    EXPECT_FALSE(u->hasParent());
 }
 
 TEST(Units, compareEqualMultiplierSimple)
