@@ -220,7 +220,7 @@ void Variable::removeAllEquivalences()
     auto thisVariable = shared_from_this();
     for (const auto &variable : mPimpl->mEquivalentVariables) {
         if (!variable.expired()) {
-            removeEquivalence(thisVariable, variable.lock());
+            variable.lock()->mPimpl->unsetEquivalentTo(thisVariable);
         }
     }
     mPimpl->mEquivalentVariables.clear();
