@@ -142,7 +142,7 @@ public:
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
      * @return the @c std::string mapping id.
      */
     static std::string equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
@@ -156,10 +156,32 @@ public:
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1 Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
      * @return the @c std::string connection id.
      */
     static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Clear equivalent connection id for this equivalence.
+     *
+     * Clears the equivalent connection id for the equivalence defined by the two
+     * variables passed as arguments.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     */
+    static void removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Clear the equivalent mapping id for this equivalence.
+     *
+     * Clears the equivalent mapping id for the equivalence defined by the two
+     * variables passed as arguments.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     */
+    static void removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Remove each argument variable to the other's equivalent variable set.
@@ -276,6 +298,13 @@ public:
     UnitsPtr units() const;
 
     /**
+     * @brief Clear the units from this variable.
+     *
+     * Clears the units from this variable.
+     */
+    void removeUnits();
+
+    /**
      * @brief Set the initial value for this variable using a string.
      *
      * Set the initial value for this variable using a string.
@@ -324,6 +353,13 @@ public:
     std::string initialValue() const;
 
     /**
+     * @brief Clear the initial value for this variable.
+     *
+     * Clears the initial value for this variable.
+     */
+    void removeInitialValue();
+
+    /**
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable using a string.
@@ -356,6 +392,13 @@ public:
      * @sa setInterfaceType
      */
     std::string interfaceType() const;
+
+    /**
+     * @brief Clear the interface type for this variable.
+     *
+     * Clears the interface type for this variable.
+     */
+    void removeInterfaceType();
 
 private:
     Variable(); /**< Constructor */
