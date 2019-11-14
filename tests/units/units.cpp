@@ -632,7 +632,7 @@ TEST(Units, parentOfUnits)
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
 
-    model->addUnits(u);  
+    model->addUnits(u);
 
     libcellml::ModelPtr parent = std::dynamic_pointer_cast<libcellml::Model>(u->parent());
     EXPECT_FALSE(parent == nullptr);
