@@ -142,6 +142,41 @@ TEST(Variable, setUnitsAndName)
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, removeUnits)
+{
+    const std::string in = "dimensionless";
+    const std::string eVariableWithUnits =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string eVariableWithOutUnits =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = libcellml::Variable::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName(in);
+    v->setUnits(u);
+    c->addVariable(v);
+
+    libcellml::Printer printer;
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eVariableWithUnits, a);
+
+    v->removeUnits();
+    a = printer.printModel(m);
+    EXPECT_EQ(eVariableWithOutUnits, a);
+}
+
 TEST(Variable, setInitialValueByString)
 {
     const std::string e =
@@ -205,6 +240,11 @@ TEST(Variable, setInitialValueByReference)
 TEST(Variable, unsetInitialValue)
 {
     libcellml::VariablePtr v = libcellml::Variable::create();
+    v->setInitialValue("3.0");
+
+    EXPECT_EQ(v->initialValue(), "3.0");
+
+    v->removeInitialValue();
     EXPECT_EQ(v->initialValue(), "");
 }
 
@@ -329,6 +369,38 @@ TEST(Variable, setInterfaceTypePublicAndPrivate)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
+}
+
+TEST(Variable, removeInterfaceTypePublicAndPrivate)
+{
+    const std::string eWithInterfaceType =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string eWithOutInterfaceType =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    v->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    c->addVariable(v);
+    libcellml::Printer printer;
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eWithInterfaceType, a);
+
+    v->removeInterfaceType();
+
+    a = printer.printModel(m);
+    EXPECT_EQ(eWithOutInterfaceType, a);
 }
 
 TEST(Variable, setGetInterfaceType)
