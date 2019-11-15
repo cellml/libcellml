@@ -74,30 +74,6 @@ GeneratorVariable::~GeneratorVariable()
     delete mPimpl;
 }
 
-GeneratorVariable::GeneratorVariable(const GeneratorVariable &rhs)
-    : mPimpl(new GeneratorVariableImpl())
-{
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mType = rhs.mPimpl->mType;
-}
-
-GeneratorVariable::GeneratorVariable(GeneratorVariable &&rhs) noexcept
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-GeneratorVariable &GeneratorVariable::operator=(GeneratorVariable rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void GeneratorVariable::swap(GeneratorVariable &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 VariablePtr GeneratorVariable::variable() const
 {
     return mPimpl->mVariable;
@@ -1513,7 +1489,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
-                GeneratorVariablePtr variable = std::make_shared<GeneratorVariable>();
+                GeneratorVariablePtr variable = GeneratorVariable::create();
 
                 mVariables.push_back(variable);
 
@@ -3418,70 +3394,6 @@ Generator::~Generator()
     delete mPimpl;
 }
 
-Generator::Generator(const Generator &rhs)
-    : Logger(rhs)
-    , mPimpl(new GeneratorImpl())
-{
-    mPimpl->mGenerator = rhs.mPimpl->mGenerator;
-
-    mPimpl->mModelType = rhs.mPimpl->mModelType;
-
-    mPimpl->mInternalVariables = rhs.mPimpl->mInternalVariables;
-    mPimpl->mEquations = rhs.mPimpl->mEquations;
-
-    mPimpl->mVoi = rhs.mPimpl->mVoi;
-    mPimpl->mStates = rhs.mPimpl->mStates;
-    mPimpl->mVariables = rhs.mPimpl->mVariables;
-
-    mPimpl->mProfile = rhs.mPimpl->mProfile;
-
-    mPimpl->mNeedEq = rhs.mPimpl->mNeedEq;
-    mPimpl->mNeedNeq = rhs.mPimpl->mNeedNeq;
-    mPimpl->mNeedLt = rhs.mPimpl->mNeedLt;
-    mPimpl->mNeedLeq = rhs.mPimpl->mNeedLeq;
-    mPimpl->mNeedGt = rhs.mPimpl->mNeedGt;
-    mPimpl->mNeedGeq = rhs.mPimpl->mNeedGeq;
-    mPimpl->mNeedAnd = rhs.mPimpl->mNeedAnd;
-    mPimpl->mNeedOr = rhs.mPimpl->mNeedOr;
-    mPimpl->mNeedXor = rhs.mPimpl->mNeedXor;
-    mPimpl->mNeedNot = rhs.mPimpl->mNeedNot;
-
-    mPimpl->mNeedMin = rhs.mPimpl->mNeedMin;
-    mPimpl->mNeedMax = rhs.mPimpl->mNeedMax;
-
-    mPimpl->mNeedSec = rhs.mPimpl->mNeedSec;
-    mPimpl->mNeedCsc = rhs.mPimpl->mNeedCsc;
-    mPimpl->mNeedCot = rhs.mPimpl->mNeedCot;
-    mPimpl->mNeedSech = rhs.mPimpl->mNeedSech;
-    mPimpl->mNeedCsch = rhs.mPimpl->mNeedCsch;
-    mPimpl->mNeedCoth = rhs.mPimpl->mNeedCoth;
-    mPimpl->mNeedAsec = rhs.mPimpl->mNeedAsec;
-    mPimpl->mNeedAcsc = rhs.mPimpl->mNeedAcsc;
-    mPimpl->mNeedAcot = rhs.mPimpl->mNeedAcot;
-    mPimpl->mNeedAsech = rhs.mPimpl->mNeedAsech;
-    mPimpl->mNeedAcsch = rhs.mPimpl->mNeedAcsch;
-    mPimpl->mNeedAcoth = rhs.mPimpl->mNeedAcoth;
-}
-
-Generator::Generator(Generator &&rhs) noexcept
-    : Logger(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Generator &Generator::operator=(Generator rhs)
-{
-    Logger::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Generator::swap(Generator &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 GeneratorProfilePtr Generator::profile()
 {
     return mPimpl->mProfile;
@@ -3497,16 +3409,16 @@ void Generator::processModel(const ModelPtr &model)
     // Make sure that the model is valid before processing it.
 
     /*TODO: enable the below code once validation is known to work fine.
-    libcellml::Validator validator;
+    ValidatorPtr validator = Validator::create();
 
-    validator.validateModel(model);
+    validator->validateModel(model);
 
-    if (validator.errorCount() > 0) {
+    if (validator->errorCount() > 0) {
         // The model is not valid, so retrieve the validation errors and make
         // them our own.
 
-        for (size_t i = 0; i < validator.errorCount(); ++i) {
-            addError(validator.error(i));
+        for (size_t i = 0; i < validator->errorCount(); ++i) {
+            addError(validator->error(i));
         }
 
         return;

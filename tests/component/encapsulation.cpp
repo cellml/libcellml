@@ -243,8 +243,8 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
     std::string actual = printer.printModel(model);
     EXPECT_EQ(expected, actual);
 
-    libcellml::Validator v;
-    v.validateModel(model);
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    v->validateModel(model);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }

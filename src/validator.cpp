@@ -271,32 +271,6 @@ Validator::~Validator()
     delete mPimpl;
 }
 
-Validator::Validator(const Validator &rhs)
-    : Logger(rhs)
-    , mPimpl(new ValidatorImpl())
-{
-    mPimpl->mValidator = rhs.mPimpl->mValidator;
-}
-
-Validator::Validator(Validator &&rhs) noexcept
-    : Logger(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Validator &Validator::operator=(Validator rhs)
-{
-    Logger::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Validator::swap(Validator &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing errors in ths validator instance.
