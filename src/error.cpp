@@ -50,37 +50,6 @@ Error::~Error()
     delete mPimpl;
 }
 
-Error::Error(const Error &rhs)
-    : mPimpl(new ErrorImpl())
-{
-    mPimpl->mDescription = rhs.mPimpl->mDescription;
-    mPimpl->mKind = rhs.mPimpl->mKind;
-    mPimpl->mRule = rhs.mPimpl->mRule;
-    mPimpl->mComponent = rhs.mPimpl->mComponent;
-    mPimpl->mImportSource = rhs.mPimpl->mImportSource;
-    mPimpl->mModel = rhs.mPimpl->mModel;
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mReset = rhs.mPimpl->mReset;
-}
-
-Error::Error(Error &&rhs) noexcept
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Error &Error::operator=(Error rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void Error::swap(Error &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 Error::Error(const ModelPtr &model)
     : mPimpl(new ErrorImpl())
 {

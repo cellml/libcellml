@@ -71,7 +71,7 @@ TEST(Coverage, printer)
     libcellml::Printer p;
     libcellml::Printer pm;
 
-    libcellml::ErrorPtr error = std::make_shared<libcellml::Error>();
+    libcellml::ErrorPtr error = libcellml::Error::create();
 
     p.addError(error);
 
@@ -80,22 +80,6 @@ TEST(Coverage, printer)
     libcellml::Printer pc(pm);
 
     EXPECT_EQ(size_t(1), pc.errorCount());
-}
-
-TEST(Coverage, error)
-{
-    const std::string description = "test";
-
-    libcellml::Error e;
-    libcellml::Error em;
-
-    e.setDescription(description);
-
-    em = std::move(e);
-
-    libcellml::Error ec(em);
-
-    EXPECT_EQ(description, ec.description());
 }
 
 TEST(Coverage, generator)

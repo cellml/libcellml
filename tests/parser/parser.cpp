@@ -103,7 +103,7 @@ TEST(Parser, makeError)
 {
     const std::string ex;
 
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>();
+    libcellml::ErrorPtr e = libcellml::Error::create();
 
     EXPECT_EQ(ex, e->description());
 }
@@ -1422,7 +1422,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     // Trigger undefined error
     libcellml::Parser parser2;
     // Add an undefined error
-    libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
+    libcellml::ErrorPtr undefinedError = libcellml::Error::create();
     parser2.addError(undefinedError);
     EXPECT_EQ(size_t(1), parser2.errorCount());
     if (parser2.error(0)->isKind(libcellml::Error::Kind::UNDEFINED)) {

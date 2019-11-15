@@ -1067,7 +1067,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             }
         } else {
             std::string modelName = entityName(owningModel(component));
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + variableName
                                 + "' in component '" + component->name()
@@ -1183,7 +1183,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             ModelPtr model = owningModel(component);
             ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
             ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -1233,7 +1233,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
                 std::string modelName = entityName(owningModel(component));
-                ErrorPtr err = std::make_shared<Error>();
+                ErrorPtr err = Error::create();
 
                 err->setDescription("Variable '" + variable->name()
                                     + "' in component '" + component->name()
@@ -1251,7 +1251,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + mVoi->name()
                                 + "' in component '" + voiComponent->name()
@@ -1276,7 +1276,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("The differential equation for variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -1454,7 +1454,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
 
             if (!errorType.empty()) {
-                ErrorPtr err = std::make_shared<Error>();
+                ErrorPtr err = Error::create();
                 VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
                 ModelPtr realModel = owningModel(realComponent);
