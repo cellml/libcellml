@@ -1008,7 +1008,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 mValidator->addError(err);
                             }
 
-                            if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
+                            if (equivalentVariable->hasEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
                                 auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                                 if (component2 == nullptr || !component2->hasVariable(equivalentVariable)) {

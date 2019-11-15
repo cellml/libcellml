@@ -87,7 +87,7 @@ public:
      * Add a copy of @p variable1 to the set of equivalent variables for
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.  Also set the
-     * mapping id of the equivalence and also optionally the connection id fo the
+     * mapping id of the equivalence and also optionally the connection id for the
      * equivalence.
      *
      * @overload
@@ -184,7 +184,7 @@ public:
     static void removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
-     * @brief Remove each argument variable to the other's equivalent variable set.
+     * @brief Remove each argument variable from the other's equivalent variable set.
      *
      * Removes a copy of @p variable1 from the set of equivalent variables for
      * @p variable2, if present. Also removes a copy of @p variable2 from the
@@ -193,9 +193,9 @@ public:
      * @sa addEquivalence, equivalentVariable
      *
      * @param variable1 The variable to remove from the equivalent variable set
-     * for @p variable2.
+     * of @p variable2.
      * @param variable2 The variable to remove from the equivalent variable set
-     * for @p variable1.
+     * of @p variable1.
      *
      * @return True if the equivalence was removed, false otherwise.
      */
@@ -204,7 +204,7 @@ public:
     /**
      * @brief Remove all equivalent variables for this variable.
      *
-     * Clears all equivalent variables that have been added to the set for this variable.
+     * Clears all equivalences that have been added to the equivalence set for this variable.
      */
     void removeAllEquivalences();
 
@@ -234,7 +234,8 @@ public:
      *
      * Tests to see if the argument variable exists in the set of this variable's equivalent
      * variables. Returns @c true if the argument variable is in this variable's equivalent
-     * variables and @c false otherwise.
+     * variables and @c false otherwise.  The test will *not* traverse the equivalent network
+     * to determine if the two variables are equivalent.
      *
      * @param equivalentVariable The variable to check for in this variable's equivalent variables.
      *
@@ -244,20 +245,22 @@ public:
      * @deprecated This method is currently needed by our Printer and Validator classes, but this is
      * not a method that a libCellML user should ever need. It will therefore be removed at some point.
      */
-    bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
      * @brief Test whether the argument variable is equivalent to this variable.
      *
      * Tests to see if the argument variable is equivalent to this variable. Returns @c true if
-     * the argument variable is equivalent to this variable and @c false otherwise.
+     * the argument variable is equivalent to this variable and @c false otherwise. The test will
+     * traverse through the equivalent network to determine if the argument variable is
+     * equivalent to this variable.
      *
      * @param equivalentVariable The variable to check for equivalence.
      *
      * @return @c true if the @p equivalentVariable is equivalent to this variable and
      * @c false otherwise.
      */
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
+    bool hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
      * @brief Set the units by @p name for this variable.
@@ -266,6 +269,7 @@ public:
      * to unset the units.
      *
      * @sa units
+     * @sa removeUnits
      *
      * @param name The name of the units to set.
      */
@@ -280,6 +284,7 @@ public:
      * @overload
      *
      * @sa units
+     * @sa removeUnits
      *
      * @param units The @c UnitsPtr to set.
      */
@@ -292,6 +297,7 @@ public:
      * an empty @c std::string is returned.
      *
      * @sa setUnits
+     * @sa removeUnits
      *
      * @return The @c UnitsPtr of the units for this variable.
      */
