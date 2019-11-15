@@ -12,9 +12,6 @@ class GeneratorVariableTestCase(unittest.TestCase):
 
         x = GeneratorVariable()
         del(x)
-        y = GeneratorVariable()
-        z = GeneratorVariable(y)
-        del(y, z)
 
 
 class GeneratorTestCase(unittest.TestCase):
@@ -24,9 +21,6 @@ class GeneratorTestCase(unittest.TestCase):
 
         x = Generator()
         del(x)
-        y = Generator()
-        z = Generator(y)
-        del(y, z)
 
     def test_inheritance(self):
         import libcellml

@@ -11,9 +11,6 @@ class ValidatorTestCase(unittest.TestCase):
 
         x = Validator()
         del(x)
-        y = Validator()
-        z = Validator(y)
-        del(y, z)
 
     def test_inheritance(self):
         import libcellml
@@ -36,7 +33,7 @@ class ValidatorTestCase(unittest.TestCase):
 
         # void validateModel(const ModelPtr &model)
         v = Validator()
-        v->validateModel(libcellml.Model())
+        v.validateModel(libcellml.Model())
 
 
 if __name__ == '__main__':

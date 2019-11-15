@@ -288,8 +288,8 @@ TEST(Encapsulation, hierarchyWaterfallAndParse)
     std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 
-    libcellml::Parser parser = libcellml::Parser();
-    libcellml::ModelPtr parsedModel = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr parsedModel = parser->parseModel(e);
 
     a = printer.printModel(parsedModel);
     EXPECT_EQ(e, a);
@@ -315,10 +315,10 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
         "  <component name=\"child3\"/>\n"
         "</model>\n";
 
-    libcellml::Parser parser = libcellml::Parser();
-    libcellml::ModelPtr model = parser.parseModel(input);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(input);
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
     EXPECT_EQ(size_t(1), model->componentCount());
     auto component = model->component(0);
     for (size_t i = 0; i < 3; ++i) {

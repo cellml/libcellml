@@ -785,9 +785,9 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid integer or an SI prefix.",
     };
 
-    libcellml::Parser p;
-    libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(size_t(0), p.errorCount());
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr m = p->parseModel(input);
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
@@ -931,8 +931,8 @@ TEST(Validator, integerStrings)
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
     };
 
-    libcellml::Parser p;
-    libcellml::ModelPtr m = p.parseModel(input);
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr m = p->parseModel(input);
 
     EXPECT_EQ_ERRORS(expectedParsingErrors, p);
 
@@ -2121,8 +2121,8 @@ TEST(Validator, duplicatedCellMLUnitsOnCiElement)
 
 TEST(Validator, multipleDefinitionsOfCellMLNamespace)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("multiplecellmlnamespaces.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("multiplecellmlnamespaces.cellml"));
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);

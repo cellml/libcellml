@@ -219,32 +219,6 @@ Parser::~Parser()
     delete mPimpl;
 }
 
-Parser::Parser(const Parser &rhs)
-    : Logger(rhs)
-    , mPimpl(new ParserImpl())
-{
-    mPimpl->mParser = rhs.mPimpl->mParser;
-}
-
-Parser::Parser(Parser &&rhs) noexcept
-    : Logger(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Parser &Parser::operator=(Parser rhs)
-{
-    Logger::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Parser::swap(Parser &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 ModelPtr Parser::parseModel(const std::string &input)
 {
     ModelPtr model = Model::create();

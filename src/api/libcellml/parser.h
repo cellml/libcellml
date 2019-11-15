@@ -33,11 +33,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Parser: public Logger
 {
 public:
-    Parser(); /**< Constructor */
     ~Parser() override; /**< Destructor */
-    Parser(const Parser &rhs); /**< Copy constructor */
-    Parser(Parser &&rhs) noexcept; /**< Move constructor */
-    Parser &operator=(Parser rhs); /**< Assignment operator */
+    Parser(const Parser &rhs) = delete; /**< Copy constructor */
+    Parser(Parser &&rhs) noexcept = delete; /**< Move constructor */
+    Parser &operator=(Parser rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
     static std::shared_ptr<Parser> create(Args &&... args) noexcept
@@ -58,7 +57,7 @@ public:
     ModelPtr parseModel(const std::string &input);
 
 private:
-    void swap(Parser &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Parser(); /**< Constructor */
 
     struct ParserImpl; /**< Forward declaration for pImpl idiom. */
     ParserImpl *mPimpl; /**< Private member to implementation pointer. */

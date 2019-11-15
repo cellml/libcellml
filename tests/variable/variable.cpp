@@ -900,8 +900,8 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
     EXPECT_EQ("invalid name", u->name());
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
@@ -1000,8 +1000,8 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse)
     v2->setInitialValue("-1.0");
     c->addVariable(v2);
 
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -1090,8 +1090,8 @@ TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfacesAndParse)
     v4->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
     c->addVariable(v4);
 
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -1142,8 +1142,8 @@ TEST(Variable, modelWithComponentWithFiveNamedVariablesWithInterfacesAndParse)
     v5->setInterfaceType("other");
     c->addVariable(v5);
 
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -1161,7 +1161,7 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::Parser parser;
-    parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->parseModel(e);
+    EXPECT_EQ(size_t(0), parser->errorCount());
 }
