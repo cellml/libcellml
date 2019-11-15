@@ -236,8 +236,8 @@ void resolveImport(const ImportedEntityPtr &importedEntity,
             if (file.good()) {
                 std::stringstream buffer;
                 buffer << file.rdbuf();
-                Parser parser;
-                ModelPtr model = parser.parseModel(buffer.str());
+                ParserPtr parser = Parser::create();
+                ModelPtr model = parser->parseModel(buffer.str());
                 importSource->setModel(model);
                 model->resolveImports(url);
             }

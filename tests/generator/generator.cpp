@@ -46,8 +46,8 @@ TEST(Generator, emptyModel)
 
 TEST(Generator, generatorErrors)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr invalidModel = parser.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr invalidModel = parser->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(invalidModel);
@@ -63,10 +63,10 @@ TEST(Generator, generatorErrors)
 
 TEST(Generator, initializedVariableOfIntegration)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'time' in component 'my_component' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised.",
@@ -96,10 +96,10 @@ TEST(Generator, initializedVariableOfIntegration)
 
 TEST(Generator, twoVariablesOfIntegration)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/two_variables_of_integration.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/two_variables_of_integration.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration.",
@@ -129,10 +129,10 @@ TEST(Generator, twoVariablesOfIntegration)
 
 TEST(Generator, nonFirstOrderOdes)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/non_first_order_odes.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_first_order_odes.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
@@ -166,10 +166,10 @@ TEST(Generator, nonFirstOrderOdes)
 
 TEST(Generator, undefinedVariables)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/undefined_variables.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/undefined_variables.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'a' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere.",
@@ -197,10 +197,10 @@ TEST(Generator, undefinedVariables)
 
 TEST(Generator, variableInitializedTwice)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/variable_initialized_twice.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/variable_initialized_twice.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised.",
@@ -227,10 +227,10 @@ TEST(Generator, variableInitializedTwice)
 
 TEST(Generator, nonInitializedState)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/non_initialized_state.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_initialized_state.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'my_component' of model 'non_initialized_state' is used in an ODE, but it is not initialised.",
@@ -257,10 +257,10 @@ TEST(Generator, nonInitializedState)
 
 TEST(Generator, underconstrained)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/underconstrained.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/underconstrained.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
@@ -287,10 +287,10 @@ TEST(Generator, underconstrained)
 
 TEST(Generator, overconstrained)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/overconstrained.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/overconstrained.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'my_component' of model 'my_model' is computed more than once.",
@@ -317,10 +317,10 @@ TEST(Generator, overconstrained)
 
 TEST(Generator, unsuitablyConstrained)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/unsuitably_constrained.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/unsuitably_constrained.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
@@ -348,10 +348,10 @@ TEST(Generator, unsuitablyConstrained)
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -382,10 +382,10 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
 TEST(Generator, algebraicEqnConstVarOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -416,10 +416,10 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
 TEST(Generator, algebraicEqnConstantOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_constant_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_constant_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -450,10 +450,10 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
 TEST(Generator, algebraicEqnDerivativeOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -485,10 +485,10 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
 TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -520,10 +520,10 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
 TEST(Generator, algebraicEqnStateVarOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -555,10 +555,10 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
 TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -590,10 +590,10 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
 TEST(Generator, odeComputedVarOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_computed_var_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_computed_var_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -625,10 +625,10 @@ TEST(Generator, odeComputedVarOnRhs)
 
 TEST(Generator, odeComputedVarOnRhsOneComponent)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_computed_var_on_rhs_one_component/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_computed_var_on_rhs_one_component/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -660,10 +660,10 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
 TEST(Generator, odeConstVarOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_const_var_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_const_var_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -695,10 +695,10 @@ TEST(Generator, odeConstVarOnRhs)
 
 TEST(Generator, odeConstVarOnRhsOneComponent)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_const_var_on_rhs_one_component/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_const_var_on_rhs_one_component/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -730,10 +730,10 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
 TEST(Generator, odeConstantOnRhs)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_constant_on_rhs/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_constant_on_rhs/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -764,10 +764,10 @@ TEST(Generator, odeConstantOnRhs)
 
 TEST(Generator, odeConstantOnRhsOneComponent)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_constant_on_rhs_one_component/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_constant_on_rhs_one_component/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -798,10 +798,10 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
 TEST(Generator, odeMultipleDependentOdes)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -833,10 +833,10 @@ TEST(Generator, odeMultipleDependentOdes)
 
 TEST(Generator, odeMultipleDependentOdesOneComponent)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_multiple_dependent_odes_one_component/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_multiple_dependent_odes_one_component/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -868,10 +868,10 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
 TEST(Generator, odeMultipleOdesWithSameName)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_multiple_odes_with_same_name/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/ode_multiple_odes_with_same_name/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -903,10 +903,10 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
 TEST(Generator, cellmlMappingsAndEncapsulations)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/cellml_mappings_and_encapsulations/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_mappings_and_encapsulations/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -938,10 +938,10 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
 TEST(Generator, dependentEqns)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/dependent_eqns/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/dependent_eqns/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -973,10 +973,10 @@ TEST(Generator, dependentEqns)
 
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -1008,10 +1008,10 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
 TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -1043,10 +1043,10 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -1103,10 +1103,10 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
 TEST(Generator, nobleModel1962)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/noble_model_1962/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/noble_model_1962/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
@@ -1138,10 +1138,10 @@ TEST(Generator, nobleModel1962)
 
 TEST(Generator, coverage)
 {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/coverage/model.cellml"));
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/coverage/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 

@@ -148,8 +148,8 @@ TEST(ComponentImport, nonExistentURLAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), model->componentCount());
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -204,8 +204,8 @@ TEST(ComponentImport, multipleImportAndParse)
     EXPECT_TRUE((e1 == a) || (e2 == a));
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e2);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e2);
     EXPECT_EQ(size_t(3), model->componentCount());
     a = printer.printModel(model);
     EXPECT_TRUE((e1 == a) || (e2 == a));
@@ -259,8 +259,8 @@ TEST(ComponentImport, hierarchicalImportAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), model->componentCount());
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -318,8 +318,8 @@ TEST(ComponentImport, complexImportAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 

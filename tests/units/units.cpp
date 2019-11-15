@@ -589,8 +589,8 @@ TEST(Units, multipleAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }

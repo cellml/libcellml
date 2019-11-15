@@ -38,9 +38,9 @@ TEST(Coverage, connectionComment)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Parser p;
-    p.parseModel(in);
-    EXPECT_EQ(size_t(4), p.errorCount());
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ(size_t(4), p->errorCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -61,9 +61,9 @@ TEST(Coverage, importWithNonHrefXlink)
         "</model>\n";
 
     // Parse
-    libcellml::Parser parser;
-    parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->parseModel(e);
+    EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Coverage, printer)

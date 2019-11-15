@@ -187,8 +187,8 @@ TEST(Connection, validConnectionAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
@@ -210,10 +210,10 @@ TEST(Connection, parseValidAlternateFormConnection)
         "</model>\n";
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(input);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(input);
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser->errorCount());
     EXPECT_EQ(size_t(2), model->componentCount());
     EXPECT_EQ(size_t(1), model->component("component1")->variable("variable1")->equivalentVariableCount());
 }
@@ -420,8 +420,8 @@ TEST(Connection, nineVariablesTenConnectionsAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
@@ -1085,9 +1085,9 @@ TEST(Connection, importedComponentConnectionAndParse)
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -1122,13 +1122,13 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(s);
-    EXPECT_EQ(size_t(1), parser.errorCount());
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(s);
+    EXPECT_EQ(size_t(1), parser->errorCount());
 
-    EXPECT_EQ(expectError, parser.error(0)->description());
-    parser.removeAllErrors();
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(expectError, parser->error(0)->description());
+    parser->removeAllErrors();
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);

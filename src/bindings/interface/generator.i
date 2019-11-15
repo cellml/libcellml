@@ -62,14 +62,14 @@ preparing for code generation.";
 #include "libcellml/generator.h"
 %}
 
-%create_constructor(Generator)
-%create_constructor(GeneratorVariable)
-
 %pythonappend libcellml::Generator::Generator %{
 from libcellml import GeneratorProfile
 profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
 self.setProfile(profile)
 %}
+
+%create_constructor(GeneratorVariable)
+%create_constructor(Generator)
 
 %include "libcellml/types.h"
 %include "libcellml/generator.h"
