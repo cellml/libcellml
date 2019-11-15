@@ -32,11 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Validator: public Logger
 {
 public:
-    Validator(); /**< Constructor */
     ~Validator() override; /**< Destructor */
-    Validator(const Validator &rhs); /**< Copy constructor */
-    Validator(Validator &&rhs) noexcept; /**< Move constructor */
-    Validator &operator=(Validator rhs); /**< Assignment operator */
+    Validator(const Validator &rhs) = delete; /**< Copy constructor */
+    Validator(Validator &&rhs) noexcept = delete; /**< Move constructor */
+    Validator &operator=(Validator rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
     static std::shared_ptr<Validator> create(Args &&... args) noexcept
@@ -55,7 +54,7 @@ public:
     void validateModel(const ModelPtr &model);
 
 private:
-    void swap(Validator &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Validator(); /**< Constructor */
 
     struct ValidatorImpl; /**< Forward declaration for pImpl idiom. */
     ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */

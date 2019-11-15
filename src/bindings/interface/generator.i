@@ -4,6 +4,7 @@
 
 %include <std_string.i>
 
+%import "createconstructor.i"
 %import "logger.i"
 %import "types.i"
 
@@ -61,10 +62,8 @@ preparing for code generation.";
 #include "libcellml/generator.h"
 %}
 
-%ignore libcellml::Generator::Generator(Generator &&);
-%ignore libcellml::Generator::operator =;
-%ignore libcellml::GeneratorVariable::GeneratorVariable(GeneratorVariable &&);
-%ignore libcellml::GeneratorVariable::operator =;
+%create_constructor(Generator)
+%create_constructor(GeneratorVariable)
 
 %pythonappend libcellml::Generator::Generator %{
 from libcellml import GeneratorProfile

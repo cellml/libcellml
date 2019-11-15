@@ -703,8 +703,8 @@ TEST(Parser, encapsulationWithCycleDefined)
     auto output = printer.printModel(m);
     EXPECT_EQ(output, ex);
 
-    libcellml::Validator v;
-    v.validateModel(m);
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    v->validateModel(m);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }

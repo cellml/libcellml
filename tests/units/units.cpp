@@ -601,7 +601,7 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
 
-    libcellml::Validator validator;
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     m->setName("myModel");
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -618,10 +618,10 @@ TEST(Units, unitsWithPrefixOutOfRange)
     m->addComponent(c);
     m->addUnits(u);
 
-    validator.validateModel(m);
+    validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator.errorCount());
-    EXPECT_EQ(e, validator.error(0)->description());
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(e, validator->error(0)->description());
 }
 
 TEST(Units, compareEqualMultiplierSimple)

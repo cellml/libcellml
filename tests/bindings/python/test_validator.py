@@ -36,7 +36,7 @@ class ValidatorTestCase(unittest.TestCase):
 
         # void validateModel(const ModelPtr &model)
         v = Validator()
-        v.validateModel(libcellml.Model())
+        v->validateModel(libcellml.Model())
 
 
 if __name__ == '__main__':
