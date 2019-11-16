@@ -67,8 +67,8 @@ TEST(Parser, parse)
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -83,8 +83,8 @@ TEST(Parser, parseNamedModel)
     libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(n, model->name());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -263,8 +263,8 @@ TEST(Parser, parseNamedModelWithNamedComponent)
     libcellml::ComponentPtr c = model->component(cName);
     EXPECT_EQ(cName, c->name());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -283,8 +283,8 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -477,8 +477,8 @@ TEST(Parser, parseModelWithTwoComponents)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -502,8 +502,8 @@ TEST(Parser, parseModelWithComponentHierarchyWaterfall)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -535,8 +535,8 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -562,8 +562,8 @@ TEST(Parser, modelWithUnits)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(in);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -616,8 +616,8 @@ TEST(Parser, modelWithInvalidUnits)
 
     EXPECT_EQ_ERRORS(expectedErrors, parser);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -688,8 +688,8 @@ TEST(Parser, encapsulationWithCycleDefined)
 
     EXPECT_EQ(size_t(0), p->errorCount());
 
-    libcellml::Printer printer;
-    auto output = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    auto output = printer->printModel(m);
     EXPECT_EQ(output, ex);
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -1207,8 +1207,8 @@ TEST(Parser, component2InConnectionMissing)
     libcellml::ModelPtr m = p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -1324,8 +1324,8 @@ TEST(Parser, invalidImportsAndGetError)
     EXPECT_EQ(expectError3, p->error(2)->description());
     EXPECT_EQ(expectError4, p->error(3)->description());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(output, a);
 
     libcellml::ImportSourcePtr import = m->units("units_in_this_model")->importSource();
@@ -1605,8 +1605,8 @@ TEST(Parser, parseIdsOnEverythingButMath)
     EXPECT_EQ("tv1id", model->component("component2")->reset(0)->testValueId());
     EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
 
-    libcellml::Printer printer;
-    EXPECT_EQ(input, printer.printModel(model));
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    EXPECT_EQ(input, printer->printModel(model));
 }
 
 TEST(Parser, parseResets)
@@ -1795,8 +1795,8 @@ TEST(Parser, unitsWithCellMLRealVariations)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(input);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -1974,13 +1974,13 @@ TEST(Parser, repeatedMathParsePrintBehaviour)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::Printer printer;
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
 
     libcellml::ModelPtr model1 = parser->parseModel(input);
-    std::string output1 = printer.printModel(model1);
+    std::string output1 = printer->printModel(model1);
 
     libcellml::ModelPtr model2 = parser->parseModel(output1);
-    std::string output2 = printer.printModel(model2);
+    std::string output2 = printer->printModel(model2);
 
     EXPECT_EQ(input, output2);
 }
@@ -2017,13 +2017,13 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::Printer printer;
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
 
     libcellml::ModelPtr model1 = parser->parseModel(input);
-    std::string output1 = printer.printModel(model1);
+    std::string output1 = printer->printModel(model1);
 
     libcellml::ModelPtr model2 = parser->parseModel(output1);
-    std::string output2 = printer.printModel(model2);
+    std::string output2 = printer->printModel(model2);
 
     EXPECT_EQ(input, output2);
 }

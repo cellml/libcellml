@@ -85,19 +85,19 @@ TEST(Encapsulation, reparentComponent)
 
     model->addComponent(parent);
 
-    libcellml::Printer printer;
-    std::string a_parent = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
     // 'child3's parent is changed to 'child2'.
     child2->addComponent(child3);
 
-    a_parent = printer.printModel(model);
+    a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
     // Now we have two components at the bottom of the hierarchy.
     model->addComponent(child2);
-    a_parent = printer.printModel(model);
+    a_parent = printer->printModel(model);
     EXPECT_EQ(e_re_add, a_parent);
 }
 
@@ -137,8 +137,8 @@ TEST(Encapsulation, hierarchyWaterfall)
 
     model->addComponent(parent);
 
-    libcellml::Printer printer;
-    const std::string a_parent = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent, a_parent);
 }
 
@@ -193,21 +193,21 @@ TEST(Encapsulation, hierarchyCircular)
     // waterfall hierarchy of two steps.
     model->addComponent(parent);
 
-    libcellml::Printer printer;
-    std::string a_parent = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
     // Add 'child2' to 'child1' to make a waterfall hierarchy of
     // three steps.
     EXPECT_TRUE(child1->addComponent(child2));
-    a_parent = printer.printModel(model);
+    a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
     // Try to make a circular hierarchy but we will not succeed as this is not
     // allowed.  The model will stay as it is.
     EXPECT_FALSE(child2->addComponent(parent));
     EXPECT_FALSE(parent->hasAncestor(child2));
-    a_parent = printer.printModel(model);
+    a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 }
 
@@ -239,8 +239,8 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
     model->addComponent(first_instance);
     first_instance->addComponent(second_instance);
 
-    libcellml::Printer printer;
-    std::string actual = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string actual = printer->printModel(model);
     EXPECT_EQ(expected, actual);
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -284,14 +284,14 @@ TEST(Encapsulation, hierarchyWaterfallAndParse)
     parent->addComponent(child1);
     model->addComponent(parent);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr parsedModel = parser->parseModel(e);
 
-    a = printer.printModel(parsedModel);
+    a = printer->printModel(parsedModel);
     EXPECT_EQ(e, a);
 }
 
@@ -419,7 +419,7 @@ TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)
     model->addComponent(parent1);
     model->addComponent(parent2);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }

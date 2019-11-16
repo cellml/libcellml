@@ -32,11 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Printer: public Logger
 {
 public:
-    Printer(); /**< Constructor */
     ~Printer() override; /**< Destructor */
-    Printer(const Printer &rhs); /**< Copy constructor */
-    Printer(Printer &&rhs) noexcept; /**< Move constructor */
-    Printer &operator=(Printer rhs); /**< Assignment operator */
+    Printer(const Printer &rhs) = delete; /**< Copy constructor */
+    Printer(Printer &&rhs) noexcept = delete; /**< Move constructor */
+    Printer &operator=(Printer rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
     static std::shared_ptr<Printer> create(Args &&... args) noexcept
@@ -56,7 +55,7 @@ public:
     std::string printModel(const ModelPtr &model) const;
 
 private:
-    void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Printer(); /**< Constructor */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
     PrinterImpl *mPimpl; /**< Private member to implementation pointer. */

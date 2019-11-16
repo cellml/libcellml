@@ -54,8 +54,8 @@ TEST(ComponentImport, basics)
 
     m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -86,8 +86,8 @@ TEST(ComponentImport, singleImportA)
     m->addComponent(importedComponent);
     EXPECT_EQ(size_t(1), m->componentCount());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -111,8 +111,8 @@ TEST(ComponentImport, singleImportB)
     importedComponent->setImportReference("a_component_in_that_model");
     m->addComponent(importedComponent);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -143,15 +143,15 @@ TEST(ComponentImport, nonExistentURLAndParse)
     m->addComponent(importedComponent);
     EXPECT_EQ(size_t(1), m->componentCount());
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), model->componentCount());
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -199,15 +199,15 @@ TEST(ComponentImport, multipleImportAndParse)
     c3->setSourceComponent(imp2, "cc1");
     m->addComponent(c3);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_TRUE((e1 == a) || (e2 == a));
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e2);
     EXPECT_EQ(size_t(3), model->componentCount());
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
@@ -254,15 +254,15 @@ TEST(ComponentImport, hierarchicalImportAndParse)
     bob->addComponent(i1);
     EXPECT_EQ(size_t(1), bob->componentCount());
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(1), model->componentCount());
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -313,14 +313,14 @@ TEST(ComponentImport, complexImportAndParse)
     angus->setName("angus");
     bob->addComponent(angus);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 
     // check component counts
