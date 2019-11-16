@@ -66,21 +66,6 @@ TEST(Coverage, importWithNonHrefXlink)
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
-TEST(Coverage, generatorProfile)
-{
-    libcellml::GeneratorProfile rgp;
-    libcellml::GeneratorProfile ao;
-
-    ao = rgp;
-
-    std::vector<libcellml::GeneratorProfile> vec;
-
-    vec.push_back(rgp);
-    vec.insert(vec.begin(), ao);
-
-    auto gp = libcellml::GeneratorProfile::create();
-}
-
 TEST(Coverage, entityHasParent)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
