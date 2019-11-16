@@ -33,8 +33,8 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
     // parse the string using libcellml
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 
     // and now parse directly using libxml2

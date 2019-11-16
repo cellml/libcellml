@@ -113,8 +113,8 @@ TEST(Connection, componentlessVariableInvalidConnection)
     m->addComponent(comp1);
     libcellml::Variable::addEquivalence(v1, v2);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -148,8 +148,8 @@ TEST(Connection, componentlessVariableInvalidConnectionRemoveParentCheck)
     m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
     m->removeComponent("component1");
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -182,14 +182,14 @@ TEST(Connection, validConnectionAndParse)
     m->addComponent(comp1);
     m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -261,8 +261,8 @@ TEST(Connection, twoMapVariablesConnection)
     libcellml::Variable::addEquivalence(v11, v21);
     libcellml::Variable::addEquivalence(v12, v22);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -321,8 +321,8 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate)
     libcellml::Variable::addEquivalence(v12, v22);
     libcellml::Variable::addEquivalence(v13, v23);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -415,14 +415,14 @@ TEST(Connection, nineVariablesTenConnectionsAndParse)
     libcellml::Variable::addEquivalence(v11, v33);
     libcellml::Variable::addEquivalence(v33, v23);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -469,8 +469,8 @@ TEST(Connection, twoValidConnections)
     m->addComponent(comp3);
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -556,17 +556,17 @@ TEST(Connection, removeEquivalentVariableMethods)
     libcellml::Variable::addEquivalence(v1, v3);
     libcellml::Variable::setEquivalenceConnectionId(v1, v3, "con2Id");
     libcellml::Variable::addEquivalence(v2, v3, "mapId", "con1Id");
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
 
     EXPECT_TRUE(libcellml::Variable::removeEquivalence(v2, v3));
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
     EXPECT_FALSE(libcellml::Variable::removeEquivalence(v3, v4));
 
     v1->removeAllEquivalences();
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e3, a);
 }
 
@@ -617,13 +617,13 @@ TEST(Connection, removeConnectionIdFromConnection)
 
     libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connectionId");
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(eWithConnectionId, a);
 
     libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(eWithOutConnectionId, a);
 }
 
@@ -674,13 +674,13 @@ TEST(Connection, removeMappingIdFromConnection)
 
     libcellml::Variable::setEquivalenceMappingId(v1, v2, "mappingId");
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(eWithMappingId, a);
 
     libcellml::Variable::removeEquivalenceMappingId(v1, v2);
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(eWithOutMappingId, a);
 }
 
@@ -839,24 +839,24 @@ TEST(Connection, removeVariablesFromConnections)
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::setEquivalenceMappingId(v1_1, v4, "v11v4Id");
     libcellml::Variable::addEquivalence(v2, v3);
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
 
     comp4->removeVariable(v4);
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 
     comp3->removeVariable("variable3");
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e3, a);
 
     comp2->removeVariable(v2);
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e4, a);
 
     comp1->removeAllVariables();
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e5, a);
 }
 
@@ -915,8 +915,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -978,8 +978,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -1038,8 +1038,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -1080,8 +1080,8 @@ TEST(Connection, importedComponentConnectionAndParse)
     componentBob->addVariable(variableBob);
     EXPECT_EQ(componentImported->variable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported, variableBob);
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
@@ -1089,7 +1089,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(0), parser->errorCount());
 
-    a = printer.printModel(model);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -1130,7 +1130,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     parser->removeAllErrors();
     EXPECT_EQ(size_t(0), parser->errorCount());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }

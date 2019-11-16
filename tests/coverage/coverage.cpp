@@ -66,22 +66,6 @@ TEST(Coverage, importWithNonHrefXlink)
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
-TEST(Coverage, printer)
-{
-    libcellml::Printer p;
-    libcellml::Printer pm;
-
-    libcellml::ErrorPtr error = libcellml::Error::create();
-
-    p.addError(error);
-
-    pm = std::move(p);
-
-    libcellml::Printer pc(pm);
-
-    EXPECT_EQ(size_t(1), pc.errorCount());
-}
-
 TEST(Coverage, generatorProfile)
 {
     libcellml::GeneratorProfile rgp;
