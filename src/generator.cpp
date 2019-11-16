@@ -536,7 +536,7 @@ struct Generator::GeneratorImpl
     std::vector<VariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
-    GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
+    GeneratorProfilePtr mProfile = libcellml::GeneratorProfile::create();
 
     bool mNeedEq = false;
     bool mNeedNeq = false;

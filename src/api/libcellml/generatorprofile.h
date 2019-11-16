@@ -37,11 +37,10 @@ public:
         PYTHON
     };
 
-    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
     ~GeneratorProfile(); /**< Destructor */
-    GeneratorProfile(const GeneratorProfile &rhs); /**< Copy constructor */
-    GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
-    GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
+    GeneratorProfile(const GeneratorProfile &rhs) = delete; /**< Copy constructor */
+    GeneratorProfile(GeneratorProfile &&rhs) noexcept = delete; /**< Move constructor */
+    GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator */
 
     template<typename... Args>
     static std::shared_ptr<GeneratorProfile> create(Args &&... args) noexcept
@@ -3115,7 +3114,7 @@ public:
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 
 private:
-    void swap(GeneratorProfile &rhs); /**< Swap method required for C++ 11 move semantics. */
+    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
 
     struct GeneratorProfileImpl;
     GeneratorProfileImpl *mPimpl;
