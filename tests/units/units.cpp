@@ -665,6 +665,29 @@ TEST(Units, compareMultiplierStandardUnit)
     EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
 }
 
+TEST(Units, compareMultiplierFirstParameterNullUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, u));
+}
+
+TEST(Units, compareMultiplierSecondParameterNullUnit)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u, nullptr));
+}
+
+TEST(Units, compareMultiplierBothNullUnit)
+{
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
+}
+
 TEST(Units, compareIncompatiableMultiplierSimple)
 {
     // u1 = 1000*u2
