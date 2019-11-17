@@ -413,7 +413,7 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     double scalingFactor = 0.0;
 
 	if (!units1 || !units2) {
-        return scalingFactor;    
+		// no change
 	} else {
         updateUnitMultipliers(multiplier, units2, 1, 0, 1);
         updateUnitMultipliers(multiplier, units1, 1, 0, -1);
