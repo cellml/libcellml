@@ -730,6 +730,20 @@ TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
 }
 
+/*
+TEST(Units, testScalingFactorWithModelForReference)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::COULOMB, 0, 1.0, 1.0);
+
+	libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::COULOMB, 0, 1.0, 1.0);
+
+}
+*/
+
 TEST(Units, compareIncompatiableMultiplierSimple)
 {
     // u1 = 1000*u2
@@ -810,4 +824,93 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     EXPECT_EQ(1e-08, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
     // Incompatible units but return a scaling factor.
     EXPECT_EQ(1e-07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
+}
+
+TEST(Units, compareDimensionallyComparableUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_TRUE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
+}
+
+TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveSameBase)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::LUX, "milli");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_FALSE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
+}
+
+TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveDifferentBase)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::BECQUEREL, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_FALSE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
+}
+
+TEST(Units, compareDimensionallyIncomparableUnitsWithInputAsNullptr)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, "milli");
+
+    EXPECT_FALSE(libcellml::Units::isEquivalentTo(u, nullptr));
+    EXPECT_FALSE(libcellml::Units::isEquivalentTo(nullptr, u));
+}
+
+TEST(Units, compareDimensionallyIncomparableUnitsWithBothInputsAsNullptr)
+{
+    EXPECT_FALSE(libcellml::Units::isEquivalentTo(nullptr, nullptr));
+}
+
+TEST(Units, compareComparableUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::LUX, "milli");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_TRUE(libcellml::Units::isEquivalentTo(u1, u2));
+}
+
+TEST(Units, compareNonComparableUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::WEBER, "milli");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_FALSE(libcellml::Units::isEquivalentTo(u1, u2));
+}
+
+TEST(Units, compareOneUnitWithNullptr)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, "milli");
+
+    EXPECT_TRUE(libcellml::Units::isEquivalentTo(u, nullptr));
 }

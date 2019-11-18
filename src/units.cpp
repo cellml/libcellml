@@ -420,4 +420,22 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
+bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+	if ((units1 != nullptr) && (units2 != nullptr) {
+		return true;
+	}
+	
+	return false;
+}
+
+bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+    if ((units1 != nullptr) && (units2 != nullptr)) {
+		return true;
+	}
+	
+	return false;
+}
+
 } // namespace libcellml
