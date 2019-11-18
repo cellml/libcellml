@@ -385,6 +385,32 @@ public:
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
+	/**
+	* @brief Return a bool which indicates if the units are loosely comparable.
+	* 
+	* Two units are loosely comparable if they share the same base, e.g. millivolts and
+	* volts.
+	* 
+	* @param1 units1 The first units to compare.
+	* @param2 units2 The second units to compare.
+	*
+	* @return bool indicating whether units are comparable (true), false otherwise.
+	*/
+	static bool isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2);
+
+	/**
+	* @brief Return a bool which indicates if the units are loosely comparable.
+	* 
+	* Two units are dimensionally comparable if they are the same unit, e.g. volts and
+	* volts.
+	* 
+	* @param1 units1 The first units to compare.
+	* @param2 units2 The second units to compare.
+	*
+	* @return bool indicating whether units are dimensionally comparable (true), false otherwise.
+	*/
+	static bool isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2);
+
 private:
     Units(); /**< Constructor */
     explicit Units(const std::string &name);
