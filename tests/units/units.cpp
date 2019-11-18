@@ -665,7 +665,7 @@ TEST(Units, compareMultiplierStandardUnit)
     EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
 }
 
-TEST(Units, compareMultiplierFirstParameterNullUnit)
+TEST(Units, compareScalingFactorWithNullptrAsFirstParameter)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
@@ -674,7 +674,7 @@ TEST(Units, compareMultiplierFirstParameterNullUnit)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, u));
 }
 
-TEST(Units, compareMultiplierSecondParameterNullUnit)
+TEST(Units, compareScalingFactorWithNullptrAsSecondParameter)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
@@ -683,7 +683,7 @@ TEST(Units, compareMultiplierSecondParameterNullUnit)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u, nullptr));
 }
 
-TEST(Units, compareMultiplierBothNullUnit)
+TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
 {
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
 }
