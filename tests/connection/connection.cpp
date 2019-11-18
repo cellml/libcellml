@@ -118,7 +118,7 @@ TEST(Connection, componentlessVariableInvalidConnection)
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
+TEST(Connection, componentlessVariableInvalidConnectionRemoveParentCheck)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -570,6 +570,120 @@ TEST(Connection, removeEquivalentVariableMethods)
     EXPECT_EQ(e3, a);
 }
 
+TEST(Connection, removeConnectionIdFromConnection)
+{
+    const std::string eWithConnectionId =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\" id=\"connectionId\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+    const std::string eWithOutConnectionId =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connectionId");
+
+    libcellml::Printer printer;
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eWithConnectionId, a);
+
+    libcellml::Variable::removeEquivalenceConnectionId(v1, v2);
+
+    a = printer.printModel(m);
+    EXPECT_EQ(eWithOutConnectionId, a);
+}
+
+TEST(Connection, removeMappingIdFromConnection)
+{
+    const std::string eWithMappingId =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"mappingId\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+    const std::string eWithOutMappingId =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    libcellml::Variable::setEquivalenceMappingId(v1, v2, "mappingId");
+
+    libcellml::Printer printer;
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eWithMappingId, a);
+
+    libcellml::Variable::removeEquivalenceMappingId(v1, v2);
+
+    a = printer.printModel(m);
+    EXPECT_EQ(eWithOutMappingId, a);
+}
+
 TEST(Connection, removeVariablesFromConnections)
 {
     // Initial model
@@ -1013,7 +1127,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     EXPECT_EQ(size_t(1), parser.errorCount());
 
     EXPECT_EQ(expectError, parser.error(0)->description());
-    parser.clearErrors();
+    parser.removeAllErrors();
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     libcellml::Printer printer;

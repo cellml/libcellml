@@ -30,13 +30,13 @@
 %feature("docstring") libcellml::Reset::setTestValue
 "Sets the :class: test_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearTestValue
+%feature("docstring") libcellml::Reset::removeTestValue
 "Clears the :class: test_value MathML string of this reset.";
 
 %feature("docstring") libcellml::Reset::setResetValue
 "Sets the :class: reset_value MathML string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearResetValue
+%feature("docstring") libcellml::Reset::removeResetValue
 "Clears the :class: reset_value MathML string of this reset.";
 
 %feature("docstring") libcellml::Reset::appendTestValue
@@ -48,13 +48,13 @@
 %feature("docstring") libcellml::Reset::setTestValueId
 "Sets the :class: test_value id string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearTestValueId
+%feature("docstring") libcellml::Reset::removeTestValueId
 "Clears the :class: test_value id string of this reset.";
 
 %feature("docstring") libcellml::Reset::setResetValueId
 "Sets the :class: reset_value id string of this reset.";
 
-%feature("docstring") libcellml::Reset::clearResetValueId
+%feature("docstring") libcellml::Reset::removeResetValueId
 "Clears the :class: reset_value id string of this reset.";
 
 %feature("docstring") libcellml::Reset::testValueId

@@ -42,7 +42,7 @@ public:
      *
      * Clear the errors from the logger.
      */
-    void clearErrors();
+    void removeAllErrors();
 
     /**
      * @brief Add an error to the logger.

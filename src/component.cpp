@@ -77,7 +77,7 @@ Component::~Component()
 {
     if (mPimpl != nullptr) {
         for (const auto &variable : mPimpl->mVariables) {
-            variable->clearParent();
+            variable->removeParent();
         }
     }
     delete mPimpl;
@@ -120,6 +120,11 @@ std::string Component::math() const
 void Component::setMath(const std::string &math)
 {
     mPimpl->mMath = math;
+}
+
+void Component::removeMath()
+{
+    mPimpl->mMath.clear();
 }
 
 void Component::addVariable(const VariablePtr &variable)

@@ -360,6 +360,11 @@ void Variable::setUnits(const UnitsPtr &units)
     mPimpl->mUnits = units;
 }
 
+void Variable::removeUnits()
+{
+    mPimpl->mUnits = nullptr;
+}
+
 UnitsPtr Variable::units() const
 {
     return mPimpl->mUnits;
@@ -385,6 +390,11 @@ std::string Variable::initialValue() const
     return mPimpl->mInitialValue;
 }
 
+void Variable::removeInitialValue()
+{
+    mPimpl->mInitialValue.clear();
+}
+
 void Variable::setInterfaceType(const std::string &interfaceType)
 {
     mPimpl->mInterfaceType = interfaceType;
@@ -400,6 +410,11 @@ void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
 std::string Variable::interfaceType() const
 {
     return mPimpl->mInterfaceType;
+}
+
+void Variable::removeInterfaceType()
+{
+    mPimpl->mInterfaceType.clear();
 }
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
@@ -442,6 +457,22 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
         }
     }
     return id;
+}
+
+void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
+        variable1->mPimpl->setEquivalentConnectionId(variable2, "");
+        variable2->mPimpl->setEquivalentConnectionId(variable1, "");
+    }
+}
+
+void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
+        variable1->mPimpl->setEquivalentMappingId(variable2, "");
+        variable2->mPimpl->setEquivalentMappingId(variable1, "");
+    }
 }
 
 } // namespace libcellml
