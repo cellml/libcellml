@@ -409,12 +409,15 @@ size_t Units::unitCount() const
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    double multiplier = 0.0;
+    if ((units1 != nullptr) && (units2 != nullptr)) {
+        double multiplier = 0.0;
 
-    updateUnitMultipliers(multiplier, units2, 1, 0, 1);
-    updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+        updateUnitMultipliers(multiplier, units2, 1, 0, 1);
+        updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+        return std::pow(10, multiplier);
+    }
 
-    return std::pow(10, multiplier);
+    return 0.0;
 }
 
 } // namespace libcellml
