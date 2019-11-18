@@ -14,21 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "namespaces.h"
-#include "utilities.h"
-#include "xmldoc.h"
-#include "xmlutils.h"
+#include "libcellml/parser.h"
+
+#include <string>
+#include <vector>
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/parser.h"
 #include "libcellml/reset.h"
 #include "libcellml/variable.h"
 
-#include <string>
-#include <vector>
+#include "namespaces.h"
+#include "utilities.h"
+#include "xmldoc.h"
+#include "xmlutils.h"
 
 namespace libcellml {
 
