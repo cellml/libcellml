@@ -624,6 +624,48 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(e, validator.error(0)->description());
 }
 
+TEST(Units, parentOfUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    model->addUnits(u);
+
+    libcellml::ModelPtr parent = std::dynamic_pointer_cast<libcellml::Model>(u->parent());
+    EXPECT_FALSE(parent == nullptr);
+    EXPECT_EQ(model, parent);
+}
+
+TEST(Units, parentlessUsingRemoveUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(0);
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits("u");
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(u);
+    EXPECT_FALSE(u->hasParent());
+}
+
 TEST(Units, compareEqualMultiplierSimple)
 {
     // u1 = 1000*u2
