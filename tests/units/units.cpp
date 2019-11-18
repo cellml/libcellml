@@ -624,6 +624,48 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(e, validator->error(0)->description());
 }
 
+TEST(Units, parentOfUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    model->addUnits(u);
+
+    libcellml::ModelPtr parent = std::dynamic_pointer_cast<libcellml::Model>(u->parent());
+    EXPECT_FALSE(parent == nullptr);
+    EXPECT_EQ(model, parent);
+}
+
+TEST(Units, parentlessUsingRemoveUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(0);
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits("u");
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(u);
+    EXPECT_FALSE(u->hasParent());
+}
+
 TEST(Units, compareEqualMultiplierSimple)
 {
     // u1 = 1000*u2
@@ -663,6 +705,29 @@ TEST(Units, compareMultiplierStandardUnit)
 
     EXPECT_NEAR(0.002, libcellml::Units::scalingFactor(u1, u2), 1e-12);
     EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
+}
+
+TEST(Units, compareScalingFactorWithNullptrAsFirstParameter)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, u));
+}
+
+TEST(Units, compareScalingFactorWithNullptrAsSecondParameter)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u, nullptr));
+}
+
+TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
+{
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
 }
 
 TEST(Units, compareIncompatiableMultiplierSimple)

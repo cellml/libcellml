@@ -96,6 +96,8 @@ bool Model::removeUnits(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
+        auto units = *(mPimpl->mUnits.begin() + int64_t(index));
+        units->removeParent();
         mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         status = true;
     }
@@ -108,6 +110,7 @@ bool Model::removeUnits(const std::string &name)
     bool status = false;
     auto result = mPimpl->findUnits(name);
     if (result != mPimpl->mUnits.end()) {
+        (*result)->removeParent();
         mPimpl->mUnits.erase(result);
         status = true;
     }
@@ -120,6 +123,7 @@ bool Model::removeUnits(const UnitsPtr &units)
     bool status = false;
     auto result = mPimpl->findUnits(units);
     if (result != mPimpl->mUnits.end()) {
+        units->removeParent();
         mPimpl->mUnits.erase(result);
         status = true;
     }
