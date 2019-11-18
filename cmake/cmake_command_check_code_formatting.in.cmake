@@ -1,8 +1,16 @@
 set(_FAILED_FILES)
 set(_FILES @FILES_TO_FORMAT@)
+
+if(WIN32)
+  # Windows uses CRLF at line endings but files are actually stored with
+  # LF line ending, UNIX style. So we will ignore differences in line
+  # endings on Windows.
+  set(GIT_DIFF_OPTION_FOR_WINDOWS --ignore-space-at-eol)
+endif()
+
 foreach(file ${_FILES})
-  execute_process(COMMAND @CLANG_FORMAT_EXE@ ${file}
-    COMMAND @GIT_EXE@ diff --no-index -- ${file} -
+  execute_process(COMMAND "@CLANG_FORMAT_EXE@" "${file}"
+    COMMAND "@GIT_EXE@" diff --no-index ${GIT_DIFF_OPTION_FOR_WINDOWS} -- "${file}" -
     RESULT_VARIABLE _RESULT
     OUTPUT_VARIABLE _STDOUT
     ERROR_VARIABLE _STDERR
