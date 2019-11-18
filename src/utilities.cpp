@@ -463,7 +463,9 @@ std::string uniqueComponentName(const ModelPtr& model, const std::string& name)
     return uniqueName;
 }
 
-bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr &component)
+using ComponentMap = std::map<const ComponentPtr&, std::vector<const ComponentPtr&> >;
+
+bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr &component, ComponentMap &cMaps)
 {
     const ModelPtr &parentModel = owningModel(parent);
     std::cout << "parent->name: " << parent->name() << std::endl;
@@ -473,15 +475,26 @@ bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr 
     label += "/";
     label += cname;
     std::cout << "Flattening component: " << label << std::endl;
+    ComponentPtr flatComponent = Component::create();
+    cMaps[flatComponent].push_back(component);
     if (component->isImport()) {
-        ComponentPtr src = component->importSource()->model()->component(component->importReference());
-        std::cout << "**F** " << label << ": using the source component: " << src->name() << std::endl;
-        auto localName = src->name();
+        auto localName = component->name();
         localName += "_flattened";
         localName = uniqueComponentName(parentModel, localName);
-        src->setName(localName);
-        src->clearParent();
-
+        flatComponent->setName(localName);
+        ComponentPtr src = component->importSource()->model()->component(component->importReference());
+        while (src->isImport()) {
+            std::cout << "**F** " << label << ": using the source component: " << src->name() << std::endl;
+            cMaps[flatComponent].push_back(src);
+            for (auto n = 0; n < src->componentCount(); ++n) {
+                ComponentPtr c = src->component(n);
+                addflattenedComponent(src, c);
+            }
+            src = src->importSource()->model()->component(src->importReference());
+        }
+        
+        
+        
         std::cout << "**F** " << label << ": Number of variables in component to flatten: " << int(component->variableCount()) << std::endl;
         for (auto n = 0; n < component->variableCount(); ++n) {
             const VariablePtr& v = component->variable(n);
@@ -513,9 +526,10 @@ ModelPtr flattenModel(const ModelPtr &sourceModel)
     name += "__flattended";
     flatModel->setName(name);
     
+    ComponentMap cMap;
     for (size_t n = 0; n < sourceModel->componentCount(); ++n) {
         ComponentPtr sourceComponent = sourceModel->component(n);
-        addflattenedComponent(flatModel, sourceComponent);
+        addflattenedComponent(flatModel, sourceComponent, cMaps);
     }
     
     return flatModel;
