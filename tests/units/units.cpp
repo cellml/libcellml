@@ -725,6 +725,16 @@ TEST(Units, compareBaseUnitsAgainstItself)
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u1));
 }
 
+TEST(Units, compareBaseUnitsWithCapitalisation)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("frufru");
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("Frufru");
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
 TEST(Units, compareScalingFactorWithNullptrAsFirstParameter)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
