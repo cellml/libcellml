@@ -88,7 +88,6 @@ public:
      */
     static ErrorPtr create(const VariablePtr &variable) noexcept;
 
-
     /**
      * @brief The error Kind enum class.
      *
