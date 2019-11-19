@@ -84,25 +84,25 @@ else()
 endif()
 
 if(CLANG_FORMAT_EXE AND GIT_EXE)
-  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executables required to run the ClangFormat test are available.")
+  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the ClangFormat test are available.")
 endif()
 
 if(CLANG_TIDY_EXE)
-  set(CLANG_TIDY_AVAILABLE TRUE INTERNAL BOOL "Executable required to perform static analysis is available.")
+  set(CLANG_TIDY_AVAILABLE TRUE CACHE INTERNAL "Executable required to perform static analysis is available.")
 endif()
 
 if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND AND GCC_COVERAGE_COMPILER_FLAGS_OK)
-  set(COVERAGE_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executables required to run the coverage testing are available.")
+  set(COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the coverage testing are available.")
 endif()
 
 if(SWIG_EXECUTABLE)
-  set(BINDINGS_AVAILABLE TRUE INTERNAL BOOL "Executable required to generate bindings is available.")
+  set(BINDINGS_AVAILABLE TRUE CACHE INTERNAL "Executable required to generate bindings is available.")
 endif()
 
 if(VALGRIND_EXE AND Python_Interpreter_FOUND)
-  set(VALGRIND_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executable required to run valgrind testing is available.")
+  set(VALGRIND_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executable required to run valgrind testing is available.")
 endif()
 
 if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
-  set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executables required to run the llvm coverage testing are available.")
+  set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
 endif()
