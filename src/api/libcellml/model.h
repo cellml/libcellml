@@ -61,7 +61,7 @@ public:
     static ModelPtr create() noexcept;
 
     /**
-     * @overload static ModelPtr create() noexcept
+     * @overload
      */
     static ModelPtr create(const std::string &name) noexcept;
 
@@ -87,11 +87,11 @@ public:
     bool removeUnits(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the units with the given @p name.
      *
      * Remove the first units found with the given @p name.
-     *
-     * @overload bool removeUnits(size_t index)
      *
      * @param name The name of the units to remove.
      *
@@ -100,11 +100,11 @@ public:
     bool removeUnits(const std::string &name);
 
     /**
+     * @overload
+     *
      * @brief Remove the units with the given pointer.
      *
      * Remove the units with the pointer @p units.
-     *
-     * @overload bool removeUnits(size_t index)
      *
      * @param units The pointer to the units to remove.
      *
@@ -135,12 +135,12 @@ public:
     bool hasUnits(const std::string &name) const;
 
     /**
+     * @overload
+     *
      * @brief Tests to see if the units is within this model.
      *
      * Tests to see if the given @c units is contained within this model.
      * Returns @c true if the units is in the model and @c false otherwise.
-     *
-     * @overload bool hasUnits(const std::string &name) const
      *
      * @param units The units to test for existence in this model.
      *
@@ -162,12 +162,12 @@ public:
     UnitsPtr units(size_t index) const;
 
     /**
+     * @overload
+     *
      * @brief Get a units with the given @p name.
      *
      * Returns a reference to a units with the given @p name.  If the @p name
      * is not valid a @c nullptr is returned.
-     *
-     * @overload UnitsPtr units(size_t index) const
      *
      * @param name The name of the units to return.
      *
@@ -188,12 +188,12 @@ public:
     UnitsPtr takeUnits(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Take the units with the given @p name and return it.
      *
      * Takes the first occurence of the units with the given name @p name and returns it.
      * If no units with name @p name is found then a @c nullptr is returned.
-     *
-     * @overload UnitsPtr takeUnits(size_t index)
      *
      * @param name The name of the units to take.
      *
@@ -215,11 +215,11 @@ public:
     bool replaceUnits(size_t index, const UnitsPtr &units);
 
     /**
+     * @overload
+     *
      * @brief Replace a units with the given @p name.
      *
      * Replaces the units with the given @p name with @p units.
-     *
-     * @overload bool replaceUnits(size_t index, const UnitsPtr &units)
      *
      * @param name The name of the units to replace.
      * @param units The units to use for replacement.
@@ -229,11 +229,11 @@ public:
     bool replaceUnits(const std::string &name, const UnitsPtr &units);
 
     /**
+     * @overload
+     *
      * @brief Replace a units with another units.
      *
      * Replaces one units with another.
-     *
-     * @overload bool replaceUnits(size_t index, const UnitsPtr &units)
      *
      * @param oldUnits The units to be replaced.
      * @param newUnits The units to use for replacement.

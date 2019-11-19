@@ -60,7 +60,7 @@ public:
     static ComponentPtr create() noexcept;
 
     /**
-     * @overload static ComponentPtr create() noexcept
+     * @overload
      */
     static ComponentPtr create(const std::string &name) noexcept;
 
@@ -141,6 +141,8 @@ public:
     bool removeVariable(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the variable with the given @p name from this component.
      *
      * Remove the variable with the given name from this component. If the named variable to
@@ -149,8 +151,6 @@ public:
      *
      * @sa addVariable
      *
-     * @overload bool removeVariable(size_t index)
-     *
      * @param name The name of the variable to remove.
      *
      * @return True if the variable was removed, false otherwise.
@@ -158,6 +158,8 @@ public:
     bool removeVariable(const std::string &name);
 
     /**
+     * @overload
+     *
      * @brief Remove the variable by the given @p variable pointer from this component.
      *
      * Remove the variable with the given pointer from this component. If the @p variable to
@@ -165,8 +167,6 @@ public:
      * component will not be serialised in the connection.
      *
      * @sa addVariable
-     *
-     * @overload bool removeVariable(size_t index)
      *
      * @param variable The pointer to the variable to remove.
      *
@@ -197,12 +197,12 @@ public:
     VariablePtr variable(size_t index) const;
 
     /**
+     * @overload
+     *
      * @brief Get a variable with the given name @p name.
      *
      * Returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
-     *
-     * @overload VariablePtr variable(size_t index) const
      *
      * @param name The name of the variable to return.
      *
@@ -225,13 +225,13 @@ public:
     VariablePtr takeVariable(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Take a variable with the given name @p name.
      *
      * Remove the variable with the given name from this component and
      * returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
-     *
-     * @overload VariablePtr takeVariable(size_t index)
      *
      * @param name The name of the variable to return.
      *
@@ -262,13 +262,13 @@ public:
     bool hasVariable(const VariablePtr &variable) const;
 
     /**
+     * @overload
+     *
      * @brief Test whether the variable named @p name is in this component.
      *
      * Tests whether a variable with the argument @p name exists in the set of this
      * component's variables. Returns @c true if the named variable is in this
      * component's variables and @c false otherwise.
-     *
-     * @overload bool hasVariable(const VariablePtr &variable) const
      *
      * @param name The name of the variable to check for in this component.
      *
@@ -304,13 +304,13 @@ public:
     bool removeReset(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the reset by the given @p reset pointer from this component.
      *
      * Remove the reset with the given pointer from this component.
      *
      * @sa addReset
-     *
-     * @overload bool removeReset(size_t index)
      *
      * @param reset The pointer to the reset to remove.
      *

@@ -54,7 +54,7 @@ public:
     static VariablePtr create() noexcept;
 
     /**
-     * @overload static VariablePtr create() noexcept
+     * @overload
      */
     static VariablePtr create(const std::string &name) noexcept;
 
@@ -89,6 +89,8 @@ public:
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
+     * @overload
+     *
      * @brief Add each argument variable to the other's equivalent variable set.
      *
      * Add a copy of @p variable1 to the set of equivalent variables for
@@ -96,8 +98,6 @@ public:
      * set of equivalent variables for @p variable1 if not already present.  Also set the
      * mapping id of the equivalence and also optionally the connection id fo the
      * equivalence.
-     *
-     * @overload static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -279,12 +279,12 @@ public:
     void setUnits(const std::string &name);
 
     /**
+     * @overload
+     *
      * @brief Set the units for this variable using a @c UnitsPtr.
      *
      * Set the units for this variable as the name associated with the
      * argument @p units.
-     *
-     * @overload void setUnits(const std::string &name)
      *
      * @sa units
      *
@@ -323,12 +323,12 @@ public:
     void setInitialValue(const std::string &initialValue);
 
     /**
+     * @overload
+     *
      * @brief Set the initial value for this variable using a real number.
      *
      * Set the initial value for this variable using a real number.
      * The real number value will be converted to and stored as a string.
-     *
-     * @overload void setInitialValue(const std::string &initialValue)
      *
      * @sa initialValue
      *
@@ -337,12 +337,12 @@ public:
     void setInitialValue(double initialValue);
 
     /**
+     * @overload
+     *
      * @brief Set the initial value for this variable using a variable reference.
      *
      * Set the initial value for this variable using a variable reference.
      * The initial value will be set to the name of the referenced variable.
-     *
-     * @overload void setInitialValue(const std::string &initialValue)
      *
      * @sa initialValue
      *
@@ -378,12 +378,12 @@ public:
     void setInterfaceType(const std::string &interfaceType);
 
     /**
+     * @overload
+     *
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable from the available
      * options in the InterfaceType enum class.
-     *
-     * @overload void setInterfaceType(const std::string &interfaceType)
      *
      * @sa interfaceType
      *

@@ -59,32 +59,32 @@ public:
     static ErrorPtr create() noexcept;
 
     /**
-     * @overload static ErrorPtr create() noexcept
+     * @overload
      */
     static ErrorPtr create(const ComponentPtr &component) noexcept;
 
     /**
-     * @overload static ErrorPtr create() noexcept
+     * @overload
      */
     static ErrorPtr create(const ImportSourcePtr &importSource) noexcept;
 
     /**
-     * @overload static ErrorPtr create() noexcept
+     * @overload
      */
     static ErrorPtr create(const ModelPtr &model) noexcept;
 
     /**
-     * @overload static ErrorPtr create() noexcept
+     * @overload
      */
     static ErrorPtr create(const ResetPtr &reset) noexcept;
 
     /**
-     * @overload static ErrorPtr create() noexcept
+     * @overload
      */
     static ErrorPtr create(const UnitsPtr &units) noexcept;
 
     /**
-     * @overload static ErrorPtr create() noexcept
+     * @overload
      */
     static ErrorPtr create(const VariablePtr &variable) noexcept;
 
