@@ -415,10 +415,12 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 
             updateUnitMultipliers(multiplier, units2, 1, 0, 1);
             updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+
             return std::pow(10, multiplier);
         }
+
         if (units1->name() == units2->name()) {
-            return 1.0; // If no units but same name then equivalent
+            return 1.0;
         }
     }
 
