@@ -54,7 +54,7 @@ public:
      *
      * or a named model with name "Model" with::
      *
-     *   ModelPtr model = libcellml::Model::create(std::string("Model"));
+     *   ModelPtr model = libcellml::Model::create("Model");
      *
      * @return A smart pointer to a @c Model object.
      */

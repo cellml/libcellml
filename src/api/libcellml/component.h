@@ -53,7 +53,7 @@ public:
      *
      * or a named component with name "Component" with::
      *
-     *   ComponentPtr component = libcellml::Component::create(std::string("Component"));
+     *   ComponentPtr component = libcellml::Component::create("Component");
      *
      * @return A smart pointer to a @c Component object.
      */
