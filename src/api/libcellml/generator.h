@@ -48,11 +48,17 @@ public:
     GeneratorVariable(GeneratorVariable &&rhs) noexcept = delete; /**< Move constructor */
     GeneratorVariable &operator=(GeneratorVariable rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<GeneratorVariable> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c GeneratorVariable object.
+     *
+     * Factory method to create a @c GeneratorVariable.  Create a
+     * generator variable with::
+     *
+     *   GeneratorVariablePtr generatorVariable = libcellml::GeneratorVariable::create();
+     *
+     * @return A smart pointer to a @c GeneratorVariable object.
+     */
+    static GeneratorVariablePtr create() noexcept;
 
     /**
      * @brief Get the @c Variable for this @c GeneratorVariable.
@@ -103,11 +109,17 @@ public:
     Generator(Generator &&rhs) noexcept = delete; /**< Move constructor */
     Generator &operator=(Generator rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Generator> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Generator> {new Generator {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Generator object.
+     *
+     * Factory method to create a @c Generator.  Create a
+     * generator with::
+     *
+     *   GeneratorPtr generator = libcellml::Generator::create();
+     *
+     * @return A smart pointer to a @c Generator object.
+     */
+    static GeneratorPtr create() noexcept;
 
     /**
      * @brief Get the @c GeneratorProfile.

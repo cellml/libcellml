@@ -25,6 +25,10 @@ TEST(Reset, create)
     libcellml::ResetPtr r = libcellml::Reset::create();
 
     EXPECT_NE(nullptr, r);
+
+    libcellml::ResetPtr rOrder = libcellml::Reset::create(10);
+
+    EXPECT_EQ(10, rOrder->order());
 }
 
 TEST(Reset, order)

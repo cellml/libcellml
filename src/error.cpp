@@ -92,6 +92,41 @@ Error::Error(const ResetPtr &reset)
     mPimpl->mKind = Error::Kind::RESET;
 }
 
+ErrorPtr Error::create() noexcept
+{
+    return std::shared_ptr<Error> {new Error {}};
+}
+
+ErrorPtr Error::create(const ComponentPtr &component) noexcept
+{
+    return std::shared_ptr<Error> {new Error {component}};
+}
+
+ErrorPtr Error::create(const ImportSourcePtr &importSource) noexcept
+{
+    return std::shared_ptr<Error> {new Error {importSource}};
+}
+
+ErrorPtr Error::create(const ModelPtr &model) noexcept
+{
+    return std::shared_ptr<Error> {new Error {model}};
+}
+
+ErrorPtr Error::create(const ResetPtr &reset) noexcept
+{
+    return std::shared_ptr<Error> {new Error {reset}};
+}
+
+ErrorPtr Error::create(const UnitsPtr &units) noexcept
+{
+    return std::shared_ptr<Error> {new Error {units}};
+}
+
+ErrorPtr Error::create(const VariablePtr &variable) noexcept
+{
+    return std::shared_ptr<Error> {new Error {variable}};
+}
+
 void Error::setDescription(const std::string &description)
 {
     mPimpl->mDescription = description;

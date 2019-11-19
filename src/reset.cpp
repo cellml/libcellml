@@ -42,6 +42,22 @@ Reset::Reset()
 {
 }
 
+Reset::Reset(int order)
+    : mPimpl(new ResetImpl())
+{
+    setOrder(order);
+}
+
+ResetPtr Reset::create() noexcept
+{
+    return std::shared_ptr<Reset> {new Reset {}};
+}
+
+ResetPtr Reset::create(int order) noexcept
+{
+    return std::shared_ptr<Reset> {new Reset {order}};
+}
+
 Reset::~Reset()
 {
     delete mPimpl;

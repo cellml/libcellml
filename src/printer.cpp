@@ -421,6 +421,11 @@ Printer::~Printer()
     delete mPimpl;
 }
 
+PrinterPtr Printer::create() noexcept
+{
+    return std::shared_ptr<Printer> {new Printer {}};
+}
+
 std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap

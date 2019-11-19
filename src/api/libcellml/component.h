@@ -43,11 +43,26 @@ public:
     Component(Component &&rhs) noexcept = delete; /**< Move constructor */
     Component &operator=(Component rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Component> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Component> {new Component {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Component object.
+     *
+     * Factory method to create a @c Component.  Create a
+     * blank component with::
+     *
+     *   ComponentPtr component = libcellml::Component::create();
+     *
+     * or a named component with name "Component" with::
+     *
+     *   ComponentPtr component = libcellml::Component::create(std::string("Component"));
+     *
+     * @return A smart pointer to a @c Component object.
+     */
+    static ComponentPtr create() noexcept;
+
+    /**
+     * @overload static ComponentPtr create() noexcept
+     */
+    static ComponentPtr create(const std::string &name) noexcept;
 
     /**
      * @brief Set the source component for this component.
@@ -134,7 +149,7 @@ public:
      *
      * @sa addVariable
      *
-     * @overload
+     * @overload bool removeVariable(size_t index)
      *
      * @param name The name of the variable to remove.
      *
@@ -151,7 +166,7 @@ public:
      *
      * @sa addVariable
      *
-     * @overload
+     * @overload bool removeVariable(size_t index)
      *
      * @param variable The pointer to the variable to remove.
      *
@@ -187,7 +202,7 @@ public:
      * Returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
      *
-     * @overload
+     * @overload VariablePtr variable(size_t index) const
      *
      * @param name The name of the variable to return.
      *
@@ -216,7 +231,7 @@ public:
      * returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
      *
-     * @overload
+     * @overload VariablePtr takeVariable(size_t index)
      *
      * @param name The name of the variable to return.
      *
@@ -253,7 +268,7 @@ public:
      * component's variables. Returns @c true if the named variable is in this
      * component's variables and @c false otherwise.
      *
-     * @overload
+     * @overload bool hasVariable(const VariablePtr &variable) const
      *
      * @param name The name of the variable to check for in this component.
      *
@@ -295,7 +310,7 @@ public:
      *
      * @sa addReset
      *
-     * @overload
+     * @overload bool removeReset(size_t index)
      *
      * @param reset The pointer to the reset to remove.
      *

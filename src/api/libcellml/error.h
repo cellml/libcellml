@@ -37,11 +37,57 @@ public:
     Error(Error &&rhs) noexcept = delete; /**< Move constructor */
     Error &operator=(Error rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Error> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Error> {new Error {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create an @c Error object.
+     *
+     * Factory method to create an @c Error.  Can create a
+     * blank error with::
+     *
+     *   ErrorPtr error = libcellml::Error::create();
+     *
+     * or an error with one of the following types as a parameter::
+     *
+     *   - libcellml::ComponentPtr
+     *   - libcellml::ImportSourcePtr
+     *   - libcellml::ModelPtr
+     *   - libcellml::ResetPtr
+     *   - libcellml::UnitsPtr
+     *   - libcellml::VariablePtr
+     *
+     * @return A smart pointer to an @c Error object.
+     */
+    static ErrorPtr create() noexcept;
+
+    /**
+     * @overload static ErrorPtr create() noexcept
+     */
+    static ErrorPtr create(const ComponentPtr &component) noexcept;
+
+    /**
+     * @overload static ErrorPtr create() noexcept
+     */
+    static ErrorPtr create(const ImportSourcePtr &importSource) noexcept;
+
+    /**
+     * @overload static ErrorPtr create() noexcept
+     */
+    static ErrorPtr create(const ModelPtr &model) noexcept;
+
+    /**
+     * @overload static ErrorPtr create() noexcept
+     */
+    static ErrorPtr create(const ResetPtr &reset) noexcept;
+
+    /**
+     * @overload static ErrorPtr create() noexcept
+     */
+    static ErrorPtr create(const UnitsPtr &units) noexcept;
+
+    /**
+     * @overload static ErrorPtr create() noexcept
+     */
+    static ErrorPtr create(const VariablePtr &variable) noexcept;
+
 
     /**
      * @brief The error Kind enum class.

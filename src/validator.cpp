@@ -271,6 +271,11 @@ Validator::~Validator()
     delete mPimpl;
 }
 
+ValidatorPtr Validator::create() noexcept
+{
+    return std::shared_ptr<Validator> {new Validator {}};
+}
+
 void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing errors in ths validator instance.

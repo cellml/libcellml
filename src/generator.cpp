@@ -74,6 +74,11 @@ GeneratorVariable::~GeneratorVariable()
     delete mPimpl;
 }
 
+GeneratorVariablePtr GeneratorVariable::create() noexcept
+{
+    return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {}};
+}
+
 VariablePtr GeneratorVariable::variable() const
 {
     return mPimpl->mVariable;
@@ -3392,6 +3397,11 @@ Generator::Generator()
 Generator::~Generator()
 {
     delete mPimpl;
+}
+
+GeneratorPtr Generator::create() noexcept
+{
+    return std::shared_ptr<Generator> {new Generator {}};
 }
 
 GeneratorProfilePtr Generator::profile()

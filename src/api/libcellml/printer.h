@@ -37,11 +37,17 @@ public:
     Printer(Printer &&rhs) noexcept = delete; /**< Move constructor */
     Printer &operator=(Printer rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Printer> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Printer> {new Printer {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Printer object.
+     *
+     * Factory method to create a @c Printer.  Create a
+     * printer with::
+     *
+     *   PrinterPtr printer = libcellml::Printer::create();
+     *
+     * @return A smart pointer to a @c Printer object.
+     */
+    static PrinterPtr create() noexcept;
 
     /**
      * @brief Serialise the @c Model to @c std::string.
