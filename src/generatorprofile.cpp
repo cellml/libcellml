@@ -867,6 +867,11 @@ GeneratorProfile::~GeneratorProfile()
     delete mPimpl;
 }
 
+GeneratorProfilePtr GeneratorProfile::create(Profile profile) noexcept
+{
+    return std::shared_ptr<GeneratorProfile> {new GeneratorProfile {profile}};
+}
+
 GeneratorProfile::Profile GeneratorProfile::profile() const
 {
     return mPimpl->mProfile;

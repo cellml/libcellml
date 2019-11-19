@@ -14,14 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
-#include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/parser.h"
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
-
-#include "utilities.h"
 
 #include <algorithm>
 #include <fstream>
@@ -30,6 +23,14 @@ limitations under the License.
 #include <stack>
 #include <utility>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/importsource.h"
+#include "libcellml/parser.h"
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -69,6 +70,16 @@ Model::Model(const std::string &name)
     : mPimpl(new ModelImpl())
 {
     setName(name);
+}
+
+ModelPtr Model::create() noexcept
+{
+    return std::shared_ptr<Model> {new Model {}};
+}
+
+ModelPtr Model::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Model> {new Model {name}};
 }
 
 Model::~Model()

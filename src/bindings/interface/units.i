@@ -7,9 +7,6 @@
 %import "importedentity.i"
 %import "types.i"
 
-%ignore libcellml::Units::Units(Units &&);
-%ignore libcellml::Units::operator =;
-
 // Add typemaps to fix string ref inputs (fixes memory leak issues)
 %include "typemaps.i"
 %apply std::string &OUTPUT { std::string &reference };

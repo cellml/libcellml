@@ -38,11 +38,17 @@ public:
     Parser(Parser &&rhs) noexcept = delete; /**< Move constructor */
     Parser &operator=(Parser rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Parser> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Parser> {new Parser {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Parser object.
+     *
+     * Factory method to create a @c Parser.  Create a
+     * parser with::
+     *
+     *   ParserPtr parser = libcellml::Parser::create();
+     *
+     * @return A smart pointer to a @c Parser object.
+     */
+    static ParserPtr create() noexcept;
 
     /**
      * @brief Create and populate a new model from a @c std::string.

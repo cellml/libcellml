@@ -44,11 +44,26 @@ public:
     Model(Model &&rhs) noexcept = delete; /**< Move constructor */
     Model &operator=(Model rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Model> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Model> {new Model {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Model object.
+     *
+     * Factory method to create a @c Model.  Create a
+     * blank model with::
+     *
+     *   ModelPtr model = libcellml::Model::create();
+     *
+     * or a named model with name "Model" with::
+     *
+     *   ModelPtr model = libcellml::Model::create(std::string("Model"));
+     *
+     * @return A smart pointer to a @c Model object.
+     */
+    static ModelPtr create() noexcept;
+
+    /**
+     * @overload static ModelPtr create() noexcept
+     */
+    static ModelPtr create(const std::string &name) noexcept;
 
     /**
      * @brief Add a child units to this model.
@@ -76,7 +91,7 @@ public:
      *
      * Remove the first units found with the given @p name.
      *
-     * @overload
+     * @overload bool removeUnits(size_t index)
      *
      * @param name The name of the units to remove.
      *
@@ -89,7 +104,7 @@ public:
      *
      * Remove the units with the pointer @p units.
      *
-     * @overload
+     * @overload bool removeUnits(size_t index)
      *
      * @param units The pointer to the units to remove.
      *
@@ -125,6 +140,8 @@ public:
      * Tests to see if the given @c units is contained within this model.
      * Returns @c true if the units is in the model and @c false otherwise.
      *
+     * @overload bool hasUnits(const std::string &name) const
+     *
      * @param units The units to test for existence in this model.
      *
      * @return @c true if the units is in the model and @c false otherwise.
@@ -138,8 +155,6 @@ public:
      * is not valid a @c nullptr is returned, the range of valid values for the
      * index is [0, \#units).
      *
-     * @overload
-     *
      * @param index The index of the units to return.
      *
      * @return A reference to the units at the given @p index on success, @c nullptr otherwise.
@@ -152,7 +167,7 @@ public:
      * Returns a reference to a units with the given @p name.  If the @p name
      * is not valid a @c nullptr is returned.
      *
-     * @overload
+     * @overload UnitsPtr units(size_t index) const
      *
      * @param name The name of the units to return.
      *
@@ -178,7 +193,7 @@ public:
      * Takes the first occurence of the units with the given name @p name and returns it.
      * If no units with name @p name is found then a @c nullptr is returned.
      *
-     * @overload
+     * @overload UnitsPtr takeUnits(size_t index)
      *
      * @param name The name of the units to take.
      *
@@ -204,7 +219,7 @@ public:
      *
      * Replaces the units with the given @p name with @p units.
      *
-     * @overload
+     * @overload bool replaceUnits(size_t index, const UnitsPtr &units)
      *
      * @param name The name of the units to replace.
      * @param units The units to use for replacement.
@@ -218,7 +233,7 @@ public:
      *
      * Replaces one units with another.
      *
-     * @overload
+     * @overload bool replaceUnits(size_t index, const UnitsPtr &units)
      *
      * @param oldUnits The units to be replaced.
      * @param newUnits The units to use for replacement.
@@ -258,7 +273,7 @@ public:
 
 private:
     Model(); /**< Constructor */
-    explicit Model(const std::string &name);
+    explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
 
     bool doAddComponent(const ComponentPtr &component) override;
 

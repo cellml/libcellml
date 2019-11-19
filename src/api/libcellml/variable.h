@@ -37,11 +37,26 @@ public:
     Variable(Variable &&rhs) noexcept = delete; /**< Move constructor */
     Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Variable> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Variable> {new Variable {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Variable object.
+     *
+     * Factory method to create a @c Variable.  Create a
+     * blank variable with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create();
+     *
+     * or a named variable with name "Variable" with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create(std::string("Variable"));
+     *
+     * @return A smart pointer to a @c Variable object.
+     */
+    static VariablePtr create() noexcept;
+
+    /**
+     * @overload static VariablePtr create() noexcept
+     */
+    static VariablePtr create(const std::string &name) noexcept;
 
     /**
      * @brief The InterfaceType enum class.
@@ -82,7 +97,7 @@ public:
      * mapping id of the equivalence and also optionally the connection id fo the
      * equivalence.
      *
-     * @overload
+     * @overload static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -269,7 +284,7 @@ public:
      * Set the units for this variable as the name associated with the
      * argument @p units.
      *
-     * @overload
+     * @overload void setUnits(const std::string &name)
      *
      * @sa units
      *
@@ -313,7 +328,7 @@ public:
      * Set the initial value for this variable using a real number.
      * The real number value will be converted to and stored as a string.
      *
-     * @overload
+     * @overload void setInitialValue(const std::string &initialValue)
      *
      * @sa initialValue
      *
@@ -327,7 +342,7 @@ public:
      * Set the initial value for this variable using a variable reference.
      * The initial value will be set to the name of the referenced variable.
      *
-     * @overload
+     * @overload void setInitialValue(const std::string &initialValue)
      *
      * @sa initialValue
      *
@@ -368,7 +383,7 @@ public:
      * Set the interface type for this variable from the available
      * options in the InterfaceType enum class.
      *
-     * @overload
+     * @overload void setInterfaceType(const std::string &interfaceType)
      *
      * @sa interfaceType
      *
@@ -394,7 +409,7 @@ public:
 
 private:
     Variable(); /**< Constructor */
-    explicit Variable(const std::string &name);
+    explicit Variable(const std::string &name); /**< Constructor with std::string parameter*/
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */

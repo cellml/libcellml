@@ -233,6 +233,16 @@ Units::~Units()
     delete mPimpl;
 }
 
+UnitsPtr Units::create() noexcept
+{
+    return std::shared_ptr<Units> {new Units {}};
+}
+
+UnitsPtr Units::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Units> {new Units {name}};
+}
+
 bool Units::isBaseUnit() const
 {
     return unitCount() == 0;

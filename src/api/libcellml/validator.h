@@ -37,11 +37,17 @@ public:
     Validator(Validator &&rhs) noexcept = delete; /**< Move constructor */
     Validator &operator=(Validator rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Validator> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Validator> {new Validator {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Validator object.
+     *
+     * Factory method to create a @c Validator.  Create a
+     * validator with::
+     *
+     *   ValidatorPtr validator = libcellml::Validator::create();
+     *
+     * @return A smart pointer to a @c Validator object.
+     */
+    static ValidatorPtr create() noexcept;
 
     /**
      * @brief Validate the @p model using the CellML 2.0 Specification.
