@@ -54,7 +54,7 @@ public:
     static ResetPtr create() noexcept;
 
     /**
-     * @overload static ResetPtr create() noexcept
+     * @overload
      */
     static ResetPtr create(int order) noexcept;
 

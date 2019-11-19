@@ -70,13 +70,13 @@ public:
     bool removeComponent(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the component with the given @p name.
      *
      * Remove the first component found that matches the given @p name.
      * If @p searchEncapsulated is @c true (default) this will also
      * search for the named component through this component's encapsulated components.
-     *
-     * @overload bool removeComponent(size_t index)
      *
      * @param name The name of the component to remove.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
@@ -87,12 +87,12 @@ public:
     bool removeComponent(const std::string &name, bool searchEncapsulated = true);
 
     /**
+     * @overload
+     *
      * @brief Remove the component with the given pointer.
      *
      * Remove the component with the pointer @p component. If @p searchEncapsulated is @c true (default)
      * this will also search for the component pointer through this component's encapsulated components.
-     *
-     * @overload bool removeComponent(const std::string &name, bool searchEncapsulated = true)
      *
      * @param component The pointer to the component to remove.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
@@ -126,14 +126,14 @@ public:
     bool containsComponent(const std::string &name, bool searchEncapsulated = true) const;
 
     /**
+     * @overload
+     *
      * @brief Tests to see if the component pointer is contained within this component.
      *
      * Tests to see if the argument component pointer @p component is contained
      * within this component entity. If @p searchEncapsulated is @c true (default) this will also
      * search for the component pointer in this component's encapsulated components.
      * Returns @c true if the component is in the component entity and @c false otherwise.
-     *
-     * @overload bool containsComponent(const std::string &name, bool searchEncapsulated = true) const
      *
      * @param component The component pointer to test for existence in this component entity.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
@@ -156,13 +156,13 @@ public:
     ComponentPtr component(size_t index) const;
 
     /**
+     * @overload
+     *
      * @brief Get a component with the given @p name.
      *
      * Returns a component with the given @p name. If @p searchEncapsulated
      * is @c true (default) this will also search for the named component through this component's
      * encapsulated components. If the @p name is does not match a named component a @c nullptr is returned.
-     *
-     * @overload ComponentPtr component(size_t index) const
      *
      * @param name The name of the Component to return.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
@@ -185,13 +185,13 @@ public:
     ComponentPtr takeComponent(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Take the component with the given @p name and return it.
      *
      * Takes the component with the given @p name and returns it. If @p searchEncapsulated
      * is @c true (default) this will also search for the named component through this component's
      * encapsulated components.
-     *
-     * @overload ComponentPtr takeComponent(size_t index)
      *
      * @param name The name of the Component to take.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
@@ -215,14 +215,14 @@ public:
     bool replaceComponent(size_t index, const ComponentPtr &component);
 
     /**
+     * @overload
+     *
      * @brief Replace a component with the given @p name.
      *
      * Replaces the component with the given @p name with @p component. If @p searchEncapsulated
      * is @c true (default) this will also search for the named component through this component's
      * encapsulated components. If @p name is not found in the components children then no replacement
      * is made.
-     *
-     * @overload bool replaceComponent(size_t index, const ComponentPtr &component)
      *
      * @param name The name of the Component to replace.
      * @param component The Component to use for replacement.
@@ -234,14 +234,14 @@ public:
     bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated = true);
 
     /**
+     * @overload
+     *
      * @brief Replace the given component.
      *
      * Replaces the given component @p oldComponent with @p newComponent. If @p searchEncapsulated
      * is @c true (default) this will also search for the component through this component's
      * encapsulated components. If @p oldComponent is not found in the components children then no replacement
      * is made.
-     *
-     * @overload bool replaceComponent(size_t index, const ComponentPtr &component)
      *
      * @param oldComponent The Component to replace.
      * @param newComponent The Component to use for replacement.
