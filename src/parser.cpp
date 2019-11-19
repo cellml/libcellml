@@ -225,7 +225,6 @@ ParserPtr Parser::create() noexcept
     return std::shared_ptr<Parser> {new Parser {}};
 }
 
-
 ModelPtr Parser::parseModel(const std::string &input)
 {
     ModelPtr model = Model::create();

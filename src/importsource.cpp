@@ -46,7 +46,6 @@ ImportSourcePtr ImportSource::create() noexcept
     return std::shared_ptr<ImportSource> {new ImportSource {}};
 }
 
-
 std::string ImportSource::url() const
 {
     return mPimpl->mUrl;
