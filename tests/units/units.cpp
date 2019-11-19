@@ -707,6 +707,24 @@ TEST(Units, compareMultiplierStandardUnit)
     EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
 }
 
+TEST(Units, compareSameBaseUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("frufru");
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("frufru");
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
+TEST(Units, compareBaseUnitsAgainstItself)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("frufru");
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u1));
+}
+
 TEST(Units, compareScalingFactorWithNullptrAsFirstParameter)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
