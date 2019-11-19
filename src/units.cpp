@@ -420,11 +420,18 @@ size_t Units::unitCount() const
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        double multiplier = 0.0;
+        if ((units1->unitCount() != 0) && (units2->unitCount() != 0)) {
+            double multiplier = 0.0;
 
-        updateUnitMultipliers(multiplier, units2, 1, 0, 1);
-        updateUnitMultipliers(multiplier, units1, 1, 0, -1);
-        return std::pow(10, multiplier);
+            updateUnitMultipliers(multiplier, units2, 1, 0, 1);
+            updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+
+            return std::pow(10, multiplier);
+        }
+
+        if (units1->name() == units2->name()) {
+            return 1.0;
+        }
     }
 
     return 0.0;
