@@ -730,7 +730,7 @@ TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
 }
 
-TEST(Units, scalingFactorWithOneUnitsPtrEmpty)
+TEST(Units, scalingFactorWithOneEmptyUnit)
 {
     // Add unit with no members
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -744,7 +744,7 @@ TEST(Units, scalingFactorWithOneUnitsPtrEmpty)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
-TEST(Units, scalingFactorWithBothUnitsPtrEmpty)
+TEST(Units, scalingFactorWithTwoEmptyUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
