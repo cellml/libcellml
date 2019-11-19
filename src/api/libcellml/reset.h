@@ -45,7 +45,7 @@ public:
      *
      *   ResetPtr reset = libcellml::Reset::create();
      *
-     * or an ordered reset with order "10" with::
+     * or an ordered reset with order 10 with::
      *
      *   ResetPtr reset = libcellml::Reset::create(10);
      *

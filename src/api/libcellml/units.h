@@ -54,7 +54,7 @@ public:
      *
      * or a named units with name "Units" with::
      *
-     *   UnitsPtr units = libcellml::Units::create(std::string("Units"));
+     *   UnitsPtr units = libcellml::Units::create("Units");
      *
      * @return A smart pointer to a @c Units object.
      */

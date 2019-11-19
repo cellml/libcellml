@@ -47,7 +47,7 @@ public:
      *
      * or a named variable with name "Variable" with::
      *
-     *   VariablePtr variable = libcellml::Variable::create(std::string("Variable"));
+     *   VariablePtr variable = libcellml::Variable::create("Variable");
      *
      * @return A smart pointer to a @c Variable object.
      */
