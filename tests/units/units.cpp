@@ -730,6 +730,34 @@ TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
 }
 
+TEST(Units, compareScalingFactorWithUnitWhichHasNoParent)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2)); // Currently function not evaluating
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, compareScalingFactorWithTwoUnitsWhichHaveNoParent)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("banana", 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
 TEST(Units, compareIncompatiableMultiplierSimple)
 {
     // u1 = 1000*u2
