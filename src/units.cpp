@@ -222,10 +222,12 @@ bool updateUnitMultiplier(double &multiplier,
             if (isStandardUnitName(ref)) {
                 multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 updated = true;
-            } else if (owningModel(units)) {
+            } else {
                 auto model = owningModel(units);
-                auto refUnits = model->units(ref);
-                updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                if (model != nullptr) {
+                    auto refUnits = model->units(ref);
+                    updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                }
             }
         }
     }
