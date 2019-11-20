@@ -27,9 +27,9 @@ TEST(Printer, printEmptyModel)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
     libcellml::ModelPtr m = libcellml::Model::create();
 
-    libcellml::Printer p;
+    libcellml::PrinterPtr p = libcellml::Printer::create();
 
-    const std::string a = p.printModel(m);
+    const std::string a = p->printModel(m);
 
     EXPECT_EQ(e, a);
 }
@@ -46,8 +46,8 @@ TEST(Printer, printEmptyUnits)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -65,8 +65,8 @@ TEST(Printer, printEmptyVariable)
     libcellml::VariablePtr v = libcellml::Variable::create();
     c->addVariable(v);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -80,8 +80,8 @@ TEST(Printer, printEmptyComponent)
 
     libcellml::ModelPtr m = createModelWithComponent();
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -101,8 +101,8 @@ TEST(Printer, printEmptyReset)
 
     c->addReset(r);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -127,8 +127,8 @@ TEST(Printer, printEncapsulation)
 
     model->addComponent(parent);
 
-    libcellml::Printer printer;
-    const std::string a_parent = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent, a_parent);
 }
 
@@ -155,7 +155,7 @@ TEST(Printer, printEncapsulationWithNames)
 
     model->addComponent(parent);
 
-    libcellml::Printer printer;
-    const std::string a_parent = printer.printModel(model);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent, a_parent);
 }

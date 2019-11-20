@@ -4,6 +4,7 @@
 
 %include <std_string.i>
 
+%import "createconstructor.i"
 %import "types.i"
 
 %feature("docstring") libcellml::GeneratorProfile
@@ -990,7 +991,12 @@ be replaced with some code to create the variables array.";
 #include <memory>
 %}
 
-%ignore libcellml::GeneratorProfile::GeneratorProfile(GeneratorProfile &&);
-%ignore libcellml::GeneratorProfile::operator =;
+%create_constructor(GeneratorProfile)
+%extend libcellml::GeneratorProfile {
+    GeneratorProfile(libcellml::GeneratorProfile::Profile profileType) {
+        auto ptr = new std::shared_ptr<  libcellml::GeneratorProfile >(libcellml::GeneratorProfile::create(profileType));
+        return reinterpret_cast<libcellml::GeneratorProfile *>(ptr);
+    }
+}
 
 %include "libcellml/generatorprofile.h"
