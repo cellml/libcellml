@@ -4,6 +4,7 @@
 
 %include <std_string.i>
 
+%import "createconstructor.i"
 %import "enumerations.i"
 %import "logger.i"
 %import "types.i"
@@ -18,8 +19,7 @@
 #include "libcellml/parser.h"
 %}
 
-%ignore libcellml::Parser::Parser(Parser &&);
-%ignore libcellml::Parser::operator =;
+%create_constructor(Parser)
 
 %include "libcellml/types.h"
 %include "libcellml/parser.h"

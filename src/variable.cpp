@@ -192,6 +192,16 @@ Variable::~Variable()
     delete mPimpl;
 }
 
+VariablePtr Variable::create() noexcept
+{
+    return std::shared_ptr<Variable> {new Variable {}};
+}
+
+VariablePtr Variable::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Variable> {new Variable {name}};
+}
+
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     variable1->mPimpl->setEquivalentTo(variable2);
