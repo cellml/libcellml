@@ -43,17 +43,22 @@ public:
         ALGEBRAIC
     };
 
-    GeneratorVariable(); /**< Constructor */
     ~GeneratorVariable(); /**< Destructor */
-    GeneratorVariable(const GeneratorVariable &rhs); /**< Copy constructor */
-    GeneratorVariable(GeneratorVariable &&rhs) noexcept; /**< Move constructor */
-    GeneratorVariable &operator=(GeneratorVariable rhs); /**< Assignment operator */
+    GeneratorVariable(const GeneratorVariable &rhs) = delete; /**< Copy constructor */
+    GeneratorVariable(GeneratorVariable &&rhs) noexcept = delete; /**< Move constructor */
+    GeneratorVariable &operator=(GeneratorVariable rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<GeneratorVariable> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c GeneratorVariable object.
+     *
+     * Factory method to create a @c GeneratorVariable.  Create a
+     * generator variable with::
+     *
+     *   GeneratorVariablePtr generatorVariable = libcellml::GeneratorVariable::create();
+     *
+     * @return A smart pointer to a @c GeneratorVariable object.
+     */
+    static GeneratorVariablePtr create() noexcept;
 
     /**
      * @brief Get the @c Variable for this @c GeneratorVariable.
@@ -74,7 +79,7 @@ public:
     GeneratorVariable::Type type() const;
 
 private:
-    void swap(GeneratorVariable &rhs); /**< Swap method required for C++ 11 move semantics. */
+    GeneratorVariable(); /**< Constructor */
 
     struct GeneratorVariableImpl;
     GeneratorVariableImpl *mPimpl;
@@ -99,17 +104,22 @@ public:
         UNSUITABLY_CONSTRAINED
     };
 
-    Generator(); /**< Constructor */
     ~Generator() override; /**< Destructor */
-    Generator(const Generator &rhs); /**< Copy constructor */
-    Generator(Generator &&rhs) noexcept; /**< Move constructor */
-    Generator &operator=(Generator rhs); /**< Assignment operator */
+    Generator(const Generator &rhs) = delete; /**< Copy constructor */
+    Generator(Generator &&rhs) noexcept = delete; /**< Move constructor */
+    Generator &operator=(Generator rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Generator> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Generator> {new Generator {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Generator object.
+     *
+     * Factory method to create a @c Generator.  Create a
+     * generator with::
+     *
+     *   GeneratorPtr generator = libcellml::Generator::create();
+     *
+     * @return A smart pointer to a @c Generator object.
+     */
+    static GeneratorPtr create() noexcept;
 
     /**
      * @brief Get the @c GeneratorProfile.
@@ -218,7 +228,7 @@ public:
     std::string implementationCode() const;
 
 private:
-    void swap(Generator &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Generator(); /**< Constructor */
 
     struct GeneratorImpl;
     GeneratorImpl *mPimpl;

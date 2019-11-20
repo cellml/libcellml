@@ -25,6 +25,8 @@
         return reinterpret_cast<libcellml::TYPE *>(ptr);
     }
 }
+
+%ignore libcellml::TYPE::create;
 %enddef
 
 %define %create_name_constructor(TYPE...)

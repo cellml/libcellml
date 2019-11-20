@@ -41,17 +41,16 @@ std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "
 
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 
-void TEST_EXPORT printErrors(const libcellml::Logger &l, bool headings = false, bool kinds = false, bool rule = false);
-void TEST_EXPORT printErrors(const libcellml::Validator &v);
-void TEST_EXPORT printErrors(const libcellml::Parser &p);
+void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool kinds = false, bool rule = false);
+
 void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &errors,
-                                   const libcellml::Logger &logger);
+                                   const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
                                                         const std::vector<std::string> &specificationHeadings,
-                                                        const libcellml::Logger &logger);
+                                                        const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualErrorsKinds(const std::vector<std::string> &errors,
                                         const std::vector<libcellml::Error::Kind> &kinds,
-                                        const libcellml::Logger &logger);
+                                        const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");

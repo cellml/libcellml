@@ -44,29 +44,6 @@ Logger::~Logger()
     delete mPimpl;
 }
 
-Logger::Logger(const Logger &rhs)
-    : mPimpl(new LoggerImpl())
-{
-    mPimpl->mErrors = rhs.mPimpl->mErrors;
-}
-
-Logger::Logger(Logger &&rhs) noexcept
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Logger &Logger::operator=(Logger rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void Logger::swap(Logger &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 void Logger::removeAllErrors()
 {
     mPimpl->mErrors.clear();

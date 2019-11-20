@@ -37,11 +37,17 @@ public:
     ImportSource(ImportSource &&rhs) noexcept = delete; /**< Move constructor */
     ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<ImportSource> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<ImportSource> {new ImportSource {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c ImportSource object.
+     *
+     * Factory method to create an @c ImportSource.  Create an
+     * import source with::
+     *
+     *   ImportSourcePtr importSource = libcellml::ImportSource::create();
+     *
+     * @return A smart pointer to an @c ImportSource object.
+     */
+    static ImportSourcePtr create() noexcept;
 
     /**
      * @brief Get the source @c Model's URL.
