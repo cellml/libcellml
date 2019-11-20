@@ -4,6 +4,7 @@
 
 %include <std_string.i>
 
+%import "createconstructor.i"
 %import "enumerations.i"
 %import "logger.i"
 %import "types.i"
@@ -18,16 +19,7 @@
 #include "libcellml/printer.h"
 %}
 
-%ignore libcellml::Printer::Printer(Printer &&);
-%ignore libcellml::Printer::operator =;
-
-// Hide methods that cause conflicts
-%ignore libcellml::Printer::printModel(Model model) const;
-%ignore libcellml::Printer::printModel(Model* model) const;
-%ignore libcellml::Printer::printUnits(Units units) const;
-%ignore libcellml::Printer::printVariable(Variable variable) const;
-%ignore libcellml::Printer::printComponent(Component component) const;
-%ignore libcellml::Printer::printReset(Reset reset) const;
+%create_constructor(Printer)
 
 %include "libcellml/types.h"
 %include "libcellml/printer.h"

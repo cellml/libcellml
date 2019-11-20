@@ -11,9 +11,6 @@ class PrinterTestCase(unittest.TestCase):
 
         x = Printer()
         del(x)
-        y = Printer()
-        z = Printer(y)
-        del(y, z)
 
     def test_inheritance(self):
         import libcellml
