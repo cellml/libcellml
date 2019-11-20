@@ -184,10 +184,10 @@ bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
 }
 */
 
-bool updateUnitMultipliers(double &multiplier,
-                           const UnitsPtr &units,
-                           double uExp, double logMult,
-                           int direction)
+bool Units::updateUnitMultiplier(double &multiplier,
+                                 const UnitsPtr &units,
+                                 double uExp, double logMult,
+                                 int direction)
 {
     bool updated = false;
     auto unitsName = units->name();
@@ -206,10 +206,11 @@ bool updateUnitMultipliers(double &multiplier,
             mult = std::log10(expMult);
             if (isStandardUnitName(ref)) {
                 multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
-            } else {
+                updated = true;
+            } else if (owningModel(units)) {
                 auto model = owningModel(units);
                 auto refUnits = model->units(ref);
-                updated = updateUnitMultipliers(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
             }
         }
     }
@@ -409,14 +410,19 @@ size_t Units::unitCount() const
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
+    bool updateUnits1 = false;
+    bool updateUnits2 = false;
+
     if ((units1 != nullptr) && (units2 != nullptr)) {
         if ((units1->unitCount() != 0) && (units2->unitCount() != 0)) {
             double multiplier = 0.0;
 
-            updateUnitMultipliers(multiplier, units2, 1, 0, 1);
-            updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+            updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
+            updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
 
-            return std::pow(10, multiplier);
+            if (updateUnits1 && updateUnits2) {
+                return std::pow(10, multiplier); //Return only if we successfully updated both units
+            }
         }
 
         if (units1->name() == units2->name()) {
