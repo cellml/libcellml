@@ -446,7 +446,7 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
             updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
 
             if (updateUnits1 && updateUnits2) {
-                return std::pow(10, multiplier); //Return only if we successfully updated both units
+                return std::pow(10, multiplier);
             }
         }
 
