@@ -27,18 +27,18 @@ limitations under the License.
 
 TEST(Parser, parseSineModelFromFile)
 {
-    libcellml::Parser p;
-    p.parseModel(fileContents("sine_approximations.xml"));
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(fileContents("sine_approximations.xml"));
 
-    EXPECT_EQ(size_t(0), p.errorCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, parseSineImportsModelFromFile)
 {
-    libcellml::Parser p;
-    p.parseModel(fileContents("sine_approximations_import.xml"));
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(fileContents("sine_approximations_import.xml"));
 
-    EXPECT_EQ(size_t(0), p.errorCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, parseInvalidModelFromFile)
@@ -48,18 +48,18 @@ TEST(Parser, parseInvalidModelFromFile)
         "Could not get a valid XML root node from the provided input.",
     };
 
-    libcellml::Parser p;
-    p.parseModel(fileContents("invalid_cellml_2.0.xml"));
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(fileContents("invalid_cellml_2.0.xml"));
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, parseOrdModelFromFile)
 {
-    libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(fileContents("Ohara_Rudy_2011.cellml"));
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("Ohara_Rudy_2011.cellml"));
 
-    EXPECT_EQ(size_t(0), p.errorCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     // Test some random values.
     std::string a = model->component("intracellular_ions")->variable("BSLmax")->initialValue();
@@ -78,10 +78,10 @@ TEST(Parser, parseOrdModelFromFile)
 TEST(Parser, parseComplexEncapsulationModelFromFile)
 {
     // This test resulted from https://github.com/cellml/libcellml/issues/170
-    libcellml::Parser p;
-    p.parseModel(fileContents("complex_encapsulation.xml"));
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(fileContents("complex_encapsulation.xml"));
 
-    EXPECT_EQ(size_t(0), p.errorCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
@@ -119,9 +119,9 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(fileContents("a_plus_b.cellml"));
-    EXPECT_EQ(size_t(0), p.errorCount());
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("a_plus_b.cellml"));
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     std::string a = model->component("c1")->math();
     EXPECT_EQ(e1, a);
@@ -147,10 +147,10 @@ TEST(Parser, simpleGeneratorModel)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
 
-    EXPECT_EQ(size_t(0), p.errorCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     std::string a = model->component("my_component")->math();
     EXPECT_EQ(e, a);

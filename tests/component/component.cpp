@@ -45,8 +45,8 @@ TEST(Component, validName)
     libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", c->name());
 }
@@ -63,8 +63,8 @@ TEST(Component, invalidName)
     libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name -", c->name());
 }
@@ -86,13 +86,13 @@ TEST(Component, setAndUnsetName)
     libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ("name", c->name());
     EXPECT_EQ(eName, a);
     c->setName("");
     EXPECT_EQ("", c->name());
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -203,12 +203,12 @@ TEST(Component, addChildrenAndSerialise)
 
     m->addComponent(c0);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
 
     c2->addComponent(c3);
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 }
 
@@ -254,8 +254,8 @@ TEST(Component, removeComponentMethods)
     EXPECT_TRUE(c->removeComponent(0));
     EXPECT_EQ(size_t(1), c->componentCount());
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
     // No longer a component at position 1.
     EXPECT_FALSE(c->removeComponent(1));
@@ -270,7 +270,7 @@ TEST(Component, removeComponentMethods)
     EXPECT_FALSE(c->removeComponent(c1));
     // Still have component 'c2'.
     EXPECT_EQ(size_t(1), c->componentCount());
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change
@@ -279,7 +279,7 @@ TEST(Component, removeComponentMethods)
     EXPECT_EQ(size_t(1), c->componentCount());
 
     c->removeAllComponents();
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e3, a);
     EXPECT_EQ(size_t(0), c->componentCount());
 }
@@ -326,8 +326,8 @@ TEST(Component, componentMethods)
     libcellml::ComponentPtr cA = c->component(0);
     cA->setName("childA");
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
 
     // Using const version of overloaded method
@@ -354,7 +354,7 @@ TEST(Component, componentMethods)
     libcellml::ComponentPtr cSn = c->component("gus");
     EXPECT_EQ("gus", cSn->name());
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 }
 
@@ -388,8 +388,8 @@ TEST(Component, takeComponentMethods)
     EXPECT_EQ("child1", c01->name());
     EXPECT_EQ(nullptr, c01->parent());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -450,14 +450,14 @@ TEST(Component, replaceComponentMethods)
     c->addComponent(c2);
 
     // Test replace by index
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e_orig, a);
     EXPECT_FALSE(c->replaceComponent(5, c3));
 
     EXPECT_TRUE(c->replaceComponent(1, c3));
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e_after, a);
 
     // Test replace by name
@@ -466,13 +466,13 @@ TEST(Component, replaceComponentMethods)
 
     EXPECT_TRUE(c->replaceComponent("", c4));
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e_post, a);
 
     // Test replace by ptr
     EXPECT_FALSE(c->replaceComponent(c1, c2));
     EXPECT_TRUE(c->replaceComponent(c4, c1));
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e_after, a);
 }
 
@@ -498,8 +498,8 @@ TEST(Component, constructors)
     c->setName(n);
     c->addComponent(libcellml::Component::create());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Testing assignment for component
