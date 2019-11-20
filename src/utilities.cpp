@@ -463,12 +463,28 @@ std::string uniqueComponentName(const ModelPtr& model, const std::string& name)
     return uniqueName;
 }
 
-using ImportComponentMap = std::map<ComponentPtr, ComponentPtr>;
+void addVariableClones(const ComponentPtr& component, const ComponentPtr& src)
+{
+    std::cout << "**F** " << ": Number of variables in component to add: " << int(src->variableCount()) << std::endl;
+    for (auto n = 0; n < src->variableCount(); ++n) {
+        auto v = src->variable(n);
+        auto vname = v->name();
+        auto variable = libcellml::Variable::create(vname);
+        component->addVariable(variable);
+    }
+}
 
+// An flattened imported component maps to the "import component" in the original model and the "source component" in the imported model
+// The "source component" may also be an imported component, so need to recursively check.
+using ImportComponentMap = std::map<ComponentPtr, std::pair<ComponentPtr, ComponentPtr> >;
+
+// will return true on success
 bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr &component, ImportComponentMap &cMaps)
 {
-    bool componentFlattened = false;
     const ModelPtr &parentModel = owningModel(parent);
+    if (parentModel == nullptr) {
+        return false;
+    }
     std::cout << "parent->name: " << parent->name() << std::endl;
     std::cout << "parentModel->name: " << parentModel->name() << std::endl;
     auto cname = component->name();
@@ -478,29 +494,19 @@ bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr 
     std::cout << "Flattening component: " << label << std::endl;
     ComponentPtr flatComponent = Component::create();
     parent->addComponent(flatComponent);
-    //cMaps[flatComponent] = component;
+    cMaps[flatComponent].first = component;
     if (component->isImport()) {
         auto localName = component->name();
         localName += "_flattened";
         localName = uniqueComponentName(parentModel, localName);
         flatComponent->setName(localName);
         ComponentPtr src = component->importSource()->model()->component(component->importReference());
-        // should recursively resolve imports...
-#if 0
-        while (src->isImport()) {
-            std::cout << "**F** " << label << ": using the source component: " << src->name() << std::endl;
-            cMaps[flatComponent].push_back(src);
-            for (auto n = 0; n < src->componentCount(); ++n) {
-                ComponentPtr c = src->component(n);
-                addflattenedComponent(src, c);
-            }
-            src = src->importSource()->model()->component(src->importReference());
-        }
-#endif
-        
+        cMaps[flatComponent].second = src;
+        // add the variables from the source component
         // Need to resolve variable equivalences after creating the complete model
+        addVariableClones(flatComponent, src);
 #if 0
-        std::cout << "**F** " << label << ": Number of variables in component to flatten: " << int(component->variableCount()) << std::endl;
+        std::cout << "**F** " << label << ": Number of variables in component to flatten: " << int(src->variableCount()) << std::endl;
         for (auto n = 0; n < component->variableCount(); ++n) {
             const VariablePtr& v = component->variable(n);
             auto vname = v->name();
@@ -516,20 +522,26 @@ bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr 
 #endif
         for (auto n = 0; n < src->componentCount(); ++n) {
             ComponentPtr c = src->component(n);
-            addflattenedComponent(flatComponent, c, cMaps);
+            if (!addflattenedComponent(flatComponent, c, cMaps)) {
+                return false;
+            }
         }
-        componentFlattened = true;
     }
     else {
         auto localName = component->name();
         localName = uniqueComponentName(parentModel, localName);
         flatComponent->setName(localName);
+        // add the variables from the source component
+        // Need to resolve variable equivalences after creating the complete model
+        addVariableClones(flatComponent, component);
         for (auto n = 0; n < component->componentCount(); ++n) {
             ComponentPtr c = component->component(n);
-            addflattenedComponent(flatComponent, c, cMaps);
+            if (!addflattenedComponent(flatComponent, c, cMaps)) {
+                return false;
+            }
         }
     }
-    return componentFlattened;
+    return true;
 }
 
 ModelPtr flattenModel(const ModelPtr &sourceModel)
@@ -543,9 +555,13 @@ ModelPtr flattenModel(const ModelPtr &sourceModel)
     ImportComponentMap cMap;
     for (size_t n = 0; n < sourceModel->componentCount(); ++n) {
         ComponentPtr sourceComponent = sourceModel->component(n);
-        addflattenedComponent(flatModel, sourceComponent, cMap);
+        if (!addflattenedComponent(flatModel, sourceComponent, cMap)) {
+            return nullptr;
+        }
     }
-    
+    // add variable equivalences
+    // check if any imports remain
+
     return flatModel;
 }
 
