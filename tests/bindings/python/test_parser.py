@@ -11,9 +11,6 @@ class ParserTestCase(unittest.TestCase):
 
         x = Parser()
         del(x)
-        y = Parser()
-        z = Parser(y)
-        del(y, z)
 
     def test_inheritance(self):
         import libcellml
