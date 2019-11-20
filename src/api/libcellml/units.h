@@ -400,6 +400,13 @@ public:
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
+private:
+    Units(); /**< Constructor */
+    explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
+
+    struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
+
     /** 
 	* @brief Finds and updates the multiplier of the unit.
 	* 
@@ -415,14 +422,7 @@ public:
 	*
 	* @return Either @c true or @c false, depending if the units were successfully updated.
 	*/
-    static bool Units::updateUnitMultiplier(double &multiplier, const UnitsPtr &units, double uExp, double logMult, int direction);
-
-private:
-    Units(); /**< Constructor */
-    explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
-
-    struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
+    static bool updateUnitMultiplier(double &multiplier, const UnitsPtr &units, double uExp, double logMult, int direction);
 };
 
 } // namespace libcellml
