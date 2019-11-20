@@ -14,15 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
-#include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/parser.h"
-#include "libcellml/printer.h"
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
-
-#include "utilities.h"
 
 #include <algorithm>
 #include <fstream>
@@ -33,6 +25,15 @@ limitations under the License.
 #include <vector>
 #include <iostream>
 
+
+#include "libcellml/component.h"
+#include "libcellml/importsource.h"
+#include "libcellml/parser.h"
+#include "libcellml/printer.h"
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -72,6 +73,16 @@ Model::Model(const std::string &name)
     : mPimpl(new ModelImpl())
 {
     setName(name);
+}
+
+ModelPtr Model::create() noexcept
+{
+    return std::shared_ptr<Model> {new Model {}};
+}
+
+ModelPtr Model::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Model> {new Model {name}};
 }
 
 Model::~Model()
@@ -243,8 +254,8 @@ void resolveImport(const ImportedEntityPtr &importedEntity,
             if (file.good()) {
                 std::stringstream buffer;
                 buffer << file.rdbuf();
-                Parser parser;
-                ModelPtr model = parser.parseModel(buffer.str());
+                ParserPtr parser = Parser::create();
+                ModelPtr model = parser->parseModel(buffer.str());
                 importSource->setModel(model);
                 model->resolveImports(url);
             }

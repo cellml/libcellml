@@ -11,9 +11,6 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         x = GeneratorProfile()
         del(x)
-        y = GeneratorProfile()
-        z = GeneratorProfile(y)
-        del(y, z)
 
     def test_profile(self):
         from libcellml import GeneratorProfile

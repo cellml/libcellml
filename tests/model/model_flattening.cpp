@@ -38,11 +38,11 @@ TEST(ModelFlattening, flattenSingleLevelComponentImport)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(fileContents("sine_approximations_import.xml"));
-    EXPECT_EQ(size_t(0), p.errorCount());
-    libcellml::Printer printer;
-    std::string s = printer.printModel(model);
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations_import.xml"));
+    EXPECT_EQ(size_t(0), p->errorCount());
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string s = printer->printModel(model);
     debug("Source model:");
     debug(s);
 
@@ -50,7 +50,7 @@ TEST(ModelFlattening, flattenSingleLevelComponentImport)
     model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
     libcellml::ModelPtr flattenedModel = libcellml::Model::flatCopy(model);
-    s = printer.printModel(flattenedModel);
+    s = printer->printModel(flattenedModel);
     debug("Flat model:");
     debug(s);
     EXPECT_EQ(e, s);
