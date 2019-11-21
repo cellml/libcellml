@@ -758,6 +758,33 @@ TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
 }
 
+TEST(Units, compareScalingFactorWithUnitBasedOnUnknownUnit)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, compareScalingFactorWithTwoUnitsBasedOnUnknownUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("banana", 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
 TEST(Units, scalingFactorWithOneEmptyUnit)
 {
     // Add unit with no members
