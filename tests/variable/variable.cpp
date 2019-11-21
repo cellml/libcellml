@@ -1269,17 +1269,16 @@ TEST(Variable, removeIndirectEquivalence)
     EXPECT_TRUE(v1->hasEquivalentVariable(v3));
     EXPECT_TRUE(v2->hasEquivalentVariable(v3));
 
-    // Remove v1=v2 - remove indirect equivalence
+    // Attempt to remove v1=v2
     EXPECT_FALSE(libcellml::Variable::removeEquivalence(v1, v2));
 
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v3)); // nothing should have changed here
+    // But cannot remove indirect equivalence
+    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2)); // It never was anyway, no change here
+
+    // Nothing else should have changed here
+    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v3));
     EXPECT_TRUE(v2->hasIndirectEquivalentVariable(v3));
     EXPECT_TRUE(v1->hasEquivalentVariable(v3));
     EXPECT_TRUE(v2->hasEquivalentVariable(v3));
-
-    EXPECT_FALSE(v1->hasEquivalentVariable(v2)); // It never was anyway, no change here
-
-    // Just removed this (or so we imagine) ... but connection remains.
-    // Need to document this really clearly as it's not really expected - test fails.
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
 }
