@@ -227,8 +227,7 @@ VariablePtr Variable::create(const std::string &name) noexcept
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    return (variable1 !=nullptr && variable1->mPimpl->setEquivalentTo(variable2) &&
-            variable2 != nullptr && variable2->mPimpl->setEquivalentTo(variable1));
+    return (variable1 != nullptr && variable1->mPimpl->setEquivalentTo(variable2) && variable2 != nullptr && variable2->mPimpl->setEquivalentTo(variable1));
 }
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
