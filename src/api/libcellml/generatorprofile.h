@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -37,17 +38,22 @@ public:
         PYTHON
     };
 
-    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
     ~GeneratorProfile(); /**< Destructor */
-    GeneratorProfile(const GeneratorProfile &rhs); /**< Copy constructor */
-    GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
-    GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
+    GeneratorProfile(const GeneratorProfile &rhs) = delete; /**< Copy constructor */
+    GeneratorProfile(GeneratorProfile &&rhs) noexcept = delete; /**< Move constructor */
+    GeneratorProfile &operator=(GeneratorProfile rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<GeneratorProfile> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<GeneratorProfile> {new GeneratorProfile {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c GeneratorProfile object.
+     *
+     * Factory method to create a @c GeneratorProfile.  Create a
+     * generator profile with::
+     *
+     *   GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
+     *
+     * @return A smart pointer to a @c GeneratorProfile object.
+     */
+    static GeneratorProfilePtr create(Profile profile = Profile::C) noexcept;
 
     // Whether the profile is official.
 
@@ -3115,7 +3121,7 @@ public:
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 
 private:
-    void swap(GeneratorProfile &rhs); /**< Swap method required for C++ 11 move semantics. */
+    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
 
     struct GeneratorProfileImpl;
     GeneratorProfileImpl *mPimpl;

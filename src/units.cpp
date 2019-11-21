@@ -184,10 +184,25 @@ bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
 }
 */
 
-bool updateUnitMultipliers(double &multiplier,
-                           const UnitsPtr &units,
-                           double uExp, double logMult,
-                           int direction)
+/** 
+* @brief Finds and updates the multiplier of the unit.
+* 
+* We pass in the unit and use its' attributes to find the relevant multiplier.
+* If the units are not base units, we travel up the model hierarchy to find 
+* the base units.
+*
+* @param multiplier The multiplier to find.
+* @param units The units to find the multiplier for.
+* @param uExp The exponential of the units.
+* @param logMult The log multiplier of the units.
+* @param direction The direction to update multiplier. Either 1 or -1.
+*
+* @return Either @c true or @c false, depending if the units were successfully updated.
+*/
+bool updateUnitMultiplier(double &multiplier,
+                          const UnitsPtr &units,
+                          double uExp, double logMult,
+                          int direction)
 {
     bool updated = false;
     auto unitsName = units->name();
@@ -206,10 +221,13 @@ bool updateUnitMultipliers(double &multiplier,
             mult = std::log10(expMult);
             if (isStandardUnitName(ref)) {
                 multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+                updated = true;
             } else {
                 auto model = owningModel(units);
-                auto refUnits = model->units(ref);
-                updated = updateUnitMultipliers(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                if (model != nullptr) {
+                    auto refUnits = model->units(ref);
+                    updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                }
             }
         }
     }
@@ -231,6 +249,16 @@ Units::Units(const std::string &name)
 Units::~Units()
 {
     delete mPimpl;
+}
+
+UnitsPtr Units::create() noexcept
+{
+    return std::shared_ptr<Units> {new Units {}};
+}
+
+UnitsPtr Units::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Units> {new Units {name}};
 }
 
 bool Units::isBaseUnit() const
@@ -409,12 +437,27 @@ size_t Units::unitCount() const
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    double multiplier = 0.0;
+    bool updateUnits1 = false;
+    bool updateUnits2 = false;
 
-    updateUnitMultipliers(multiplier, units2, 1, 0, 1);
-    updateUnitMultipliers(multiplier, units1, 1, 0, -1);
+    if ((units1 != nullptr) && (units2 != nullptr)) {
+        if ((units1->unitCount() != 0) && (units2->unitCount() != 0)) {
+            double multiplier = 0.0;
 
-    return std::pow(10, multiplier);
+            updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
+            updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
+
+            if (updateUnits1 && updateUnits2) {
+                return std::pow(10, multiplier);
+            }
+        }
+
+        if (units1->name() == units2->name()) {
+            return 1.0;
+        }
+    }
+
+    return 0.0;
 }
 
 } // namespace libcellml
