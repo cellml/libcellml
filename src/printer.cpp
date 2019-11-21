@@ -491,8 +491,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         }
         repr += ">\n";
         const auto &importVector = importMap[importSource];
-        for (size_t i = 0; i < importVector.size(); ++i) {
-            const auto &entry = importVector.at(i);
+        for (const auto &entry : importVector) {
             const auto &reference = entry.first;
             const auto &localComponent = entry.second;
             repr += tabIndent + tabIndent + "<component component_ref=\"" + reference + "\" name=\"" + localComponent->name() + "\"";
