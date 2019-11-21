@@ -93,8 +93,10 @@ public:
      * for @p variable2.
      * @param variable2 The variable to copy to the equivalent variable set
      * for @p variable1.
+     *
+     * @return True if the equivalence was added, false otherwise.
      */
-    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+    static bool addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @overload
@@ -113,8 +115,10 @@ public:
      * for @p variable1.
      * @param mappingId The @c std::string mapping id.
      * @param connectionId The @c std::string connection id (optional).
+     *
+     * @return True if the equivalence was added, false otherwise.
      */
-    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
+    static bool addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
 
     /**
      * @brief Set the equivalent mapping id for this equivalence.

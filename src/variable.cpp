@@ -66,8 +66,10 @@ struct Variable::VariableImpl
      *
      * @param equivalentVariable The variable to add to this variable's equivalent
      * variable set if not already present.
+     *
+     * @return True if the given variable is added to this variables equivalent variable set.
      */
-    void setEquivalentTo(const VariablePtr &equivalentVariable);
+    bool setEquivalentTo(const VariablePtr &equivalentVariable);
 
     /**
      * @brief Private function to remove an equivalent variable from the set for this variable.
@@ -223,25 +225,30 @@ VariablePtr Variable::create(const std::string &name) noexcept
     return std::shared_ptr<Variable> {new Variable {name}};
 }
 
-void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
+bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    variable1->mPimpl->setEquivalentTo(variable2);
-    variable2->mPimpl->setEquivalentTo(variable1);
+    if (variable1 !=nullptr && variable1->mPimpl->setEquivalentTo(variable2) &&
+            variable2 != nullptr && variable2->mPimpl->setEquivalentTo(variable1)) {
+        return true;
+    }
+    return false;
 }
 
-void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
+bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
 {
-    Variable::addEquivalence(variable1, variable2);
+    bool added = Variable::addEquivalence(variable1, variable2);
     variable1->mPimpl->setEquivalentMappingId(variable2, mappingId);
     variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
     variable2->mPimpl->setEquivalentMappingId(variable1, mappingId);
     variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
+
+    return added;
 }
 
 bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    bool equivalence_1 = variable1->mPimpl->unsetEquivalentTo(variable2);
-    bool equivalence_2 = variable2->mPimpl->unsetEquivalentTo(variable1);
+    bool equivalence_1 = variable1 != nullptr ? variable1->mPimpl->unsetEquivalentTo(variable2) : false;
+    bool equivalence_2 = variable2 != nullptr ? variable2->mPimpl->unsetEquivalentTo(variable1) : false;
 
     return equivalence_1 && equivalence_2;
 }
@@ -329,12 +336,15 @@ bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
     return false;
 }
 
-void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
     if (!hasEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
         mEquivalentVariables.push_back(weakEquivalentVariable);
+        return true;
     }
+
+    return false;
 }
 
 bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
