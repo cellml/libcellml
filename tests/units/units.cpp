@@ -915,7 +915,7 @@ TEST(Units, checkingOwningModelBothUnits)
 
     model->addUnits(u1);
     model->addUnits(u2);
-    model->addUnits(u3); // Should fail. No base units defined in model
+    model->addUnits(u3); // u not defined in model
 
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u3));
@@ -934,7 +934,7 @@ TEST(Units, checkingOwningModelOneUnit)
 
     libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("u2");
-    u2->addUnit("apples", "kilo", 2.0, 1000.0); // apples not defined in the model, should fail.
+    u2->addUnit("apples", "kilo", 2.0, 1000.0); // apples not in model
 
     model->addUnits(u);
     model->addUnits(u1);
