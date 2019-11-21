@@ -38,9 +38,9 @@ TEST(Coverage, connectionComment)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Parser p;
-    p.parseModel(in);
-    EXPECT_EQ(size_t(4), p.errorCount());
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ(size_t(4), p->errorCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -61,84 +61,9 @@ TEST(Coverage, importWithNonHrefXlink)
         "</model>\n";
 
     // Parse
-    libcellml::Parser parser;
-    parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
-}
-
-TEST(Coverage, printer)
-{
-    libcellml::Printer p;
-    libcellml::Printer pm;
-
-    libcellml::ErrorPtr error = std::make_shared<libcellml::Error>();
-
-    p.addError(error);
-
-    pm = std::move(p);
-
-    libcellml::Printer pc(pm);
-
-    EXPECT_EQ(size_t(1), pc.errorCount());
-}
-
-TEST(Coverage, error)
-{
-    const std::string description = "test";
-
-    libcellml::Error e;
-    libcellml::Error em;
-
-    e.setDescription(description);
-
-    em = std::move(e);
-
-    libcellml::Error ec(em);
-
-    EXPECT_EQ(description, ec.description());
-}
-
-TEST(Coverage, generator)
-{
-    libcellml::Generator rg;
-    libcellml::Generator ao;
-
-    ao = rg;
-
-    std::vector<libcellml::Generator> vec;
-
-    vec.push_back(rg);
-    vec.insert(vec.begin(), ao);
-
-    rg.setProfile(std::make_shared<libcellml::GeneratorProfile>());
-}
-
-TEST(Coverage, generatorProfile)
-{
-    libcellml::GeneratorProfile rgp;
-    libcellml::GeneratorProfile ao;
-
-    ao = rgp;
-
-    std::vector<libcellml::GeneratorProfile> vec;
-
-    vec.push_back(rgp);
-    vec.insert(vec.begin(), ao);
-
-    auto gp = libcellml::GeneratorProfile::create();
-}
-
-TEST(Coverage, generatorVariable)
-{
-    libcellml::GeneratorVariable rgp;
-    libcellml::GeneratorVariable ao;
-
-    ao = rgp;
-
-    std::vector<libcellml::GeneratorVariable> vec;
-
-    vec.push_back(rgp);
-    vec.insert(vec.begin(), ao);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    parser->parseModel(e);
+    EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Coverage, entityHasParent)

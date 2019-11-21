@@ -4,6 +4,7 @@
 
 %include <std_string.i>
 
+%import "createconstructor.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Error
@@ -75,8 +76,33 @@ return Kind::UNDEFINED.";
 #include "libcellml/error.h"
 %}
 
-%ignore libcellml::Error::Error(Error &&);
-%ignore libcellml::Error::operator =;
+%create_constructor(Error)
+%extend libcellml::Error {
+    Error(const ComponentPtr &component) {
+        auto ptr = new std::shared_ptr<  libcellml::Error >(libcellml::Error::create(component));
+        return reinterpret_cast<libcellml::Error *>(ptr);
+    }
+    Error(const ImportSourcePtr &importSource) {
+        auto ptr = new std::shared_ptr<  libcellml::Error >(libcellml::Error::create(importSource));
+        return reinterpret_cast<libcellml::Error *>(ptr);
+    }
+    Error(const ModelPtr &model) {
+        auto ptr = new std::shared_ptr<  libcellml::Error >(libcellml::Error::create(model));
+        return reinterpret_cast<libcellml::Error *>(ptr);
+    }
+    Error(const ResetPtr &reset) {
+        auto ptr = new std::shared_ptr<  libcellml::Error >(libcellml::Error::create(reset));
+        return reinterpret_cast<libcellml::Error *>(ptr);
+    }
+    Error(const UnitsPtr &units) {
+        auto ptr = new std::shared_ptr<  libcellml::Error >(libcellml::Error::create(units));
+        return reinterpret_cast<libcellml::Error *>(ptr);
+    }
+    Error(const VariablePtr &variable) {
+        auto ptr = new std::shared_ptr<  libcellml::Error >(libcellml::Error::create(variable));
+        return reinterpret_cast<libcellml::Error *>(ptr);
+    }
+}
 
 %include "libcellml/exportdefinitions.h"
 %include "libcellml/specificationrules.h"

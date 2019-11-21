@@ -50,37 +50,6 @@ Error::~Error()
     delete mPimpl;
 }
 
-Error::Error(const Error &rhs)
-    : mPimpl(new ErrorImpl())
-{
-    mPimpl->mDescription = rhs.mPimpl->mDescription;
-    mPimpl->mKind = rhs.mPimpl->mKind;
-    mPimpl->mRule = rhs.mPimpl->mRule;
-    mPimpl->mComponent = rhs.mPimpl->mComponent;
-    mPimpl->mImportSource = rhs.mPimpl->mImportSource;
-    mPimpl->mModel = rhs.mPimpl->mModel;
-    mPimpl->mUnits = rhs.mPimpl->mUnits;
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mReset = rhs.mPimpl->mReset;
-}
-
-Error::Error(Error &&rhs) noexcept
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Error &Error::operator=(Error rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void Error::swap(Error &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
-}
-
 Error::Error(const ModelPtr &model)
     : mPimpl(new ErrorImpl())
 {
@@ -121,6 +90,41 @@ Error::Error(const ResetPtr &reset)
 {
     mPimpl->mReset = reset;
     mPimpl->mKind = Error::Kind::RESET;
+}
+
+ErrorPtr Error::create() noexcept
+{
+    return std::shared_ptr<Error> {new Error {}};
+}
+
+ErrorPtr Error::create(const ComponentPtr &component) noexcept
+{
+    return std::shared_ptr<Error> {new Error {component}};
+}
+
+ErrorPtr Error::create(const ImportSourcePtr &importSource) noexcept
+{
+    return std::shared_ptr<Error> {new Error {importSource}};
+}
+
+ErrorPtr Error::create(const ModelPtr &model) noexcept
+{
+    return std::shared_ptr<Error> {new Error {model}};
+}
+
+ErrorPtr Error::create(const ResetPtr &reset) noexcept
+{
+    return std::shared_ptr<Error> {new Error {reset}};
+}
+
+ErrorPtr Error::create(const UnitsPtr &units) noexcept
+{
+    return std::shared_ptr<Error> {new Error {units}};
+}
+
+ErrorPtr Error::create(const VariablePtr &variable) noexcept
+{
+    return std::shared_ptr<Error> {new Error {variable}};
 }
 
 void Error::setDescription(const std::string &description)

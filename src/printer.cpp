@@ -421,29 +421,9 @@ Printer::~Printer()
     delete mPimpl;
 }
 
-Printer::Printer(const Printer &rhs)
-    : Logger(rhs)
-    , mPimpl(new PrinterImpl())
+PrinterPtr Printer::create() noexcept
 {
-}
-
-Printer::Printer(Printer &&rhs) noexcept
-    : Logger(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Printer &Printer::operator=(Printer rhs)
-{
-    Logger::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Printer::swap(Printer &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
+    return std::shared_ptr<Printer> {new Printer {}};
 }
 
 std::string Printer::printModel(const ModelPtr &model) const
