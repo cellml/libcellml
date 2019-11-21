@@ -915,7 +915,7 @@ TEST(Units, checkingOwningModelBothUnits)
 
     model->addUnits(u1);
     model->addUnits(u2);
-    model->addUnits(u3); 
+    model->addUnits(u3);
 
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u3));
