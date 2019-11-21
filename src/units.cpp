@@ -226,6 +226,10 @@ bool updateUnitMultiplier(double &multiplier,
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
+                    if ((refUnits == nullptr) || (refUnits->isImport() == true)) {
+                        updated = false;
+                        return updated;
+                    }
                     updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 }
             }
