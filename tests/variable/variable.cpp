@@ -1240,7 +1240,7 @@ TEST(Variable, removeIndirectEquivalence)
 
     v1->setName("variable1");
     v2->setName("variable2");
-    v3->setName("variable2");
+    v3->setName("variable3");
 
     v1->setUnits("dimensionless");
     v2->setUnits("dimensionless");
@@ -1281,4 +1281,98 @@ TEST(Variable, removeIndirectEquivalence)
     EXPECT_TRUE(v2->hasIndirectEquivalentVariable(v3));
     EXPECT_TRUE(v1->hasEquivalentVariable(v3));
     EXPECT_TRUE(v2->hasEquivalentVariable(v3));
+}
+
+TEST(Variable, addEquivalenceFirstParameterNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(nullptr, v1));
+}
+
+TEST(Variable, addEquivalenceSecondParameterNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, nullptr));
+}
+
+TEST(Variable, addEquivalenceBothParametersNullptr)
+{
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(nullptr, nullptr));
+}
+
+TEST(Variable, removeEquivalenceFirstParametersNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(nullptr, v1));
+}
+
+TEST(Variable, removeEquivalenceSecondParametersNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(v1, nullptr));
+}
+
+TEST(Variable, removeEquivalenceBothParametersNullptr)
+{
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(nullptr, nullptr));
 }
