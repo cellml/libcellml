@@ -864,3 +864,55 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     // Incompatible units but return a scaling factor.
     EXPECT_EQ(1e-07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
 }
+
+TEST(Units, checkingOwningModelBothUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
+    u1->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    u2->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("u3");
+    u3->addUnit("u", "kilo", 4.0, 0.001); // standard, exponent.
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3); // Should fail. No base units defined in model
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u3));
+}
+
+TEST(Units, checkingOwningModelOneUnit)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("u", "milli", 1.0, 1.0); // u1 is a parent of u
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("apples", "kilo", 2.0, 1000.0); // apples not defined in the model, should fail.
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
