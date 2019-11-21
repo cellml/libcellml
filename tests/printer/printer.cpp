@@ -20,6 +20,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 TEST(Printer, printEmptyModel)
 {
     const std::string e =
@@ -163,6 +165,7 @@ TEST(Printer, printEncapsulationWithNames)
 TEST(Printer, printModelWithImports)
 {
     const std::string e_model =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"sin_approximations_import\" id=\"sin_approximations_import\">\n"
         "  <import xlink:href=\"sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
         "    <component component_ref=\"sin\" name=\"actual_sin\"/>\n"
@@ -201,11 +204,14 @@ TEST(Printer, printModelWithImports)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(fileContents("sine_approximations_import.xml"));
-    EXPECT_EQ(size_t(0), p.errorCount());
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations_import.xml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
     EXPECT_TRUE(model->hasUnresolvedImports());
-    libcellml::Printer printer;
-    const std::string a_model = printer.printModel(model);
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a_model = printer->printModel(model);
     EXPECT_EQ(e_model, a_model);
 }
