@@ -531,6 +531,7 @@ bool addflattenedComponent(const ComponentEntityPtr& parent, const ComponentPtr 
         auto localName = component->name();
         localName = uniqueComponentName(parentModel, localName);
         flatComponent->setName(localName);
+        cMaps[flatComponent].second = nullptr;
         // add the variables from the source component
         // Need to resolve variable equivalences after creating the complete model
         addVariableClones(flatComponent, component);
@@ -559,8 +560,29 @@ ModelPtr flattenModel(const ModelPtr &sourceModel)
             return nullptr;
         }
     }
+    // build the reverse component map
+    std::map<ComponentPtr, ComponentPtr> rMap;
+    for (auto const& i : cMap) {
+        rMap[i.second.first] = i.first;
+    }
     // add variable equivalences
-    // check if any imports remain
+    for (size_t n = 0; n < flatModel->componentCount(); ++n) {
+        ComponentPtr c = flatModel->component(n);
+        std::pair<ComponentPtr, ComponentPtr> p = cMap[c];
+        // add equivalences in the top-level model
+        for (auto k = 0; k < c->variableCount(); ++k) {
+            const VariablePtr& v = c->variable(k);
+            auto vname = v->name();
+            const VariablePtr& srcV = p.first->variable(vname);
+            for (auto e = 0; e < srcV->equivalentVariableCount(); ++e) {
+                const VariablePtr& ev = srcV->equivalentVariable(e);
+                std::cout << "**F** " << ": adding connection: " << vname << " ==> "
+                    << entityName(ev->parent()) << "/" << ev->name() << std::endl;
+                Variable::addEquivalence(v, rMap[std::dynamic_pointer_cast<Component>(ev->parent())]->variable(ev->name()));
+            }
+        }
+    }
+    // check if any imports remain and recurse
 
     return flatModel;
 }
