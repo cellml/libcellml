@@ -69,6 +69,12 @@ TEST(Component, invalidName)
     EXPECT_EQ("invalid name -", c->name());
 }
 
+TEST(Component, clone)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ComponentPtr cc = c->clone();
+}
+
 TEST(Component, setAndUnsetName)
 {
     const std::string in = "name";
