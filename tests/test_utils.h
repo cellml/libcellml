@@ -16,7 +16,9 @@ limitations under the License.
 
 #pragma once
 
+#include <iostream>
 #include <libcellml>
+#include <sstream>
 
 #include "test_exportdefinitions.h"
 
@@ -35,7 +37,34 @@ const std::string NON_EMPTY_MATH =
     "  </apply>\n"
     "</math>\n";
 
-void TEST_EXPORT debug(const std::string &text, bool newLine = true);
+struct Debug
+{
+    Debug() = default;
+
+    ~Debug()
+    {
+        std::cout << mSS.str() << std::endl;
+    }
+
+    Debug &operator<<(const void *p)
+    {
+        std::ostringstream ss;
+        ss << static_cast<const void *>(p);
+        mSS << ss.str();
+        return *this;
+    }
+
+    // Accept just about anything.
+    template<class T>
+    Debug &operator<<(const T &x)
+    {
+        mSS << x;
+        return *this;
+    }
+
+private:
+    std::ostringstream mSS;
+};
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 
