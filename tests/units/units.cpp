@@ -943,3 +943,112 @@ TEST(Units, checkingOwningModelOneUnit)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
+
+TEST(Units, checkScalingFactorImportedModel)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+    model->addUnits(u1);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(model);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorOneUnitImported)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u1->setImportSource(import);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorOneNonBaseUnitImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit("apples", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+    u2->addUnit("u", 0, 1.0, 1.0);
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u->setImportSource(import);
+
+    EXPECT_TRUE(u->isImport());
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorBothNonBaseUnitsImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit("apples", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit("u", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+    u2->addUnit("u", 0, 1.0, 1.0);
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u->setImportSource(import);
+
+    EXPECT_TRUE(u->isImport());
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
