@@ -388,9 +388,9 @@ public:
     /**
 	* @brief Return a bool which indicates if the units are loosely comparable.
 	* 
-	* Two units are loosely comparable if they share the same base, e.g. millivolts and
-	* volts.
-	* 
+	* Two units are loosely comparable if they share the same units ONLY (kg,s,m,...),
+	* this means we are uninterested in unit multipliers. 
+	*
 	* @param1 units1 The first units to compare.
 	* @param2 units2 The second units to compare.
 	*
@@ -399,10 +399,11 @@ public:
     static bool isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-	* @brief Return a bool which indicates if the units are loosely comparable.
+	* @brief Return a bool which indicates if the units are directly comparable.
 	* 
 	* Two units are dimensionally comparable if they are the same unit, e.g. volts and
-	* volts.
+	* volts. This means we can check for the same base units across all parameters (kg,s,m), 
+	* using the exponent, multiplier, and prefix of the unit.
 	* 
 	* @param1 units1 The first units to compare.
 	* @param2 units2 The second units to compare.
