@@ -282,4 +282,9 @@ bool Component::hasReset(const ResetPtr &reset) const
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
+ComponentPtr Component::clone() const
+{
+    return create();
+}
+
 } // namespace libcellml
