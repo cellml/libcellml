@@ -206,6 +206,11 @@ bool updateUnitMultiplier(double &multiplier,
 {
     bool updated = false;
     auto unitsName = units->name();
+
+    if (units->isImport()) {
+        return false;
+    }
+
     if (units->isBaseUnit()) {
         multiplier += direction * logMult;
         updated = true;
