@@ -57,14 +57,6 @@ void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool 
     }
 }
 
-void debug(const std::string &text, bool newLine)
-{
-    std::cout << text;
-    if (newLine) {
-        std::cout << std::endl;
-    }
-}
-
 void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(errors.size(), logger->errorCount());

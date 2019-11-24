@@ -20,6 +20,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 TEST(Printer, printEmptyModel)
 {
     const std::string e =
@@ -158,4 +160,58 @@ TEST(Printer, printEncapsulationWithNames)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a_parent = printer->printModel(model);
     EXPECT_EQ(e_parent, a_parent);
+}
+
+TEST(Printer, printModelWithImports)
+{
+    const std::string e_model =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"sin_approximations_import\" id=\"sin_approximations_import\">\n"
+        "  <import xlink:href=\"sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"sin\" name=\"actual_sin\"/>\n"
+        "  </import>\n"
+        "  <import xlink:href=\"deriv_approx_sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"sin\" name=\"deriv_approx_sin\"/>\n"
+        "  </import>\n"
+        "  <import xlink:href=\"parabolic_approx_sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"sin\" name=\"parabolic_approx_sin\"/>\n"
+        "  </import>\n"
+        "  <component name=\"main\" id=\"main\">\n"
+        "    <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\" interface=\"public_and_private\" id=\"x\"/>\n"
+        "    <variable name=\"sin1\" units=\"dimensionless\" interface=\"public_and_private\" id=\"sin\"/>\n"
+        "    <variable name=\"sin2\" units=\"dimensionless\" interface=\"public_and_private\" id=\"deriv_approx\"/>\n"
+        "    <variable name=\"deriv_approx_initial_value\" units=\"dimensionless\" initial_value=\"0\" interface=\"public_and_private\" id=\"deriv_approx_initial_value\"/>\n"
+        "    <variable name=\"sin3\" units=\"dimensionless\" interface=\"public_and_private\" id=\"parabolic_approx\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"main\" component_2=\"actual_sin\">\n"
+        "    <map_variables variable_1=\"x\" variable_2=\"x\"/>\n"
+        "    <map_variables variable_1=\"sin1\" variable_2=\"sin\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"main\" component_2=\"deriv_approx_sin\">\n"
+        "    <map_variables variable_1=\"x\" variable_2=\"x\"/>\n"
+        "    <map_variables variable_1=\"sin2\" variable_2=\"sin\"/>\n"
+        "    <map_variables variable_1=\"deriv_approx_initial_value\" variable_2=\"sin_initial_value\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"main\" component_2=\"parabolic_approx_sin\">\n"
+        "    <map_variables variable_1=\"x\" variable_2=\"x\"/>\n"
+        "    <map_variables variable_1=\"sin3\" variable_2=\"sin\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"main\">\n"
+        "      <component_ref component=\"actual_sin\"/>\n"
+        "      <component_ref component=\"deriv_approx_sin\"/>\n"
+        "      <component_ref component=\"parabolic_approx_sin\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations_import.xml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a_model = printer->printModel(model);
+    EXPECT_EQ(e_model, a_model);
 }
