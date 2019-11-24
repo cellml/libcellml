@@ -420,22 +420,97 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
+std::map<std::string, double> createUnitMap(const UnitsPtr &units)
+{
+    std::map<std::string, double> map;
+
+    // First we deal with case if unit is baseUnit
+    if (units->isBaseUnit()) {
+        // Check for imports, otherwise throw units into the map, with associated exponent
+    } else {
+		// for loop going through and grabbing base units. probably need to use recursion for this one;
+		// recursively call createUnitMap
+	}
+
+    return map;
+}
+
 bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    if ((units1 != nullptr) && (units2 != nullptr)) {
-        return true;
+    if ((units1 == nullptr) || (units2 == nullptr)) {
+        return false;
     }
 
-    return false;
+    // this time we are uninterested in dimensionality
+    std::map<std::string, double> units1Map = createUnitMap(units1);
+    std::map<std::string, double> units2Map = createUnitMap(units2); // creating the maps to compare units over
+
+    if (units1Map.size() != units2Map.size()) {
+        return false;
+    } else {
+        std::map<std::string, double>::iterator it = units1Map.begin();
+
+        while (it != units1Map.end()) {
+            // Accessing KEY from element pointed by it.
+            std::string unit = it->first;
+            auto found = units2Map.find(unit);
+
+            if (found == units2Map.end()) {
+                return false;
+            } else {
+                if (found->second != it->second) {
+                    return false;
+                }
+            }
+
+            // Increment the Iterator to point to next entry
+            it++;
+        }
+    }
+
+    return true;
 }
 
 bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    if ((units1 != nullptr) && (units2 != nullptr)) {
-        return true;
+    if ((units1 == nullptr) || (units2 == nullptr)) {
+        return false;
     }
 
-    return false;
+    double multiplier = 0.0;
+    updated1 = updateUnitMultipliers(multiplier, units2, 1, 0, 1);
+    updated2 = updateUnitMultipliers(multiplier, units1, 1, 0, -1); // updating to get comparative multiplier
+
+    if (std::pow(10, multiplier) != 1.0 || !updated1 || !updated2) {
+        return false; // if our multiplier does not come out to be 1 then our units are not dimensionally equivalent
+    }
+
+    std::map<std::string, double> units1Map = createUnitMap(units1);
+    std::map<std::string, double> units2Map = createUnitMap(units2); // creating the maps to compare units over
+
+    if (units1Map.size() != units2Map.size()) {
+        return false;
+    } else {
+        std::map<std::string, double>::iterator it = units1Map.begin();
+
+        while (it != units1Map.end()) {
+            // Accessing KEY from element pointed by it.
+            std::string unit = it->first;
+            auto found = units2Map.find(unit);
+
+            if (found == units2Map.end()) {
+                return false;
+            } else {
+                if (found->second != it->second) {
+                    return false;
+                }
+            }
+
+            // Increment the Iterator to point to next entry
+            it++;
+        }
+    }
+    return true;
 }
 
 } // namespace libcellml
