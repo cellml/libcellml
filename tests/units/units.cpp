@@ -984,8 +984,8 @@ TEST(Units, checkScalingFactorOneUnitImported)
 
     u1->setImportSource(import);
 
-    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
-    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
 TEST(Units, checkScalingFactorOneNonBaseUnitImported)
