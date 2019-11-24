@@ -14,22 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "utilities.h"
-
-#include "libcellml/component.h"
-#include "libcellml/enumerations.h"
-#include "libcellml/importsource.h"
-#include "libcellml/model.h"
 #include "libcellml/printer.h"
-#include "libcellml/reset.h"
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
 
+#include <list>
 #include <map>
 #include <sstream>
 #include <stack>
 #include <utility>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/enumerations.h"
+#include "libcellml/importsource.h"
+#include "libcellml/model.h"
+#include "libcellml/reset.h"
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -431,57 +433,39 @@ std::string Printer::printModel(const ModelPtr &model) const
     // ImportMap
     using ImportPair = std::pair<std::string, ComponentPtr>;
     using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
+    using ImportOrder = std::vector<ImportSourcePtr>;
     ImportMap importMap;
+    ImportOrder importOrder;
     VariableMap variableMap;
     ComponentMap componentMap;
 
     // Gather all imports.
-    std::stack<size_t> indeciesStack;
-    std::stack<ComponentPtr> componentStack;
-    bool incrementComponent = false;
+    std::list<ComponentPtr> componentStack;
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr comp = model->component(i);
-        ComponentPtr modelComponent = comp;
-        size_t index = 0;
         while (comp) {
-            incrementComponent = false;
             if (comp->isImport()) {
                 ImportPair pair = std::make_pair(comp->importReference(), comp);
                 ImportSourcePtr importSource = comp->importSource();
                 if (importMap.count(importSource) == 0) {
                     importMap[importSource] = std::vector<ImportPair>();
+                    // We track the order to make the testing easier. The alternative
+                    // is to implement a weak ordering method on the ImportSource class.
+                    importOrder.push_back(importSource);
                 }
                 importMap[importSource].push_back(pair);
-                incrementComponent = true;
-            } else if (comp->componentCount() != 0) {
-                // If the current component is a model component
-                // let the 'for' loop take care of the stack.
-                if (modelComponent != comp) {
-                    componentStack.push(comp);
-                    indeciesStack.push(index);
-                }
-                index = 0;
-                comp = comp->component(index);
             } else {
-                incrementComponent = true;
+                for (size_t j = 0; j < comp->componentCount(); ++j) {
+                    auto childComponent = comp->component(j);
+                    componentStack.push_back(childComponent);
+                }
             }
 
-            if (incrementComponent) {
-                if (!componentStack.empty()) {
-                    index = indeciesStack.top();
-                    comp = componentStack.top();
-                    indeciesStack.pop();
-                    componentStack.pop();
-                    index += 1;
-                    if (index < comp->componentCount()) {
-                        comp = comp->component(index);
-                    } else {
-                        comp = nullptr;
-                    }
-                } else {
-                    index = 0;
-                    comp = nullptr;
-                }
+            if (componentStack.empty()) {
+                comp = nullptr;
+            } else {
+                comp = componentStack.front();
+                componentStack.pop_front();
             }
         }
     }
@@ -500,15 +484,17 @@ std::string Printer::printModel(const ModelPtr &model) const
         repr += ">\n";
     }
 
-    for (const auto &iter : importMap) {
-        repr += tabIndent + "<import xlink:href=\"" + iter.first->url() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-        if (!iter.first->id().empty()) {
-            repr += " id=\"" + iter.first->id() + "\"";
+    for (const auto &importSource : importOrder) {
+        repr += tabIndent + "<import xlink:href=\"" + importSource->url() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+        if (!importSource->id().empty()) {
+            repr += " id=\"" + importSource->id() + "\"";
         }
         repr += ">\n";
-        for (const auto &vectorIter : iter.second) {
-            const ComponentPtr &localComponent = std::get<1>(vectorIter);
-            repr += tabIndent + tabIndent + "<component component_ref=\"" + std::get<0>(vectorIter) + "\" name=\"" + localComponent->name() + "\"";
+        const auto &importVector = importMap[importSource];
+        for (const auto &entry : importVector) {
+            const auto &reference = entry.first;
+            const auto &localComponent = entry.second;
+            repr += tabIndent + tabIndent + "<component component_ref=\"" + reference + "\" name=\"" + localComponent->name() + "\"";
             if (!localComponent->id().empty()) {
                 repr += " id=\"" + localComponent->id() + "\"";
             }
