@@ -92,6 +92,9 @@ range for the index is [0, #resets).";
 resets. Returns True if the :param: reset is in this component's
 resets and False otherwise.";
 
+%feature("docstring") libcellml::Component::clone
+"Create a copy of this component.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Component {
