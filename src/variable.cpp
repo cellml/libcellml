@@ -485,4 +485,9 @@ void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const Va
     }
 }
 
+VariablePtr Variable::clone() const
+{
+    return create();
+}
+
 } // namespace libcellml
