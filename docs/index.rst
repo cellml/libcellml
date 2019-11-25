@@ -20,7 +20,7 @@ Tutorials for users
    tutorials/tutorial6/outline6
    tutorials/tutorial7/outline7
    tutorials/tutorial8/outline8
-   tutorials/theory
+   theory/theory_index
 
 
 CellML2 format specification

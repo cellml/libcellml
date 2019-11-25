@@ -1,0 +1,11 @@
+.. role:: red
+.. role:: purple
+.. role:: orange
+.. role:: green
+.. role:: blue
+.. role:: olive
+.. role:: pink
+
+.. raw:: html
+
+   <style> .red {color:red} .purple {color:purple} .orange {color:orange} .green {color:green} .blue {color:blue} .olive {color:olive} .pink {color:pink}</style>
