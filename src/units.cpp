@@ -473,15 +473,8 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    if ((units1 == nullptr) || (units2 == nullptr)) {
-        return false;
-    }
-
-    double multiplier = 0.0;
-    updated1 = updateUnitMultipliers(multiplier, units2, 1, 0, 1);
-    updated2 = updateUnitMultipliers(multiplier, units1, 1, 0, -1); // updating to get comparative multiplier
-
-    if (std::pow(10, multiplier) != 1.0 || !updated1 || !updated2) {
+    
+    if (scalingFactor(units1, units2) != 1.0) {
         return false; // if our multiplier does not come out to be 1 then our units are not dimensionally equivalent
     }
 
