@@ -400,6 +400,8 @@ public:
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
+    UnitsPtr clone() const;
+
 private:
     Units(); /**< Constructor */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/

@@ -20,6 +20,94 @@ limitations under the License.
 
 #include "test_utils.h"
 
+void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
+{
+    EXPECT_EQ(u1->unitCount(), u2->unitCount());
+
+    std::string reference1, prefix1, id1, reference2, prefix2, id2;
+    double exponent1, multiplier1, exponent2, multiplier2;
+    for (size_t index = 0; index < u1->unitCount(); ++index) {
+        u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
+        u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
+
+        EXPECT_EQ(reference1, reference2);
+        EXPECT_EQ(prefix1, prefix2);
+        EXPECT_EQ(exponent1, exponent2);
+        EXPECT_EQ(multiplier1, multiplier2);
+        EXPECT_EQ(id1, id2);
+    }
+}
+
+void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
+{
+    EXPECT_EQ(u1->id(), u2->id());
+    EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
+    EXPECT_EQ(u1->isImport(), u2->isImport());
+    EXPECT_EQ(u1->importReference(), u2->importReference());
+    EXPECT_EQ(u1->name(), u2->name());
+    EXPECT_EQ(nullptr, u2->parent());
+
+    compareUnit(u1, u2);
+}
+
+TEST(Clone, importSource)
+{
+    auto i = libcellml::ImportSource::create();
+
+    i->setId("import");
+    i->setUrl("this_is_a_url");
+
+    auto iClone = i->clone();
+
+    EXPECT_EQ(i->id(), iClone->id());
+    EXPECT_EQ(i->url(), iClone->url());
+    EXPECT_EQ(i->hasModel(), iClone->hasModel());
+}
+
+TEST(Clone, unitsBaseUnits)
+{
+    auto u = libcellml::Units::create();
+
+    u->setId("unique_id");
+    u->setName("units");
+    u->setImportReference("a_url");
+
+    auto uClone = u->clone();
+
+    compareUnits(u, uClone);
+}
+
+TEST(Clone, unitsImportedUnits)
+{
+    auto u = libcellml::Units::create();
+
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("some-other-model.xml");
+
+    u->setId("unique_id");
+    u->setName("units");
+    u->setSourceUnits(import, "imported_units_name");
+
+    auto uClone = u->clone();
+
+    compareUnits(u, uClone);
+}
+
+TEST(Clone, unitsInModel)
+{
+    auto m = libcellml::Model::create();
+    auto u = libcellml::Units::create();
+
+    u->setId("unique_id");
+    u->setName("units");
+
+    m->addUnits(u);
+
+    auto uClone = u->clone();
+
+    compareUnits(u, uClone);
+}
+
 TEST(Clone, variable)
 {
     auto v = libcellml::Variable::create();
