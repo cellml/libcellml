@@ -1,8 +1,13 @@
 .. _prefixes:
 
------------------
+=================
 Built-in prefixes
------------------
+=================
+
+libCellML recognises the following standardised prefix strings for use in
+constructing customised :code:`Units` items.  Please note the international
+spelling of the :code:`deca` prefix.  Other prefixes can be used by specifying
+the integer power of 10 to which they relate.
 
 .. csv-table::
     :align: right

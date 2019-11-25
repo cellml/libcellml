@@ -125,7 +125,6 @@ by simply printing the combined model to the screen.
 ------------------------------------
 2: Read the sodium channel component
 ------------------------------------
-
 In :ref:`Tutorial 7<tutorial7_py>` you created a component to represent the
 behaviour of a gated sodium gate and stored it inside a model.
 

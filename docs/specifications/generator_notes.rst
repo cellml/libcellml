@@ -26,7 +26,7 @@ The generator is instantiated in the same way as the other items:
 
 The Generator functionality allows you to export your CellML model in
 different languages, called *profiles*.  The default setting is for :code:`C`,
-but you can change this using the :code:`setProfile` function if you need to. 
+but you can change this using the :code:`setProfile` function if you need to.
 
 .. code-block:: cpp
 
@@ -65,6 +65,3 @@ For the Python profile:
 
     // Retrieve the main script code only:
     std::string sourceCode = generator.implementationCode();
-
-
-

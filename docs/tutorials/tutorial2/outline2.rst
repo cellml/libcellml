@@ -3,7 +3,6 @@
 ====================================================
 Tutorial 2: Debugging, error checking and validating
 ====================================================
-
 In this tutorial you'll explore how the :code:`Validator` object can be put to
 use as you create and interact with your models to help you debug and find
 issues ahead of submitting it for simulation.  You'll be taking a CellML2.0

@@ -26,8 +26,8 @@ channel.  The channel is controlled by a number of gates in series, whose
 open or closed state and the transition between them is controlled by voltage:
 hence, a "voltage-controlled ion gate".  In this tutorial we will explore how
 a channel such as that made in Tutorial 4 can include another level of
-control: the rate constants (:math:`alpha_y` and :math:`beta_y`) used earlier
-are now functions of voltage themselves.  **TODO check this is to be recommended? ** We will also show how an
+control: the rate constants (:math:`\alpha_y` and :math:`\beta_y`) used earlier
+are now functions of voltage themselves.  **TODO check this is to be recommended?** We will also show how an
 *environment* component can be used to ensure that all components are modelled
 synchronously.
 
@@ -45,7 +45,6 @@ Resources:
       use in the tutorials.
     - If you did not complete Tutorial 4 you can download the file created there:
       :download:`../resources/tutorial5_PotassiumChannelModel.cellml`
-
 
 Python instructions
 -------------------

@@ -4,15 +4,14 @@
 libCellML Documentation
 =======================
 
-Tutorials for users:
+Tutorials for users
 ====================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
 
-   tutorials/index
-   tutorials/tutorial0/outline
+   tutorials/tutorial0/outline0
    tutorials/tutorial1/outline1
    tutorials/tutorial2/outline2
    tutorials/tutorial3/outline3
@@ -21,10 +20,35 @@ Tutorials for users:
    tutorials/tutorial6/outline6
    tutorials/tutorial7/outline7
    tutorials/tutorial8/outline8
+   tutorials/theory
 
 
-Documentation for contributors:
-===============================
+CellML2 format specification
+============================
+
+.. toctree::
+    :maxdepth: 2
+    :titlesonly:
+
+    specifications/interpretation/4_model
+    specifications/interpretation/5_import
+    specifications/interpretation/6_import_units
+    specifications/interpretation/7_import_component
+    specifications/interpretation/8_units
+    specifications/interpretation/9_unit
+    specifications/interpretation/10_component
+    specifications/interpretation/11_variable
+    specifications/interpretation/12_reset
+    specifications/interpretation/14_math
+    specifications/interpretation/15_encapsulation
+    specifications/interpretation/16_component_ref
+    specifications/interpretation/17_connection
+    specifications/interpretation/18_map_variables
+    specifications/formal_specification
+
+
+Documentation for developers
+=============================
 
 .. toctree::
    :maxdepth: 2
@@ -45,10 +69,14 @@ Documentation for contributors:
    contributors
    glossary
 
+External references
+===================
 .. toctree::
-   :hidden:
+   :maxdepth: 2
+   :titlesonly:
 
-   dev_configuration_options
+   references
+
 
 Indices and tables
 ==================
@@ -66,3 +94,27 @@ Supported by:
 .. figure:: images/abi.png
    :target: http://www.abi.auckland.ac.nz
    :width: 50%
+
+
+.. toctree::
+   :hidden:
+
+   dev_configuration_options
+   tutorials/tutorial0/tutorial0_cpp
+   tutorials/tutorial0/tutorial0_py
+   tutorials/tutorial1/tutorial1_cpp
+   tutorials/tutorial1/tutorial1_py
+   tutorials/tutorial2/tutorial2_cpp
+   tutorials/tutorial2/tutorial2_py
+   tutorials/tutorial3/tutorial3_cpp
+   tutorials/tutorial3/tutorial3_py
+   tutorials/tutorial4/tutorial4_cpp
+   tutorials/tutorial4/tutorial4_py
+   tutorials/tutorial5/tutorial5_cpp
+   tutorials/tutorial5/tutorial5_py
+   tutorials/tutorial6/tutorial6_cpp
+   tutorials/tutorial6/tutorial6_py
+   tutorials/tutorial7/tutorial7_cpp
+   tutorials/tutorial7/tutorial7_py
+   tutorials/tutorial8/tutorial8_cpp
+   tutorials/tutorial8/tutorial8_py

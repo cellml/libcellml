@@ -1,14 +1,18 @@
 ..  _builtinunits:
 
---------------
+==============
 Built-in units
---------------
+==============
 
-The libCellML library includes a set of irreducible units, as well as a
+libCellML includes a set of irreducible units, as well as a
 convenience set of their most common combinations.  These built-in units,
 and their formation from the irreducible units, are shown in the table below:
 the columns indicate the irreducible units, the values shown indicate the
 exponent, and the final column contains the multiplier (if used).
+
+Please note that the American spellings of units has been removed in CellML2.0, so that:
+- :code:`liter` must become :code:`litre`
+- :code:`meter` must become :code:`metre`
 
 Note that there are three effectively dimensionless units:
 
