@@ -11,20 +11,17 @@ class ParserTestCase(unittest.TestCase):
 
         x = Parser()
         del(x)
-        y = Parser()
-        z = Parser(y)
-        del(y, z)
 
     def test_inheritance(self):
         import libcellml
         from libcellml import Parser
 
         x = Parser()
-        self.assertIsInstance(x, libcellml.Logger)
+        self.assertIsInstance(x, libcellml.logger.Logger)
 
         # Test access to inherited methods
-        self.assertIsNone(x.getError(0))
-        self.assertIsNone(x.getError(-1))
+        self.assertIsNone(x.error(0))
+        self.assertIsNone(x.error(-1))
         self.assertEqual(x.errorCount(), 0)
         x.addError(libcellml.Error())
         self.assertEqual(x.errorCount(), 1)

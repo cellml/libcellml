@@ -44,35 +44,12 @@ Logger::~Logger()
     delete mPimpl;
 }
 
-Logger::Logger(const Logger &rhs)
-    : mPimpl(new LoggerImpl())
-{
-    mPimpl->mErrors = rhs.mPimpl->mErrors;
-}
-
-Logger::Logger(Logger &&rhs)
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Logger &Logger::operator=(Logger rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void Logger::swap(Logger &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-void Logger::clearErrors()
+void Logger::removeAllErrors()
 {
     mPimpl->mErrors.clear();
 }
 
-void Logger::addError(const ErrorPtr error)
+void Logger::addError(const ErrorPtr &error)
 {
     mPimpl->mErrors.push_back(error);
 }
@@ -82,7 +59,7 @@ size_t Logger::errorCount() const
     return mPimpl->mErrors.size();
 }
 
-ErrorPtr Logger::getError(size_t index) const
+ErrorPtr Logger::error(size_t index) const
 {
     ErrorPtr err = nullptr;
     if (index < mPimpl->mErrors.size()) {

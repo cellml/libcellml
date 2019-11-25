@@ -11,16 +11,14 @@ class ImportSourceTestCase(unittest.TestCase):
 
         # Test create/copy/destroy
         x = ImportSource()
-        y = ImportSource()
-        z = ImportSource(y)
-        del(x, y, z)
+        del(x)
 
     def test_inheritance(self):
         import libcellml
         from libcellml import ImportSource
 
         x = ImportSource()
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
     def test_set_url(self):
         from libcellml import ImportSource
@@ -31,39 +29,39 @@ class ImportSourceTestCase(unittest.TestCase):
         x.setUrl('hello')
         x.setUrl('')
 
-    def test_get_url(self):
+    def test_url(self):
         from libcellml import ImportSource
 
-        # std::string getUrl()
+        # std::string url()
         source = 'cheers'
         x = ImportSource()
-        self.assertEqual(x.getUrl(), '')
+        self.assertEqual(x.url(), '')
         x.setUrl(source)
-        self.assertEqual(x.getUrl(), source)
+        self.assertEqual(x.url(), source)
         x.setUrl('')
-        self.assertEqual(x.getUrl(), '')
+        self.assertEqual(x.url(), '')
 
     def test_set_model(self):
         from libcellml import ImportSource, Model
 
-        # void setModel(libcellml::ModelPtr model);
+        # void setModel(const ModelPtr &model);
         x = ImportSource()
         x.setModel(None)
         x.setModel(Model())
         x.setModel(None)
 
-    def test_get_model(self):
+    def test_model(self):
         from libcellml import ImportSource, Model
 
-        # libcellml::ModelPtr getModel() const;
+        # ModelPtr model() const;
         model = Model()
         model.setName('bert')
         x = ImportSource()
-        self.assertIsNone(x.getModel())
+        self.assertIsNone(x.model())
         x.setModel(model)
-        self.assertEqual(x.getModel().getName(), model.getName())
+        self.assertEqual(x.model().name(), model.name())
         x.setModel(None)
-        self.assertIsNone(x.getModel())
+        self.assertIsNone(x.model())
 
     def test_has_model(self):
         from libcellml import ImportSource, Model

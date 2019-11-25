@@ -41,36 +41,12 @@ ImportedEntity::~ImportedEntity()
     delete mPimpl;
 }
 
-ImportedEntity::ImportedEntity(const ImportedEntity &rhs)
-    : mPimpl(new ImportedEntityImpl())
-{
-    mPimpl->mImportSource = rhs.mPimpl->mImportSource;
-    mPimpl->mImportReference = rhs.mPimpl->mImportReference;
-}
-
-ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-ImportedEntity &ImportedEntity::operator=(ImportedEntity e)
-{
-    e.swap(*this);
-    return *this;
-}
-
-void ImportedEntity::swap(ImportedEntity &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
 bool ImportedEntity::isImport() const
 {
     return mPimpl->mImportSource != nullptr;
 }
 
-ImportSourcePtr ImportedEntity::getImportSource() const
+ImportSourcePtr ImportedEntity::importSource() const
 {
     return mPimpl->mImportSource;
 }
@@ -80,7 +56,7 @@ void ImportedEntity::setImportSource(const ImportSourcePtr &importSource)
     mPimpl->mImportSource = importSource;
 }
 
-std::string ImportedEntity::getImportReference() const
+std::string ImportedEntity::importReference() const
 {
     return mPimpl->mImportReference;
 }

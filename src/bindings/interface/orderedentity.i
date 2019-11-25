@@ -2,13 +2,14 @@
 
 #define LIBCELLML_EXPORT
 
-%import "types.i"
+%import "createconstructor.i"
 %import "entity.i"
+%import "types.i"
 
 %feature("docstring") libcellml::OrderedEntity
 "Abstract base class for entities that can be ordered relative to others.";
 
-%feature("docstring") libcellml::OrderedEntity::getOrder
+%feature("docstring") libcellml::OrderedEntity::order
 "Returns the order for this entity as an integer value.";
 
 %feature("docstring") libcellml::OrderedEntity::setOrder
@@ -25,8 +26,7 @@
 #include "libcellml/orderedentity.h"
 %}
 
-%ignore libcellml::OrderedEntity::OrderedEntity(OrderedEntity &&);
-%ignore libcellml::OrderedEntity::operator =;
+%ignore libcellml::OrderedEntity::OrderedEntity();
 
 %include "libcellml/types.h"
 %include "libcellml/orderedentity.h"

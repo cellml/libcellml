@@ -20,30 +20,42 @@ limitations under the License.
 
 namespace libcellml {
 
-// Input, output, and error handlers.
+// General classes.
+class Error; /**< Forward declaration of Error class. */
+using ErrorPtr = std::shared_ptr<Error>; /**< Type definition for shared error pointer. */
+class Generator; /**< Forward declaration of Generator class. */
+using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
+class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
+using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
+class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */
+using GeneratorVariablePtr = std::shared_ptr<GeneratorVariable>; /**< Type definition for shared generator variable pointer. */
+class Logger; /**< Forward declaration of Parser class. */
+using LoggerPtr = std::shared_ptr<Logger>; /**< Type definition for shared parser pointer. */
 class Parser; /**< Forward declaration of Parser class. */
+using ParserPtr = std::shared_ptr<Parser>; /**< Type definition for shared parser pointer. */
+class Printer; /**< Forward declaration of Printer class. */
+using PrinterPtr = std::shared_ptr<Printer>; /**< Type definition for shared printer pointer. */
 class Validator; /**< Forward declaration of Validator class. */
+using ValidatorPtr = std::shared_ptr<Validator>; /**< Type definition for shared validator pointer. */
 
 // CellML entities.
 class Component; /**< Forward declaration of Component class. */
-typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
+using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
-typedef std::shared_ptr<ComponentEntity> ComponentEntityPtr; /**< Type definition for shared component entity pointer. */
-class Error; /**< Forward declaration of Error class. */
-typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
+using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
+class Entity; /**< Forward declaration of Entity class. */
+using EntityPtr = std::shared_ptr<Entity>; /**< Type definition for shared entity pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
-typedef std::shared_ptr<ImportedEntity> ImportedEntityPtr; /**< Type definition for shared imported entity pointer. */
+using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
-typedef std::shared_ptr<ImportSource> ImportSourcePtr; /**< Type definition for shared import source pointer. */
+using ImportSourcePtr = std::shared_ptr<ImportSource>; /**< Type definition for shared import source pointer. */
 class Model; /**< Forward declaration of Model class. */
-typedef std::shared_ptr<Model> ModelPtr; /**< Type definition for shared model pointer. */
+using ModelPtr = std::shared_ptr<Model>; /**< Type definition for shared model pointer. */
 class Reset; /**< Forward declaration of Reset class. */
-typedef std::shared_ptr<Reset> ResetPtr; /**< Type definition for shared reset pointer. */
+using ResetPtr = std::shared_ptr<Reset>; /**< Type definition for shared reset pointer. */
 class Units; /**< Forward declaration of Units class. */
-typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
+using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
-typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
-class When; /**< Forward declaration of When class. */
-typedef std::shared_ptr<When> WhenPtr; /**< Type definition for shared when pointer. */
+using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
 
 } // namespace libcellml

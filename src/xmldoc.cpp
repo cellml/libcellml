@@ -14,17 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "mathmlconfig.h"
 #include "xmldoc.h"
-#include "xmlnode.h"
 
 #include <cstring>
+#include <libxml/tree.h>
+#include <libxml/xmlerror.h>
 #include <string>
 #include <vector>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xmlerror.h>
+#include "mathmlconfig.h"
+#include "xmlnode.h"
 
 namespace libcellml {
 
@@ -45,8 +44,8 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
     if (errorString.substr(errorString.length() - 1) == "\n") {
         errorString.replace(errorString.end() - 1, errorString.end(), ".");
     }
-    xmlParserCtxtPtr context = reinterpret_cast<xmlParserCtxtPtr>(userData);
-    XmlDoc *doc = reinterpret_cast<XmlDoc *>(context->_private);
+    auto context = reinterpret_cast<xmlParserCtxtPtr>(userData);
+    auto doc = reinterpret_cast<XmlDoc *>(context->_private);
     doc->addXmlError(errorString);
 }
 
@@ -59,7 +58,7 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
  */
 struct XmlDoc::XmlDocImpl
 {
-    xmlDocPtr mXmlDocPtr;
+    xmlDocPtr mXmlDocPtr = nullptr;
     std::vector<std::string> mXmlErrors;
 };
 
@@ -70,7 +69,7 @@ XmlDoc::XmlDoc()
 
 XmlDoc::~XmlDoc()
 {
-    if (mPimpl->mXmlDocPtr) {
+    if (mPimpl->mXmlDocPtr != nullptr) {
         xmlFreeDoc(mPimpl->mXmlDocPtr);
     }
     delete mPimpl;
@@ -78,31 +77,37 @@ XmlDoc::~XmlDoc()
 
 void XmlDoc::parse(const std::string &input)
 {
+    xmlInitParser();
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST input.c_str(), "/", NULL, XML_PARSE_NOBLANKS);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
+    xmlCleanupParser();
+    xmlCleanupGlobals();
 }
 
 void XmlDoc::parseMathML(const std::string &input)
 {
+    xmlInitParser();
     std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">";
     std::string mathmlString = mathmlDtd + input;
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST mathmlString.c_str(), "/", NULL, XML_PARSE_DTDVALID | XML_PARSE_NOBLANKS);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr, XML_PARSE_DTDVALID);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
+    xmlCleanupParser();
+    xmlCleanupGlobals();
 }
 
-XmlNodePtr XmlDoc::getRootNode() const
+XmlNodePtr XmlDoc::rootNode() const
 {
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
     XmlNodePtr rootHandle = nullptr;
-    if (root) {
+    if (root != nullptr) {
         rootHandle = std::make_shared<XmlNode>();
         rootHandle->setXmlNode(root);
     }
@@ -119,7 +124,7 @@ size_t XmlDoc::xmlErrorCount() const
     return mPimpl->mXmlErrors.size();
 }
 
-std::string XmlDoc::getXmlError(size_t index) const
+std::string XmlDoc::xmlError(size_t index) const
 {
     return mPimpl->mXmlErrors.at(index);
 }

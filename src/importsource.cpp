@@ -27,7 +27,7 @@ namespace libcellml {
 struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
-    libcellml::ModelPtr mModel;
+    ModelPtr mModel;
 };
 
 ImportSource::ImportSource()
@@ -41,34 +41,12 @@ ImportSource::~ImportSource()
     delete mPimpl;
 }
 
-ImportSource::ImportSource(const ImportSource &rhs)
-    : Entity(rhs)
-    , mPimpl(new ImportSourceImpl())
+ImportSourcePtr ImportSource::create() noexcept
 {
-    mPimpl->mUrl = rhs.mPimpl->mUrl;
-    mPimpl->mModel = rhs.mPimpl->mModel;
+    return std::shared_ptr<ImportSource> {new ImportSource {}};
 }
 
-ImportSource::ImportSource(ImportSource &&rhs)
-    : Entity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-ImportSource &ImportSource::operator=(ImportSource rhs)
-{
-    Entity::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void ImportSource::swap(ImportSource &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-std::string ImportSource::getUrl() const
+std::string ImportSource::url() const
 {
     return mPimpl->mUrl;
 }
@@ -78,12 +56,12 @@ void ImportSource::setUrl(const std::string &url)
     mPimpl->mUrl = url;
 }
 
-ModelPtr ImportSource::getModel() const
+ModelPtr ImportSource::model() const
 {
     return mPimpl->mModel;
 }
 
-void ImportSource::setModel(ModelPtr model)
+void ImportSource::setModel(const ModelPtr &model)
 {
     mPimpl->mModel = model;
 }

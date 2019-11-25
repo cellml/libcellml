@@ -14,13 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "namespaces.h"
 #include "xmlattribute.h"
 
+#include <libxml/tree.h>
 #include <string>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include "namespaces.h"
 
 namespace libcellml {
 
@@ -51,37 +50,47 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
     mPimpl->mXmlAttributePtr = attribute;
 }
 
-std::string XmlAttribute::getNamespace() const
+std::string XmlAttribute::namespaceUri() const
 {
-    if (!mPimpl->mXmlAttributePtr->ns) {
-        return std::string();
+    if (mPimpl->mXmlAttributePtr->ns == nullptr) {
+        return {};
     }
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href));
+    return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href);
 }
 
-bool XmlAttribute::isType(const char *name, const char *ns)
+std::string XmlAttribute::namespacePrefix() const
 {
-    bool found = false;
-    if (!xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
-        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST name)) {
-        found = true;
+    if (mPimpl->mXmlAttributePtr->ns == nullptr || mPimpl->mXmlAttributePtr->ns->prefix == nullptr) {
+        return {};
     }
-    return found;
+    return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->prefix);
 }
 
-std::string XmlAttribute::getName() const
+bool XmlAttribute::inNamespaceUri(const char *ns) const
 {
-    std::string type;
-    if (mPimpl->mXmlAttributePtr->name) {
-        type = std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
-    }
-    return type;
+    return xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0;
 }
 
-std::string XmlAttribute::getValue() const
+bool XmlAttribute::isType(const char *name, const char *ns) const
+{
+    return (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+           && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0);
+}
+
+bool XmlAttribute::isCellmlType(const char *name) const
+{
+    return isType(name, CELLML_2_0_NS);
+}
+
+std::string XmlAttribute::name() const
+{
+    return reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name);
+}
+
+std::string XmlAttribute::value() const
 {
     std::string valueString;
-    if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
+    if ((mPimpl->mXmlAttributePtr->name != nullptr) && (mPimpl->mXmlAttributePtr->parent != nullptr)) {
         xmlChar *value = xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name);
         valueString = std::string(reinterpret_cast<const char *>(value));
         xmlFree(value);
@@ -89,11 +98,11 @@ std::string XmlAttribute::getValue() const
     return valueString;
 }
 
-XmlAttributePtr XmlAttribute::getNext()
+XmlAttributePtr XmlAttribute::next() const
 {
     xmlAttrPtr next = mPimpl->mXmlAttributePtr->next;
     XmlAttributePtr nextHandle = nullptr;
-    if (next) {
+    if (next != nullptr) {
         nextHandle = std::make_shared<XmlAttribute>();
         nextHandle->setXmlAttribute(next);
     }
