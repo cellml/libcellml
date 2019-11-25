@@ -192,20 +192,18 @@ TEST(Generator, isolatedFirstOrderModel)
     model->addUnits(mS_per_cm2);
 
     //  4.c   Validate the final arrangement. No errors are expected at this stage.
-    libcellml::Validator validator;
-    validator.validateModel(model);
-    printErrors(validator);
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 
     //  5.a   Create a Generator instance. By default the options set in the
     //        generator constructor are:
     //          - profile() return "C" (cf "PYTHON"); and
     //          - modelType() returns "ODE".
 
-    libcellml::Generator generator;
-    generator.processModel(model);
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    generator->processModel(model);
 
     //  5.b   Check whether the generator has encountered any errors.
-    printErrors(generator);
-
-    EXPECT_EQ(size_t(0), generator.errorCount());
+    EXPECT_EQ(size_t(0), generator->errorCount());
 }
