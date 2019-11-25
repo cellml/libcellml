@@ -39,11 +39,31 @@ namespace libcellml {
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
 public:
-    Units(); /**< Constructor */
     ~Units() override; /**< Destructor */
-    Units(const Units &rhs); /**< Copy constructor */
-    Units(Units &&rhs); /**< Move constructor */
-    Units &operator=(Units n); /**< Assignment operator */
+    Units(const Units &rhs) = delete; /**< Copy constructor */
+    Units(Units &&rhs) noexcept = delete; /**< Move constructor */
+    Units &operator=(Units rhs) = delete; /**< Assignment operator */
+
+    /**
+     * @brief Create a @c Units object.
+     *
+     * Factory method to create a @c Units.  Create a
+     * blank units with::
+     *
+     *   UnitsPtr units = libcellml::Units::create();
+     *
+     * or a named units with name "Units" with::
+     *
+     *   UnitsPtr units = libcellml::Units::create("Units");
+     *
+     * @return A smart pointer to a @c Units object.
+     */
+    static UnitsPtr create() noexcept;
+
+    /**
+     * @overload
+     */
+    static UnitsPtr create(const std::string &name) noexcept;
 
     /**
      * @brief The Standard Unit enum class.
@@ -70,12 +90,10 @@ public:
         KATAL, /**< Derived SI unit katal. */
         KELVIN, /**< Base SI unit kelvin. */
         KILOGRAM, /**< Base SI unit kilogram. */
-        LITER, /**< Convenience unit liter (alternative spelling). */
         LITRE, /**< Convenience unit litre. */
         LUMEN, /**< Derived SI unit lumen. */
         LUX, /**< Derived SI unit lux. */
-        METER, /**< Base SI unit meter. */
-        METRE, /**< Base SI unit metre (alternative spelling). */
+        METRE, /**< Base SI unit metre. */
         MOLE, /**< Base SI unit mole. */
         NEWTON, /**< Derived SI unit newton. */
         OHM, /**< Derived SI unit ohm. */
@@ -119,12 +137,12 @@ public:
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
      * @p exponent, and @p multiplier.
-     *
-     * @overload
      *
      * @param reference The @c std::string units reference to add.
      * @param prefix The prefix for the unit, one of Prefix.
@@ -136,12 +154,12 @@ public:
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units. This method takes an optional argument
      * @p multiplier.
-     *
-     * @overload
      *
      * @param reference The @c std::string units reference to add.
      * @param prefix The prefix for the unit expressed as a double.
@@ -149,16 +167,16 @@ public:
      * @param multiplier The multiplier.
      * @param id The optional @c std::string id to set for this unit.
      */
-    void addUnit(const std::string &reference, double prefix, double exponent,
+    void addUnit(const std::string &reference, int prefix, double exponent,
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units. This variant takes the @c std::string
      * units @p reference and an @p exponent only.
-     *
-     * @overload
      *
      * @param reference The @c std::string units reference to add.
      * @param exponent The exponent for the unit.
@@ -167,24 +185,24 @@ public:
     void addUnit(const std::string &reference, double exponent, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units, this variant specified with only a
      * @c std::string units @p reference.
-     *
-     * @overload
      *
      * @param reference The @c std::string units reference to add.
      */
     void addUnit(const std::string &reference);
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
      * @p exponent, and @p multiplier.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum units reference to add.
      * @param prefix The string prefix for the unit.
@@ -196,12 +214,12 @@ public:
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
      * @p exponent, and @p multiplier.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum units reference to add.
      * @param prefix The prefix for the unit, one of Prefix.
@@ -213,12 +231,12 @@ public:
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units. This method takes an optional argument
      * @p multiplier.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum units reference to add.
      * @param prefix The prefix for the unit expressed as a double.
@@ -226,16 +244,16 @@ public:
      * @param multiplier The multiplier.
      * @param id The optional @c std::string id to set for this unit.
      */
-    void addUnit(StandardUnit standardRef, double prefix, double exponent,
+    void addUnit(StandardUnit standardRef, int prefix, double exponent,
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units. This variant takes the @c StandardUnit enum
      * units @p reference and an @p exponent only.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum units reference to add.
      * @param exponent The exponent for the unit.
@@ -244,12 +262,12 @@ public:
     void addUnit(StandardUnit standardRef, double exponent, const std::string &id = "");
 
     /**
+     * @overload
+     *
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units, this variant specified with only a
      * @c StandardUnit enum units @p reference.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum units reference to add.
      */
@@ -269,16 +287,16 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param id The @c std::string id for this @c unit. Defaults to the empty string.
      */
-    void getUnitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
-                           double &multiplier, std::string &id) const;
+    void unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
+                        double &multiplier, std::string &id) const;
 
     /**
+     * @overload
+     *
      * @brief Get the @c unit attributes for the given @p reference.
      *
      * Get the attributes for the first @c unit that matches the reference @p reference. If
      * no attributes are set, default attribute values will be returned.
-     *
-     * @overload
      *
      * @param reference The @c std::string reference for the @c unit attributes to get.
      * @param prefix The prefix for this @c unit. Defaults to empty string.
@@ -286,15 +304,15 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param id The @c std::string id for this @c unit. Defaults to the empty string.
      */
-    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
+    void unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
     /**
+     * @overload
+     *
      * @brief Get the @c unit attributes for the given @p standardRef.
      *
      * Get the attributes for the first @c unit that matches the reference @p standardRef. If
      * no attributes are set, default attribute values will be returned.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum unit reference attributes to get.
      * @param prefix The prefix for this @c unit. Defaults to empty string.
@@ -302,7 +320,7 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param id The @c std::string id for this @c unit. Defaults to the empty string.
      */
-    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
+    void unitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
     /**
      * @brief Remove the unit at the given @p index.
@@ -317,11 +335,11 @@ public:
     bool removeUnit(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches the @c std::string reference @p reference.
-     *
-     * @overload
      *
      * @param reference The @c std::string unit reference of the unit to remove.
      *
@@ -330,11 +348,11 @@ public:
     bool removeUnit(const std::string &reference);
 
     /**
+     * @overload
+     *
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches @c StandardUnit enum reference @p reference.
-     *
-     * @overload
      *
      * @param standardRef The @c StandardUnit enum unit reference of the unit to remove.
      *
@@ -369,8 +387,22 @@ public:
      */
     size_t unitCount() const;
 
+    /**
+     * @brief Return the scaling factor difference between two units.
+     * 
+     * This can be interpreted as factor, where units2 = (factor)*units1.  This method
+     * does not check to see if the units are compatible.
+     * 
+     * @param units1 The first units to compare.
+     * @param units2 The second units to compare.
+     *
+     * @return The factor units1/units2.
+     */
+    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
+
 private:
-    void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Units(); /**< Constructor */
+    explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl *mPimpl; /**< Private member to implementation pointer */

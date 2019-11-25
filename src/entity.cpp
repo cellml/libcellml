@@ -14,11 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
-#include "libcellml/componententity.h"
 #include "libcellml/entity.h"
 
+#include "libcellml/component.h"
+#include "libcellml/componententity.h"
+
 namespace libcellml {
+
+using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
 
 /**
  * @brief The Entity::EntityImpl struct.
@@ -27,16 +30,14 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    Model *mParentModel; /**< Pointer to parent model. */
-    Component *mParentComponent; /**< Pointer to component model. */
+    EntityWeakPtr mParent; /**< Pointer to parent. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentModel = nullptr;
-    mPimpl->mParentComponent = nullptr;
+    mPimpl->mParent = {};
 }
 
 Entity::~Entity()
@@ -44,78 +45,53 @@ Entity::~Entity()
     delete mPimpl;
 }
 
-Entity::Entity(const Entity &rhs)
-    : mPimpl(new EntityImpl())
-{
-    mPimpl->mParentComponent = rhs.mPimpl->mParentComponent;
-    mPimpl->mParentModel = rhs.mPimpl->mParentModel;
-    mPimpl->mId = rhs.mPimpl->mId;
-}
-
-Entity::Entity(Entity &&rhs)
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Entity &Entity::operator=(Entity e)
-{
-    e.swap(*this);
-    return *this;
-}
-
-void Entity::swap(Entity &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
 void Entity::setId(const std::string &id)
 {
     mPimpl->mId = id;
 }
 
-std::string Entity::getId() const
+std::string Entity::id() const
 {
     return mPimpl->mId;
 }
 
-void *Entity::getParent() const
+EntityPtr Entity::parent() const
 {
-    void *parent = nullptr;
-    if (mPimpl->mParentComponent) {
-        parent = mPimpl->mParentComponent;
-    } else if (mPimpl->mParentModel) {
-        parent = mPimpl->mParentModel;
-    }
-    return parent;
+    return mPimpl->mParent.lock();
 }
 
-void Entity::setParent(Component *parent)
+void Entity::setParent(const EntityPtr &parent)
 {
-    mPimpl->mParentComponent = parent;
+    mPimpl->mParent = parent;
 }
 
-void Entity::setParent(Model *parent)
+void Entity::removeParent()
 {
-    mPimpl->mParentModel = parent;
+    mPimpl->mParent = {};
 }
 
-void Entity::clearParent()
-{
-    mPimpl->mParentComponent = nullptr;
-    mPimpl->mParentModel = nullptr;
-}
-
-bool Entity::hasParent(Component *c) const
+bool Entity::hasParent() const
 {
     bool hasParent = false;
-    if (mPimpl->mParentComponent == c) {
+    EntityPtr parent = mPimpl->mParent.lock();
+    if (parent) {
         hasParent = true;
-    } else if (mPimpl->mParentComponent) {
-        hasParent = mPimpl->mParentComponent->hasParent(c);
     }
 
     return hasParent;
+}
+
+bool Entity::hasAncestor(const EntityPtr &entity) const
+{
+    bool hasAncestor = false;
+    EntityPtr parent = mPimpl->mParent.lock();
+    if (parent == entity) {
+        hasAncestor = true;
+    } else if (parent) {
+        hasAncestor = parent->hasAncestor(entity);
+    }
+
+    return hasAncestor;
 }
 
 } // namespace libcellml

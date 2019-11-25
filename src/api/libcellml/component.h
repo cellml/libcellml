@@ -20,6 +20,10 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Component>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -28,13 +32,37 @@ namespace libcellml {
  * The Component class is for representing a CellML Component.
  */
 class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                                  public std::enable_shared_from_this<Component>
+#endif
 {
 public:
-    Component(); /**< Constructor */
     ~Component() override; /**< Destructor */
-    Component(const Component &rhs); /**< Copy constructor */
-    Component(Component &&rhs); /**< Move constructor */
-    Component &operator=(Component m); /**< Assignment operator */
+    Component(const Component &rhs) = delete; /**< Copy constructor */
+    Component(Component &&rhs) noexcept = delete; /**< Move constructor */
+    Component &operator=(Component rhs) = delete; /**< Assignment operator */
+
+    /**
+     * @brief Create a @c Component object.
+     *
+     * Factory method to create a @c Component.  Create a
+     * blank component with::
+     *
+     *   ComponentPtr component = libcellml::Component::create();
+     *
+     * or a named component with name "Component" with::
+     *
+     *   ComponentPtr component = libcellml::Component::create("Component");
+     *
+     * @return A smart pointer to a @c Component object.
+     */
+    static ComponentPtr create() noexcept;
+
+    /**
+     * @overload
+     */
+    static ComponentPtr create(const std::string &name) noexcept;
 
     /**
      * @brief Set the source component for this component.
@@ -64,7 +92,7 @@ public:
      *
      * @return @c std::string math for this component.
      */
-    std::string getMath() const;
+    std::string math() const;
 
     /**
      * @brief Set the math string for this component.
@@ -75,6 +103,13 @@ public:
      * @param math The @c std::string to append for this component.
      */
     void setMath(const std::string &math);
+
+    /**
+     * @brief Clear the math from this component.
+     *
+     * Clears the math string from this component.
+     */
+    void removeMath();
 
     /**
      * @brief Add a variable by reference as part of this component.
@@ -106,6 +141,8 @@ public:
     bool removeVariable(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the variable with the given @p name from this component.
      *
      * Remove the variable with the given name from this component. If the named variable to
@@ -114,8 +151,6 @@ public:
      *
      * @sa addVariable
      *
-     * @overload
-     *
      * @param name The name of the variable to remove.
      *
      * @return True if the variable was removed, false otherwise.
@@ -123,6 +158,8 @@ public:
     bool removeVariable(const std::string &name);
 
     /**
+     * @overload
+     *
      * @brief Remove the variable by the given @p variable pointer from this component.
      *
      * Remove the variable with the given pointer from this component. If the @p variable to
@@ -130,8 +167,6 @@ public:
      * component will not be serialised in the connection.
      *
      * @sa addVariable
-     *
-     * @overload
      *
      * @param variable The pointer to the variable to remove.
      *
@@ -159,21 +194,21 @@ public:
      *
      * @return A reference to the variable at the given index on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(size_t index) const;
+    VariablePtr variable(size_t index) const;
 
     /**
+     * @overload
+     *
      * @brief Get a variable with the given name @p name.
      *
      * Returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
      *
-     * @overload
-     *
      * @param name The name of the variable to return.
      *
      * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(const std::string &name) const;
+    VariablePtr variable(const std::string &name) const;
 
     /**
      * @brief Take a variable at index.
@@ -190,13 +225,13 @@ public:
     VariablePtr takeVariable(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Take a variable with the given name @p name.
      *
      * Remove the variable with the given name from this component and
      * returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
-     *
-     * @overload
      *
      * @param name The name of the variable to return.
      *
@@ -227,13 +262,13 @@ public:
     bool hasVariable(const VariablePtr &variable) const;
 
     /**
+     * @overload
+     *
      * @brief Test whether the variable named @p name is in this component.
      *
      * Tests whether a variable with the argument @p name exists in the set of this
      * component's variables. Returns @c true if the named variable is in this
      * component's variables and @c false otherwise.
-     *
-     * @overload
      *
      * @param name The name of the variable to check for in this component.
      *
@@ -269,13 +304,13 @@ public:
     bool removeReset(size_t index);
 
     /**
+     * @overload
+     *
      * @brief Remove the reset by the given @p reset pointer from this component.
      *
      * Remove the reset with the given pointer from this component.
      *
      * @sa addReset
-     *
-     * @overload
      *
      * @param reset The pointer to the reset to remove.
      *
@@ -301,7 +336,7 @@ public:
      *
      * @return A reference to the reset at the given index on success, @c nullptr otherwise.
      */
-    ResetPtr getReset(size_t index) const;
+    ResetPtr reset(size_t index) const;
 
     /**
      * @brief Get the number of resets in the component.
@@ -326,9 +361,10 @@ public:
     bool hasReset(const ResetPtr &reset) const;
 
 private:
-    void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Component(); /**< Constructor */
+    explicit Component(const std::string &name);
 
-    void doAddComponent(const ComponentPtr &component) override;
+    bool doAddComponent(const ComponentPtr &component) override;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */

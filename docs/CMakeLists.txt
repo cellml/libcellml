@@ -63,7 +63,7 @@ if(LIBCELLML_COVERAGE)
   set(COVERAGE_DOCS_TARGET coverage_docs)
   add_custom_target(${COVERAGE_DOCS_TARGET}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/html/coverage/
-    COMMAND ${CMAKE_SOURCE_DIR}/tests/gcovr.py --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --html --html-details --output=${CMAKE_CURRENT_BINARY_DIR}/html/coverage/index.html --gcov-executable=${GCOV_EXE}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/gcovr-4.1.1.zip --exclude-unreachable-branches -r ${GCOV_PREFIX_PATH} --html --html-details --output=${CMAKE_CURRENT_BINARY_DIR}/html/coverage/index.html --gcov-executable=${GCOV_EXE} ${GCOV_ANALYSIS_PATH}
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests with html output")

@@ -22,7 +22,6 @@ limitations under the License.
 
 #include <string>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -33,11 +32,22 @@ namespace libcellml {
 class LIBCELLML_EXPORT Printer: public Logger
 {
 public:
-    Printer(); /**< Constructor */
     ~Printer() override; /**< Destructor */
-    Printer(const Printer &rhs); /**< Copy constructor */
-    Printer(Printer &&rhs); /**< Move constructor */
-    Printer &operator=(Printer p); /**< Assignment operator */
+    Printer(const Printer &rhs) = delete; /**< Copy constructor */
+    Printer(Printer &&rhs) noexcept = delete; /**< Move constructor */
+    Printer &operator=(Printer rhs) = delete; /**< Assignment operator */
+
+    /**
+     * @brief Create a @c Printer object.
+     *
+     * Factory method to create a @c Printer.  Create a
+     * printer with::
+     *
+     *   PrinterPtr printer = libcellml::Printer::create();
+     *
+     * @return A smart pointer to a @c Printer object.
+     */
+    static PrinterPtr create() noexcept;
 
     /**
      * @brief Serialise the @c Model to @c std::string.
@@ -48,130 +58,10 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(ModelPtr model) const;
-
-    /**
-     * @brief Serialise the @c Model to @c std::string.
-     *
-     * Serialise the given @p model to a std::string.
-     *
-     * @overload
-     *
-     * @param model The @c Model to serialise.
-     *
-     * @return The @c std::string representation of the @c Model.
-     */
-    std::string printModel(Model model) const;
-
-    /**
-     * @brief Serialise the @c Model to @c std::string.
-     *
-     * Serialise the given @p model to a std::string.
-     *
-     * @overload
-     *
-     * @param model The @c Model to serialise.
-     *
-     * @return The @c std::string representation of the @c Model.
-     */
-    std::string printModel(Model *model) const;
-
-    /**
-     * @brief Serialise the @c Units to @c std::string.
-     *
-     * Serialise the given @p units to a std::string.
-     *
-     * @param units The @c Units to serialise.
-     *
-     * @return The @c std::string representation of the @c Units.
-     */
-    std::string printUnits(UnitsPtr units) const;
-
-    /**
-     * @brief Serialise the @c Units to @c std::string.
-     *
-     * Serialise the given @p units to a std::string.
-     *
-     * @overload
-     *
-     * @param units The @c Units to serialise.
-     *
-     * @return The @c std::string representation of the @c Units.
-     */
-    std::string printUnits(Units units) const;
-
-    /**
-     * @brief Serialise the variable to @c std::string.
-     *
-     * Serialise the given @p variable to a std::string.
-     *
-     * @param variable The @c Variable to serialise.
-     *
-     * @return The @c std::string representation of the @c Variable.
-     */
-    std::string printVariable(VariablePtr variable) const;
-
-    /**
-     * @brief Serialise the @c Variable to @c std::string.
-     *
-     * Serialise the given @p variable to a std::string.
-     *
-     * @overload
-     *
-     * @param variable The @c Variable to serialise.
-     *
-     * @return The @c std::string representation of the @c Variable.
-     */
-    std::string printVariable(Variable variable) const;
-
-    /**
-     * @brief Serialise the @c Component to @c std::string.
-     *
-     * Serialise the given @p component to a std::string.
-     *
-     * @param component The @c Component to serialise.
-     *
-     * @return The @c std::string representation of the @c Component.
-     */
-    std::string printComponent(ComponentPtr component) const;
-
-    /**
-     * @brief Serialise the @c Component to @c std::string.
-     *
-     * Serialise the given @p component to a std::string.
-     *
-     * @overload
-     *
-     * @param component The @c Component to serialise.
-     *
-     * @return The @c std::string representation of the @c Component.
-     */
-    std::string printComponent(Component component) const;
-
-    /**
-     * @brief Serialise the @c Reset to @c std::string.
-     *
-     * Serialise the given @p reset to a std::string.
-     *
-     * @param reset The @c Reset to serialise.
-     * @return  The @c std::string representation of the @c Reset.
-     */
-    std::string printReset(ResetPtr reset) const;
-
-    /**
-     * @brief Serialise the @c Reset to @c std::string.
-     *
-     * Serialise the given @p reset to a std::string.
-     *
-     * @overload
-     *
-     * @param reset The @c Reset to serialise.
-     * @return The @c std::string representation of the @c Reset.
-     */
-    std::string printReset(Reset reset) const;
+    std::string printModel(const ModelPtr &model) const;
 
 private:
-    void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Printer(); /**< Constructor */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
     PrinterImpl *mPimpl; /**< Private member to implementation pointer. */

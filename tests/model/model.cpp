@@ -21,9 +21,9 @@ limitations under the License.
 TEST(Model, setGetId)
 {
     const std::string id = "modelID";
-    libcellml::Model m;
-    m.setId(id);
-    EXPECT_EQ(id, m.getId());
+    libcellml::ModelPtr m = libcellml::Model::create();
+    m->setId(id);
+    EXPECT_EQ(id, m->id());
 }
 
 TEST(Model, name)
@@ -33,14 +33,18 @@ TEST(Model, name)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>\n";
 
-    libcellml::Model m;
-    m.setName(n);
+    libcellml::ModelPtr m = libcellml::Model::create();
+    m->setName(n);
 
-    EXPECT_EQ(n, m.getName());
+    EXPECT_EQ(n, m->name());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
+
+    auto m2 = libcellml::Model::create(n);
+    const std::string a2 = printer->printModel(m2);
+    EXPECT_EQ(e, a2);
 }
 
 TEST(Model, unsetName)
@@ -53,17 +57,17 @@ TEST(Model, unsetName)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
-    libcellml::Model m;
-    m.setName(n);
-    EXPECT_EQ(n, m.getName());
+    libcellml::ModelPtr m = libcellml::Model::create();
+    m->setName(n);
+    EXPECT_EQ(n, m->name());
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(eName, a);
 
-    m.setName("");
-    EXPECT_EQ("", m.getName());
-    a = printer.printModel(m);
+    m->setName("");
+    EXPECT_EQ("", m->name());
+    a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -74,13 +78,13 @@ TEST(Model, invalidName)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>\n";
 
-    libcellml::Model m;
-    m.setName(n);
+    libcellml::ModelPtr m = libcellml::Model::create();
+    m->setName(n);
 
-    EXPECT_EQ(n, m.getName());
+    EXPECT_EQ(n, m->name());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -92,12 +96,12 @@ TEST(Model, addComponent)
         "  <component/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    m.addComponent(c);
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -110,13 +114,13 @@ TEST(Model, addValidNamedComponent)
         "  <component name=\"valid_name\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     c->setName(in);
-    m.addComponent(c);
+    m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -129,13 +133,13 @@ TEST(Model, addInvalidNamedComponent)
         "  <component name=\"invalid name\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
     c->setName(in);
-    m.addComponent(c);
+    m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -150,49 +154,49 @@ TEST(Model, addTwoNamedComponents)
         "  <component name=\"component_2\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
     c1->setName(name1);
-    m.addComponent(c1);
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    m.addComponent(c2);
+    m->addComponent(c1);
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    m->addComponent(c2);
     // once the component is added, we should be able to change the handle to the component and have those changes
     // reflected in the model? Yes we are using shared pointers.
     c2->setName(name2); // so should this give an error? Nope
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Model, countComponents)
 {
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
 
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
 
-    m.addComponent(c1);
-    m.addComponent(c2);
-    EXPECT_EQ(2u, m.componentCount());
+    m->addComponent(c1);
+    m->addComponent(c2);
+    EXPECT_EQ(size_t(2), m->componentCount());
 }
 
 TEST(Model, containsComponent)
 {
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
 
-    EXPECT_FALSE(m.containsComponent("child1"));
+    EXPECT_FALSE(m->containsComponent("child1"));
 
-    m.addComponent(c1);
-    m.addComponent(c2);
-    EXPECT_TRUE(m.containsComponent("child2"));
+    m->addComponent(c1);
+    m->addComponent(c2);
+    EXPECT_TRUE(m->containsComponent("child2"));
 }
 
 TEST(Model, removeComponent)
@@ -206,41 +210,39 @@ TEST(Model, removeComponent)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"child2\"/>\n"
-        "  <component name=\"child1\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
-    m.addComponent(c1);
-    m.addComponent(c2);
+    m->addComponent(c1);
+    m->addComponent(c2);
 
-    EXPECT_EQ(2u, m.componentCount());
-    EXPECT_TRUE(m.removeComponent(0));
-    EXPECT_EQ(1u, m.componentCount());
+    EXPECT_EQ(size_t(2), m->componentCount());
+    EXPECT_TRUE(m->removeComponent(0));
+    EXPECT_EQ(size_t(1), m->componentCount());
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
-    EXPECT_FALSE(m.removeComponent(1));
+    EXPECT_FALSE(m->removeComponent(1));
 
-    m.addComponent(c1);
-    m.addComponent(c1);
+    m->addComponent(c1);
 
     // Remove the first occurence of "child1".
-    EXPECT_TRUE(m.removeComponent("child1"));
-    EXPECT_EQ(2u, m.componentCount());
-    a = printer.printModel(m);
+    EXPECT_TRUE(m->removeComponent("child1"));
+    EXPECT_EQ(size_t(1), m->componentCount());
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change to model.
-    EXPECT_FALSE(m.removeComponent("child3"));
-    EXPECT_EQ(2u, m.componentCount());
+    EXPECT_FALSE(m->removeComponent("child3"));
+    EXPECT_EQ(size_t(1), m->componentCount());
 }
 
-TEST(Model, getComponentMethods)
+TEST(Model, componentMethods)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -248,25 +250,25 @@ TEST(Model, getComponentMethods)
         "  <component name=\"childA\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
     c1->setName("child1");
-    m.addComponent(c1);
+    m->addComponent(c1);
 
-    libcellml::ComponentPtr cA = m.getComponent(0);
+    libcellml::ComponentPtr cA = m->component(0);
     cA->setName("childA");
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
-    const libcellml::ComponentPtr cB = static_cast<const libcellml::Model>(m).getComponent(0);
+    const libcellml::ComponentPtr cB = m->component(0);
     // Can do this as we just have a const pointer
     cB->setName("gus");
-    EXPECT_EQ("gus", cB->getName());
+    EXPECT_EQ("gus", cB->name());
 
-    EXPECT_EQ(nullptr, m.getComponent(4));
+    EXPECT_EQ(nullptr, m->component(4));
 }
 
 TEST(Model, takeComponentMethods)
@@ -275,35 +277,37 @@ TEST(Model, takeComponentMethods)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
-    m.addComponent(c1);
-    m.addComponent(c2);
+    m->addComponent(c1);
+    m->addComponent(c2);
 
-    libcellml::ComponentPtr c02 = m.takeComponent(1);
-    EXPECT_EQ(1u, m.componentCount());
+    libcellml::ComponentPtr c02 = m->takeComponent(1);
+    EXPECT_EQ(size_t(1), m->componentCount());
 
-    EXPECT_EQ(m.takeComponent(4), nullptr);
+    EXPECT_EQ(m->takeComponent(4), nullptr);
 
-    EXPECT_EQ("child2", c02->getName());
+    EXPECT_EQ("child2", c02->name());
+    EXPECT_EQ(nullptr, c02->parent());
 
-    libcellml::ComponentPtr c01 = m.takeComponent("child1");
+    libcellml::ComponentPtr c01 = m->takeComponent("child1");
     EXPECT_NE(nullptr, c01);
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
 
-    EXPECT_EQ("child1", c01->getName());
+    EXPECT_EQ("child1", c01->name());
+    EXPECT_EQ(nullptr, c01->parent());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Expect no change.
-    EXPECT_EQ(0u, m.componentCount());
-    EXPECT_EQ(nullptr, m.takeComponent("child4"));
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
+    EXPECT_EQ(nullptr, m->takeComponent("child4"));
+    EXPECT_EQ(size_t(0), m->componentCount());
 }
 
 static int count = 0;
@@ -315,12 +319,12 @@ public:
     big_and_complicated()
         : id(count + 101)
     {
-        count++;
+        ++count;
     }
 
     ~big_and_complicated()
     {
-        count--;
+        --count;
     }
 };
 
@@ -339,28 +343,28 @@ struct structure
         m_data->id = rhs.m_data->id;
     }
 
-    structure(structure &&rhs)
+    structure(structure &&rhs) noexcept
         : m_data(rhs.m_data)
     {
         std::cout << "structure move constructor: " << m_data->id << std::endl;
         rhs.m_data = nullptr;
     }
 
-    structure &operator=(structure r)
+    structure &operator=(structure rhs)
     {
-        r.swap(*this);
+        rhs.swap(*this);
         return *this;
     }
 
-    void swap(structure &r) throw()
+    void swap(structure &rhs) noexcept
     {
-        std::swap(this->m_data, r.m_data);
+        std::swap(m_data, rhs.m_data);
     }
 
     ~structure()
     {
         std::cout << "structure destructor: ";
-        if (m_data) {
+        if (m_data != nullptr) {
             std::cout << m_data->id << std::endl;
         } else {
             std::cout << std::endl;
@@ -371,16 +375,6 @@ struct structure
 private:
     big_and_complicated *m_data;
 };
-
-//TEST(Model, simplified_replace) {
-//    std::vector<structure> ss;
-//    structure s1, s2, s3;
-//    ss.push_back(s1);
-//    ss.push_back(s2);
-//    ss.erase(ss.begin());
-//    ss.insert(ss.begin(), s3);
-
-//}
 
 TEST(Model, replaceComponent)
 {
@@ -403,38 +397,38 @@ TEST(Model, replaceComponent)
         "  <component name=\"child3\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c4 = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
     c3->setName("child3");
     c4->setName("child4");
-    m.addComponent(c1);
-    m.addComponent(c2);
+    m->addComponent(c1);
+    m->addComponent(c2);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e_orig, a);
 
     // Attempt to replace non-existent component.
-    EXPECT_FALSE(m.replaceComponent(5, c3));
+    EXPECT_FALSE(m->replaceComponent(5, c3));
 
     // Replace existing component.
-    EXPECT_TRUE(m.replaceComponent(1, c3));
+    EXPECT_TRUE(m->replaceComponent(1, c3));
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e_after, a);
 
     // Nothing happens when trying to replace a component that doesn't match
     // the given name.
-    EXPECT_FALSE(m.replaceComponent("child5", c4));
+    EXPECT_FALSE(m->replaceComponent("child5", c4));
 
-    EXPECT_TRUE(m.replaceComponent("child1", c4));
+    EXPECT_TRUE(m->replaceComponent("child1", c4));
 
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e_post, a);
 }
 
@@ -447,32 +441,32 @@ TEST(Model, constructors)
         "</model>\n";
     const std::string n = "my_name";
 
-    libcellml::Model m, m1, m2;
-    m.setName(n);
-    m.addComponent(std::make_shared<libcellml::Component>());
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ModelPtr m1;
+    libcellml::ModelPtr m2;
+    m->setName(n);
+    m->addComponent(libcellml::Component::create());
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
 
     EXPECT_EQ(e, a);
 
     //Testing copy constructor
-    libcellml::Model m3(m);
-    EXPECT_EQ("my_name", m3.getName());
+    libcellml::ModelPtr &m3(m);
+    EXPECT_EQ("my_name", m3->name());
 
     // Testing model assignment
     m1 = m;
-    EXPECT_EQ("my_name", m.getName());
+    EXPECT_EQ("my_name", m->name());
 
     // Testing move assignment for model
     m2 = std::move(m1);
-    EXPECT_EQ("my_name", m2.getName());
-    // EXPECT_EQ("", m1.getName()); m1 is now dead (contains a nullptr).
+    EXPECT_EQ("my_name", m2->name());
 
     // Testing move constructor for component
-    libcellml::Model m4 = std::move(m2);
-    EXPECT_EQ("my_name", m4.getName());
-    // EXPECT_EQ("", m2.getName()); m2 is now dead (contains a nullptr).
+    libcellml::ModelPtr m4 = std::move(m2);
+    EXPECT_EQ("my_name", m4->name());
 }
 
 TEST(Model, setAndCheckIdsAllEntities)
@@ -491,22 +485,22 @@ TEST(Model, setAndCheckIdsAllEntities)
         "  <component name=\"c2name\" id=\"c2id\">\n"
         "    <variable name=\"vname\" units=\"u1name\" id=\"vid\"/>\n"
         "    <reset id=\"r1id\">\n"
-        "      <when id=\"w1id\"/>\n"
+        "      <test_value id=\"tvid\"/>\n"
+        "      <reset_value id=\"rvid\"/>\n"
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
 
-    libcellml::Model m;
-    libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
-    libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
-    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
+    libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::ResetPtr r1 = libcellml::Reset::create();
 
     i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
@@ -514,7 +508,7 @@ TEST(Model, setAndCheckIdsAllEntities)
     i2->setUrl("some-other-model.xml");
     u1->setSourceUnits(i2, "a_units_in_that_model");
 
-    m.setName("mname");
+    m->setName("mname");
     c1->setName("c1name");
     c2->setName("c2name");
     v->setName("vname");
@@ -522,7 +516,7 @@ TEST(Model, setAndCheckIdsAllEntities)
     u2->setName("u2name");
     u3->setName("u3name");
 
-    m.setId("mid");
+    m->setId("mid");
     i1->setId("i1id");
     i2->setId("i2id");
     c1->setId("c1id");
@@ -532,20 +526,21 @@ TEST(Model, setAndCheckIdsAllEntities)
     u2->setId("u2id");
     u3->setId("u3id");
     r1->setId("r1id");
-    w1->setId("w1id");
+
+    r1->setTestValueId("tvid");
+    r1->setResetValueId("rvid");
 
     v->setUnits(u1);
-    r1->addWhen(w1);
     c2->addReset(r1);
     c2->addVariable(v);
 
-    m.addUnits(u1);
-    m.addUnits(u2);
-    m.addUnits(u3);
-    m.addComponent(c1);
-    m.addComponent(c2);
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+    m->addComponent(c1);
+    m->addComponent(c2);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(a, e);
 }

@@ -16,15 +16,15 @@ limitations under the License.
 
 #pragma once
 
-#include "xmlnode.h"
-
 #include <memory>
 #include <string>
+
+#include "xmlnode.h"
 
 namespace libcellml {
 
 class XmlDoc; /**< Forward declaration of the internal XmlDoc class. */
-typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
+using XmlDocPtr = std::shared_ptr<XmlDoc>; /**< Type definition for shared XML doc pointer. */
 
 /**
  * @brief The XmlDoc class.
@@ -64,7 +64,7 @@ public:
      *
      * @return The root XML element for this document.
      */
-    XmlNodePtr getRootNode() const;
+    XmlNodePtr rootNode() const;
 
     /**
      * @brief Add an @p error raised while parsing this XML document.
@@ -96,7 +96,7 @@ public:
      * @param index The index of the error to get.
      * @return The @c std::string form of the XML error.
      */
-    std::string getXmlError(size_t index) const;
+    std::string xmlError(size_t index) const;
 
 private:
     struct XmlDocImpl; /**< Forward declaration for pImpl idiom. */

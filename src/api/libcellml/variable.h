@@ -32,11 +32,31 @@ namespace libcellml {
 class LIBCELLML_EXPORT Variable: public NamedEntity
 {
 public:
-    Variable(); /**< Constructor */
     ~Variable() override; /**< Destructor */
-    Variable(const Variable &rhs); /**< Copy constructor */
-    Variable(Variable &&rhs); /**< Move constructor */
-    Variable &operator=(Variable n); /**< Assignment operator */
+    Variable(const Variable &rhs) = delete; /**< Copy constructor */
+    Variable(Variable &&rhs) noexcept = delete; /**< Move constructor */
+    Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
+
+    /**
+     * @brief Create a @c Variable object.
+     *
+     * Factory method to create a @c Variable.  Create a
+     * blank variable with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create();
+     *
+     * or a named variable with name "Variable" with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create("Variable");
+     *
+     * @return A smart pointer to a @c Variable object.
+     */
+    static VariablePtr create() noexcept;
+
+    /**
+     * @overload
+     */
+    static VariablePtr create(const std::string &name) noexcept;
 
     /**
      * @brief The InterfaceType enum class.
@@ -59,7 +79,7 @@ public:
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.
      *
-     * @sa removeEquivalence, getEquivalentVariable
+     * @sa removeEquivalence, equivalentVariable
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -69,6 +89,8 @@ public:
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
+     * @overload
+     *
      * @brief Add each argument variable to the other's equivalent variable set.
      *
      * Add a copy of @p variable1 to the set of equivalent variables for
@@ -76,8 +98,6 @@ public:
      * set of equivalent variables for @p variable1 if not already present.  Also set the
      * mapping id of the equivalence and also optionally the connection id fo the
      * equivalence.
-     *
-     * @overload
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -129,10 +149,10 @@ public:
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
      * @return the @c std::string mapping id.
      */
-    static std::string getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
+    static std::string equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Get the equivalent connection id for this equivalence.
@@ -143,10 +163,32 @@ public:
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1 Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
      * @return the @c std::string connection id.
      */
-    static std::string getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+    static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Clear equivalent connection id for this equivalence.
+     *
+     * Clears the equivalent connection id for the equivalence defined by the two
+     * variables passed as arguments.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     */
+    static void removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Clear the equivalent mapping id for this equivalence.
+     *
+     * Clears the equivalent mapping id for the equivalence defined by the two
+     * variables passed as arguments.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     */
+    static void removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Remove each argument variable to the other's equivalent variable set.
@@ -155,7 +197,7 @@ public:
      * @p variable2, if present. Also removes a copy of @p variable2 from the
      * set of equivalent variables for @p variable1, if present.
      *
-     * @sa addEquivalence, getEquivalentVariable
+     * @sa addEquivalence, equivalentVariable
      *
      * @param variable1 The variable to remove from the equivalent variable set
      * for @p variable2.
@@ -183,7 +225,7 @@ public:
      *
      * @return The equivalent variable at the given index.
      */
-    VariablePtr getEquivalentVariable(size_t index) const;
+    VariablePtr equivalentVariable(size_t index) const;
 
     /**
      * @brief Get the number of equivalent variables for this variable.
@@ -205,6 +247,22 @@ public:
      *
      * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
      * and @c false otherwise.
+     *
+     * @deprecated This method is currently needed by our Printer and Validator classes, but this is
+     * not a method that a libCellML user should ever need. It will therefore be removed at some point.
+     */
+    bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
+
+    /**
+     * @brief Test whether the argument variable is equivalent to this variable.
+     *
+     * Tests to see if the argument variable is equivalent to this variable. Returns @c true if
+     * the argument variable is equivalent to this variable and @c false otherwise.
+     *
+     * @param equivalentVariable The variable to check for equivalence.
+     *
+     * @return @c true if the @p equivalentVariable is equivalent to this variable and
+     * @c false otherwise.
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
@@ -214,21 +272,21 @@ public:
      * Set the units for this variable by name. Set to an empty string
      * to unset the units.
      *
-     * @sa getUnits
+     * @sa units
      *
      * @param name The name of the units to set.
      */
     void setUnits(const std::string &name);
 
     /**
+     * @overload
+     *
      * @brief Set the units for this variable using a @c UnitsPtr.
      *
      * Set the units for this variable as the name associated with the
      * argument @p units.
      *
-     * @overload
-     *
-     * @sa getUnits
+     * @sa units
      *
      * @param units The @c UnitsPtr to set.
      */
@@ -242,44 +300,51 @@ public:
      *
      * @sa setUnits
      *
-     * @return The @c std::string name of the units for this variable.
+     * @return The @c UnitsPtr of the units for this variable.
      */
-    std::string getUnits() const;
+    UnitsPtr units() const;
+
+    /**
+     * @brief Clear the units from this variable.
+     *
+     * Clears the units from this variable.
+     */
+    void removeUnits();
 
     /**
      * @brief Set the initial value for this variable using a string.
      *
      * Set the initial value for this variable using a string.
      *
-     * @sa getInitialValue
+     * @sa initialValue
      *
      * @param initialValue The initial value to set.
      */
     void setInitialValue(const std::string &initialValue);
 
     /**
+     * @overload
+     *
      * @brief Set the initial value for this variable using a real number.
      *
      * Set the initial value for this variable using a real number.
      * The real number value will be converted to and stored as a string.
      *
-     * @overload
-     *
-     * @sa getInitialValue
+     * @sa initialValue
      *
      * @param initialValue The initial value to set.
      */
     void setInitialValue(double initialValue);
 
     /**
+     * @overload
+     *
      * @brief Set the initial value for this variable using a variable reference.
      *
      * Set the initial value for this variable using a variable reference.
      * The initial value will be set to the name of the referenced variable.
      *
-     * @overload
-     *
-     * @sa getInitialValue
+     * @sa initialValue
      *
      * @param variable The variable reference to use to set the initial value.
      */
@@ -292,28 +357,35 @@ public:
      *
      * @sa setInitialValue
      */
-    std::string getInitialValue() const;
+    std::string initialValue() const;
+
+    /**
+     * @brief Clear the initial value for this variable.
+     *
+     * Clears the initial value for this variable.
+     */
+    void removeInitialValue();
 
     /**
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable using a string.
      *
-     * @sa getInterfaceType
+     * @sa interfaceType
      *
      * @param interfaceType The string interface type to set for this variable.
      */
     void setInterfaceType(const std::string &interfaceType);
 
     /**
+     * @overload
+     *
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable from the available
      * options in the InterfaceType enum class.
      *
-     * @overload
-     *
-     * @sa getInterfaceType
+     * @sa interfaceType
      *
      * @param interfaceType The enum interface type to set for this variable.
      */
@@ -326,10 +398,18 @@ public:
      *
      * @sa setInterfaceType
      */
-    std::string getInterfaceType() const;
+    std::string interfaceType() const;
+
+    /**
+     * @brief Clear the interface type for this variable.
+     *
+     * Clears the interface type for this variable.
+     */
+    void removeInterfaceType();
 
 private:
-    void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Variable(); /**< Constructor */
+    explicit Variable(const std::string &name); /**< Constructor with std::string parameter*/
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */

@@ -45,6 +45,18 @@ elseif(COVERAGE)
 endif()
 unset(COVERAGE CACHE)
 
+# LLVM_COVERAGE ==> LIBCELLML_LLVM_COVERAGE
+set(_PARAM_ANNOTATION "Enable LLVM coverage testing.")
+if(LLVM_COVERAGE_TESTING_AVAILABLE)
+  set(LIBCELLML_LLVM_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED LLVM_COVERAGE AND LLVM_COVERAGE_TESTING_AVAILABLE)
+  set(LIBCELLML_LLVM_COVERAGE "${LLVM_COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(LLVM_COVERAGE)
+  message(WARNING "LLVM coverage testing requested but llvm-profdata or llvm-cov not found!")
+endif()
+unset(LLVM_COVERAGE CACHE)
+
 # MEMCHECK ==> LIBCELLML_MEMCHECK
 set(_PARAM_ANNOTATION "Enable memcheck testing.")
 if(VALGRIND_TESTING_AVAILABLE)
@@ -77,11 +89,10 @@ unset(UNIT_TESTS CACHE)
 
 if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
   if(NOT LIBCELLML_UNIT_TESTS)
-    message(STATUS "Configuration confusion:
+    message(SEND_ERROR "Configuration confusion:
       Memchecking or coverage testing has been requested but unit tests have not.
-      This is not possible so forcing the unit tests to 'on' to make it possible.
+      This is not possible, please change the configuration to clear this condition.
       ")
-    set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
   endif()
 endif()
 
@@ -102,21 +113,20 @@ if(NOT IS_MULTI_CONFIG)
   endif()
 endif()
 unset(BUILD_TYPE CACHE)
-if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
+if(LIBCELLML_MEMCHECK)
   if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Configuration confusion:
-      Release build requested but memchecking or coverage has also been requested.
-      This is not possible so forcing the build type to 'Debug' to make it possible.
+    message(SEND_ERROR "Configuration confusion:
+      Release build requested but memchecking has also been requested.
+      This is not possible, please change the configuration to clear this condition.
       ")
-    set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
   endif()
 endif()
 
 # INSTALL_PREFIX ==> LIBCELLML_INSTALL_PREFIX
 set(_PARAM_ANNOTATION "Install path prefix, prepended onto install directories.")
-set(LIBCELLML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION})
+set(LIBCELLML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE PATH ${_PARAM_ANNOTATION})
 if(DEFINED INSTALL_PREFIX)
-  set(LIBCELLML_INSTALL_PREFIX ${INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  set(LIBCELLML_INSTALL_PREFIX ${INSTALL_PREFIX} CACHE PATH ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(INSTALL_PREFIX CACHE)
 
@@ -142,34 +152,6 @@ hide_distracting_variables()
 # It creates "CMakePredefinedTargets" folder by default and adds CMake
 # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-# Find libxml2
-set(HAVE_LIBXML2_CONFIG FALSE)
-if(MSVC)
-  # If we want to use config packages on Windows with Visual Studio,
-  # we need to have two find_package calls and explicitly state that
-  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
-  # is the preferred method so we will try this first quietly.
-  #
-  # This does change how we get information about include paths and such so we
-  # need to track how we found LibXml2.
-  find_package(LibXml2 CONFIG QUIET)
-  if(LibXml2_FOUND)
-    set(HAVE_LIBXML2_CONFIG TRUE)
-    foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
-      if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
-        unset(${_XML2_VAR} CACHE)
-      endif()
-    endforeach()
-  else()
-    find_package(LibXml2 REQUIRED)
-    if(LibXml2_FOUND)
-      unset(LibXml2_DIR CACHE)
-    endif()
-  endif()
-else()
-  find_package(LibXml2 REQUIRED)
-endif()
 
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -206,6 +188,6 @@ if(CLANG_FORMAT_EXE)
 
   add_custom_target(format_code
     COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT}
-    COMMENT "Source code has been reformatted by clang-format."
+    COMMENT "Source code has been reformatted by ClangFormat."
   )
 endif()
