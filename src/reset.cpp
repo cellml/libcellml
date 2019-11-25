@@ -42,6 +42,22 @@ Reset::Reset()
 {
 }
 
+Reset::Reset(int order)
+    : mPimpl(new ResetImpl())
+{
+    setOrder(order);
+}
+
+ResetPtr Reset::create() noexcept
+{
+    return std::shared_ptr<Reset> {new Reset {}};
+}
+
+ResetPtr Reset::create(int order) noexcept
+{
+    return std::shared_ptr<Reset> {new Reset {order}};
+}
+
 Reset::~Reset()
 {
     delete mPimpl;
@@ -82,7 +98,7 @@ void Reset::setTestValueId(const std::string &id)
     mPimpl->mTestValueId = id;
 }
 
-void Reset::clearTestValueId()
+void Reset::removeTestValueId()
 {
     mPimpl->mTestValueId = "";
 }
@@ -97,7 +113,7 @@ void Reset::setTestValue(const std::string &math)
     mPimpl->mTestValue = math;
 }
 
-void Reset::clearTestValue()
+void Reset::removeTestValue()
 {
     mPimpl->mTestValue = "";
 }
@@ -117,7 +133,7 @@ void Reset::setResetValue(const std::string &math)
     mPimpl->mResetValue = math;
 }
 
-void Reset::clearResetValue()
+void Reset::removeResetValue()
 {
     mPimpl->mResetValue = "";
 }
@@ -127,7 +143,7 @@ void Reset::setResetValueId(const std::string &id)
     mPimpl->mResetValueId = id;
 }
 
-void Reset::clearResetValueId()
+void Reset::removeResetValueId()
 {
     mPimpl->mResetValueId = "";
 }

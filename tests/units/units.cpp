@@ -46,8 +46,8 @@ TEST(Units, validName)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", u->name());
 }
@@ -67,8 +67,8 @@ TEST(Units, invalidName)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->name());
 }
@@ -96,8 +96,8 @@ TEST(Units, compoundUnitsRaw)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -135,8 +135,8 @@ TEST(Units, compoundUnitsUsingDefines)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -165,8 +165,8 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -224,17 +224,17 @@ TEST(Units, removeUnitsMethodsAndCount)
     m->addUnits(u3);
     m->addUnits(u4);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e1, a);
 
     u1->removeAllUnits();
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 
     EXPECT_TRUE(m->removeUnits("simple_unit_2"));
     EXPECT_TRUE(m->removeUnits(u3));
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e3, a);
     EXPECT_EQ(size_t(2), m->unitsCount());
 
@@ -247,7 +247,7 @@ TEST(Units, removeUnitsMethodsAndCount)
     EXPECT_EQ(size_t(1), m->unitsCount());
 
     m->removeAllUnits();
-    a = printer.printModel(m);
+    a = printer->printModel(m);
     EXPECT_EQ(e4, a);
 }
 
@@ -385,8 +385,8 @@ TEST(Units, multiply)
 
     m->addUnits(u3);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -405,8 +405,8 @@ TEST(Units, newBaseUnit)
 
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->name());
 }
@@ -442,8 +442,8 @@ TEST(Units, farhenheit)
     u->addUnit("kelvin", 0, 1.0, 1.8);
     m->addUnits(u);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("fahrenheitish", u->name());
 }
@@ -584,14 +584,14 @@ TEST(Units, multipleAndParse)
     m->addUnits(u1);
     m->addUnits(u2);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
-    a = printer.printModel(model);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -601,7 +601,7 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
 
-    libcellml::Validator validator;
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     m->setName("myModel");
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -618,10 +618,52 @@ TEST(Units, unitsWithPrefixOutOfRange)
     m->addComponent(c);
     m->addUnits(u);
 
-    validator.validateModel(m);
+    validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator.errorCount());
-    EXPECT_EQ(e, validator.error(0)->description());
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(e, validator->error(0)->description());
+}
+
+TEST(Units, parentOfUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    model->addUnits(u);
+
+    libcellml::ModelPtr parent = std::dynamic_pointer_cast<libcellml::Model>(u->parent());
+    EXPECT_FALSE(parent == nullptr);
+    EXPECT_EQ(model, parent);
+}
+
+TEST(Units, parentlessUsingRemoveUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(0);
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits("u");
+    EXPECT_FALSE(u->hasParent());
+
+    model->addUnits(u);
+    EXPECT_TRUE(u->hasParent());
+
+    model->removeUnits(u);
+    EXPECT_FALSE(u->hasParent());
 }
 
 TEST(Units, compareEqualMultiplierSimple)
@@ -663,6 +705,109 @@ TEST(Units, compareMultiplierStandardUnit)
 
     EXPECT_NEAR(0.002, libcellml::Units::scalingFactor(u1, u2), 1e-12);
     EXPECT_NEAR(500.0, libcellml::Units::scalingFactor(u2, u1), 1e-12);
+}
+
+TEST(Units, compareSameBaseUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("frufru");
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("frufru");
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
+TEST(Units, compareBaseUnitsAgainstItself)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("frufru");
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u1));
+}
+
+TEST(Units, compareBaseUnitsWithCapitalisation)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("frufru");
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("Frufru");
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
+TEST(Units, compareScalingFactorWithNullptrAsFirstParameter)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, u));
+}
+
+TEST(Units, compareScalingFactorWithNullptrAsSecondParameter)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u, nullptr));
+}
+
+TEST(Units, compareScalingFactorWithNullptrAsBothParameters)
+{
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(nullptr, nullptr));
+}
+
+TEST(Units, compareScalingFactorWithUnitBasedOnUnknownUnit)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, compareScalingFactorWithTwoUnitsBasedOnUnknownUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("banana", 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
+TEST(Units, scalingFactorWithOneEmptyUnit)
+{
+    // Add unit with no members
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::LITRE, 0, 1.0, 1.0);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, scalingFactorWithTwoEmptyUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
 TEST(Units, compareIncompatiableMultiplierSimple)
@@ -745,4 +890,180 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     EXPECT_EQ(1e-08, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
     // Incompatible units but return a scaling factor.
     EXPECT_EQ(1e-07, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
+}
+
+TEST(Units, checkingOwningModelBothUnits)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
+    u1->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    u2->addUnit("dimensionless");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkingOwningModelWithUnitBaseOnlyInModel)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("apple");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("apple", "kilo", 2.0, 0.001); // standard, exponent.
+    u1->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("apple", "kilo", 4.0, 0.001); // standard, exponent.
+
+    model->addUnits(u);
+    model->addUnits(u1);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkingOwningModelOneUnit)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("u", "milli", 1.0, 1.0); // u1 is a parent of u
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("apples", "kilo", 2.0, 1000.0); // apples not in model
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorImportedModel)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+    model->addUnits(u1);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(model);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorOneUnitImported)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u1->setImportSource(import);
+
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorOneNonBaseUnitImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit("apples", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+    u2->addUnit("u", 0, 1.0, 1.0);
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u->setImportSource(import);
+
+    EXPECT_TRUE(u->isImport());
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkScalingFactorBothNonBaseUnitsImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+    u->addUnit("apples", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit("u", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+    u2->addUnit("u", 0, 1.0, 1.0);
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u->setImportSource(import);
+
+    EXPECT_TRUE(u->isImport());
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }

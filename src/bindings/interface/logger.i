@@ -10,7 +10,7 @@
 %feature("docstring") libcellml::Logger::addError
 "Adds an error to this logger.";
 
-%feature("docstring") libcellml::Logger::clearErrors
+%feature("docstring") libcellml::Logger::removeAllErrors
 "Clears all errors from this logger.";
 
 %feature("docstring") libcellml::Logger::error
@@ -33,8 +33,7 @@
 #include "libcellml/logger.h"
 %}
 
-%ignore libcellml::Logger::Logger(Logger &&);
-%ignore libcellml::Logger::operator =;
+%ignore libcellml::Logger::Logger();
 
 %include "libcellml/types.h"
 %include "libcellml/logger.h"

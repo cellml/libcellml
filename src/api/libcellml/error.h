@@ -32,71 +32,61 @@ namespace libcellml {
 class LIBCELLML_EXPORT Error
 {
 public:
-    Error(); /**< Constructor */
     virtual ~Error(); /**< Destructor */
-    Error(const Error &rhs); /**< Copy constructor */
-    Error(Error &&rhs) noexcept; /**< Move constructor */
-    Error &operator=(Error rhs); /**< Assignment operator */
-
-    template<typename... Args>
-    static std::shared_ptr<Error> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Error> {new Error {std::forward<Args>(args)...}};
-    }
+    Error(const Error &rhs) = delete; /**< Copy constructor */
+    Error(Error &&rhs) noexcept = delete; /**< Move constructor */
+    Error &operator=(Error rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Constructs an Error for the model.
+     * @brief Create an @c Error object.
      *
-     * Convenience constructor for creating an error for the model.
+     * Factory method to create an @c Error.  Can create a
+     * blank error with::
      *
-     * @param model The model the error references.
+     *   ErrorPtr error = libcellml::Error::create();
+     *
+     * or an error with one of the following types as a parameter::
+     *
+     *   - libcellml::ComponentPtr
+     *   - libcellml::ImportSourcePtr
+     *   - libcellml::ModelPtr
+     *   - libcellml::ResetPtr
+     *   - libcellml::UnitsPtr
+     *   - libcellml::VariablePtr
+     *
+     * @return A smart pointer to an @c Error object.
      */
-    explicit Error(const ModelPtr &model);
+    static ErrorPtr create() noexcept;
 
     /**
-     * @brief Constructs an Error for the component.
-     *
-     * Convenience constructor for creating an error for the component.
-     *
-     * @param component The component the error references.
+     * @overload
      */
-    explicit Error(const ComponentPtr &component);
+    static ErrorPtr create(const ComponentPtr &component) noexcept;
 
     /**
-     * @brief Constructs an Error for the import source.
-     *
-     * Convenience constructor for creating an error for the import source.
-     *
-     * @param importSource The import source the error references.
+     * @overload
      */
-    explicit Error(const ImportSourcePtr &importSource);
+    static ErrorPtr create(const ImportSourcePtr &importSource) noexcept;
 
     /**
-     * @brief Constructs an Error for the units.
-     *
-     * Convenience constructor for creating an error for the units.
-     *
-     * @param units The units the error references.
+     * @overload
      */
-    explicit Error(const UnitsPtr &units);
+    static ErrorPtr create(const ModelPtr &model) noexcept;
 
     /**
-     * @brief Constructs an Error for the variable.
-     *
-     * Convenience constructor for creating an error for the variable.
-     *
-     * @param variable The variable the error references.
+     * @overload
      */
-    explicit Error(const VariablePtr &variable);
+    static ErrorPtr create(const ResetPtr &reset) noexcept;
 
     /**
-     * @brief Constructs an Error for the reset.
-     *
-     * Convenience constructor for creating an error for the reset.
-     *
-     * @param reset The reset the error references.
+     * @overload
      */
-    explicit Error(const ResetPtr &reset);
+    static ErrorPtr create(const UnitsPtr &units) noexcept;
+
+    /**
+     * @overload
+     */
+    static ErrorPtr create(const VariablePtr &variable) noexcept;
 
     /**
      * @brief The error Kind enum class.
@@ -315,7 +305,61 @@ public:
     ResetPtr reset() const;
 
 private:
-    void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Error(); /**< Constructor */
+
+    /**
+     * @brief Constructs an Error for the component.
+     *
+     * Convenience constructor for creating an error for the component.
+     *
+     * @param component The component the error references.
+     */
+    explicit Error(const ComponentPtr &component);
+
+    /**
+     * @brief Constructs an Error for the import source.
+     *
+     * Convenience constructor for creating an error for the import source.
+     *
+     * @param importSource The import source the error references.
+     */
+    explicit Error(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Constructs an Error for the model.
+     *
+     * Convenience constructor for creating an error for the model.
+     *
+     * @param model The model the error references.
+     */
+    explicit Error(const ModelPtr &model);
+
+    /**
+     * @brief Constructs an Error for the reset.
+     *
+     * Convenience constructor for creating an error for the reset.
+     *
+     * @param reset The reset the error references.
+     */
+    explicit Error(const ResetPtr &reset);
+
+    /**
+     * @brief Constructs an Error for the units.
+     *
+     * Convenience constructor for creating an error for the units.
+     *
+     * @param units The units the error references.
+     */
+    explicit Error(const UnitsPtr &units);
+
+    /**
+     * @brief Constructs an Error for the variable.
+     *
+     * Convenience constructor for creating an error for the variable.
+     *
+     * @param variable The variable the error references.
+     */
+    explicit Error(const VariablePtr &variable);
 
     struct ErrorImpl; /**< Forward declaration for pImpl idiom. */
     ErrorImpl *mPimpl; /**< Private member to implementation pointer */

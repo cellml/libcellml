@@ -65,7 +65,7 @@ void Entity::setParent(const EntityPtr &parent)
     mPimpl->mParent = parent;
 }
 
-void Entity::clearParent()
+void Entity::removeParent()
 {
     mPimpl->mParent = {};
 }

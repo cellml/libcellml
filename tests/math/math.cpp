@@ -41,29 +41,47 @@ TEST(Maths, appendAndSerialiseMathComponent)
     libcellml::ComponentPtr c = m->component(0);
     c->appendMath(EMPTY_MATH);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndResetMathComponent)
+TEST(Maths, appendAndRemoveMathFromComponent)
 {
-    const std::string e =
+    const std::string eNoMath =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component/>\n"
         "</model>\n";
+    const std::string eWithMath =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
-    c->appendMath(EMPTY_MATH);
-    c->setMath("");
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
-    EXPECT_EQ(e, a);
+    c->appendMath(EMPTY_MATH);
+    std::string a = printer->printModel(m);
+    EXPECT_EQ(eWithMath, a);
+
+    c->removeMath();
+    a = printer->printModel(m);
+    EXPECT_EQ(eNoMath, a);
+
+    c->appendMath(EMPTY_MATH);
+    a = printer->printModel(m);
+    EXPECT_EQ(eWithMath, a);
+
+    c->setMath("");
+    a = printer->printModel(m);
+    EXPECT_EQ(eNoMath, a);
 }
 
-TEST(Maths, appendSerialiseAndParseMathModel)
+TEST(Maths, appendSerialiseAndParseMathInComponent)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -78,14 +96,14 @@ TEST(Maths, appendSerialiseAndParseMathModel)
     m->addComponent(c);
     c->appendMath(EMPTY_MATH);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
-    a = printer.printModel(model);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -115,8 +133,8 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
     c->appendMath(EMPTY_MATH);
     m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -146,8 +164,8 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath)
     c->appendMath(EMPTY_MATH);
     m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -200,8 +218,8 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath)
     c->appendMath(math);
     m->addComponent(c);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -295,13 +313,13 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
     m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v11, v21);
 
-    libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(e);
-    a = printer.printModel(model);
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(e);
+    a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }

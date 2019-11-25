@@ -17,7 +17,6 @@ limitations under the License.
 #include "xmlnode.h"
 
 #include <algorithm>
-#include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string>
 

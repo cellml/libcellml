@@ -33,16 +33,16 @@ class LIBCELLML_EXPORT Logger
 {
 public:
     virtual ~Logger(); /**< Destructor */
-    Logger(const Logger &rhs); /**< Copy constructor */
-    Logger(Logger &&rhs) noexcept; /**< Move constructor */
-    Logger &operator=(Logger rhs); /**< Assignment operator */
+    Logger(const Logger &rhs) = delete; /**< Copy constructor */
+    Logger(Logger &&rhs) noexcept = delete; /**< Move constructor */
+    Logger &operator=(Logger rhs) = delete; /**< Assignment operator */
 
     /**
      * @brief Clear the errors from the logger.
      *
      * Clear the errors from the logger.
      */
-    void clearErrors();
+    void removeAllErrors();
 
     /**
      * @brief Add an error to the logger.
@@ -79,8 +79,6 @@ protected:
     Logger(); /**< Constructor */
 
 private:
-    void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */
-
     struct LoggerImpl; /**< Forward declaration for pImpl idiom. */
     LoggerImpl *mPimpl; /**< Private member to implementation pointer */
 };

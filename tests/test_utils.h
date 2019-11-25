@@ -16,7 +16,9 @@ limitations under the License.
 
 #pragma once
 
+#include <iostream>
 #include <libcellml>
+#include <sstream>
 
 #include "test_exportdefinitions.h"
 
@@ -35,23 +37,49 @@ const std::string NON_EMPTY_MATH =
     "  </apply>\n"
     "</math>\n";
 
-void TEST_EXPORT debug(const std::string &text, bool newLine = true);
+struct Debug
+{
+    Debug() = default;
+
+    ~Debug()
+    {
+        std::cout << mSS.str() << std::endl;
+    }
+
+    Debug &operator<<(const void *p)
+    {
+        std::ostringstream ss;
+        ss << static_cast<const void *>(p);
+        mSS << ss.str();
+        return *this;
+    }
+
+    // Accept just about anything.
+    template<class T>
+    Debug &operator<<(const T &x)
+    {
+        mSS << x;
+        return *this;
+    }
+
+private:
+    std::ostringstream mSS;
+};
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 
-void TEST_EXPORT printErrors(const libcellml::Logger &l, bool headings = false, bool kinds = false, bool rule = false);
-void TEST_EXPORT printErrors(const libcellml::Validator &v);
-void TEST_EXPORT printErrors(const libcellml::Parser &p);
+void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool kinds = false, bool rule = false);
+
 void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &errors,
-                                   const libcellml::Logger &logger);
+                                   const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
                                                         const std::vector<std::string> &specificationHeadings,
-                                                        const libcellml::Logger &logger);
+                                                        const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualErrorsKinds(const std::vector<std::string> &errors,
                                         const std::vector<libcellml::Error::Kind> &kinds,
-                                        const libcellml::Logger &logger);
+                                        const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");
