@@ -4,7 +4,7 @@
 Tutorial 3 Python: Creating a model using the API
 =================================================
 
-The outline for this tutorial is shown on the :def:`Tutorial 3<tutorial3>`
+The outline for this tutorial is shown on the :ref:`Tutorial 3<tutorial3>`
 page. These are the Python instructions.  For the same tutorial in C++
 please see the :ref:`Tutorial 3 in C++<tutorial3_cpp>` page instead.
 

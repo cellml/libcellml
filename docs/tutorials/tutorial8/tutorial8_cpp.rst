@@ -4,7 +4,7 @@
 Tutorial 8 C++: Encapsulating components and working with parents
 =================================================================
 
-The outline for this tutorial is shown on the :def:`Tutorial 8<tutorial8>`
+The outline for this tutorial is shown on the :ref:`Tutorial 8<tutorial8>`
 page. These are the C++ instructions.  For the same tutorial in Python
 please see the :ref:`Tutorial 8 in Python<tutorial8_py>` page instead.
 

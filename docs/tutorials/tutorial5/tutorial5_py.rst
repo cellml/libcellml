@@ -4,7 +4,7 @@
 Tutorial 5 Python: Working with multiple components
 ===================================================
 
-The outline for this tutorial is shown on the :def:`Tutorial 5<tutorial5>`
+The outline for this tutorial is shown on the :ref:`Tutorial 5<tutorial5>`
 page. These are the Python instructions.  For the same tutorial in C++
 please see the :ref:`Tutorial 5 in C++<tutorial5_cpp>` page instead.
 

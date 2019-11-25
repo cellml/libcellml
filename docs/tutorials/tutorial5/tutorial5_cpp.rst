@@ -4,7 +4,7 @@
 Tutorial 5 C++: Working with multiple components
 ================================================
 
-The outline for this tutorial is shown on the :def:`Tutorial 5<tutorial5>`
+The outline for this tutorial is shown on the :ref:`Tutorial 5<tutorial5>`
 page. These are the C++ instructions.  For the same tutorial in Python
 please see the :ref:`Tutorial 5 in Python<tutorial5_py>` page instead.
 

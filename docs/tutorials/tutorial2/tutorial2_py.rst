@@ -4,7 +4,7 @@
 Tutorial 2 Python: Debugging, error checking and validating
 ===========================================================
 
-The outline for this tutorial is shown on the :def:`Tutorial 2<tutorial2>`
+The outline for this tutorial is shown on the :ref:`Tutorial 2<tutorial2>`
 page.
 These are the Python instructions.  For the same tutorial in C++ please see
 the :ref:`Tutorial 2 C++<tutorial2_cpp>` page instead.

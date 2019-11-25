@@ -4,7 +4,7 @@
 Tutorial 2 C++: Debugging, error checking and validating
 ========================================================
 
-The outline for this tutorial is shown on the :def:`Tutorial 2<tutorial2>`
+The outline for this tutorial is shown on the :ref:`Tutorial 2<tutorial2>`
 page. These are the C++ instructions.  For the same tutorial in Python
 please see the :ref:`Tutorial 2 in Python<tutorial2_py>` page instead.
 

@@ -14,13 +14,13 @@ The generator is instantiated in the same way as the other items:
 
 .. code-block:: cpp
 
-    // Instantiate the generator and submit the model to it for processing
+    // Instantiate the generator and submit a model to it for processing
     libcellml::Generator generator;
     generator.processModel(model);
 
 .. code-block:: python
 
-    # Instantiate the generator and submit the model to it for processing
+    # Instantiate the generator and submit a model to it for processing
     generator = Generator()
     generator.processModel(model)
 
