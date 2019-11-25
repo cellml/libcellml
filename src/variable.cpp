@@ -485,26 +485,15 @@ void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const Va
     }
 }
 
-VariablePtr Variable::clone(bool cloneEquivalences, bool cloneUnits) const
+VariablePtr Variable::clone() const
 {
     auto v = create();
 
-    if (cloneUnits) {
-
-    } else {
-        v->setUnits(units());
-    }
+    v->setUnits(units());
     v->setInitialValue(initialValue());
     v->setInterfaceType(interfaceType());
     v->setId(id());
     v->setName(name());
-
-    if (cloneEquivalences) {
-        for (size_t i = 0; i < equivalentVariableCount(); ++i) {
-            auto variable = equivalentVariable(i);
-            addEquivalence(v, variable, mPimpl->equivalentMappingId(variable), mPimpl->equivalentConnectionId(variable));
-        }
-    }
 
     return v;
 }

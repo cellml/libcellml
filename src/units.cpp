@@ -460,4 +460,16 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
+UnitsPtr Units::clone() const
+{
+    auto units = create();
+
+    units->setId(id());
+    units->setName(name());
+    units->setImportSource(importSource());
+    units->setImportReference(importReference());
+
+    return units;
+}
+
 } // namespace libcellml

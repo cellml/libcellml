@@ -420,23 +420,11 @@ public:
      * will not have a parent set even if this variable does.
      *
      * If this variable has any equivalences these equivalences will
-     * *not* be cloned by default.  Use the @p cloneEquivalences
-     * parameter to change this behaviour.
-     *
-     * If this variable has a @c Units set the units will *not* be
-     * cloned by default.  Use the @p cloneUnits parameter to change
-     * this behaviour.  This means this variable and the clone variable
-     * will share the reference to the same @c Units if the units
-     * for this variable is set.
-     *
-     * @param cloneEquivalences Clone equivalences of this variable, the
-     * default position is to *not* clone equivalences.
-     * @param cloneUnits Clone the units of this variable (if any), the
-     * default position is to *not* clone units.
+     * *not* be cloned.
      *
      * @return a new @c VariablePtr to the cloned variable.
      */
-    VariablePtr clone(bool cloneEquivalences = false, bool cloneUnits = false) const;
+    VariablePtr clone() const;
 
 private:
     Variable(); /**< Constructor */
