@@ -896,9 +896,6 @@ TEST(Units, checkingOwningModelBothUnits)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
 
-    libcellml::UnitsPtr u = libcellml::Units::create();
-    u->setName("u");
-
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
     u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
@@ -909,16 +906,34 @@ TEST(Units, checkingOwningModelBothUnits)
     u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
     u2->addUnit("dimensionless");
 
-    libcellml::UnitsPtr u3 = libcellml::Units::create();
-    u3->setName("u3");
-    u3->addUnit("u", "kilo", 4.0, 0.001); // standard, exponent.
-
     model->addUnits(u1);
     model->addUnits(u2);
-    model->addUnits(u3);
 
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
-    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u3));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, checkingOwningModelWithUnitBaseOnlyInModel)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("apple");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    u1->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("apple", "kilo", 4.0, 0.001); // standard, exponent.
+
+    model->addUnits(u);
+    model->addUnits(u1);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
 TEST(Units, checkingOwningModelOneUnit)
