@@ -206,6 +206,7 @@ bool updateUnitMultiplier(double &multiplier,
 {
     bool updated = false;
     auto unitsName = units->name();
+
     if (units->isBaseUnit()) {
         multiplier += direction * logMult;
         updated = true;
@@ -226,6 +227,9 @@ bool updateUnitMultiplier(double &multiplier,
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
+                    if ((refUnits == nullptr) || refUnits->isImport()) {
+                        return false;
+                    }
                     updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 }
             }
