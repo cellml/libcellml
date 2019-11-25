@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial8_LeakageCurrentModel">
+  <units name="mV">
+    <unit prefix="milli" units="volt"/>
+  </units>
+  <units name="ms">
+    <unit prefix="milli" units="second"/>
+  </units>
+  <units name="per_mV">
+    <unit exponent="-1" prefix="milli" units="volt"/>
+  </units>
+  <units name="mS_per_cm2">
+    <unit prefix="milli" units="siemens"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+  <units name="microA_per_cm2">
+    <unit prefix="micro" units="ampere"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+    <component name="leakageCurrent">
+        <variable interface="public" name="i_L" units="microA_per_cm2"/>
+        <variable initial_value="0.3" name="g_L" units="mS_per_cm2"/>
+        <variable name="E_L" units="mV"/>
+        <variable interface="public" name="t" units="ms"/>
+        <variable interface="public" name="V" units="mV"/>
+        <variable interface="public" name="E_R" units="mV"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+            <apply>
+                <eq/>
+                <ci>E_L</ci>
+                <apply>
+                    <minus/>
+                    <ci>E_R</ci>
+                    <cn cellml:units="mV">10.613</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>i_L</ci>
+                <apply>
+                    <times/>
+                    <ci>g_L</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V</ci>
+                        <ci>E_L</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>

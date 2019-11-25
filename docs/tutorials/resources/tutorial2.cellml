@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+	name="tutorial_2_model" id="tutorial 2 id has spaces">
+	<component name="i_am_a_component" id="my_component_id">
+		<variable units="dimensionless" name="1" interface="public_and_private"/>
+		<variable units="i_am_not_a_unit" name="b" interface="public_and_private" />
+		<variable units="dimensionless" name="c" initial_value="this_variable_doesnt_exist" interface="public_and_private" />
+		<variable name="d" interface="public_and_private"/>
+		<math xmlns="http://www.w3.org/1998/Math/MathML">
+			<apply><eq/>
+				<ci>a</ci>
+				<apply><plus/>
+					<ci>b</ci>
+					<ci>c</ci>
+				</apply>
+			</apply>
+		</math>
+	</component>
+</model>

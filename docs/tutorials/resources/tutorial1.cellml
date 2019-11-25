@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+	name="tutorial_1_model" id="tutorial_1_model_id_is_here">
+	<component name="i_am_a_component" id="my_component_id">
+		<variable units="dimensionless" name="a" initial_value="b" interface="public_and_private" />
+		<variable units="dimensionless" name="b" interface="public_and_private" />
+		<variable units="dimensionless" name="c" interface="public_and_private" />
+		<math xmlns="http://www.w3.org/1998/Math/MathML">
+			<apply><eq/>
+				<ci>a</ci>
+				<apply><plus/>
+					<ci>b</ci>
+					<ci>c</ci>
+				</apply>
+			</apply>
+		</math>
+	</component>
+</model>
