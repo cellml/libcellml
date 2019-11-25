@@ -244,7 +244,7 @@ std::string convertToString(int value);
  *
  * Convert the @p value to @c std::string representation.
  *
- * @overload
+ * @overload std::string convertToString(int value)
  *
  * @param value The @c size_t value of the integer to convert.
  *
@@ -256,6 +256,8 @@ std::string convertToString(size_t value);
  * @brief Convert a @c double to @c std::string format.
  *
  * Convert the @p value to @c std::string representation.
+ *
+ * @overload std::string convertToString(int value)
  *
  * @param value The @c double value number to convert.
  *

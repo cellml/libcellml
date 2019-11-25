@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%import "createconstructor.i"
 %import "logger.i"
 %import "types.i"
 
@@ -16,8 +17,7 @@ Specification. Any errors will be logged in the `Validator`.";
 #include "libcellml/validator.h"
 %}
 
-%ignore libcellml::Validator::Validator(Validator &&);
-%ignore libcellml::Validator::operator =;
+%create_constructor(Validator)
 
 %include "libcellml/types.h"
 %include "libcellml/validator.h"

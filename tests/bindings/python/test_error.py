@@ -7,13 +7,40 @@ import unittest
 class ErrorTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
+        from libcellml import Component
         from libcellml import Error
+        from libcellml import ImportSource
+        from libcellml import Model
+        from libcellml import Reset
+        from libcellml import Units
+        from libcellml import Variable
 
-        x = Error()
-        del(x)
-        y = Error()
-        z = Error(y)
-        del(y, z)
+        e1 = Error()
+        del(e1)
+
+        c = Component()
+        e2 = Error(c)
+        del(e2)
+
+        i = ImportSource()
+        e3 = Error(i)
+        del(e3)
+
+        m = Model()
+        e4 = Error(m)
+        del(e4)
+
+        r = Reset()
+        e5 = Error(r)
+        del(e5)
+
+        u = Units()
+        e6 = Error(u)
+        del(e6)
+
+        v = Variable()
+        e7 = Error(v)
+        del(e7)
 
     def test_kind_enum(self):
         from libcellml import Error

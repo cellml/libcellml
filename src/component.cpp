@@ -83,6 +83,16 @@ Component::~Component()
     delete mPimpl;
 }
 
+ComponentPtr Component::create() noexcept
+{
+    return std::shared_ptr<Component> {new Component {}};
+}
+
+ComponentPtr Component::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Component> {new Component {name}};
+}
+
 bool Component::doAddComponent(const ComponentPtr &component)
 {
     bool hasParent = component->hasParent();
