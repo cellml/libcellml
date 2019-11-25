@@ -922,7 +922,7 @@ TEST(Units, checkingOwningModelWithUnitBaseOnlyInModel)
 
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
-    u1->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    u1->addUnit("apple", "kilo", 2.0, 0.001); // standard, exponent.
     u1->addUnit("dimensionless");
 
     libcellml::UnitsPtr u2 = libcellml::Units::create();
