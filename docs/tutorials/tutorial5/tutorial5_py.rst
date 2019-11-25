@@ -1,40 +1,21 @@
-.. _tutorial5:
+.. _tutorial5_py:
 
-============================================
-Tutorial 5: Working with multiple components
-============================================
+===================================================
+Tutorial 5 Python: Working with multiple components
+===================================================
 
-Getting started:  If you're reading this it's presumed that you're already
-comfortable with the serlialisation, manipulation, and debugging functionality
-available in the libCellML library, as well as using the API to create, debug
-and validate your model.  This tutorial will build on work done in
-:ref:`Tutorial 4<tutorial4>`: if you are starting from here you can find
-the files which were created in that tutorial in the
-:code:`resources/tutorial4` folder.
+The outline for this tutorial is shown on the :def:`Tutorial 5<tutorial5>`
+page. These are the Python instructions.  For the same tutorial in C++
+please see the :ref:`Tutorial 5 in C++<tutorial5_cpp>` page instead.
 
-By the end of this tutorial you will be able to:
+Resources:
 
-- create a CellML2.0 model which includes encapsulations and more than one
-  component
-- connect components to one another by mapping equivalent variables
-
---------
-Overview
---------
-In :ref:`Tutorial 4<tutorial4>` we created a component representing an ion
-channel.  The channel is controlled by a number of gates in series, whose
-open or closed state and the transition between them is controlled by voltage:
-hence, a "voltage-controlled ion gate".  In this tutorial we will explore how
-a channel such as that made in Tutorial 4 can include another level of
-control: the rate constants (:math:`\alpha_y` and :math:`\beta_y`) used earlier
-are now functions of voltage themselves.  We will also show how an
-*environment* component can be used to ensure that all components are modelled
-synchronously.
-
---------
-0: Setup
---------
-
+    - :download:`tutorial5.py` Either the skeleton code, or ..
+    - :download:`tutorial5_complete.py` the completed tutorial code
+    - :download:`../utilities/tutorial_utilities.py` Utility functions for
+      use in the tutorials.
+    - If you did not complete Tutorial 4 you can download the file created there:
+      :download:`../resources/tutorial5_PotassiumChannelModel.cellml`
 
 -------------------
 1: Create the model
@@ -70,7 +51,7 @@ Tutorial 4 model anyway.
 
     **1.a** Create a :code:`Parser` instance and use it to deserialise the
     model from the file created in Tutorial 4 into a new model instance.
-    This process was described in :ref:`Tutorial 2<tutorial2>`. You
+    This process was described in :ref:`Tutorial 2<tutorial2_py>`. You
     may like to copy that file into the working directory for this project for
     ease of access.  If you didn't do Tutorial 4 you can copy this file from
     the resource folder instead.
@@ -87,7 +68,7 @@ Tutorial 4 model anyway.
 
 Now that we've loaded the model and checked that it's working, we want to
 rename parts of it so that they make more sense going forward.  Use the
-manipulation functionality you learnt in :ref:`Tutorial 3<tutorial3>` to
+manipulation functionality you learnt in :ref:`Tutorial 3<tutorial3_py>` to
 retrieve the following items from the model and rename them.  Recall that you
 can access the items contained inside a model by index as well as by name.
 
@@ -396,7 +377,7 @@ default, and can apply to more than one section of the axis.
 
 .. container:: dothis
 
-    **6.a** As in :ref:`Tutorial 1<tutorial1>`, use the :code:`Printer` module
+    **6.a** As in :ref:`Tutorial 1<tutorial1_py>`, use the :code:`Printer` module
     to serialise the model, and then write it to a file.
 
 .. container:: dothis

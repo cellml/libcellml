@@ -1,7 +1,7 @@
-.. _tutorial0:
+.. _tutorial0_py:
 
 ==========================================================
-Tutorial 0: Installing and testing the libCellML libraries
+Tutorial 0: Python-based installation
 ==========================================================
 
 -----------------------------------------------------
@@ -261,4 +261,3 @@ If this isn't what you see then please see the Troubleshooting section TODO
 .. container:: dothis
 
     **4.e** Go and have a cuppa, you're done!
-

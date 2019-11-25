@@ -1,4 +1,4 @@
-.. _tutorial6:
+.. _tutorial6_py:
 
 --------------------------------------
 Tutorial 6: Generating code **TODO**

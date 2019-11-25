@@ -1,31 +1,24 @@
-..  _tutorial2:
+..  _tutorial2_py:
 
-----------------------------------------------------
-Tutorial 2: Debugging, error checking and validating
-----------------------------------------------------
+===========================================================
+Tutorial 2 Python: Debugging, error checking and validating
+===========================================================
 
-In this tutorial you'll explore how the :code:`Validator` object can be put to
-use as you create and interact with your models to help you debug and find
-issues ahead of submitting it for simulation.  You'll be taking a CellML2.0
-file which has some mistakes in it, using the validation functionality to
-identify them, and then using the access and editing functions to fix them.
+The outline for this tutorial is shown on the :def:`Tutorial 2<tutorial2>`
+page.
+These are the Python instructions.  For the same tutorial in C++ please see
+the :ref:`Tutorial 2 C++<tutorial2_cpp>` page instead.
 
-By the time you have worked through Tutorial 2 you will be able to:
+Requirements:
 
-  - use the :code:`Parser` to report errors enountered when reading a file or
-    deserialising a string
-  - use the :code:`Validator` to check for errors related to a model's
-    description as compared to the CellML2.0 specifications
+    - :download:`tutorial2.py` Either the skeleton code, or ..
+    - :download:`tutorial2_complete.py` the completed tutorial code
+    - :download:`../resources/tutorial2.cellml` The input CellML file to read
+    - :download:`../utilities/tutorial_utilities.py` Utility functions for
+      use in the tutorials.
 
-This tutorial assumes that you can already:
-
-  - read and deserialise a CellML model from a file
-  - retrieve the name and id of models, components, and variables,
-  - navigate through the hierarchy of the model (model contains component(s)
-    contain(s) variable(s) and maths)
-  - serialise and print a Model structure to a CellML file.
-
-Step 0: Setup
+-------------
+0: Setup
 -------------
 
 For each of the tutorials, there is template code provided for you to get
@@ -52,7 +45,8 @@ This should give the output:
     | -----------------------------------------------
     |
 
-Step 1: Create a Model from the contents of a CellML file
+---------------------------------------------------------
+1: Create a Model from the contents of a CellML file
 ---------------------------------------------------------
 
 .. container:: dothis
@@ -61,11 +55,12 @@ Step 1: Create a Model from the contents of a CellML file
     As you did in Tutorial 1, use the :code:`Parser` to create a model
     from the :Code:`resources/tutorial2.cellml` file provided.
 
-Step 2: Print the contents of the file to the screen
+----------------------------------------------------
+2: Print the contents of the file to the screen
 ----------------------------------------------------
 
 Instead of duplicating the work you did throughout the middle steps of
-:ref:`Tutorial 1<tutorial1>`, we've provided you with a set of utility
+:ref:`Tutorial 1<tutorial1_py>`, we've provided you with a set of utility
 functions in the :code:`tutorial_utilities.py` file which will help with
 some of the repeated bits of these tutorials.
 
@@ -149,7 +144,8 @@ CellML2.0 specification document for reference.
                 r=specification_heading
                 ))
 
-Step 3: Fix the errors that were reported
+-----------------------------------------
+3: Fix the errors that were reported
 -----------------------------------------
 
 As you go through these tutorials you should be able to compile and run your
@@ -300,7 +296,8 @@ instead.
     Fix up this last error, and check for yourself that your corrected
     model is now error-free.
 
-Step 4: Have a look at the corrected model
+------------------------------------------
+4: Have a look at the corrected model
 ------------------------------------------
 
 Let's have a look at our corrected model by calling that same utility function
@@ -327,13 +324,14 @@ this:
     |            Variable[3] has units: 'dimensionless'
     |
 
-Step 5: Serialise and output the model to a file
+------------------------------------------------
+5: Serialise and output the model to a file
 ------------------------------------------------
 
 .. container:: dothis
 
     **5.a**
-    Just as you did in :ref:`Tutorial 1<tutorial1>`, create a :code:`Printer`
+    Just as you did in :ref:`Tutorial 1<tutorial1_py>`, create a :code:`Printer`
     and use it to serialise your model to a string.
 
 .. container:: dothis
@@ -345,8 +343,3 @@ Step 5: Serialise and output the model to a file
 
     **5.c**
     Go and have a cuppa, you're done!
-
-
-
-
-

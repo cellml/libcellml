@@ -1,38 +1,22 @@
-.. _tutorial3:
+.. _tutorial3_cpp:
 
-------------------------------------------
-Tutorial 3: Creating a model using the API
-------------------------------------------
+==============================================
+Tutorial 3 C++: Creating a model using the API
+==============================================
 
-By the time you have worked through Tutorial 3 you will be able to:
+The outline for this tutorial is shown on the :def:`Tutorial 3<tutorial3>`
+page. These are the C++ instructions.  For the same tutorial in Python
+please see the :ref:`Tutorial 3 in Python<tutorial2_py>` page instead.
 
-- create a new model and its child entities from scratch using the API
-- write your own MathML syntax to construct governing equations
-- define custom combinations of built-in units
-- define your own custom units independent from the built-in units
-- use the :code:`Generator` functionality to transform the model into other
-  languages.
+Requirements:
 
-This tutorial assumes that you are comfortable with:
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial
+    - :download:`tutorial3.cpp` Either the skeleton code, or ..
+    - :download:`tutorial3_complete.cpp` the completed tutorial code
 
-- accessing and adjusting names of items inside a model hierarchy
-  (see :ref:`Tutorial 2<tutorial2>`)
-- creating a validator and using it to check a model for errors
-  (see :ref:`Tutorial 2<tutorial2>`)
-- accessing the errors produced by a validator and using them to correct
-  the model (see :ref:`Tutorial 2<tutorial2>`)
-- serialising and printing a model to a CellML2 file (see
-  :ref:`Tutorial 1<tutorial1>`)
-
-Overview
 --------
-
-During this tutorial you will create a simple model representing the
-exponential decay of speed for a sled sliding on ice.  You will use
-both built-in and create your own user-defined units.
-
 0: Setup
--------------
+--------
 
 Navigate into the :code:`tutorial3` folder and check that you can build the
 template against the libCellML library successfully::
@@ -53,14 +37,14 @@ Running the template::
     | -----------------------------------------------
     |
 
-
+---------------------------------
 1: Set up the governing equations
 ---------------------------------
 
 TODO Need something here about when to use shared pointers and when to use
 concrete instances?
 
-Just as you did in :ref:`Tutorial 2<tutorial2>`, we need to start by setting
+Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting
 up a :code:`ModelPtr` model instance, and creating a component inside it.
 
 .. container:: dothis
@@ -78,7 +62,7 @@ up a :code:`ModelPtr` model instance, and creating a component inside it.
 
 Now for the real bit.  In order to actually model anything, we need to include
 the mathematical equations which represent the phyiscal situation of interest.
-As you saw in :ref:`Tutorial 2<tutorial2>`, the maths and the
+As you saw in :ref:`Tutorial 2<tutorial2_cpp>`, the maths and the
 :code:`Variable` items which it references live inside a parent
 :code:`Component` item.  At this point it should be noted that the order in
 which you add your components, or models, or variables (or anything) is not
@@ -237,7 +221,7 @@ You should see an output similar to that shown below:
 
 
 Running the validator will alert you variables in the MathML that don't (yet)
-exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2>`.
+exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_cpp>`.
 
 .. container:: dothis
 
@@ -252,9 +236,9 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2>`.
 At this stage you'll realise that you haven't yet added the :code:`Units` for
 any of the variables.  Roll on Step 2 ...
 
+--------------------------------
 2: Built-in and customised units
 --------------------------------
-
 Linking variables to the *name* of their units is straightforward, but in
 order to be able to use them we need to also define what the name actually
 *means* by creating the units themselves.  Some basic units have been defined
@@ -387,7 +371,7 @@ our :code:`millisecond` units, we could then use this definition to define the
     // Defining a per_millisecond unit based on millisecond^-1
     per_ms->addUnit(ms, -1.0);
 
-This will be useful later in :ref:`Tutorial 4<tutorial4>`.
+This will be useful later in :ref:`Tutorial 4<tutorial4_cpp>`.
 
 For completeness, the final type of unit is a custom irreducible unit.
 While this is not common (all of the seven physical attriubutes are already
@@ -463,10 +447,9 @@ present.
     process, this is the only way in which the value of any variable can be set
     directly.  Check that the model is now free of validation errors.
 
-
+----------------------------------------------------
 3: Use code generation to change the output langauge
 ----------------------------------------------------
-
 Some exciting new functionality of libCellML is its ability to generate a
 runable file from a model description.  This means that if you already have
 a solver in either C or Python, you can simply translate your model from here
@@ -605,15 +588,3 @@ For code generation into Python:
 
     **3.e**
     Go and have a cuppa, you're done!
-
-
-
-
-
-
-
-
-
-
-
-

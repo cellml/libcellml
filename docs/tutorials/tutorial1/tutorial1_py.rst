@@ -1,26 +1,18 @@
-..  _tutorial1:
+..  _tutorial1_py:
 
-----------------------------------------
-Tutorial 1: Reading, writing, 'rithmetic
-----------------------------------------
+================================================================
+Tutorial 1 Python instructions: Reading and writing CellML files
+================================================================
 
-Welcome to the introductory tutorial for the use of the libCellML library.
-Using these tutorials in sequence will walk you through the functionality and
-build your knowledge step by step. If, however, you just need to jump in and
-figure out one specific idea, you can find a tutorial related to that subject
-using the index. TODO
+For overview, please see the :ref:`Tutorial 1 overview page<tutorial1>`.
+These are the Python instructions.  For C++ please see the
+:ref:`Tutorial 1 C++<tutorial1_cpp>` page instead.
 
-After completing this tutorial you will be able to:
+Requirements:
 
-- read the contents of a CellML file
-- deserialse its contents using the Parser to create a Model structure
-- investigate the hierarchical contents of the Model, including the
-  Components, Variables, and maths
-- serialise the model and write to another file
-
-Where you see the green indentation >> in this document it means that there's
-something you need to do, and if you're stuck at any stage you can refer to
-the completed "tutorial1_completed.cpp" file for help.
+    - :download:`tutorial1.py` Either the skeleton code, or ...
+    - :download:`tutorial1_complete.py` the completed tutorial code
+    - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
 Step 0: Setup
 -------------
@@ -154,7 +146,7 @@ retrieved from its parent item using the same idiom as the names and ids:
 - (also for later) an optional nested subset of :code:`Component` items too.
 
 In this tutorial we'll only look at the variables and maths, leaving the nested
-components for :ref:`Tutorial 5<tutorial5>`.
+components for :ref:`Tutorial 5<tutorial5_py>`.
 
 .. container:: dothis
 
@@ -198,4 +190,3 @@ for file output.
 .. container:: dothis
 
     **3.c** Go and have a cuppa, you're done :)
-

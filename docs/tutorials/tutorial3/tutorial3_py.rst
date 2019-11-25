@@ -1,28 +1,17 @@
-.. _tutorial3:
+.. _tutorial3_py:
 
-==========================================
-Tutorial 3: Creating a model using the API
-==========================================
+=================================================
+Tutorial 3 Python: Creating a model using the API
+=================================================
 
-By the time you have worked through Tutorial 3 you will be able to:
+The outline for this tutorial is shown on the :def:`Tutorial 3<tutorial3>`
+page. These are the Python instructions.  For the same tutorial in C++
+please see the :ref:`Tutorial 3 in C++<tutorial3_cpp>` page instead.
 
-- create a new model and its child entities from scratch using the API
-- write your own MathML syntax to construct governing equations
-- define custom combinations of built-in units
-- define your own custom units independent from the built-in units
-- use the :code:`Generator` functionality to transform the model into other
-  languages.
+Requirements:
 
-This tutorial assumes that you are comfortable with:
-
-- accessing and adjusting names of items inside a model hierarchy
-  (see :ref:`Tutorial 2<tutorial2>`)
-- creating a validator and using it to check a model for errors
-  (see :ref:`Tutorial 2<tutorial2>`)
-- accessing the errors produced by a validator and using them to correct
-  the model (see :ref:`Tutorial 2<tutorial2>`)
-- serialising and printing a model to a CellML2 file (see
-  :ref:`Tutorial 1<tutorial1>`)
+    - :download:`tutorial3.py` Either the skeleton code, or ..
+    - :download:`tutorial3_complete.py` the completed tutorial code
 
 --------
 Overview
@@ -64,7 +53,7 @@ This should give the output:
 1: Set up the governing equations
 ---------------------------------
 
-Just as you did in :ref:`Tutorial 2<tutorial2>`, we need to start by setting
+Just as you did in :ref:`Tutorial 2<tutorial2_py>`, we need to start by setting
 up a :code:`Model` model instance, and creating a component inside it.
 
 .. container:: dothis
@@ -82,7 +71,7 @@ up a :code:`Model` model instance, and creating a component inside it.
 
 Now for the real bit.  In order to actually model anything, we need to include
 some mathematical equations which represent the phyiscal situation of interest.
-As you saw in :ref:`Tutorial 2<tutorial2>`, the maths and the
+As you saw in :ref:`Tutorial 2<tutorial2_py>`, the maths and the
 :code:`Variable` items which it references live inside a parent
 :code:`Component` item.  At this point it should be noted that the order in
 which you add your components, or models, or variables (or anything) is not
@@ -241,7 +230,7 @@ You should see an output similar to that shown below:
     |
 
 Running the validator will alert you variables in the MathML that don't (yet)
-exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2>`.
+exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
 
 .. container:: dothis
 
@@ -402,7 +391,7 @@ our :code:`millisecond` units, we could then use this definition to define the
     # Defining a per_millisecond unit based on millisecond^-1
     per_ms.addUnit(ms, -1.0)
 
-This will be useful later in :ref:`Tutorial 4<tutorial4>`.
+This will be useful later in :ref:`Tutorial 4<tutorial4_py>`.
 
 Custom irreducible units
 ------------------------

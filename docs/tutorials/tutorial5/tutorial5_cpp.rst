@@ -1,40 +1,25 @@
-.. _tutorial5:
+.. _tutorial5_cpp:
 
---------------------------------------------
-Tutorial 5: Working with multiple components
---------------------------------------------
+================================================
+Tutorial 5 C++: Working with multiple components
+================================================
 
-Getting started:  If you're reading this it's presumed that you're already
-comfortable with the serlialisation, manipulation, and debugging functionality
-available in the libCellML library, as well as using the API to create, debug
-and validate your model.  This tutorial will build on work done in
-:ref:`Tutorial 4<tutorial4>`: if you are starting from here you can find
-the files which were created in that tutorial in the
-:code:`resources/tutorial4` folder.
+The outline for this tutorial is shown on the :def:`Tutorial 5<tutorial5>`
+page. These are the C++ instructions.  For the same tutorial in Python
+please see the :ref:`Tutorial 5 in Python<tutorial5_py>` page instead.
 
-By the end of this tutorial you will be able to:
+Resources:
 
-- create a CellML2.0 model which includes encapsulations and more than one
-  component
-- connect components to one another by mapping equivalent variables
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial
+    - :download:`tutorial5.cpp` Either the skeleton code, or ..
+    - :download:`tutorial5_complete.cpp` the completed tutorial code
+    - :download:`../utilities/tutorial_utilities.h` and
+      :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
+      use in the tutorials.
+    - If you did not complete Tutorial 4 you can download the file created there:
+      :download:`../resources/tutorial5_PotassiumChannelModel.cellml`
 
-Overview
---------
-In :ref:`Tutorial 4<tutorial4>` we created a component representing an ion
-channel.  The channel is controlled by a number of gates in series, whose
-open or closed state and the transition between them is controlled by voltage:
-hence, a "voltage-controlled ion gate".  In this tutorial we will explore how
-a channel such as that made in Tutorial 4 can include another level of
-control: the rate constants (:math:`alpha_y` and :math:`beta_y`) used earlier
-are now functions of voltage themselves.  We will also show how an
-*environment* component can be used to ensure that all components are modelled
-synchronously.
-
-0: Setup
---------
-
-
-
+-------------------
 1: Create the model
 -------------------
 By now you should be familiar and comfortable with using the API to create
@@ -68,7 +53,7 @@ Tutorial 4 model anyway.
 
     **1.a** Create a :code:`Parser` instance and use it to deserialise the
     model from the file created in Tutorial 4 into a new model instance.
-    This process was described in `Tutorial 2<tutorial2>`. You
+    This process was described in `Tutorial 2<tutorial2_cpp>`. You
     may like to copy that file into the working directory for this project for
     ease of access.  If you didn't do Tutorial 4 you can copy this file from
     the resource folder instead.
@@ -94,6 +79,7 @@ contained inside a model by index as well as by name.
     **1.d** Retrieve the component from the model and rename it to
     "PotassiumChannel".
 
+---------------------------------------
 2: Include more components in the model
 ---------------------------------------
 This tutorial is intended to illustrate the use of more than one component,
@@ -122,6 +108,7 @@ gate.
 
     **2.d** Check that the model is valid so far using your validator instance.
 
+------------------------------------
 3: Create a component for the n-gate
 ------------------------------------
 The last component that we need to create is an update from our Tutorial 4
@@ -169,7 +156,7 @@ Next we need to define this new dependency of the :math:`\alpha` and
     **3.b** Create the appropriate MathML to represent the equations above, and
     add to the nGate component.  As in the previous tutorial, you
     can copy this from the file provided in the
-    :code:`resources/tutorial5/mathml.txt` file if you prefer.
+    :code:`resources/tutorial5_mathml.txt` file if you prefer.
 
 .. container:: dothis
 
@@ -184,6 +171,7 @@ constant inside the MathML, but still need to be present in the parent model.
     **3.d** Create the missing units and add to the model.  Confirm that the
     model is now valid.
 
+----------------------------------------
 4: Connect the components to one another
 ----------------------------------------
 In order for components to be able to relate to one another, we have to define
@@ -332,9 +320,9 @@ follows:
     variables to specify their avaiable interfaces.  Re-validate your model and
     confirm that it is now free of errors.
 
-5 Define the driving function
 ------------------------------
-
+5: Define the driving function
+------------------------------
 In order to give the simulation something to actually simulate, we need to add
 a driving function as an input.  This simulation replicates a voltage clamp
 experiment wherein the input voltage is given a square wave and the current
@@ -385,20 +373,15 @@ default, and can apply to more than one section of the axis.
 
     **5.c** Call the validator to check that your model is free of errors.
 
+--------------------------------
 6: Serialise and print the model
--------------------------------------
+--------------------------------
 
 .. container:: dothis
 
-    **6.a** As in :ref:`Tutorial 1<tutorial1>`, use the :code:`Printer` module
+    **6.a** As in :ref:`Tutorial 1<tutorial1_cpp>`, use the :code:`Printer` module
     to serialise the model, and then write it to a file.
 
 .. container:: dothis
 
     **6.b** Go and have a cuppa, you're done!
-
-
-
-
-
-

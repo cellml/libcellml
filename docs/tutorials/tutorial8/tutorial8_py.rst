@@ -1,31 +1,26 @@
-.. _tutorial8:
+.. _tutorial8_py:
 
-=============================================================
-Tutorial 8: Encapsulating components and working with parents
-=============================================================
+====================================================================
+Tutorial 8 Python: Encapsulating components and working with parents
+====================================================================
 
-Getting started:  If you're reading this it's presumed that you're already
-comfortable with the deserlialisation and debugging functionality
-available in the libCellML library.
+The outline for this tutorial is shown on the :def:`Tutorial 8<tutorial8>`
+page. These are the Python instructions.  For the same tutorial in C++
+please see the :ref:`Tutorial 8 in C++<tutorial8_cpp>` page instead.
 
-By the end of this tutorial you will be able to:
+Resources:
 
-- create complicated encapsulation structures to allow interdependency between
-  modelling components,
-- design and create files which allow easy reuse of components,
-- appreciate the consistency needed throughout the imports to avoid renaming
-  units.
-
-----------
-Background
-----------
-
-TODO Add the references to the cable equation and leakage stuff here ...
+    - :download:`tutorial8.py` Either the skeleton code, or ..
+    - :download:`tutorial8_complete.cpp` the completed tutorial code
+    - :download:`../utilities/tutorial_utilities.py`  Utility functions for
+      use in the tutorials.
+    - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model
+    - If you did not complete Tutorial 7 you can download the file created there:
+      :download:`../resources/tutorial8_MembraneModel.cellml`
 
 --------
 0: Setup
 --------
-
 We'll start by creating the utilities that we'll use later on.
 
 .. container:: dothis
@@ -42,7 +37,7 @@ We'll start by creating the utilities that we'll use later on.
 
 .. container:: dothis
 
-    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6>` for the potassium
+    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6_py>` for the potassium
     channel, parse the :code:`tutorial8_MembraneModel.cellml` file and save the
     deserialised model to a new model instance (*not* the one you've already
     created above - a new one). If you'd like, use the
@@ -87,7 +82,7 @@ by simply printing the combined model to the screen.
     **1.c** Print the MathML2 string from the :code:`membrane`
     component in your combined model and check it represents the equations
     below.  You can check back to the earlier
-    :ref:`Tutorial 4, step 2<tutorial4>` if need be.
+    :ref:`Tutorial 4, step 2<tutorial4_py>` if need be.
 
 .. math::
 
@@ -131,7 +126,7 @@ by simply printing the combined model to the screen.
 2: Read the sodium channel component
 ------------------------------------
 
-In :ref:`Tutorial 7<tutorial7>` you created a component to represent the
+In :ref:`Tutorial 7<tutorial7_py>` you created a component to represent the
 behaviour of a gated sodium gate and stored it inside a model.
 
 .. container:: dothis
@@ -193,7 +188,7 @@ environment component in the sodium channel *model*.
 
     **PUT ERRORS HERE WHEN VALIDATOR IS WORKING**
 
-Recall the idiom you used in :ref:`Tutorial 5<tutorial5>` to create the
+Recall the idiom you used in :ref:`Tutorial 5<tutorial5_py>` to create the
 connections between equivalent variables; the same can be done in reverse
 here to *remove* the equivalence between two variables:
 
@@ -225,7 +220,7 @@ component and add it to the combined model.
 .. container:: dothis
 
     **3.a-b** Repeat the process above to import the potassium channel
-    component that was created in :ref:`Tutorial 5<tutorial5>` into the
+    component that was created in :ref:`Tutorial 5<tutorial5_py>` into the
     membrane component.  Note that if you did not complete that tutorial
     you can simply copy the
     :code:`resources/tutorial5_PotassiumComponentModel.cellml` file.
@@ -397,7 +392,7 @@ which are shared with an adjacent component.
 
 .. container:: dothis
 
-    **6.b** Using the same interface type rules as in :ref:`Tutorial 7<tutorial7>`,
+    **6.b** Using the same interface type rules as in :ref:`Tutorial 7<tutorial7_py>`,
     set the interface type for the missing interfaces.
 
 .. container:: dothis
@@ -443,4 +438,3 @@ add a definition for this stimulus current.
 -------------------
 Finally you're ready to write the model ready for simulation.  You know the
 drill!
-

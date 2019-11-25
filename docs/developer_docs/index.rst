@@ -7,8 +7,9 @@
 libCellML Documentation
 =======================
 
-Contents:
-=========
+
+Developer documentation:
+========================
 
 .. toctree::
    :maxdepth: 2

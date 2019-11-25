@@ -1,4 +1,4 @@
-..  _tutorial4:
+..  _tutorial4_py:
 
 ==========================================
 Tutorial 4: Modelling a gated ion channel
@@ -10,9 +10,9 @@ available in the libCellML library.  If not, please see the earlier tutorials
 which introduce these issues:
 
 - :ref:`Tutorial 1: Reading, writing, and 'rithmetic in a CellML file
-  <tutorial1>`
-- :ref:`Tutorial 2: Debugging, error checking, and validation<tutorial2>`
-- :ref:`Tutorial 3: Creating a model using the API<tutorial3>`
+  <tutorial1_py>`
+- :ref:`Tutorial 2: Debugging, error checking, and validation<tutorial2_py>`
+- :ref:`Tutorial 3: Creating a model using the API<tutorial3_py>`
 
 From this point onwards the tutorials will build on work done in the previous
 ones.  If you need to jump in at some intermediate stage
@@ -24,7 +24,7 @@ Overview
 ---------
 
 The basic steps for model creation and output are the same as those in
-:ref:`Tutorial 3<tutorial3>`, but here you'll begin to create a model based on
+:ref:`Tutorial 3<tutorial3_py>`, but here you'll begin to create a model based on
 the Hodgkin Huxley model. All the biological and mathematical modelling
 background needed for this model are explained in a separate document,
 :ref:`Understanding the Hodgkin-Huxley model<hh_background>`.
@@ -89,7 +89,7 @@ Now to add this equation into the component we created in Step 1.
 Once the maths is created, the process of adding it is very simple, and follows
 the same pattern as adding anything to anything else: there is a `setMath`
 command which which does the job nicely.  The more difficult part is creating
-the maths itself.  This was covered in :ref:`Tutorial 3<tutorial3>` and there
+the maths itself.  This was covered in :ref:`Tutorial 3<tutorial3_py>` and there
 are other resources on the :mathml2:`W3 resource pages for MathML2 <>` too.
 
 Consider the equation above, converted here into MathML2 format:
@@ -225,7 +225,7 @@ the model.
 
     **3.a** Use the validator output or the MathML you've written to determine
     the variables which you'll need to declare.  These must be created, named, and
-    added to the component.  Need help? See :ref:`Tutorial 2<tutorial2>`.
+    added to the component.  Need help? See :ref:`Tutorial 2<tutorial2_py>`.
 
 .. container:: nb
 
@@ -235,7 +235,7 @@ the model.
 
 As well as a name and a parent component, each variable needs :code:`Units`.
 These are specified using the :code:`setUnits` function for a variable, just
-as you did in :ref:`Tutorial 3<tutorial3>`.  The units you'll need here are:
+as you did in :ref:`Tutorial 3<tutorial3_py>`.  The units you'll need here are:
 
 - time, :math:`t`, has units of :code:`millisecond`
 - voltage, :math:`V`, has units of :code:`millivolt`
@@ -274,7 +274,7 @@ The variables created above referenced unit names of :code:`millisecond`,
 :code:`millivolt`, :code:`per_millisecond`, and :code:`dimensionless`.  The
 :code:`dimensionless` units are already present, so we don't need to take any
 other action, but the other three need to be created and added.  This was
-covered in :ref:`Tutorial 3<tutorial3>` in case you need a reminder.
+covered in :ref:`Tutorial 3<tutorial3_py>` in case you need a reminder.
 
 .. container:: dothis
 
@@ -305,7 +305,7 @@ Step 5: Serialise and write to a file
 The final step is to output our created model to a CellML2.0 file.  This file
 will be used in subsequent tutorials, so be sure to name it something
 meaningful!  This step is the same as what was covered at the end of
-:ref:`Tutorial 2<tutorial2>`; you can refer back to the code and/or
+:ref:`Tutorial 2<tutorial2_py>`; you can refer back to the code and/or
 instructions there if you need to.
 
 .. container:: dothis
@@ -319,35 +319,3 @@ instructions there if you need to.
 .. container:: dothis
 
     **5.c** Go and have a cuppa, you're done!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-.. _tutorial6:
+.. _tutorial6_cpp:
 
 --------------------------------------
 Tutorial 6: Generating code **TODO**
@@ -50,6 +50,3 @@ container:: dothis
     check that no errors were encountered.
 
 TODO Currently segfaults - waiting for fix.
-
-
-

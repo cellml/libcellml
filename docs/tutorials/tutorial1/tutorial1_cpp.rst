@@ -1,26 +1,19 @@
-..  _tutorial1:
+..  _tutorial1_cpp:
 
-----------------------------------------
-Tutorial 1: Reading, writing, 'rithmetic
-----------------------------------------
+=============================================================
+Tutorial 1 C++ instructions: Reading and writing CellML files
+=============================================================
 
-Welcome to the introductory tutorial for the use of the libCellML library.
-Using these tutorials in sequence will walk you through the functionality and
-build your knowledge step by step. If, however, you just need to jump in and
-figure out one specific idea, you can find a tutorial related to that subject
-using the index.
+For overview, please see the :ref:`Tutorial 1 overview page<tutorial1>`.
+For instructions in Python please see the
+:ref:`Tutorial 1 in Python<tutorial1_py>` page instead.
 
-After completing this tutorial you will be able to:
+Requirements:
 
-- read the contents of a CellML file
-- deserialse its contents using the Parser to create a Model structure
-- investigate the hierarchical contents of the Model, including the
-  Components, Variables, and maths
-- serialise the model and write to another file
-
-Where you see the green indentation >> in this document it means that there's
-something you need to do, and if you're stuck at any stage you can refer to
-the completed "tutorial1_completed.cpp" file for help.
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial
+    - :download:`tutorial1.cpp` Either the skeleton code, or ..
+    - :download:`tutorial1_complete.cpp` the completed tutorial code
+    - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
 Step 0: Setup
 -------------
@@ -199,19 +192,3 @@ for file output.
 .. container:: dothis
 
     **4** Go and have a cuppa, you're done :)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,31 +1,25 @@
-..  _tutorial2:
+..  _tutorial2_cpp:
 
-----------------------------------------------------
-Tutorial 2: Debugging, error checking and validating
-----------------------------------------------------
+========================================================
+Tutorial 2 C++: Debugging, error checking and validating
+========================================================
 
-In this tutorial you'll explore how the :code:`Validator` object can be put to
-use as you create and interact with your models to help you debug and find
-issues ahead of submitting it for simulation.  You'll be taking a CellML2.0
-file which has some mistakes in it, using the validation functionality to
-identify them, and then using the access and editing functions to fix them.
+The outline for this tutorial is shown on the :def:`Tutorial 2<tutorial2>`
+page. These are the C++ instructions.  For the same tutorial in Python
+please see the :ref:`Tutorial 2 in Python<tutorial2_py>` page instead.
 
-By the time you have worked through Tutorial 2 you will be able to:
+Requirements:
 
-  - use the :code:`Parser` to report errors enountered when reading a file or
-    deserialising a string
-  - use the :code:`Validator` to check for errors related to a model's
-    description as compared to the CellML2.0 specifications
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial
+    - :download:`tutorial2.cpp` Either the skeleton code, or ..
+    - :download:`tutorial2_complete.cpp` the completed tutorial code
+    - :download:`../resources/tutorial2.cellml` The input CellML file to read
+    - :download:`../utilities/tutorial_utilities.h` and
+      :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
+      use in the tutorials.
 
-This tutorial assumes that you can already:
-
-  - read and deserialise a CellML model from a file
-  - retrieve the name and id of models, components, and variables,
-  - navigate through the hierarchy of the model (model contains component(s)
-    contain(s) variable(s) and maths)
-  - serialise and print a Model structure to a CellML file.
-
-Step 0: Setup
+-------------
+0: Setup
 -------------
 
 Navigate into the :code:`tutorial2` folder and check that you can build the
@@ -45,7 +39,8 @@ Running the template::
     |   TUTORIAL 2: ERROR CHECKING AND VALIDATION
     | -----------------------------------------------
 
-Step 1: Create a Model from the contents of a CellML file
+---------------------------------------------------------
+1: Create a Model from the contents of a CellML file
 ---------------------------------------------------------
 
 .. container:: dothis
@@ -54,8 +49,8 @@ Step 1: Create a Model from the contents of a CellML file
     As you did in Tutorial 1, use the :code:`Parser` to create a model
     from the "Tutorial2.cellml" file provided.
 
-
-Step 2: Print the contents of the file to the screen
+----------------------------------------------------
+2: Print the contents of the file to the screen
 ----------------------------------------------------
 
 Instead of duplicating the work you did throughout the middle steps of Tutorial
@@ -334,9 +329,3 @@ Step 5: Serialise and output the model to a file
 
     **5.c**
     Go and have a cuppa, you're done!
-
-
-
-
-
-
