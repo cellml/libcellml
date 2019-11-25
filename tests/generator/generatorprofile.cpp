@@ -35,7 +35,7 @@ std::string convertToString(double value)
 
 TEST(GeneratorProfile, defaultGeneralValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ(libcellml::GeneratorProfile::Profile::C, generatorProfile->profile());
 
@@ -44,7 +44,7 @@ TEST(GeneratorProfile, defaultGeneralValues)
 
 TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ(" = ", generatorProfile->assignmentString());
     EXPECT_EQ(" == ", generatorProfile->eqString());
@@ -72,7 +72,7 @@ TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
 
 TEST(GeneratorProfile, defaultArithmeticOperatorValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("+", generatorProfile->plusString());
     EXPECT_EQ("-", generatorProfile->minusString());
@@ -96,7 +96,7 @@ TEST(GeneratorProfile, defaultArithmeticOperatorValues)
 
 TEST(GeneratorProfile, defaultTrigonometricOperatorValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("sin", generatorProfile->sinString());
     EXPECT_EQ("cos", generatorProfile->cosString());
@@ -126,7 +126,7 @@ TEST(GeneratorProfile, defaultTrigonometricOperatorValues)
 
 TEST(GeneratorProfile, defaultPiecewiseStatementValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("(<CONDITION>)?<IF_STATEMENT>", generatorProfile->conditionalOperatorIfString());
     EXPECT_EQ(":<ELSE_STATEMENT>", generatorProfile->conditionalOperatorElseString());
@@ -138,7 +138,7 @@ TEST(GeneratorProfile, defaultPiecewiseStatementValues)
 
 TEST(GeneratorProfile, defaultConstantValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("1.0", generatorProfile->trueString());
     EXPECT_EQ("0.0", generatorProfile->falseString());
@@ -150,7 +150,7 @@ TEST(GeneratorProfile, defaultConstantValues)
 
 TEST(GeneratorProfile, defaultArithmeticFunctionValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("", generatorProfile->eqFunctionString());
     EXPECT_EQ("", generatorProfile->neqFunctionString());
@@ -180,7 +180,7 @@ TEST(GeneratorProfile, defaultArithmeticFunctionValues)
 
 TEST(GeneratorProfile, defaultTrigonometricFunctionValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("double sec(double x)\n"
               "{\n"
@@ -252,7 +252,7 @@ TEST(GeneratorProfile, defaultTrigonometricFunctionValues)
 
 TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
     EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
@@ -406,7 +406,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
 TEST(GeneratorProfile, generalSettings)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const libcellml::GeneratorProfile::Profile profile = libcellml::GeneratorProfile::Profile::PYTHON;
     const bool falseValue = false;
@@ -422,7 +422,7 @@ TEST(GeneratorProfile, generalSettings)
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
     const bool trueValue = true;
@@ -477,7 +477,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
 
 TEST(GeneratorProfile, arithmeticOperators)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
     const bool trueValue = true;
@@ -523,7 +523,7 @@ TEST(GeneratorProfile, arithmeticOperators)
 
 TEST(GeneratorProfile, trigonometricOperators)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
 
@@ -580,7 +580,7 @@ TEST(GeneratorProfile, trigonometricOperators)
 
 TEST(GeneratorProfile, piecewiseStatement)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
     const bool falseValue = true;
@@ -602,7 +602,7 @@ TEST(GeneratorProfile, piecewiseStatement)
 
 TEST(GeneratorProfile, constants)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
 
@@ -623,7 +623,7 @@ TEST(GeneratorProfile, constants)
 
 TEST(GeneratorProfile, arithmeticFunctions)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
 
@@ -656,7 +656,7 @@ TEST(GeneratorProfile, arithmeticFunctions)
 
 TEST(GeneratorProfile, trigonometricFunctions)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
 
@@ -689,7 +689,7 @@ TEST(GeneratorProfile, trigonometricFunctions)
 
 TEST(GeneratorProfile, miscellaneous)
 {
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
 
     const std::string value = "value";
 

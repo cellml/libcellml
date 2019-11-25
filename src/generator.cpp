@@ -74,28 +74,9 @@ GeneratorVariable::~GeneratorVariable()
     delete mPimpl;
 }
 
-GeneratorVariable::GeneratorVariable(const GeneratorVariable &rhs)
-    : mPimpl(new GeneratorVariableImpl())
+GeneratorVariablePtr GeneratorVariable::create() noexcept
 {
-    mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mType = rhs.mPimpl->mType;
-}
-
-GeneratorVariable::GeneratorVariable(GeneratorVariable &&rhs) noexcept
-    : mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-GeneratorVariable &GeneratorVariable::operator=(GeneratorVariable rhs)
-{
-    rhs.swap(*this);
-    return *this;
-}
-
-void GeneratorVariable::swap(GeneratorVariable &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
+    return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {}};
 }
 
 VariablePtr GeneratorVariable::variable() const
@@ -560,7 +541,7 @@ struct Generator::GeneratorImpl
     std::vector<VariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
-    GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
+    GeneratorProfilePtr mProfile = libcellml::GeneratorProfile::create();
 
     bool mNeedEq = false;
     bool mNeedNeq = false;
@@ -1067,7 +1048,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             }
         } else {
             std::string modelName = entityName(owningModel(component));
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + variableName
                                 + "' in component '" + component->name()
@@ -1183,7 +1164,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             ModelPtr model = owningModel(component);
             ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
             ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -1233,7 +1214,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
                 std::string modelName = entityName(owningModel(component));
-                ErrorPtr err = std::make_shared<Error>();
+                ErrorPtr err = Error::create();
 
                 err->setDescription("Variable '" + variable->name()
                                     + "' in component '" + component->name()
@@ -1251,7 +1232,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + mVoi->name()
                                 + "' in component '" + voiComponent->name()
@@ -1276,7 +1257,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
-            ErrorPtr err = std::make_shared<Error>();
+            ErrorPtr err = Error::create();
 
             err->setDescription("The differential equation for variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -1373,7 +1354,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mNeedAcsch = false;
     mNeedAcoth = false;
 
-    mGenerator->clearErrors();
+    mGenerator->removeAllErrors();
 
     // Recursively process the model's components, so that we end up with an AST
     // for each of the model's equations.
@@ -1454,7 +1435,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
 
             if (!errorType.empty()) {
-                ErrorPtr err = std::make_shared<Error>();
+                ErrorPtr err = Error::create();
                 VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
                 ModelPtr realModel = owningModel(realComponent);
@@ -1513,7 +1494,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
-                GeneratorVariablePtr variable = std::make_shared<GeneratorVariable>();
+                GeneratorVariablePtr variable = GeneratorVariable::create();
 
                 mVariables.push_back(variable);
 
@@ -3418,68 +3399,9 @@ Generator::~Generator()
     delete mPimpl;
 }
 
-Generator::Generator(const Generator &rhs)
-    : Logger(rhs)
-    , mPimpl(new GeneratorImpl())
+GeneratorPtr Generator::create() noexcept
 {
-    mPimpl->mGenerator = rhs.mPimpl->mGenerator;
-
-    mPimpl->mModelType = rhs.mPimpl->mModelType;
-
-    mPimpl->mInternalVariables = rhs.mPimpl->mInternalVariables;
-    mPimpl->mEquations = rhs.mPimpl->mEquations;
-
-    mPimpl->mVoi = rhs.mPimpl->mVoi;
-    mPimpl->mStates = rhs.mPimpl->mStates;
-    mPimpl->mVariables = rhs.mPimpl->mVariables;
-
-    mPimpl->mProfile = rhs.mPimpl->mProfile;
-
-    mPimpl->mNeedEq = rhs.mPimpl->mNeedEq;
-    mPimpl->mNeedNeq = rhs.mPimpl->mNeedNeq;
-    mPimpl->mNeedLt = rhs.mPimpl->mNeedLt;
-    mPimpl->mNeedLeq = rhs.mPimpl->mNeedLeq;
-    mPimpl->mNeedGt = rhs.mPimpl->mNeedGt;
-    mPimpl->mNeedGeq = rhs.mPimpl->mNeedGeq;
-    mPimpl->mNeedAnd = rhs.mPimpl->mNeedAnd;
-    mPimpl->mNeedOr = rhs.mPimpl->mNeedOr;
-    mPimpl->mNeedXor = rhs.mPimpl->mNeedXor;
-    mPimpl->mNeedNot = rhs.mPimpl->mNeedNot;
-
-    mPimpl->mNeedMin = rhs.mPimpl->mNeedMin;
-    mPimpl->mNeedMax = rhs.mPimpl->mNeedMax;
-
-    mPimpl->mNeedSec = rhs.mPimpl->mNeedSec;
-    mPimpl->mNeedCsc = rhs.mPimpl->mNeedCsc;
-    mPimpl->mNeedCot = rhs.mPimpl->mNeedCot;
-    mPimpl->mNeedSech = rhs.mPimpl->mNeedSech;
-    mPimpl->mNeedCsch = rhs.mPimpl->mNeedCsch;
-    mPimpl->mNeedCoth = rhs.mPimpl->mNeedCoth;
-    mPimpl->mNeedAsec = rhs.mPimpl->mNeedAsec;
-    mPimpl->mNeedAcsc = rhs.mPimpl->mNeedAcsc;
-    mPimpl->mNeedAcot = rhs.mPimpl->mNeedAcot;
-    mPimpl->mNeedAsech = rhs.mPimpl->mNeedAsech;
-    mPimpl->mNeedAcsch = rhs.mPimpl->mNeedAcsch;
-    mPimpl->mNeedAcoth = rhs.mPimpl->mNeedAcoth;
-}
-
-Generator::Generator(Generator &&rhs) noexcept
-    : Logger(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-Generator &Generator::operator=(Generator rhs)
-{
-    Logger::operator=(rhs);
-    rhs.swap(*this);
-    return *this;
-}
-
-void Generator::swap(Generator &rhs)
-{
-    std::swap(mPimpl, rhs.mPimpl);
+    return std::shared_ptr<Generator> {new Generator {}};
 }
 
 GeneratorProfilePtr Generator::profile()
@@ -3497,16 +3419,16 @@ void Generator::processModel(const ModelPtr &model)
     // Make sure that the model is valid before processing it.
 
     /*TODO: enable the below code once validation is known to work fine.
-    libcellml::Validator validator;
+    ValidatorPtr validator = Validator::create();
 
-    validator.validateModel(model);
+    validator->validateModel(model);
 
-    if (validator.errorCount() > 0) {
+    if (validator->errorCount() > 0) {
         // The model is not valid, so retrieve the validation errors and make
         // them our own.
 
-        for (size_t i = 0; i < validator.errorCount(); ++i) {
-            addError(validator.error(i));
+        for (size_t i = 0; i < validator->errorCount(); ++i) {
+            addError(validator->error(i));
         }
 
         return;

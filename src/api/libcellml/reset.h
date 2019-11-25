@@ -37,11 +37,26 @@ public:
     Reset(Reset &&rhs) noexcept = delete; /**< Move constructor */
     Reset &operator=(Reset rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Reset> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Reset> {new Reset {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Reset object.
+     *
+     * Factory method to create a @c Reset.  Create a
+     * blank reset with::
+     *
+     *   ResetPtr reset = libcellml::Reset::create();
+     *
+     * or an ordered reset with order 10 with::
+     *
+     *   ResetPtr reset = libcellml::Reset::create(10);
+     *
+     * @return A smart pointer to a @c Reset object.
+     */
+    static ResetPtr create() noexcept;
+
+    /**
+     * @overload
+     */
+    static ResetPtr create(int order) noexcept;
 
     /**
      * @brief Set the @c Variable for this @c Reset.
@@ -115,7 +130,7 @@ public:
      *
      * @sa setTestValue
      */
-    void clearTestValue();
+    void removeTestValue();
 
     /**
      * @brief Set an identifier to the test value for this reset.
@@ -134,7 +149,7 @@ public:
      *
      * @sa setTestValueId
      */
-    void clearTestValueId();
+    void removeTestValueId();
 
     /**
      * @brief Return the identifier of the test value for this reset.
@@ -181,7 +196,7 @@ public:
      *
      * @sa setResetValue
      */
-    void clearResetValue();
+    void removeResetValue();
 
     /**
      * @brief Set an identifier to the reset value for this reset.
@@ -199,7 +214,7 @@ public:
      *
      * @sa setResetValueId
      */
-    void clearResetValueId();
+    void removeResetValueId();
 
     /**
      * @brief Return the identifier of the reset value for this reset.
@@ -212,6 +227,7 @@ public:
 
 private:
     Reset(); /**< Constructor */
+    explicit Reset(int order); /**< Constructor with int parameter */
 
     struct ResetImpl; /**< Forward declaration for pImpl idiom. */
     ResetImpl *mPimpl; /**< Private member to implementation pointer */

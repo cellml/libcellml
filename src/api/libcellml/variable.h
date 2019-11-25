@@ -37,11 +37,26 @@ public:
     Variable(Variable &&rhs) noexcept = delete; /**< Move constructor */
     Variable &operator=(Variable rhs) = delete; /**< Assignment operator */
 
-    template<typename... Args>
-    static std::shared_ptr<Variable> create(Args &&... args) noexcept
-    {
-        return std::shared_ptr<Variable> {new Variable {std::forward<Args>(args)...}};
-    }
+    /**
+     * @brief Create a @c Variable object.
+     *
+     * Factory method to create a @c Variable.  Create a
+     * blank variable with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create();
+     *
+     * or a named variable with name "Variable" with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create("Variable");
+     *
+     * @return A smart pointer to a @c Variable object.
+     */
+    static VariablePtr create() noexcept;
+
+    /**
+     * @overload
+     */
+    static VariablePtr create(const std::string &name) noexcept;
 
     /**
      * @brief The InterfaceType enum class.
@@ -74,6 +89,8 @@ public:
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
+     * @overload
+     *
      * @brief Add each argument variable to the other's equivalent variable set.
      *
      * Add a copy of @p variable1 to the set of equivalent variables for
@@ -81,8 +98,6 @@ public:
      * set of equivalent variables for @p variable1 if not already present.  Also set the
      * mapping id of the equivalence and also optionally the connection id fo the
      * equivalence.
-     *
-     * @overload
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -134,7 +149,7 @@ public:
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
      * @return the @c std::string mapping id.
      */
     static std::string equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
@@ -148,10 +163,32 @@ public:
      * If the two variables are not equivalent the empty string is returned.
      *
      * @param variable1 Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
      * @return the @c std::string connection id.
      */
     static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Clear equivalent connection id for this equivalence.
+     *
+     * Clears the equivalent connection id for the equivalence defined by the two
+     * variables passed as arguments.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     */
+    static void removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Clear the equivalent mapping id for this equivalence.
+     *
+     * Clears the equivalent mapping id for the equivalence defined by the two
+     * variables passed as arguments.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     */
+    static void removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Remove each argument variable to the other's equivalent variable set.
@@ -242,12 +279,12 @@ public:
     void setUnits(const std::string &name);
 
     /**
+     * @overload
+     *
      * @brief Set the units for this variable using a @c UnitsPtr.
      *
      * Set the units for this variable as the name associated with the
      * argument @p units.
-     *
-     * @overload
      *
      * @sa units
      *
@@ -268,6 +305,13 @@ public:
     UnitsPtr units() const;
 
     /**
+     * @brief Clear the units from this variable.
+     *
+     * Clears the units from this variable.
+     */
+    void removeUnits();
+
+    /**
      * @brief Set the initial value for this variable using a string.
      *
      * Set the initial value for this variable using a string.
@@ -279,12 +323,12 @@ public:
     void setInitialValue(const std::string &initialValue);
 
     /**
+     * @overload
+     *
      * @brief Set the initial value for this variable using a real number.
      *
      * Set the initial value for this variable using a real number.
      * The real number value will be converted to and stored as a string.
-     *
-     * @overload
      *
      * @sa initialValue
      *
@@ -293,12 +337,12 @@ public:
     void setInitialValue(double initialValue);
 
     /**
+     * @overload
+     *
      * @brief Set the initial value for this variable using a variable reference.
      *
      * Set the initial value for this variable using a variable reference.
      * The initial value will be set to the name of the referenced variable.
-     *
-     * @overload
      *
      * @sa initialValue
      *
@@ -316,6 +360,13 @@ public:
     std::string initialValue() const;
 
     /**
+     * @brief Clear the initial value for this variable.
+     *
+     * Clears the initial value for this variable.
+     */
+    void removeInitialValue();
+
+    /**
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable using a string.
@@ -327,12 +378,12 @@ public:
     void setInterfaceType(const std::string &interfaceType);
 
     /**
+     * @overload
+     *
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable from the available
      * options in the InterfaceType enum class.
-     *
-     * @overload
      *
      * @sa interfaceType
      *
@@ -349,9 +400,16 @@ public:
      */
     std::string interfaceType() const;
 
+    /**
+     * @brief Clear the interface type for this variable.
+     *
+     * Clears the interface type for this variable.
+     */
+    void removeInterfaceType();
+
 private:
     Variable(); /**< Constructor */
-    explicit Variable(const std::string &name);
+    explicit Variable(const std::string &name); /**< Constructor with std::string parameter*/
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */

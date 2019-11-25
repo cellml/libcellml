@@ -77,10 +77,20 @@ Component::~Component()
 {
     if (mPimpl != nullptr) {
         for (const auto &variable : mPimpl->mVariables) {
-            variable->clearParent();
+            variable->removeParent();
         }
     }
     delete mPimpl;
+}
+
+ComponentPtr Component::create() noexcept
+{
+    return std::shared_ptr<Component> {new Component {}};
+}
+
+ComponentPtr Component::create(const std::string &name) noexcept
+{
+    return std::shared_ptr<Component> {new Component {name}};
 }
 
 bool Component::doAddComponent(const ComponentPtr &component)
@@ -120,6 +130,11 @@ std::string Component::math() const
 void Component::setMath(const std::string &math)
 {
     mPimpl->mMath = math;
+}
+
+void Component::removeMath()
+{
+    mPimpl->mMath.clear();
 }
 
 void Component::addVariable(const VariablePtr &variable)
