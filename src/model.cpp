@@ -341,8 +341,8 @@ bool Model::hasUnresolvedImports()
     return unresolvedImports;
 }
 
-using IndexStack = std::vector< size_t >;
-using EquivalenceMap = std::map< IndexStack, std::vector< IndexStack > >; /**< Type definition for map of variable equivalences defined over model. */
+using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
+using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
 
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable)
 {
@@ -410,7 +410,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             auto equivalentVariable = variable->equivalentVariable(j);
             auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
             if (equivalenceMap.count(indexStack) == 0) {
-                equivalenceMap[indexStack] = std::vector< IndexStack >();
+                equivalenceMap[indexStack] = std::vector<IndexStack>();
             }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }
@@ -525,7 +525,7 @@ ModelPtr Model::clone() const
 
     auto map = generateEquivalenceMap(shared_from_this());
     applyEquivalenceMapToModel(map, m);
-//    printEquivalenceMap(map);
+    // printEquivalenceMap(map);
 
     return m;
 }
