@@ -39,7 +39,7 @@ const std::string NON_EMPTY_MATH =
 
 struct Debug
 {
-    Debug(bool newLine = true)
+    explicit Debug(bool newLine = true)
         : mNewLine(newLine)
     {
     }

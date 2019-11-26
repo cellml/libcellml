@@ -23,7 +23,7 @@ namespace libcellml {
 
 struct Debug
 {
-    Debug(bool newLine = true)
+    explicit Debug(bool newLine = true)
         : mNewLine(newLine)
     {
     }
