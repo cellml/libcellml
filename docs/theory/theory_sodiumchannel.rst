@@ -22,11 +22,11 @@ where :math:`\bar{g}_{Na} = \ `\ 120
 mS.cm\ :sup:`-2`, and with
 :math:`\left\lbrack Na^{+} \right\rbrack_{i}`\ = 30mM and
 :math:`\left\lbrack Na^{+} \right\rbrack_{o}`\ = 140mM, the
-Nernst potential for the sodium channel (z=1) is:
+Nernst potential for the sodium channel (:math:`z=1`) is:
 
 .. math::
 
-   E_{Na} = \frac{\text{RT}}{\text{zF}}ln\frac{\left\lbrack Na^{+} \right\rbrack_{o}}{\left\lbrack Na^{+} \right\rbrack_{i}} = 25\ ln\frac{140}{30} = 35\text{mV}.
+   E_{Na} = \frac{RT}{zF}ln\frac{\left\lbrack Na^{+} \right\rbrack_{o}}{\left\lbrack Na^{+} \right\rbrack_{i}} = 25 \ln\frac{140}{30} = 35\text{mV}.
 
 The gating kinetics are described by:
 
@@ -41,10 +41,10 @@ experimentally [#]_ to be:
 
 .. math::
 
-   \alpha_{m} = \frac{- 0.1\left( V + 50 \right)} {e^{{- 0.1 \left( V + 50 \right)}} - 1};
-   \beta_{m} = 4 \text{ exp} \left( {\frac{- \left( V + 75 \right)}{18}} \right);
-   \alpha_{h} = 0.07\text{ exp}\left( {\frac{- \left( V + 75 \right)}{20}}\right);
-   \beta_{h} = \frac{1} {e^{ {- 0.1 \left( V + 45 \right)}} + 1}.
+   \alpha_{m} = \frac{- 0.1\left( V + 50 \right)} {\exp \left( - 0.1 \left( V + 50 \right) \right) - 1}; \\[5pt]
+   \beta_{m} = 4 \exp \left( {\frac{- \left( V + 75 \right)}{18}} \right);\\[5pt]
+   \alpha_{h} = 0.07\exp\left( {\frac{- \left( V + 75 \right)}{20}}\right);\\[5pt]
+   \beta_{h} = \frac{1} {\exp\left({ {- 0.1 \left( V + 45 \right)}}\right) + 1}
 
 Interpretation as a CellML model
 --------------------------------
