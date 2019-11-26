@@ -22,14 +22,14 @@ where :math:`\bar{g}_{K} = \ 36 \text{ mS.cm}^{-2}`,
 and with intra- and extra-cellular concentrations
 :math:`\left\lbrack K^{+} \right\rbrack_{i} = 90\text{ mM}` and
 :math:`\left\lbrack K^{+} \right\rbrack_{o} = 3\text{ mM}`, respectively, the
-Nernst potential for the potassium channel (:math:`z = 1` since one +ve charge
-on :math:`K^{+}`) is:
+Nernst potential for the potassium channel (:math:`z = 1` since one positive
+charge on :math:`K^{+}`) is:
 
 .. math::
 
     E_{k} = \frac{RT}{zF} \ln\frac{\left\lbrack K^{+}
     \right\rbrack_{o}}{\left\lbrack K^{+} \right\rbrack_{i}} =
-    25\text{ }\ln\frac{3}{90} = - 85\text{mV}
+    25\ln\frac{3}{90} = - 85\text{ mV}
 
 As noted above, this is called the *equilibrium potential* since it is
 the potential across the cell membrane when the channel is open but no
@@ -43,7 +43,7 @@ The gating kinetics are described (as before) by:
 
 .. math::
 
-    \frac{dn}{dt} = \alpha_{n}\left( 1 - n \right) - \beta_{n}\text{.}n
+    \frac{dn}{dt} = \alpha_{n}\left( 1 - n \right) - \beta_{n}n
 
 with time constant:
 
@@ -58,7 +58,7 @@ follows \ [#]_:
 
 .. math::
 
-    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{exp{{\frac{- \left( V + 65 \right)}{10}}} - 1}
+    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp{-0.1 \left( V + 65 \right)} - 1}
 
     \beta_{n} = 0.125\exp{{\frac{- \left( V + 75 \right)}{80}}}
 
