@@ -87,7 +87,7 @@ where
 
 .. math::
 
-    R = k_{B}N_{A} \approx 1.34x10^{-23}\text{ }(J.K^{-1}) \times 6.02\times10^{23}\text{ }(mol^{-1}) \approx 8.4\text{ }(J.mol^{-1}K^{-1})
+    R = k_{B}N_{A} \approx 1.34\times10^{-23}\text{ }(J.K^{-1}) \times 6.02\times10^{23}\text{ }(mol^{-1}) \approx 8.4\text{ }(J.mol^{-1}K^{-1})
 
 
 is the 'universal gas constant'\ [#]_.
@@ -105,14 +105,14 @@ Every positively charged ion that crosses the membrane raises the
 potential difference and produces an electrostatic driving force that
 opposes the entropic force (see :numref:`ocr_tut_bal_force`). To move an
 electron of
-charge :math:`e` (:math:`\approx 1.6x10^{-19}` in :math:`C`) through a voltage
+charge :math:`e` (:math:`\approx 1.6\times 10^{-19}` in :math:`C`) through a voltage
 change of :math:`\Delta\phi` (in :math:`V`) requires energy :math:`e\Delta\phi`
 (in :math:`J`) and therefore the energy needed to move an ion :math:`Y^{+}` of
 valence :math:`z=1` (the number of charges per ion) through a voltage change of
 :math:`\Delta\phi` is :math:`\text{ze}\Delta\phi` (in :math:`J.ion^{-1}`) or
 :math:`\text{ze}N_{A}\Delta\phi` (:math:`J.mol^{-1}`). Using Faraday's
 constant :math:`F = eN_{A}`, where
-:math:`F \approx 0.96x10^{5}` (in :math:`C.mol^{-1}`), the change in energy
+:math:`F \approx 0.96\times10^{5}` (in :math:`C.mol^{-1}`), the change in energy
 density at the macroscopic scale is :math:`{zF}\Delta\phi` (in
 :math:`J.mol^{-1}`).
 
@@ -133,7 +133,7 @@ or
 where :math:`E_{Y}` is the 'equilibrium' or 'Nernst' potential for
 :math:`Y^{+}`. At 25°C (298K),
 :math:`\frac{{RT}}{F} =
-\frac{2.5x10^{3}\ }{0.96x10^{5}} (J.C^{-1}) \approx 25mV`.
+\frac{2.5\times10^{3}\ }{0.96\times10^{5}} (J.C^{-1}) \approx 25mV`.
 
 .. figure:: images/open_ch_linear_iv.png
    :name: ocr_tut_open_ch_iv
@@ -267,9 +267,9 @@ show now for the neural potassium and sodium ion channels.
 .. [#]
    The Brownian motion of individual molecules has energy :math:`k_{B}T`
    (J), where the Boltzmann constant :math:`k_{B}` is approximately
-   :math:`1.34x10^{-23}` (:math:`J.K^{-1}`). At 25°C, or 298K, :math:`k_{B}T`
-   = :math:`4.10^{-21}` (J) is the minimum amount of energy to contain a
-   ‘bit’ of information at that temperature.
+   :math:`1.34\times10^{-23}` (:math:`J.K^{-1}`). At 25°C, or 298K,
+   :math:`k_{B}T = 4\times10^{-21}` (:math:`J`) is the minimum amount
+   of energy to contain a ‘bit’ of information at that temperature.
 
 .. [#]
    The *first law of thermodynamics* states that energy is conserved,
@@ -282,7 +282,7 @@ show now for the neural potassium and sodium ion channels.
    packed with solute and the entropy is zero.
 
 .. [#]
-   :math:`N_{A}` is Avogadro’s number (:math:`6.023x10^{23}`) and is the
+   :math:`N_{A}` is Avogadro’s number (:math:`6.023\times 10^{23}`) and is the
    scaling factor between molecular and macroscopic processes.
    Boltzmann’s constant :math:`k_{B}` and electron charge *e* operate at
    the atomic/molecular scale. Their effect at the physiological scale
