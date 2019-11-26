@@ -52,6 +52,7 @@ with time constant:
 
 The main difference from the gating model in our previous example is
 that Hodgkin and Huxley found it necessary to make the rate constants
+:math:`\alpha_n` and :math:`\beta_n`
 functions of the membrane potential :math:`V`
 (see :numref:`ocr_tut_volt_deps_gates`) as
 follows \ [#]_:
@@ -59,6 +60,7 @@ follows \ [#]_:
 .. math::
 
     \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp{-0.1 \left( V + 65 \right)} - 1}
+
 
     \beta_{n} = 0.125\exp{{\frac{- \left( V + 75 \right)}{80}}}
 
