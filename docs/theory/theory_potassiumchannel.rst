@@ -59,10 +59,10 @@ follows \ [#]_:
 
 .. math::
 
-    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp \left({-0.1 \left( V + 65 \right)}\right) - 1} \\[30pt]
+    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp \left({-0.1 \left( V + 65 \right)}\right) - 1} \\[16pt]
     \beta_{n} = 0.125\exp{\left( \frac{- \left( V + 75 \right) } {80} \right) }
 
-.. figure:: _static/images/volt_deps_of_gate_consts.png
+.. figure:: images/volt_deps_of_gate_consts.png
    :name: ocr_tut_volt_deps_gates
    :alt: Voltage dependencies of gate constants
    :align: center
@@ -85,11 +85,14 @@ Note that under steady state conditions when
 The voltage dependence of the steady state channel conductance is then:
 
 .. math::
+
     g_{ss} = \left( \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} \right)^{4}.\bar{g}_{Y}
 
 (see :numref:`ocr_tut_volt_deps_gates`). The steady state current-voltage
 relation for the channel is illustrated in :numref:`ocr_tut_ss_cur_volt`.
 
+Interpretation into a CellML model
+----------------------------------
 Defining components serves two purposes: it preserves a modular
 structure for CellML models, and allows these component modules to be
 imported into other models, as illustrated in
@@ -107,9 +110,24 @@ dynamics of the :math:`n`-gate.
    The steady-state current-voltage relation for the potassium channel.
 
 Since certain variables (:math:`t`, :math:`V` and :math:`n`) are shared
-between components, we need to also define the component maps as
-indicated in the *CellML Text*
-view below. **TODO**
+between components, we need to also define the component maps or equivalent
+variables as shown below.
+
+An aside: Equivalent variables
+------------------------------
+Variables are contained within components in order to make the models
+modular, and enabling the sharing and reuse of their different entities.
+But along with this containment functionality comes the need for the
+enclosed variables to communicate with one another across these artificial
+walls.  This is done by creating *equivalent variable maps*, where a variable
+in one component is mapped through an interface to a corresponding variable in
+another.  More information about how components can be nested to
+create a hierarchical *encapsulation structure* is shown in more detail in
+the next chapter, `A model of a sodium channel<theory_sodiumchannel>` and
+demonstrated in `Tutorial 5<../tutorials/tutorial5/outline5>`.
+
+
+
 
 
 

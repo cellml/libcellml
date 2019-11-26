@@ -4,7 +4,8 @@
 Tutorial 7: Creating the sodium channel
 =======================================
 
-This tutorial is a companion to :ref:`Tutorial 5<tutorial5>` which walked you through the
+This tutorial is a companion to :ref:`Tutorial 5<tutorial5>` which walked you
+through the
 creation of a gated potassium channel model.  It follows the same basic recipe
 steps as previously, but provides only a little guidance in terms of *how*
 you will use the API to create the model and its components.  In general:
@@ -47,8 +48,8 @@ Resources:
     - :download:`../utilities/tutorial_utilities.h` and
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 5 you can download the file created there:
-      :download:`../resources/tutorial7_SodiumChannelModel.cellml`
+    - If you did not complete Tutorial 5 you can download the file created
+      there: :download:`../resources/tutorial7_SodiumChannelModel.cellml`
 
 
 Python instructions
@@ -61,5 +62,5 @@ Resources:
     - :download:`tutorial7_complete.py` the completed tutorial code
     - :download:`../utilities/tutorial_utilities.py`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 5 you can download the file created there:
-      :download:`../resources/tutorial7_SodiumChannelModel.cellml`
+    - If you did not complete Tutorial 5 you can download the file created
+      there: :download:`../resources/tutorial7_SodiumChannelModel.cellml`
