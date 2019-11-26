@@ -489,7 +489,9 @@ VariablePtr Variable::clone() const
 {
     auto v = create();
 
-    v->setUnits(units());
+    if (mPimpl->mUnits != nullptr) {
+        v->setUnits(mPimpl->mUnits->name());
+    }
     v->setInitialValue(initialValue());
     v->setInterfaceType(interfaceType());
     v->setId(id());
