@@ -7,9 +7,9 @@ A model of a sodium channel
 Theory
 ------
 The Hodgkin-Huxley model's sodium channel has two types of gate,
-an :math:`m` gate (of which
+an :math:`m`-gate (of which
 there are 3) that is initially closed (:math:`m = 0`) before activating
-and inactivating back to the closed state, and an :math:`h` gate that is
+and inactivating back to the closed state, and an :math:`h`-gate that is
 initially open (:math:`h = 1`) before activating and inactivating back
 to the open state. The short period when both types of gate are open
 allows a brief window current to pass through the channel. Therefore,
@@ -77,14 +77,15 @@ are able to see and be seen by which others, as defined by the available interfa
   components.
 - A *private* interface is available from a parent to its child(ren).
 - Both *public* and *private* interfaces are available using the
-  *public_and_private* type, needed where there is more than one level of nesting
+  *public_and_private* type, needed where there is more than one level of
+  nesting
   (for example, a grandparent-parent-child structure).  Here, the parent must
   define a *public_and_private* interface type as it is both the child of the
   grandparent, and the parent of the child.
 - Communication through the aunt-child, grandparent-child, and cousin-parent
-  relationships is not possible as there is no available interface. Communication
-  with the no-relation component is only possible with the grandparent because,
-  as top-level components, they are siblings.
+  relationships is not possible as there is no available interface.
+  Communication with the no-relation component is only possible with the
+  grandparent because, as top-level components, they are siblings.
 
 We define the CellML components **sodium_channel_m_gate** and
 **sodium_channel_h_gate** below. Each of these components has its own
@@ -98,7 +99,7 @@ useful to group them into one **sodium_channel** component.
     :align: left
 
     The sodium channel component is the parent of two children:
-    the :math:`m`-gate and the :math:`h` gate components, which are
+    the :math:`m`-gate and the :math:`h`-gate components, which are
     therefore siblings. A *private
     interface* allows a parent to talk to its children and a *public
     interface* allows siblings to talk among themselves and to their parents.
@@ -121,7 +122,8 @@ plots :math:`V\left( t \right)`, :math:`m\left( t \right)`,
 (b) -85mV to 0mV and (c) -85mV to 20mV. There are several
 things to note:
 
-i.   The kinetics of the :math:`m`-gate are much faster than the :math:`h`-gate.
+i.   The kinetics of the :math:`m`-gate are much faster than the
+     :math:`h`-gate.
 
 ii.  The opening behaviour is faster as the voltage is stepped to higher
      values since :math:`\tau = \frac{1}{\alpha_{n} + \beta_{n}}`
@@ -129,16 +131,17 @@ ii.  The opening behaviour is faster as the voltage is stepped to higher
 
 iii. The sodium channel conductance rises (*activates*) and then falls
      (*inactivates*) under a positive voltage step from rest since the
-     three :math:`m`-gates turn on but the :math:`h`-gate turns off and the conductance
-     is a product of these. Compare this with the potassium channel
-     conductance shown in **TODO ref to potassium page** :numref:`ocr_tut_kin_pot_ch` which is only
-     reduced back to zero by stepping the voltage back to its resting value – i.e.
-     *deactivating* it.
+     three :math:`m`-gates turn on but the :math:`h`-gate turns off and the
+     conductance is a product of these. Compare this with the potassium channel
+     conductance shown in **TODO ref to potassium page**
+     :numref:`ocr_tut_kin_pot_ch` which is only reduced back to zero by
+     stepping the voltage back to its resting value – that is, *deactivating*
+     it.
 
 iv.  The only time current :math:`i_{\text{Na}}` flows through the
      sodium channel is during the brief period when the :math:`m`-gate is
-     rapidly opening and the much slower :math:`h`-gate is beginning to close. A
-     small current flows during the reverse voltage step but this is at
+     rapidly opening and the much slower :math:`h`-gate is beginning to close.
+     A small current flows during the reverse voltage step but this is at
      a time when the :math:`h`-gate is now firmly off so the magnitude is very
      small.
 
@@ -159,17 +162,20 @@ more or less space depending on their magnitude.
 
 Next steps
 ----------
-The incorporation of this sodium channel model into the full Hodgkin-Huxley model of a neuron is
-described in the next chapter, :ref:`Hodgkin-Huxley assembly<theory_hh>`.
-
+The incorporation of this sodium channel model into the full Hodgkin-Huxley
+model of a neuron is described in the next chapter,
+:ref:`Hodgkin-Huxley assembly<theory_hh>`.  This will include the
+:math:`n`-gate described in the previous chapter, :ref:`A model of a potassium
+channel<theory__potassiumchannel>` as well as a leakage current model.
 
 
 ---------------------------
 
 .. rubric:: Footnotes
 
-.. [#] The HH paper used
-       :math:`\alpha_m = \frac{0.1(v+25)}{e^{0.1(v+25)}-1}`;
-       :math:`\beta_m = 4e^{\frac{v}{18}}`;
-       :math:`\alpha_h = 0.07e^{\frac{v}{20}}`;
-       :math:`\beta_h = \frac{1}{e^{0.1(v+30)}+1}`;.
+.. [#] The Hodgkin-Huxley paper used:
+    .. math::
+       \alpha_m = \frac{0.1(v+25)}{\exp\left({0.1(v+25)\right)-1}
+       \beta_m = 4\exp\left({\frac{v}{18}\right)
+       \alpha_h = 0.07e^{\frac{v}{20}}
+       \beta_h = \frac{1}{\exp\left(0.1(v+30)\right)+1}
