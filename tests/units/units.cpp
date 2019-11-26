@@ -950,11 +950,11 @@ TEST(Units, checkingOwningModelOneUnit)
     libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("u2");
     u2->addUnit("apples", "kilo", 2.0, 1000.0); // apples not in model
-  
+
     model->addUnits(u);
     model->addUnits(u1);
     model->addUnits(u2);
-  
+
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
@@ -1020,11 +1020,11 @@ TEST(Units, checkScalingFactorOneNonBaseUnitImported)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
     u2->addUnit("u", 0, 1.0, 1.0);
-  
+
     model->addUnits(u);
     model->addUnits(u1);
     model->addUnits(u2);
-  
+
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
 
@@ -1053,11 +1053,11 @@ TEST(Units, checkScalingFactorBothNonBaseUnitsImported)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
     u2->addUnit("u", 0, 1.0, 1.0);
-  
+
     model->addUnits(u);
     model->addUnits(u1);
     model->addUnits(u2);
-  
+
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
 
@@ -1261,8 +1261,8 @@ TEST(Units, compareUnitsEquivalentComplex)
     model->addUnits(u1);
     model->addUnits(u2);
 
-    EXPECT_TRUE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
-    EXPECT_TRUE(libcellml::Units::isDimensionallyEquivalentTo(u2, u1));
+    EXPECT_TRUE(libcellml::Units::isEquivalentTo(u1, u2));
+    EXPECT_TRUE(libcellml::Units::isEquivalentTo(u2, u1));
 }
 
 TEST(Units, compareUnitsNotEquivalentComplex)
@@ -1286,6 +1286,6 @@ TEST(Units, compareUnitsNotEquivalentComplex)
     model->addUnits(u1);
     model->addUnits(u2);
 
-    EXPECT_FALSE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
-    EXPECT_FALSE(libcellml::Units::isDimensionallyEquivalentTo(u2, u1));
+    EXPECT_FALSE(libcellml::Units::isEquivalentTo(u1, u2));
+    EXPECT_FALSE(libcellml::Units::isEquivalentTo(u2, u1));
 }
