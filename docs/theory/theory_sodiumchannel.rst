@@ -127,14 +127,14 @@ i.   The kinetics of the :math:`m`-gate are much faster than the
 
 ii.  The opening behaviour is faster as the voltage is stepped to higher
      values since :math:`\tau = \frac{1}{\alpha_{n} + \beta_{n}}`
-     reduces with increasing :math"`V` (see :numref:`ocr_tut_volt_deps_gates`).
+     reduces with increasing :math:`V` (see :numref:`ocr_tut_volt_deps_gates`).
 
 iii. The sodium channel conductance rises (*activates*) and then falls
      (*inactivates*) under a positive voltage step from rest since the
      three :math:`m`-gates turn on but the :math:`h`-gate turns off and the
-     conductance is a product of these. Compare this with the potassium channel
-     conductance shown in **TODO ref to potassium page**
-     :numref:`ocr_tut_kin_pot_ch` which is only reduced back to zero by
+     conductance is a product of these. Compare this with the
+     :ref:`potassium channel conductance<theory_potassiumchannel>`
+     which is only reduced back to zero by
      stepping the voltage back to its resting value – that is, *deactivating*
      it.
 
