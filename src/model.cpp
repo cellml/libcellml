@@ -462,7 +462,7 @@ void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const M
 
 void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model)
 {
-    for (const auto & iter : map) {
+    for (const auto &iter : map) {
         auto key = iter.first;
         auto vector = iter.second;
         for (auto vectorIter = vector.begin(); vectorIter < vector.end(); ++vectorIter) {
