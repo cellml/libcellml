@@ -46,14 +46,14 @@ void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
     }
 }
 
-void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
+void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr)
 {
     EXPECT_EQ(u1->id(), u2->id());
     EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
     EXPECT_EQ(u1->isImport(), u2->isImport());
     EXPECT_EQ(u1->importReference(), u2->importReference());
     EXPECT_EQ(u1->name(), u2->name());
-    EXPECT_EQ(nullptr, u2->parent());
+    EXPECT_EQ(expectedParent, u2->parent());
 
     compareUnit(u1, u2);
 }
@@ -423,9 +423,36 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 {
     EXPECT_EQ(m1->id(), m2->id());
     EXPECT_EQ(m1->name(), m2->name());
+
+    EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
+    EXPECT_EQ(m1->componentCount(), m2->componentCount());
+
+    for (size_t index = 0; index < m1->unitsCount(); ++index) {
+        auto u1 = m1->units(index);
+        auto u2 = m2->units(index);
+        compareUnits(u1, u2, m2);
+    }
+
+    for (size_t index = 0; index < m1->componentCount(); ++index) {
+        auto c1 = m1->component(index);
+        auto c2 = m2->component(index);
+        compareComponent(c1, c2, m2);
+    }
 }
 
 TEST(Clone, model)
+{
+    auto m = libcellml::Model::create();
+    m->setId("unique_model");
+    m->setName("model");
+    m->setEncapsulationId("encapsulation_id");
+
+    auto mClone = m->clone();
+
+    compareModel(m, mClone);
+}
+
+TEST(Clone, modelWithUnits)
 {
     auto m = libcellml::Model::create();
     m->setId("unique_model");
@@ -434,4 +461,90 @@ TEST(Clone, model)
     auto mClone = m->clone();
 
     compareModel(m, mClone);
+}
+
+TEST(Clone, modelWithComponents)
+{
+    auto m = libcellml::Model::create();
+    m->setId("unique_model");
+    m->setName("model");
+
+    auto c = libcellml::Component::create();
+    auto c1 = libcellml::Component::create();
+    auto c2 = libcellml::Component::create();
+
+    c->setId("unique");
+    c->setName("copy");
+    c1->setName("child_1");
+    c2->setName("child_2");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+
+    auto mClone = m->clone();
+
+    compareModel(m, mClone);
+}
+
+TEST(Clone, modelWithVariableEquivalences)
+{
+    auto m = libcellml::Model::create();
+    m->setId("unique_model");
+    m->setName("model");
+
+    auto c = libcellml::Component::create();
+    auto c1 = libcellml::Component::create();
+    auto c2 = libcellml::Component::create();
+    auto v1 = libcellml::Variable::create();
+    auto v2 = libcellml::Variable::create();
+    auto u = libcellml::Units::create();
+
+    u->setName("second");
+
+    v1->setUnits(u);
+    v2->setUnits(u);
+    m->addUnits(u);
+
+    c->setId("unique");
+    c->setName("copy");
+    c1->setName("child_1");
+    c1->addVariable(v1);
+    c2->setName("child_2");
+    c2->addVariable(v2);
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+
+    m->addComponent(c);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    auto mClone = m->clone();
+
+    compareModel(m, mClone);
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    EXPECT_EQ(p->printModel(m), p->printModel(mClone));
+}
+
+TEST(Clone, generateFromClonedModel)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    auto clonedModel = model->clone();
+
+    compareModel(model, clonedModel);
+
+    generator->processModel(clonedModel);
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    EXPECT_EQ(p->printModel(model), p->printModel(clonedModel));
 }
