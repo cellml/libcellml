@@ -339,4 +339,10 @@ bool Model::hasUnresolvedImports()
     return unresolvedImports;
 }
 
+ModelPtr Model::clone() const
+{
+    auto m = create();
+    return m;
+}
+
 } // namespace libcellml

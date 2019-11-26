@@ -418,3 +418,20 @@ TEST(Clone, componentWithImportAndChildren)
 
     compareComponent(c, cClone);
 }
+
+void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
+{
+    EXPECT_EQ(m1->id(), m2->id());
+    EXPECT_EQ(m1->name(), m2->name());
+}
+
+TEST(Clone, model)
+{
+    auto m = libcellml::Model::create();
+    m->setId("unique_model");
+    m->setName("model");
+
+    auto mClone = m->clone();
+
+    compareModel(m, mClone);
+}
