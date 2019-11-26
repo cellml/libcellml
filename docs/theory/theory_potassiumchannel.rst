@@ -59,10 +59,10 @@ follows \ [#]_:
 
 .. math::
 
-    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp{-0.1 \left( V + 65 \right)} - 1}
+    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp \left({-0.1 \left( V + 65 \right)}\right) - 1}
 
 
-    \beta_{n} = 0.125\exp{{\frac{- \left( V + 75 \right)}{80}}}
+    \beta_{n} = 0.125\exp{\left({\frac{- \left( V + 75 \right)}{80}\right)}}
 
 .. figure:: _static/images/volt_deps_of_gate_consts.png
    :name: ocr_tut_volt_deps_gates
@@ -87,18 +87,18 @@ Note that under steady state conditions when
 The voltage dependence of the steady state channel conductance is then:
 
 .. math::
-    g_{\text{SS}} = \left( \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} \right)^{4}.\bar{g}_{Y}
+    g_{SS} = \left( \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} \right)^{4}.\bar{g}_{Y}
 
 (see :numref:`ocr_tut_volt_deps_gates`). The steady state current-voltage
 relation for the channel is illustrated in :numref:`ocr_tut_ss_cur_volt`.
 
 Defining components serves two purposes: it preserves a modular
 structure for CellML models, and allows these component modules to be
-imported into other models, as we will illustrate later in
+imported into other models, as illustrated in
 :ref:`Tutorial 5<tutorial5>`. For the
 potassium channel model we define components representing (i) the
 environment, (ii) the potassium channel conductivity, and (iii) the
-dynamics of the n-gate.
+dynamics of the :math:`n`-gate.
 
 .. figure:: _static/images/ss_cur_volt.png
    :name: ocr_tut_ss_cur_volt
@@ -108,8 +108,9 @@ dynamics of the n-gate.
 
    The steady-state current-voltage relation for the potassium channel.
 
-Since certain variables (t, V and n) are shared between components, we
-need to also define the component maps as indicated in the *CellML Text*
+Since certain variables (:math:`t`, :math:`V` and :math:`n`) are shared
+between components, we need to also define the component maps as
+indicated in the *CellML Text*
 view below. **TODO**
 
 
