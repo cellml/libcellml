@@ -63,6 +63,9 @@
 %feature("docstring") libcellml::Reset::resetValueId
 "Returns the :class: reset_value id string of this reset.";
 
+%feature("docstring") libcellml::Reset::clone
+"Create a copy of this reset.";
+
 #if defined(SWIGPYTHON)
     // Allow any type of input to be converted to bool
     %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }

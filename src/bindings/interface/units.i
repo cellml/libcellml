@@ -76,6 +76,9 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::scalingFactor
 "Returns the scaling factor between two Units objects.";
 
+%feature("docstring") libcellml::Units::clone
+"Create a copy of this units.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
