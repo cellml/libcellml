@@ -32,6 +32,8 @@ limitations under the License.
 
 #include "utilities.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 /**
@@ -339,9 +341,192 @@ bool Model::hasUnresolvedImports()
     return unresolvedImports;
 }
 
+using IndexStack = std::vector< size_t >;
+using EquivalenceMap = std::map< IndexStack, std::vector< IndexStack > >; /**< Type definition for map of variable equivalences defined over model. */
+
+size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable)
+{
+    size_t index = 0;
+    bool found = false;
+    while (index < component->variableCount() && !found) {
+        if (component->variable(index) == variable) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    if (!found) {
+        Debug() << "Not found variable in parent Component!!!!";
+    }
+    return index;
+}
+
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component)
+{
+    size_t index = 0;
+    bool found = false;
+    while (index < componentParent->componentCount() && !found) {
+        if (componentParent->component(index) == component) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    if (!found) {
+        Debug() << "Not found component in parent Entity!!!!";
+    }
+    return index;
+}
+
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
+{
+    IndexStack indexStack;
+    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+    indexStack.push_back(getVariableIndexInComponent(component, variable));
+
+    ComponentEntityPtr parent = component;
+    ComponentEntityPtr grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
+    while (grandParent != nullptr) {
+        indexStack.push_back(getComponentIndexInComponentEntity(grandParent, parent));
+        parent = grandParent;
+        grandParent = std::dynamic_pointer_cast<ComponentEntity>(grandParent->parent());
+    }
+
+    std::reverse(std::begin(indexStack), std::end(indexStack));
+
+    return indexStack;
+}
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto variable = component->variable(index);
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            if (j == 0) {
+                indexStack.push_back(index);
+            }
+            auto equivalentVariable = variable->equivalentVariable(j);
+            auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
+            if (equivalenceMap.count(indexStack) == 0) {
+                equivalenceMap[indexStack] = std::vector< IndexStack >();
+            }
+            equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
+        }
+        if (variable->equivalentVariableCount()) {
+            indexStack.pop_back();
+        }
+    }
+}
+
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        indexStack.push_back(index);
+        auto c = component->component(index);
+        recordVariableEquivalences(c, map, indexStack);
+        generateEquivalenceMap(c, map, indexStack);
+        indexStack.pop_back();
+    }
+}
+
+EquivalenceMap generateEquivalenceMap(std::shared_ptr<const libcellml::Model> model)
+{
+    EquivalenceMap map;
+
+    IndexStack indexStack;
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        indexStack.push_back(index);
+        auto c = model->component(index);
+        recordVariableEquivalences(c, map, indexStack);
+        generateEquivalenceMap(c, map, indexStack);
+        indexStack.pop_back();
+    }
+
+    return map;
+}
+
+VariablePtr getVariableLocatedAt(const IndexStack &stack, ModelPtr model)
+{
+    ComponentPtr component;
+    for (size_t index = 0; index < stack.size() - 1; ++index) {
+        if (index == 0) {
+            component = model->component(stack.at(index));
+        } else {
+            component = component->component(stack.at(index));
+        }
+    }
+
+    return component->variable(stack.back());
+}
+
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, ModelPtr model)
+{
+    auto v1 = getVariableLocatedAt(stack1, model);
+    auto v2 = getVariableLocatedAt(stack2, model);
+    Variable::addEquivalence(v1, v2);
+}
+
+void applyEquivalenceMapToModel(const EquivalenceMap &map, ModelPtr model)
+{
+    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
+        auto key = iter->first;
+        auto vector = iter->second;
+        for (auto vectorIter = vector.begin(); vectorIter < vector.end(); ++vectorIter) {
+            makeEquivalence(key, *vectorIter, model);
+        }
+    }
+}
+
+void printStack(const IndexStack &stack)
+{
+    Debug(false) << "[";
+    for (auto iter = stack.begin(); iter < stack.end(); ++iter) {
+        Debug(false) << *iter;
+        if (iter + 1 < stack.end()) {
+            Debug(false) << ", ";
+        }
+    }
+    Debug() << "]";
+}
+
+void printEquivalenceMap(const EquivalenceMap &map)
+{
+    Debug() << "Print out of equivalence map";
+    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
+        auto key = iter->first;
+        Debug(false) << "key: ";
+        printStack(key);
+        auto vector = iter->second;
+        for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
+            Debug(false) << "value: ";
+            printStack(*vectorIt);
+        }
+    }
+}
+
 ModelPtr Model::clone() const
 {
     auto m = create();
+
+    m->setId(id());
+    m->setName(name());
+
+    m->setEncapsulationId(encapsulationId());
+
+    for (size_t index = 0; index < mPimpl->mUnits.size(); ++index) {
+        m->addUnits(units(index)->clone());
+    }
+
+    for (size_t index = 0; index < componentCount(); ++index) {
+        m->addComponent(component(index)->clone());
+    }
+
+    auto map = generateEquivalenceMap(shared_from_this());
+    applyEquivalenceMapToModel(map, m);
+//    printEquivalenceMap(map);
+
     return m;
 }
 
