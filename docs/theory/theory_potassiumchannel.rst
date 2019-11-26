@@ -123,8 +123,8 @@ walls.  This is done by creating *equivalent variable maps*, where a variable
 in one component is mapped through an interface to a corresponding variable in
 another.  More information about how components can be nested to
 create a hierarchical *encapsulation structure* is shown in more detail in
-the next chapter, `A model of a sodium channel<theory_sodiumchannel>` and
-demonstrated in `Tutorial 5<../tutorials/tutorial5/outline5>`.
+the next chapter, :ref:`A model of a sodium channel<theory_sodiumchannel>` and
+demonstrated in :ref:`Tutorial 5<../tutorials/tutorial5/outline5>`.
 
 **TODO image here of model structure for equivalent variables**
 
