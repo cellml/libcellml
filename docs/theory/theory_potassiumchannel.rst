@@ -59,8 +59,7 @@ follows \ [#]_:
 
 .. math::
 
-    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp \left({-0.1 \left( V + 65 \right)}\right) - 1}
-
+    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp \left({-0.1 \left( V + 65 \right)}\right) - 1} \\[30pt]
     \beta_{n} = 0.125\exp{\left( \frac{- \left( V + 75 \right) } {80} \right) }
 
 .. figure:: _static/images/volt_deps_of_gate_consts.png
