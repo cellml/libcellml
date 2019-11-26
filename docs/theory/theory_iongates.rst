@@ -12,7 +12,7 @@ ion channel. Before we describe the
 gating behaviour of an ion channel, however, we need to explain the
 concepts of the 'Nernst potential' and channel conductance.
 
-An ion channel is a protein or protein complex embedded in the bilipid
+An ion channel is a protein or protein complex embedded in the bi-lipid
 membrane surrounding a cell and containing a pore through which an ion
 :math:`Y^{+}` (or :math:`Y^{-}`) can pass when the channel is open. If
 the concentration of this ion is
@@ -21,11 +21,10 @@ the concentration of this ion is
 driving an ion through the pore is calculated from the change in
 *entropy*.
 
-.. figure:: _static/images/distribution_microstates.png
+.. figure:: images/distribution_microstates.png
    :name: ocr_tut_dist_ust
    :alt: Distribution of microstates
-   :align: right
-   :figwidth: 300
+   :align: centre
 
    Distribution of microstates in a system :cite:`11`. The 16 particles in a
    confined region (left) have only one possible arrangement (W = 1) and
@@ -64,7 +63,6 @@ entropy) is therefore
     \Delta q = T\Delta S = k_{B}T\left( \ln{\left\lbrack Y^{+} \right\rbrack_{o} - \ln\left\lbrack Y^{+} \right\rbrack_{i}} \right) = k_{B}T\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
     ( J.ion^{-1} )
 
-
 or
 
 .. math::
@@ -78,7 +76,7 @@ or
 is the 'universal gas constant'\ [#]_.
 At 25°C (298K), :math:`\text{RT} \approx 2.5 kJ.mol^{-1}`.
 
-.. figure:: _static/images/balance_forces.png
+.. figure:: images/balance_forces.png
    :name: ocr_tut_bal_force
    :alt: Balance of entropic and electrostatic forces
    :align: right
@@ -121,7 +119,7 @@ where :math:`E_{Y}` is the 'equilibrium' or 'Nernst' potential for
 :math:`\frac{\text{RT}}{F} =
 \frac{2.5x10^{3}\ }{0.96x10^{5}} (J.C^{-1}) \approx 25mV`.
 
-.. figure:: _static/images/open_ch_linear_iv.png
+.. figure:: images/open_ch_linear_iv.png
    :name: ocr_tut_open_ch_iv
    :alt: Open channel linear IV
    :align: right
@@ -142,7 +140,7 @@ This defines a linear current-voltage relation ('Ohms law') as shown in
 :numref:`ocr_tut_open_ch_iv`. The gates to be discussed below modify this
 open channel conductance.
 
-.. figure:: _static/images/ion_ch_gating.png
+.. figure:: images/ion_ch_gating.png
    :name: ocr_tut_ion_ch_gating
    :alt: Ion channel gating kinetics
    :align: right
@@ -152,7 +150,7 @@ open channel conductance.
    state. :math:`\alpha_n` and :math:`\beta_n` are the rate constants for
    opening and closing, respectively.
 
-.. figure:: _static/images/transient_beh_gates.png
+.. figure:: images/transient_beh_gates.png
    :name: ocr_tut_trans_gate_beh
    :alt: Transient gate behaviour
    :align: right
@@ -212,7 +210,7 @@ is the steady state current through the open gate.
 The solution of these equations for the parameters indicated above is
 illustrated in :numref:`ocr_tut_ocr_4_ion_ch`.
 
-.. figure:: _static/images/opencor_four_gate_ion_channel.png
+.. figure:: images/opencor_four_gate_ion_channel.png
    :name: ocr_tut_ocr_4_ion_ch
    :alt: OpenCOR solution to 4 gate ion channel model
    :align: center

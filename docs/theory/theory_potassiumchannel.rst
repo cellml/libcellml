@@ -11,7 +11,7 @@ discussed in :ref:`the last chapter<theory_iongates>` to
 the Hodgkin and Huxley (HH) potassium channel. Following the convention
 introduced by Hodgkin and Huxley, the gating variable for the potassium
 channel is :math:`n` and the number of gates in series is
-:math:`\gamma = 4`, therefore
+:math:`\gamma = 4`, therefore:
 
 .. math::
 
