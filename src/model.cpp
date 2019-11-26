@@ -408,22 +408,6 @@ void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, 
     }
 }
 
-EquivalenceMap generateEquivalenceMap(const std::shared_ptr<const libcellml::Model> &model)
-{
-    EquivalenceMap map;
-
-    IndexStack indexStack;
-    for (size_t index = 0; index < model->componentCount(); ++index) {
-        indexStack.push_back(index);
-        auto c = model->component(index);
-        recordVariableEquivalences(c, map, indexStack);
-        generateEquivalenceMap(c, map, indexStack);
-        indexStack.pop_back();
-    }
-
-    return map;
-}
-
 VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model)
 {
     ComponentPtr component;
@@ -473,7 +457,16 @@ ModelPtr Model::clone() const
         m->addComponent(component(index)->clone());
     }
 
-    auto map = generateEquivalenceMap(shared_from_this());
+    // Generate equivalence map starting from the models components.
+    EquivalenceMap map;
+    IndexStack indexStack;
+    for (size_t index = 0; index < componentCount(); ++index) {
+        indexStack.push_back(index);
+        auto c = component(index);
+        recordVariableEquivalences(c, map, indexStack);
+        generateEquivalenceMap(c, map, indexStack);
+        indexStack.pop_back();
+    }
     applyEquivalenceMapToModel(map, m);
 
     return m;
