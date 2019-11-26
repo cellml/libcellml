@@ -464,52 +464,43 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
-void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &map, double exp = 1.0)
+void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap, double exp = 1.0)
 {
-    //need a check here to deal with imports
-
-    // First we deal with case if unit is baseUnit
     if (units->isBaseUnit()) {
-        // Check for imports, otherwise throw units into the map, with associated exponent
-
-        // Find and check if the base unit already exists in the map. If it does, add the relevant exponent to
-        // the current exponent amount
-        if (map.find(units->name) == map.end()) {
-            map.emplace(std::make_pair(units->name, 1.0));
+        auto found = unitMap.find(units->name());
+        if (found == unitMap.end()) {
+            unitMap.emplace(units->name(), 1.0);
         } else {
-            auto unit = map.find(units->name);
+            auto unit = unitMap.find(units->name());
             unit->second += exp;
         }
-    } else if (isStandardUnitName(units->name)) {
-        // We grab our units through map in utilities
-        auto unit = standardUnitsList.find(units->name);
+
+    } else if (isStandardUnitName(units->name())) {
+        auto unit = standardUnitsList.find(units->name());
         for (auto u : unit->second) {
-            if (map.find(u.first) == map.end()) {
-                map.emplace(u);
+            if (unitMap.find(u.first) == unitMap.end()) {
+                unitMap.emplace(u.first, u.second);
             } else {
-                auto e = map.find(u.first);
-                e->second += u.second * exp; // adding associated base exponent (times exp???)
+                auto ut = unitMap.find(u.first);
+                ut->second += u.second * exp; // adding associated base exponent
             }
         }
 
     } else {
-        // for loop going through and grabbing base units. probably need to use recursion for this one;
-        // recursively call createUnitMap
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
             std::string pre;
             std::string id;
-            double mult;
             double expMult;
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             if (isStandardUnitName(ref)) {
-                auto unit = standardUnitsList.find(units->name);
+                auto unit = standardUnitsList.find(ref);
                 for (auto u : unit->second) {
-                    if (map.find(u.first) == map.end()) {
-                        map.emplace(u);
+                    if (unitMap.find(u.first) == unitMap.end()) {
+                        unitMap.emplace(u.first, u.second);
                     } else {
-                        auto e = map.find(u.first);
-                        e->second += u.second * exp; // adding associated base exponent (times exp???)
+                        auto ut = unitMap.find(u.first);
+                        ut->second += u.second * exp;
                     }
                 }
             } else {
@@ -517,10 +508,10 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &map, do
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
-                        map.clear();
+                        unitMap.clear();
                         break;
                     }
-                    createUnitMap(refUnits, map, exp);
+                    createUnitMap(refUnits, unitMap, exp); // recursively add units to the map
                 }
             }
         }
