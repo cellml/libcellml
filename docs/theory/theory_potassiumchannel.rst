@@ -71,8 +71,8 @@ follows \ [#]_:
 
    Voltage dependence of rate constants :math:`\alpha_n` and
    :math:`\beta_n (\text{ms}^{-1})`,
-   time constant :math:`\tau_n (\text{ ms})` and
-   relative conductance :math:`\frac{g_{SS}}{\bar{g}_Y}`.
+   time constant :math:`\tau_n (\text{ms})` and
+   relative conductance :math:`\frac{g_{ss}}{\bar{g}_Y}`.
 
 Note that under steady state conditions when
 :math:`t \rightarrow \infty` and
@@ -86,7 +86,7 @@ Note that under steady state conditions when
 The voltage dependence of the steady state channel conductance is then:
 
 .. math::
-    g_{SS} = \left( \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} \right)^{4}.\bar{g}_{Y}
+    g_{ss} = \left( \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} \right)^{4}.\bar{g}_{Y}
 
 (see :numref:`ocr_tut_volt_deps_gates`). The steady state current-voltage
 relation for the channel is illustrated in :numref:`ocr_tut_ss_cur_volt`.
@@ -127,6 +127,7 @@ along the axon to generate an action potential.
 
 .. [#] The original expression in the HH paper used
        :math:`\alpha_n = \frac{0.01(v+10)}{e^{\frac{(v+10)}{10}}-1}` and
-       :math:`\beta_n = 0.125e^{\frac{v}{80}}`, where :math:`v` is defined
+       :math:`\beta_n = 0.125\exp \left( {\frac{v}{80}} \right)`, where
+       :math:`v` is defined
        relative to the resting potential (:math:`-75\text{mV}`) with +ve
        corresponding to +ve *inward* current and :math:`v = -(V+75)`.
