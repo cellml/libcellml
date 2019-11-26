@@ -16,17 +16,17 @@ allows a brief window current to pass through the channel. Therefore,
 
 .. math::
 
-   i_{\text{Na}} = \bar{i}_{\text{Na}}m^{3}h = m^{3}{h.}\bar{g}_{\text{Na}}\left( V - E_{\text{Na}} \right)
+   i_{Na} = \bar{i}_{Na}m^{3}h = m^{3}{h.}\bar{g}_{Na}\left( V - E_{Na} \right)
 
-where :math:`\bar{g}_{\text{Na}} = \ `\ 120
+where :math:`\bar{g}_{Na} = \ `\ 120
 mS.cm\ :sup:`-2`, and with
-:math:`\left\lbrack \text{Na}^{+} \right\rbrack_{i}`\ = 30mM and
-:math:`\left\lbrack \text{Na}^{+} \right\rbrack_{o}`\ = 140mM, the
+:math:`\left\lbrack Na^{+} \right\rbrack_{i}`\ = 30mM and
+:math:`\left\lbrack Na^{+} \right\rbrack_{o}`\ = 140mM, the
 Nernst potential for the sodium channel (z=1) is:
 
 .. math::
 
-   E_{\text{Na}} = \frac{\text{RT}}{\text{zF}}ln\frac{\left\lbrack \text{Na}^{+} \right\rbrack_{o}}{\left\lbrack \text{Na}^{+} \right\rbrack_{i}} = 25\ ln\frac{140}{30} = 35\text{mV}.
+   E_{Na} = \frac{\text{RT}}{\text{zF}}ln\frac{\left\lbrack Na^{+} \right\rbrack_{o}}{\left\lbrack Na^{+} \right\rbrack_{i}} = 25\ ln\frac{140}{30} = 35\text{mV}.
 
 The gating kinetics are described by:
 
@@ -117,8 +117,8 @@ Results
 The results of the computation, with an end time of 40 and
 time interval of 0.1, are shown in :numref:`ocr_tut_kin_na_ch_vs` with
 plots :math:`V\left( t \right)`, :math:`m\left( t \right)`,
-:math:`h\left( t \right)`, :math:`g_{\text{Na}}\left( t \right)` and
-:math:`i_{\text{Na}}(t)` for voltage steps from (a) -85mV to -20mV,
+:math:`h\left( t \right)`, :math:`g_{Na}\left( t \right)` and
+:math:`i_{Na}(t)` for voltage steps from (a) -85mV to -20mV,
 (b) -85mV to 0mV and (c) -85mV to 20mV. There are several
 things to note:
 
@@ -138,14 +138,14 @@ iii. The sodium channel conductance rises (*activates*) and then falls
      stepping the voltage back to its resting value – that is, *deactivating*
      it.
 
-iv.  The only time current :math:`i_{\text{Na}}` flows through the
+iv.  The only time current :math:`i_{Na}` flows through the
      sodium channel is during the brief period when the :math:`m`-gate is
      rapidly opening and the much slower :math:`h`-gate is beginning to close.
      A small current flows during the reverse voltage step but this is at
      a time when the :math:`h`-gate is now firmly off so the magnitude is very
      small.
 
-v.   The large sodium current :math:`i_{\text{Na}}` is an inward current
+v.   The large sodium current :math:`i_{Na}` is an inward current
      and hence negative.
 
 Note that the bottom trace does not quite line up at t=0 because the
