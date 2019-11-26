@@ -254,15 +254,22 @@ TEST(Clone, resetAllIdsSet)
     compareReset(r, rClone);
 }
 
-void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2)
+void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr)
 {
     EXPECT_EQ(c1->name(), c2->name());
     EXPECT_EQ(c1->id(), c2->id());
     EXPECT_EQ(c1->isImport(), c2->isImport());
+    EXPECT_EQ(c1->importSource(), c2->importSource());
+    EXPECT_EQ(c1->importReference(), c2->importReference());
     EXPECT_EQ(c1->componentCount(), c2->componentCount());
     EXPECT_EQ(c1->resetCount(), c2->resetCount());
     EXPECT_EQ(c1->variableCount(), c2->variableCount());
-    EXPECT_EQ(nullptr, c2->parent());
+    EXPECT_EQ(expectedParent, c2->parent());
+    for (size_t index = 0; index < c1->componentCount(); ++index) {
+        auto c1i = c1->component(index);
+        auto c2i = c2->component(index);
+        compareComponent(c1i, c2i, c2);
+    }
 }
 
 TEST(Clone, component)
@@ -280,19 +287,21 @@ TEST(Clone, component)
     EXPECT_NE(c->name(), cClone->name());
 }
 
-TEST(Clone, componentWithVariable)
+TEST(Clone, componentWithVariables)
 {
     auto c = libcellml::Component::create();
     auto u = libcellml::Units::create();
-    auto v = libcellml::Variable::create();
+    auto v1 = libcellml::Variable::create();
+    auto v2 = libcellml::Variable::create();
 
     u->setName("daves");
-    v->setUnits(u);
+    v1->setUnits(u);
 
     c->setId("unique");
     c->setName("copy");
 
-    c->addVariable(v);
+    c->addVariable(v1);
+    c->addVariable(v2);
 
     auto cClone = c->clone();
 
@@ -310,6 +319,60 @@ TEST(Clone, componentWithResets)
 
     c->addReset(r1);
     c->addReset(r2);
+
+    auto cClone = c->clone();
+
+    compareComponent(c, cClone);
+}
+
+TEST(Clone, componentWithChildren)
+{
+    auto c = libcellml::Component::create();
+    auto c1 = libcellml::Component::create();
+    auto c2 = libcellml::Component::create();
+
+    c->setId("unique");
+    c->setName("copy");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+
+    auto cClone = c->clone();
+
+    compareComponent(c, cClone);
+}
+
+TEST(Clone, componentWithImport)
+{
+    auto c = libcellml::Component::create();
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("some-other-model.xml");
+
+    c->setId("unique");
+    c->setName("copy");
+    c->setSourceComponent(import, "imported_component_name");
+
+    auto cClone = c->clone();
+
+    compareComponent(c, cClone);
+}
+
+TEST(Clone, componentWithImportAndChildren)
+{
+    auto c = libcellml::Component::create();
+    auto c1 = libcellml::Component::create();
+    auto c2 = libcellml::Component::create();
+    auto import = libcellml::ImportSource::create();
+
+    import->setUrl("some-other-model.xml");
+    c->setId("unique");
+    c->setName("copy");
+    c1->setName("child_1");
+    c2->setName("child_2");
+
+    c->addComponent(c1);
+    c->addComponent(c2);
+    c->setSourceComponent(import, "my_component_name");
 
     auto cClone = c->clone();
 

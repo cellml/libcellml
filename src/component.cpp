@@ -203,8 +203,7 @@ VariablePtr Component::variable(const std::string &name) const
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr res = nullptr;
-    res = variable(index);
+    VariablePtr res = variable(index);
     removeVariable(index);
 
     return res;
@@ -212,8 +211,7 @@ VariablePtr Component::takeVariable(size_t index)
 
 VariablePtr Component::takeVariable(const std::string &name)
 {
-    VariablePtr res = nullptr;
-    res = variable(name);
+    VariablePtr res = variable(name);
     removeVariable(name);
 
     return res;
@@ -291,6 +289,9 @@ ComponentPtr Component::clone() const
     c->setId(id());
     c->setName(name());
     c->setMath(math());
+
+    c->setImportSource(importSource());
+    c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
         auto v = variable(index);
