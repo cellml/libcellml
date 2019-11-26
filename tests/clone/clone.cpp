@@ -154,24 +154,6 @@ TEST(Clone, variableWithUnitsPtrSet)
     EXPECT_EQ(nullptr, vClone->units()->parent());
 }
 
-TEST(Clone, variableWithEquivalences)
-{
-    auto m = libcellml::Model::create();
-    auto u = libcellml::Units::create();
-    u->setName("daves");
-    m->addUnits(u);
-
-    auto c = libcellml::Component::create();
-    m->addComponent(c);
-
-    auto v = libcellml::Variable::create();
-    v->setUnits(u);
-
-    c->addVariable(v);
-
-    auto vClone = v->clone(true);
-}
-
 TEST(Clone, variableInModel)
 {
     auto m = libcellml::Model::create();
@@ -188,21 +170,148 @@ TEST(Clone, variableInModel)
     c->addVariable(v);
 
     auto vClone = v->clone();
+
     EXPECT_EQ(nullptr, vClone->parent());
     EXPECT_NE(v->units(), vClone->units());
     EXPECT_EQ(nullptr, vClone->units()->parent());
 }
 
+void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
+{
+    EXPECT_EQ(r1->id(), r2->id());
+    EXPECT_EQ(r1->order(), r2->order());
+    if (r1->variable() != nullptr) {
+        EXPECT_NE(r1->variable(), r2->variable());
+        EXPECT_EQ(r1->variable()->name(), r2->variable()->name());
+    }
+    if (r1->testVariable() != nullptr) {
+        EXPECT_NE(r1->testVariable(), r2->testVariable());
+        EXPECT_EQ(r1->testVariable()->name(), r2->testVariable()->name());
+    }
+}
+
+TEST(Clone, reset)
+{
+    auto r = libcellml::Reset::create();
+    r->setId("unique");
+    r->setOrder(32);
+
+    auto rClone = r->clone();
+
+    compareReset(r, rClone);
+}
+
+TEST(Clone, resetWithVariable)
+{
+    auto r = libcellml::Reset::create();
+    auto v = libcellml::Variable::create();
+
+    r->setId("unique");
+    r->setOrder(22);
+    r->setVariable(v);
+
+    auto rClone = r->clone();
+
+    compareReset(r, rClone);
+}
+
+TEST(Clone, resetWithTestVariable)
+{
+    auto r = libcellml::Reset::create();
+    auto v = libcellml::Variable::create();
+
+    r->setId("unique");
+    r->setOrder(43);
+    r->setTestVariable(v);
+
+    auto rClone = r->clone();
+
+    compareReset(r, rClone);
+}
+
+TEST(Clone, resetWithMath)
+{
+    auto r = libcellml::Reset::create();
+    r->setId("unique");
+    r->setOrder(32);
+    r->setTestValue(NON_EMPTY_MATH);
+    r->setResetValue(EMPTY_MATH);
+
+    auto rClone = r->clone();
+
+    compareReset(r, rClone);
+}
+
+TEST(Clone, resetAllIdsSet)
+{
+    auto r = libcellml::Reset::create();
+    r->setId("unique");
+    r->setResetValueId("rId");
+    r->setTestValueId("tId");
+
+    auto rClone = r->clone();
+
+    compareReset(r, rClone);
+}
+
+void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2)
+{
+    EXPECT_EQ(c1->name(), c2->name());
+    EXPECT_EQ(c1->id(), c2->id());
+    EXPECT_EQ(c1->isImport(), c2->isImport());
+    EXPECT_EQ(c1->componentCount(), c2->componentCount());
+    EXPECT_EQ(c1->resetCount(), c2->resetCount());
+    EXPECT_EQ(c1->variableCount(), c2->variableCount());
+    EXPECT_EQ(nullptr, c2->parent());
+}
+
 TEST(Clone, component)
 {
     auto c = libcellml::Component::create();
+    c->setId("unique");
     c->setName("copy");
+    c->setMath(NON_EMPTY_MATH);
 
     auto cClone = c->clone();
 
-    EXPECT_EQ(c->name(), cClone->name());
+    compareComponent(c, cClone);
 
     cClone->setName("on_my_own");
     EXPECT_NE(c->name(), cClone->name());
 }
 
+TEST(Clone, componentWithVariable)
+{
+    auto c = libcellml::Component::create();
+    auto u = libcellml::Units::create();
+    auto v = libcellml::Variable::create();
+
+    u->setName("daves");
+    v->setUnits(u);
+
+    c->setId("unique");
+    c->setName("copy");
+
+    c->addVariable(v);
+
+    auto cClone = c->clone();
+
+    compareComponent(c, cClone);
+}
+
+TEST(Clone, componentWithResets)
+{
+    auto c = libcellml::Component::create();
+    auto r1 = libcellml::Reset::create();
+    auto r2 = libcellml::Reset::create();
+
+    c->setId("unique");
+    c->setName("copy");
+
+    c->addReset(r1);
+    c->addReset(r2);
+
+    auto cClone = c->clone();
+
+    compareComponent(c, cClone);
+}

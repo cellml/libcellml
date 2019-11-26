@@ -20,8 +20,10 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+
 #include "utilities.h"
 
 namespace libcellml {
@@ -284,7 +286,28 @@ bool Component::hasReset(const ResetPtr &reset) const
 
 ComponentPtr Component::clone() const
 {
-    return create();
+    auto c = create();
+
+    c->setId(id());
+    c->setName(name());
+    c->setMath(math());
+
+    for (size_t index = 0; index < variableCount(); ++index) {
+        auto v = variable(index);
+        c->addVariable(v->clone());
+    }
+
+    for (size_t index = 0; index < resetCount(); ++index) {
+        auto r = reset(index);
+        c->addReset(r->clone());
+    }
+
+    for (size_t index = 0; index < componentCount(); ++index) {
+        auto cChild = component(index);
+        c->addComponent(cChild->clone());
+    }
+
+    return c;
 }
 
 } // namespace libcellml

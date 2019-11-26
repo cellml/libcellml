@@ -19,6 +19,8 @@ limitations under the License.
 #include <algorithm>
 #include <vector>
 
+#include "libcellml/variable.h"
+
 namespace libcellml {
 
 /**
@@ -151,6 +153,26 @@ void Reset::removeResetValueId()
 std::string Reset::resetValueId() const
 {
     return mPimpl->mResetValueId;
+}
+
+ResetPtr Reset::clone() const
+{
+    auto r = create();
+
+    r->setId(id());
+    r->setOrder(order());
+    r->setResetValue(resetValue());
+    r->setResetValueId(resetValueId());
+    r->setTestValue(testValue());
+    r->setTestValueId(testValueId());
+    if (mPimpl->mVariable != nullptr) {
+        r->setVariable(mPimpl->mVariable->clone());
+    }
+    if (mPimpl->mTestVariable != nullptr) {
+        r->setTestVariable(mPimpl->mTestVariable->clone());
+    }
+
+    return r;
 }
 
 } // namespace libcellml
