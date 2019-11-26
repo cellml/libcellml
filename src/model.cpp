@@ -342,21 +342,6 @@ bool Model::hasUnresolvedImports()
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
 
-size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable)
-{
-    size_t index = 0;
-    bool found = false;
-    while (index < component->variableCount() && !found) {
-        if (component->variable(index) == variable) {
-            found = true;
-        } else {
-            ++index;
-        }
-    }
-
-    return index;
-}
-
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component)
 {
     size_t index = 0;
