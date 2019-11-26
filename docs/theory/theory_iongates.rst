@@ -21,60 +21,77 @@ the concentration of this ion is
 driving an ion through the pore is calculated from the change in
 *entropy*.
 
+
+.. _distribution_microstates:
 .. figure:: images/distribution_microstates.png
-   :name: ocr_tut_dist_ust
-   :alt: Distribution of microstates
-   :align: centre
+    :name: distribution_microstates
+    :alt: Distribution of microstates
+    :align: center
 
-   Distribution of microstates in a system :cite:`11`. The 16 particles in a
-   confined region (left) have only one possible arrangement (W = 1) and
-   therefore zero entropy (:math:`k_{B}\text{lnW}=0`). When the barrier is
-   removed and the number of possible locations for each particle increases
-   4x (right), the number of possible arrangements for the 16 particles
-   increases by 416 and the increase in entropy is therefore :math:`ln(416)`
-   or :math:`16ln4`. The thermal energy (temperature) of the previously
-   confined particles on the left has been redistributed in space to achieve
-   a more probable (higher entropy) state. If we now added more particles to
-   the container on the right, the concentration would increase and the entropy
-   would decrease.
+    Distribution of microstates in a system :cite:`11`. The 16 particles in a
+    confined region (left) have only one possible arrangement (:math:`W` = 1) and
+    therefore zero entropy (:math:`k_{B}\text{ln }W=0`). When the barrier is
+    removed and the number of possible locations for each particle increases
+    four-fold (right), the number of possible arrangements for the 16 particles
+    increases by 416 and the increase in entropy is therefore
+    :math:`\text{ln}(416)=16\text{ln}(4)`. The thermal energy (temperature)
+    of the previously
+    confined particles on the left has been redistributed in space to achieve
+    a more probable (higher entropy) state. If we now added more particles to
+    the container on the right, the concentration would increase and the entropy
+    would decrease.
 
-Entropy :math:`S` (:math:`J.K^{-1}`) is a measure of the number of
-microstates available to a system, as defined by Boltzmann’s equation
-:math:`S = k_{B}\text{lnW}`, where :math:`W` is the number of ways of
-arranging a given distribution of microstates of a system and
-:math:`k_{B}` is Boltzmann’s constant\ [#]_. The driving force for ion
-movement is the dispersal of energy into a more probable distribution
-(see :numref:`ocr_tut_dist_ust`; cf. the second law of thermodynamics\ [#]_).
 
-The energy change :math:`\Delta q` associated with this change of
-entropy :math:`\Delta S` at temperature :math:`T` is
-:math:`\Delta q = T\Delta S` (J).
-
-For a given volume of fluid the number of microstates :math:`W`
-available to a solute (and hence the entropy of the solute) at a high
-concentration is less than that for a low concentration\ [#]_. The
-energy difference driving ion movement from a high ion concentration
-:math:`\left\lbrack Y^{+} \right\rbrack_{i}` (lower entropy) to a lower
-ion concentration :math:`\left\lbrack Y^{+} \right\rbrack_{o}` (higher
-entropy) is therefore
+Entropy :math:`S` in :math:`J.K^{-1}` is a measure of the number of
+microstates available to a system, as defined by Boltzmann’s equation:
 
 .. math::
 
-    \Delta q = T\Delta S = k_{B}T\left( \ln{\left\lbrack Y^{+} \right\rbrack_{o} - \ln\left\lbrack Y^{+} \right\rbrack_{i}} \right) = k_{B}T\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
-    ( J.ion^{-1} )
+    S = k_{B}\ln W
+
+where :math:`W` is the number of ways of
+arranging a given distribution of microstates of a system and
+:math:`k_{B}` is Boltzmann’s constant \ [#]_. The driving force for ion
+movement is the dispersal of energy into a more probable distribution
+(see :numref:`distribution_microstates` ; cf. the second law of
+thermodynamics \ [#]_).
+
+The energy change :math:`\Delta q` associated with this change of
+entropy :math:`\Delta S` at temperature :math:`T` is
+:math:`\Delta q = T\Delta S` in :math:`J`.
+
+For a given volume of fluid the number of microstates :math:`W`
+available to a solute (and hence the entropy of the solute) at a high
+concentration is less than that for a low concentration \ [#]_. The
+energy difference which drives ion movement from a high ion concentration
+:math:`\left\lbrack Y^{+} \right\rbrack_{i}` (lower entropy) to a lower
+ion concentration :math:`\left\lbrack Y^{+} \right\rbrack_{o}` (higher
+entropy) is therefore:
+
+.. math::
+
+    \Delta q
+    = T\Delta S
+    = k_{B}T\left( \ln{\left\lbrack Y^{+} \right\rbrack_{o} - \ln\left\lbrack Y^{+} \right\rbrack_{i}} \right)
+    = k_{B}T\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
+    \text{    }(J.ion^{-1})
 
 or
 
 .. math::
 
     \Delta Q = RT\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
-    (:math:`J.mol^{-1}`).
+    \text{    in }J.mol^{-1}
+
+where
+
+.. math::
+
+    R = k_{B}N_{A} \approx 1.34x10^{-23}\text{ }(J.K^{-1}) \times 6.02\times10^{23}\text{ }(mol^{-1}) \approx 8.4\text{ }(J.mol^{-1}K^{-1})
 
 
-:math:`R = k_{B}N_{A} \approx 1.34x10^{-23} (J.K^{-1}) \text{x}
-6.02x10^{23} (mol^{-1}) \approx 8.4 (J.mol^{-1}K^{-1})`
 is the 'universal gas constant'\ [#]_.
-At 25°C (298K), :math:`\text{RT} \approx 2.5 kJ.mol^{-1}`.
+At 25°C (:math:`298K`), :math:`{RT} \approx 2.5 \text{ }(kJ.mol^{-1})`.
 
 .. figure:: images/balance_forces.png
    :name: ocr_tut_bal_force
@@ -88,17 +105,16 @@ Every positively charged ion that crosses the membrane raises the
 potential difference and produces an electrostatic driving force that
 opposes the entropic force (see :numref:`ocr_tut_bal_force`). To move an
 electron of
-charge *e* (:math:`\approx 1.6x10^{-19}` C) through a voltage change of
-:math:`\Delta\phi` (V) requires energy :math:`e\Delta\phi` (J) and
-therefore the energy needed to move an ion :math:`Y^{+}` of valence
-*z=1* (the number of charges per ion) through a voltage change of
-:math:`\Delta\phi` is :math:`\text{ze}\Delta\phi`
-(:math:`J.ion^{-1}`) or
+charge :math:`e` (:math:`\approx 1.6x10^{-19}` in :math:`C`) through a voltage
+change of :math:`\Delta\phi` (in :math:`V`) requires energy :math:`e\Delta\phi`
+(in :math:`J`) and therefore the energy needed to move an ion :math:`Y^{+}` of
+valence :math:`z=1` (the number of charges per ion) through a voltage change of
+:math:`\Delta\phi` is :math:`\text{ze}\Delta\phi` (in :math:`J.ion^{-1}`) or
 :math:`\text{ze}N_{A}\Delta\phi` (:math:`J.mol^{-1}`). Using Faraday's
 constant :math:`F = eN_{A}`, where
-:math:`F \approx 0.96x10^{5} C.mol^{-1}`, the change in energy
-density at the macroscopic scale is :math:`\text{zF}\Delta\phi`
-(:math:`J.mol^{-1}`).
+:math:`F \approx 0.96x10^{5}` (in :math:`C.mol^{-1}`), the change in energy
+density at the macroscopic scale is :math:`{zF}\Delta\phi` (in
+:math:`J.mol^{-1}`).
 
 No further movement of ions takes place when the force for entropy
 driven ion movement exactly equals the opposing electrostatic driving
@@ -106,17 +122,17 @@ force associated with charge movement:
 
 .. math::
 
-    \text{zF}\Delta\phi = \text{RT}\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
-    ( J.mol^{-1} ) or
+    {zF}\Delta\phi = RT\text{ln }\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}\text{  in }J.mol^{-1}
+
+or
 
 .. math::
 
-    \Delta\phi = E_{Y} = \frac{\text{RT}}{\text{zF}}\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
-    ( J.C^{-1} or V)
+    \Delta\phi = E_{Y} = \frac{RT}{zF}\text{ln }\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}\text{  in }J.C^{-1} or V
 
 where :math:`E_{Y}` is the 'equilibrium' or 'Nernst' potential for
 :math:`Y^{+}`. At 25°C (298K),
-:math:`\frac{\text{RT}}{F} =
+:math:`\frac{{RT}}{F} =
 \frac{2.5x10^{3}\ }{0.96x10^{5}} (J.C^{-1}) \approx 25mV`.
 
 .. figure:: images/open_ch_linear_iv.png
