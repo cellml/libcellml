@@ -473,8 +473,11 @@ UnitsPtr Units::clone() const
     units->setImportSource(importSource());
     units->setImportReference(importReference());
 
-    std::string reference, prefix, id;
-    double exponent, multiplier;
+    std::string reference;
+    std::string prefix;
+    std::string id;
+    double exponent;
+    double multiplier;
     for (size_t index = 0; index < mPimpl->mUnits.size(); ++index) {
         unitAttributes(index, reference, prefix, exponent, multiplier, id);
         units->addUnit(reference, prefix, exponent, multiplier, id);
