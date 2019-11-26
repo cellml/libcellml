@@ -24,8 +24,16 @@ void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
 {
     EXPECT_EQ(u1->unitCount(), u2->unitCount());
 
-    std::string reference1, prefix1, id1, reference2, prefix2, id2;
-    double exponent1, multiplier1, exponent2, multiplier2;
+    std::string reference1;
+    std::string prefix1;
+    std::string id1;
+    std::string reference2;
+    std::string prefix2;
+    std::string id2;
+    double exponent1;
+    double multiplier1;
+    double exponent2;
+    double multiplier2;
     for (size_t index = 0; index < u1->unitCount(); ++index) {
         u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
         u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
