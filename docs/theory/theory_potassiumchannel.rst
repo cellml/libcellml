@@ -91,16 +91,6 @@ The voltage dependence of the steady state channel conductance is then:
 (see :numref:`ocr_tut_volt_deps_gates`). The steady state current-voltage
 relation for the channel is illustrated in :numref:`ocr_tut_ss_cur_volt`.
 
-Interpretation into a CellML model
-----------------------------------
-Defining components serves two purposes: it preserves a modular
-structure for CellML models, and allows these component modules to be
-imported into other models, as demonstrated in
-:ref:`Tutorial 5<tutorial5>`. For the
-potassium channel model we define components representing (i) the
-environment, (ii) the potassium channel conductivity, and (iii) the
-dynamics of the :math:`n`-gate as shown in :numref:`ocr_tut_ss_cur_volt`.
-
 .. figure:: images/ss_cur_volt.png
    :name: ocr_tut_ss_cur_volt
    :alt: Steady-state current voltage
@@ -109,9 +99,19 @@ dynamics of the :math:`n`-gate as shown in :numref:`ocr_tut_ss_cur_volt`.
 
    The steady-state current-voltage relation for the potassium channel.
 
+Interpretation into a CellML model
+----------------------------------
+Defining components serves two purposes: it preserves a modular
+structure for CellML models, and allows these component modules to be
+imported into other models, as demonstrated in
+:ref:`Tutorial 5<tutorial5>`. For the
+potassium channel model we define components representing (i) the
+environment, (ii) the potassium channel conductivity, and (iii) the
+dynamics of the :math:`n`-gate as shown in **TODO**.
+
 Since certain variables (:math:`t`, :math:`V` and :math:`n`) are shared
 between components, we need to also define the component maps or equivalent
-variables as shown below.
+variables as described below.
 
 An aside: Equivalent variables
 ------------------------------
@@ -128,12 +128,15 @@ demonstrated in :ref:`Tutorial 5<tutorial5>`.
 
 **TODO image here of model structure for equivalent variables**
 
-This potassium channel model will be used later, along with a sodium
+This potassium channel model will be used - together with a sodium
 channel model (in :ref:`Tutorial 7<tutorial7>`) and a leakage channel
-model, to form the Hodgkin-Huxley
+model - to form the Hodgkin-Huxley
 neuron model (in :ref:`Tutorial 8<tutorial8>`), where the membrane ion
 channel current flows are coupled to the equations governing current flow
 along the axon to generate an action potential.
+
+The next chapter describes the theory behind the
+:ref:`sodium channel model<theory_sodiumchannel>`.
 
 ---------------------------
 
