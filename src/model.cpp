@@ -406,7 +406,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
             }
             equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
         }
-        if (variable->equivalentVariableCount()) {
+        if (variable->equivalentVariableCount() > 0) {
             indexStack.pop_back();
         }
     }
