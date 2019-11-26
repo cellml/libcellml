@@ -1135,6 +1135,7 @@ TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveDifferentBase)
 TEST(Units, compareDimensionallyComparableUnitsComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
     u->addUnit(libcellml::Units::StandardUnit::CANDELA, "micro", 2.0, 3.0);
 
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -1161,6 +1162,7 @@ TEST(Units, compareDimensionallyComparableUnitsComplex)
 TEST(Units, compareDimensionallyIncomparableComparableUnitsComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
     u->addUnit(libcellml::Units::StandardUnit::CANDELA, "micro", 2.0, 3.0);
 
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -1242,6 +1244,7 @@ TEST(Units, compareBothInputsNullptr)
 TEST(Units, compareUnitsEquivalentComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
     u->addUnit(libcellml::Units::StandardUnit::CANDELA, "micro", 2.0, 3.0);
 
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -1268,6 +1271,7 @@ TEST(Units, compareUnitsEquivalentComplex)
 TEST(Units, compareUnitsNotEquivalentComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
     u->addUnit(libcellml::Units::StandardUnit::CANDELA, "micro", 2.0, 3.0);
 
     libcellml::UnitsPtr u1 = libcellml::Units::create();
