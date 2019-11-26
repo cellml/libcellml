@@ -22,8 +22,8 @@ where :math:`\bar{g}_{K} = \ 36 \text{ mS.cm}^{-2}`,
 and with intra- and extra-cellular concentrations
 :math:`\left\lbrack K^{+} \right\rbrack_{i} = 90\text{ mM}` and
 :math:`\left\lbrack K^{+} \right\rbrack_{o} = 3\text{ mM}`, respectively, the
-Nernst potential for the potassium channel (:math:`z = 1` since one positive
-charge on :math:`K^{+}`) is:
+Nernst potential for the potassium channel (:math:`z = 1` representing the one
+positive charge on :math:`K^{+}`) is:
 
 .. math::
 
@@ -61,8 +61,7 @@ follows \ [#]_:
 
     \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{\exp \left({-0.1 \left( V + 65 \right)}\right) - 1}
 
-
-    \beta_{n} = 0.125\exp{\left({\frac{- \left( V + 75 \right)}{80}\right)}}
+    \beta_{n} = 0.125\exp{\left( \frac{- \left( V + 75 \right) } {80} \right) }
 
 .. figure:: _static/images/volt_deps_of_gate_consts.png
    :name: ocr_tut_volt_deps_gates
