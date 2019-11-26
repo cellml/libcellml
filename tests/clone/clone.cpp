@@ -310,6 +310,15 @@ void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::Compon
         auto c2i = c2->component(index);
         compareComponent(c1i, c2i, c2);
     }
+    for (size_t index = 0; index < c2->resetCount(); ++index) {
+        auto r = c2->reset(index);
+        if (r->variable() != nullptr) {
+            EXPECT_TRUE(c2->hasVariable(r->variable()));
+        }
+        if (r->testVariable() != nullptr) {
+            EXPECT_TRUE(c2->hasVariable(r->testVariable()));
+        }
+    }
 }
 
 TEST(Clone, component)
@@ -491,8 +500,13 @@ TEST(Clone, model)
 TEST(Clone, modelWithUnits)
 {
     auto m = libcellml::Model::create();
+    auto u = libcellml::Units::create();
+
+    u->setName("jangle");
     m->setId("unique_model");
     m->setName("model");
+
+    m->addUnits(u);
 
     auto mClone = m->clone();
 
@@ -516,6 +530,8 @@ TEST(Clone, modelWithComponents)
 
     c->addComponent(c1);
     c->addComponent(c2);
+
+    m->addComponent(c);
 
     auto mClone = m->clone();
 
