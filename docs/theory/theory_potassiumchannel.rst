@@ -7,7 +7,8 @@ A model of the potassium channel
 ================================
 
 We now deal specifically with the application of the ion channel model
-discussed in :ref:`the last chapter<theory_iongates>` to
+discussed in :ref:`the previous chapter on ion gates
+theory<theory_iongates>` to
 the Hodgkin and Huxley (HH) potassium channel. Following the convention
 introduced by Hodgkin and Huxley, the gating variable for the potassium
 channel is :math:`n` and the number of gates in series is
@@ -17,18 +18,18 @@ channel is :math:`n` and the number of gates in series is
 
     i_{K} = \bar{i_K}n^{4} = n^{4}\bar{g}_{K}\left( V - E_{K} \right)
 
-where :math:`\bar{g}_{K} = \ 36 \text{mS.cm}^{-2}`,
+where :math:`\bar{g}_{K} = \ 36 \text{ mS.cm}^{-2}`,
 and with intra- and extra-cellular concentrations
-:math:`\left\lbrack K^{+} \right\rbrack_{i} = 90\text{mM}` and
-:math:`\left\lbrack K^{+} \right\rbrack_{o} = 3\text{mM}`, respectively, the
+:math:`\left\lbrack K^{+} \right\rbrack_{i} = 90\text{ mM}` and
+:math:`\left\lbrack K^{+} \right\rbrack_{o} = 3\text{ mM}`, respectively, the
 Nernst potential for the potassium channel (:math:`z = 1` since one +ve charge
 on :math:`K^{+}`) is:
 
 .. math::
 
-    E_{k} = \frac{\text{RT}}{\text{zF}} ln\frac{\left\lbrack K^{+}
+    E_{k} = \frac{RT}{zF} \ln\frac{\left\lbrack K^{+}
     \right\rbrack_{o}}{\left\lbrack K^{+} \right\rbrack_{i}} =
-    25\text{ }ln\frac{3}{90} = - 85\text{mV}
+    25\text{ }\ln\frac{3}{90} = - 85\text{mV}
 
 As noted above, this is called the *equilibrium potential* since it is
 the potential across the cell membrane when the channel is open but no
@@ -53,13 +54,13 @@ The main difference from the gating model in our previous example is
 that Hodgkin and Huxley found it necessary to make the rate constants
 functions of the membrane potential :math:`V`
 (see :numref:`ocr_tut_volt_deps_gates`) as
-follows\ [#]_:
+follows \ [#]_:
 
 .. math::
 
-    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{e^{\frac{- \left( V + 65 \right)}{10}} - 1}
+    \alpha_{n} = \frac{- 0.01\left( V + 65 \right)}{exp{{\frac{- \left( V + 65 \right)}{10}}} - 1}
 
-    \beta_{n} = 0.125e^{\frac{- \left( V + 75 \right)}{80}}
+    \beta_{n} = 0.125\exp{{\frac{- \left( V + 75 \right)}{80}}}
 
 .. figure:: _static/images/volt_deps_of_gate_consts.png
    :name: ocr_tut_volt_deps_gates
@@ -69,7 +70,7 @@ follows\ [#]_:
 
    Voltage dependence of rate constants :math:`\alpha_n` and
    :math:`\beta_n (\text{ms}^{-1})`,
-   time constant :math:`\tau_n (\text{ms})` and
+   time constant :math:`\tau_n (\text{ ms})` and
    relative conductance :math:`\frac{g_{SS}}{\bar{g}_Y}`.
 
 Note that under steady state conditions when
