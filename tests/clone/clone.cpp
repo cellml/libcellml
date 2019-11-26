@@ -93,6 +93,20 @@ TEST(Clone, unitsImportedUnits)
     compareUnits(u, uClone);
 }
 
+TEST(Clone, unitsWithUnit)
+{
+    auto u = libcellml::Units::create();
+
+    u->setId("unique_id");
+    u->setName("units");
+    u->addUnit(libcellml::Units::StandardUnit::LUMEN);
+    u->addUnit("meter", "milli", -2.0);
+
+    auto uClone = u->clone();
+
+    compareUnits(u, uClone);
+}
+
 TEST(Clone, unitsImportedUnitsWithAdditionalUnit)
 {
     auto u = libcellml::Units::create();
