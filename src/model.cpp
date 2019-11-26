@@ -32,8 +32,6 @@ limitations under the License.
 
 #include "utilities.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 /**
@@ -356,9 +354,6 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
         }
     }
 
-    if (!found) {
-        Debug() << "Not found variable in parent Component!!!!";
-    }
     return index;
 }
 
@@ -374,9 +369,6 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
         }
     }
 
-    if (!found) {
-        Debug() << "Not found component in parent Entity!!!!";
-    }
     return index;
 }
 
@@ -479,6 +471,7 @@ void applyEquivalenceMapToModel(const EquivalenceMap &map, ModelPtr model)
     }
 }
 
+/*
 void printStack(const IndexStack &stack)
 {
     Debug(false) << "[";
@@ -505,6 +498,7 @@ void printEquivalenceMap(const EquivalenceMap &map)
         }
     }
 }
+*/
 
 ModelPtr Model::clone() const
 {
