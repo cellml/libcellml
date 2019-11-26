@@ -423,7 +423,7 @@ void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, 
     }
 }
 
-EquivalenceMap generateEquivalenceMap(std::shared_ptr<const libcellml::Model> model)
+EquivalenceMap generateEquivalenceMap(const std::shared_ptr<const libcellml::Model> &model)
 {
     EquivalenceMap map;
 
@@ -439,7 +439,7 @@ EquivalenceMap generateEquivalenceMap(std::shared_ptr<const libcellml::Model> mo
     return map;
 }
 
-VariablePtr getVariableLocatedAt(const IndexStack &stack, ModelPtr model)
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model)
 {
     ComponentPtr component;
     for (size_t index = 0; index < stack.size() - 1; ++index) {
@@ -453,18 +453,18 @@ VariablePtr getVariableLocatedAt(const IndexStack &stack, ModelPtr model)
     return component->variable(stack.back());
 }
 
-void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, ModelPtr model)
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model)
 {
     auto v1 = getVariableLocatedAt(stack1, model);
     auto v2 = getVariableLocatedAt(stack2, model);
     Variable::addEquivalence(v1, v2);
 }
 
-void applyEquivalenceMapToModel(const EquivalenceMap &map, ModelPtr model)
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model)
 {
-    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
-        auto key = iter->first;
-        auto vector = iter->second;
+    for (const auto & iter : map) {
+        auto key = iter.first;
+        auto vector = iter.second;
         for (auto vectorIter = vector.begin(); vectorIter < vector.end(); ++vectorIter) {
             makeEquivalence(key, *vectorIter, model);
         }
