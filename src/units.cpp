@@ -477,7 +477,7 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
 
     } else if (isStandardUnitName(units->name())) {
         auto unit = standardUnitsList.find(units->name());
-        for (auto u : unit->second) {
+        for (auto const &u : unit->second) {
             if (unitMap.find(u.first) == unitMap.end()) {
                 unitMap.emplace(u.first, u.second);
             } else {
@@ -495,7 +495,7 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             if (isStandardUnitName(ref)) {
                 auto unit = standardUnitsList.find(ref);
-                for (auto u : unit->second) {
+                for (auto const &u : unit->second) {
                     if (unitMap.find(u.first) == unitMap.end()) {
                         unitMap.emplace(u.first, u.second);
                     } else {
@@ -533,10 +533,6 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
     std::map<std::string, double> units2Map;
     createUnitMap(units2, units2Map); // creating the maps to compare units over
 
-    if ((units1Map.size() == 0) || (units2Map.size() == 0)) {
-        return false;
-    }
-
     if (units1Map.size() == units2Map.size()) {
         auto it = units1Map.begin();
 
@@ -560,10 +556,7 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    if (isEquivalentTo(units1, units2) && scalingFactor(units1, units2) == 1.0) {
-        return true;
-    }
-    return false;
+    return ((Units::isEquivalentTo(units1, units2)) && (Units::scalingFactor(units1, units2) == 1.0));
 }
 
 } // namespace libcellml
