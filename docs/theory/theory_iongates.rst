@@ -29,12 +29,12 @@ driving an ion through the pore is calculated from the change in
     :align: center
 
     Distribution of microstates in a system :cite:`11`. The 16 particles in a
-    confined region (left) have only one possible arrangement (:math:`W` = 1) and
-    therefore zero entropy (:math:`k_{B}\text{ln }W=0`). When the barrier is
+    confined region (left) have only one possible arrangement (:math:`W=1`) and
+    therefore zero entropy (:math:`k_{B}\ln W=0`). When the barrier is
     removed and the number of possible locations for each particle increases
     four-fold (right), the number of possible arrangements for the 16 particles
     increases by 416 and the increase in entropy is therefore
-    :math:`\text{ln}(416)=16\text{ln}(4)`. The thermal energy (temperature)
+    :math:`\ln(416)=16\ln(4)`. The thermal energy (temperature)
     of the previously
     confined particles on the left has been redistributed in space to achieve
     a more probable (higher entropy) state. If we now added more particles to
@@ -81,17 +81,18 @@ or
 .. math::
 
     \Delta Q = RT\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
-    \text{    in }J.mol^{-1}
+    \text{    }(J.mol^{-1})
 
 where
 
 .. math::
 
-    R = k_{B}N_{A} \approx 1.34\times10^{-23}\text{ }(J.K^{-1}) \times 6.02\times10^{23}\text{ }(mol^{-1}) \approx 8.4\text{ }(J.mol^{-1}K^{-1})
+    R = k_{B}N_{A} \approx 1.34\times10^{-23}\text{ }(J.K^{-1}) \times 6.02\times10^{23}\text{ }(mol^{-1}) \approx 8.4
+    \text{    }(J.mol^{-1}K^{-1})
 
 
-is the 'universal gas constant'\ [#]_.
-At 25°C (:math:`298K`), :math:`{RT} \approx 2.5 \text{ }(kJ.mol^{-1})`.
+is the 'universal gas constant'\ [#]_. At 25°C (:math:`298K`)
+:math:`{RT} \approx 2.5 \text{ }(kJ.mol^{-1})`.
 
 .. figure:: images/balance_forces.png
    :name: ocr_tut_bal_force
@@ -99,22 +100,25 @@ At 25°C (:math:`298K`), :math:`{RT} \approx 2.5 \text{ }(kJ.mol^{-1})`.
    :align: right
    :figwidth: 250
 
-   The balance between :purple:`entropic` and :red:`electrostatic` forces determines the Nernst potential.
+   The balance between :purple:`entropic` and :red:`electrostatic` forces
+   determines the Nernst potential.
 
 Every positively charged ion that crosses the membrane raises the
 potential difference and produces an electrostatic driving force that
 opposes the entropic force (see :numref:`ocr_tut_bal_force`). To move an
 electron of
-charge :math:`e` (:math:`\approx 1.6\times 10^{-19}` in :math:`C`) through a voltage
-change of :math:`\Delta\phi` (in :math:`V`) requires energy :math:`e\Delta\phi`
-(in :math:`J`) and therefore the energy needed to move an ion :math:`Y^{+}` of
+charge :math:`e` (:math:`\approx 1.6\times 10^{-19}\text{  }(C)`) through a
+voltage
+change of :math:`\Delta\phi` ( in :math:`V`) requires energy
+:math:`e\Delta\phi` (in :math:`J`) and therefore the energy needed to move an
+ion :math:`Y^{+}` of
 valence :math:`z=1` (the number of charges per ion) through a voltage change of
-:math:`\Delta\phi` is :math:`\text{ze}\Delta\phi` (in :math:`J.ion^{-1}`) or
-:math:`\text{ze}N_{A}\Delta\phi` (:math:`J.mol^{-1}`). Using Faraday's
+:math:`\Delta\phi` is :math:`{ze}\Delta\phi` (:math:`J.ion^{-1}`) or
+:math:`{ze}N_{A}\Delta\phi` (:math:`J.mol^{-1}`). Using Faraday's
 constant :math:`F = eN_{A}`, where
-:math:`F \approx 0.96\times10^{5}` (in :math:`C.mol^{-1}`), the change in energy
-density at the macroscopic scale is :math:`{zF}\Delta\phi` (in
-:math:`J.mol^{-1}`).
+:math:`F \approx 0.96\times10^{5}` (:math:`C.mol^{-1}`), the change in
+energy density at the macroscopic scale is :math:`{zF}\Delta\phi`
+(:math:`J.mol^{-1}`).
 
 No further movement of ions takes place when the force for entropy
 driven ion movement exactly equals the opposing electrostatic driving
@@ -122,18 +126,20 @@ force associated with charge movement:
 
 .. math::
 
-    {zF}\Delta\phi = RT\text{ln }\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}\text{  in }J.mol^{-1}
+    {zF}\Delta\phi = RT\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
+    \text{    }(J.mol^{-1})
 
 or
 
 .. math::
 
-    \Delta\phi = E_{Y} = \frac{RT}{zF}\text{ln }\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}\text{  in }J.C^{-1} or V
+    \Delta\phi = E_{Y} = \frac{RT}{zF}\ln\frac{\left\lbrack Y^{+} \right\rbrack_{o}}{\left\lbrack Y^{+} \right\rbrack_{i}}
+    \text{    }(J.C^{-1} \text{ or }V)
 
-where :math:`E_{Y}` is the 'equilibrium' or 'Nernst' potential for
+where :math:`E_{Y}` is the "equilibrium" or "Nernst" potential for
 :math:`Y^{+}`. At 25°C (298K),
 :math:`\frac{{RT}}{F} =
-\frac{2.5\times10^{3}\ }{0.96\times10^{5}} (J.C^{-1}) \approx 25mV`.
+\frac{2.5\times10^{3}\ }{0.96\times10^{5}}\text{ }(J.C^{-1}) \approx 25mV`.
 
 .. figure:: images/open_ch_linear_iv.png
    :name: ocr_tut_open_ch_iv
@@ -152,7 +158,7 @@ Nernst potential for that ion:
 
     {\overset{\overline{}}{i}}_{Y}\mathbf{=}{\overset{\overline{}}{g}}_{Y}\left( V - E_{Y} \right)
 
-This defines a linear current-voltage relation ('Ohms law') as shown in
+This defines a linear current-voltage relation ("Ohm's law") as shown in
 :numref:`ocr_tut_open_ch_iv`. The gates to be discussed below modify this
 open channel conductance.
 
@@ -179,13 +185,13 @@ open channel conductance.
 To describe the time dependent transition between the closed and open
 states of the channel, Hodgkin and Huxley introduced the idea of channel
 gates that control the passage of ions through a membrane ion channel.
-If the fraction of gates that are open is *y*, the fraction of gates
+If the fraction of gates that are open is :math:`y`, the fraction of gates
 that are closed is :math:`1-y`, and a first order ODE can be used to describe
 the transition between the two states (see :numref:`ocr_tut_ion_ch_gating`):
 
 .. math::
 
-    \frac{\text{dy}}{\text{dt}} = \alpha_{y}\left( 1 - y \right) - \beta_{y}\text{.y}
+    \frac{dy}{dt} = \alpha_{y}\left( 1 - y \right) - \beta_{y}.y
 
 where :math:`\alpha_{y}`\ is the opening rate and :math:`\beta_{y}` is
 the closing rate.
@@ -193,10 +199,15 @@ the closing rate.
 The solution to this ODE is:
 
 .. math::
+
     y = \frac{\alpha_{y}}{\alpha_{y} + \beta_{y}} + Ae^{- \left( \alpha_{y} + \beta_{y} \right)t}
 
-The constant :math:`A` can be interpreted as
-:math:`A = y\left( 0 \right) - \frac{\alpha_{y}}{\alpha_{y} + \beta_{y}}`
+The constant :math:`A` can be interpreted as:
+
+.. math::
+
+    A = y\left( 0 \right) - \frac{\alpha_{y}}{\alpha_{y} + \beta_{y}}
+
 as in the previous example and, with :math:`y\left( 0 \right) = 0` (i.e.
 all gates initially shut), the solution looks like
 :numref:`Fig. %s(a) <ocr_tut_trans_gate_beh>`.
