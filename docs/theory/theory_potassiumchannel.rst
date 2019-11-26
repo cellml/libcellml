@@ -146,5 +146,5 @@ The next chapter describes the theory behind the
        :math:`\alpha_n = \frac{0.01(v+10)}{\exp\left(0.1(v+10)\right)-1}` and
        :math:`\beta_n = 0.125\exp \left( {\frac{v}{80}} \right)`, where
        :math:`v` is defined
-       relative to the resting potential (:math:`-75\text{mV}`) with +ve
-       corresponding to +ve *inward* current and :math:`v = -(V+75)`.
+       relative to the resting potential (:math:`-75\text{ mV}`) with positive
+       corresponding to positive *inward* current and :math:`v = -(V+75)`.
