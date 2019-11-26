@@ -464,90 +464,115 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
-std::map<std::string, double> createUnitMap(const UnitsPtr &units)
+void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &map, double exp = 1.0)
 {
-    std::map<std::string, double> map;
+    //need a check here to deal with imports
 
     // First we deal with case if unit is baseUnit
     if (units->isBaseUnit()) {
         // Check for imports, otherwise throw units into the map, with associated exponent
-    } else {
-		// for loop going through and grabbing base units. probably need to use recursion for this one;
-		// recursively call createUnitMap
-	}
 
-    return map;
+        // Find and check if the base unit already exists in the map. If it does, add the relevant exponent to
+        // the current exponent amount
+        if (map.find(units->name) == map.end()) {
+            map.emplace(std::make_pair(units->name, 1.0));
+        } else {
+            auto unit = map.find(units->name);
+            unit->second += exp;
+        }
+    } else if (isStandardUnitName(units->name)) {
+        // We grab our units through map in utilities
+        auto unit = standardUnitsList.find(units->name);
+        for (auto u : unit->second) {
+            if (map.find(u.first) == map.end()) {
+                map.emplace(u);
+            } else {
+                auto e = map.find(u.first);
+                e->second += u.second * exp; // adding associated base exponent (times exp???)
+            }
+        }
+
+    } else {
+        // for loop going through and grabbing base units. probably need to use recursion for this one;
+        // recursively call createUnitMap
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double mult;
+            double expMult;
+            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            if (isStandardUnitName(ref)) {
+                auto unit = standardUnitsList.find(units->name);
+                for (auto u : unit->second) {
+                    if (map.find(u.first) == map.end()) {
+                        map.emplace(u);
+                    } else {
+                        auto e = map.find(u.first);
+                        e->second += u.second * exp; // adding associated base exponent (times exp???)
+                    }
+                }
+            } else {
+                auto model = owningModel(units);
+                if (model != nullptr) {
+                    auto refUnits = model->units(ref);
+                    if ((refUnits == nullptr) || refUnits->isImport()) {
+                        map.clear();
+                        break;
+                    }
+                    createUnitMap(refUnits, map, exp);
+                }
+            }
+        }
+    }
 }
 
 bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
+    // initial checks
     if ((units1 == nullptr) || (units2 == nullptr)) {
         return false;
     }
-
-    // this time we are uninterested in dimensionality
-    std::map<std::string, double> units1Map = createUnitMap(units1);
-    std::map<std::string, double> units2Map = createUnitMap(units2); // creating the maps to compare units over
-
-    if (units1Map.size() != units2Map.size()) {
+    if ((units1->isImport()) || (units2->isImport())) {
         return false;
-    } else {
-        std::map<std::string, double>::iterator it = units1Map.begin();
+    }
+
+    std::map<std::string, double> units1Map;
+    createUnitMap(units1, units1Map);
+    std::map<std::string, double> units2Map;
+    createUnitMap(units2, units2Map); // creating the maps to compare units over
+
+    if ((units1Map.size() == 0) || (units2Map.size() == 0)) {
+        return false;
+    }
+
+    if (units1Map.size() == units2Map.size()) {
+        auto it = units1Map.begin();
 
         while (it != units1Map.end()) {
-            // Accessing KEY from element pointed by it.
             std::string unit = it->first;
             auto found = units2Map.find(unit);
 
             if (found == units2Map.end()) {
                 return false;
-            } else {
-                if (found->second != it->second) {
-                    return false;
-                }
+            }
+            if ((found->second < it->second) || (found->second > it->second)) {
+                return false;
             }
 
-            // Increment the Iterator to point to next entry
             it++;
         }
+        return true;
     }
-
-    return true;
+    return false;
 }
 
 bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    
-    if (scalingFactor(units1, units2) != 1.0) {
-        return false; // if our multiplier does not come out to be 1 then our units are not dimensionally equivalent
+    if (isEquivalentTo(units1, units2) && scalingFactor(units1, units2) == 1.0) {
+        return true;
     }
-
-    std::map<std::string, double> units1Map = createUnitMap(units1);
-    std::map<std::string, double> units2Map = createUnitMap(units2); // creating the maps to compare units over
-
-    if (units1Map.size() != units2Map.size()) {
-        return false;
-    } else {
-        std::map<std::string, double>::iterator it = units1Map.begin();
-
-        while (it != units1Map.end()) {
-            // Accessing KEY from element pointed by it.
-            std::string unit = it->first;
-            auto found = units2Map.find(unit);
-
-            if (found == units2Map.end()) {
-                return false;
-            } else {
-                if (found->second != it->second) {
-                    return false;
-                }
-            }
-
-            // Increment the Iterator to point to next entry
-            it++;
-        }
-    }
-    return true;
+    return false;
 }
 
 } // namespace libcellml
