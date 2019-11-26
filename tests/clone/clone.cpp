@@ -365,6 +365,42 @@ TEST(Clone, componentWithResets)
     compareComponent(c, cClone);
 }
 
+TEST(Clone, componentWithResetsAndVariables)
+{
+    auto c = libcellml::Component::create();
+    auto r1 = libcellml::Reset::create();
+    auto r2 = libcellml::Reset::create();
+    auto v1 = libcellml::Variable::create();
+    auto v2 = libcellml::Variable::create();
+    auto v3 = libcellml::Variable::create();
+    auto v4 = libcellml::Variable::create();
+
+    c->setId("unique");
+    c->setName("copy");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    r1->setVariable(v2);
+    r1->setTestVariable(v3);
+
+    r2->setTestVariable(v4);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->addVariable(v4);
+
+    c->addReset(r1);
+    c->addReset(r2);
+
+    auto cClone = c->clone();
+
+    compareComponent(c, cClone);
+}
+
 TEST(Clone, componentWithChildren)
 {
     auto c = libcellml::Component::create();
