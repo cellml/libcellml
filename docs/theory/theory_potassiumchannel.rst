@@ -95,13 +95,13 @@ Interpretation into a CellML model
 ----------------------------------
 Defining components serves two purposes: it preserves a modular
 structure for CellML models, and allows these component modules to be
-imported into other models, as illustrated in
+imported into other models, as demonstrated in
 :ref:`Tutorial 5<tutorial5>`. For the
 potassium channel model we define components representing (i) the
 environment, (ii) the potassium channel conductivity, and (iii) the
-dynamics of the :math:`n`-gate.
+dynamics of the :math:`n`-gate as shown in :numref:`ocr_tut_ss_cur_volt`.
 
-.. figure:: _static/images/ss_cur_volt.png
+.. figure:: images/ss_cur_volt.png
    :name: ocr_tut_ss_cur_volt
    :alt: Steady-state current voltage
    :figwidth: 8cm
@@ -126,10 +126,7 @@ create a hierarchical *encapsulation structure* is shown in more detail in
 the next chapter, `A model of a sodium channel<theory_sodiumchannel>` and
 demonstrated in `Tutorial 5<../tutorials/tutorial5/outline5>`.
 
-
-
-
-
+**TODO image here of model structure for equivalent variables**
 
 This potassium channel model will be used later, along with a sodium
 channel model (in :ref:`Tutorial 7<tutorial7>`) and a leakage channel
