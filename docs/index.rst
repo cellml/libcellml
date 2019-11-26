@@ -88,10 +88,10 @@ Indices and tables
 Supported by:
 ==============
 
-.. figure:: images/vpr.png
+.. figure:: developer_docs/images/vpr.png
    :target: http://www.virtualrat.org
    :width: 50%
-.. figure:: images/abi.png
+.. figure:: developer_docs/images/abi.png
    :target: http://www.abi.auckland.ac.nz
    :width: 50%
 
@@ -99,7 +99,7 @@ Supported by:
 .. toctree::
    :hidden:
 
-   dev_configuration_options
+   developer_docs/dev_configuration_options
    tutorials/tutorial0/tutorial0_cpp
    tutorials/tutorial0/tutorial0_py
    tutorials/tutorial1/tutorial1_cpp
