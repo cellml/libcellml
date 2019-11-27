@@ -1,5 +1,7 @@
 .. Developer Setup for libCellML
 
+.. _dev_setup:
+
 =================
 Development setup
 =================
@@ -49,6 +51,8 @@ operating system and some pointers are offered below:
   package manager with the command ``sudo apt-get install git``.
 * Git for MacOS is pre-installed and available from the command line.
 
+.. _cmake_installation:
+
 CMake: Custom makefiles and setup
 ---------------------------------
 :cmake:`Cmake <>` is the cross-platform family of tools designed to build,
@@ -63,9 +67,13 @@ Again, installation of Cmake is particular to each operating system.
   command ``sudo apt-get install cmake``.
 * CMake for Windows and MacOS can be installed using binaries provided
   on their website. Please visit the
-  `CMake download page <https://cmake.org/download/>`_, choose the binary
+  :cmake:`CMake download page <download/>`, choose the binary
   appropriate for your operating system and follow the installatio
   instructions.
+
+.. note::
+
+    Please note that a minimum version of 3.2 is required.
 
 Toolchain: The compiler you'll use to build libCellML
 -----------------------------------------------------
@@ -87,8 +95,7 @@ different toolchain. We sometimes use the
 `Intel C++ compiler <https://software.intel.com/en-us/c-compilers>`_ to build
 libCellML, but at the time of writing we do not test with it.
 
-The following sub-sections provide guidance on how to install the recommended
-toolchain on the major operating systems that libCellML supports.
+.. _libxml2_installation:
 
 LibXml2
 -------
