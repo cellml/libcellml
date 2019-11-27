@@ -474,18 +474,6 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
             auto unit = unitMap.find(units->name());
             unit->second += exp;
         }
-
-    } else if (isStandardUnitName(units->name())) {
-        auto unit = standardUnitsList.find(units->name());
-        for (const auto &u : unit->second) {
-            if (unitMap.find(u.first) == unitMap.end()) {
-                unitMap.emplace(u.first, u.second);
-            } else {
-                auto ut = unitMap.find(u.first);
-                ut->second += u.second * exp; // adding associated base exponent
-            }
-        }
-
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
@@ -497,7 +485,7 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
                 auto unit = standardUnitsList.find(ref);
                 for (const auto &u : unit->second) {
                     if (unitMap.find(u.first) == unitMap.end()) {
-                        unitMap.emplace(u.first, u.second);
+                        unitMap.emplace(u.first, u.second * exp);
                     } else {
                         auto ut = unitMap.find(u.first);
                         ut->second += u.second * exp;
