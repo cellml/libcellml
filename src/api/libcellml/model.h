@@ -282,6 +282,17 @@ public:
      */
     ModelPtr clone() const;
 
+    /**
+     * @brief Flatten this model.
+     *
+     * Instatiates all imports and removes them from this model.
+     * The result is a self-contained model requiring no external
+     * resources
+     *
+     * The effects of this method cannot be undone.
+     */
+    void flatten();
+
 private:
     Model(); /**< Constructor */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
