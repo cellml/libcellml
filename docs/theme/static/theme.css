@@ -1,5 +1,45 @@
-@import url("alabaster.css");
+
+.dothis    { 
+    border-left: 1px solid rgb(131, 139, 115);
+    color: darkolivegreen;
+    background-color: rgb(247, 255, 247);
+    padding: 1px 0px 0px 10px; 
+    margin-top:20px;
+}
+
+.nb {
+    border-left: 1px solid sandybrown;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+    color: saddlebrown;
+    background-color: rgb(255, 253, 247);
+    padding: 5px 0px 0px 10px; 
+}
+
+.terminal {
+    border: none; 
+    color: white;
+    background-color:#777777;
+    padding: 5px 0px 0px 10px; 
+    font-family: 'Consolas', 'Deja Vu Sans Mono','Bitstream Vera Sans Mono', monospace;
+    font-size: 0.85em;
+}  
+
+pre {
+    border: none;
+}
+
+.highlight-cpp {
+    margin: 0px;
+}
+
+
+
+
+
+/* @import url("alabaster.css");
 
 div.figure a.image-reference {
     border: none;
-}
+} */
