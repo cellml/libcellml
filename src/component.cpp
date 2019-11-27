@@ -20,8 +20,10 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+
 #include "utilities.h"
 
 namespace libcellml {
@@ -201,8 +203,7 @@ VariablePtr Component::variable(const std::string &name) const
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr res = nullptr;
-    res = variable(index);
+    VariablePtr res = variable(index);
     removeVariable(index);
 
     return res;
@@ -210,8 +211,7 @@ VariablePtr Component::takeVariable(size_t index)
 
 VariablePtr Component::takeVariable(const std::string &name)
 {
-    VariablePtr res = nullptr;
-    res = variable(name);
+    VariablePtr res = variable(name);
     removeVariable(name);
 
     return res;
@@ -280,6 +280,61 @@ size_t Component::resetCount() const
 bool Component::hasReset(const ResetPtr &reset) const
 {
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
+}
+
+size_t getVariableIndexInComponent(const std::shared_ptr<const Component> &component, const VariablePtr &variable)
+{
+    size_t index = 0;
+    bool found = false;
+    while (index < component->variableCount() && !found) {
+        if (component->variable(index) == variable) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    return index;
+}
+
+ComponentPtr Component::clone() const
+{
+    auto c = create();
+
+    c->setId(id());
+    c->setName(name());
+    c->setMath(math());
+
+    c->setImportSource(importSource());
+    c->setImportReference(importReference());
+
+    for (size_t index = 0; index < variableCount(); ++index) {
+        auto v = variable(index);
+        c->addVariable(v->clone());
+    }
+
+    for (size_t index = 0; index < resetCount(); ++index) {
+        auto r = reset(index);
+        auto rClone = r->clone();
+        c->addReset(rClone);
+        size_t variableIndex = getVariableIndexInComponent(shared_from_this(), r->variable());
+        if (variableIndex < variableCount()) {
+            auto v = c->variable(variableIndex);
+            rClone->setVariable(v);
+        }
+        size_t testVariableIndex = getVariableIndexInComponent(shared_from_this(), r->testVariable());
+        if (testVariableIndex < variableCount()) {
+            auto v = c->variable(testVariableIndex);
+            rClone->setTestVariable(v);
+        }
+    }
+
+    for (size_t index = 0; index < componentCount(); ++index) {
+        auto cChild = component(index);
+        c->addComponent(cChild->clone());
+    }
+
+    return c;
 }
 
 } // namespace libcellml

@@ -99,6 +99,16 @@ public:
      */
     bool hasModel() const;
 
+    /**
+     * @brief Create a clone of this import source.
+     *
+     * Creates a full separate copy of this import source without copying
+     * the parent.
+     *
+     * @return a new @c ImportSourcePtr to the cloned import source.
+     */
+    ImportSourcePtr clone() const;
+
 private:
     ImportSource(); /**< Constructor */
 

@@ -400,6 +400,17 @@ public:
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
+    /**
+     * @brief Create a clone of this units.
+     *
+     * Creates a full separate copy of this units without copying
+     * the parent. Thus the cloned (returned) version of this units
+     * will not have a parent set even if this units does.
+     *
+     * @return a new @c UnitsPtr to the cloned units.
+     */
+    UnitsPtr clone() const;
+
 private:
     Units(); /**< Constructor */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/
