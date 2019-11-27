@@ -477,7 +477,7 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
 
     } else if (isStandardUnitName(units->name())) {
         auto unit = standardUnitsList.find(units->name());
-        for (auto const &u : unit->second) {
+        for (const auto &u : unit->second) {
             if (unitMap.find(u.first) == unitMap.end()) {
                 unitMap.emplace(u.first, u.second);
             } else {
@@ -495,7 +495,7 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             if (isStandardUnitName(ref)) {
                 auto unit = standardUnitsList.find(ref);
-                for (auto const &u : unit->second) {
+                for (const auto &u : unit->second) {
                     if (unitMap.find(u.first) == unitMap.end()) {
                         unitMap.emplace(u.first, u.second);
                     } else {
