@@ -26,7 +26,7 @@ Overview
 * Once progress has been made towards addressing the issue, create a pull
   request which includes a reference to it.
 
-* The `Buildbot <https://buildbot.net/>`_ `build/test` procedure will run
+* The :buildbot:`Buildbot <>` :code:`build/test` procedure will run
   each time changes are pushed to the pull request's branch, and the results
   are displayed in the pull request view.
 
@@ -35,7 +35,7 @@ Overview
 
 * Once all the changes and reviews are complete, one of the prime libCellML
   administrators will merge the pull request into the prime repository, onto
-  the `develop` branch.
+  the :code:`develop` branch.
 
 * Note that a bug is just a type of issue, and that resolving the bug should
   have both the implementation to fix the bug and a test that triggers the bug.
@@ -90,7 +90,7 @@ whom you collaborate).  It is a branch that will not be available from the
 prime repository.  All development work should be carried out on a topic
 branch, for example any major feature that you work on or minor bug fix.
 Before creating a local topic branch, pull the latest changes from the
-prime repository `develop` branch.
+prime repository :code:`develop` branch.
 
 .. _libcellml-branching:
 .. figure:: images/libCellMLProcesses-GitBranching.png
@@ -100,11 +100,11 @@ prime repository `develop` branch.
    Git branching illustration.
 
 Following this process will make it easier to have multiple topic branches
-at once and keep them in-sync with the prime repository `develop` branch,
+at once and keep them in-sync with the prime repository :code:`develop` branch,
 which will in turn make it easier to manage multiple pull requests.
 
 The following Git commands show an example of how to create a
-topic branch for fixing a (hypothetical) bug described in `issue #123`::
+topic branch for fixing a (hypothetical) bug described in :code:`issue #123`::
 
   git fetch prime develop
   git checkout develop # Not required if already on develop branch
@@ -144,8 +144,8 @@ Making a pull request
   **your** Github libCellML repository (refer to
   :numref:`Figure %s <libcellml-branching>`).
 * From there, create a pull request from your topic branch to the prime
-  repository `develop` branch.  When creating the pull request, make sure to
-  add in the comment `Addresses issue #123` (of course, replace the number 123
+  repository :code:`develop` branch.  When creating the pull request, make sure to
+  add in the comment :code:`Addresses issue #123` (of course, replace the number 123
   with the actual number of the issue you are addressing), or something to that
   effect. This will create a link between the issue and the pull request
   enabling other people to see that you are working on this issue and comment

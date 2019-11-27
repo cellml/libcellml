@@ -11,12 +11,6 @@ Contents
    :maxdepth: 2
    :titlesonly:
 
-   roadmap
-   current_thinking
-   usecases
-   object_model
-   api_documentation
-   coverage_statistics
    dev_setup
    dev_building
    dev_testing_code
@@ -24,6 +18,13 @@ Contents
    dev_review
    dev_coding_standard
    contributors
+
+   roadmap
+   current_thinking
+   usecases
+   object_model
+   api_documentation
+   coverage_statistics
    glossary
 
 .. toctree::

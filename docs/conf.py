@@ -69,6 +69,7 @@ extlinks = {
     'opencor': ('https://opencor.ws/%s', ''),
     'pmr': ('https://models.physiomeproject.org/welcome/%s', ''),
     'python': ('https://www.python.org/%s', ''),
+    'sphinx': ('http://sphinx-doc.org/%s',''),
     'swig': ('http://www.swig.org/%s', ''),
     'xml': ('https://www.w3.org/XML/%s', ''),
 }
