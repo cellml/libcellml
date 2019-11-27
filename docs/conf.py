@@ -52,10 +52,10 @@ master_doc = 'index'
 autosectionlabel_prefix_document = True
 
 # These are the shorthand for external links.  Use them in the other pages as:
-#  :shortcut:`Shortcut text <extra string if needed>`
+#   :shortcut:`Shortcut text <extra string if needed>` NB space before <
+# Declare below as: 
+#   'shortcut': ('http://linkhere/%s',''), NB have to put the string insertion %s to make it work
 extlinks = {
-    # 'shortcut': ('http://linkhere/%s',''), # NB have to put the string insertion %s to make it work
-
     'mathml2': ('https://www.w3.org/TR/MathML2/chapter4.html#id.4.2.1.3%s', ''),
     'opencor': ('https://opencor.ws/%s',''),
     'pmr': ('https://models.physiomeproject.org/welcome%s',''),
@@ -156,6 +156,7 @@ html_theme_path = ['@SPHINX_THEME_DIR@']
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
+html_static_path = ['theme/static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
