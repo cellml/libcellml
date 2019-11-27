@@ -1068,7 +1068,7 @@ TEST(Units, checkScalingFactorBothNonBaseUnitsImported)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
-TEST(Units, compareDimensionallyComparableUnits)
+TEST(Units, compareDimensionallyEquivalentUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1081,7 +1081,7 @@ TEST(Units, compareDimensionallyComparableUnits)
     EXPECT_TRUE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
 }
 
-TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveSameBase)
+TEST(Units, compareDimensionallyNonEquivalentUnitsWhichHaveSameBase)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1095,7 +1095,7 @@ TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveSameBase)
     EXPECT_FALSE(libcellml::Units::isDimensionallyEquivalentTo(u2, u1));
 }
 
-TEST(Units, compareDimensionallyComparableUnitsWhichHaveNonStandardBase)
+TEST(Units, compareDimensionallyEquivalentUnitsWhichHaveNonStandardBase)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("model");
@@ -1119,7 +1119,7 @@ TEST(Units, compareDimensionallyComparableUnitsWhichHaveNonStandardBase)
     EXPECT_TRUE(libcellml::Units::isDimensionallyEquivalentTo(u2, u1));
 }
 
-TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveDifferentBase)
+TEST(Units, compareDimensionallyNonEquivalentUnitsWhichHaveDifferentBase)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1132,7 +1132,7 @@ TEST(Units, compareDimensionallyIncomparableUnitsWhichHaveDifferentBase)
     EXPECT_FALSE(libcellml::Units::isDimensionallyEquivalentTo(u1, u2));
 }
 
-TEST(Units, compareDimensionallyComparableUnitsComplex)
+TEST(Units, compareDimensionallyEquivalentUnitsComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
@@ -1160,7 +1160,7 @@ TEST(Units, compareDimensionallyComparableUnitsComplex)
     EXPECT_TRUE(libcellml::Units::isDimensionallyEquivalentTo(u2, u1));
 }
 
-TEST(Units, compareDimensionallyIncomparableComparableUnitsComplex)
+TEST(Units, compareDimensionallyIncomparableEquivalentUnitsComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
