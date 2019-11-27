@@ -76,6 +76,14 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::scalingFactor
 "Returns the scaling factor between two Units objects.";
 
+%feature("docstring") libcellml::Units::isEquivalentTo
+"Returns if two units are equivalent in terms of units, but may not have the 
+same scaling factor.";
+
+%feature("docstring") libcellml::Units::isDimensionallyEquivalentTo
+"Returns if two units are equivalent in terms of units, and have the 
+same scaling factor.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
