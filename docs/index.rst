@@ -22,9 +22,15 @@ applications would be required to resolve and retrieve import URLs and provide
 the serialised documents to libCellML in the form of strings for instantiation
 as part of the CellML hierarchical model description.
 
+Installation and system requirements
+------------------------------------
+
+
+
+
 
 Tutorials for users
-====================
+-------------------
 
 .. toctree::
    :maxdepth: 3
@@ -43,7 +49,7 @@ Tutorials for users
 
 
 CellML2 format specification
-============================
+----------------------------
 
 .. toctree::
     :maxdepth: 2
@@ -67,7 +73,7 @@ CellML2 format specification
 
 
 Documentation for developers
-=============================
+----------------------------
 
 .. toctree::
    :maxdepth: 2
@@ -89,7 +95,7 @@ Documentation for developers
    glossary
 
 External references
-===================
+----------------------------
 .. toctree::
    :maxdepth: 2
    :titlesonly:
@@ -98,7 +104,7 @@ External references
 
 
 Indices and tables
-==================
+----------------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

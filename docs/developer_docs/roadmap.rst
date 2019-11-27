@@ -30,7 +30,7 @@ Environment
 
 This section will specify the environment for the development of libCellML.
 
-* `GitHub <https://github.com/>`_ to host the primary libCellML source repository and issue tracker under the `CellML organisation <https://github.com/cellml>`_ (current and former editorial board members).
+* :github:`Github <>` to host the primary libCellML source repository and issue tracker under the `CellML organisation <https://github.com/cellml>`_ (current and former editorial board members).
 * Development language: C++ with `SWIG <http://www.swig.org/>`_ bindings.
 * Build: `CMake <http://www.cmake.org/>`_ for generating cross-platform build rules.
 * Test: using `Buildbot <http://buildbot.net/>`_ on the ABI BaTS to run continuous integration testing.
@@ -49,7 +49,7 @@ Requirements
   * Functionality is more important than API stability in early releases.
   * Release early and often.
 
-* Development: code review prior to acceptance into the primary repository using the `pull request <https://help.github.com/articles/using-pull-requests>`_ feature on `GitHub <https://github.com/>`_.
+* Development: code review prior to acceptance into the primary repository using the `pull request <https://help.github.com/articles/using-pull-requests>`_ feature on :github:`Github <>`.
 * Development: objectives are added and broken down into incremental tasks.
 * Development: a single task should be no more than two weeks.
 

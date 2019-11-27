@@ -58,9 +58,12 @@ autosectionlabel_prefix_document = True
 extlinks = {
     'mathml2': ('https://www.w3.org/TR/MathML2/chapter4.html#id.4.2.1.3%s', ''),
     'opencor': ('https://opencor.ws/%s',''),
-    'pmr': ('https://models.physiomeproject.org/welcome%s',''),
+    'pmr': ('https://models.physiomeproject.org/welcome/%s',''),
     'xml': ('https://www.w3.org/XML/%s',''),
-    'cellml2': ('https://www.cellml.org/%s','')
+    'cellml2': ('https://www.cellml.org/%s',''),
+    'swig':('http://www.swig.org/%s',''),
+    'python': ('https://www.python.org/%s',''),
+    'libcellml_repo': ('https://github.com/cellml/libcellml.git%s','')
 }
 
 # General information about the project.

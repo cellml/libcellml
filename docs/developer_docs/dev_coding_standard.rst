@@ -12,7 +12,7 @@ The following is a list of exceptions/deviations from the google style guide tha
 Think of it like case-law.
 
  * Lower camel case class method names.
- * Indent core code 4 spaces at a time (no tabs); for `CMake <https://cmake.org/>`_ files use 2-space indentation.
+ * Indent core code 4 spaces at a time (no tabs); for :cmake:`Cmake <>` files use 2-space indentation.
 
 Doxygen Comments
 ================

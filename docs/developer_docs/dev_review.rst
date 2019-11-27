@@ -48,4 +48,4 @@ This can be done by adding a directive to the merge commit, like so::
   closes #123
 
 where the numeral corresponds to the issue that needs to be closed.
-You can use other directives that will achieve the same outcome, `here <https://help.github.com/articles/closing-issues-via-commit-messages/>`_ is a list of all directives that will work on `GitHub <https://github.com/>`_.
+You can use other directives that will achieve the same outcome, `here <https://help.github.com/articles/closing-issues-via-commit-messages/>`_ is a list of all directives that will work on :github:`Github <>`.
