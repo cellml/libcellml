@@ -1,9 +1,12 @@
 
+.. _coverage_statistics:
+
 ===================
 Coverage Statistics
 ===================
 
-The output from the coverage testing using gcov is available `here <coverage/index.html>`_.
+The output from the coverage testing using :code:`gcov` is available `here <coverage/index.html>`_.
+**TODO** is it gcov or gcovr??
 
 .. note::
 

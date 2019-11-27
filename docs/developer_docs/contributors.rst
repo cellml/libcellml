@@ -1,10 +1,13 @@
 .. Contributors documentation for libCellML
 
+.. _contributors:
+
 ============
 Contributors
 ============
 
-All contributors to the libCellML software project agree to the terms and conditions of the `Apache v2.0 <https://opensource.org/licenses/Apache-2.0>`_ license.
+All contributors to the libCellML software project agree to the terms and
+conditions of the `Apache v2.0 <https://opensource.org/licenses/Apache-2.0>`_ license.
 
 List of Funding Organisations
 =============================
@@ -15,7 +18,9 @@ List of Funding Organisations
 List of Contributors
 ====================
 
-The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the libCellML project on or before 2019-09-23.
+The following is a list of contributors (in surname alphabetical order) who
+have contributed lines of source code to the libCellML project on or before
+2019-09-23.
 
  * `Ted Ahmadi <https://github.com/TedAhmadi>`_
  * `Robert Blake <https://github.com/rblake-llnl>`_
