@@ -442,4 +442,19 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
     componentEntity->removeComponent(component, false);
 }
 
+size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable)
+{
+    size_t index = 0;
+    bool found = false;
+    while (index < component->variableCount() && !found) {
+        if (component->variable(index) == variable) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    return index;
+}
+
 } // namespace libcellml

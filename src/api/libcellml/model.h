@@ -271,6 +271,17 @@ public:
      */
     bool hasUnresolvedImports();
 
+    /**
+     * @brief Create a clone of this model.
+     *
+     * Creates a full separate copy of this model.  The component
+     * hierarchy and variable equivalence maps will also be copied
+     * from this model to the destination model.
+     *
+     * @return a new @c ModelPtr to the cloned model.
+     */
+    ModelPtr clone() const;
+
 private:
     Model(); /**< Constructor */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/

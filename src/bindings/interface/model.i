@@ -58,6 +58,8 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::hasUnresolvedImports
 "Tests if this model has unresolved imports.";
 
+%feature("docstring") libcellml::Model::clone
+"Create a copy of this model.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
