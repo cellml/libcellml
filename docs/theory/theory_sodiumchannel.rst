@@ -65,16 +65,17 @@ relationships between components.  This is illustrated in
 
     Encapsulation structure of nested components in a parent-child-sibling structure.
 
-Beyond convenience, defining an encapsulation structure also controls which components
-are able to see and be seen by which others, as defined by the available interface types:
+Beyond convenience, defining an encapsulation structure also controls which
+components are able to see and be seen by which others, as defined by the
+available interface types:
 
 - By default, no interfaces exist between components.  The types of interface
   listed below are those which are *possible*; they must be specified
   before they can be used. This is the default, but may be specified explicitly
   using the *none* interface type.
-- A *public* interface is available between siblings, and from a child to its parent.
-  This is also true of top-level components, such as the 'grandparent' and 'no relation'
-  components.
+- A *public* interface is available between siblings, and from a child to its
+  parent. This is also true of top-level components, such as the 'grandparent'
+  and 'no relation' components.
 - A *private* interface is available from a parent to its child(ren).
 - Both *public* and *private* interfaces are available using the
   *public_and_private* type, needed where there is more than one level of
