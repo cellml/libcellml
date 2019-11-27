@@ -227,6 +227,7 @@ ParserPtr Parser::create() noexcept
 
 ModelPtr Parser::parseModel(const std::string &input)
 {
+    removeAllErrors();
     ModelPtr model = Model::create();
     mPimpl->updateModel(model, input);
     return model;
