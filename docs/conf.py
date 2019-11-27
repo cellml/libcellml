@@ -59,6 +59,9 @@ extlinks = {
     'mathml2': ('https://www.w3.org/TR/MathML2/chapter4.html#id.4.2.1.3%s', ''),
     'opencor': ('https://opencor.ws/%s',''),
     'pmr': ('https://models.physiomeproject.org/welcome%s',''),
+    'xml': ('https://www.w3.org/XML/%s',''),
+    'cellml2': ('https://www.cellml.org/%s','')
+
 }
 
 # General information about the project.

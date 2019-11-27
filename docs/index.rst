@@ -4,6 +4,25 @@
 libCellML Documentation
 =======================
 
+Welcome to the documentation for libCellML, including user tutorials,
+developer guidelines, installation information and the formal language
+specification.
+
+The purpose of libCellML is to create, manipulate, serialise, deserialise,
+validate and instantiate :cellml2:`CellML2 <>` models.
+In the first instance, all serialising and deserialising will be to and from
+standard strings and using the CellML2.0 specification.
+
+The library is intended to be lightweight and focused purely in dealing with
+:cellml2:`CellML <>` models.  In achieving this, some of the
+convenience methods/objects that we might expect will not be part of libCellML.
+For example, in our current thoughts, libCellML would not be concerned with the
+actual mechanics of resolving and retrieving external resources - calling
+applications would be required to resolve and retrieve import URLs and provide
+the serialised documents to libCellML in the form of strings for instantiation
+as part of the CellML hierarchical model description.
+
+
 Tutorials for users
 ====================
 
