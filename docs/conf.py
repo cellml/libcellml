@@ -61,7 +61,6 @@ extlinks = {
     'pmr': ('https://models.physiomeproject.org/welcome%s',''),
     'xml': ('https://www.w3.org/XML/%s',''),
     'cellml2': ('https://www.cellml.org/%s','')
-
 }
 
 # General information about the project.
@@ -156,8 +155,8 @@ html_theme_path = ['@SPHINX_THEME_DIR@']
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
-html_static_path = ['theme/static']
-html_style = 'libcellml.css'
+html_static_path = ['static']
+html_style = 'css/libcellml.css'
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
