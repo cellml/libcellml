@@ -10,7 +10,7 @@ Tutorial 0: C++ installation
 
 .. container:: dothis
 
-    **1.a** Create an empty folder and navigate into it, then create a further empty
+    :guilabel:`**1.a**` Create an empty folder and navigate into it, then create a further empty
     folder called :code:`libcellml`, and navigate into that one.
 
 .. code-block:: console
