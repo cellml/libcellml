@@ -472,4 +472,46 @@ ModelPtr Model::clone() const
     return m;
 }
 
+void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
+{
+    if (component->isImport()) {
+        auto importedComponent = component->importSource()->model()->component(component->importReference());
+        importedComponent->setName(component->name());
+        parent->replaceComponent(index, importedComponent);
+    }
+}
+
+void flattenComponentTree(ComponentEntityPtr parent, ComponentPtr component, size_t componentIndex)
+{
+    flattenComponent(parent, component, componentIndex);
+
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        flattenComponentTree(component, c, index);
+    }
+}
+
+void Model::flatten()
+{
+    if (hasUnresolvedImports()) {
+        return;
+    }
+
+    // Go through Units and instantiate any imported Units.
+    for (size_t index = 0; index < unitsCount(); ++index) {
+        auto u = units(index);
+        if (u->isImport()) {
+            auto importedUnits = u->importSource()->model()->units(u->importReference());
+            importedUnits->setName(u->name());
+            replaceUnits(index, importedUnits);
+        }
+    }
+
+    // Go through Components and instatiate any imported Components
+    for (size_t index = 0; index < componentCount(); ++index) {
+        auto c = component(index);
+        flattenComponentTree(shared_from_this(), c, index);
+    }
+}
+
 } // namespace libcellml
