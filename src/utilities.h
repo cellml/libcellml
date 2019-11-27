@@ -403,4 +403,18 @@ bool isStandardUnitName(const std::string &name);
  */
 bool isStandardPrefixName(const std::string &name);
 
+/**
+ * @brief Get the index of the @p variable in the @p component.
+ *
+ * Searches through the @p component for the @p variable returning the index
+ * of the @p variable if it was found.  If the @p variable was not found then
+ * the number of variables in the @p component is returned.
+ *
+ * @param component The @c ComponentPtr to search for the @c VariablePtr in.
+ * @param variable The @c VariablePtr to return the index of.
+ * @return The index of the @p variable found in the component.  Returns the
+ * number of variables in the component if the variable was not found.
+ */
+size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+
 } // namespace libcellml

@@ -547,4 +547,26 @@ bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &
     return ((Units::isEquivalentTo(units1, units2)) && (Units::scalingFactor(units1, units2) == 1.0));
 }
 
+UnitsPtr Units::clone() const
+{
+    auto units = create();
+
+    units->setId(id());
+    units->setName(name());
+    units->setImportSource(importSource());
+    units->setImportReference(importReference());
+
+    std::string reference;
+    std::string prefix;
+    std::string id;
+    double exponent;
+    double multiplier;
+    for (size_t index = 0; index < mPimpl->mUnits.size(); ++index) {
+        unitAttributes(index, reference, prefix, exponent, multiplier, id);
+        units->addUnit(reference, prefix, exponent, multiplier, id);
+    }
+
+    return units;
+}
+
 } // namespace libcellml

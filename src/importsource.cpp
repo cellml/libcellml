@@ -71,4 +71,15 @@ bool ImportSource::hasModel() const
     return mPimpl->mModel != nullptr;
 }
 
+ImportSourcePtr ImportSource::clone() const
+{
+    auto i = create();
+
+    i->setId(id());
+    i->setUrl(url());
+    i->setModel(model());
+
+    return i;
+}
+
 } // namespace libcellml

@@ -84,6 +84,9 @@ same scaling factor.";
 "Returns if two units are equivalent in terms of units, and have the 
 same scaling factor.";
 
+%feature("docstring") libcellml::Units::clone
+"Create a copy of this units.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
