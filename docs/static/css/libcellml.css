@@ -27,6 +27,10 @@
     font-size: 0.85em;
 }  
 
+.code {
+    color:darkslategray;
+}
+
 pre {
     border: none;
 }
