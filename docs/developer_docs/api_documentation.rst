@@ -1,7 +1,11 @@
 
+.. _api_documentation:
+
 =================
 API Documentation
 =================
+
+**TODO** Check all these ... need to ge the Doxygen stuff to work here too ...
 
 The API is documented through Doxygen, the generated files are available `here <code/index.html>`_.
 

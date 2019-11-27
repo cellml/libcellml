@@ -48,7 +48,7 @@ operating system and some pointers are offered below:
   - `Git SCM <https://git-scm.com/>`_
 
 * Git for Ubuntu (and other Linux distributions) can be installed using the
-  package manager with the command ``sudo apt-get install git``.
+  package manager with the command:code:`sudo apt-get install git`.
 * Git for MacOS is pre-installed and available from the command line.
 
 .. _cmake_installation:
@@ -64,7 +64,7 @@ compiler environment of your choice.
 Again, installation of Cmake is particular to each operating system.
 
 * CMake for Linux can be installed using the package manager with the
-  command ``sudo apt-get install cmake``.
+  command:code:`sudo apt-get install cmake`.
 * CMake for Windows and MacOS can be installed using binaries provided
   on their website. Please visit the
   :cmake:`CMake download page <download/>`, choose the binary
@@ -105,7 +105,7 @@ which the CellML file format is a subset.
 * On MacOS libXML2 is already installed, so no further action is required.
 * For Windows use the recommended implementation available
   from `the dependency repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_
-* For Ubuntu Linux use ``sudo apt install libxml2-dev``
+* For Ubuntu Linux use:code:`sudo apt install libxml2-dev`
   **TODO** what flavours of linux are supported?
 
 Python bindings
@@ -117,7 +117,7 @@ time.
 
 To compile the bindings, a SWIG installation is required, as well as a Python 2
 or Python 3 installation (including the development packages on Linux systems,
-for example ``python-dev``).  **TODO** ditch Python 2??
+for example:code:`python-dev`).  **TODO** ditch Python 2??
 
 * For Windows installation packages are available from the
   :python:`Python download page <downloads/windows/>` and from the
@@ -127,8 +127,6 @@ for example ``python-dev``).  **TODO** ditch Python 2??
 * For MacOS please follow the instructions on the
   :swig:`SWIG installation instructions
   page <Doc4.0/Preface.html#Preface_installation>`.
-
-
 
 2. Setting up the codebase
 ==========================
@@ -174,7 +172,7 @@ see :numref:`fig_devSetup_githubFork` for locating this button.
    Fork button for libCellML repository.
 
 You should now see your new libCellML repository in your own Github account, at
-a location similar to :code:`https://github.com/<your_name_here>/libcellml`
+a location similar to :code:`https://github.com/your_username_here/libcellml`
 but with your Github username inserted.
 
 Cloning your repository to your computer
@@ -216,9 +214,10 @@ repository above, then do the following::
   git config remote.prime.pushurl "You really did not want to do that!"
 
 You have now added a new remote connection to the original
-:libcellml_repo:`libCellML <>` repository, named it ``prime`` and set it to be
-the default location for your fetch and push commands. You have also set the
-``prime`` repository as read-only by setting an invalid push URL.
+:libcellml_repo:`libCellML <>` repository, named it :code:`prime` and
+set it to be the default location for your fetch and push commands. You have
+also set the :code:`prime` repository as read-only by setting an invalid push
+URL.
 
 Next steps
 ==========

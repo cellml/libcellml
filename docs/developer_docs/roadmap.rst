@@ -66,7 +66,7 @@ Milestone 1: Python bindings, validation, code generation, and documentation
 
 #. Load a CellML 2.0 model and validate it.
 
-   #. Validate models against the rules defined in the current draft of the CellML 2.0 specification (currently an active document, outstanding issues regarding the new ``reset`` construct are likely to require updates to the validation implementation).
+   #. Validate models against the rules defined in the current draft of the CellML 2.0 specification (currently an active document, outstanding issues regarding the new :code:`reset` construct are likely to require updates to the validation implementation).
 
 #. Code generation.
 

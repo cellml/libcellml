@@ -19,7 +19,8 @@ MEMCHECK       ON           Enable memcheck testing (if available).
 COVERAGE       ON           Enable coverage testing (if available).
 ============== ============ =========================================
 
-:sup:`*` In CMake GUI Configuration applications this option is given in full ``LIBCELLML_TREAT_WARNINGS_AS_ERRORS``
+:sup:`*` In CMake GUI Configuration applications this option is given in full
+:code:`LIBCELLML_TREAT_WARNINGS_AS_ERRORS`
 
 .. note In CMake GUI Configuration applications the config variable is prefixed with 'LIBCELLML\_'
 

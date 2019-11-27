@@ -6,6 +6,7 @@
 A model of ion channel gating and current
 =========================================
 
+
 A good example of a model based on a first order equation is the one
 used by Hodgkin and Huxley :cite:`10` to describe the gating behaviour of an
 ion channel. Before we describe the

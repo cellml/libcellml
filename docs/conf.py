@@ -56,10 +56,13 @@ autosectionlabel_prefix_document = True
 # Declare below as:
 #   'shortcut': ('http://linkhere/%s',''), NB have to put the string insertion %s to make it work
 extlinks = {
+    'buildbot': ('https://buildbot.net%s',''),
     'cellml2': ('https://www.cellml.org/%s', ''),
     'cmake': ('https://cmake.org/%s', ''),
+    'doxygen': ('http://www.doxygen.nl/%s',''),
     'git': ('https://git-scm.com/%s', ''),
     'github': ('https://github.com/%s', ''),
+    'google_styleguide': ('https://google.github.io/styleguide/cppguide.html%s',''),
     'libcellml_repo': ('https://github.com/cellml/libcellml.git%s', ''),
     'libxml2': ('http://www.xmlsoft.org/%s',''),
     'mathml2': ('https://www.w3.org/TR/MathML2/chapter4.html#id.4.2.1.3%s', ''),

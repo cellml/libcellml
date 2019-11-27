@@ -23,7 +23,7 @@ the integer power of 10 to which they relate.
     :code:`kilo`, 3
     :code:`hecto`, 2
     :code:`deca`, 1
-    :code:``, 0
+    :code:` `, 0
     :code:`deci`, -1
     :code:`centi`, -2
     :code:`milli`, -3

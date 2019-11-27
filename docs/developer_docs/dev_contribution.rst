@@ -83,7 +83,7 @@ General labels currently used for libCellML are:
   take precedence and therefore be assigned a more immediate (lower) milestone
   number.
 
-Topic Branch
+Topic branch
 ============
 A topic or feature branch is a branch that is local to you (and anyone with
 whom you collaborate).  It is a branch that will not be available from the
@@ -103,7 +103,7 @@ Following this process will make it easier to have multiple topic branches
 at once and keep them in-sync with the prime repository `develop` branch,
 which will in turn make it easier to manage multiple pull requests.
 
-The following :git:`Git <>` commands show an example of how to create a
+The following Git commands show an example of how to create a
 topic branch for fixing a (hypothetical) bug described in `issue #123`::
 
   git fetch prime develop
@@ -138,7 +138,6 @@ For simple or obvious bugs, which have fallen through the testing gaps, just
 the implementation is fine.
 **TODO** I don't understand this?^^
 
-
 Making a pull request
 =====================
 * Once some changes have been made committed locally, push your changes to
@@ -162,30 +161,45 @@ The following git commands show an example of how to:
     git commit -m "Descriptive message about the changes made."
     git push -u origin issue123
 
-The ``git add`` and ``git commit`` commands should be obvious, the ``git push`` command sets the local branch ``issue123`` to be linked with the remote branch ``issue123`` in the origin (the default shorthand for your libCellML repository on :github:`Github <>`) repository.
-This branch will be created in the origin repository if it does not already exist.
+The :code:`git add` and :code:`git commit` commands should be obvious,
+the :code:`git push` command sets the local branch :code:`issue123` to be
+linked with the remote branch :code:`issue123` in the origin (the default
+shorthand for your libCellML repository on :github:`Github <>`) repository.
+This branch will be created in the origin repository if it does not already
+exist.
 
-To create a pull request from one :github:`Github <>` repository to another, follow the instructions `here <https://help.github.com/articles/creating-a-pull-request/>`_.
+To create a pull request from one repository to another,
+follow the `instructions for creating a Github pull
+request <https://help.github.com/articles/creating-a-pull-request/>`_.
 
-Satisfy Comments
-================
-
-It is important to respond to all feedback appropriately, the review process will check to make sure that all comments have been dealt with.
-Feel free to respond to comments as appropriate, e.g. through code changes, posting a direct reply, etc.
+Satisfy the reviewers' comments
+===============================
+It is important to respond to all feedback appropriately, the review process
+will check to make sure that all comments have been dealt with.
+Feel free to respond to comments as appropriate, e.g. through code changes,
+posting a direct reply, etc.
 
 Review
 ======
-
-It may happen that submitted work is not reviewed immediately or the work is finished before any comments have been made.
-If this is the case add a comment to the pull request asking for the submission to be reviewed.
-An email will be sent out to the repository owners who will respond and review the submission, please remember that everyone is busy and it may not happen right away.
+It may happen that submitted work is not reviewed immediately or the work
+is finished before any comments have been made. If this is the case add a
+comment to the pull request asking for the submission to be reviewed.
+An email will be sent out to the repository owners who will respond and
+review the submission, please remember that everyone is busy and it may not
+happen right away.
 
 Completion
 ==========
+To complete the process, it is required to have two owners of the prime
+repository comment on the pull request that they are satisfied that the work
+on the issue is complete and also that the feedback has been addressed, in
+essence that they are happy to merge the submission. For small submissions
+it is sufficient for the second owner to show satisfaction by performing the
+merge. For larger submissions one of the owners will post a comment on the
+issue notifying subscribers that they intend to merge the pull request.
+If no further objections are raised, the pull request will be merged and
+closed.
 
-To complete the process, it is required to have two owners of the prime repository comment on the pull request that they are satisfied that the work on the issue is complete and also that the feedback has been addressed, in essence that they are "happy" to merge the submission.
-For small submissions, it is sufficient for the second owner to show satisfaction by performing the merge.
-For larger submissions one of the owners will post a comment on the issue notifying subscribers that they intend to merge the pull request.
-If no further objections are raised, the pull request will be merged and closed.
-
-A little reminder for the repository owners to check that the :doc:`Review Process <dev_review>` has been followed/(is going to be followed) when merging the pull request.
+A little reminder for the repository owners to check that the
+:ref:`Review process <dev_review>` has been/will be followed when merging
+the pull request.
