@@ -389,10 +389,10 @@ public:
 
     /**
      * @brief Return the scaling factor difference between two units.
-     * 
+     *
      * This can be interpreted as factor, where units2 = (factor)*units1.  This method
      * does not check to see if the units are compatible.
-     * 
+     *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
      *
@@ -401,29 +401,29 @@ public:
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Return a bool which indicates if the units are loosely comparable.
-     * 
-     * Two units are loosely comparable if they share the same units ONLY (kg,s,m,...),
-     * this means we are uninterested in unit multipliers. 
+     * @brief Return whether the two Units are equivalent.
      *
-     * @param1 units1 The first units to compare.
-     * @param2 units2 The second units to compare.
+     * Two Units are considered to be equivalent if they share the same units,
+     * independently of their dimension (e.g. volt and volt, volt and millivolt).
      *
-     * @return bool indicating whether units are comparable (true), false otherwise.
+     * @param1 units1 The first Units to compare.
+     * @param2 units2 The second Units to compare.
+     *
+     * @return @c true if the two Units are equivalent, @c false otherwise.
      */
     static bool isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Return a bool which indicates if the units are directly comparable.
-     * 
-     * Two units are dimensionally comparable if they are the same unit, e.g. volts and
-     * volts. This means we can check for the same base units across all parameters (kg,s,m), 
-     * using the exponent, multiplier, and prefix of the unit.
-     * 
-     * @param1 units1 The first units to compare.
-     * @param2 units2 The second units to compare.
+     * @brief Return whether the two Units are dimensionally equivalent.
      *
-     * @return bool indicating whether units are dimensionally comparable (true), false otherwise.
+     * Two Units are considered to be dimensionally equivalent if they share the
+     * exact same units (e.g. volt and volt, but not volt and millivolt).
+     *
+     * @param1 units1 The first Units to compare.
+     * @param2 units2 The second Units to compare.
+     *
+     * @return @c true if the two Units are dimensionally equivalent, @c false
+     * otherwise.
      */
     static bool isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2);
 

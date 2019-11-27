@@ -184,11 +184,11 @@ bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
 }
 */
 
-/** 
+/**
 * @brief Finds and updates the multiplier of the unit.
-* 
+*
 * We pass in the unit and use its' attributes to find the relevant multiplier.
-* If the units are not base units, we travel up the model hierarchy to find 
+* If the units are not base units, we travel up the model hierarchy to find
 * the base units.
 *
 * @param multiplier The multiplier to find.
@@ -466,14 +466,14 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 
 using unitsMap = std::map<std::string, double>;
 
-void updateUnitMap(const UnitsPtr &units, unitsMap &unitMap, double exp = 1.0)
+void updateUnitsMap(const UnitsPtr &units, unitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
-        auto found = unitMap.find(units->name());
-        if (found == unitMap.end()) {
-            unitMap.emplace(units->name(), 1.0);
+        auto found = unitsMap.find(units->name());
+        if (found == unitsMap.end()) {
+            unitsMap.emplace(units->name(), 1.0);
         } else {
-            auto unit = unitMap.find(units->name());
+            auto unit = unitsMap.find(units->name());
             unit->second += exp;
         }
     } else {
@@ -486,10 +486,10 @@ void updateUnitMap(const UnitsPtr &units, unitsMap &unitMap, double exp = 1.0)
             if (isStandardUnitName(ref)) {
                 auto unit = standardUnitsList.find(ref);
                 for (const auto &u : unit->second) {
-                    if (unitMap.find(u.first) == unitMap.end()) {
-                        unitMap.emplace(u.first, u.second * exp);
+                    if (unitsMap.find(u.first) == unitsMap.end()) {
+                        unitsMap.emplace(u.first, u.second * exp);
                     } else {
-                        auto ut = unitMap.find(u.first);
+                        auto ut = unitsMap.find(u.first);
                         ut->second += u.second * exp;
                     }
                 }
@@ -498,10 +498,10 @@ void updateUnitMap(const UnitsPtr &units, unitsMap &unitMap, double exp = 1.0)
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
-                        unitMap.clear();
+                        unitsMap.clear();
                         break;
                     }
-                    updateUnitMap(refUnits, unitMap, exp); // recursively add units to the map
+                    updateUnitsMap(refUnits, unitsMap, exp);
                 }
             }
         }
@@ -510,7 +510,7 @@ void updateUnitMap(const UnitsPtr &units, unitsMap &unitMap, double exp = 1.0)
 
 bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    // initial checks
+    // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
         return false;
     }
@@ -519,25 +519,21 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
     }
 
     unitsMap units1Map;
-    updateUnitMap(units1, units1Map);
+    updateUnitsMap(units1, units1Map);
     unitsMap units2Map;
-    updateUnitMap(units2, units2Map); // creating the maps to compare units over
+    updateUnitsMap(units2, units2Map);
 
     if (units1Map.size() == units2Map.size()) {
-        auto it = units1Map.begin();
-
-        while (it != units1Map.end()) {
-            std::string unit = it->first;
+        for (auto &units : units1Map) {
+            std::string unit = units.first;
             auto found = units2Map.find(unit);
 
             if (found == units2Map.end()) {
                 return false;
             }
-            if ((found->second < it->second) || (found->second > it->second)) {
+            if ((found->second < units.second) || (found->second > units.second)) {
                 return false;
             }
-
-            it++;
         }
         return true;
     }
