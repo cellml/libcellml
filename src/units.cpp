@@ -464,7 +464,9 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
-void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap, double exp = 1.0)
+using unitsMap = std::map<std::string, double>;
+
+void updateUnitMap(const UnitsPtr &units, unitsMap &unitMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
         auto found = unitMap.find(units->name());
@@ -499,7 +501,7 @@ void createUnitMap(const UnitsPtr &units, std::map<std::string, double> &unitMap
                         unitMap.clear();
                         break;
                     }
-                    createUnitMap(refUnits, unitMap, exp); // recursively add units to the map
+                    updateUnitMap(refUnits, unitMap, exp); // recursively add units to the map
                 }
             }
         }
@@ -516,10 +518,10 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
         return false;
     }
 
-    std::map<std::string, double> units1Map;
-    createUnitMap(units1, units1Map);
-    std::map<std::string, double> units2Map;
-    createUnitMap(units2, units2Map); // creating the maps to compare units over
+    unitsMap units1Map;
+    updateUnitMap(units1, units1Map);
+    unitsMap units2Map;
+    updateUnitMap(units2, units2Map); // creating the maps to compare units over
 
     if (units1Map.size() == units2Map.size()) {
         auto it = units1Map.begin();
@@ -544,7 +546,7 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    return ((Units::isEquivalentTo(units1, units2)) && (Units::scalingFactor(units1, units2) == 1.0));
+    return Units::isEquivalentTo(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
 }
 
 UnitsPtr Units::clone() const
