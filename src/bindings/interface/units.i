@@ -77,12 +77,10 @@ extract the units with the given `name`.";
 "Returns the scaling factor between two Units objects.";
 
 %feature("docstring") libcellml::Units::isEquivalentTo
-"Returns if two units are equivalent in terms of units, but may not have the 
-same scaling factor.";
+"Tests if two Units are equivalent.";
 
 %feature("docstring") libcellml::Units::isDimensionallyEquivalentTo
-"Returns if two units are equivalent in terms of units, and have the 
-same scaling factor.";
+"Tests if two Units are dimensionally equivalent.";
 
 %feature("docstring") libcellml::Units::clone
 "Create a copy of this units.";
