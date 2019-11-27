@@ -157,6 +157,7 @@ html_theme_path = ['@SPHINX_THEME_DIR@']
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
 html_static_path = ['theme/static']
+html_style = 'libcellml.css'
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

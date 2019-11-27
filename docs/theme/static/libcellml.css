@@ -1,3 +1,4 @@
+@import url("theme.css");
 
 .dothis    { 
     border-left: 1px solid rgb(131, 139, 115);
@@ -34,12 +35,6 @@ pre {
     margin: 0px;
 }
 
-
-
-
-
-/* @import url("alabaster.css");
-
 div.figure a.image-reference {
     border: none;
-} */
+}
