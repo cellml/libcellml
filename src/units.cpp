@@ -473,8 +473,7 @@ void updateUnitsMap(const UnitsPtr &units, unitsMap &unitsMap, double exp = 1.0)
         if (found == unitsMap.end()) {
             unitsMap.emplace(units->name(), 1.0);
         } else {
-            auto unit = unitsMap.find(units->name());
-            unit->second += exp;
+            found->second += exp;
         }
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
@@ -508,7 +507,7 @@ void updateUnitsMap(const UnitsPtr &units, unitsMap &unitsMap, double exp = 1.0)
     }
 }
 
-bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
+bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
@@ -540,9 +539,9 @@ bool Units::isEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
     return false;
 }
 
-bool Units::isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2)
+bool Units::dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    return Units::isEquivalentTo(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
+    return Units::equivalent(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
 }
 
 UnitsPtr Units::clone() const
