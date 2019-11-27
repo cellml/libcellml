@@ -70,18 +70,19 @@ TEST(ModelFlattening, importedUnits)
 TEST(ModelFlattening, importedComponent)
 {
     const std::string sineDefinitionModel =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"sin\" id=\"sin\">\n"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"sin\" id=\"sin\">\n"
         "  <component name=\"sin\" id=\"sin\">\n"
         "    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\"/>\n"
         "    <variable id=\"sin\" units=\"dimensionless\" name=\"sin\" interface=\"public_and_private\"/>\n"
         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "      <apply id=\"actual_sin\"><eq/>\n"
-        "        <ci>sin</ci>\n"
-        "        <apply><sin/>\n"
-        "          <ci>x</ci>\n"
-        "        </apply>\n"
-        "      </apply>\n"
-        "    </math>\n"
+        "  <apply id=\"actual_sin\"><eq/>\n"
+        "    <ci>sin</ci>\n"
+        "    <apply><sin/>\n"
+        "      <ci>x</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n"
         "  </component>\n"
         "</model>\n";
 
