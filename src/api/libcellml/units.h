@@ -402,11 +402,11 @@ public:
 
     /**
      * @brief Return a bool which indicates if the units are loosely comparable.
-	   * 
-	   * Two units are loosely comparable if they share the same units ONLY (kg,s,m,...),
-	   * this means we are uninterested in unit multipliers. 
-	   *
-	   * @param1 units1 The first units to compare.
+     * 
+     * Two units are loosely comparable if they share the same units ONLY (kg,s,m,...),
+     * this means we are uninterested in unit multipliers. 
+     *
+     * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
      * @return bool indicating whether units are comparable (true), false otherwise.
@@ -426,7 +426,7 @@ public:
      * @return bool indicating whether units are dimensionally comparable (true), false otherwise.
      */
     static bool isDimensionallyEquivalentTo(const UnitsPtr &units1, const UnitsPtr &units2);
-    
+
     /**
      * @brief Create a clone of this units.
      *
@@ -437,7 +437,6 @@ public:
      * @return a new @c UnitsPtr to the cloned units.
      */
     UnitsPtr clone() const;
-
 
 private:
     Units(); /**< Constructor */
