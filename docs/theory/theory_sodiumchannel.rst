@@ -130,13 +130,13 @@ ii.  The opening behaviour is faster as the voltage is stepped to higher
      reduces with increasing :math:`V` (see :numref:`ocr_tut_volt_deps_gates`).
 
 iii. The sodium channel conductance rises (*activates*) and then falls
-     (*inactivates*) under a positive voltage step from rest since the
-     three :math:`m`-gates turn on but the :math:`h`-gate turns off and the
+     (*deactivates*) under a positive voltage step from rest since the
+     three :math:`m`-gates turn on, but the :math:`h`-gate turns off and the
      conductance is a product of these. Compare this with the
-     :ref:`potassium channel conductance<theory_potassiumchannel>`
-     which is only reduced back to zero by
-     stepping the voltage back to its resting value – that is, *deactivating*
-     it.
+     :ref:`kinetics of the potassium channel
+     conductance<kinetics_of_potassium_ch>` which is only reduced back to zero
+     by stepping the voltage back to its resting value – that is,
+     *deactivating* it.
 
 iv.  The only time current :math:`i_{Na}` flows through the
      sodium channel is during the brief period when the :math:`m`-gate is

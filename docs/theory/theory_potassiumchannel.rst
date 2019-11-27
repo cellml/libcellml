@@ -126,8 +126,84 @@ create a hierarchical *encapsulation structure* is shown in more detail in
 the next chapter, :ref:`A model of a sodium channel<theory_sodiumchannel>` and
 demonstrated in :ref:`Tutorial 5<tutorial5>`.
 
-**TODO image here of model structure for equivalent variables**
+.. figure:: images/potassium_component_structure.png
+    :name: potassium_component_structure
+    :alt: Structure of the potassium channel component with its n-gate and environment component
+    :align: center
 
+    Structure of the potassium channel component with its :math:`n`-gate and environment component
+
+
+Simulation and results
+----------------------
+
+Note that several other features have been added:
+
+-  the event control *select case* which indicates that the voltage is
+   specified to jump from 0 mV to -85 mV at t = 5 ms then back to 0 mV at
+   t = 15 ms. This is only used here in order to test the K channel model;
+   when the potassium_channel component is later imported into a neuron
+   model, **the environment component is not imported**.
+
+
+
+We now use OpenCOR, with *Ending point* 40 and *Point interval* 0.1, to
+solve the equations for the potassium channel under a voltage step
+condition in which the membrane voltage is clamped initially at 0mV and
+then stepped down to -85mV for 10ms before being returned to 0mV. At
+0mV, the steady state value of the n gate is
+:math:`n_{\infty} = \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} =` 0.324
+and, at -85mV, :math:`n_{\infty} = \ `\ 0.945.
+
+The voltage traces are shown at the top of :numref:`ocr_tut_kin_pot_ch`.
+The :math:`n`-gate
+response, shown next, is to open further from its partially open value
+of :math:`n =`\ 0.324 at 0mV and then plateau at an almost fully open
+state of :math:`n =`\ 0.945 at the Nernst potential -85mV before closing
+again as the voltage is stepped back to 0mV. Note that the gate opening
+behaviour (set by the voltage dependence of the :math:`\alpha_{n}`
+opening rate constant) is faster than the closing behaviour (set by the
+voltage dependence of the :math:`\beta_{n}` closing rate constant). The
+channel conductance (:math:`= n^{4}\bar{g}_K`) is
+shown next – note the initial s-shaped conductance increase caused by
+the :math:`n^{4}` (four gates in series) effect on conductance. Finally
+the channel current :math:`i_{K} =` conductance
+:math:`\times\left( V - E_{K} \right)` is shown at the bottom. Because the
+voltage is clamped at the Nernst potential (-85mV) during the time period
+when the gate is opening, there is no current flow, but when the voltage
+is stepped back to 0mV, the open gates begin to close and the
+conductance declines but now there is a voltage gradient to drive an
+outward (positive) current flow through the partially open channel –
+albeit briefly since the channel is closing.
+
+.. _kinetics_of_potassium_ch:
+.. figure:: images/kinetics_of_potassium_ch.png
+   :name: ocr_tut_kin_pot_ch
+   :alt: Kinetics of the potassium channel
+   :align: center
+
+   Kinetics of the potassium channel gates for a voltage
+   step from 0mV to -85mV. The voltage clamp step is shown at the top, then
+   the n gate first order response, then the channel conductance, then the
+   channel current. Notice how the conductance is slightly slower to turn
+   on (due to the four gates in series) but fast to inactivate. Current
+   only flows when there is a non-zero conductance and a non-zero voltage
+   gradient. This is called the ‘tail current’.
+
+Note that the simulation above includes the Nernst equation with
+its dependence on the concentrations
+:math:`\left\lbrack K^{+} \right\rbrack_{i}`\ = 90mM and
+:math:`\left\lbrack K^{+} \right\rbrack_{o}`\ = 3mM. By raising the
+external potassium concentration to
+:math:`\left\lbrack K^{+} \right\rbrack_{o}`\ = 10mM you will then see
+the Nernst potential increase from -85mV to -55mV and a negative
+(inward) current flowing during the period when the membrane voltage is
+clamped to -85mV. The cell is now in a ‘hyperpolarised’ state because
+the potential is less than the equilibrium potential.
+
+
+Next steps
+----------
 This potassium channel model will be used - together with a sodium
 channel model (in :ref:`Tutorial 7<tutorial7>`) and a leakage channel
 model - to form the Hodgkin-Huxley
