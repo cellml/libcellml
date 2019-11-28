@@ -13,11 +13,12 @@ or reading your own as soon as possible.
 This section explains the basic classes inside libCellML, and the most commonly
 used functionality associated with them.
 
-How to ...
+.. toctree::
+ :maxdepth: 3
 
 
 Change a CellML1.1 model to CellML2.0
--------------------------------------
++++++++++++++++++++++++++++++++++++++
 libCellML deals exclusively with models which meet the CellML2 specification.
 To use libCellML with a previous version (1.0, 1.1) you will need to first
 translate it into CellML2 using the :cellml1to2:`cellML1to2 <>` tool.
@@ -26,8 +27,7 @@ translate it into CellML2 using the :cellml1to2:`cellML1to2 <>` tool.
 
 .. _include_libcellml_library:
 Include the libCellML library in your project
----------------------------------------------
-
++++++++++++++++++++++++++++++++++++++++++++++
 If you've followed :ref:`the instructions for installing libCellML<tutorial0>`
 then the library is available for use like this:
 
@@ -47,7 +47,7 @@ using the ``libcellml::`` prefix.
 
 
 Parse an existing model from a file
------------------------------------
++++++++++++++++++++++++++++++++++++
 The following code will read a file called ``quickstart.cellml`` and deserialise
 its contents into a ``ModelPtr`` instance:
 
@@ -90,7 +90,7 @@ In Python:
 
 
 Debug and validate a model
-==========================
+++++++++++++++++++++++++++
 The ``Validator`` class is used to check your final model for errors before
 export or code generation, but it can also be used as a debugger
 during the process of your model creation or editing.  The error descriptions
@@ -133,7 +133,7 @@ In Python:
 
 
 Serialise a model into CellML2 for printing to a file
-=====================================================
++++++++++++++++++++++++++++++++++++++++++++++++++++++
 The ``Printer`` class has the opposite functionality to the ``Parser`` class.
 It accepts an existing ``ModelPtr`` and creates a ``string`` which can be
 written to a file.  As with the ``Parser`` and the ``Validator``, the
@@ -186,24 +186,16 @@ In Python:
     write_file.close()
 
 Generate a C or Python version of a model
-==========================================
++++++++++++++++++++++++++++++++++++++++++
 Once you have a model, and have checked that it is free of validation errors,
 you can call the ``Generator`` isntance to create code which represents your
 model in either C or Python format.  For more information on the
 ``Generator`` please see the :ref:`Generator information<generator_notes>`
 pages.
 
-In C++:
-
-.. code-block::
-
-    std::cout << "Number of variables = " << generator.variableCount() << std::endl;
-    std::cout << "Variable of integration = " << generator.voi()->name() << std::endl;
-    std::cout << "Number of states = " << generator.stateCount() << std::endl;
-
-
 Create or edit a model using the API
-==========================================
+++++++++++++++++++++++++++++++++++++
+To create a new model
 
 Create or edit a component
 ==========================================
