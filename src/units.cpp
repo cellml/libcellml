@@ -507,11 +507,11 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     }
 }
 
-UnitsMap createUnitMap(const UnitsPtr &units)
+UnitsMap createUnitsMap(const UnitsPtr &units)
 {
-    UnitsMap unitMap;
-    updateUnitsMap(units, unitMap);
-    return unitMap;
+    UnitsMap unitsMap;
+    updateUnitsMap(units, unitsMap);
+    return unitsMap;
 }
 
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
@@ -524,8 +524,8 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
         return false;
     }
 
-    UnitsMap units1Map = createUnitMap(units1);
-    UnitsMap units2Map = createUnitMap(units2);
+    UnitsMap units1Map = createUnitsMap(units1);
+    UnitsMap units2Map = createUnitsMap(units2);
 
     if (units1Map.size() == units2Map.size()) {
         for (auto &units : units1Map) {
