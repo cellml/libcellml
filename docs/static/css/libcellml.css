@@ -9,12 +9,10 @@
 } */
 
 .dothis    {
-    border-left: 10px solid #2980b9;
-    /* color: rgb(30, 46, 0); */
-    /* background-color: rgb(247, 255, 247); */
-    padding: 0px 0px 0px 15px;
+    border-left: 5px solid #dadada;
+    padding: 0px 0px 0px 8px;
     margin-top:20px;
-    margin-bottom:10px;
+    margin-bottom:20px;
     line-height: inherit;
     font: inherit;
 }
