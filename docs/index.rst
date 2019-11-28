@@ -42,7 +42,7 @@ Tutorials for users
 -------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
 
    tutorials/tutorials_index
@@ -55,7 +55,7 @@ CellML2 format specification
     :maxdepth: 2
     :titlesonly:
 
-    specification/specification_index
+    specifications/specification_index
 
 Documentation for developers
 ----------------------------
@@ -66,17 +66,8 @@ Documentation for developers
 
    developer_docs/index_development
 
-External references
-----------------------------
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-
-   references
-
 Indices and tables
 ----------------------------
-
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
@@ -90,27 +81,3 @@ Supported by:
 .. figure:: developer_docs/images/abi.png
    :target: http://www.abi.auckland.ac.nz
    :width: 50%
-
-
-.. toctree::
-   :hidden:
-
-   developer_docs/dev_configuration_options
-   tutorials/tutorial0/tutorial0_cpp
-   tutorials/tutorial0/tutorial0_py
-   tutorials/tutorial1/tutorial1_cpp
-   tutorials/tutorial1/tutorial1_py
-   tutorials/tutorial2/tutorial2_cpp
-   tutorials/tutorial2/tutorial2_py
-   tutorials/tutorial3/tutorial3_cpp
-   tutorials/tutorial3/tutorial3_py
-   tutorials/tutorial4/tutorial4_cpp
-   tutorials/tutorial4/tutorial4_py
-   tutorials/tutorial5/tutorial5_cpp
-   tutorials/tutorial5/tutorial5_py
-   tutorials/tutorial6/tutorial6_cpp
-   tutorials/tutorial6/tutorial6_py
-   tutorials/tutorial7/tutorial7_cpp
-   tutorials/tutorial7/tutorial7_py
-   tutorials/tutorial8/tutorial8_cpp
-   tutorials/tutorial8/tutorial8_py
