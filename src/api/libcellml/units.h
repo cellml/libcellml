@@ -388,7 +388,7 @@ public:
     size_t unitCount() const;
 
     /**
-     * @brief Return the scaling factor difference between two units.
+     * @brief Return the scaling factor difference between two @c Units.
      *
      * This can be interpreted as factor, where units2 = (factor)*units1.  This method
      * does not check to see if the units are compatible.
@@ -401,28 +401,30 @@ public:
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Return whether the two Units are equivalent.
+     * @brief Test to determine whether two @c Units are equivalent or not.
      *
-     * Two Units are considered to be equivalent if they share the same units,
-     * independently of their dimension (e.g. volt and volt, volt and millivolt).
+     * Two @c Units are considered to be equivalent if they share the same units,
+     * independently of their dimension (e.g. volt and volt are equivalent as are 
+     * volt and millivolt).
      *
      * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
-     * @return @c true if the two Units are equivalent, @c false otherwise.
+     * @return @c true if the two @c Units are equivalent, @c false otherwise.
      */
     static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Return whether the two Units are dimensionally equivalent.
+     * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
      *
-     * Two Units are considered to be dimensionally equivalent if they share the
-     * exact same units (e.g. volt and volt, but not volt and millivolt).
+     * Two @c Units are considered to be dimensionally equivalent if they share the
+     * exact same units (e.g. volt and volt are dimensionally equivalent but 
+     * volt and millivolt are not).
      *
      * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
-     * @return @c true if the two Units are dimensionally equivalent, @c false
+     * @return @c true if the two @c Units are dimensionally equivalent, @c false
      * otherwise.
      */
     static bool dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
