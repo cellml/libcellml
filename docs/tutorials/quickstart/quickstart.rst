@@ -121,7 +121,7 @@ In Python:
 .. code-block:: python
 
     # Create a Validator instance and pass it the model for checking
-    validator = Validator()
+    validator = libcellml.Validator()
     validator.validateModel(model)
 
     # Check the validator for errors
