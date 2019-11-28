@@ -140,6 +140,7 @@ written to a file.  As with the ``Parser`` and the ``Validator``, the
 ``Printer`` also records errors which can be accessed as above.
 
 In C++:
+
 .. code-block:: cpp
 
     // Create a Printer instance and pass the model into it
@@ -163,6 +164,7 @@ In C++:
     outFile.close();
 
 In Python:
+
 .. code-block:: python
 
     from libcellml import Printer
@@ -183,10 +185,16 @@ In Python:
     write_file.write(serialised_model)
     write_file.close()
 
-
-
 Generate a C or Python version of a model
 ==========================================
+Once you have a model, and have checked that it is free of validation errors,
+you can call the ``Generator`` isntance to create code which represents your
+model in either C or Python format.  For more information on the
+``Generator`` please see the :ref:`Generator information<generator_notes>`
+pages.
+
+In C++:
+
 
 
 Create or edit a model using the API

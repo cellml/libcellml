@@ -168,7 +168,7 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
 html_static_path = ['static']
-html_style = 'css/libcellml.css'
+html_style = 'css/theme.css'
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
