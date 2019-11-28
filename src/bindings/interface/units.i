@@ -76,6 +76,12 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::scalingFactor
 "Returns the scaling factor between two Units objects.";
 
+%feature("docstring") libcellml::Units::equivalent
+"Tests if two Units are equivalent.";
+
+%feature("docstring") libcellml::Units::dimensionallyEquivalent
+"Tests if two Units are dimensionally equivalent.";
+
 %feature("docstring") libcellml::Units::clone
 "Create a copy of this units.";
 
