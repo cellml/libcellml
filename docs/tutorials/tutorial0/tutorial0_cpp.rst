@@ -4,6 +4,8 @@
 Tutorial 0: C++ installation
 ==========================================================
 
+**TODO** Update this with binary/Docker/something else installation instructions
+
 -----------------------------------------------------
 1: Create the libCellML library
 -----------------------------------------------------

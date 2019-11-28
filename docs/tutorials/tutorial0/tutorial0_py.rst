@@ -4,6 +4,8 @@
 Tutorial 0: Python-based installation
 ==========================================================
 
+**TODO* Update this with pip installation instructions??
+
 -----------------------------------------------------
 1: Create the libCellML library
 -----------------------------------------------------

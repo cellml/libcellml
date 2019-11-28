@@ -45,18 +45,8 @@ Tutorials for users
    :maxdepth: 1
    :titlesonly:
 
-   tutorials/tutorial0/outline0
-   tutorials/tutorial1/outline1
-   tutorials/tutorial2/outline2
-   tutorials/tutorial3/outline3
-   tutorials/tutorial4/outline4
-   tutorials/tutorial5/outline5
-   tutorials/tutorial6/outline6
-   tutorials/tutorial7/outline7
-   tutorials/tutorial8/outline8
-
+   tutorials/tutorials_index
    theory/theory_index
-
 
 CellML2 format specification
 ----------------------------
@@ -65,22 +55,7 @@ CellML2 format specification
     :maxdepth: 1
     :titlesonly:
 
-    specifications/interpretation/4_model
-    specifications/interpretation/5_import
-    specifications/interpretation/6_import_units
-    specifications/interpretation/7_import_component
-    specifications/interpretation/8_units
-    specifications/interpretation/9_unit
-    specifications/interpretation/10_component
-    specifications/interpretation/11_variable
-    specifications/interpretation/12_reset
-    specifications/interpretation/14_math
-    specifications/interpretation/15_encapsulation
-    specifications/interpretation/16_component_ref
-    specifications/interpretation/17_connection
-    specifications/interpretation/18_map_variables
-    specifications/formal_specification
-
+    specification/specification_index
 
 Documentation for developers
 ----------------------------
@@ -89,21 +64,7 @@ Documentation for developers
    :maxdepth: 1
    :titlesonly:
 
-   developer_docs/dev_setup
-   developer_docs/dev_building
-   developer_docs/dev_contribution
-   developer_docs/dev_coding_standard
-   developer_docs/dev_testing_code
-   developer_docs/dev_review
-
-   developer_docs/usecases
-   developer_docs/object_model
-   developer_docs/api_documentation
-   developer_docs/roadmap
-   developer_docs/current_thinking
-   developer_docs/coverage_statistics
-   developer_docs/contributors
-   developer_docs/glossary
+   developer_docs/index_development
 
 External references
 ----------------------------
@@ -112,7 +73,6 @@ External references
    :titlesonly:
 
    references
-
 
 Indices and tables
 ----------------------------
