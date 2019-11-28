@@ -129,61 +129,6 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
 }
 
-/*
-
-//TDOD: This code is progress towards checking that units are compatible.
-using UnitMultiplierMap = std::map<std::string, double>;
-
-    UnitMultiplierMap unitMap = {};
-    for (const auto &baseUnits : baseUnitsList) {
-        unitMap[baseUnits] = 0.0;
-    }
-bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
-                           double &multiplier,
-                           const UnitsPtr &units,
-                           double uExp, double logMult,
-                           int direction)
-{
-    bool updated = false;
-    auto unitsName = units->name();
-    if (!units->isBaseUnit()) {
-        std::string ref;
-        std::string pre;
-        std::string id;
-        double exp;
-        double mult;
-        double expMult;
-        for (size_t i = 0; i < units->unitCount(); ++i) {
-            units->unitAttributes(i, ref, pre, exp, expMult, id);
-            mult = std::log10(expMult);
-            if (!isStandardUnitName(ref)) {
-                auto model = owningModel(units);
-                auto refUnits = model->units(ref);
-                updated = updateUnitMultipliers(unitMultiplierMap, multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
-            } else {
-                for (const auto &iter : standardUnitsList.at(ref)) {
-                    unitMultiplierMap.at(iter.first) += direction * (iter.second * exp * uExp);
-                }
-                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
-            }
-        }
-    } else if (unitMultiplierMap.find(unitsName) == unitMultiplierMap.end()) {
-        unitMultiplierMap.emplace(std::pair<std::string, double>(unitsName, direction * uExp));
-        multiplier += direction * logMult;
-        updated = true;
-    } else if (isStandardUnitName(unitsName)) {
-        for (const auto &iter : standardUnitsList.at(unitsName)) {
-            unitMultiplierMap.at(iter.first) += direction * (iter.second * uExp);
-        }
-        multiplier += direction * logMult;
-        multiplier += direction * standardMultiplierList.at(unitsName);
-        updated = true;
-    }
-
-    return updated;
-}
-*/
-
 /**
 * @brief Finds and updates the multiplier of the unit.
 *
