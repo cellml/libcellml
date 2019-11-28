@@ -132,7 +132,7 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
 /**
  * @brief Finds and updates the multiplier of the unit.
  *
- * We pass in the unit and use its' attributes to find the relevant multiplier.
+ * We pass in the unit and use its attributes to find the relevant multiplier.
  * If the units are not base units, we travel up the model hierarchy to find
  * the base units.
  *
