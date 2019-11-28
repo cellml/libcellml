@@ -11,13 +11,11 @@ project should set up their *working copy* for developing libCellML.
 
 .. contents::
 
-1. Prerequisites needed
+Prerequisites needed
 =======================
-The libCellML codebase is hosted on Github and therefore Git is used to
-track changes. Before you begin, you will need to have a few pre-requisites
-satisfied:
+This section will walk you through the setup of the following requirements:
 
-1. A :github:`Github <>` user account (for the rest of this document
+a. A :github:`Github <>` user account (for the rest of this document
    we will call our user *andre*).
 #. :git:`Git <>` installed on your local machine.
 #. :cmake:`Cmake <>`.
@@ -25,9 +23,6 @@ satisfied:
 #. :libxml2:`LibXML2 <>`.
 #. If you intend to build bindings for Python, then you'll also need
    :python:`Python <>` as well as :swig:`SWIG <>`.
-
-In this section, we cover the retrieval and installation of pre-requisites
-listed above.
 
 Git: Version control
 --------------------
@@ -128,7 +123,7 @@ for example:code:`python-dev`).  **TODO** ditch Python 2??
   :swig:`SWIG installation instructions
   page <Doc4.0/Preface.html#Preface_installation>`.
 
-2. Setting up the codebase
+Setting up the codebase
 ==========================
 The remainder of this document assumes that the above pre-requisites have
 been met, and covers setup from the command line.
