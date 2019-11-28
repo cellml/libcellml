@@ -473,7 +473,7 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
     UnitsMap units2Map = createUnitsMap(units2);
 
     if (units1Map.size() == units2Map.size()) {
-        for (auto &units : units1Map) {
+        for (const auto &units : units1Map) {
             std::string unit = units.first;
             auto found = units2Map.find(unit);
 
