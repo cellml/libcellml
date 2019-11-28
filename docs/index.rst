@@ -28,15 +28,15 @@ How and where you install libCellML will depend a little on who you are and
 how you want to use it.
 
 * For a quickstart setup of libCellML for users already familiar with the
-  CellML format, please follow the Quickstart guide.
+  CellML format, please follow the :ref:`Quickstart<quickstart>` guide.
 
 * For users who are new to CellML, please see the step-by-step instructions
   which begin with :ref:`Tutorial 0: Installation and testing<tutorial0>`.
 
-* For developers who want to contribute or build libCellML from source,
+* For developers who want to build libCellML from source and perhaps
+  contribute to the code base,
   please start with the :ref:`Setup for Developers<dev_setup>` page in the
   :ref:`Documentation for developers<index_development>` section.
-
 
 Tutorials for users
 -------------------
