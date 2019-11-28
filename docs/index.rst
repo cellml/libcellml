@@ -42,7 +42,7 @@ Tutorials for users
 -------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :titlesonly:
 
    tutorials/tutorials_index
@@ -52,7 +52,7 @@ CellML2 format specification
 ----------------------------
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :titlesonly:
 
     specification/specification_index
@@ -61,7 +61,7 @@ Documentation for developers
 ----------------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :titlesonly:
 
    developer_docs/index_development
