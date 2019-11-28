@@ -41,8 +41,10 @@ pre {
     background-color:#eeeeee;
 }
 
-.highlight-cpp {
-    margin: 0px;
+.highlight {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color:#eeeeee;
 }
 
 div.figure a.image-reference {
