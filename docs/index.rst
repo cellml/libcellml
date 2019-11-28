@@ -24,16 +24,25 @@ as part of the CellML hierarchical model description.
 
 Installation and system requirements
 ------------------------------------
+How and where you install libCellML will depend a little on who you are and
+how you want to use it.
 
+* For a quickstart setup of libCellML for users already familiar with the
+  CellML format, please follow the Quickstart guide.
 
+* For users who are new to CellML, please see the step-by-step instructions
+  which begin with :ref:`Tutorial 0: Installation and testing<tutorial0>`.
 
+* For developers who want to contribute or build libCellML from source,
+  please start with the :ref:`Setup for Developers<dev_setup>` page in the
+  :ref:`Documentation for developers<index_development>` section.
 
 
 Tutorials for users
 -------------------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :titlesonly:
 
    tutorials/tutorial0/outline0
@@ -45,6 +54,7 @@ Tutorials for users
    tutorials/tutorial6/outline6
    tutorials/tutorial7/outline7
    tutorials/tutorial8/outline8
+
    theory/theory_index
 
 
@@ -52,7 +62,7 @@ CellML2 format specification
 ----------------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :titlesonly:
 
     specifications/interpretation/4_model
@@ -76,28 +86,29 @@ Documentation for developers
 ----------------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :titlesonly:
 
-   developer_docs/roadmap
-   developer_docs/current_thinking
+   developer_docs/dev_setup
+   developer_docs/dev_building
+   developer_docs/dev_contribution
+   developer_docs/dev_coding_standard
+   developer_docs/dev_testing_code
+   developer_docs/dev_review
+
    developer_docs/usecases
    developer_docs/object_model
    developer_docs/api_documentation
+   developer_docs/roadmap
+   developer_docs/current_thinking
    developer_docs/coverage_statistics
-   developer_docs/dev_setup
-   developer_docs/dev_building
-   developer_docs/dev_testing_code
-   developer_docs/dev_contribution
-   developer_docs/dev_review
-   developer_docs/dev_coding_standard
-   contributors
-   glossary
+   developer_docs/contributors
+   developer_docs/glossary
 
 External references
 ----------------------------
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :titlesonly:
 
    references
