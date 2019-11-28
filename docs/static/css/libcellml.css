@@ -9,12 +9,12 @@
 } */
 
 .dothis    {
-    /* border-left: 1px solid rgb(131, 139, 115); */
-    color: rgb(30, 46, 0);
+    border-left: 10px solid #2980b9;
+    /* color: rgb(30, 46, 0); */
     /* background-color: rgb(247, 255, 247); */
-    padding: 1px 0px 0px 10px;
+    padding: 0px 0px 0px 15px;
     margin-top:20px;
-    margin-bottom:5px;
+    margin-bottom:10px;
     line-height: inherit;
     font: inherit;
 }
