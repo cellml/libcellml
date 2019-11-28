@@ -229,7 +229,15 @@ ModelPtr Parser::parseModel(const std::string &input)
 {
     removeAllErrors();
     ModelPtr model = Model::create();
-    mPimpl->updateModel(model, input);
+    if (input.size() == 0) {
+        ErrorPtr err = Error::create();
+        err->setDescription("Model passed to 'parseModel' is empty.");
+        err->setKind(Error::Kind::XML);
+        err->setModel(model);
+        addError(err);
+    } else {
+        mPimpl->updateModel(model, input);
+    }
     return model;
 }
 
