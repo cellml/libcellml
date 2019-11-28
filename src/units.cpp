@@ -130,20 +130,20 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
 }
 
 /**
-* @brief Finds and updates the multiplier of the unit.
-*
-* We pass in the unit and use its' attributes to find the relevant multiplier.
-* If the units are not base units, we travel up the model hierarchy to find
-* the base units.
-*
-* @param multiplier The multiplier to find.
-* @param units The units to find the multiplier for.
-* @param uExp The exponential of the units.
-* @param logMult The log multiplier of the units.
-* @param direction The direction to update multiplier. Either 1 or -1.
-*
-* @return Either @c true or @c false, depending if the units were successfully updated.
-*/
+ * @brief Finds and updates the multiplier of the unit.
+ *
+ * We pass in the unit and use its' attributes to find the relevant multiplier.
+ * If the units are not base units, we travel up the model hierarchy to find
+ * the base units.
+ *
+ * @param multiplier The multiplier to find.
+ * @param units The units to find the multiplier for.
+ * @param uExp The exponential of the units.
+ * @param logMult The log multiplier of the units.
+ * @param direction The direction to update multiplier. Either 1 or -1.
+ *
+ * @return Either @c true or @c false, depending if the units were successfully updated.
+ */
 bool updateUnitMultiplier(double &multiplier,
                           const UnitsPtr &units,
                           double uExp, double logMult,
