@@ -120,6 +120,8 @@ In Python:
 
 .. code-block:: python
 
+    from libcellml import Validator
+
     # Create a Validator instance and pass it the model for checking
     validator = libcellml.Validator()
     validator.validateModel(model)
@@ -130,8 +132,51 @@ In Python:
         print(validator.error(e).specificationHeading())
 
 
-Print a model to a file
-==========================================
+Serialise a model into CellML2 for printing to a file
+=====================================================
+The ``Printer`` class has the opposite functionality to the ``Parser`` class.
+It accepts an existing ``ModelPtr`` and creates a ``string`` which can be
+written to a file.  As with the ``Parser`` and the ``Validator``, the
+``Printer`` also records errors which can be accessed as above.
+
+In C++:
+.. code-block:: cpp
+
+    // Create a Printer instance and pass the model into it
+    libcellml::Printer printer;
+
+    // The output of the printModel function is a string representing the serialised model
+    std::string serialisedModelString = printer.printModel(model);
+
+    // Check the printer for errors
+
+    // Write the serialised string to a file
+    std::string outFileName = "my_printed_file.cellml";
+    std::ofstream outFile(outFileName);
+    outFile << serialisedModelString;
+    outFile.close();
+
+
+
+
+In Python:
+.. code-block:: python
+
+    from libcellml import Printer
+
+    # Create a Printer instance and pass the model into it
+    printer = Printer()
+
+    # The output of the printModel function is a string representing the serialised model
+    serialised_model = printer.printModel(model)
+
+    # Write the string to a file
+    write_file = open("my_printed_file.cellml", "w")
+    write_file.write(serialised_model)
+
+
+
+
 
 
 

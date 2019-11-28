@@ -1,13 +1,5 @@
 @import url("theme.css");
 
-/* .dothis    {
-    border-left: 1px solid rgb(131, 139, 115);
-    color: darkolivegreen;
-    background-color: rgb(247, 255, 247);
-    padding: 1px 0px 0px 10px;
-    margin-top:20px;
-} */
-
 .dothis    {
     border-left: 5px solid #dadada;
     padding: 0px 0px 0px 8px;
@@ -46,7 +38,7 @@
 
 pre {
     border: none;
-    background-color:#eee;
+    background-color:#eeeeee;
 }
 
 .highlight-cpp {
