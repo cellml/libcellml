@@ -149,15 +149,18 @@ In C++:
     std::string serialisedModelString = printer.printModel(model);
 
     // Check the printer for errors
+    for (size_t e = 0; e < printer.errorCount(); ++e) {
+        libcellml::ErrorPtr error = printer.error(e);
+        std::cout << error->description() << std::endl;
+        std::cout << error->specificationReference() << std::endl
+                  << std::endl;
+    }
 
     // Write the serialised string to a file
     std::string outFileName = "my_printed_file.cellml";
     std::ofstream outFile(outFileName);
     outFile << serialisedModelString;
     outFile.close();
-
-
-
 
 In Python:
 .. code-block:: python
@@ -170,13 +173,15 @@ In Python:
     # The output of the printModel function is a string representing the serialised model
     serialised_model = printer.printModel(model)
 
+    # Check the printer for errors
+    for e in range(0, printer.errorCount()):
+        print(printer.error(e).description())
+        print(printer.error(e).specificationHeading())
+
     # Write the string to a file
     write_file = open("my_printed_file.cellml", "w")
     write_file.write(serialised_model)
-
-
-
-
+    write_file.close()
 
 
 
