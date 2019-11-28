@@ -99,14 +99,13 @@ TEST(Parser, makeError)
 
 TEST(Parser, emptyModelString)
 {
-    const std::string ex;
+    const std::string e;
     const std::vector<std::string> expectedErrors = {
-        "LibXml2 error: Document is empty.",
-        "Could not get a valid XML root node from the provided input.",
+        "Model passed to 'parseModel' is empty.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(e);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
