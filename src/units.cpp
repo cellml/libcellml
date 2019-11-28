@@ -464,9 +464,9 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     return 0.0;
 }
 
-using unitsMap = std::map<std::string, double>;
+using UnitsMap = std::map<std::string, double>;
 
-void updateUnitsMap(const UnitsPtr &units, unitsMap &unitsMap, double exp = 1.0)
+void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
         auto found = unitsMap.find(units->name());
@@ -507,6 +507,13 @@ void updateUnitsMap(const UnitsPtr &units, unitsMap &unitsMap, double exp = 1.0)
     }
 }
 
+UnitsMap createUnitMap(const UnitsPtr &units)
+{
+    UnitsMap unitMap;
+    updateUnitsMap(units, unitMap);
+    return unitMap;
+}
+
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
@@ -517,10 +524,8 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
         return false;
     }
 
-    unitsMap units1Map;
-    updateUnitsMap(units1, units1Map);
-    unitsMap units2Map;
-    updateUnitsMap(units2, units2Map);
+    UnitsMap units1Map = createUnitMap(units1);
+    UnitsMap units2Map = createUnitMap(units2);
 
     if (units1Map.size() == units2Map.size()) {
         for (auto &units : units1Map) {

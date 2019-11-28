@@ -406,8 +406,8 @@ public:
      * Two Units are considered to be equivalent if they share the same units,
      * independently of their dimension (e.g. volt and volt, volt and millivolt).
      *
-     * @param1 units1 The first Units to compare.
-     * @param2 units2 The second Units to compare.
+     * @param1 units1 The first units to compare.
+     * @param2 units2 The second units to compare.
      *
      * @return @c true if the two Units are equivalent, @c false otherwise.
      */
@@ -419,8 +419,8 @@ public:
      * Two Units are considered to be dimensionally equivalent if they share the
      * exact same units (e.g. volt and volt, but not volt and millivolt).
      *
-     * @param1 units1 The first Units to compare.
-     * @param2 units2 The second Units to compare.
+     * @param1 units1 The first units to compare.
+     * @param2 units2 The second units to compare.
      *
      * @return @c true if the two Units are dimensionally equivalent, @c false
      * otherwise.
