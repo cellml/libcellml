@@ -20,6 +20,7 @@ The generator is instantiated in the same way as the other items:
 
 .. code-block:: python
 
+    from libcellml import Generator
     # Instantiate the generator and submit a model to it for processing
     generator = Generator()
     generator.processModel(model)
@@ -39,9 +40,10 @@ but you can change this using the :code:`setProfile` function if you need to.
     generator.setProfile(profile)
 
 Of course, your choice of generator profile (language) will affect
-what you need to export.  If you're using C, then you will need both the
-header file as well as the source code.  If you're using Python, you will
-only need the source code.
+what you need to export.  If you're using the C profile, then you will need
+both the interface code (the header file) as well as the implementation code
+(the source file).  If you're using Python
+profile, you will only need the source code.
 
 For the C profile:
 

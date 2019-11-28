@@ -195,6 +195,11 @@ pages.
 
 In C++:
 
+.. code-block::
+
+    std::cout << "Number of variables = " << generator.variableCount() << std::endl;
+    std::cout << "Variable of integration = " << generator.voi()->name() << std::endl;
+    std::cout << "Number of states = " << generator.stateCount() << std::endl;
 
 
 Create or edit a model using the API

@@ -1,4 +1,25 @@
-@import url("theme.css");
+@import url("../alabaster.css");
+
+.code.literal {
+    color:darkslategray;
+}
+
+pre {
+    border: none;
+    background-color:#eeeeee;
+}
+
+.highlight {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color:#eeeeee;
+}
+
+div.figure a.image-reference {
+    border: none;
+}
+
+
 
 .dothis    {
     border-left: 5px solid #dadada;
@@ -30,23 +51,4 @@
     padding: 5px 0px 0px 10px;
     font-family: 'Consolas', 'Deja Vu Sans Mono','Bitstream Vera Sans Mono', monospace;
     font-size: 0.85em;
-}
-
-.code.literal {
-    color:darkslategray;
-}
-
-pre {
-    border: none;
-    background-color:#eeeeee;
-}
-
-.highlight {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background-color:#eeeeee;
-}
-
-div.figure a.image-reference {
-    border: none;
 }
