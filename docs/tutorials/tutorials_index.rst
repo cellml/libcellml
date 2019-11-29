@@ -26,7 +26,7 @@ Tutorials for users
     :maxdepth: 2
     :titlesonly:
 
-    quickstart
+    quickstart/quickstart
     tutorial0/outline0
     tutorial1/outline1
     tutorial2/outline2

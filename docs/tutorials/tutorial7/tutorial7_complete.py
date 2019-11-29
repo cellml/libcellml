@@ -15,7 +15,7 @@
 
 from libcellml import Component, Generator, GeneratorProfile, Model, Printer, Units, Validator, Variable
 
-from utilities.tutorial_utilities import print_errors_to_terminal
+from tutorial_utilities import print_errors_to_terminal
 
 if __name__ == "__main__":
     #  0 Setup stuff that is used throughout

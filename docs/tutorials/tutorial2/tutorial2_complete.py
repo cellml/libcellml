@@ -15,7 +15,7 @@
 
 from libcellml import Parser, Printer, Validator
 
-from utilities.tutorial_utilities import print_model_to_terminal
+from tutorial_utilities import print_model_to_terminal
 
 if __name__ == "__main__":
     print("-----------------------------------------------------")

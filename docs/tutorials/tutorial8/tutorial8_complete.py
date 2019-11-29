@@ -13,7 +13,7 @@
 """
 from libcellml import Component, Generator, GeneratorProfile, Model, Parser, Printer, Validator, Variable
 
-from utilities.tutorial_utilities import print_errors_to_terminal, print_encapsulation_structure_to_terminal, \
+from tutorial_utilities import print_errors_to_terminal, print_encapsulation_structure_to_terminal, \
     switch_units_in_maths, insert_into_mathml_string
 
 if __name__ == "__main__":

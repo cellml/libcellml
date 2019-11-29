@@ -11,7 +11,7 @@
 
 from libcellml import Component, Model, Printer, Validator, Variable, Units
 
-from utilities.tutorial_utilities import print_errors_to_terminal
+from tutorial_utilities import print_errors_to_terminal
 
 if __name__ == "__main__":
 

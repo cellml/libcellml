@@ -18,7 +18,7 @@
 
 from libcellml import Component, Parser, Printer, Units, Variable, Validator
 
-from utilities.tutorial_utilities import print_model_to_terminal, print_errors_to_terminal, \
+from tutorial_utilities import print_model_to_terminal, print_errors_to_terminal, \
     print_encapsulation_structure_to_terminal
 
 if __name__ == "__main__":
