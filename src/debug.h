@@ -23,11 +23,17 @@ namespace libcellml {
 
 struct Debug
 {
-    Debug() = default;
+    explicit Debug(bool newLine = true)
+        : mNewLine(newLine)
+    {
+    }
 
     ~Debug()
     {
-        std::cout << mSS.str() << std::endl;
+        std::cout << mSS.str();
+        if (mNewLine) {
+            std::cout << std::endl;
+        }
     }
 
     Debug &operator<<(const void *p)
@@ -48,6 +54,7 @@ struct Debug
 
 private:
     std::ostringstream mSS;
+    bool mNewLine;
 };
 
 } // namespace libcellml
