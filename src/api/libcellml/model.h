@@ -251,6 +251,17 @@ public:
      */
     size_t unitsCount() const;
 
+    /**
+     * @brief Test to determine if there are any import entities.
+     *
+     * Checks the model to determine if there are any @c Units or
+     * @c Components which are imports.  Returns @c true if the
+     * model has at least one @c Units or @c Component which is an
+     * imported @c Units or @c Component.
+     *
+     * @return True if the @c Model has a @c Units or @c Component
+     * that is an import, false otherwise.
+     */
     bool hasImports() const;
 
     /**
