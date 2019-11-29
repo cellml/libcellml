@@ -251,6 +251,8 @@ public:
      */
     size_t unitsCount() const;
 
+    bool hasImports() const;
+
     /**
      * @brief Resolve all imports in this model.
      *
@@ -269,7 +271,7 @@ public:
      *
      * @return True if the @c Model has unresolved imports and false otherwise.
      */
-    bool hasUnresolvedImports();
+    bool hasUnresolvedImports() const;
 
     /**
      * @brief Create a clone of this model.

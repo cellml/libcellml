@@ -297,7 +297,7 @@ bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
     return unresolvedImport;
 }
 
-bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity);
+bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity);
 
 bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
@@ -319,7 +319,7 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
     return unresolvedImports;
 }
 
-bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity)
+bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity)
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {
@@ -329,7 +329,7 @@ bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEnti
     return unresolvedImports;
 }
 
-bool Model::hasUnresolvedImports()
+bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
@@ -340,6 +340,36 @@ bool Model::hasUnresolvedImports()
         unresolvedImports = hasUnresolvedComponentImports(shared_from_this());
     }
     return unresolvedImports;
+}
+
+bool hasComponentImports(const ComponentEntityConstPtr &parentComponentEntity)
+{
+    bool importsPresent = false;
+    for (size_t n = 0; n < parentComponentEntity->componentCount() && !importsPresent; ++n) {
+        libcellml::ComponentPtr component = parentComponentEntity->component(n);
+        importsPresent = component->isImport();
+        if (!importsPresent) {
+            importsPresent = hasComponentImports(component);
+        }
+    }
+    return importsPresent;
+}
+
+bool Model::hasImports() const
+{
+    bool importsPresent = false;
+    for (size_t n = 0; n < unitsCount() && !importsPresent; ++n) {
+        libcellml::UnitsPtr units = Model::units(n);
+        if (units->isImport()) {
+            importsPresent = true;
+        }
+    }
+
+    if (!importsPresent) {
+        importsPresent = hasComponentImports(shared_from_this());
+    }
+
+    return importsPresent;
 }
 
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
@@ -652,21 +682,23 @@ void Model::flatten()
         return;
     }
 
-    // Go through Units and instantiate any imported Units.
-    for (size_t index = 0; index < unitsCount(); ++index) {
-        auto u = units(index);
-        if (u->isImport()) {
-            auto importedUnits = u->importSource()->model()->units(u->importReference());
-            auto importedUnitsCopy = importedUnits->clone();
-            importedUnitsCopy->setName(u->name());
-            replaceUnits(index, importedUnitsCopy);
+    while (hasImports()) {
+        // Go through Units and instantiate any imported Units.
+        for (size_t index = 0; index < unitsCount(); ++index) {
+            auto u = units(index);
+            if (u->isImport()) {
+                auto importedUnits = u->importSource()->model()->units(u->importReference());
+                auto importedUnitsCopy = importedUnits->clone();
+                importedUnitsCopy->setName(u->name());
+                replaceUnits(index, importedUnitsCopy);
+            }
         }
-    }
 
-    // Go through Components and instatiate any imported Components
-    for (size_t index = 0; index < componentCount(); ++index) {
-        auto c = component(index);
-        flattenComponentTree(shared_from_this(), c, index);
+        // Go through Components and instatiate any imported Components
+        for (size_t index = 0; index < componentCount(); ++index) {
+            auto c = component(index);
+            flattenComponentTree(shared_from_this(), c, index);
+        }
     }
 }
 
