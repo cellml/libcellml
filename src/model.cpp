@@ -516,15 +516,11 @@ IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originSta
 {
     auto rebasedStack = stack;
 
-    if (originStack.size() < stack.size()) {
-        rebasedStack.resize(originStack.size());
-        if (rebasedStack == originStack) {
-            rebasedStack = destinationStack;
-            auto offsetIt = stack.begin() + static_cast<long>(originStack.size());
-            rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
-        } else {
-            rebasedStack.clear();
-        }
+    rebasedStack.resize(originStack.size(), SIZE_T_MAX);
+    if (rebasedStack == originStack) {
+        rebasedStack = destinationStack;
+        auto offsetIt = stack.begin() + static_cast<long>(originStack.size());
+        rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
     } else {
         rebasedStack.clear();
     }
@@ -544,7 +540,9 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
             for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
                 auto target = *vectorIt;
                 auto rebasedTarget = rebaseIndexStack(target, originStack, destinationStack);
-                rebasedVector.push_back(rebasedTarget);
+                if (rebasedTarget.size() > 0) {
+                    rebasedVector.push_back(rebasedTarget);
+                }
             }
 
             if (rebasedVector.size() > 0) {

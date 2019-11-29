@@ -344,6 +344,78 @@ TEST(ModelFlattening, importedComponentWithInternalEquivalentVariables)
     EXPECT_EQ(eImportModel, aImportModel);
 }
 
+TEST(ModelFlattening, importedComponentWithEquivalentVariablesReferencingVariablesOutsideOfImportedComponent)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <component name=\"main_model_component\">\n"
+        "    <variable name=\"v\" units=\"dimensionless\" initial_value=\"1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"other_component\">\n"
+        "    <variable name=\"time\" units=\"dimensionless\" interface=\"public_and_private\"/>\n"
+        "    <variable name=\"parameter\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "    <variable name=\"cosine\" units=\"dimensionless\" initial_value=\"0\" interface=\"public\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <apply>\n"
+        "          <diff/>\n"
+        "          <bvar>\n"
+        "            <ci>time</ci>\n"
+        "          </bvar>\n"
+        "          <ci>cosine</ci>\n"
+        "        </apply>\n"
+        "        <apply>\n"
+        "          <sin/>\n"
+        "          <apply>\n"
+        "            <times/>\n"
+        "            <ci>parameter</ci>\n"
+        "            <ci>time</ci>\n"
+        "          </apply>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "  <component name=\"reusable_child_1\">\n"
+        "    <variable name=\"time\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"reusable_child_2\">\n"
+        "    <variable name=\"time\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"other_component\" component_2=\"reusable_child_1\">\n"
+        "    <map_variables variable_1=\"time\" variable_2=\"time\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"reusable_child_1\" component_2=\"reusable_child_2\">\n"
+        "    <map_variables variable_1=\"time\" variable_2=\"time\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"main_model_component\">\n"
+        "      <component_ref component=\"other_component\">\n"
+        "        <component_ref component=\"reusable_child_1\"/>\n"
+        "        <component_ref component=\"reusable_child_2\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/outsidecomponentequivalentvariables.xml"));
+
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
+/*
 TEST(ModelFlattening, importedComponentUsingUnitsDefinedInImportedModel)
 {
     const std::string e =
@@ -539,3 +611,4 @@ TEST(ModelFlattening, importedUnitsWithNameClashes)
     auto a = printer->printModel(model);
 //    EXPECT_EQ(e, a);
 }
+*/
