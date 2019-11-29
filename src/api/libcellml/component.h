@@ -360,6 +360,19 @@ public:
      */
     bool hasReset(const ResetPtr &reset) const;
 
+    /**
+     * @brief Create a clone of this component.
+     *
+     * Creates a full separate copy of this component without copying
+     * the parent.  Thus the cloned (returned) version of this component
+     * will not have a parent set even if this component does.  Any and
+     * all child components will also be cloned recreating the full
+     * component hierarchy that this component is the root of.
+     *
+     * @return a new @c ComponentPtr to the cloned component.
+     */
+    ComponentPtr clone() const;
+
 private:
     Component(); /**< Constructor */
     explicit Component(const std::string &name);
