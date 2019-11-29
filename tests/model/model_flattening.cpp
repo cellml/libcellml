@@ -443,61 +443,56 @@ TEST(ModelFlattening, importedComponentUsingUnitsDefinedInImportedModel)
     EXPECT_EQ(e, a);
 }
 
-/*
-TEST(ModelFlattening, importedComponentWithEquivalentVariablesOutsideTheComponent)
-{
-    const std::string e = "";
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
-
-    EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
-    EXPECT_FALSE(model->hasUnresolvedImports());
-
-    model->flatten();
-
-    auto printer = libcellml::Printer::create();
-
-    auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
-}
-
-TEST(ModelFlattening, importedComponentUsingImportedUnits)
-{
-    const std::string e = "";
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
-
-    EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
-    EXPECT_FALSE(model->hasUnresolvedImports());
-
-    model->flatten();
-
-    auto printer = libcellml::Printer::create();
-
-    auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
-}
-
 TEST(ModelFlattening, importedComponentUsingImportedComponent)
 {
-    const std::string e = "";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <component name=\"my_component\">\n"
+        "    <variable name=\"time\" units=\"dimensionless\" interface=\"public_and_private\"/>\n"
+        "    <variable name=\"parameter\" units=\"dimensionless\" interface=\"public\"/>\n"
+        "    <variable name=\"cosine\" units=\"dimensionless\" initial_value=\"0\" interface=\"public\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <apply>\n"
+        "          <diff/>\n"
+        "          <bvar>\n"
+        "            <ci>time</ci>\n"
+        "          </bvar>\n"
+        "          <ci>cosine</ci>\n"
+        "        </apply>\n"
+        "        <apply>\n"
+        "          <sin/>\n"
+        "          <apply>\n"
+        "            <times/>\n"
+        "            <ci>parameter</ci>\n"
+        "            <ci>time</ci>\n"
+        "          </apply>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
+    auto model = parser->parseModel(fileContents("modelflattening/importedcomponentusingimportedcomponent.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("modelflattening/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_TRUE(model->hasImports());
 
     model->flatten();
+    EXPECT_FALSE(model->hasImports());
 
     auto printer = libcellml::Printer::create();
 
     auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
+/*
 TEST(ModelFlattening, multipleImportedUnits)
 {
     const std::string e = "";
