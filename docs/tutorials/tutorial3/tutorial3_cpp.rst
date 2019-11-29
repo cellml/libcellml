@@ -50,15 +50,16 @@ up a :code:`ModelPtr` model instance, and creating a component inside it.
 .. container:: dothis
 
     **1.a**
-    Allocate a shared pointer for a new Model instance.
+    Create a new ModelPtr using the
+    ``libcellml::SomethingPtr something = libcellml::Something::create();`` idiom.
     Set the name and id attributes of the model you created, and print them to
     the terminal to check them.
 
 .. container:: dothis
 
     **1.b**
-    Allocate a shared pointer for a new Component instance.  Name it and add it
-    to the model you created above.
+    Create a new Component as above.  Name it and add it
+    to the model you created in 1.a.
 
 Now for the real bit.  In order to actually model anything, we need to include
 the mathematical equations which represent the phyiscal situation of interest.
@@ -546,7 +547,7 @@ as *profiles*.  The default setting is for C, but you can change this using the
 
     // Change the generated language from the default C to Python
     libcellml::GeneratorProfilePtr profile =
-        std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
 
 **TODO** Check whether this is changed to create() for the GeneratorProfile

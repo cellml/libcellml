@@ -149,9 +149,8 @@ if __name__ == "__main__":
     write_file.write(header_code)
     print("The {} file has been written".format(out_file_name))
 
-
     #  4.e  Change the generator profile from C to Python and reprocess
-    profile = GeneratorProfile.create(GeneratorProfile.Profile.PYTHON)
+    profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
     generator.setProfile(profile)
     generator.processModel(model)
 

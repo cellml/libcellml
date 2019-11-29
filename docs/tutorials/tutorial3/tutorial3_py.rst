@@ -570,11 +570,10 @@ as *profiles*.  The default setting is for C, but you can change this using the
 
 .. code-block:: python
 
+    from libcellml import GeneratorProfile
     # Change the generated language from the default C to Python
-    profile = libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.PYTHON)
+    profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
     generator->setProfile(profile)
-
-TODO Check whether the use of the copy constructor is actually needed??
 
 .. container:: dothis
 

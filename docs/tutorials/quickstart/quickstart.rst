@@ -254,6 +254,38 @@ In C++:
 
 Using the Component class
 +++++++++++++++++++++++++
+Components are the building blocks of the CellML modelling process.  They
+are a modular representation of anything which is to be simulated, including
+the governing equations and their variables, and the relationship of this
+component to any of the others in the model.
+
+Because components are named items, their basic use follows the same format
+as for other types of named items.
+
+In C++
+
+.. code-block:: cpp
+
+    // Add a component to a model
+    model->addComponent(component);
+    // Add a child component to its parent
+    parentComponent->addComponent(encapsulatedChildComponent);
+    // Remove a child component: The childComponent now has a null parent() pointer
+    parentComponent->removeComponent(childComponent);
+    // Remove all child components
+    parentComponent->removeAllComponents();
+
+    // Count the child components
+    int numberOfChildComponents = parentComponent->componentCount();
+    // Access a child component by index (this returns a pointer to the second child)
+    childComponent = parentComponent->component(1);
+    // Access a child component by name
+    childComponent = parentComponent->component("my_child");
+
+
+
+
+
 
 
 
@@ -288,7 +320,8 @@ In C++:
     u1->setName("my_units");
 
 
-
+Retrieving named items: Model, Component, Variable, Units
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
