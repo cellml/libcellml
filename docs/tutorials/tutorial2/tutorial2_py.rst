@@ -85,7 +85,7 @@ what's missing or incorrect as you go.  This is really easy:
 .. code-block:: python
 
     validator = libCellML.Validator()
-    validator.validateModel(yourModelHere)
+    validator->validateModel(yourModelHere)
 
 .. container:: dothis
 
@@ -113,7 +113,7 @@ using an index:
 
 .. code-block:: python
 
-    the_fifteenth_rror = validator.error(14)
+    the_fifteenth_rror = validator->error(14)
 
 Inside an :code:`Error` structure are two fields which are really useful.
 These are the :code:`description()` (which does what you'd think) and the
@@ -131,7 +131,7 @@ CellML2.0 specification document for reference.
 
     for e in range(0, number_of_validation_errors):
         # Retrieving the e-th error from the validator
-        validator_error = validator.error(e)
+        validator_error = validator->error(e)
 
         # Printing the description to the screen
         print("  Validator error[{e}]: ".format(e=e))

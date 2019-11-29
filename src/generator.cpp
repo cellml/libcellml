@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/generator.h"
+#include "libcellml/generator->h"
 
 #include <algorithm>
 #include <limits>
@@ -27,7 +27,7 @@ limitations under the License.
 #include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
-#include "libcellml/validator.h"
+#include "libcellml/validator->h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
 #include "utilities.h"

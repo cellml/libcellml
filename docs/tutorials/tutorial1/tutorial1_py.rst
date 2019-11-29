@@ -78,7 +78,7 @@ point.
     #  1.b   Create a libCellML Parser, and use it to parse the file
     #        string contents and convert it into a CellML Model structure
     parser = libcellml.Parser()
-    model = parser.parseModel(read_file_contents)
+    model = parser->parseModel(read_file_contents)
 
 Now we have a *deserialsied* CellML model which we can manipulate using the
 libCellML library.
@@ -177,7 +177,7 @@ for file output.
     printer = libcellml.Printer()
 
     # Using the printer to serialse a model into a string
-    serialised_model_string = printer.printModel(my_first_model)
+    serialised_model_string = printer->printModel(my_first_model)
 
 .. container:: dothis
 

@@ -36,8 +36,8 @@ int main() {
   std::stringstream inFileContents;
   inFileContents << inFile.rdbuf();
   std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
-  libcellml::Parser parser;
-  libcellml::ModelPtr model = parser.parseModel(inFileContents.str());
+  libcellml::ParserPtr parser = libcellml::Parser::create();
+  libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
 
   // ---------------------------------------------------------------------------
   //  STEP 2:   Print the contents of the model to the terminal so that we can
@@ -56,11 +56,11 @@ int main() {
   std::cout << "-----------------------------------------------" << std::endl;
   std::cout << "       Validating the parsed model" << std::endl;
   std::cout << "-----------------------------------------------" << std::endl;
-  libcellml::Validator validator;
-  validator.validateModel(model);
+  libcellml::ValidatorPtr validator = libcellml::Validator::create();
+  validator->validateModel(model);
 
   //  2.b   Check whether there were errors returned from the validator
-  int numberOfValidationErrors = validator.errorCount();
+  int numberOfValidationErrors = validator->errorCount();
   if (numberOfValidationErrors != 0) {
     std::cout << "The validator has found " << numberOfValidationErrors
               << " errors!" << std::endl;
@@ -68,7 +68,7 @@ int main() {
     // 2.c  Retrieve the errors, and print their description and specification
     //      reference to the terminal
     for (size_t e = 0; e < numberOfValidationErrors; ++e) {
-      libcellml::ErrorPtr validatorError = validator.error(e);
+      libcellml::ErrorPtr validatorError = validator->error(e);
       std::string errorSpecificationReference =
           validatorError->specificationHeading();
 
@@ -168,13 +168,13 @@ int main() {
   std::cout << "-----------------------------------------------" << std::endl;
   std::cout << "       Validating the corrected model" << std::endl;
   std::cout << "-----------------------------------------------" << std::endl;
-  validator.validateModel(model);
-  std::cout << "The validator found " << validator.errorCount()
+  validator->validateModel(model);
+  std::cout << "The validator found " << validator->errorCount()
             << " errors in the model." << std::endl;
 
   //  STEP 6:   Print corrected model to a file
-  libcellml::Printer printer;
-  std::string serialisedModelString = printer.printModel(model);
+  libcellml::PrinterPtr printer=libcellml::Printer::create();
+  std::string serialisedModelString = printer->printModel(model);
   std::string outFileName = "tutorial1_printed.cellml";
   std::ofstream outFile(outFileName);
   outFile << serialisedModelString;

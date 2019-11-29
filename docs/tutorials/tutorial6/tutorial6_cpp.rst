@@ -41,8 +41,8 @@ The Generator is accessed similarly to the Validator and Parser, and a simple
 call to the :code:`processModel` function will do most of the work.
 ::
 
-    libcellml::Generator generator;
-    generator.processModel(model);
+    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    generator->processModel(model);
 
 container:: dothis
 

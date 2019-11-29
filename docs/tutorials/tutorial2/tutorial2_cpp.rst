@@ -77,8 +77,8 @@ what's missing or incorrect as you go.  This is really easy:
 
 .. code-block:: cpp
 
-    libcellml::Validator validator;
-    validator.validateModel(yourModelHere);
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(yourModelHere);
 
 .. container:: dothis
 
@@ -106,7 +106,7 @@ using an index:
 
 .. code-block:: cpp
 
-    libcellml::ErrorPtr theFifteenthError = validator.error(14);
+    libcellml::ErrorPtr theFifteenthError = validator->error(14);
 
 Inside an :code:`Error` structure are two fields which are really useful.
 These are the :code:`description` (which does what you'd think) and the
@@ -122,10 +122,10 @@ specification document for reference.
 
 .. code-block:: cpp
 
-    for (size_t e = 0; e < validator.errorCount(); ++e) {
+    for (size_t e = 0; e < validator->errorCount(); ++e) {
 
         // Retrieving the e'th error as a pointer:
-        libcellml::ErrorPtr validatorError = validator.error(e);
+        libcellml::ErrorPtr validatorError = validator->error(e);
 
         std::cout << "  Validator error[" << e << "]:" << std::endl;
 

@@ -24,7 +24,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/error.i
     ../interface/entity.i
     ../interface/enumerations.i
-    ../interface/generator.i
+    ../interface/generator->i
     ../interface/generatorprofile.i
     ../interface/importsource.i
     ../interface/importedentity.i
@@ -32,12 +32,12 @@ set(SWIG_INTERFACE_SRCS
     ../interface/model.i
     ../interface/namedentity.i
     ../interface/orderedentity.i
-    ../interface/parser.i
-    ../interface/printer.i
+    ../interface/parser->i
+    ../interface/printer->i
     ../interface/reset.i
     ../interface/specificationrule.i
     ../interface/units.i
-    ../interface/validator.i
+    ../interface/validator->i
     ../interface/variable.i
     ../interface/version.i
 )

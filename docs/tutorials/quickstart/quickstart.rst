@@ -59,15 +59,15 @@ In C++:
     inFileContents << inFile.rdbuf();
 
     // Creating a Parser instance
-    libcellml::Parser parser;
+    libcellml::ParserPtr parser = libcellml::Parser::create();
 
     // Deserialising the CellML contents of the parsed file into a Model pointer
-    libcellml::ModelPtr model = parser.parseModel(inFileContents.str());
+    libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
 
     // Check the Parser for errors
-    for(size_t e = 0; e < parser.errorCount(); ++e) {
-      std::cout<<parser.error(e)->description()<<std::endl;
-      std::cout<<parser.error(e)->specificationHeading()<<std::endl;
+    for(size_t e = 0; e < parser->errorCount(); ++e) {
+      std::cout<<parser->error(e)->description()<<std::endl;
+      std::cout<<parser->error(e)->specificationHeading()<<std::endl;
     }
 
 In Python:
@@ -80,12 +80,12 @@ In Python:
     #  Create a libCellML Parser, and use it to parse the file string contents
     #  and convert it into a CellML Model structure
     parser = Parser()
-    model = parser.parseModel(read_file.read())
+    model = parser->parseModel(read_file.read())
 
     # Check the parser for errors
-    for e in range(0, parser.errorCount()):
-        print(parser.error(e).description())
-        print(parser.error(e).specificationHeading())
+    for e in range(0, parser->errorCount()):
+        print(parser->error(e).description())
+        print(parser->error(e).specificationHeading())
 
 
 Debug and validate a Model
@@ -103,13 +103,13 @@ In C++:
 .. code-block:: cpp
 
     // Create a Validator instance and pass the model to it for checking
-    libcellml::Validator validator;
-    validator.validateModel(model);
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(model);
 
     // Retrieve the errors from the validator and print their specificiation
     // reference and description
-    for (size_t e = 0; e < validator.errorCount(); ++e) {
-        libcellml::ErrorPtr error = validator.error(e);
+    for (size_t e = 0; e < validator->errorCount(); ++e) {
+        libcellml::ErrorPtr error = validator->error(e);
         std::cout << error->description() << std::endl;
         std::cout << error->specificationReference() << std::endl
                   << std::endl;
@@ -123,12 +123,12 @@ In Python:
 
     # Create a Validator instance and pass it the model for checking
     validator = libcellml.Validator()
-    validator.validateModel(model)
+    validator->validateModel(model)
 
     # Check the validator for errors
-    for e in range(0, validator.errorCount()):
-        print(validator.error(e).description())
-        print(validator.error(e).specificationHeading())
+    for e in range(0, validator->errorCount()):
+        print(validator->error(e).description())
+        print(validator->error(e).specificationHeading())
 
 Serialise a Model into CellML2 for printing to a file
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -142,14 +142,14 @@ In C++:
 .. code-block:: cpp
 
     // Create a Printer instance and pass the model into it
-    libcellml::Printer printer;
+    libcellml::PrinterPtr printer=libcellml::Printer::create();
 
     // The output of the printModel function is a string representing the serialised model
-    std::string serialisedModelString = printer.printModel(model);
+    std::string serialisedModelString = printer->printModel(model);
 
     // Check the printer for errors
-    for (size_t e = 0; e < printer.errorCount(); ++e) {
-        libcellml::ErrorPtr error = printer.error(e);
+    for (size_t e = 0; e < printer->errorCount(); ++e) {
+        libcellml::ErrorPtr error = printer->error(e);
         std::cout << error->description() << std::endl;
         std::cout << error->specificationReference() << std::endl
                   << std::endl;
@@ -171,12 +171,12 @@ In Python:
     printer = Printer()
 
     # The output of the printModel function is a string representing the serialised model
-    serialised_model = printer.printModel(model)
+    serialised_model = printer->printModel(model)
 
     # Check the printer for errors
-    for e in range(0, printer.errorCount()):
-        print(printer.error(e).description())
-        print(printer.error(e).specificationHeading())
+    for e in range(0, printer->errorCount()):
+        print(printer->error(e).description())
+        print(printer->error(e).specificationHeading())
 
     # Write the string to a file
     write_file = open("my_printed_file.cellml", "w")

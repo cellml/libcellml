@@ -16,10 +16,10 @@
 "Parses a string and returns a :class:`Model`.";
 
 %{
-#include "libcellml/parser.h"
+#include "libcellml/parser->h"
 %}
 
 %create_constructor(Parser)
 
 %include "libcellml/types.h"
-%include "libcellml/parser.h"
+%include "libcellml/parser->h"

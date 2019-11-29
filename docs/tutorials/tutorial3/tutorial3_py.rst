@@ -486,8 +486,8 @@ The generator is instantiated in the same way as the other items:
 .. code-block:: python
 
     # Instantiate the generator and submit the model to it for processing
-    libcellml::Generator generator;
-    generator.processModel(model);
+    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    generator->processModel(model);
 
 .. container:: dothis
 
@@ -534,7 +534,7 @@ elsewhere:
 - The :code:`voi()` function returns a *pointer* to the :code:`Variable` which
   is to be used as the variable of integration (VOI).  This is specified inside
   the MathML block using the :code:`<bvar>...</bvar>` tags.
-  To return its *name* you can use :code:`your_generator.voi().name()`.
+  To return its *name* you can use :code:`your_generator->voi().name()`.
 
 - The :code:`variableCount()` function returns the number of variables which
   need to be solved for in the model.  As with elsewhere, you can access the
@@ -562,7 +562,7 @@ this being one of the following:
 The :code:`modelType()` function returns the classification as an :code:`enum`,
 so you'll need to interpret it by comparing to the enum list above.  In the
 tutorials you're given a utility function that will return the name of the enum
-for you, eg: :code:`getModelTypeFromEnum(generator.modelType())`. TODO
+for you, eg: :code:`getModelTypeFromEnum(generator->modelType())`. TODO
 
 The Generator functionality refers to its different language options
 as *profiles*.  The default setting is for C, but you can change this using the
@@ -572,7 +572,7 @@ as *profiles*.  The default setting is for C, but you can change this using the
 
     # Change the generated language from the default C to Python
     profile = libcellml.GeneratorProfile(libcellml.GeneratorProfile.Profile.PYTHON)
-    generator.setProfile(profile)
+    generator->setProfile(profile)
 
 TODO Check whether the use of the copy constructor is actually needed??
 
@@ -592,17 +592,17 @@ For code generation into Python:
 .. code-block:: python
 
     # Retrieve the main script code only
-    source_code = generator.implementationCode()
+    source_code = generator->implementationCode()
 
 For code generation into C:
 
 .. code-block:: python
 
     # Retrieve the interface or header code, and write to a file:
-    header_code = generator.interfaceCode()
+    header_code = generator->interfaceCode()
 
     # Retrieve the main source code and write to a file:
-    source_code = generator.implementationCode()
+    source_code = generator->implementationCode()
 
 .. container:: dothis
 

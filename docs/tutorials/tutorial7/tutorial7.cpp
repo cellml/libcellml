@@ -1,9 +1,9 @@
 /**
  *      TUTORIAL 7: Creating the Sodium Channel
- *  This tutorial is an opportunity to practise creating models from 
- *  scratch using the libCellML API.  The model you create here will 
+ *  This tutorial is an opportunity to practise creating models from
+ *  scratch using the libCellML API.  The model you create here will
  *  be used later on in Tutorial ??.
- * 
+ *
  *  Tutorial 7 assumes that you are already comfortable with:
  *    - the concept of component hierarchy and encapsulation (Tutorial 5)
  *    - the use of the API to create all of the entities in a model (Tutorial 3)
@@ -19,7 +19,7 @@
 int main()
 {
     //  0 Setup stuff that is used throughout
-    libcellml::Validator validator;
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
 
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("Tutorial7_SodiumChannelModel");
@@ -72,7 +72,7 @@ int main()
 
     //  4.a Creating the new environment component
 
-    //  4.b Add variables to the component.  
+    //  4.b Add variables to the component.
 
     //  4.c Add the new component to the model and validate
 
@@ -87,7 +87,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  6.a Create the MathML controlling the driving function
-    
+
     //  6.b Validate the final model
 
     std::cout << "-----------------------------------------------" << std::endl;

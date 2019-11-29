@@ -31,8 +31,8 @@ int main() {
 
   //  1.b   Create a libCellML Parser, and use it to parse the fileContents
   //        string and convert it into a CellML Model structure
-  libcellml::Parser parser;
-  libcellml::ModelPtr model = parser.parseModel(inFileContents.str());
+  libcellml::ParserPtr parser = libcellml::Parser::create();
+  libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
 
   // ---------------------------------------------------------------------------
   //  STEP 2:   Investigate the model we've just loaded and see what's inside it
@@ -54,7 +54,7 @@ int main() {
 
   assert(numberOfComponents > 0);
 
-  //  2.c   Return the name and id of the first component and print them to 
+  //  2.c   Return the name and id of the first component and print them to
   //        the screen.
 
   libcellml::ComponentPtr component = model->component(0);
@@ -91,8 +91,8 @@ int main() {
   //  STEP 3: Print the model to another CellML file
   //  3.a   Create a Printer and use it to serialise the model to a string
 
-  libcellml::Printer printer;
-  std::string serialisedModelString = printer.printModel(model);
+  libcellml::PrinterPtr printer=libcellml::Printer::create();
+  std::string serialisedModelString = printer->printModel(model);
 
   //  3.b   Write the serialised string to a file
   std::string outFileName = "tutorial1_printed.cellml";

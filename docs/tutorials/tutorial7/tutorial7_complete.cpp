@@ -1,9 +1,9 @@
 /**
  *      TUTORIAL 7: Creating the Sodium Channel
- *  This tutorial is an opportunity to practise creating models from 
- *  scratch using the libCellML API.  The model you create here will 
+ *  This tutorial is an opportunity to practise creating models from
+ *  scratch using the libCellML API.  The model you create here will
  *  be used later on in Tutorial ??.
- * 
+ *
  *  Tutorial 7 assumes that you are already comfortable with:
  *    - the concept of component hierarchy and encapsulation (Tutorial 5)
  *    - the use of the API to create all of the entities in a model (Tutorial 3)
@@ -19,7 +19,7 @@
 int main()
 {
     //  0 Setup stuff that is used throughout
-    libcellml::Validator validator;
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
 
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("Tutorial7_SodiumChannelModel");
@@ -187,7 +187,7 @@ int main()
     mM->addUnit("mole", "milli");
     model->addUnits(mM);
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -320,7 +320,7 @@ int main()
     per_mV_ms->addUnit("volt", "milli", -1);
     model->addUnits(per_mV_ms);
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -430,7 +430,7 @@ int main()
     per_ms->addUnit("second", "milli", -1);
     model->addUnits(per_ms);
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -457,7 +457,7 @@ int main()
     //  4.c Add the new component to the model and validate
     model->addComponent(environment);
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -489,7 +489,7 @@ int main()
     sodiumChannel->variable("h")->setInterfaceType("private");
     hGate->variable("h")->setInterfaceType("public");
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -522,15 +522,15 @@ int main()
     }
 
     //  6.b Validate the final model
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     // std::cout << "-----------------------------------------------" << std::endl;
     // std::cout << "    STEP 7: Serialse and print the model " << std::endl;
     // std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::Printer printer;
-    std::string serialisedModelString = printer.printModel(model);
+    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    std::string serialisedModelString = printer->printModel(model);
     std::string outFileName = "tutorial7_SodiumChannelModel.cellml";
     std::ofstream outFile(outFileName);
     outFile << serialisedModelString;
@@ -543,16 +543,16 @@ int main()
     // std::cout << "    STEP 7: Generate and output the model " << std::endl;
     // std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::Generator generator;
-    generator.processModel(model);
+    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    generator->processModel(model);
     printErrorsToTerminal(generator);
 
     outFile.open("tutorial7_SodiumChannelModel.h");
-    outFile << generator.interfaceCode();
+    outFile << generator->interfaceCode();
     outFile.close();
 
     outFile.open("tutorial7_SodiumChannelModel.c");
-    outFile << generator.implementationCode();
+    outFile << generator->implementationCode();
     outFile.close();
 
     std::cout << "The generated code has been output into tutorial7_SodiumChannelModel.c ";

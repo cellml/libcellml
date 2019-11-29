@@ -28,7 +28,7 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief Callback for errors from the libxml2 context parser.
+ * @brief Callback for errors from the libxml2 context parser->
  *
  * Structured callback @c xmlStructuredErrorFunc for errors
  * from the libxml2 context parser used to parse this document.

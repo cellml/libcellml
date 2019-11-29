@@ -1,15 +1,15 @@
 """
     TUTORIAL 6: CODE GENERATION
- 
-    This tutorial explores the ability of libCellML to generate files representing 
-    the model which can be solved in Python or C.  By the time you have worked 
+
+    This tutorial explores the ability of libCellML to generate files representing
+    the model which can be solved in Python or C.  By the time you have worked
     through Tutorial 6 you will be able to:
         - use the Generator functionality to create models in Python or C format
         - use the simple solver provided to run the created models.
-    
+
     Tutorial 6 assumes that you are already comfortable with:
         - file manipulation and summarising using the utility functions
-      
+
 """
 from libcellml import Component, Generator, GeneratorProfile, Model, Parser, Printer, Validator, Variable
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     print_errors_to_terminal(validator)
 
     #  2.b Extract the sodiumChannel component from the parsed model and add it
-    #      to the one created at the beginning, and check the structure of the 
+    #      to the one created at the beginning, and check the structure of the
     #      encapsulation using the utility function printEncapsulationStructureToTerminal(model)
     sodium_channel = sodium_channel_model.component("sodiumChannel")
     sodium_channel.removeParent()
@@ -262,7 +262,7 @@ if __name__ == "__main__":
     print("   STEP 7: Add the driving function")
     print("-----------------------------------------------")
 
-    #  7.a Create a MathML string to represent the stimulus current i_stim, which 
+    #  7.a Create a MathML string to represent the stimulus current i_stim, which
     #      is set to 100 microA/cm^2 between t=1ms < t < t=1.2ms.
     stimulusEquation = \
         '<apply><eq/>\
@@ -306,4 +306,3 @@ if __name__ == "__main__":
     generator.processModel(model)
     print("procesed ... ")
     print_errors_to_terminal(generator)
-

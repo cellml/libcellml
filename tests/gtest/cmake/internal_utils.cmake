@@ -53,7 +53,7 @@ macro(config_compiler_and_linker)
 
   fix_default_compiler_settings_()
   if (MSVC)
-    # Newlines inside flags variables break CMake's NMake generator.
+    # Newlines inside flags variables break CMake's NMake generator->
     # TODO(vladl@google.com): Add -RTCs and -RTCu to debug builds.
     set(cxx_base_flags "-GS -W4 -WX -wd4127 -wd4251 -wd4275 -nologo -J -Zi")
     if (MSVC_VERSION LESS 1400)
@@ -156,4 +156,3 @@ endfunction()
 function(cxx_library name cxx_flags)
   cxx_library_with_type(${name} "" "${cxx_flags}" ${ARGN})
 endfunction()
-

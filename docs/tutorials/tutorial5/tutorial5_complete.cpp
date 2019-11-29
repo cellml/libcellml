@@ -1,15 +1,15 @@
 /**
  *      TUTORIAL 5: IMPORTS, COMPONENTS, AND CONNECTIONS
- * 
+ *
  *  This tutorial explores the ability of CellML to represent more than one
  *  modelled process at a time using components with connections between them.
  *  By the time you have worked through Tutorial 5 you will be able to:
  *      - import a Component or Units item from an existing CellML file
  *      - assemble a multi-component model using the API
- *      - inter-connect the components using the equivalent variables 
+ *      - inter-connect the components using the equivalent variables
  *        functionality
  *      - validate and debug the constructed model
- * 
+ *
  *  Tutorial 5 assumes that you are already comfortable with:
  *      - file manipulation and summarising using the utility functions
  *      - model creation through the API
@@ -37,15 +37,15 @@ int main()
     inFileContents << inFile.rdbuf();
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(inFileContents.str());
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
 
     //  1.b Print the parsed model to the terminal and check its contents
     printModelToTerminal(model);
 
     //  1.c Create a Validator and use it to check that the model is ok so far
-    libcellml::Validator validator;
-    validator.validateModel(model);
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  1.d Retrieve and rename the component
@@ -80,7 +80,7 @@ int main()
     model->addComponent(environment);
 
     //  2.d Calling the validator to check that our model is valid so far.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -207,7 +207,7 @@ int main()
 
     //  3.c Add the n-gate component into the model.
     model->addComponent(nGate);
-    //validator.validateModel(model);
+    //validator->validateModel(model);
     //printErrorsToTerminal(validator);
 
     //  3.d Add the missing units (connected to the constant in equation 1) and recheck the validation
@@ -216,7 +216,7 @@ int main()
     per_mVms->addUnit("volt", "milli", -1);
     per_mVms->addUnit("second", "milli", -1);
     model->addUnits(per_mVms);
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -243,7 +243,7 @@ int main()
     //      components
 
     // TODO This should produce a validation error but currently does not?
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  4.e  Fix the connection error above, and add the voltage and gating variable equivalences
@@ -254,7 +254,7 @@ int main()
     libcellml::Variable::addEquivalence(potassiumChannel->variable("n"), nGate->variable("n"));
 
     // TODO This should produce a validation error but currently does not?
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  4.f Add the interface specification.  The environment component is a sibling of the potassiumChannel
@@ -276,7 +276,7 @@ int main()
     potassiumChannel->variable("n")->setInterfaceType("private");
     nGate->variable("n")->setInterfaceType("public");
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -312,15 +312,15 @@ int main()
     environment->appendMath(mathFooter);
 
     //  5.c Validate the model including this new maths block
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "    STEP 6: Serialse and print the model " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::Printer printer;
-    std::string serialisedModelString = printer.printModel(model);
+    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    std::string serialisedModelString = printer->printModel(model);
     std::string outFileName = "tutorial5_PotassiumChannelModel.cellml";
     std::ofstream outFile(outFileName);
     outFile << serialisedModelString;

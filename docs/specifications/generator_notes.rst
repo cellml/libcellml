@@ -15,15 +15,15 @@ The generator is instantiated in the same way as the other items:
 .. code-block:: cpp
 
     // Instantiate the generator and submit a model to it for processing
-    libcellml::Generator generator;
-    generator.processModel(model);
+    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    generator->processModel(model);
 
 .. code-block:: python
 
     from libcellml import Generator
     # Instantiate the generator and submit a model to it for processing
     generator = Generator()
-    generator.processModel(model)
+    generator->processModel(model)
 
 The Generator functionality allows you to export your CellML model in
 different languages, called *profiles*.  The default setting is for :code:`C`,
@@ -32,12 +32,12 @@ but you can change this using the :code:`setProfile` function if you need to.
 .. code-block:: cpp
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
-    generator.setProfile(profile);
+    generator->setProfile(profile);
 
 .. code-block:: python
 
     profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
-    generator.setProfile(profile)
+    generator->setProfile(profile)
 
 Of course, your choice of generator profile (language) will affect
 what you need to export.  If you're using the C profile, then you will need
@@ -50,20 +50,20 @@ For the C profile:
 .. code-block:: cpp
 
     // Retrieve the interface or header code:
-    std::string headerCode = generator.interfaceCode();
+    std::string headerCode = generator->interfaceCode();
     // Retrieve the main source code:
-    std::string sourceCode = generator.implementationCode();
+    std::string sourceCode = generator->implementationCode();
 
 .. code-block:: python
 
     # Retrieve the interface or header code:
-    header_code = generator.interfaceCode()
+    header_code = generator->interfaceCode()
     # Retrieve the main source code:
-    source_code = generator.implementationCode()
+    source_code = generator->implementationCode()
 
 For the Python profile:
 
 .. code-block:: cpp
 
     // Retrieve the main script code only:
-    std::string sourceCode = generator.implementationCode();
+    std::string sourceCode = generator->implementationCode();

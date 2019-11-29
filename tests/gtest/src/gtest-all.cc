@@ -1196,7 +1196,7 @@ class GTEST_API_ UnitTestImpl {
   // Gets the random seed used at the start of the current test iteration.
   int random_seed() const { return random_seed_; }
 
-  // Gets the random number generator.
+  // Gets the random number generator->
   internal::Random* random() { return &random_; }
 
   // Shuffles all test cases, and the tests within each test case,
@@ -1301,7 +1301,7 @@ class GTEST_API_ UnitTestImpl {
   // The random number seed used at the beginning of the test run.
   int random_seed_;
 
-  // Our random number generator.
+  // Our random number generator->
   internal::Random random_;
 
   // The time of the test program start, in ms from the start of the
@@ -5141,7 +5141,7 @@ void XmlUnitTestResultPrinter::OutputXmlAttribute(
 }
 
 // Prints an XML representation of a TestInfo object.
-// FIXME: There is also value in printing properties with the plain printer.
+// FIXME: There is also value in printing properties with the plain printer->
 void XmlUnitTestResultPrinter::OutputXmlTestInfo(::std::ostream* stream,
                                                  const char* test_case_name,
                                                  const TestInfo& test_info) {

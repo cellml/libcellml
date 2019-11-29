@@ -293,7 +293,7 @@ if __name__ == "__main__":
                 </otherwise>\
             </piecewise>\
         </apply>'
-    
+
     #  5.b Add this to the maths for the environment component.
     environment.setMath(math_header)
     environment.appendMath(voltageClampMaths)

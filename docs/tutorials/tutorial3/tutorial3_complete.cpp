@@ -84,8 +84,8 @@ int main()
     component->appendMath(mathFooter);
 
     //  1.f   Create a validator and use it to check the model so far.
-    libcellml::Validator validator;
-    validator.validateModel(model);
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  1.g   Create some variables and add them to the component
@@ -108,7 +108,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
     printModelToTerminal(model);
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  Printing the validation errors after Step 1" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
@@ -154,7 +154,7 @@ int main()
     model->addUnits(league);
 
     //  2.c   Validate the model again
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  2.d  Change the constant "b" to have a hard-coded value of 2.0 in the MathML
@@ -184,7 +184,7 @@ int main()
     a->setInitialValue(1.0);
     component->addVariable(a);
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  Printing the validation errors after Step 2" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
@@ -197,14 +197,14 @@ int main()
     //  3.a Create a Generator instance and use it to process the model.  Output
     //      any errors to the terminal using the utility function printErrorsToTerminal
     //      called with your generator as argument.
-    libcellml::Generator generator;
-    // generator.processModel(model);
+    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    // generator->processModel(model);
     // printErrorsToTerminal(generator);
 
     //  3.b Set the initial conditions of the distance variable such that x(t=0)=5 and
     //      check that there are no more errors reported.
     distance->setInitialValue(5.0);
-    generator.processModel(model);
+    generator->processModel(model);
     printErrorsToTerminal(generator);
 
     //  3.c Check that the generator has the settings which we expect:
@@ -216,23 +216,23 @@ int main()
     std::cout << "     Investigating the Generator settings" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    std::cout << "Number of variables = " << generator.variableCount() << std::endl;
-    std::cout << "Variable of integration = " << generator.voi()->name() << std::endl;
-    std::cout << "Number of states = " << generator.stateCount() << std::endl;
-    std::cout << "Model type = " << getModelTypeFromEnum(generator.modelType()) << std::endl;
-    // TODO std::cout << "Langauge = " << getProfileFromEnum(generator.profile()) << std::endl;
+    std::cout << "Number of variables = " << generator->variableCount() << std::endl;
+    std::cout << "Variable of integration = " << generator->voi()->name() << std::endl;
+    std::cout << "Number of states = " << generator->stateCount() << std::endl;
+    std::cout << "Model type = " << getModelTypeFromEnum(generator->modelType()) << std::endl;
+    // TODO std::cout << "Langauge = " << getProfileFromEnum(generator->profile()) << std::endl;
 
     //  3.d Create the interface code (*.h file contents) and implementation code (*.c file
     //      contents) and print them to files.
 
     std::ofstream outFile("tutorial3_generated.h");
-    outFile << generator.interfaceCode();
+    outFile << generator->interfaceCode();
     outFile.close();
 
     outFile.open("tutorial3_generated.c");
-    outFile << generator.implementationCode();
+    outFile << generator->implementationCode();
     outFile.close();
 
-    std::cout << "The generated code has been output into tutorial3_generated.c and 
+    std::cout << "The generated code has been output into tutorial3_generated.c and
                  tutorial3_generated.h." << std::endl;
 }

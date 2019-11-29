@@ -4,7 +4,7 @@
     This tutorial is an opportunity to practise creating models from
     scratch using the libCellML API.  The model you create here will
     be used later on in Tutorial ??.
- 
+
     Tutorial 7 assumes that you are already comfortable with:
         - the concept of component hierarchy and encapsulation (Tutorial 5)
         - the use of the API to create all of the entities in a model (Tutorial 3)
@@ -433,7 +433,7 @@ if __name__ == "__main__":
     environment = Component()
     environment.setName("environment")
 
-    #  4.b Add variables to the component.  
+    #  4.b Add variables to the component.
     if True:
         V = Variable()
         V.setName("V")
@@ -542,5 +542,3 @@ if __name__ == "__main__":
     write_file = open("tutorial7_generated.py", "w")
     write_file.write(implementation_code)
     print("The {} has been printed to tutorial7_generated.py".format(model.name()))
-
-

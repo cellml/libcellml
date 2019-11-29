@@ -1,15 +1,15 @@
 /**
  *      TUTORIAL 6: CODE GENERATION
- * 
- *  This tutorial explores the ability of libCellML to generate files representing 
- *  the model which can be solved in Python or C.  By the time you have worked 
+ *
+ *  This tutorial explores the ability of libCellML to generate files representing
+ *  the model which can be solved in Python or C.  By the time you have worked
  *  through Tutorial 6 you will be able to:
  *      - use the Generator functionality to create models in Python or C format
  *      - use the simple solver provided to run the created models.
- * 
+ *
  *  Tutorial 6 assumes that you are already comfortable with:
  *      - file manipulation and summarising using the utility functions
- *      
+ *
  */
 
 #include <iostream>
@@ -23,8 +23,8 @@ int main()
     //  0.a Create a new model instance representing the combined model and name it.
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("Tutorial8_HHModel");
-    libcellml::Validator validator;
-    libcellml::Parser parser;
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    libcellml::ParserPtr parser = libcellml::Parser::create();
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "    STEP 1: Read the membrane component" << std::endl;
@@ -39,7 +39,7 @@ int main()
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
     // 1.b  Create a temporary model for the membrane
-    libcellml::ModelPtr membraneModel = parser.parseModel(inFileContents.str());
+    libcellml::ModelPtr membraneModel = parser->parseModel(inFileContents.str());
     membraneModel->setName("membraneModel");
 
     //  1.b Extract the membrane component from the parsed model and add it
@@ -51,7 +51,7 @@ int main()
 
     //  1.c Validate the combined model.  We expect to see errors from:
     //      - missing units, as we have only added the component so far
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  1.d Import the units from the membraneModel into the combined model
@@ -60,7 +60,7 @@ int main()
     }
 
     //  1.e No errors expected this time :)
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -78,11 +78,11 @@ int main()
 
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
-    libcellml::ModelPtr sodiumChannelModel = parser.parseModel(inFileContents.str());
+    libcellml::ModelPtr sodiumChannelModel = parser->parseModel(inFileContents.str());
     sodiumChannelModel->setName("sodiumChannelModel");
 
     //  2.b Extract the sodiumChannel component from the parsed model and add it
-    //      to the one created at the beginning, and check the structure of the 
+    //      to the one created at the beginning, and check the structure of the
     //      encapsulation using the utility function printEncapsulationStructureToTerminal(model)
     libcellml::ComponentPtr sodiumChannel = sodiumChannelModel->component("sodiumChannel");
     sodiumChannel->removeParent();
@@ -93,7 +93,7 @@ int main()
     //      - missing units, as we have only added the component so far,
     //      - illegal connections between equivalent varaibles, as now the environment
     //        component and the sodiumChannel component are no longer siblings.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  2.d Add all of the units from the sodium channel model which are not already
@@ -115,7 +115,7 @@ int main()
         sodiumChannelModel->component("environment")->variable("V"));
 
     //  2.f Validate that there are no more errors in the combined model
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -130,7 +130,7 @@ int main()
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
     //  3.a Deserialising the file and reading into the potassiumChannelModel
-    libcellml::ModelPtr potassiumChannelModel = parser.parseModel(inFileContents.str());
+    libcellml::ModelPtr potassiumChannelModel = parser->parseModel(inFileContents.str());
     potassiumChannelModel->setName("potassiumChannelModel");
 
     //  3.b Extract the potassiumChannel component from the parsed model and add it
@@ -140,7 +140,7 @@ int main()
     membrane->addComponent(potassiumChannel);
 
     //  3.c Validate the combined model.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     //  If you have used the files provided in the Resources folder, you can expect
@@ -191,7 +191,7 @@ int main()
         potassiumChannelModel->component("environment")->variable("V"));
 
     //  3.g Calling the validator again.  We do not expect errors here.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -206,7 +206,7 @@ int main()
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
     //  4.a Deserialising the file and reading into the leakageCurrentModel
-    libcellml::ModelPtr leakageCurrentModel = parser.parseModel(inFileContents.str());
+    libcellml::ModelPtr leakageCurrentModel = parser->parseModel(inFileContents.str());
     leakageCurrentModel->setName("leakageCurrentModel");
 
     //  4.b Extract the leakageCurrent component from the parsed model and add it
@@ -216,7 +216,7 @@ int main()
     membrane->addComponent(leakageCurrent);
 
     //  4.c Validate the combined model.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -245,7 +245,7 @@ int main()
     } // end of the environment scope for variables
 
     //  5.c Add the new component to the model and validate
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -268,16 +268,16 @@ int main()
     environment->variable("V")->setInterfaceType("public");
     membrane->variable("V")->setInterfaceType("public_and_private");
 
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "   STEP 7: Add the driving function" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  7.a Create a MathML string to represent the stimulus current i_stim, which 
+    //  7.a Create a MathML string to represent the stimulus current i_stim, which
     //      is set to 100 microA/cm^2 between t=1ms < t < t=1.2ms.
-    std::string stimulusEquation = 
+    std::string stimulusEquation =
             "<apply><eq/>\
                 <ci>i_stim</ci>\
                 <piecewise>\
@@ -304,8 +304,8 @@ int main()
     std::cout << "   STEP 8: Output the final model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::Printer printer;
-    std::string serialisedModelString = printer.printModel(model);
+    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    std::string serialisedModelString = printer->printModel(model);
     std::string outFileName = "tutorial8_HodgkinHuxleyModel.cellml";
     std::ofstream outFile(outFileName);
     outFile << serialisedModelString;

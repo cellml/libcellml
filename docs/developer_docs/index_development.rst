@@ -1,7 +1,7 @@
 .. _index_development:
 
 =================================
-libCellML Developer Documentation
+Documentation for developers
 =================================
 
 Contents
@@ -19,6 +19,12 @@ Contents
    dev_coding_standard
    contributors
 
+References and archives
+-----------------------
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
    roadmap
    current_thinking
    usecases

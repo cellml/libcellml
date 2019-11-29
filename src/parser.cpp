@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/parser.h"
+#include "libcellml/parser->h"
 
 #include <string>
 #include <vector>

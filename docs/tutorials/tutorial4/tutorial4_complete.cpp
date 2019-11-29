@@ -34,8 +34,8 @@ int main()
 
     //  1.c   Call the validator and print the messages to the terminal.
     //        No errors are expected at this stage.
-    libcellml::Validator validator;
-    validator.validateModel(model);
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -109,7 +109,7 @@ int main()
     //        Expected errors refer to variables referenced in the maths which
     //        are not (yet) defined in the component, as well as cn element units
     //        which are not defined yet either.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -181,7 +181,7 @@ int main()
     //  3.d Call the validator and print the messages to the terminal.
     //      Expected errors refer to units refered to by these variables, but
     //      which don't (yet) exist in the model.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -222,15 +222,15 @@ int main()
     model->addUnits(mS_per_cm2);
 
     //  4.c Validate the final arrangement.  No errors are expected at this stage.
-    validator.validateModel(model);
+    validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  STEP 5: Serialise and print the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::Printer printer;
-    std::string serialisedModelString = printer.printModel(model);
+    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    std::string serialisedModelString = printer->printModel(model);
     std::string outFileName = "tutorial4_IonChannelModel.cellml";
     std::ofstream outFile(outFileName);
     outFile << serialisedModelString;
