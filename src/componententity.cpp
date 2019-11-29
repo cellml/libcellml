@@ -212,11 +212,13 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     return foundComponent;
 }
 
-bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component)
+bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &componentIn)
 {
     bool status = false;
+    ComponentEntityPtr c = component(index);
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), componentIn);
+        componentIn->setParent(c->parent());
         status = true;
     }
 
