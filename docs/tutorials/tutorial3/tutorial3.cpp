@@ -20,7 +20,7 @@
 
 #include <libcellml>
 
-#include "../../utilities/tutorial_utilities.h"
+#include "../utilities/tutorial_utilities.h"
 
 int main()
 {
@@ -34,8 +34,8 @@ int main()
     //  1.a   Allocate the ModelPtr
     //  TODO Need some more specific info on how to think about smart pointers
     //  here
-    
-    
+
+
     //  1.b   Create a component to use as an integrator, set its attributes and
     //        add it to the model
 

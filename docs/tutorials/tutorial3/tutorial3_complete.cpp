@@ -20,7 +20,7 @@
 
 #include <libcellml>
 
-#include "../../utilities/tutorial_utilities.h"
+#include "../utilities/tutorial_utilities.h"
 
 int main()
 {
@@ -31,9 +31,7 @@ int main()
     // ---------------------------------------------------------------------------
     //  STEP 1: Create the model instance
     //
-    //  1.a   Allocate the ModelPtr
-    //  TODO Need some more specific info on how to think about smart pointers
-    //  here
+    //  1.a   Create the ModelPtr
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("tutorial_3_model");
     model->setId("tutorial_3_model_id");
@@ -157,7 +155,7 @@ int main()
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    //  2.d  Change the constant "b" to have a hard-coded value of 2.0 in the MathML
+    //  2.d  Change the constant "b" to have a hard-coded value of 5.0 in the MathML
     std::string equation2 = "<apply><eq/>\
                                 <apply><diff/>\
                                     <bvar>\
@@ -166,22 +164,22 @@ int main()
                                     <ci>x</ci>\
                                 </apply>\
                                 <apply><plus/>\
+                                    <cn cellml:units=\"league\">5.0</cn>\
                                     <apply><times/>\
                                         <ci>a</ci>\
                                         <ci>x</ci>\
                                     </apply>\
-                                    <cn cellml:units=\"league\">2.0</cn>\
                                 </apply>\
                             </apply>";
     component->setMath(mathHeader);
     component->appendMath(equation2);
     component->appendMath(mathFooter);
 
-    //  2.e Create and define the constant "a" to have a value of 1
+    //  2.e Create and define the constant "a" to have a value of -0.2
     libcellml::VariablePtr a = libcellml::Variable::create();
     a->setName("a");
     a->setUnits("dimensionless");
-    a->setInitialValue(1.0);
+    a->setInitialValue(-0.2);
     component->addVariable(a);
 
     validator->validateModel(model);
@@ -197,7 +195,7 @@ int main()
     //  3.a Create a Generator instance and use it to process the model.  Output
     //      any errors to the terminal using the utility function printErrorsToTerminal
     //      called with your generator as argument.
-    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
     // generator->processModel(model);
     // printErrorsToTerminal(generator);
 

@@ -15,7 +15,7 @@
 
 #include <libcellml>
 
-#include "../../utilities/tutorial_utilities.h"
+#include "../utilities/tutorial_utilities.h"
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a   Create the model instance
-    
+
     //  1.b   Create a component and add it into the model
 
     //  1.c   Call the validator and print the messages to the terminal.

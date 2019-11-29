@@ -19,7 +19,7 @@
 #include <iostream>
 #include <libcellml>
 
-#include "../../utilities/tutorial_utilities.h"
+#include "../utilities/tutorial_utilities.h"
 
 int main()
 {
@@ -31,7 +31,7 @@ int main()
     //      do that tutorial you can simply copy the CellML file
     //      from Resources/Tutorial4_IonChannelModel.cellml
 
-    std::string inFileName = "../../resources/tutorial4_IonChannelModel.cellml";
+    std::string inFileName = "../resources/tutorial4_IonChannelModel.cellml";
     std::ifstream inFile(inFileName);
     std::stringstream inFileContents;
     inFileContents << inFile.rdbuf();

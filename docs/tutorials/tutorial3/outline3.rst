@@ -27,10 +27,17 @@ This tutorial assumes that you are comfortable with:
 Overview
 --------
 During this tutorial you will create a simple model representing the
-exponential decay of speed for a sled sliding on ice.  You will use
+exponential decay of speed a toboggan coming to rest.  You will use
 both built-in and create your own user-defined units.
 
-**TODO** Finish this explanation
+The toboggan's speed is governed by the equation:
+
+.. math::
+
+    \frac {dx}{dt} = a-bx
+
+where :math:`x` is the distance from the starting point, :math:`t` is time,
+and :math:`a` and :math:`b` are constants.
 
 
 C++ instructions

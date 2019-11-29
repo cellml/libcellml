@@ -1,15 +1,15 @@
 /**
  *      TUTORIAL 5: IMPORTS, COMPONENTS, AND CONNECTIONS
- * 
+ *
  *  This tutorial explores the ability of CellML to represent more than one
  *  modelled process at a time using components with connections between them.
  *  By the time you have worked through Tutorial 5 you will be able to:
  *      - import a Component or Units item from an existing CellML file
  *      - assemble a multi-component model using the API
- *      - inter-connect the components using the equivalent variables 
+ *      - inter-connect the components using the equivalent variables
  *        functionality
  *      - validate and debug the constructed model
- * 
+ *
  *  Tutorial 5 assumes that you are already comfortable with:
  *      - file manipulation and summarising using the utility functions
  *      - model creation through the API
@@ -19,7 +19,7 @@
 #include <iostream>
 #include <libcellml>
 
-#include "../../utilities/tutorial_utilities.h"
+#include "../utilities/tutorial_utilities.h"
 
 int main()
 {
@@ -49,7 +49,7 @@ int main()
     //      these variables. This means that we can use variables with the same
     //      symbol elsewhere.
     {
-        
+
     } // end of the environment scope for variables
 
     //  2.c Add the new component to the model
@@ -100,7 +100,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  5.a Define a MathML string representing the voltage clamp
-    
+
     //  5.b Add this to the maths for the environment component.
 
     //  5.c Validate the model including this new maths block

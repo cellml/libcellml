@@ -16,7 +16,7 @@
 #include <libcellml>
 #include <regex>
 
-#include "../../utilities/tutorial_utilities.h"
+#include "../utilities/tutorial_utilities.h"
 
 int main()
 {
@@ -32,7 +32,7 @@ int main()
 
     //  1.a Read the model provided for you in the "tutorial8_MembraneModel.cellml"
     //      file in the resources folder.
-    std::string inFileName = "../../resources/tutorial8_MembraneModel.cellml";
+    std::string inFileName = "../resources/tutorial8_MembraneModel.cellml";
     std::ifstream inFile(inFileName);
     std::stringstream inFileContents;
     inFileContents << inFile.rdbuf();
@@ -70,7 +70,7 @@ int main()
     //  2.a Read the model created in Tutorial 7 representing the sodium channel.
     //      Note that if you didn't do that tutorial you can simply copy the CellML file
     //      from tutorial7_SodiumChannelModel.cellml in the resources folder.
-    inFileName = "../../resources/tutorial7_SodiumChannelModel.cellml";
+    inFileName = "../resources/tutorial7_SodiumChannelModel.cellml";
     inFile.close();
     inFile.open(inFileName);
     std::stringstream().swap(inFileContents);
@@ -122,7 +122,7 @@ int main()
     std::cout << "       STEP 3: Read the potassium channel" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    inFileName = "../../resources/tutorial5_PotassiumChannelModel.cellml";
+    inFileName = "../resources/tutorial5_PotassiumChannelModel.cellml";
     inFile.close();
     inFile.open(inFileName);
     std::stringstream().swap(inFileContents);
@@ -198,7 +198,7 @@ int main()
     std::cout << "    STEP 4: Read the leakage component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    inFileName = "../../resources/tutorial8_LeakageCurrentModel.cellml";
+    inFileName = "../resources/tutorial8_LeakageCurrentModel.cellml";
     inFile.close();
     inFile.open(inFileName);
     std::stringstream().swap(inFileContents);

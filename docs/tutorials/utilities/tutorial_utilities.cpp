@@ -1,7 +1,7 @@
 
 /**
- *  TUTORIAL 2: Utilities
- *  This file contains helper functions for Tutorial 2
+ *  TUTORIAL UTILITIES
+ *  This file contains helper functions for the tutorials
  */
 
 #include "tutorial_utilities.h"
@@ -45,7 +45,7 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
               << component->variableCount()
               << " variables:" << std::endl;
 
-    //  2.d  Printing the variables within the component
+    // Printing the variables within the component
     for (size_t v = 0; v < component->variableCount(); v++) {
         std::cout << spacer << "  Variable[" << v << "] has name: '"
                   << component->variable(v)->name() << "'" << std::endl;
@@ -54,17 +54,19 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
                       << component->variable(v)->initialValue() << "'"
                       << std::endl;
         }
-        std::cout << spacer << "  Variable[" << v << "] has units: '"
-                  << component->variable(v)->units()->name() << "'" << std::endl;
+        if (component->variable(v)->units() != nullptr) {
+            std::cout << spacer << "  Variable[" << v << "] has units: '"
+                      << component->variable(v)->units()->name() << "'" << std::endl;
+        }
     }
 
-    // 2.c   Print the maths within the component
-    // if (component->math() != "") {
-    //   std::cout << spacer<<"  Maths in the component is:" << std::endl;
-    //   std::cout << component->math() << std::endl;
-    // }
+    // Print the maths within the component
+    if (component->math() != "") {
+        std::cout << spacer << "  Maths in the component is:" << std::endl;
+        std::cout << component->math() << std::endl;
+    }
 
-    // Print the encapsulated components here too
+    // Print the encapsulated components
     if (component->componentCount() > 0) {
         std::cout << spacer << "Component[" << c << "] has "
                   << component->componentCount()
@@ -78,10 +80,10 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
     }
 }
 
-void printErrorsToTerminal(const libcellml::Validator &item)
+void printErrorsToTerminal(libcellml::ValidatorPtr &item)
 {
     //  2.b   Check whether there were errors returned from the item
-    int numberOfValidationErrors = item.errorCount();
+    int numberOfValidationErrors = item->errorCount();
 
     std::cout << "The validator has found " << numberOfValidationErrors
               << " errors!" << std::endl;
@@ -89,7 +91,7 @@ void printErrorsToTerminal(const libcellml::Validator &item)
         // 2.c  Retrieve the errors, and print their description and specification
         //      reference to the terminal
         for (size_t e = 0; e < numberOfValidationErrors; ++e) {
-            libcellml::ErrorPtr validatorError = item.error(e);
+            libcellml::ErrorPtr validatorError = item->error(e);
             std::string errorSpecificationReference =
                 validatorError->specificationHeading();
 
@@ -105,10 +107,10 @@ void printErrorsToTerminal(const libcellml::Validator &item)
     }
 }
 
-void printErrorsToTerminal(const libcellml::Generator &item)
+void printErrorsToTerminal(libcellml::GeneratorPtr &item)
 {
     //  2.b   Check whether there were errors returned from the item
-    int numberOfErrors = item.errorCount();
+    int numberOfErrors = item->errorCount();
 
     std::cout << "The generator has found " << numberOfErrors
               << " errors!" << std::endl;
@@ -116,7 +118,7 @@ void printErrorsToTerminal(const libcellml::Generator &item)
         // 2.c  Retrieve the errors, and print their description and specification
         //      reference to the terminal
         for (size_t e = 0; e < numberOfErrors; ++e) {
-            libcellml::ErrorPtr error = item.error(e);
+            libcellml::ErrorPtr error = item->error(e);
             std::string errorSpecificationReference =
                 error->specificationHeading();
 
@@ -132,22 +134,22 @@ void printErrorsToTerminal(const libcellml::Generator &item)
     }
 }
 
-void printErrors(const libcellml::Validator &v)
-{
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        std::cout << v.error(i)->description() << ", "
-                  << v.error(i)->specificationHeading() << std::endl;
-    }
-}
+// void printErrors(const libcellml::Validator &v)
+// {
+//     for (size_t i = 0; i < v.errorCount(); ++i) {
+//         std::cout << v.error(i)->description() << ", "
+//                   << v.error(i)->specificationHeading() << std::endl;
+//     }
+// }
 
-void printErrors(const libcellml::Parser &p)
-{
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        std::cout << p.error(i)->description() << ", " << std::endl;
-        std::cout << static_cast<int>(p.error(i)->rule()) << std::endl;
-        std::cout << p.error(i)->specificationHeading() << std::endl;
-    }
-}
+// void printErrors(const libcellml::Parser &p)
+// {
+//     for (size_t i = 0; i < p.errorCount(); ++i) {
+//         std::cout << p.error(i)->description() << ", " << std::endl;
+//         std::cout << static_cast<int>(p.error(i)->rule()) << std::endl;
+//         std::cout << p.error(i)->specificationHeading() << std::endl;
+//     }
+// }
 
 std::string fileContents(const std::string &fileName)
 {
@@ -188,8 +190,8 @@ void insertIntoMathMLString(std::string &maths, std::string &addMe)
     std::string tag = "</math>\n";
     std::string before = maths.substr(0, maths.length() - tag.length() - 1);
     std::string after = maths.substr(maths.length() - tag.length());
-    maths.erase(maths.find_last_not_of( " \t\n\r\f\v" ) + 1);
-    
+    maths.erase(maths.find_last_not_of(" \t\n\r\f\v") + 1);
+
     // test the final characters of the existing math string
     if (after == tag) {
         maths = before + addMe + tag;
