@@ -344,6 +344,7 @@ bool Model::hasUnresolvedImports()
 
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
+using StringList = std::vector<std::string>; /**< Type definition for holding a list of names. */
 
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component)
 {
@@ -497,6 +498,7 @@ void printStack(const IndexStack &stack)
     }
     Debug() << "]";
 }
+
 void printEquivalenceMap(const EquivalenceMap &map)
 {
     Debug() << "Print out of equivalence map";
@@ -554,36 +556,61 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     return rebasedMap;
 }
 
+void listOfUnitsInComponent(const ComponentPtr &component, StringList &list)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if ((u != nullptr) && (u->name().size() > 0) && !isStandardUnitName(u->name())) {
+            list.push_back(u->name());
+        }
+    }
+}
+
+void traverseComponentTreeForUnits(const ComponentPtr &component, StringList &list)
+{
+    listOfUnitsInComponent(component, list);
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto childComponent = component->component(index);
+        traverseComponentTreeForUnits(childComponent, list);
+    }
+}
+
+StringList unitsUsedList(const ComponentPtr &component)
+{
+    StringList list;
+    traverseComponentTreeForUnits(component, list);
+
+    return list;
+}
+
 void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
 {
     if (component->isImport()) {
-        auto importedComponent = component->importSource()->model()->component(component->importReference());
-        IndexStack indexTemp;
-        EquivalenceMap mapTemp;
-        for (size_t ii = 0; ii < component->importSource()->model()->componentCount(); ++ii) {
-            indexTemp.push_back(ii);
-            auto c = component->importSource()->model()->component(ii);
-            recordVariableEquivalences(c, mapTemp, indexTemp);
-            generateEquivalenceMap(c, mapTemp, indexTemp);
-            indexTemp.pop_back();
-        }
-        printEquivalenceMap(mapTemp);
+        auto importModel = component->importSource()->model();
+        auto importedComponent = importModel->component(component->importReference());
 
-        IndexStack importedComponentBaseIndexStack = reverseEngineerIndexStack(importedComponent);
+        // Determine the stack for the destination component.
         IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
-        Debug() << "Imported Base stack.";
-        printStack(importedComponentBaseIndexStack);
-        Debug() << "Destination base stack.";
-        printStack(destinationComponentBaseIndexStack);
+
+        // Determine the stack for the source component.
+        IndexStack importedComponentBaseIndexStack = reverseEngineerIndexStack(importedComponent);
+
+        // Generate equivalence map for the source component.
         EquivalenceMap map;
         recordVariableEquivalences(importedComponent, map, importedComponentBaseIndexStack);
         generateEquivalenceMap(importedComponent, map, importedComponentBaseIndexStack);
-        printEquivalenceMap(map);
-        // Rebase the generated equivalence map for the destination.
+
+        // Rebase the generated equivalence map from the source component to the destination component.
         auto rebasedMap = rebaseEquivalenceMap(map, importedComponentBaseIndexStack, destinationComponentBaseIndexStack);
-        printEquivalenceMap(rebasedMap);
+
+        // Get a list of all the units used by this component.
+        StringList unitsUsed = unitsUsedList(importedComponent);
+
+        // Take a copy of the imported component which will be used to replace the import defined in this model.
         auto importedComponentCopy = importedComponent->clone();
         importedComponentCopy->setName(component->name());
+
         // If the component 'component' has variables then they are equivalent variables and they
         // need to be exchanged with the real variables from the component 'importedComponent'.
         for (size_t i = 0; i < component->variableCount(); ++i) {
@@ -596,9 +623,16 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
             }
         }
         parent->replaceComponent(index, importedComponentCopy);
+
+        // Apply the rebased equivalence map onto the modified model.
         auto model = owningModel(importedComponentCopy);
         applyEquivalenceMapToModel(rebasedMap, model);
-        index++;
+
+        // Copy over units used in imported component to this model.
+        for (size_t i = 0; i < unitsUsed.size(); ++i) {
+            auto u = importModel->units(unitsUsed.at(i));
+            model->addUnits(u);
+        }
     }
 }
 
