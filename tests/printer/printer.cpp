@@ -22,6 +22,17 @@ limitations under the License.
 
 #include "test_utils.h"
 
+TEST(Printer, printNullptrModel)
+{
+    const std::string e = "";
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    const std::string a = p->printModel(nullptr);
+
+    EXPECT_EQ(e, a);
+}
+
 TEST(Printer, printEmptyModel)
 {
     const std::string e =

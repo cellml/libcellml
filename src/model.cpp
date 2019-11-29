@@ -32,6 +32,8 @@ limitations under the License.
 
 #include "utilities.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 /**
@@ -231,6 +233,7 @@ size_t Model::unitsCount() const
  *
  * @param filename The @c std::string relative path from the base path.
  * @param base The @c std::string location on local disk for determining the full path from.
+ *
  * @return The full path from the @p base location to the @p filename
  */
 std::string resolvePath(const std::string &filename, const std::string &base)
@@ -472,12 +475,132 @@ ModelPtr Model::clone() const
     return m;
 }
 
+IndexStack reverseEngineerIndexStack(ComponentPtr component)
+{
+    auto dummyVariable = Variable::create();
+    component->addVariable(dummyVariable);
+    IndexStack indexStack = reverseEngineerIndexStack(dummyVariable);
+    indexStack.pop_back();
+    component->removeVariable(dummyVariable);
+
+    return indexStack;
+}
+
+void printStack(const IndexStack &stack)
+{
+    Debug(false) << "[";
+    for (auto iter = stack.begin(); iter < stack.end(); ++iter) {
+        Debug(false) << *iter;
+        if (iter + 1 < stack.end()) {
+            Debug(false) << ", ";
+        }
+    }
+    Debug() << "]";
+}
+void printEquivalenceMap(const EquivalenceMap &map)
+{
+    Debug() << "Print out of equivalence map";
+    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
+        auto key = iter->first;
+        Debug(false) << "key: ";
+        printStack(key);
+        auto vector = iter->second;
+        for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
+            Debug(false) << "value: ";
+            printStack(*vectorIt);
+        }
+    }
+}
+
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    auto rebasedStack = stack;
+
+    if (originStack.size() < stack.size()) {
+        rebasedStack.resize(originStack.size());
+        if (rebasedStack == originStack) {
+            rebasedStack = destinationStack;
+            auto offsetIt = stack.begin() + static_cast<long>(originStack.size());
+            rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
+        } else {
+            rebasedStack.clear();
+        }
+    } else {
+        rebasedStack.clear();
+    }
+
+    return rebasedStack;
+}
+
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    EquivalenceMap rebasedMap;
+    for (auto iter = map.begin(); iter != map.end(); ++iter) {
+        auto key = iter->first;
+        auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
+        if (rebasedKey.size() > 0) {
+            auto vector = iter->second;
+            std::vector<IndexStack> rebasedVector;
+            for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
+                auto target = *vectorIt;
+                auto rebasedTarget = rebaseIndexStack(target, originStack, destinationStack);
+                rebasedVector.push_back(rebasedTarget);
+            }
+
+            if (rebasedVector.size() > 0) {
+                rebasedMap[rebasedKey] = rebasedVector;
+            }
+        }
+    }
+
+    return rebasedMap;
+}
+
 void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
 {
     if (component->isImport()) {
         auto importedComponent = component->importSource()->model()->component(component->importReference());
-        importedComponent->setName(component->name());
-        parent->replaceComponent(index, importedComponent);
+        IndexStack indexTemp;
+        EquivalenceMap mapTemp;
+        for (size_t ii = 0; ii < component->importSource()->model()->componentCount(); ++ii) {
+            indexTemp.push_back(ii);
+            auto c = component->importSource()->model()->component(ii);
+            recordVariableEquivalences(c, mapTemp, indexTemp);
+            generateEquivalenceMap(c, mapTemp, indexTemp);
+            indexTemp.pop_back();
+        }
+        printEquivalenceMap(mapTemp);
+
+        IndexStack importedComponentBaseIndexStack = reverseEngineerIndexStack(importedComponent);
+        IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
+        Debug() << "Imported Base stack.";
+        printStack(importedComponentBaseIndexStack);
+        Debug() << "Destination base stack.";
+        printStack(destinationComponentBaseIndexStack);
+        EquivalenceMap map;
+        recordVariableEquivalences(importedComponent, map, importedComponentBaseIndexStack);
+        generateEquivalenceMap(importedComponent, map, importedComponentBaseIndexStack);
+        printEquivalenceMap(map);
+        // Rebase the generated equivalence map for the destination.
+        auto rebasedMap = rebaseEquivalenceMap(map, importedComponentBaseIndexStack, destinationComponentBaseIndexStack);
+        printEquivalenceMap(rebasedMap);
+        auto importedComponentCopy = importedComponent->clone();
+        importedComponentCopy->setName(component->name());
+        // If the component 'component' has variables then they are equivalent variables and they
+        // need to be exchanged with the real variables from the component 'importedComponent'.
+        for (size_t i = 0; i < component->variableCount(); ++i) {
+            auto placeholderVariable = component->variable(i);
+            for (size_t j = 0; j < placeholderVariable->equivalentVariableCount(); ++j) {
+                auto localModelVariable = placeholderVariable->equivalentVariable(j);
+                auto importedComponentVariable = importedComponentCopy->variable(placeholderVariable->name());
+                Variable::removeEquivalence(placeholderVariable, localModelVariable);
+                Variable::addEquivalence(importedComponentVariable, localModelVariable);
+            }
+        }
+        parent->replaceComponent(index, importedComponentCopy);
+        auto model = owningModel(importedComponentCopy);
+        applyEquivalenceMapToModel(rebasedMap, model);
+        index++;
     }
 }
 
@@ -502,8 +625,9 @@ void Model::flatten()
         auto u = units(index);
         if (u->isImport()) {
             auto importedUnits = u->importSource()->model()->units(u->importReference());
-            importedUnits->setName(u->name());
-            replaceUnits(index, importedUnits);
+            auto importedUnitsCopy = importedUnits->clone();
+            importedUnitsCopy->setName(u->name());
+            replaceUnits(index, importedUnitsCopy);
         }
     }
 
