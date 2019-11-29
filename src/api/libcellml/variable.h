@@ -150,6 +150,7 @@ public:
      *
      * @param variable1Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
+     *
      * @return the @c std::string mapping id.
      */
     static std::string equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
@@ -356,6 +357,8 @@ public:
      * Get the string corresponding to the initial value for this variable.
      *
      * @sa setInitialValue
+     *
+     * @return the initial value as a @c std::string.
      */
     std::string initialValue() const;
 
@@ -397,6 +400,8 @@ public:
      * Get the string corresponding to the interface type for this variable.
      *
      * @sa setInterfaceType
+     *
+     * @return the interface type as a @c std::string.
      */
     std::string interfaceType() const;
 
@@ -406,6 +411,20 @@ public:
      * Clears the interface type for this variable.
      */
     void removeInterfaceType();
+
+    /**
+     * @brief Create a clone of this variable.
+     *
+     * Creates a full separate copy of this variable without copying
+     * the parent.  Thus the cloned (returned) version of this variable
+     * will not have a parent set even if this variable does.
+     *
+     * If this variable has any equivalences these equivalences will
+     * *not* be cloned.
+     *
+     * @return a new @c VariablePtr to the cloned variable.
+     */
+    VariablePtr clone() const;
 
 private:
     Variable(); /**< Constructor */
