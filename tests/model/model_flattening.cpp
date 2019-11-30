@@ -492,8 +492,39 @@ TEST(ModelFlattening, importedComponentUsingImportedComponent)
     EXPECT_EQ(e, a);
 }
 
+TEST(ModelFlattening, repeatedImportOfSameUnitsViaDifferentComponents)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"fergie_time\">\n"
+        "    <unit prefix=\"mega\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"average_component\">\n"
+        "    <variable name=\"time\" units=\"fergie_time\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"good_component\">\n"
+        "    <variable name=\"sometime\" units=\"fergie_time\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/repeatedimportofsameunitsviadifferentcomponents.xml"));
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
 /*
-TEST(ModelFlattening, multipleImportedUnits)
+TEST(ModelFlattening, multipleImportedComponents)
 {
     const std::string e = "";
     auto parser = libcellml::Parser::create();
@@ -511,7 +542,7 @@ TEST(ModelFlattening, multipleImportedUnits)
 //    EXPECT_EQ(e, a);
 }
 
-TEST(ModelFlattening, multipleImportedComponents)
+TEST(ModelFlattening, importedUnitsWithNameClashes)
 {
     const std::string e = "";
     auto parser = libcellml::Parser::create();
@@ -547,21 +578,4 @@ TEST(ModelFlattening, importedComponentWithNameClashes)
 //    EXPECT_EQ(e, a);
 }
 
-TEST(ModelFlattening, importedUnitsWithNameClashes)
-{
-    const std::string e = "";
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
-
-    EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
-    EXPECT_FALSE(model->hasUnresolvedImports());
-
-    model->flatten();
-
-    auto printer = libcellml::Printer::create();
-
-    auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
-}
 */
