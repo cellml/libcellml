@@ -523,30 +523,11 @@ TEST(ModelFlattening, repeatedImportOfSameUnitsViaDifferentComponents)
     EXPECT_EQ(e, a);
 }
 
-/*
-TEST(ModelFlattening, multipleImportedComponents)
-{
-    const std::string e = "";
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
-
-    EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
-    EXPECT_FALSE(model->hasUnresolvedImports());
-
-    model->flatten();
-
-    auto printer = libcellml::Printer::create();
-
-    auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
-}
-
 TEST(ModelFlattening, importedUnitsWithNameClashes)
 {
     const std::string e = "";
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
+    auto model = parser->parseModel(fileContents("modelflattening/importedunitswithnameclashes.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("modelflattening/"));
@@ -557,9 +538,10 @@ TEST(ModelFlattening, importedUnitsWithNameClashes)
     auto printer = libcellml::Printer::create();
 
     auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
+/*
 TEST(ModelFlattening, importedComponentWithNameClashes)
 {
     const std::string e = "";
