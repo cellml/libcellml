@@ -310,7 +310,11 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
             if (importedSource->hasModel()) {
                 ModelPtr importedModel = importedSource->model();
                 ComponentPtr importedComponent = importedModel->component(component->importReference());
-                unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
+                if (importedComponent == nullptr) {
+                    unresolvedImports = true;
+                } else {
+                    unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
+                }
             }
         }
     } else {
@@ -617,7 +621,8 @@ StringList unitsUsedList(const ComponentPtr &component)
 void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
 {
     if (component->isImport()) {
-        auto importModel = component->importSource()->model();
+        auto importSource = component->importSource();
+        auto importModel = importSource->model();
         auto importedComponent = importModel->component(component->importReference());
 
         // Determine the stack for the destination component.
@@ -661,7 +666,9 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
         // Copy over units used in imported component to this model.
         for (size_t i = 0; i < unitsUsed.size(); ++i) {
             auto u = importModel->units(unitsUsed.at(i));
-            model->addUnits(u);
+            if (!model->hasUnits(u)) {
+                model->addUnits(u);
+            }
         }
     }
 }
