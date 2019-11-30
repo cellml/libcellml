@@ -129,76 +129,21 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
 }
 
-/*
-
-//TDOD: This code is progress towards checking that units are compatible.
-using UnitMultiplierMap = std::map<std::string, double>;
-
-    UnitMultiplierMap unitMap = {};
-    for (const auto &baseUnits : baseUnitsList) {
-        unitMap[baseUnits] = 0.0;
-    }
-bool updateUnitMultipliers(UnitMultiplierMap &unitMultiplierMap,
-                           double &multiplier,
-                           const UnitsPtr &units,
-                           double uExp, double logMult,
-                           int direction)
-{
-    bool updated = false;
-    auto unitsName = units->name();
-    if (!units->isBaseUnit()) {
-        std::string ref;
-        std::string pre;
-        std::string id;
-        double exp;
-        double mult;
-        double expMult;
-        for (size_t i = 0; i < units->unitCount(); ++i) {
-            units->unitAttributes(i, ref, pre, exp, expMult, id);
-            mult = std::log10(expMult);
-            if (!isStandardUnitName(ref)) {
-                auto model = owningModel(units);
-                auto refUnits = model->units(ref);
-                updated = updateUnitMultipliers(unitMultiplierMap, multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
-            } else {
-                for (const auto &iter : standardUnitsList.at(ref)) {
-                    unitMultiplierMap.at(iter.first) += direction * (iter.second * exp * uExp);
-                }
-                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
-            }
-        }
-    } else if (unitMultiplierMap.find(unitsName) == unitMultiplierMap.end()) {
-        unitMultiplierMap.emplace(std::pair<std::string, double>(unitsName, direction * uExp));
-        multiplier += direction * logMult;
-        updated = true;
-    } else if (isStandardUnitName(unitsName)) {
-        for (const auto &iter : standardUnitsList.at(unitsName)) {
-            unitMultiplierMap.at(iter.first) += direction * (iter.second * uExp);
-        }
-        multiplier += direction * logMult;
-        multiplier += direction * standardMultiplierList.at(unitsName);
-        updated = true;
-    }
-
-    return updated;
-}
-*/
-
-/** 
-* @brief Finds and updates the multiplier of the unit.
-* 
-* We pass in the unit and use its' attributes to find the relevant multiplier.
-* If the units are not base units, we travel up the model hierarchy to find 
-* the base units.
-*
-* @param multiplier The multiplier to find.
-* @param units The units to find the multiplier for.
-* @param uExp The exponential of the units.
-* @param logMult The log multiplier of the units.
-* @param direction The direction to update multiplier. Either 1 or -1.
-*
-* @return Either @c true or @c false, depending if the units were successfully updated.
-*/
+/**
+ * @brief Finds and updates the multiplier of the unit.
+ *
+ * We pass in the unit and use its attributes to find the relevant multiplier.
+ * If the units are not base units, we travel up the model hierarchy to find
+ * the base units.
+ *
+ * @param multiplier The multiplier to find.
+ * @param units The units to find the multiplier for.
+ * @param uExp The exponential of the units.
+ * @param logMult The log multiplier of the units.
+ * @param direction The direction to update multiplier. Either 1 or -1.
+ *
+ * @return Either @c true or @c false, depending if the units were successfully updated.
+ */
 bool updateUnitMultiplier(double &multiplier,
                           const UnitsPtr &units,
                           double uExp, double logMult,
@@ -462,6 +407,91 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     }
 
     return 0.0;
+}
+
+using UnitsMap = std::map<std::string, double>;
+
+void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
+{
+    if (units->isBaseUnit()) {
+        auto found = unitsMap.find(units->name());
+        if (found == unitsMap.end()) {
+            unitsMap.emplace(units->name(), 1.0);
+        } else {
+            found->second += exp;
+        }
+    } else {
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double expMult;
+            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            if (isStandardUnitName(ref)) {
+                auto unit = standardUnitsList.find(ref);
+                for (const auto &u : unit->second) {
+                    if (unitsMap.find(u.first) == unitsMap.end()) {
+                        unitsMap.emplace(u.first, u.second * exp);
+                    } else {
+                        auto ut = unitsMap.find(u.first);
+                        ut->second += u.second * exp;
+                    }
+                }
+            } else {
+                auto model = owningModel(units);
+                if (model != nullptr) {
+                    auto refUnits = model->units(ref);
+                    if ((refUnits == nullptr) || refUnits->isImport()) {
+                        unitsMap.clear();
+                        break;
+                    }
+                    updateUnitsMap(refUnits, unitsMap, exp);
+                }
+            }
+        }
+    }
+}
+
+UnitsMap createUnitsMap(const UnitsPtr &units)
+{
+    UnitsMap unitsMap;
+    updateUnitsMap(units, unitsMap);
+    return unitsMap;
+}
+
+bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+    // Initial checks.
+    if ((units1 == nullptr) || (units2 == nullptr)) {
+        return false;
+    }
+    if ((units1->isImport()) || (units2->isImport())) {
+        return false;
+    }
+
+    UnitsMap units1Map = createUnitsMap(units1);
+    UnitsMap units2Map = createUnitsMap(units2);
+
+    if (units1Map.size() == units2Map.size()) {
+        for (const auto &units : units1Map) {
+            std::string unit = units.first;
+            auto found = units2Map.find(unit);
+
+            if (found == units2Map.end()) {
+                return false;
+            }
+            if ((found->second < units.second) || (found->second > units.second)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool Units::dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
+{
+    return Units::equivalent(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
 }
 
 UnitsPtr Units::clone() const
