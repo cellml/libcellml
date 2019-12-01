@@ -47,6 +47,7 @@ configure_file(
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
