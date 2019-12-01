@@ -48,8 +48,6 @@ struct Model::ModelImpl
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-
-    bool hasUnlinkedUnits();
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -62,11 +60,6 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &unit
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
-}
-
-bool Model::ModelImpl::hasUnlinkedUnits()
-{
-    return false;
 }
 
 Model::Model()
