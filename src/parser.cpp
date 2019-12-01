@@ -385,6 +385,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     for (const auto &connectionNode : connectionNodes) {
         loadConnection(model, connectionNode);
     }
+
+    model->linkUnits();
 }
 
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node)

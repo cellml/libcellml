@@ -1052,7 +1052,7 @@ TEST(Connection, importedComponentConnectionAndParse)
         "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
         "  <component name=\"component_bob\">\n"
-        "    <variable name=\"variable_bob\" units=\"seconds\"/>\n"
+        "    <variable name=\"variable_bob\" units=\"second\"/>\n"
         "  </component>\n"
         "  <connection component_1=\"component_in_this_model\" component_2=\"component_bob\">\n"
         "    <map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>\n"
@@ -1072,7 +1072,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     componentBob->setName("component_bob");
     variableImported->setName("variable_import");
     variableBob->setName("variable_bob");
-    variableBob->setUnits("seconds");
+    variableBob->setUnits("second");
 
     m->addComponent(componentImported);
     m->addComponent(componentBob);
