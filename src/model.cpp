@@ -30,6 +30,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "internaltypes.h"
 #include "utilities.h"
 
 #include "debug.h"
@@ -455,10 +456,6 @@ bool Model::hasImports() const
     return importsPresent;
 }
 
-using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
-using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
-using StringList = std::vector<std::string>; /**< Type definition for holding a list of names. */
-
 size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component)
 {
     size_t index = 0;
@@ -598,33 +595,6 @@ IndexStack reverseEngineerIndexStack(ComponentPtr component)
     component->removeVariable(dummyVariable);
 
     return indexStack;
-}
-
-void printStack(const IndexStack &stack)
-{
-    Debug(false) << "[";
-    for (auto iter = stack.begin(); iter < stack.end(); ++iter) {
-        Debug(false) << *iter;
-        if (iter + 1 < stack.end()) {
-            Debug(false) << ", ";
-        }
-    }
-    Debug() << "]";
-}
-
-void printEquivalenceMap(const EquivalenceMap &map)
-{
-    Debug() << "Print out of equivalence map";
-    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
-        auto key = iter->first;
-        Debug(false) << "key: ";
-        printStack(key);
-        auto vector = iter->second;
-        for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
-            Debug(false) << "value: ";
-            printStack(*vectorIt);
-        }
-    }
 }
 
 IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack)
