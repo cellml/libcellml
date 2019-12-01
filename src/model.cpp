@@ -33,8 +33,6 @@ limitations under the License.
 #include "internaltypes.h"
 #include "utilities.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 /**
@@ -667,13 +665,10 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
         // Temporarily add component to new model to find units used.
         auto tempModel = Model::create();
         tempModel->addComponent(importedComponentCopy);
-        Debug() << "Import model has unlinked units: " << importModel->hasUnlinkedUnits();
         tempModel->linkUnits();
         std::vector<UnitsPtr> requiredUnits;
-        Debug() << "temp model units count: " << tempModel->unitsCount();
         for (size_t i = 0; i < tempModel->unitsCount(); ++i) {
             auto u = tempModel->units(i);
-            Debug() << u->name();
             requiredUnits.push_back(u);
         }
 
@@ -699,7 +694,6 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
             if (!model->hasUnits(u)) {
                 size_t count = 1;
                 while (!model->hasUnits(u) && model->hasUnits(u->name())) {
-                    Debug() << "Units: " << u->name() << " - " << model->hasUnits(u) << " - " << model->hasUnits(u->name());
                     auto name = u->name();
                     name += "_" + convertToString(count++);
                     u->setName(name);
