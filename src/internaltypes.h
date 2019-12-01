@@ -23,6 +23,5 @@ namespace libcellml {
 
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
-using StringList = std::vector<std::string>; /**< Type definition for holding a list of names. */
 
 }
