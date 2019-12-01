@@ -2242,3 +2242,322 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
+
+TEST(Validator, validateUnitsOfCompenentsSimple)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("u1");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
+
+    model->setName("model");
+    c->setName("c1");
+
+    model->addComponent(c);
+    model->addUnits(u);
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u1");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v->validateModel(model);
+
+    EXPECT_EQ(size_t(0), v->errorCount());
+}
+
+TEST(Validator, validateUnitsOfCompenentsComplex)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
+    u2 = u1->clone();
+
+    u3->setName("u3");
+    u3->addUnit(libcellml::Units::StandardUnit::FARAD, 0, 1.0, 1.0);
+    u4 = u3->clone();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+    libcellml::VariablePtr v3 = createVariableWithUnits("v3", "u3");
+    libcellml::VariablePtr v4 = createVariableWithUnits("v4", "u4");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
+    c2->addVariable(v4);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v4);
+
+    v->validateModel(model);
+
+    EXPECT_EQ(size_t(0), v->errorCount());
+}
+
+TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction (Difference is kg^1.0, A^-1.0, s^3.0, m^-1.0)",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::COULOMB, 0, 1.0, 1.0);
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
+
+    model->setName("model");
+    c->setName("c1");
+    model->addComponent(c);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v->validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateNonEquivalentUnitsofComponentsComplex)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction (Difference is A^2.0, cd^1.0, s^1.0)",
+        "Error: Variables 'v2' and 'v3' do not have the same unit reduction (Difference is kg^1.0, A^-1.0, s^3.0, m^-1.0)",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addComponent(c3);
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
+
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::COULOMB, 0, 1.0, 1.0);
+
+    u3->setName("u3");
+    u3->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
+
+    u4 = u3->clone();
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+    libcellml::VariablePtr v3 = createVariableWithUnits("v3", "u3");
+    libcellml::VariablePtr v4 = createVariableWithUnits("v4", "u4");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
+    c3->addVariable(v4);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v3, v4);
+
+    v->validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateModelWithDuplicateMappingElement)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Error: map_variables element used twice on variables 'v1' and 'v2'.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+
+    u1->setName("u3");
+    u1->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
+
+    u2 = u1->clone();
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    v->validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateModelWithMultipleMapVariablesDuplicates)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Error: map_variables element used twice on variables 'v1' and 'v2'.",
+        "Error: map_variables element used twice on variables 'v2' and 'v4'.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addComponent(c3);
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
+
+    u2 = u1->clone();
+    u3 = u1->clone();
+    u4 = u1->clone();
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+    libcellml::VariablePtr v3 = createVariableWithUnits("v3", "u3");
+    libcellml::VariablePtr v4 = createVariableWithUnits("v4", "u4");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
+    c3->addVariable(v4);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v1);
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::addEquivalence(v2, v4);
+
+    v->validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, duplicateMappingOnSameElement)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Error: map_variables element used twice on variables 'v1' and 'v1'.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+
+    model->setName("model");
+    c->setName("c");
+    model->addComponent(c);
+    
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
+
+    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
+
+    c->addVariable(v1);
+
+    model->addUnits(u);
+
+    libcellml::Variable::addEquivalence(v1, v1);
+    libcellml::Variable::addEquivalence(v1, v1);
+
+    v->validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
