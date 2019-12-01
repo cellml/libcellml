@@ -1550,6 +1550,7 @@ TEST(Parser, parseIdsOnEverythingButMath)
         "    <unit units=\"second\" id=\"unit1id\"/>\n"
         "  </units>\n"
         "  <units name=\"units3\" id=\"u3id\"/>\n"
+        "  <units name=\"blob\"/>\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
         "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
         "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
@@ -1989,6 +1990,7 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <units name=\"blob\"/>\n"
         "  <component name=\"component\">\n"
         "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
         "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"

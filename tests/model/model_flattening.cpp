@@ -525,7 +525,23 @@ TEST(ModelFlattening, repeatedImportOfSameUnitsViaDifferentComponents)
 
 TEST(ModelFlattening, importedUnitsWithNameClashes)
 {
-    const std::string e = "";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"common_units\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"common_units_1\">\n"
+        "    <unit prefix=\"hecto\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"my_component\">\n"
+        "    <variable name=\"v\" units=\"common_units_1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"best_component\">\n"
+        "    <variable name=\"v\" units=\"common_units\" initial_value=\"1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("modelflattening/importedunitswithnameclashes.xml"));
 
