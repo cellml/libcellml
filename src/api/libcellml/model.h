@@ -252,6 +252,37 @@ public:
     size_t unitsCount() const;
 
     /**
+     * @brief Link the units used in this model.
+     *
+     * Traverses the model looking for @c Units attached to
+     * @c Variables that are not standard units and which are not
+     * linked to @c Units added to the model.
+     *
+     * Unlinked variable units can occur when a @c Variable's units are
+     * set by name.  If a @c Units cannot be found in the model that matches
+     * the name given to the variables setUnits() method then the units for
+     * that variable will be unlinked.  This method will link variable units
+     * specified by name to units in the model (if they are found). Any variable
+     * units that cannot be linked to units in the model are left untouched.
+     *
+     * Any @c Variables found that are not linked to model @c Units will be
+     * linked. If a Variable has units that are not attached to the model
+     * then the units will added to the model as well.
+     */
+    void linkUnits();
+
+    /**
+     * @brief Test to determine if any variable units are not linked to model units.
+     *
+     * Traverses the model to determine if any @c Units attached to variables
+     * are not @c Units attached to the model.
+     *
+     * @return True if any @c Units attached to variables are not linked to
+     * units in the model, false otherwise.
+     */
+    bool hasUnlinkedUnits();
+
+    /**
      * @brief Test to determine if there are any import entities.
      *
      * Checks the model to determine if there are any @c Units or

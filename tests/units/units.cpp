@@ -345,6 +345,105 @@ TEST(Units, replaceUnits)
     EXPECT_TRUE(m->replaceUnits(u2, u1));
 }
 
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToVariableButNotModel)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    v1->setUnits(u1);
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToBothModelAndVariable)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    v1->setUnits(u1);
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+    m->addUnits(u1);
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelBeforeNameUsedForVariableUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    // Adding units to model before adding to a variable
+    // means the units are linked.
+    m->addUnits(u1);
+    v1->setUnits("a_unit");
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelAfterNameUsedForVariableUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    // Adding units to model after adding to a variable
+    // means the units are not linked.
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenNonBaseUnitsAddedToModelAfterNameUsedForVariableUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u1->addUnit("second");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    // Adding units to model after adding to a variable
+    // means the units are not linked.
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
@@ -612,11 +711,12 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     u->setName("myUnits");
     u->addUnit("second", "18446744073709551616");
-
     v->setUnits(u);
     c->addVariable(v);
     m->addComponent(c);
     m->addUnits(u);
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
 
     validator->validateModel(m);
 

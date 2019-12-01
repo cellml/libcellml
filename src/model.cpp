@@ -49,6 +49,8 @@ struct Model::ModelImpl
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
+
+    bool hasUnlinkedUnits();
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -60,7 +62,12 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name(); });
+                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
+}
+
+bool Model::ModelImpl::hasUnlinkedUnits()
+{
+    return false;
 }
 
 Model::Model()
@@ -221,6 +228,78 @@ bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 size_t Model::unitsCount() const
 {
     return mPimpl->mUnits.size();
+}
+
+void linkComponentVariableUnits(const ComponentPtr &component)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            if (model == nullptr && !isStandardUnitName(u->name())) {
+                model = owningModel(component);
+                auto modelUnits = model->units(u->name());
+                if (modelUnits == nullptr) {
+                    model->addUnits(u);
+                    modelUnits = u;
+                }
+                v->setUnits(modelUnits);
+            }
+        }
+    }
+}
+
+void traversComponentTreeLinkingUnits(const ComponentPtr &component)
+{
+    linkComponentVariableUnits(component);
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        traversComponentTreeLinkingUnits(c);
+    }
+}
+
+void Model::linkUnits()
+{
+    for (size_t index = 0; index < componentCount(); ++index) {
+        auto c = component(index);
+        traversComponentTreeLinkingUnits(c);
+    }
+}
+
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
+{
+    bool unlinked = false;
+    for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            unlinked = model == nullptr && !isStandardUnitName(u->name());
+        }
+    }
+
+    return unlinked;
+}
+
+bool traveseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
+{
+    bool unlinkedUnits = areComponentVariableUnitsUnlinked(component);
+    for (size_t index = 0; index < component->componentCount() && !unlinkedUnits; ++index) {
+        auto c = component->component(index);
+        unlinkedUnits = traveseComponentTreeForUnlinkedUnits(c);
+    }
+    return unlinkedUnits;
+}
+
+bool Model::hasUnlinkedUnits()
+{
+    bool unlinkedUnits = false;
+    for (size_t index = 0; index < componentCount() && !unlinkedUnits; ++index) {
+        auto c = component(index);
+        unlinkedUnits = traveseComponentTreeForUnlinkedUnits(c);
+    }
+    return unlinkedUnits;
 }
 
 /**
