@@ -639,34 +639,6 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     return rebasedMap;
 }
 
-void listOfUnitsInComponent(const ComponentPtr &component, StringList &list)
-{
-    for (size_t index = 0; index < component->variableCount(); ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-        if ((u != nullptr) && (u->name().size() > 0) && !isStandardUnitName(u->name())) {
-            list.push_back(u->name());
-        }
-    }
-}
-
-void traverseComponentTreeForUnits(const ComponentPtr &component, StringList &list)
-{
-    listOfUnitsInComponent(component, list);
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        auto childComponent = component->component(index);
-        traverseComponentTreeForUnits(childComponent, list);
-    }
-}
-
-StringList unitsUsedList(const ComponentPtr &component)
-{
-    StringList list;
-    traverseComponentTreeForUnits(component, list);
-
-    return list;
-}
-
 void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
 {
     if (component->isImport()) {
