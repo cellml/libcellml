@@ -258,6 +258,8 @@ struct Validator::ValidatorImpl
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
                             std::vector<std::string> &history,
                             std::vector<std::vector<std::string>> &errorList);
+
+    void checkUnitHomogeneity();
 };
 
 Validator::Validator()
@@ -1247,6 +1249,11 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
             }
         }
     }
+}
+
+void Validator::ValidatorImpl::checkUnitHomogeneity()
+{
+
 }
 
 } // namespace libcellml
