@@ -1,8 +1,8 @@
 .. _tutorial1:
 
-========================================
-Tutorial 1: Reading, writing, 'rithmetic
-========================================
+============================================
+Tutorial 1: Reading and writing CellML files
+============================================
 
 Welcome to the introductory tutorial for the use of the libCellML library.
 Using these tutorials in sequence will walk you through the functionality and

@@ -102,7 +102,7 @@ int main()
     //        already stored, simply call setMath("") with an empty string.
     component->setMath(mathHeader);
     component->appendMath(equation1);
-    component->appendMath(equation2); // TODO adding a second apply block causes a segfault
+    component->appendMath(equation2);
     component->appendMath(mathFooter);
 
     //  2.c:  Call the validator and print the messages to the terminal.
@@ -226,19 +226,52 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Serialise and print the model" << std::endl;
+    std::cout << "  STEP 5: Output the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    //  5.a Create a Generator item, set the profile (that is, the output
+    //      language) to your choice of C (the default) or Python (see below), and
+    //      submit the model for processing.
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    libcellml::GeneratorProfilePtr profile =
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+    generator->processModel(model);
+
+    //  5.b Check that the Generator has not encountered any errors.
+    printErrorsToTerminal(generator);
+    assert(generator->errorCount() == 0);
+
+    //  5.c Retrieve the output code from the Generator, remembering
+    //      that for output in C you will need both the interfaceCode (the
+    //      header file contents) as well as the implementationCode (the source
+    //      file contents), whereas for Python you need only output the
+    //      implementationCode.  Write the file(s).
+
+    // std::ofstream outFile("tutorial4_generated.h");
+    // outFile << generator->interfaceCode();
+    // outFile.close();
+
+    // outFile.open("tutorial4_generated.c");
+    // outFile << generator->implementationCode();
+    // outFile.close();
+
+    std::ofstream outFile("tutorial4_generated.py");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    //  5.d Create a Printer item and submit your model for serialisation.
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(model);
+
+    //  5.e Write the serialised string output from the printer to a file.
     std::string outFileName = "tutorial4_IonChannelModel.cellml";
-    std::ofstream outFile(outFileName);
+    outFile.open(outFileName);
     outFile << serialisedModelString;
     outFile.close();
 
     std::cout << "The created '" << model->name()
               << "' model has been printed to: " << outFileName << std::endl;
 
-
-
+    //  5.f Go and have a cuppa, you're done!
 }

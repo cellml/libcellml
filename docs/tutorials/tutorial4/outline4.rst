@@ -23,10 +23,10 @@ Overview:
 ---------
 
 The basic steps for model creation and output are the same as those in
-:ref:`Tutorial 3<tutorial3>`, but here you'll begin to create a model based on
-the Hodgkin Huxley model. All the biological and mathematical modelling
-background needed for this model are explained in a separate document,
-:ref:`Understanding the Hodgkin-Huxley model<hh_theory_hh>`.
+:ref:`Tutorial 3<tutorial3>`, but here you'll begin to create a model which
+will later become the Hodgkin Huxley model. All the biological and mathematical
+modelling background needed for this model are explained separately,
+:ref:`Understanding the Hodgkin-Huxley model<hh_theory>`.  In general we will:
 
 #.  Create a simple model with one component.  This will represent a gated
     ion channel, and we'll write it in such a way that we can reuse it later.

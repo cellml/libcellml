@@ -61,6 +61,7 @@ extlinks = {
     'cellml2': ('https://www.cellml.org/%s', ''),
     'cmake': ('https://cmake.org/%s', ''),
     'doxygen': ('http://www.doxygen.nl/%s',''),
+    'euler_method': ('https://en.wikipedia.org/wiki/Euler_method%s',''),
     'git': ('https://git-scm.com/%s', ''),
     'github': ('https://github.com/%s', ''),
     'google_styleguide': ('https://google.github.io/styleguide/cppguide.html%s',''),

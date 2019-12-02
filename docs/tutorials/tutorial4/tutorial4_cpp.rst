@@ -295,20 +295,52 @@ covered in :ref:`Tutorial 3<tutorial3_cpp>` in case you need a reminder.
 Step 5: Serialise and write to a file
 -------------------------------------
 
-The final step is to output our created model to a CellML2.0 file.  This file
+The final steps are to output our created model to a CellML2.0 file (which
 will be used in subsequent tutorials, so be sure to name it something
-meaningful!  This step is the same as what was covered at the end of
-:ref:`Tutorial 2<tutorial2_cpp>`; you can refer back to the code and/or
-instructions there if you need to.
+meaningful!) as well as generating the C or Python files which we can use to
+investigate this component's operation in isolation.  We will do the code
+generation step first to take advantage of the additional error checks present
+inside the :code:`Generator`.
 
 .. container:: dothis
 
-    **5.a** Create a Printer item and submit your model for serialisation.
+    **5.a** Create a Generator item, set the profile (that is, the output
+    language) to your choice of C (the default) or Python (see below), and
+    then submit the model for processing.
+
+    .. code-block:: cpp
+
+    // Change the generated language from the default C to Python if need be
+    libcellml::GeneratorProfilePtr profile =
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
 
 .. container:: dothis
 
-    **5.b** Write the serialised string output from the printer to a file.
+    **5.b** Check that the Generator has not encountered any errors.
 
 .. container:: dothis
 
-    **5.c** Go and have a cuppa, you're done!
+    **5.c** Retrieve the output code from the :code:`Generator`, remembering
+    that for output in C you will need both the :code:`interfaceCode` (the
+    header file contents) as well as the :code:`implementationCode` (the source
+    file contents), whereas for Python you need only output the
+    :code:`implementationCode`.  Write the file(s).
+
+
+The second step is the
+same as what was covered at the end of :ref:`Tutorial 2<tutorial2_cpp>` to use
+the :code:`Printer`; you can refer back to the code and/or instructions there
+if you need to.
+
+.. container:: dothis
+
+    **5.d** Create a Printer item and submit your model for serialisation.
+
+.. container:: dothis
+
+    **5.e** Write the serialised string output from the printer to a file.
+
+.. container:: dothis
+
+    **5.f** Go and have a cuppa, you're done!
