@@ -1,3 +1,5 @@
+.. include:: resources/roles.txt
+
 .. _theory_ode_solutions:
 
 ============================================================

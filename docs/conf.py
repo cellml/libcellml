@@ -59,6 +59,7 @@ extlinks = {
     'buildbot': ('https://buildbot.net%s',''),
     'cellml1to2': ('https://github.com/hsorby/cellml1to2%s',''),
     'cellml2': ('https://www.cellml.org/%s', ''),
+    'cellsolver': ('https://github.com/hsorby/cellsolver%s',''),
     'cmake': ('https://cmake.org/%s', ''),
     'doxygen': ('http://www.doxygen.nl/%s',''),
     'euler_method': ('https://en.wikipedia.org/wiki/Euler_method%s',''),
