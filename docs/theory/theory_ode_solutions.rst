@@ -176,20 +176,18 @@ returned by a call to the :code:`implementationCode()` function of the :code:`Ge
       {"name": "d", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT}
   ]
 
-Specification of states and rates
-+++++++++++++++++++++++++++++++++
+Defining the initial values
++++++++++++++++++++++++++++
 
-Once a :code:`Variable` has been identified as a *state* variable, it is paired
-by the :code:`Generator` by its corresponding entry in the *rates* array.  The
-rate of a state variable is its gradient function, as described above.
-
-These equations are found in the  by the :code:`Generator` as:
+All :code:`Variables` items must either be initialised using the
+:code:`setInitialValue()` function, or specified within the MathML as a
+variable of integration (VOI) using the :code:`<bvar> ... </bvar>` tags.  Note
+that VOI must not be initialised - setting an initial value for these will
+raise an error in the :code:`Generator`.
 
 .. code-block:: cpp
 
-  // Inside the code created by a call to the generator->implementationCode() with
-  // the default C generator profile
-
+  // In the *.c generated file
   void initializeStatesAndConstants(double *states, double *variables)
   {
       // "states" are those variables which are being integrated or solved for
@@ -200,6 +198,27 @@ These equations are found in the  by the :code:`Generator` as:
       variables[2] = -0.8;  // c, constant in the rates equation for fishes
       variables[3] = 0.3;   // d, constant in the rates equation for fishes
   }
+
+.. code-block:: python
+
+  # In the *.py generated file
+  def initialize_states_and_constants(states, variables):
+      states[0] = 2.0      # the initial condition for the shark population
+      states[1] = 1.0      # initial condition for the fish population
+      variables[0] = 1.2   # a, constant in the rates equation for sharks
+      variables[1] = -0.6  # b, constant in the rates equation for sharks
+      variables[2] = -0.8  # c, constant in the rates equation for fishes
+      variables[3] = 0.3   # d, constant in the rates equation for fishes
+
+Specification of states and rates
++++++++++++++++++++++++++++++++++
+Once a :code:`Variable` has been identified as a *state* variable, it is paired
+by the :code:`Generator` by its corresponding entry in the *rates* array.  The
+rate of a state variable is its gradient function, as described above.
+
+These equations are found in the by the :code:`Generator` as:
+
+.. code-block:: cpp
 
   void computeRates(double voi, double *states, double *rates, double *variables)
   {
@@ -213,37 +232,7 @@ These equations are found in the  by the :code:`Generator` as:
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1];
   }
 
-If the :code:`GeneratorProfile` was set to Python then the output file would contain:
-
 .. code-block:: python
-
-  # Parts of the code created by generator->implementationCode() with the Python generator profile
-
-  # VOI stands for "variable of integration"
-  VOI_INFO = {"name": "time", "units": "dimensionless", "component": "component"}
-
-  # States are those variables which are to be solved for through integration
-  STATE_INFO = [
-      {"name": "sharks", "units": "dimensionless", "component": "component"},
-      {"name": "fishes", "units": "dimensionless", "component": "component"}
-  ]
-
-  # Variables are other variables which may need to be found algebraically or be constant.
-  # They are everything which does not require numerical integration.
-  VARIABLE_INFO = [
-      {"name": "a", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
-      {"name": "b", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
-      {"name": "c", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
-      {"name": "d", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT}
-  ]
-
-  def initialize_states_and_constants(states, variables):
-      states[0] = 2.0      # the initial condition for the shark population
-      states[1] = 1.0      # initial condition for the fish population
-      variables[0] = 1.2   # a, constant in the rates equation for sharks
-      variables[1] = -0.6  # b, constant in the rates equation for sharks
-      variables[2] = -0.8  # c, constant in the rates equation for fishes
-      variables[3] = 0.3   # d, constant in the rates equation for fishes
 
   def compute_rates(voi, states, rates, variables):
       # The "rates" array contains the gradient functions for each of the variables
@@ -255,4 +244,4 @@ If the :code:`GeneratorProfile` was set to Python then the output file would con
 Solving the model
 -----------------
 
-Now that we have a model, and we have ...
+Now that we have a model, and we have to solve it ...
