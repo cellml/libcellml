@@ -467,12 +467,16 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
             auto found = unitsMap.find("dimensionless");
             if (found == unitsMap.end()) {
                 unitsMap.emplace(std::make_pair("dimensionless", 0.0));
-                unitsMap.erase(it);
+                it = unitsMap.erase(it);
             } else {
-                unitsMap.erase(it);
+                it = unitsMap.erase(it);
             }
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
+        }
+
+        if (it == unitsMap.end()) {
+            break;
         }
         ++it;
     }

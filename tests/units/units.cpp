@@ -1471,3 +1471,8 @@ TEST(Units, compareEquivalentSameSizeButDifferentExponent)
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
     EXPECT_FALSE(libcellml::Units::equivalent(u2, u1));
 }
+
+TEST(Units, compareEquivalentUnitsWhichAreDimensionless)
+{
+
+}
