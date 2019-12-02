@@ -1442,6 +1442,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     const std::vector<std::string> expectedErrors = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+        "Error: Variables 'tomayto' and 'tomahto' do not have the same unit reduction.",
     };
 
     // This one is now an error.
