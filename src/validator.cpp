@@ -1262,25 +1262,46 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
 void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
 {
     std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
-    std::pair<size_t, size_t> verifyPair = std::make_pair(size_t(0), size_t(0)); // init 
-
+    std::vector<std::pair<VariablePtr, VariablePtr>> errorPairs;
+    //std::pair<size_t, size_t> verifyPair = std::make_pair(size_t(0), size_t(0)); // init
 
     // Check components.
     if (model->componentCount() > 0) {
-        
         for (size_t i = 0; i < model->componentCount(); ++i) {
-            
             auto component = model->component(i);
-            
             // Check variables.
-            
             for (size_t j = 0; j < component->variableCount(); ++j) {
-                
                 auto variable = component->variable(j);
-
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                        // Check both equivalence pairings
                         auto equivalentVariable = variable->equivalentVariable(k);
+                        auto firstCheckPairing = std::make_pair(variable, equivalentVariable);
+                        auto secondCheckPairing = std::make_pair(equivalentVariable, variable);
+
+                        if ((std::find(checkedPairs.begin(), checkedPairs.end(), firstCheckPairing) == checkedPairs.end())
+                            && (std::find(checkedPairs.begin(), checkedPairs.end(), secondCheckPairing) == checkedPairs.end())) {
+                            checkedPairs.push_back(firstCheckPairing);
+
+                            // Check equivalence
+                            bool equivalent = variable->units()->equivalent(variable->units(), equivalentVariable->units());
+                            if (!equivalent) {
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                                ErrorPtr err = Error::create();
+                                err->setDescription("Error: Variables '" + variable->name() + "' and '" + equivalentVariable->name() + "' do not have the same unit reduction.");
+                                err->setModel(model);
+                                err->setKind(Error::Kind::UNITS);
+                                err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);
+                                mValidator->addError(err);
+                            }
+
+                        } else if (std::find(checkedPairs.begin(), checkedPairs.end(), firstCheckPairing) != checkedPairs.end()) {
+                            // Log all the pairings first, then outside of the loop we then log all the errors associated with each pairing
+                            errorPairs.push_back(firstCheckPairing);
+                        }
+
+                        /*auto equivalentVariable = variable->equivalentVariable(k);
 
                         auto checkPairing = std::make_pair(variable, equivalentVariable);  // mapping to check
 
@@ -1322,7 +1343,7 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
                                 }
                             }
                             */
-
+                        /*
                         // Check equivalence
                         bool equivalent = variable->units()->equivalent(variable->units(), equivalentVariable->units());
 
@@ -1340,7 +1361,7 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
                         // Search through entire vector of pairs and check for double ups
                         if (k == variable->equivalentVariableCount() - 1) {
                             checkedPairs.clear();
-                        } 
+                        }
 
                         /*} /*else {
                             if ((j == verifyPair.first) && (k != verifyPair.second)) {
@@ -1358,7 +1379,26 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
             }
         }
     }
-}
 
+    // Erasing all doubled up errorPairs- we don't want double error messages!
+    for (auto error : errorPairs) {
+        auto pairing = std::find(errorPairs.begin(), errorPairs.end(), std::make_pair(error.second, error.first)); // removing naturally symmetric pairings
+        if (pairing != errorPairs.end()) {
+            errorPairs.erase(pairing);
+        }
+    }
+
+    // Then another for loop to state all the error messages
+    for (auto error : errorPairs) {
+        auto unitsName = error.first->units() == nullptr ? "" : error.first->units()->name();
+        auto equivalentUnitsName = error.second->units() == nullptr ? "" : error.second->units()->name();
+        ErrorPtr err = Error::create();
+        err->setDescription("Error: Equivalence mapping used more than once on '" + error.first->name() + "' and '" + error.second->name() + "'.");
+        err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::MAP_VARIABLES_UNIQUE);
+        mValidator->addError(err);
+    }
+}
 
 } // namespace libcellml
