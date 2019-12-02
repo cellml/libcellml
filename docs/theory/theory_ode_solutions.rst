@@ -19,11 +19,11 @@ orders (like acceleration) or more than one variable of influence or interest
 
 For example:
 
-- a simple first order system, :math:`\frac{dx}{dt}=f(x,t)` representing the effects
+- a simple first order system, :math:`\frac{dy}{dt}=f(y,t)` representing the effects
   of speed-dependent drag forces on the motion of an object,
-- a higher-order system, :math:`\frac{d^2x}{dt^2} = f(\frac {dx}{dt}, x, t)`
+- a higher-order system, :math:`\frac{d^2y}{dt^2} = f(\frac {dy}{dt}, y, t)`
   representing a spring-mass-damper system like that in shock absorbers,
-- a multi-variable system, :math:`\frac{dx}{dt} = f(x, y, t)` representing
+- a multi-variable system, :math:`\frac{dy_1}{dt} = f(y_1, y_2, t)` representing
   population dynamics between predator and prey species over time.
 
 For each variable we need to know:
@@ -34,8 +34,7 @@ For each variable we need to know:
   etc - which affect the gradient of this variable.
 - An initial condition for the variable so we have somewhere to start from.
   If this value is dependent on other variable values, it must nonetheless be
-  known at the time of submitting the solver.  **TODO** check whether this is
-  allowed in the generator??
+  able to be determined at the time of submitting the solver.
 - How large a step to take through the independent variable space (like time).
   This is often made consistent between all variables so that their solutions
   progress together, though adaptive step sizing methods (in which the step
@@ -75,7 +74,7 @@ the others - were specified in the MathML block within the CellML as:
 
 .. code-block:: xml
 
-  # Gradient function for variable "sharks" based on the current shark and fish populations
+  # Gradient function for variable "y_s" based on the current shark and fish populations
   <apply><eq/>
     <apply><diff/>
       <ci>sharks</ci>
@@ -94,7 +93,7 @@ the others - were specified in the MathML block within the CellML as:
     </apply>
   </apply>
 
-  # Gradient function for variable "fishes" based on the current shark and fish populations
+  # Gradient function for variable "y_f" based on the current shark and fish populations
     <apply><eq/>
     <apply><diff/>
       <ci>sharks</ci>
@@ -251,10 +250,10 @@ is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
       // The "rates" array contains the gradient functions for each of the variables
       // which are being integrated (the "states")
 
-      // This equation is the equivalent of d(sharks)/dt = a*sharks + b*sharks*fishes
+      // This equation is the equivalent of d(sharks)/dt = a*y_sharks + b*y_sharks*y_fishes
       rates[0] = variables[0]*states[0]+variables[1]*states[0]*states[1];
 
-      // This equation is the equivalent of d(fishes)/dt = c*fishes + d*sharks*fishes
+      // This equation is the equivalent of d(fishes)/dt = c*y_fishes + d*y_sharks*y_fishes
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1];
   }
 
@@ -293,5 +292,7 @@ Euler's method updates each variable according to:
 
 where the gradients of each variable are given by evaluating the current
 value of the appropriate gradient function, :math:`f(t_k, x_k,...)`.
-It is the evaluation of these *gradient functions* which determine the nature of
+It is the evaluation of these *gradient functions* which defines the nature of
 the physical situation represented by the model.
+
+In the files
