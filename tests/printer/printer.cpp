@@ -24,7 +24,7 @@ limitations under the License.
 
 TEST(Printer, printNullptrModel)
 {
-    const std::string e = "";
+    const std::string e;
 
     libcellml::PrinterPtr p = libcellml::Printer::create();
 
