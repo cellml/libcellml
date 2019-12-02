@@ -557,12 +557,28 @@ TEST(ModelFlattening, importedUnitsWithNameClashes)
     EXPECT_EQ(e, a);
 }
 
-/*
 TEST(ModelFlattening, importedComponentWithNameClashes)
 {
-    const std::string e = "";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main_model\">\n"
+        "  <units name=\"common_units\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"my_component\"/>\n"
+        "  <component name=\"best_component_1\"/>\n"
+        "  <component name=\"best_component\">\n"
+        "    <variable name=\"v\" units=\"common_units\" initial_value=\"1\" interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"my_component\">\n"
+        "      <component_ref component=\"best_component_1\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
+    auto model = parser->parseModel(fileContents("modelflattening/importedcomponentswithnameclashes.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("modelflattening/"));
@@ -573,7 +589,5 @@ TEST(ModelFlattening, importedComponentWithNameClashes)
     auto printer = libcellml::Printer::create();
 
     auto a = printer->printModel(model);
-//    EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
-
-*/
