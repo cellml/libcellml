@@ -456,6 +456,27 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
 {
     UnitsMap unitsMap;
     updateUnitsMap(units, unitsMap);
+
+    
+    // dimensionality checks for dimensionless constants, removing as can throw unit errors
+    auto it = unitsMap.begin();
+
+    while (it != unitsMap.end()) {
+        std::string unit = it->first;
+        if (it->second == 0.0) {
+            auto found = unitsMap.find("dimensionless");
+            if (found == unitsMap.end()) {
+                unitsMap.emplace(std::make_pair("dimensionless", 0.0));
+                unitsMap.erase(it);
+            } else {
+                unitsMap.erase(it);
+            }
+        } else if (it->first == "dimensionless") {
+            it->second = 0.0;
+        }
+        ++it;
+    }
+    
     return unitsMap;
 }
 
