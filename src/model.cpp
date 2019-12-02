@@ -607,15 +607,14 @@ IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originSta
 EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack)
 {
     EquivalenceMap rebasedMap;
-    for (auto iter = map.begin(); iter != map.end(); ++iter) {
-        auto key = iter->first;
+    for (const auto &entry : map) {
+        auto key = entry.first;
         auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
         if (!rebasedKey.empty()) {
-            auto vector = iter->second;
+            auto vector = entry.second;
             std::vector<IndexStack> rebasedVector;
-            for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
-                auto target = *vectorIt;
-                auto rebasedTarget = rebaseIndexStack(target, originStack, destinationStack);
+            for (const auto &stack : vector) {
+                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
                 if (!rebasedTarget.empty()) {
                     rebasedVector.push_back(rebasedTarget);
                 }
