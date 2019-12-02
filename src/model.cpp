@@ -630,12 +630,49 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     return rebasedMap;
 }
 
+void getComponentNames(const ComponentPtr &component, NameList &names)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        names.push_back(c->name());
+        getComponentNames(c, names);
+    }
+}
+
+NameList getComponentNames(const ModelPtr &model)
+{
+    NameList names;
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        auto component = model->component(index);
+        names.push_back(component->name());
+        getComponentNames(component, names);
+    }
+    return names;
+}
+
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
+{
+    ComponentNameMap nameMap;
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        nameMap[c->name()] = c;
+        ComponentNameMap childrenNameMap = createComponentNamesMap(c);
+        nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
+    }
+
+    return nameMap;
+}
+
 void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
 {
     if (component->isImport()) {
+        auto model = owningModel(component);
         auto importSource = component->importSource();
         auto importModel = importSource->model();
         auto importedComponent = importModel->component(component->importReference());
+
+        // Determine names of components already in use.
+        NameList componentNames = getComponentNames(model);
 
         // Determine the stack for the destination component.
         IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
@@ -665,6 +702,20 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
             requiredUnits.push_back(u);
         }
 
+        // Make a map of component name to component pointer.
+        ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
+        for(const auto &entry : newComponentNames) {
+            std::string newName = entry.first;
+            size_t count = 1;
+            while (std::find(componentNames.begin(), componentNames.end(), newName) != componentNames.end()) {
+                newName += "_" + convertToString(count++);
+            }
+            if (newName != entry.first) {
+                entry.second->setName(newName);
+            }
+
+        }
+
         // If the component 'component' has variables then they are equivalent variables and they
         // need to be exchanged with the real variables from the component 'importedComponent'.
         for (size_t i = 0; i < component->variableCount(); ++i) {
@@ -679,7 +730,6 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
         parent->replaceComponent(index, importedComponentCopy);
 
         // Apply the rebased equivalence map onto the modified model.
-        auto model = owningModel(importedComponentCopy);
         applyEquivalenceMapToModel(rebasedMap, model);
 
         // Copy over units used in imported component to this model.
