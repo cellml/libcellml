@@ -36,7 +36,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT Variable: public NamedEntity
 #ifndef SWIG
     ,
-                                  public std::enable_shared_from_this<Variable>
+                                 public std::enable_shared_from_this<Variable>
 #endif
 {
 public:

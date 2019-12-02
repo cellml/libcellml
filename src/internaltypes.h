@@ -28,4 +28,4 @@ using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type 
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
 using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
 
-}
+} // namespace libcellml
