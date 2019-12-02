@@ -244,7 +244,6 @@ TEST(ModelFlattening, importedComponentWithEquivalentVariables)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
 
-
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("modelflattening/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
@@ -323,7 +322,6 @@ TEST(ModelFlattening, importedComponentWithInternalEquivalentVariables)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("modelflattening/internalequivalentvariables.xml"));
 
-
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("modelflattening/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
@@ -401,7 +399,6 @@ TEST(ModelFlattening, importedComponentWithEquivalentVariablesReferencingVariabl
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("modelflattening/outsidecomponentequivalentvariables.xml"));
-
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath("modelflattening/"));

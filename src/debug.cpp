@@ -16,10 +16,9 @@ limitations under the License.
 
 #ifdef ENABLE_HANDY_DEBUGGING_FUNCTIONS
 
-#include "debug.h"
+#    include "debug.h"
 
 namespace libcellml {
-
 
 void printStack(const IndexStack &stack)
 {
@@ -48,6 +47,6 @@ void printEquivalenceMap(const EquivalenceMap &map)
     }
 }
 
-}
+} // namespace libcellml
 
 #endif /* ENABLE_HANDY_DEBUGGING_FUNCTIONS */
