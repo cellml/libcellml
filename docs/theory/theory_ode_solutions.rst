@@ -310,11 +310,13 @@ is overkill ... should just include the script instead?
 
 In C++ you can use this **TODO**
 
+Solving the model reveals the cyclical interaction between the populations of
+fish and sharks, as shown in :numref:`sharks_and_fishes`.
+
 .. _sharks_and_fishes:
 .. figure:: images/sharks_and_fishes.png
    :name: sharks_and_fishes
    :alt: Population dynamics of sharks and fishes
    :align: center
 
-Solving the model reveals the cyclical interaction between the populations of
-fish and sharks, as shown in :numref:`sharks_and_fishes`.
+   Solution to the 0<time<20 period for the interaction of the two populations
