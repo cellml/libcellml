@@ -610,18 +610,18 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     for (auto iter = map.begin(); iter != map.end(); ++iter) {
         auto key = iter->first;
         auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
-        if (rebasedKey.size() > 0) {
+        if (!rebasedKey.empty()) {
             auto vector = iter->second;
             std::vector<IndexStack> rebasedVector;
             for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
                 auto target = *vectorIt;
                 auto rebasedTarget = rebaseIndexStack(target, originStack, destinationStack);
-                if (rebasedTarget.size() > 0) {
+                if (!rebasedTarget.empty()) {
                     rebasedVector.push_back(rebasedTarget);
                 }
             }
 
-            if (rebasedVector.size() > 0) {
+            if (!rebasedVector.empty()) {
                 rebasedMap[rebasedKey] = rebasedVector;
             }
         }
