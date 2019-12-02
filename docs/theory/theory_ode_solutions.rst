@@ -120,7 +120,7 @@ These equations are interpreted by the :code:`Generator` as:
 
 .. code-block:: cpp
 
-  // Inside the code created by a call to the generator->implementationCode()
+  // Inside the code created by a call to the generator->implementationCode() with the default C generator profile
 
   void initializeStatesAndConstants(double *states, double *variables)
   {
@@ -147,6 +147,8 @@ These equations are interpreted by the :code:`Generator` as:
 If the :code:`GeneratorProfile` was set to Python then the output file would contain:
 
 .. code-block:: python
+
+  # Inside the code created by a call to the generator->implementationCode() with the Python generator profile
 
   def initialize_states_and_constants(states, variables):
       states[0] = 2.0      # This represents the sharks: "states" are those variables which are being integrated or solved for
