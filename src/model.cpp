@@ -577,7 +577,7 @@ ModelPtr Model::clone() const
     return m;
 }
 
-IndexStack reverseEngineerIndexStack(ComponentPtr component)
+IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
 {
     auto dummyVariable = Variable::create();
     component->addVariable(dummyVariable);
@@ -663,7 +663,7 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     return nameMap;
 }
 
-void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t index)
+void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
         auto model = owningModel(component);
@@ -746,7 +746,7 @@ void flattenComponent(ComponentEntityPtr parent, ComponentPtr component, size_t 
     }
 }
 
-void flattenComponentTree(ComponentEntityPtr parent, ComponentPtr component, size_t componentIndex)
+void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t componentIndex)
 {
     flattenComponent(parent, component, componentIndex);
 
