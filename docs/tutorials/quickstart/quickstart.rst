@@ -6,7 +6,9 @@ Quickstart and common examples
 
 If you're reading this it's presumed that you're already familiar with the
 structure and usage of CellML models, and you want to get started on creating
-or reading your own as soon as possible.
+or reading your own as soon as possible.  If that doesn't sound like you, and
+you'd rather start with a gentler introduction, please start from
+:ref:`Tutorial 0<tutorial0>` instead.
 
 **TODO** installation guide to go here once processes are finalised
 
@@ -17,19 +19,24 @@ used functionality associated with them.
  :maxdepth: -1
 
 
-Convert a CellML1.1 model to CellML2.0
-++++++++++++++++++++++++++++++++++++++
-libCellML deals exclusively with models which meet the CellML2.0 specification.
-To use libCellML with a previous version (1.0, 1.1) you will need to first
-translate it into CellML2 using the :cellml1to2:`cellML1to2 <>` tool.
-
-**TODO** Needs more instructions for how to use this and perhaps move to main repo?
+General API strategy for use
+============================
+The tutorials here have taken a top-down approach to model creation. They start
+by creating components which define mathematical behaviour.  The validator is
+then called to list the variables and units which the mathematics requires.
+This process is repeated until all the components needed have been created
+or imported, and the combined model is ready for output.  Model output takes
+one of two forms - either serialisation by writing to a CellML2.0 file using
+the Printer functionality, or code generation into C or Python using the
+Generator functionality.
+Of course you are welcome to use the API in a top-down or bottom-up manner
+as you see fit.
 
 .. _include_libcellml_library:
 Include the libCellML library in your project
 +++++++++++++++++++++++++++++++++++++++++++++
 If you've followed :ref:`the instructions for installing libCellML<tutorial0>`
-then the library is available for use like this:
+then the library is available for use like so:
 
 .. code-block:: cpp
 
@@ -42,7 +49,7 @@ using the ``libcellml::`` prefix.
 .. code-block:: python
 
   # main.py
-  import libcellml                       # imports the entire library
+  import libcellml                       # import the entire library, or
   from libcellml import Model, Variable  # import specific classes as needed
 
 Parse an existing Model from a file
@@ -74,18 +81,20 @@ In Python:
 
 .. code-block:: python
 
+    from libcellml import Parser
+
     #  Open the CellML file for reading
     read_file = open("../resources/quickstart.cellml", "r")
 
     #  Create a libCellML Parser, and use it to parse the file string contents
     #  and convert it into a CellML Model structure
     parser = Parser()
-    model = parser->parseModel(read_file.read())
+    model = parser.parseModel(read_file.read())
 
     # Check the parser for errors
-    for e in range(0, parser->errorCount()):
-        print(parser->error(e).description())
-        print(parser->error(e).specificationHeading())
+    for e in range(0, parser.errorCount()):
+        print(parser.error(e).description())
+        print(parser.error(e).specificationHeading())
 
 
 Debug and validate a Model
@@ -122,13 +131,13 @@ In Python:
     from libcellml import Validator
 
     # Create a Validator instance and pass it the model for checking
-    validator = libcellml.Validator()
-    validator->validateModel(model)
+    validator = Validator()
+    validator.validateModel(model)
 
     # Check the validator for errors
-    for e in range(0, validator->errorCount()):
-        print(validator->error(e).description())
-        print(validator->error(e).specificationHeading())
+    for e in range(0, validator.errorCount()):
+        print(validator.error(e).description())
+        print(validator.error(e).specificationHeading())
 
 Serialise a Model into CellML2 for printing to a file
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -171,12 +180,12 @@ In Python:
     printer = Printer()
 
     # The output of the printModel function is a string representing the serialised model
-    serialised_model = printer->printModel(model)
+    serialised_model = printer.printModel(model)
 
     # Check the printer for errors
-    for e in range(0, printer->errorCount()):
-        print(printer->error(e).description())
-        print(printer->error(e).specificationHeading())
+    for e in range(0, printer.errorCount()):
+        print(printer.error(e).description())
+        print(printer.error(e).specificationHeading())
 
     # Write the string to a file
     write_file = open("my_printed_file.cellml", "w")
@@ -191,9 +200,20 @@ model in either C or Python format.  For more information on the
 ``Generator`` please see the :ref:`Generator information<generator_notes>`
 pages.
 
+Convert a CellML1.1 model to CellML2.0
+++++++++++++++++++++++++++++++++++++++
+libCellML deals exclusively with models which meet the CellML2.0 specification.
+To use libCellML with a previous version (1.0, 1.1) you will need to first
+translate it into CellML2 using the :cellml1to2:`cellML1to2 <>` tool.
+
+**TODO** Needs more instructions for how to use this and perhaps move to main repo?
+
+
+Functionality associated with each class
+========================================
+
 Using the Model class
 +++++++++++++++++++++
-
 In C++:
 
 .. code-block:: cpp

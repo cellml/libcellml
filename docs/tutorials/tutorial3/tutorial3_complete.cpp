@@ -184,7 +184,7 @@ int main()
 
     validator->validateModel(model);
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  Printing the validation errors after Step 2" << std::endl;
+    std::cout << "  Printing the validation errors after Step 2  " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
     printErrorsToTerminal(validator);
 
