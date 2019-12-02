@@ -58,7 +58,7 @@ Euler's method updates each variable according to:
 
 .. math::
 
-    x_{next} = x_{current} + (gradient\text{ }function\text{ }value).timestep
+    x_{next} = x_{current} + (gradient\text{ }function\text{ }value)\times(timestep)
 
     x(t_k+\Delta t) = x_k + f(t_k, x_k)\times\Delta t
 
