@@ -259,7 +259,12 @@ struct Validator::ValidatorImpl
                             std::vector<std::string> &history,
                             std::vector<std::vector<std::string>> &errorList);
 
-    void checkUnitHomogeneity();
+    /**
+    * @brief checks model mapping to ensure all variables mapped to other variables have the same units.
+    *
+    * @param model The model containing the variables and mappings to be tested.
+    */
+    void checkUnitHomogeneity(const ModelPtr &model);
 };
 
 Validator::Validator()
@@ -1251,9 +1256,63 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
     }
 }
 
-void Validator::ValidatorImpl::checkUnitHomogeneity()
+void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
 {
+    std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
+    std::pair<size_t, size_t> verifyPair = std::make_pair(size_t(0), size_t(0)); // init 
 
+
+    // Check components.
+    if (model->componentCount() > 0) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            auto component = model->component(i);
+            // Check variables.
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                auto variable = component->variable(j);
+
+                if (variable->equivalentVariableCount() > 0) {
+                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                        auto equivalentVariable = variable->equivalentVariable(k);
+
+                        auto checkPairing = std::make_pair(variable, equivalentVariable);  // mapping to check
+
+                        if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) == checkedPairs.end()) {
+                            // Swap the order for storage in the pair.
+                            checkPairing = std::make_pair(equivalentVariable, variable);
+                            checkedPairs.push_back(checkPairing);
+
+                            verifyPair = std::make_pair(j, k); // checking if the pair is already present in the mapping (i.e if we've mapped it twice)
+
+                            // Check equivalence
+                            bool equivalent = variable->units()->equivalent(variable->units(), equivalentVariable->units());
+
+                            if (!equivalent) {
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                                ErrorPtr err = Error::create();
+                                err->setDescription("Error: Variables '" + variable->name() + "' and '" + equivalentVariable->name() + "' do not have the same unit reduction.");
+                                err->setModel(model);
+                                err->setKind(Error::Kind::UNITS);
+                                err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);
+                                mValidator->addError(err);
+                            }
+                        } else {
+                            if ((j == verifyPair.first) && (k != verifyPair.second)) {
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                                ErrorPtr err = Error::create();
+                                err->setDescription("Error: Equivalence mapping used twice on '" + variable->name() + "' and '" + equivalentVariable->name() + "'.");
+                                err->setModel(model);
+                                err->setKind(Error::Kind::CONNECTION);
+                                err->setRule(SpecificationRule::MAP_VARIABLES_UNIQUE);
+                                mValidator->addError(err);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 } // namespace libcellml

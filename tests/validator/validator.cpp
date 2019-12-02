@@ -2329,7 +2329,7 @@ TEST(Validator, validateUnitsOfCompenentsComplex)
 TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
 {
     const std::vector<std::string> expectedErrors = {
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction (Difference is kg^1.0, A^-1.0, s^3.0, m^-1.0)",
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2366,8 +2366,8 @@ TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
 TEST(Validator, validateNonEquivalentUnitsofComponentsComplex)
 {
     const std::vector<std::string> expectedErrors = {
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction (Difference is A^2.0, cd^1.0, s^1.0)",
-        "Error: Variables 'v2' and 'v3' do not have the same unit reduction (Difference is kg^1.0, A^-1.0, s^3.0, m^-1.0)",
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Error: Variables 'v2' and 'v3' do not have the same unit reduction.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
