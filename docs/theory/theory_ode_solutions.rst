@@ -213,7 +213,7 @@ Once a :code:`Variable` has been identified as a *state* variable, it is paired
 by the :code:`Generator` by its corresponding entry in the :code:`rates` array,
 which represents its gradient function.
 
-Because the gradients of each of the integrated variables or :code:`state`s
+Because the gradients of each of the integrated variables or :code:`states`
 could include dependency on time or any variable's value, the values of each
 gradient function array must be updated throughout the solution process.  This
 is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
