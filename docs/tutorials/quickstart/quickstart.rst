@@ -304,10 +304,7 @@ In C++
 
 
 
-
-
-
-
+**TODO** Not sure if this is the best strategy for documentation??
 
 
 Create and naming items: Model, Component, Variable, Units
@@ -342,33 +339,3 @@ In C++:
 
 Retrieving named items: Model, Component, Variable, Units
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
-
-Access and edit a Model using the API
-+++++++++++++++++++++++++++++++++++++
-In general, items within a model can be accesed using their name or index with
-respect to their parent item.  Some examples are below.
-
-In C++:
-
-.. code-block:: cpp
-
-    auto model = libcellml::Model::create();
-
-
-
-
-Create or edit a component
-++++++++++++++++++++++++++
-
-Create or edit a variable
-==========================================
-
-Create or edit units
-==========================================
-
-Control mathematical behaviour
-==========================================
