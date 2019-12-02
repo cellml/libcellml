@@ -19,9 +19,9 @@ orders (like acceleration) or more than one variable of influence or interest
 
 For example:
 
-- a first order system, :math:`\frac{dx}{dt}=f(x,t)` representing the effects
+- a simple first order system, :math:`\frac{dx}{dt}=f(x,t)` representing the effects
   of speed-dependent drag forces on the motion of an object,
-- a second order system, :math:`\frac{d^2x}{dt^2} = f(\frac {dx}{dt}, x, t)`
+- a higher-order system, :math:`\frac{d^2x}{dt^2} = f(\frac {dx}{dt}, x, t)`
   representing a spring-mass-damper system like that in shock absorbers,
 - a multi-variable system, :math:`\frac{dx}{dt} = f(x, y, t)` representing
   population dynamics between predator and prey species over time.
@@ -43,6 +43,8 @@ For each variable we need to know:
   different steps are used for different variables) are possible. In the
   examples here we will use a constant step-size for all variables and all
   steps.
+
+**something about rates and states here??**
 
 A simple numerical integration method like :euler_method:`Euler's method <>`
 involves stepping from the variable's initial value, along the gradient (as
@@ -116,20 +118,87 @@ were specified in the MathML block within the CellML as:
     </apply>
   </apply>
 
-These equations are interpreted by the :code:`Generator` as:
+Classification of variables
++++++++++++++++++++++++++++
+
+The :code:`Generator` does two things with these equations:
+
+- it classifies all the :code:`Variable` items within the :code:`Component` as:
+
+  - *variables* do not require integration, but come in three types:
+
+    - :code:`CONSTANT` variables do not need any kind of calculation
+    - :code:`COMPUTED_CONSTANT` variables needs calculation but not integration, and
+    - :code:`ALGEBRAIC` variables need ...?? **TODO**
+
+  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>`
+    tags in the MathML.  These must not be initialised in libCellML.
+  - *states* are the variables which do need integration by a solver.
+
+We can see this results of this classification process in the generated code
+returned by a call to the :code:`implementationCode()` function of the :code:`Generator`.
 
 .. code-block:: cpp
 
-  // Inside the code created by a call to the generator->implementationCode() with the default C generator profile
+  // Defining the VOI variable of integration, its units and the name of its parent component
+  const VariableInfo VOI_INFO = {"time", "dimensionless", "component"};
+
+  // Defining the states: the variables which require integration
+  const VariableInfo STATE_INFO[] = {
+      {"sharks", "dimensionless", "component"},
+      {"fishes", "dimensionless", "component"}
+  };
+
+  // Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
+  const VariableInfoWithType VARIABLE_INFO[] = {
+      {"a", "dimensionless", "component", CONSTANT},
+      {"b", "dimensionless", "component", CONSTANT},
+      {"c", "dimensionless", "component", CONSTANT},
+      {"d", "dimensionless", "component", CONSTANT}
+  };
+
+.. code-block:: python
+
+  # Defining the VOI variable of integration, its units and the name of its parent component
+  VOI_INFO = {"name": "time", "units": "dimensionless", "component": "component"}
+
+  # Defining the states: the variables which require integration
+  STATE_INFO = [
+      {"name": "sharks", "units": "dimensionless", "component": "component"},
+      {"name": "fishes", "units": "dimensionless", "component": "component"}
+  ]
+
+  # Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
+  VARIABLE_INFO = [
+      {"name": "a", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
+      {"name": "b", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
+      {"name": "c", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
+      {"name": "d", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT}
+  ]
+
+Specification of states and rates
++++++++++++++++++++++++++++++++++
+
+Once a :code:`Variable` has been identified as a *state* variable, it is paired
+by the :code:`Generator` by its corresponding entry in the *rates* array.  The
+rate of a state variable is its gradient function, as described above.
+
+These equations are found in the  by the :code:`Generator` as:
+
+.. code-block:: cpp
+
+  // Inside the code created by a call to the generator->implementationCode() with
+  // the default C generator profile
 
   void initializeStatesAndConstants(double *states, double *variables)
   {
-      states[0] = 2.0;  // This represents the sharks: "states" are those variables which are being integrated or solved for
-      states[1] = 1.0;  // The fishes
-      variables[0] = 1.2;   // a - here this is a constant, ditto below
-      variables[1] = -0.6;  // b
-      variables[2] = -0.8;  // c
-      variables[3] = 0.3;   // d
+      // "states" are those variables which are being integrated or solved for
+      states[0] = 2.0;      // shark population
+      states[1] = 1.0;      // fish population
+      variables[0] = 1.2;   // a, constant in the rates equation for sharks
+      variables[1] = -0.6;  // b, constant in the rates equation for sharks
+      variables[2] = -0.8;  // c, constant in the rates equation for fishes
+      variables[3] = 0.3;   // d, constant in the rates equation for fishes
   }
 
   void computeRates(double voi, double *states, double *rates, double *variables)
@@ -148,15 +217,33 @@ If the :code:`GeneratorProfile` was set to Python then the output file would con
 
 .. code-block:: python
 
-  # Inside the code created by a call to the generator->implementationCode() with the Python generator profile
+  # Parts of the code created by generator->implementationCode() with the Python generator profile
+
+  # VOI stands for "variable of integration"
+  VOI_INFO = {"name": "time", "units": "dimensionless", "component": "component"}
+
+  # States are those variables which are to be solved for through integration
+  STATE_INFO = [
+      {"name": "sharks", "units": "dimensionless", "component": "component"},
+      {"name": "fishes", "units": "dimensionless", "component": "component"}
+  ]
+
+  # Variables are other variables which may need to be found algebraically or be constant.
+  # They are everything which does not require numerical integration.
+  VARIABLE_INFO = [
+      {"name": "a", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
+      {"name": "b", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
+      {"name": "c", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
+      {"name": "d", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT}
+  ]
 
   def initialize_states_and_constants(states, variables):
-      states[0] = 2.0      # This represents the sharks: "states" are those variables which are being integrated or solved for
-      states[1] = 1.0      # The fishes
-      variables[0] = 1.2   # a - here this is a constant, ditto below
-      variables[1] = -0.6  # b
-      variables[2] = -0.8  # c
-      variables[3] = 0.3   # d
+      states[0] = 2.0      # the initial condition for the shark population
+      states[1] = 1.0      # initial condition for the fish population
+      variables[0] = 1.2   # a, constant in the rates equation for sharks
+      variables[1] = -0.6  # b, constant in the rates equation for sharks
+      variables[2] = -0.8  # c, constant in the rates equation for fishes
+      variables[3] = 0.3   # d, constant in the rates equation for fishes
 
   def compute_rates(voi, states, rates, variables):
       # The "rates" array contains the gradient functions for each of the variables
