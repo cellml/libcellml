@@ -44,34 +44,10 @@ For each variable we need to know:
   examples here we will use a constant step-size for all variables and all
   steps.
 
-**something about rates and states here??**
 
-A simple numerical integration method like :euler_method:`Euler's method <>`
-involves stepping from the variable's initial value, along the gradient (as
-evaluated by the *gradient function evaluation*), to a new value.  This new
-value is used in turn to update all of the other gradient functions for other
-variables, and the process is repeated for all variables and all time points
-within the solution time interval.  More complicated stepping procedures
-involve the combination of many points at which to evaluate the gradient
-function as well as relaxation and hybrid techniques. In this example we will
-use Euler's method as being the simplest possible.
-
-Euler's method updates each variable according to:
-
-.. math::
-
-    x_{next} = x_{current} + (gradient\text{ }function\text{ }value)\times(timestep)
-
-    x(t_k+\Delta t) = x_k + f(t_k, x_k)\times\Delta t
-
-where the gradients of each variable are given by evaluating the current
-value of the appropriate gradient function, :math:`f(t_k, x_k,...)`.
-It is the evaluation of these *gradient functions* which determine the nature of
-the physical situation represented by the model.
 
 Interpretation in code: MathML, generated C, generated Python
 -------------------------------------------------------------
-
 The :code:`Generator` interprets your CellML model into a structure which can
 easily be passed to a numerical integrator.  Consider the file created by
 completing :ref:`Tutorial 3<tutorial3>` to model a first-order ODE.  The
@@ -120,7 +96,6 @@ were specified in the MathML block within the CellML as:
 
 Classification of variables
 +++++++++++++++++++++++++++
-
 The :code:`Generator` does two things with these equations:
 
 - it classifies all the :code:`Variable` items within the :code:`Component` as:
@@ -178,12 +153,15 @@ returned by a call to the :code:`implementationCode()` function of the :code:`Ge
 
 Defining the initial values
 +++++++++++++++++++++++++++
-
 All :code:`Variables` items must either be initialised using the
 :code:`setInitialValue()` function, or specified within the MathML as a
 variable of integration (VOI) using the :code:`<bvar> ... </bvar>` tags.  Note
 that VOI must not be initialised - setting an initial value for these will
 raise an error in the :code:`Generator`.
+
+Note that the initial conditions for all non-VOI variables are specified in a
+function, as opposed to the dictonary syntax used for the information items
+above. This function can be called by the solver.
 
 .. code-block:: cpp
 
@@ -213,10 +191,14 @@ raise an error in the :code:`Generator`.
 Specification of states and rates
 +++++++++++++++++++++++++++++++++
 Once a :code:`Variable` has been identified as a *state* variable, it is paired
-by the :code:`Generator` by its corresponding entry in the *rates* array.  The
-rate of a state variable is its gradient function, as described above.
+by the :code:`Generator` by its corresponding entry in the :code:`rates` array,
+which represents its gradient function.
 
-These equations are found in the by the :code:`Generator` as:
+Because the gradients of each of the integrated variables or :code:`state`s
+could include dependency on time or any variable's value, the values of each
+gradient function array must be updated throughout the solution process.  This
+is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
+(in Python) function to recalculate the gradient values for each state variable.
 
 .. code-block:: cpp
 
@@ -236,12 +218,34 @@ These equations are found in the by the :code:`Generator` as:
 
   def compute_rates(voi, states, rates, variables):
       # The "rates" array contains the gradient functions for each of the variables
-      # which are being integrated (the "states")
+      # which are being integrated (the "states")'
+      # This equation is the equivalent of d(sharks)/dt = a*sharks + b*sharks*fishes
       rates[0] = variables[0]*states[0]+variables[1]*states[0]*states[1]
+      # This equation is the equivalent of d(fishes)/dt = c*fishes + d*sharks*fishes
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1]
 
 
 Solving the model
 -----------------
+A simple numerical integration method like :euler_method:`Euler's method <>`
+involves stepping from the variable's initial value, along the gradient (as
+evaluated by the *gradient function evaluation*), to a new value.  This new
+value is used in turn to update all of the other gradient functions for other
+variables, and the process is repeated for all variables and all time points
+within the solution time interval.  More complicated stepping procedures
+involve the combination of many points at which to evaluate the gradient
+function as well as relaxation and hybrid techniques. In this example we will
+use Euler's method as being the simplest possible.
 
-Now that we have a model, and we have to solve it ...
+Euler's method updates each variable according to:
+
+.. math::
+
+    x_{next} = x_{current} + (gradient\text{ }function\text{ }value)\times(timestep)
+
+    x(t_k+\Delta t) = x_k + f(t_k, x_k)\times\Delta t
+
+where the gradients of each variable are given by evaluating the current
+value of the appropriate gradient function, :math:`f(t_k, x_k,...)`.
+It is the evaluation of these *gradient functions* which determine the nature of
+the physical situation represented by the model.
