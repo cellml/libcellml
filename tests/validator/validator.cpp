@@ -2448,7 +2448,7 @@ TEST(Validator, validateModelWithDuplicateMappingElement)
     model->addComponent(c1);
     model->addComponent(c2);
 
-    u1->setName("u3");
+    u1->setName("u1");
     u1->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
 
     u2 = u1->clone();
