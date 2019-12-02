@@ -117,7 +117,47 @@ These equations are interpreted by the :code:`Generator` as:
 
 .. code-block:: cpp
 
-  // Inside the
+  // Inside the code created by a call to the generator->implementationCode()
+
+  void initializeStatesAndConstants(double *states, double *variables)
+  {
+      states[0] = 2.0;  // This represents the sharks: "states" are those variables which are being integrated or solved for
+      states[1] = 1.0;  // The fishes
+      variables[0] = 1.2;   // a - here this is a constant, ditto below
+      variables[1] = -0.6;  // b
+      variables[2] = -0.8;  // c
+      variables[3] = 0.3;   // d
+  }
+
+  void computeRates(double voi, double *states, double *rates, double *variables)
+  {
+      // The "rates" array contains the gradient functions for each of the variables
+      // which are being integrated (the "states")
+
+      // This equation is the equivalent of d(sharks)/dt = a*sharks + b*sharks*fishes
+      rates[0] = variables[0]*states[0]+variables[1]*states[0]*states[1];
+
+      // This equation is the equivalent of d(fishes)/dt = c*fishes + d*sharks*fishes
+      rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1];
+  }
+
+If the :code:`GeneratorProfile` was set to Python then the output file would contain:
+
+.. code-block::
+
+  def initialize_states_and_constants(states, variables):
+      states[0] = 2.0      # This represents the sharks: "states" are those variables which are being integrated or solved for
+      states[1] = 1.0      # The fishes
+      variables[0] = 1.2   # a - here this is a constant, ditto below
+      variables[1] = -0.6  # b
+      variables[2] = -0.8  # c
+      variables[3] = 0.3   # d
+
+  def compute_rates(voi, states, rates, variables):
+      # The "rates" array contains the gradient functions for each of the variables
+      # which are being integrated (the "states")
+      rates[0] = variables[0]*states[0]+variables[1]*states[0]*states[1]
+      rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1]
 
 
 
