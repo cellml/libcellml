@@ -4,6 +4,15 @@
 Documentation for developers
 =================================
 
+Welcome to the documentation of libCellML for contributors and developers.  If
+you're looking for information on how to build the libCellML library from
+source, how to set up a developmetn environment for contributions, and how
+to get those contributions reviewed and integrated with the prime repository,
+then you're in the right place.
+
+If you'd like to just use the libCellML library within a simple installation,
+please see the :ref:`Tutorial 0: Installation<tutorial0>` page instead.
+
 Contents
 --------
 
