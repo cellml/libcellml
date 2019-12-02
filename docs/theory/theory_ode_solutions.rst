@@ -305,7 +305,8 @@ from both the C and Python generator profiles, and solve the system of
 equations.
 
 In Python this is available through the :cellsolver:`cellsolver package <>`.
-Follow the instructions for installation on that page.
+Follow the instructions for installation on that page.  **TODO** maybe this
+is overkill ... should just include the script instead?
 
 In C++ you can use this **TODO**
 
