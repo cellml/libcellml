@@ -444,6 +444,74 @@ TEST(Units, hasUnlinkedUnitsWhenNonBaseUnitsAddedToModelAfterNameUsedForVariable
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
+TEST(Units, hasUnlinkedUnitsLayeredComponentsWithVariables)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u1->addUnit("second");
+
+    v2->setUnits(u1);
+    v3->setUnits(u1);
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    c3->addVariable(v4);
+
+    c2->addComponent(c3);
+    c1->addComponent(c2);
+    m->addComponent(c1);
+
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+    v4->setUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsSiblingComponentsWithVariables)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u1->addUnit("second");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    c3->addVariable(v4);
+
+    c1->addComponent(c2);
+    c1->addComponent(c3);
+    m->addComponent(c1);
+
+    v4->setUnits("a_unit");
+
+    m->addUnits(u1);
+    v1->setUnits("a_unit");
+    v2->setUnits(u1);
+    v3->setUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
