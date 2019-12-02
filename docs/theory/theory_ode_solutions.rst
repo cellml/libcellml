@@ -6,6 +6,10 @@
 Solution methods for sets of Ordinary Differential Equations
 ============================================================
 
+.. toctree::
+   :maxdepth: 2
+
+
 Differential equations provide the governing mathematics for most of the
 simulations used in computational biology and engineering.  This document is
 a very simplified explanation for how the output files from the libCellml
@@ -57,13 +61,13 @@ population.  In maths this relationship can be written:
 
 .. math::
 
-    \frac{d}{dt} \left(y_(sharks)\right)=f(sharks, fishes, time) = ay_{sharks}+by_{sharks}y_{fishes}
+    \frac{dy_s}{dt} =f(sharks, fishes, time) = a y_s + b y_s y_f
 
-    \frac{d}{dt} \left(y_(fishes)\right)=f(sharks, fishes, time) = cy_{fishes}+dy_{sharks}y_{fishes}
+    \frac{dy_f}{dt} =f(sharks, fishes, time) = c y_f + d y_s y_f
 
 where the constants :math:`(a, b, c, d)=(1.2, -0.6, -0.8, 0.3)` and we'll use
-the initial condtions of :math:`y_{sharks}(t=0)=2.0` and
-:math:`y_{fishes}(t=0)=1.0`.
+the initial condtions of :math:`y_s(t=0)=2.0` and
+:math:`y_f(t=0)=1.0`.
 
 Interpretation in code: MathML, generated C, generated Python
 -------------------------------------------------------------
@@ -79,18 +83,18 @@ the others - were specified in the MathML block within the CellML as:
   # Gradient function for variable "y_s" based on the current shark and fish populations
   <apply><eq/>
     <apply><diff/>
-      <ci>sharks</ci>
+      <ci>y_s</ci>
       <bvar>time</bvar>
     </apply>
     <apply><plus/>
       <apply><times/>
         <ci>a</ci>
-        <ci>sharks</ci>
+        <ci>y_s</ci>
       </apply>
       <apply><times/>
         <ci>b</ci>
-        <ci>sharks</ci>
-        <ci>fishes</ci>
+        <ci>y_s</ci>
+        <ci>y_f</ci>
       </apply>
     </apply>
   </apply>
@@ -98,24 +102,24 @@ the others - were specified in the MathML block within the CellML as:
   # Gradient function for variable "y_f" based on the current shark and fish populations
     <apply><eq/>
     <apply><diff/>
-      <ci>sharks</ci>
+      <ci>y_f</ci>
       <bvar>time</bvar>
     </apply>
     <apply><plus/>
       <apply><times/>
-        <ci>a</ci>
-        <ci>sharks</ci>
+        <ci>c</ci>
+        <ci>y_f</ci>
       </apply>
       <apply><times/>
-        <ci>b</ci>
-        <ci>sharks</ci>
-        <ci>fishes</ci>
+        <ci>d</ci>
+        <ci>y_s</ci>
+        <ci>y_f</ci>
       </apply>
     </apply>
   </apply>
 
 For the sake of illustrating the different variable types, we'll also define
-the (erstwhile) constant :math:`d` using the simple equation :math:`d=a+b+c+0.5`:
+the (otherwise) constant :math:`d` using the simple equation :math:`d=a+b+c+0.5`:
 
 .. code-block:: xml
 
@@ -159,12 +163,12 @@ returned by a call to the :code:`implementationCode` function of the :code:`Gene
   };
 
   // Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
-const VariableInfoWithType VARIABLE_INFO[] = {
-    {"a", "dimensionless", "shark_fish_interaction", CONSTANT},
-    {"b", "dimensionless", "shark_fish_interaction", CONSTANT},
-    {"c", "dimensionless", "shark_fish_interaction", CONSTANT},
-    {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
-};
+  const VariableInfoWithType VARIABLE_INFO[] = {
+      {"a", "dimensionless", "shark_fish_interaction", CONSTANT},
+      {"b", "dimensionless", "shark_fish_interaction", CONSTANT},
+      {"c", "dimensionless", "shark_fish_interaction", CONSTANT},
+      {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
+  };
 
 .. code-block:: python
 
