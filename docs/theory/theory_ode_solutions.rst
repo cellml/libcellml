@@ -32,10 +32,10 @@ For each variable we need to know:
   This is known as the *gradient function evaluation* step, and includes
   anything and everything - including other unknown variables, constants,
   etc - which affect the gradient of this variable.
-- The initial condition for the variable so we have somewhere to start from.
+- An initial condition for the variable so we have somewhere to start from.
   If this value is dependent on other variable values, it must nonetheless be
-  known at the time of submitting the solver.  **TODO check whether this is
-  allowed in the generator?? **
+  known at the time of submitting the solver.  **TODO** check whether this is
+  allowed in the generator??
 - How large a step to take through the independent variable space (like time).
   This is often made consistent between all variables so that their solutions
   progress together, though adaptive step sizing methods (in which the step
@@ -45,14 +45,34 @@ For each variable we need to know:
   steps.
 
 
+Modelling situation: Swimming with sharks
++++++++++++++++++++++++++++++++++++++++++
+The remainder of this document will use the following modelling situation to
+explain the :code:`Generator` outputs.  Imagine a tank filled with sharks and
+fishes; predators and prey.  The population of fish can only grow when they
+are not being constantly eaten by sharks, and the rate at which is grows will
+depend on how many fish are available for breeding.  At the same time, the
+population of sharks will depend on how much food is available in the fish
+population.  In maths this relationship can be written:
+
+.. math::
+
+    \frac{d}{dt} \left(sharks\right)=f(sharks, fishes, time) = ay_{sharks}+by_{sharks}y_{fishes}
+
+    \frac{d}{dt} \left(fishes\right)=f(sharks, fishes, time) = cy_{fishes}+dy_{sharks}y_{fishes}
+
+where the constants :math:`(a, b, c, d)=(1.2, -0.6, -0.8, 0.3)` and we'll use
+the initial condtions of :math:`y_{sharks}(t=0)=2.0` and
+:math:`y_{fishes}(t=0)=1.0`.
 
 Interpretation in code: MathML, generated C, generated Python
 -------------------------------------------------------------
 The :code:`Generator` interprets your CellML model into a structure which can
 easily be passed to a numerical integrator.  Consider the file created by
-completing :ref:`Tutorial 3<tutorial3>` to model a first-order ODE.  The
-governing equations - that is, the definitions of the variable gradients -
-were specified in the MathML block within the CellML as:
+completing :ref:`Tutorial 3<tutorial3>` to model a coupled system of
+first-order ODEs.  The
+governing equations - that is, gradient of each variable as a function of all
+the others - were specified in the MathML block within the CellML as:
 
 .. code-block:: xml
 
@@ -96,9 +116,8 @@ were specified in the MathML block within the CellML as:
 
 Classification of variables
 +++++++++++++++++++++++++++
-The :code:`Generator` does two things with these equations:
-
-- it classifies all the :code:`Variable` items within the :code:`Component` as:
+The :code:`Generator` then classifies all the :code:`Variable` items within
+the :code:`Component` as:
 
   - *variables* do not require integration, but come in three types:
 
@@ -107,8 +126,8 @@ The :code:`Generator` does two things with these equations:
     - :code:`ALGEBRAIC` variables need ...?? **TODO**
 
   - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>`
-    tags in the MathML.  These must not be initialised in libCellML.
-  - *states* are the variables which do need integration by a solver.
+    tags in the MathML.  These must not be initialised.
+  - *states* are those variables which do need integration by a solver.
 
 We can see this results of this classification process in the generated code
 returned by a call to the :code:`implementationCode()` function of the :code:`Generator`.
