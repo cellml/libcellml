@@ -588,3 +588,30 @@ TEST(ModelFlattening, importedComponentWithNameClashes)
     auto a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
+/*
+// The variable ordering changes when using the HH model defined with imports.
+TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("modelflattening/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("modelflattening/hodgkin_huxley_squid_axon_model_1952/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+
+    auto generator = libcellml::Generator::create();
+
+    generator->processModel(model);
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    auto modelNonImportVersion = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+    auto e = printer->printModel(modelNonImportVersion);
+    EXPECT_EQ(e, a);
+}
+*/
