@@ -58,14 +58,17 @@ Euler's method updates each variable according to:
 
 .. math::
 
-    x_next = x_current + (gradient\text{ }function\text{ }value).timestep
+    x_{next} = x_{current} + (gradient\text{ }function\text{ }value).timestep
 
     x(t_k+\Delta t) = x_k + f(t_k, x_k)\times\Delta t
 
 where the gradients of each variable are given by evaluating the current
 value of the appropriate gradient function, :math:`f(t_k, x_k,...)`.
-It is these *gradient function evaluations* which determine the nature of
+It is the evaluation of these *gradient functions* which determine the nature of
 the physical situation represented by the model.
+
+Interpretation in code: MathML, generated C, generated Python
+-------------------------------------------------------------
 
 The :code:`Generator` interprets your CellML model into a structure which can
 easily be passed to a numerical integrator.  Consider the file created by
@@ -143,7 +146,7 @@ These equations are interpreted by the :code:`Generator` as:
 
 If the :code:`GeneratorProfile` was set to Python then the output file would contain:
 
-.. code-block::
+.. code-block:: python
 
   def initialize_states_and_constants(states, variables):
       states[0] = 2.0      # This represents the sharks: "states" are those variables which are being integrated or solved for
@@ -160,10 +163,7 @@ If the :code:`GeneratorProfile` was set to Python then the output file would con
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1]
 
 
+Solving the model
+-----------------
 
-
-
-
-
-
-dfs
+Now that we have a model, and we have ...
