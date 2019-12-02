@@ -135,7 +135,7 @@ the :code:`Component` as:
   - *variables* do not require integration, but come in three types:
 
     - :code:`CONSTANT` variables do not need any kind of calculation
-    - :code:`COMPUTED_CONSTANT` variables needs calculation but not integration, and
+    - :code:`COMPUTED_CONSTANT` variables need calculation but not integration, and
     - :code:`ALGEBRAIC` variables need ...?? **TODO**
 
   - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>`
@@ -143,7 +143,7 @@ the :code:`Component` as:
   - *states* are those variables which do need integration by a solver.
 
 We can see this results of this classification process in the generated code
-returned by a call to the :code:`implementationCode()` function of the :code:`Generator`.
+returned by a call to the :code:`implementationCode` function of the :code:`Generator`.
 
 .. code-block:: cpp
 
@@ -186,8 +186,8 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 Defining the initial values
 +++++++++++++++++++++++++++
 All :code:`Variables` items must either be initialised using the
-:code:`setInitialValue()` function, or specified within the MathML as a
-variable of integration (VOI) using the :code:`<bvar> ... </bvar>` tags.
+:code:`setInitialValue` function, or specified within the MathML as a
+variable of integration (VOI) using the :code:`<bvar></bvar>` tags.
 Errors will be returned by the :code:`Generator` where variables are either:
 
 - are not a VOI and are missing an initial value, or
@@ -269,7 +269,6 @@ is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
       # This equation is the equivalent of d(fishes)/dt = c*fishes + d*sharks*fishes
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1]
 
-
 Solving the model
 -----------------
 A simple numerical integration method like :euler_method:`Euler's method <>`
@@ -295,4 +294,11 @@ value of the appropriate gradient function, :math:`f(t_k, x_k,...)`.
 It is the evaluation of these *gradient functions* which defines the nature of
 the physical situation represented by the model.
 
-In the files
+Simple implementations are provided which will take the generated files,
+from both the C and Python generator profiles, and solve the system of
+equations.
+
+In Python this is available through the :cellsolver:`cellsolver package <>`.
+Follow the instructions for installation on that page.
+
+In C++ you can use this **TODO**
