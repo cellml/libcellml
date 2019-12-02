@@ -44,7 +44,6 @@ For each variable we need to know:
   examples here we will use a constant step-size for all variables and all
   steps.
 
-
 Modelling situation: Swimming with sharks
 +++++++++++++++++++++++++++++++++++++++++
 The remainder of this document will use the following modelling situation to
@@ -57,9 +56,9 @@ population.  In maths this relationship can be written:
 
 .. math::
 
-    \frac{d}{dt} \left(sharks\right)=f(sharks, fishes, time) = ay_{sharks}+by_{sharks}y_{fishes}
+    \frac{d}{dt} \left(y_(sharks)\right)=f(sharks, fishes, time) = ay_{sharks}+by_{sharks}y_{fishes}
 
-    \frac{d}{dt} \left(fishes\right)=f(sharks, fishes, time) = cy_{fishes}+dy_{sharks}y_{fishes}
+    \frac{d}{dt} \left(y_(fishes)\right)=f(sharks, fishes, time) = cy_{fishes}+dy_{sharks}y_{fishes}
 
 where the constants :math:`(a, b, c, d)=(1.2, -0.6, -0.8, 0.3)` and we'll use
 the initial condtions of :math:`y_{sharks}(t=0)=2.0` and
@@ -114,6 +113,21 @@ the others - were specified in the MathML block within the CellML as:
     </apply>
   </apply>
 
+For the sake of illustrating the different variable types, we'll also define
+the (erstwhile) constant :math:`d` using the simple equation :math:`d=a+b+c+0.5`:
+
+.. code-block:: xml
+
+    <apply><eq/>
+       <ci>d</ci>
+       <apply><plus/>
+           <ci>a</ci>
+           <ci>b</ci>
+           <ci>c</ci>
+           <cn cellml:units="dimensionless">0.5</cn>
+       </apply>
+    </apply>
+
 Classification of variables
 +++++++++++++++++++++++++++
 The :code:`Generator` then classifies all the :code:`Variable` items within
@@ -135,52 +149,55 @@ returned by a call to the :code:`implementationCode()` function of the :code:`Ge
 .. code-block:: cpp
 
   // Defining the VOI variable of integration, its units and the name of its parent component
-  const VariableInfo VOI_INFO = {"time", "dimensionless", "component"};
+  const VariableInfo VOI_INFO = {"time", "dimensionless", "shark_fish_interaction"};
 
   // Defining the states: the variables which require integration
   const VariableInfo STATE_INFO[] = {
-      {"sharks", "dimensionless", "component"},
-      {"fishes", "dimensionless", "component"}
+      {"y_f", "dimensionless", "shark_fish_interaction"},
+      {"y_s", "dimensionless", "shark_fish_interaction"}
   };
 
   // Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
-  const VariableInfoWithType VARIABLE_INFO[] = {
-      {"a", "dimensionless", "component", CONSTANT},
-      {"b", "dimensionless", "component", CONSTANT},
-      {"c", "dimensionless", "component", CONSTANT},
-      {"d", "dimensionless", "component", CONSTANT}
-  };
+const VariableInfoWithType VARIABLE_INFO[] = {
+    {"a", "dimensionless", "shark_fish_interaction", CONSTANT},
+    {"b", "dimensionless", "shark_fish_interaction", CONSTANT},
+    {"c", "dimensionless", "shark_fish_interaction", CONSTANT},
+    {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
+};
 
 .. code-block:: python
 
   # Defining the VOI variable of integration, its units and the name of its parent component
-  VOI_INFO = {"name": "time", "units": "dimensionless", "component": "component"}
+  VOI_INFO = {"name": "time", "units": "dimensionless", "component": "shark_fish_interaction"}
 
   # Defining the states: the variables which require integration
   STATE_INFO = [
-      {"name": "sharks", "units": "dimensionless", "component": "component"},
-      {"name": "fishes", "units": "dimensionless", "component": "component"}
+      {"name": "y_f", "units": "dimensionless", "component": "shark_fish_interaction"},
+      {"name": "y_s", "units": "dimensionless", "component": "shark_fish_interaction"}
   ]
 
   # Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
   VARIABLE_INFO = [
-      {"name": "a", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
-      {"name": "b", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
-      {"name": "c", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT},
-      {"name": "d", "units": "dimensionless", "component": "component", "type": VariableType.CONSTANT}
+      {"name": "a", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
+      {"name": "b", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
+      {"name": "c", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
+      {"name": "d", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.COMPUTED_CONSTANT}
   ]
 
 Defining the initial values
 +++++++++++++++++++++++++++
 All :code:`Variables` items must either be initialised using the
 :code:`setInitialValue()` function, or specified within the MathML as a
-variable of integration (VOI) using the :code:`<bvar> ... </bvar>` tags.  Note
-that VOI must not be initialised - setting an initial value for these will
-raise an error in the :code:`Generator`.
+variable of integration (VOI) using the :code:`<bvar> ... </bvar>` tags.
+Errors will be returned by the :code:`Generator` where variables are either:
 
-Note that the initial conditions for all non-VOI variables are specified in a
+- are not a VOI and are missing an initial value, or
+- are a VOI and have been initalised.
+
+The initial conditions for all non-VOI variables are specified in a
 function, as opposed to the dictonary syntax used for the information items
-above. This function can be called by the solver.
+above. This function can be called by the solver whenever the solution's
+initial conditions need to be reset.
 
 .. code-block:: cpp
 
@@ -193,7 +210,12 @@ above. This function can be called by the solver.
       variables[0] = 1.2;   // a, constant in the rates equation for sharks
       variables[1] = -0.6;  // b, constant in the rates equation for sharks
       variables[2] = -0.8;  // c, constant in the rates equation for fishes
-      variables[3] = 0.3;   // d, constant in the rates equation for fishes
+  }
+
+  void computeComputedConstants(double *variables)
+  {
+      // d, the calculated constant in the rates equation for fishes
+      variables[3] = variables[0]+variables[1]+variables[2]+0.5;
   }
 
 .. code-block:: python
@@ -205,7 +227,10 @@ above. This function can be called by the solver.
       variables[0] = 1.2   # a, constant in the rates equation for sharks
       variables[1] = -0.6  # b, constant in the rates equation for sharks
       variables[2] = -0.8  # c, constant in the rates equation for fishes
-      variables[3] = 0.3   # d, constant in the rates equation for fishes
+
+  def compute_computed_constants(variables):
+      # d, the calculated constant in the rates equation for fishes
+      variables[3] = variables[0]+variables[1]+variables[2]+0.5
 
 Specification of states and rates
 +++++++++++++++++++++++++++++++++
@@ -237,9 +262,11 @@ is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
 
   def compute_rates(voi, states, rates, variables):
       # The "rates" array contains the gradient functions for each of the variables
-      # which are being integrated (the "states")'
+      # which are being integrated (the "states")
+
       # This equation is the equivalent of d(sharks)/dt = a*sharks + b*sharks*fishes
       rates[0] = variables[0]*states[0]+variables[1]*states[0]*states[1]
+
       # This equation is the equivalent of d(fishes)/dt = c*fishes + d*sharks*fishes
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1]
 
