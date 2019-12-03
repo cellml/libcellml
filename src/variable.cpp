@@ -518,4 +518,19 @@ void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const Va
     }
 }
 
+VariablePtr Variable::clone() const
+{
+    auto v = create();
+
+    if (mPimpl->mUnits != nullptr) {
+        v->setUnits(mPimpl->mUnits->name());
+    }
+    v->setInitialValue(initialValue());
+    v->setInterfaceType(interfaceType());
+    v->setId(id());
+    v->setName(name());
+
+    return v;
+}
+
 } // namespace libcellml

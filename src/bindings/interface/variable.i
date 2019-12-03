@@ -95,6 +95,9 @@ not equivalent the connection id is not set.";
 %feature("docstring") libcellml::Variable::removeEquivalenceMappingId
 "Remove the mapping id for the equivalence defined with the given variables.";
 
+%feature("docstring") libcellml::Variable::clone
+"Create a copy of this variable.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {

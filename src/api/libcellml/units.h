@@ -388,17 +388,57 @@ public:
     size_t unitCount() const;
 
     /**
-     * @brief Return the scaling factor difference between two units.
-     * 
+     * @brief Return the scaling factor difference between two @c Units.
+     *
      * This can be interpreted as factor, where units2 = (factor)*units1.  This method
      * does not check to see if the units are compatible.
-     * 
+     *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
      *
      * @return The factor units1/units2.
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
+
+    /**
+     * @brief Test to determine whether two @c Units are equivalent or not.
+     *
+     * Two @c Units are considered to be equivalent if they share the same units,
+     * independently of their dimension (e.g. volt and volt are equivalent as are 
+     * volt and millivolt).
+     *
+     * @param1 units1 The first units to compare.
+     * @param2 units2 The second units to compare.
+     *
+     * @return @c true if the two @c Units are equivalent, @c false otherwise.
+     */
+    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+
+    /**
+     * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
+     *
+     * Two @c Units are considered to be dimensionally equivalent if they share the
+     * exact same units (e.g. volt and volt are dimensionally equivalent but 
+     * volt and millivolt are not).
+     *
+     * @param1 units1 The first units to compare.
+     * @param2 units2 The second units to compare.
+     *
+     * @return @c true if the two @c Units are dimensionally equivalent, @c false
+     * otherwise.
+     */
+    static bool dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+
+    /**
+     * @brief Create a clone of this units.
+     *
+     * Creates a full separate copy of this units without copying
+     * the parent. Thus the cloned (returned) version of this units
+     * will not have a parent set even if this units does.
+     *
+     * @return a new @c UnitsPtr to the cloned units.
+     */
+    UnitsPtr clone() const;
 
 private:
     Units(); /**< Constructor */
