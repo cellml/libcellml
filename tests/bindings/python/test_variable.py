@@ -141,37 +141,37 @@ class VariableTestCase(unittest.TestCase):
     def test_has_equivalent_variable(self):
         from libcellml import Variable
 
-        # bool hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable)
+        # bool hasEquivalentVariable(const VariablePtr &equivalentVariable)
         v1 = Variable()
         v2 = Variable()
         v3 = Variable()
 
-        self.assertFalse(v1.hasIndirectEquivalentVariable(v1))
-        self.assertFalse(v1.hasIndirectEquivalentVariable(v2))
-        self.assertFalse(v1.hasIndirectEquivalentVariable(v3))
+        self.assertFalse(v1.hasEquivalentVariable(v1, True))
+        self.assertFalse(v1.hasEquivalentVariable(v2, True))
+        self.assertFalse(v1.hasEquivalentVariable(v3, True))
 
-        self.assertFalse(v2.hasIndirectEquivalentVariable(v1))
-        self.assertFalse(v2.hasIndirectEquivalentVariable(v2))
-        self.assertFalse(v2.hasIndirectEquivalentVariable(v3))
+        self.assertFalse(v2.hasEquivalentVariable(v1, True))
+        self.assertFalse(v2.hasEquivalentVariable(v2, True))
+        self.assertFalse(v2.hasEquivalentVariable(v3, True))
 
-        self.assertFalse(v3.hasIndirectEquivalentVariable(v1))
-        self.assertFalse(v3.hasIndirectEquivalentVariable(v2))
-        self.assertFalse(v3.hasIndirectEquivalentVariable(v3))
+        self.assertFalse(v3.hasEquivalentVariable(v1, True))
+        self.assertFalse(v3.hasEquivalentVariable(v2, True))
+        self.assertFalse(v3.hasEquivalentVariable(v3, True))
 
         Variable.addEquivalence(v1, v2)
         Variable.addEquivalence(v2, v3)
 
-        self.assertFalse(v1.hasIndirectEquivalentVariable(v1))
-        self.assertTrue(v1.hasIndirectEquivalentVariable(v2))
-        self.assertTrue(v1.hasIndirectEquivalentVariable(v3))
+        self.assertFalse(v1.hasEquivalentVariable(v1, True))
+        self.assertTrue(v1.hasEquivalentVariable(v2, True))
+        self.assertTrue(v1.hasEquivalentVariable(v3, True))
 
-        self.assertTrue(v2.hasIndirectEquivalentVariable(v1))
-        self.assertFalse(v2.hasIndirectEquivalentVariable(v2))
-        self.assertTrue(v2.hasIndirectEquivalentVariable(v3))
+        self.assertTrue(v2.hasEquivalentVariable(v1, True))
+        self.assertFalse(v2.hasEquivalentVariable(v2, True))
+        self.assertTrue(v2.hasEquivalentVariable(v3, True))
 
-        self.assertTrue(v3.hasIndirectEquivalentVariable(v1))
-        self.assertTrue(v3.hasIndirectEquivalentVariable(v2))
-        self.assertFalse(v3.hasIndirectEquivalentVariable(v3))
+        self.assertTrue(v3.hasEquivalentVariable(v1, True))
+        self.assertTrue(v3.hasEquivalentVariable(v2, True))
+        self.assertFalse(v3.hasEquivalentVariable(v3, True))
 
     def test_set_units(self):
         from libcellml import Variable, Units

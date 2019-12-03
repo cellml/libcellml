@@ -20,11 +20,6 @@ objects are updated)";
 "Tests if the given variable is in this variable's set of equivalent
 variables.";
 
-%feature("docstring") libcellml::Variable::hasIndirectEquivalentVariable
-"Tests if the given variable is equivalent to this variable traversing
-through the equivalence network to determine if the variables are
-equivalent or not.";
-
 %feature("docstring") libcellml::Variable::removeEquivalence
 "Removes an equivalence between this variable and the given one (both objects
 are updated).

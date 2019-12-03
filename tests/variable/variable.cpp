@@ -511,32 +511,32 @@ TEST(Variable, hasIndirectEquivalentVariable)
     libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::VariablePtr v3 = libcellml::Variable::create();
 
-    EXPECT_FALSE(v1->hasIndirectEquivalentVariable(v1));
-    EXPECT_FALSE(v1->hasIndirectEquivalentVariable(v2));
-    EXPECT_FALSE(v1->hasIndirectEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v3, true));
 
-    EXPECT_FALSE(v2->hasIndirectEquivalentVariable(v1));
-    EXPECT_FALSE(v2->hasIndirectEquivalentVariable(v2));
-    EXPECT_FALSE(v2->hasIndirectEquivalentVariable(v3));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v3, true));
 
-    EXPECT_FALSE(v3->hasIndirectEquivalentVariable(v1));
-    EXPECT_FALSE(v3->hasIndirectEquivalentVariable(v2));
-    EXPECT_FALSE(v3->hasIndirectEquivalentVariable(v3));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v3, true));
 
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v2, v3);
 
-    EXPECT_FALSE(v1->hasIndirectEquivalentVariable(v1));
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v1, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 
-    EXPECT_TRUE(v2->hasIndirectEquivalentVariable(v1));
-    EXPECT_FALSE(v2->hasIndirectEquivalentVariable(v2));
-    EXPECT_TRUE(v2->hasIndirectEquivalentVariable(v3));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v2, true));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3, true));
 
-    EXPECT_TRUE(v3->hasIndirectEquivalentVariable(v1));
-    EXPECT_TRUE(v3->hasIndirectEquivalentVariable(v2));
-    EXPECT_FALSE(v3->hasIndirectEquivalentVariable(v3));
+    EXPECT_TRUE(v3->hasEquivalentVariable(v1, true));
+    EXPECT_TRUE(v3->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v3, true));
 }
 
 TEST(Variable, addVariableToUnnamedComponent)
@@ -1260,9 +1260,9 @@ TEST(Variable, removeIndirectEquivalence)
     libcellml::Variable::addEquivalence(v1, v3);
 
     // All variables connected ...
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
-    EXPECT_TRUE(v2->hasIndirectEquivalentVariable(v3));
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v3));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 
     // ... but not directly through v1-v2
     EXPECT_FALSE(v1->hasEquivalentVariable(v2));
@@ -1273,12 +1273,12 @@ TEST(Variable, removeIndirectEquivalence)
     EXPECT_FALSE(libcellml::Variable::removeEquivalence(v1, v2));
 
     // But cannot remove indirect equivalence
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
     EXPECT_FALSE(v1->hasEquivalentVariable(v2)); // It never was anyway, no change here
 
     // Nothing else should have changed here
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v3));
-    EXPECT_TRUE(v2->hasIndirectEquivalentVariable(v3));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3, true));
     EXPECT_TRUE(v1->hasEquivalentVariable(v3));
     EXPECT_TRUE(v2->hasEquivalentVariable(v3));
 }
