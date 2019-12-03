@@ -22,8 +22,6 @@ the concentration of this ion is
 driving an ion through the pore is calculated from the change in
 *entropy*.
 
-
-.. _distribution_microstates:
 .. figure:: images/distribution_microstates.png
     :name: distribution_microstates
     :alt: Distribution of microstates

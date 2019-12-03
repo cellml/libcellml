@@ -141,23 +141,21 @@ Simulation and results
 Note that several other features have been added:
 
 -  the event control *select case* which indicates that the voltage is
-   specified to jump from 0 mV to -85 mV at t = 5 ms then back to 0 mV at
-   t = 15 ms. This is only used here in order to test the K channel model;
+   specified to jump from 0mV to -85mV at t = 5ms then back to 0mV at
+   t = 15ms. This is only used here in order to test the K channel model;
    when the potassium_channel component is later imported into a neuron
    model, **the environment component is not imported**.
 
-
-
-We now use OpenCOR, with *Ending point* 40 and *Point interval* 0.1, to
-solve the equations for the potassium channel under a voltage step
+Running the simulation up to an ending point of t = 40ms with a timestep
+of 0.1 we can solve the equations for the potassium channel with a voltage step
 condition in which the membrane voltage is clamped initially at 0mV and
 then stepped down to -85mV for 10ms before being returned to 0mV. At
-0mV, the steady state value of the n gate is
+0mV, the steady state value of the :math:`n`-gate is
 :math:`n_{\infty} = \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} =` 0.324
 and, at -85mV, :math:`n_{\infty} = \ `\ 0.945.
 
-The voltage traces are shown at the top of :numref:`ocr_tut_kin_pot_ch`.
-The :math:`n`-gate
+The voltage traces are shown at the top of
+:numref:`kinetics_of_potassium_ch`. The :math:`n`-gate
 response, shown next, is to open further from its partially open value
 of :math:`n =`\ 0.324 at 0mV and then plateau at an almost fully open
 state of :math:`n =`\ 0.945 at the Nernst potential -85mV before closing
@@ -177,9 +175,8 @@ conductance declines but now there is a voltage gradient to drive an
 outward (positive) current flow through the partially open channel –
 albeit briefly since the channel is closing.
 
-.. _kinetics_of_potassium_ch:
 .. figure:: images/kinetics_of_potassium_ch.png
-   :name: ocr_tut_kin_pot_ch
+   :name: kinetics_of_potassium_ch
    :alt: Kinetics of the potassium channel
    :align: center
 
