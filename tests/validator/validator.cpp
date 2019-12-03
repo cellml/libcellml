@@ -2341,11 +2341,13 @@ TEST(Validator, validateUnitsOfCompenentsComplex)
 TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
 {
     const std::vector<std::string> expectedErrors = {
+        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.", 
         "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
 
@@ -2358,16 +2360,23 @@ TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
     u2->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
 
     model->setName("model");
-    c->setName("c1");
-    model->addComponent(c);
+    c1->setName("c1");
+    c2->setName("c2");
+    model->addComponent(c1);
+    model->addComponent(c2);
     model->addUnits(u1);
     model->addUnits(u2);
 
-    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
-    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
 
-    c->addVariable(v1);
-    c->addVariable(v2);
+    v1->setName("v1");
+    v1->setUnits(u1);
+    v2->setName("v2");
+    v2->setUnits(u2);
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
     libcellml::Variable::addEquivalence(v1, v2);
 
     v->validateModel(model);
