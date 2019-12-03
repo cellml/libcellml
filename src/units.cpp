@@ -439,7 +439,6 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                     }
                 }
             } else {
-                exp *= e;
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
@@ -447,7 +446,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                         unitsMap.clear();
                         break;
                     }
-                    updateUnitsMap(refUnits, unitsMap, exp);
+                    updateUnitsMap(refUnits, unitsMap, e * exp);
                 }
             }
         }

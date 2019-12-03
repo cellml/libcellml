@@ -1833,6 +1833,7 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1879,6 +1880,7 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
         "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
