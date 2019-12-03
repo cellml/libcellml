@@ -31,8 +31,8 @@ Tutorials for users
     tutorial1/outline1
     tutorial2/outline2
     tutorial3/outline3
-    tutorial4/outline4
-    tutorial5/outline5
+    tutorial5/outline4
+    tutorial6/outline5
     tutorial6/outline6
     tutorial7/outline7
     tutorial8/outline8

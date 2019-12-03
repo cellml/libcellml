@@ -45,42 +45,51 @@ TODO Need something here about when to use shared pointers and when to use
 concrete instances?
 
 Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting
-up a :code:`ModelPtr` model instance, and creating a component inside it.
+up a :code:`Model` instance, and creating a component inside it.
 
 .. container:: dothis
 
     **1.a**
-    Create a new ModelPtr using the
-    ``libcellml::SomethingPtr something = libcellml::Something::create();`` idiom.
+    Create a new :code:`Model` using the
+    ``libcellml::SomethingPtr something = libcellml::Something::create();``
+    idiom.
     Set the name and id attributes of the model you created, and print them to
     the terminal to check them.
 
 .. container:: dothis
 
     **1.b**
-    Create a new Component as above.  Name it and add it
+    Create a new :code:`Component` as above.  Name it and add it
     to the model you created in 1.a.
 
 Now for the real bit.  In order to actually model anything, we need to include
 the mathematical equations which represent the phyiscal situation of interest.
 As you saw in :ref:`Tutorial 2<tutorial2_cpp>`, the maths and the
 :code:`Variable` items which it references live inside a parent
-:code:`Component` item.  At this point it should be noted that the order in
+:code:`Component` item.  At this point it should be noted that the *order* in
 which you add your components, or models, or variables (or anything) is not
 important to the final product, but it *can* affect how quickly you're able to
 find and fix bugs along the way.  In these tutorials, we have suggested that
 you add the mathematics first and use a :code:`Validator` to notify you of the
 outstanding items, but you can really do this in any order you choose.
 
-The governing equation describes the motion of the sled as a
-function of time, as shown below:
+The system of equations which describe the populations are given by:
 
 .. math::
 
-    \frac{dx}{dt}=-ax+b
+    c = a - 2.0
 
-where :math:`x` is the sled's position, :math:`t` is time, and :math:`a` an
-:math:`b` are constants representing the time constant and initial conditions.
+    \frac{dy_s}{dt} =f(sharks, fishes, time) = a y_s + b y_s y_f
+
+    \frac{dy_f}{dt} =f(sharks, fishes, time) = c y_f + d y_s y_f
+
+
+where :math:`y_s` and :math:`y_f` are the number of sharks and fish
+respectively, and the constants :math:`(a, b, d)=(1.2, -0.6, 0.3)`
+govern their behaviour.  It's clear that the value of constant :math:`c` is
+easily calculable from the first equation, but we will leave it in this form
+to better illustrate the operation of the :code:`Generator` later on.
+
 In order to use this in our model we need to write it as a
 MathML2 string.  The basic structure for these is described in the
 :mathml2:`W3 resource pages regarding MathML2 <>`.
@@ -90,29 +99,37 @@ MathML2 string.  The basic structure for these is described in the
     **Note** that libCellML will **only** accept MathML2 markup, even though
     later versions (3 and 4) are now available.
 
-Looking at the right hand side first, the MathML2 representation of
-:math:`ax+b` is
+Looking at the top equation first, the MathML2 representation of
+:math:`c=a-2.0` is:
 
 .. code-block:: xml
 
-                <apply><plus/>
-                    <apply><times/>
-                        <ci>a</ci>
-                        <ci>x</ci>
-                    </apply>
-                    <ci>b</ci>
-                </apply>
+    <apply><eq/>
+       <ci>c</ci>
+       <apply><minus/>
+           <ci>a</ci>
+           <cn>2.0</cn>
+       </apply>
+    </apply>
 
-Three things can be seen here:
+Four things can be seen here:
 
 - the :code:`<apply>` opening and :code:`</apply>` closing tags which surround
   the *operations*,
-- the *operations* tags like :code:`<times/>` and :code:`<plus/>` which stand
-  alone rather than in an open/close pair,
+- the *operations* tags like :code:`<eq/>` and :code:`<minus/>` (or :code:`<plus/>`,
+  :code:`<times/>`, :code:`<divide/>`) which stand alone rather than in an
+  open/close pair,
 - the :code:`<ci>` opening and :code:`</ci>` closing tags which surround the
-  variable names.
+  variable names, and
+- the :code:`<cn>` opening and :code:`</cn>` closing tags which surround the
+  constant :math:`0.5` value.
 
-The left-hand side, :math:`\frac{dx}{dt}` becomes:
+.. container:: dothis
+
+
+
+
+The left-hand side, :math:`\frac{dy}{dt}` becomes:
 
 .. code-block:: xml
 
@@ -372,7 +389,7 @@ our :code:`millisecond` units, we could then use this definition to define the
     // Defining a per_millisecond unit based on millisecond^-1
     per_ms->addUnit(ms, -1.0);
 
-This will be useful later in :ref:`Tutorial 4<tutorial4_cpp>`.
+This will be useful later in :ref:`Tutorial 5<tutorial5_cpp>`.
 
 For completeness, the final type of unit is a custom irreducible unit.
 While this is not common (all of the seven physical attriubutes are already

@@ -146,7 +146,7 @@ retrieved from its parent item using the same idiom as the names and ids:
 - (also for later) an optional nested subset of :code:`Component` items too.
 
 In this tutorial we'll only look at the variables and maths, leaving the nested
-components for :ref:`Tutorial 5<tutorial5_py>`.
+components for :ref:`Tutorial 5<tutorial6_py>`.
 
 .. container:: dothis
 

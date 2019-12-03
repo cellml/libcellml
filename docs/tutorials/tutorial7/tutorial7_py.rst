@@ -185,7 +185,7 @@ You can use the :code:`print_model_to_terminal` utility function to check that
 this is indeed the structure that you have.
 
 Just as we did before, we need to connect the environment variables throughout
-the rest of the components.  Recall from :ref:`Tutorial 5<tutorial5_py>` that:
+the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_py>` that:
 
 - only immediate siblings, children, and parents can be connected
 - the kind of interface depends on the relationship between components.

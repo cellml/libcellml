@@ -1,35 +1,46 @@
 .. _tutorial5:
 
-============================================
-Tutorial 5: Working with multiple components
-============================================
+=========================================
+Tutorial 5: Modelling a gated ion channel
+=========================================
 
-Getting started:  If you're reading this it's presumed that you're already
-comfortable with the serlialisation, manipulation, and debugging functionality
-available in the libCellML library, as well as using the API to create, debug
-and validate your model.  This tutorial will build on work done in
-:ref:`Tutorial 4<tutorial4>`: if you are starting from here you can find
-the files which were created in that tutorial in the
+If you're reading this it's presumed that you're already
+comfortable with the serlialisation, mainipulation, and debugging functionality
+available in the libCellML library.  If not, please see the earlier tutorials
+which introduce these issues:
+
+- :ref:`Tutorial 1: Reading, writing, and 'rithmetic in a CellML file
+  <tutorial1>`
+- :ref:`Tutorial 2: Debugging, error checking, and validation<tutorial2>`
+- :ref:`Tutorial 3: Creating a model using the API<tutorial3>`
+
+From this point onwards the tutorials will build on work done in the previous
+ones.  If you need to jump in at some intermediate stage
+you will find all the files created by the earlier tutorials in the
 :code:`resources` folder.
 
-By the end of this tutorial you will be able to:
+Overview:
+---------
 
-- create a CellML2.0 model which includes encapsulations and more than one
-  :code:`Component`
-- connect :code:`Components` to one another by mapping equivalent
-  :code:`Variables`
+The basic steps for model creation and output are the same as those in
+:ref:`Tutorial 3<tutorial3>`, but here you'll begin to create a model which
+will later become the Hodgkin Huxley model. All the biological and mathematical
+modelling background needed for this model are explained separately,
+:ref:`Understanding the Hodgkin-Huxley model<hh_theory>`.  In general we will:
 
-Overview
---------
-In :ref:`Tutorial 4<tutorial4>` we created a component representing an ion
-channel.  The channel is controlled by a number of gates in series, whose
-open or closed state and the transition between them is controlled by voltage:
-hence, a "voltage-controlled ion gate".  In this tutorial we will explore how
-a channel such as that made in Tutorial 4 can include another level of
-control: the rate constants (:math:`\alpha_y` and :math:`\beta_y`) used earlier
-are now functions of voltage themselves.  **TODO check this is to be recommended?** We will also show how an
-*environment* component can be used to ensure that all components are modelled
-synchronously.
+#.  Create a simple model with one component.  This will represent a gated
+    ion channel, and we'll write it in such a way that we can reuse it later.
+#.  Add mathematics to the component.  This includes writing MathML code as a
+    string and adding it to the component.
+#.  Because the maths defined above will need variables, we'll need to add
+    these to the component as well.
+#.  Because the quantities modelled have units, we will define what these are,
+    and make sure that they are included in the model too.
+
+As always, the steps discussed here are mirrored by the comments in the code
+files attached.  You can choose to either create your own code from the
+structure given in the :code:`tutorial5` file, or to simply read the
+finished code given in the :code:`tutorial5_complete` file.
 
 C++ instructions
 ----------------
@@ -43,8 +54,7 @@ Resources:
     - :download:`../utilities/tutorial_utilities.h` and
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 4 you can download the file created there:
-      :download:`../resources/tutorial5_PotassiumChannelModel.cellml`
+
 
 Python instructions
 -------------------
@@ -56,5 +66,3 @@ Resources:
     - :download:`tutorial5_complete.py` the completed tutorial code
     - :download:`../utilities/tutorial_utilities.py`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 4 you can download the file created there:
-      :download:`../resources/tutorial5_PotassiumChannelModel.cellml`

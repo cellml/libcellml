@@ -11,7 +11,7 @@ By the time you have worked through Tutorial 3 you will be able to:
 - define custom combinations of built-in units
 - define your own custom units independent from the built-in units
 - use the :code:`Generator` functionality to transform the model into other
-  languages. TODO remove this??
+  languages.
 
 This tutorial assumes that you are comfortable with:
 
@@ -27,28 +27,18 @@ This tutorial assumes that you are comfortable with:
 Overview
 --------
 During this tutorial you will create a simple model representing the
-population dynamics of two species - one a predator (sharks), and the other
-their prey (fish).
-The population of fish can only grow when they
-are not being constantly eaten by sharks, and the rate at which is grows will
-depend on how many fish are available for breeding.  At the same time, the
-population of sharks will depend on how much food is available in the fish
-population.  In maths this relationship can be written:
+exponential decay of speed a toboggan coming to rest.  You will use
+both built-in and create your own user-defined units.
+
+The toboggan's speed is governed by the equation:
 
 .. math::
 
-    \frac{dy_s}{dt} =f(sharks, fishes, time) = a y_s + b y_s y_f
+    \frac {dx}{dt} = a-bx
 
-    \frac{dy_f}{dt} =f(sharks, fishes, time) = c y_f + d y_s y_f
+where :math:`x` is the distance from the starting point, :math:`t` is time,
+and :math:`a` and :math:`b` are constants.
 
-where the constants :math:`(a, b, c, d)=(1.2, -0.6, -0.8, 0.3)` and we'll use
-the initial condtions of :math:`y_s(t=0)=2.0` and
-:math:`y_f(t=0)=1.0`.
-
-In order to model these unusual populations you'll need to create your own
-custom units, to enter and check these governing equations in MathML syntax,
-and to use the :code:`Generator` functionality to create files able to be
-solved using a numerical integrator in C or Python.
 
 C++ instructions
 ----------------

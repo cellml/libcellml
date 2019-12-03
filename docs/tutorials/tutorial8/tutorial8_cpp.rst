@@ -40,7 +40,7 @@ We'll start by creating the utilities that we'll use later on.
 
 .. container:: dothis
 
-    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6_cpp>` for the potassium
+    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6_cpp>` TODO CHECK for the potassium
     channel, parse the :code:`Tutorial8_MembraneModel.cellml` file and save the
     deserialised model to a new model instance (*not* the one you've already
     created above - a new one). If you'd like, use the
@@ -85,7 +85,7 @@ by simply printing the combined model to the screen.
     **1.c** Print the MathML2 string from the :code:`membrane`
     component in your combined model and check it represents the equations
     below.  You can check back to the earlier
-    :ref:`Tutorial 4, step 2<tutorial4_cpp>` if need be.
+    :ref:`Tutorial 5, step 2<tutorial5_cpp>` if need be.
 
 .. math::
 
@@ -190,7 +190,7 @@ environment component in the sodiumChannelModel.
 
     **PUT ERRORS HERE WHEN VALIDATOR IS WORKING**
 
-Recall the idiom you used in :ref:`Tutorial 5<tutorial5_cpp>` to *create* the
+Recall the idiom you used in :ref:`Tutorial 5<tutorial6_cpp>` to *create* the
 connections between equivalent variables:
 
 .. code-block:: cpp
@@ -230,9 +230,9 @@ component and add it to the combined model.
 .. container:: dothis
 
     **3.a-b** Repeat the process above to import the potassium channel
-    component that was created in :ref:`Tutorial 5<tutorial5_cpp>` into the
+    component that was created in :ref:`Tutorial 5<tutorial6_cpp>` into the
     membrane component.  Note that if you did not complete that tutorial
-    you can simply copy the :code:`Tutorial5_PotassiumComponentModel.cellml`
+    you can simply copy the :code:`tutorial6_PotassiumComponentModel.cellml`
     file from the :code:`resources/tutorial8` folder.
 
 .. container:: dothis

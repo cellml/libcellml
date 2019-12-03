@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.2)
-set(PROJECT_NAME tutorial4)
+set(PROJECT_NAME tutorial6)
 
 project(${PROJECT_NAME} VERSION 0.1.0)
 set(libCellML_DIR "../../../../libcellml/install/lib/cmake/libCellML")

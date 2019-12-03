@@ -104,7 +104,7 @@ Interpretation into a CellML model
 Defining components serves two purposes: it preserves a modular
 structure for CellML models, and allows these component modules to be
 imported into other models, as demonstrated in
-:ref:`Tutorial 5<tutorial5>`. For the
+:ref:`Tutorial 5<tutorial6>`. For the
 potassium channel model we define components representing (i) the
 environment, (ii) the potassium channel conductivity, and (iii) the
 dynamics of the :math:`n`-gate as shown in **TODO**.
@@ -124,7 +124,7 @@ in one component is mapped through an interface to a corresponding variable in
 another.  More information about how components can be nested to
 create a hierarchical *encapsulation structure* is shown in more detail in
 the next chapter, :ref:`A model of a sodium channel<theory_sodiumchannel>` and
-demonstrated in :ref:`Tutorial 5<tutorial5>`.
+demonstrated in :ref:`Tutorial 5<tutorial6>`.
 
 .. figure:: images/potassium_component_structure.png
     :name: potassium_component_structure

@@ -14,6 +14,11 @@
  *    - serialising and printing a model to a CellML file (T1)
  */
 
+/**
+ *  TUTORIAL 3: MODEL CREATION AND GENERATION THROUGH THE API
+ *
+ */
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -29,7 +34,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     // ---------------------------------------------------------------------------
-    //  STEP 1: Create the model instance
+    //  STEP 1: Create the model, component and maths
     //
     //  1.a   Create the ModelPtr
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -43,7 +48,7 @@ int main()
     //  1.b   Create a component to use as an integrator, set its attributes and
     //        add it to the model
     libcellml::ComponentPtr component = libcellml::Component::create();
-    component->setName("distance_finder");
+    component->setName("predator_prey_component");
     model->addComponent(component);
 
     //  Check that it worked
@@ -56,181 +61,202 @@ int main()
                   << model->component(c)->id() << "'" << std::endl;
     }
 
-    //  1.c,d Create the MathML2 string representing the governing equation
-    std::string equation = "<apply><eq/>\
-                                <apply><diff/>\
-                                    <bvar>\
-                                        <ci>t</ci>\
-                                    </bvar>\
-                                    <ci>x</ci>\
-                                </apply>\
-                                <apply><plus/>\
-                                    <apply><times/>\
-                                        <ci>a</ci>\
-                                        <ci>x</ci>\
-                                    </apply>\
-                                    <ci>b</ci>\
-                                </apply>\
-                            </apply>";
+    //  1.c,d,e Create the MathML2 strings representing the governing equations
+    std::string equation1 =
+        "<apply><eq/>"
+        "   <ci>c</ci>"
+        "   <apply><minus/>"
+        "       <ci>a</ci>"
+        "       <cn>2.0</cn>"
+        "   </apply>"
+        "</apply>";
+    std::string equation2 =
+        "<apply><eq/>"
+        "   <apply><diff/>"
+        "   <bvar><ci>time</ci></bvar>"
+        "   <ci>y_s</ci>"
+        "   </apply>"
+        "   <apply><plus/>"
+        "       <apply><times/>"
+        "           <ci>a</ci>"
+        "           <ci>y_s</ci>"
+        "      </apply>"
+        "      <apply><times/>"
+        "          <ci>b</ci>"
+        "          <ci>y_s</ci>"
+        "          <ci>y_f</ci>"
+        "      </apply>"
+        "   </apply>"
+        "</apply>";
+    std::string equation3 =
+        "<apply><eq/>"
+        "   <apply><diff/>"
+        "   <bvar><ci>time</ci></bvar>"
+        "   <ci>y_f</ci>"
+        "   </apply>"
+        "   <apply><plus/>"
+        "       <apply><times/>"
+        "           <ci>c</ci>"
+        "           <ci>y_f</ci>"
+        "      </apply>"
+        "      <apply><times/>"
+        "          <ci>d</ci>"
+        "          <ci>y_s</ci>"
+        "          <ci>y_f</ci>"
+        "      </apply>"
+        "   </apply>"
+        "</apply>";
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
     std::string mathFooter = "</math>";
 
-    //  1.e   Include the MathML strings in the component
+    //  1.f Add the maths strings in to the component
     component->setMath(mathHeader);
-    component->appendMath(equation);
+    component->appendMath(equation1);
+    component->appendMath(equation2);
+    component->appendMath(equation3);
     component->appendMath(mathFooter);
 
-    //  1.f   Create a validator and use it to check the model so far.
+    //  1.g Call the validator and check for error so far.  We expect there to be 20 errors found, related to missing variables
+    //      in the component.
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    //  1.g   Create some variables and add them to the component
-    libcellml::VariablePtr time = libcellml::Variable::create();
-    libcellml::VariablePtr distance = libcellml::Variable::create();
+    // ---------------------------------------------------------------------------
+    //  STEP 2: Create the variables and add them to the component
 
-    time->setName("t");
-    distance->setName("x");
+    //  2.a Create the variables listed by the validator: d, a, b, c, time, y_s, y_f
 
+    libcellml::VariablePtr sharks = libcellml::Variable::create("y_s");
+    libcellml::VariablePtr fish = libcellml::Variable::create("y_f");
+    libcellml::VariablePtr time = libcellml::Variable::create("time");
+    libcellml::VariablePtr a = libcellml::Variable::create("a");
+    libcellml::VariablePtr b = libcellml::Variable::create("b");
+    libcellml::VariablePtr c = libcellml::Variable::create("c");
+    libcellml::VariablePtr d = libcellml::Variable::create("d");
+
+    //  2.b Add the variables into the component
+
+    component->addVariable(a);
+    component->addVariable(b);
+    component->addVariable(c);
+    component->addVariable(d);
+    component->addVariable(sharks);
+    component->addVariable(fish);
     component->addVariable(time);
-    component->addVariable(distance);
 
-    //  1.e   Assign units to the variables
-    time->setUnits("millisecond");
-    distance->setUnits("league");
-
-    //  Check that it all worked
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "         Printing the model at Step 1" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-    printModelToTerminal(model);
-
+    //  2.c Call the Validator again to check
     validator->validateModel(model);
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  Printing the validation errors after Step 1" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
     printErrorsToTerminal(validator);
 
     // ---------------------------------------------------------------------------
-    //  STEP 2: Create the user-defined units
-    //
-    //  From the validation errors printed above you'll see that none of the three
-    //  units we need are built-in. The good news is that we can create the ones
-    //  we need from the set of built-in units, we just need to define the
-    //  relationship.  NB: Even though units are used by Variables, which sit
-    //  'inside' Components, Units sit inside the Model itself.  This helps you to
-    //  reuse Units when you have more than one component (more on that in
-    //  Tutorial 5)
+    //  STEP 3: Create the Units and add them to the model
 
-    //  2.a   Define the relationship between our custom units and the built-in
-    //        units. There is a list of built-in units and their definitions
-    //        available in section 19.s of the CellML2 specification.
+    //  3.a Create the day and per_day units
+    libcellml::UnitsPtr day = libcellml::Units::create("day");
+    day->addUnit("second", 0, 1, 86400); // base unit, prefix, exponent, multiplier
+    model->addUnits(day);
 
-    libcellml::UnitsPtr millisecond = libcellml::Units::create();
-    millisecond->setName("millisecond");
-    millisecond->addUnit(
-        "second",
-        "milli");
-    // second is a built-in unit, used inside millisecond with the
-    // prefix "milli".  NB this is equivalent to specifying a prefix
-    // integer value of -3, corresponding to the power of 10 by
-    // which the base is multiplied.
+    libcellml::UnitsPtr per_day = libcellml::Units::create("per_day");
+    per_day->addUnit("day", -1); // base unit, exponent
+    model->addUnits(per_day);
 
-    libcellml::UnitsPtr league = libcellml::Units::create();
-    league->setName("league");
-    league->addUnit(
-        "metre", 3, 1.0,
-        5.556);
-    // metre is a built-in unit.  A league is equal to 5556m, but here
-    // we illustrate the overloaded function by passing a prefix of 3
-    // (indicating a factor of 10^3), an exponent of 1, and a
-    // multiplier of 5.556.
+    //  3.b Create the sharks and fishes base units
+    libcellml::UnitsPtr number_of_sharks = libcellml::Units::create("number_of_sharks");
+    libcellml::UnitsPtr thousands_of_fish = libcellml::Units::create("thousands_of_fish");
+    model->addUnits(number_of_sharks);
+    model->addUnits(thousands_of_fish);
 
-    //  2.b   Add the units to the model
-    model->addUnits(millisecond);
-    model->addUnits(league);
+    //  3.c Combined units for the constants
+    libcellml::UnitsPtr b_units = libcellml::Units::create("per_shark_day");
+    b_units->addUnit("per_day");
+    b_units->addUnit("number_of_sharks", -1);
+    model->addUnits(b_units);
 
-    //  2.c   Validate the model again
+    libcellml::UnitsPtr d_units = libcellml::Units::create("per_1000fish_day");
+    d_units->addUnit("per_day");
+    d_units->addUnit("thousands_of_fish", -1);
+    model->addUnits(d_units);
+
+    //  3.d Add the units to their variables
+    time->setUnits(day);
+    a->setUnits(per_day);
+    b->setUnits(b_units);
+    c->setUnits(per_day);
+    d->setUnits(d_units);
+    sharks->setUnits(number_of_sharks);
+    fish->setUnits(thousands_of_fish);
+
+    //  3.e Call the validator to check the model.  We expect one error regarding the missing units in the MathML.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    //  2.d  Change the constant "b" to have a hard-coded value of 5.0 in the MathML
-    std::string equation2 = "<apply><eq/>\
-                                <apply><diff/>\
-                                    <bvar>\
-                                        <ci>t</ci>\
-                                    </bvar>\
-                                    <ci>x</ci>\
-                                </apply>\
-                                <apply><plus/>\
-                                    <cn cellml:units=\"league\">5.0</cn>\
-                                    <apply><times/>\
-                                        <ci>a</ci>\
-                                        <ci>x</ci>\
-                                    </apply>\
-                                </apply>\
-                            </apply>";
+    //  3.f Units for constants inside the MathML must be specified at the time.  This means we need to adjust
+    //      equation1 to include the per_day units.  We have to wipe all the existing MathML and replace it.
+    component->removeMath();
     component->setMath(mathHeader);
+    equation1 =
+        "<apply><eq/>"
+        "   <ci>c</ci>"
+        "   <apply><minus/>"
+        "       <ci>a</ci>"
+        "       <cn cellml:units=\"per_day\">2.0</cn>"
+        "   </apply>"
+        "</apply>";
+
+    component->appendMath(equation1);
     component->appendMath(equation2);
+    component->appendMath(equation3);
     component->appendMath(mathFooter);
 
-    //  2.e Create and define the constant "a" to have a value of -0.2
-    libcellml::VariablePtr a = libcellml::Variable::create();
-    a->setName("a");
-    a->setUnits("dimensionless");
-    a->setInitialValue(-0.2);
-    component->addVariable(a);
-
+    //  3.g Expect there to be no errors.
     validator->validateModel(model);
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  Printing the validation errors after Step 2  " << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
     printErrorsToTerminal(validator);
+    assert(validator->errorCount()==0);
 
     // ---------------------------------------------------------------------------
-    //  STEP 3: Output the model for solving
-    //
+    //  STEP 4: Code generation
 
-    //  3.a Create a Generator instance and use it to process the model.  Output
-    //      any errors to the terminal using the utility function printErrorsToTerminal
-    //      called with your generator as argument.
+    //  4.a Create a generator instance and pass it the model for processing.  The
+    //      default profile is to generate C code, but we can change this later.
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
-    // generator->processModel(model);
-    // printErrorsToTerminal(generator);
+    generator->processModel(model);
 
-    //  3.b Set the initial conditions of the distance variable such that x(t=0)=5 and
-    //      check that there are no more errors reported.
-    distance->setInitialValue(5.0);
+    //  4.b Check for errors found in the generator
+    printErrorsToTerminal(generator);
+
+    //  4.c Add initial conditions to all variables except the base variable, time
+    //      and the constant c which will be computed. Reprocess the model.
+    a->setInitialValue(1.2);
+    b->setInitialValue(-0.6);
+    d->setInitialValue(0.3);
+    sharks->setInitialValue(2.0);
+    fish->setInitialValue(1.0);
+
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
-    //  3.c Check that the generator has the settings which we expect:
-    //      - the number of variables
-    //      - the language of output
-    //      - the variable of integration
-    //      - the type of model
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "     Investigating the Generator settings" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    std::cout << "Number of variables = " << generator->variableCount() << std::endl;
-    std::cout << "Variable of integration = " << generator->voi()->name() << std::endl;
-    std::cout << "Number of states = " << generator->stateCount() << std::endl;
-    std::cout << "Model type = " << getModelTypeFromEnum(generator->modelType()) << std::endl;
-    // TODO std::cout << "Langauge = " << getProfileFromEnum(generator->profile()) << std::endl;
-
-    //  3.d Create the interface code (*.h file contents) and implementation code (*.c file
-    //      contents) and print them to files.
-
-    std::ofstream outFile("tutorial3_generated.h");
+    //  4.d Because we've used the default profile (C) we need to output both the
+    //      interfaceCode (the header file) and the implementationCode (source file)
+    //      from the generator and write them.
+    std::ofstream outFile("tutorial3_PredatorPrey_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
 
-    outFile.open("tutorial3_generated.c");
+    outFile.open("tutorial3_PredatorPrey_generated.c");
     outFile << generator->implementationCode();
     outFile.close();
 
-    std::cout << "The generated code has been output into tutorial3_generated.c and
-                 tutorial3_generated.h." << std::endl;
+    //  4.e Change the generator profile to Python
+    libcellml::GeneratorProfilePtr profile =
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+
+    //  4.f Retrieve the Python implementation code and write to a file
+    outFile.open("tutorial3_PredatorPrey_generated.py");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    //  4.g Go and have a cuppa, you're done!
 }

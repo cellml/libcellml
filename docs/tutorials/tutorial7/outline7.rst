@@ -4,7 +4,7 @@
 Tutorial 7: Creating the sodium channel
 =======================================
 
-This tutorial is a companion to :ref:`Tutorial 5<tutorial5>` which walked you
+This tutorial is a companion to :ref:`Tutorial 5<tutorial6>` which walked you
 through the
 creation of a gated potassium channel model.  It follows the same basic recipe
 steps as previously, but provides only a little guidance in terms of *how*

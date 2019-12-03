@@ -1,387 +1,346 @@
-.. _tutorial5_cpp:
+..  _tutorial5_cpp:
 
-================================================
-Tutorial 5 C++: Working with multiple components
-================================================
+-----------------------------------------
+Tutorial 5: Modelling a gated ion channel
+-----------------------------------------
 
-The outline for this tutorial is shown on the :ref:`Tutorial 5<tutorial5>`
-page. These are the C++ instructions.  For the same tutorial in Python
-please see the :ref:`Tutorial 5 in Python<tutorial5_py>` page instead.
+If you're reading this it's presumed that you're already
+comfortable with the serlialisation, mainipulation, and debugging functionality
+available in the libCellML library.  If not, please see the earlier tutorials
+which introduce these issues:
 
-Resources:
+- :ref:`Tutorial 1: Reading, writing, and 'rithmetic in a CellML file
+  <tutorial1_cpp>`
+- :ref:`Tutorial 2: Debugging, error checking, and validation<tutorial2_cpp>`
+- :ref:`Tutorial 3: Creating a model using the API<tutorial3_cpp>`
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial
-    - :download:`tutorial5.cpp` Either the skeleton code, or ..
-    - :download:`tutorial5_complete.cpp` the completed tutorial code
-    - :download:`../utilities/tutorial_utilities.h` and
-      :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
-      use in the tutorials.
-    - If you did not complete Tutorial 4 you can download the file created there:
-      :download:`../resources/tutorial5_PotassiumChannelModel.cellml`
+From this point onwards the tutorials will build on work done in the previous
+ones.  If you need to jump in at some intermediate stage
+you will find all the files created by the earlier tutorials in the
+:code:`resources` folder.
 
--------------------
-1: Create the model
--------------------
-By now you should be familiar and comfortable with using the API to create
-the model instance, and normally that's how you'd start ... but not this time.
-If you completed Tutorial 4 you will have created a model representing a
-gated ion channel, serialised the model and written it to a file.  A good
-idea for programming, modelling, and work in general is the DRY principle:
-**Don't Repeat Yourself**.  With this in mind we want to be able to reuse the
-work that's already done, and in particular, that useful ion channel that was
-created in Tutorial 4.  There are four possible options:
+Overview:
+---------
 
-- Option 0: Write it all again.  We're not going to do that. It's too WET
-  (Write Every Time).
-- Option 1: Copy the code you wrote in Tutorial 4 to create the component, and
-  simply add it here.  This is not a great solution, because it's not as DRY as
-  it could be, but it beats writing it all from scratch again.
-- Option 2: Use the skills you learned in Tutorial 2 around parsing and
-  deserialising a CellML model to read the model from the file which you
-  created during Tutorial 4.  This option is DRY-er than Option 1, but will
-  involve a tweak or two because the :code:`Parser` will only load the whole
-  model, not just the bits we care about.
-- Option 3: Instead of parsing and loading the entirety of the model from
-  Tutorial 4, just tell libCellML to reference what it needs to.
+The basic steps for model creation and output are the same as those in
+:ref:`Tutorial 3<tutorial3_cpp>`, but here you'll begin to create a model based on
+the Hodgkin Huxley model. All the biological and mathematical modelling
+background needed for this model are explained in a separate document,
+:ref:`Understanding the Hodgkin-Huxley model<hh_background>`.
 
-Option 3 seems to be the DRYest, and indeed this is how we will do it later on
-when the :code:`ImportSource` functionality is introduced.  For now though,
-we'll just go with Option 2 since there's only one component inside the
-Tutorial 4 model anyway.
+#.  Create a simple model with one component.  This will represent a gated
+    ion channel, and we'll write it in such a way that we can reuse it later.
+#.  Add mathematics to the component.  This includes writing MathML code as a
+    string and adding it to the component.
+#.  Because the maths defined above will need variables, we'll need to add
+    these to the component as well.
+#.  Because the quantities modelled have units, we will define what these are,
+    and make sure that they are included in the model too.
 
-.. container:: dothis
+As always, the steps discussed here are mirrored by the comments in the code
+files attached.  You can choose to either create your own code from the
+structure given in the :code:`tutorial5.cpp` file, or to simply read the
+finished code given in the :code:`tutorial5_complete.cpp` file.
 
-    **1.a** Create a :code:`Parser` instance and use it to deserialise the
-    model from the file created in Tutorial 4 into a new model instance.
-    This process was described in `Tutorial 2<tutorial2_cpp>`. You
-    may like to copy that file into the working directory for this project for
-    ease of access.  If you didn't do Tutorial 4 you can copy this file from
-    the resource folder instead.
-
-.. container:: dothis
-
-    **1.b** Use the :code:`printModelToTerminal` function to check that you
-    have what you expect.
-
-.. container:: dothis
-
-    **1.c** Create a :code:`Validator` instance and check that your model is
-    valid so far.
-
-Now that we've loaded the model and checked that it's working, we want to
-rename parts of it so that they make more sense going forward.  Use the
-manipulation functionality you learnt in Tutorial 3 to retrieve the following
-items from the model and rename them.  Recall that you can access the items
-contained inside a model by index as well as by name.
-
-.. container:: dothis
-
-    **1.d** Retrieve the component from the model and rename it to
-    "PotassiumChannel".
-
+1: Create the model and component items
 ---------------------------------------
-2: Include more components in the model
----------------------------------------
-This tutorial is intended to illustrate the use of more than one component,
-and how they're connected to each other.  Let's get started with creating two
-more components: one to represent the environment variables which will be
-shared throughout the whole model, and one to represent details of a
-gate.
+Following the same procedures as in previous tutorials, our first step is to
+create new model and component instances.  We haven't encountered it yet, but
+the real power of modelling comes from our ability to use and reuse different
+items, combining them into more and more complicated situations.  In this case,
+we're going to create a component which represents a generic gated ion channel;
+it will be reused later on to represent channels for sodium and potassium in
+neuron models, or calcium in a cardiac model.  There's an introduction to the
+biological and mathematical theory behind this particular model in
+:ref:`Understanding the Hodgkin-Huxley model<hh_background>`.
 
 .. container:: dothis
 
-    **2.a** Create a new component named "environment"
+    **1.a**
+    Create a model instance, and name it appropriately.
 
 .. container:: dothis
 
-    **2.b** Create two new variables with the units below, and add to the
-    component.
-
-- V (millivolt)
-- t (millisecond)
+    **1.b**
+    Create a component, name it, and add the component to the model.
 
 .. container:: dothis
 
-    **2.c** Add both new components to the model.
+    **1.c**
+    Create a validator and use it to verify that your model has no errors.
 
-.. container:: dothis
-
-    **2.d** Check that the model is valid so far using your validator instance.
-
+2: Define the mathematical behaviour
 ------------------------------------
-3: Create a component for the n-gate
-------------------------------------
-The last component that we need to create is an update from our Tutorial 4
-model such that the rate constants :math:`alpha` and :math:`beta` become
-functions of voltage.  We have another choice.  We could either:
-
-- remove all the mathematics from our existing PotassiumChannel component
-  and adjust the equations which are already there to suit, or
-- create another component to handle the voltage dependence, and pass its
-  computed values to our existing component.
-
-In a continuation of the DRY principle, we're going to go with the latter.
-
-.. container:: dothis
-
-    **3.a** Create a new component named "nGate", and add five
-    new variables:
-
-- :math:`V` (millivolt)
-- :math:`t` (millisecond)
-- :math:`n` (dimensionless)
-- :math:`\alpha_n` (per millisecond)
-- :math:`\beta_n` (per millisecond)
-
-You may notice that during this process you've created more than one
-:code:`VariablePtr` instance with the symbol :code:`V` or :code:`t`.  The
-CellML2 specification says that you need to have variable names which are
-unique within the scope of the component in which they're contained.  In C++
-you can mimic this using curly brackets, :code:`{...}`, around your
-:code:`VariablePtr` definitions.
-
-Next we need to define this new dependency of the :math:`\alpha` and
-:math:`\beta` rate constants on the voltage.  The mathematics for this is:
+The next step is to define what the component actually *does*.  In this case,
+its purpose is to represent a collection of gates in series in order to model
+the channel behaviour.  Let's start with the simple ODE below:
 
 .. math::
+    \frac{dm}{dt} = \alpha_m (1-m) - \beta_m m
 
-    \alpha_n = \frac{0.01*(V+10)}{exp(\frac{V+10}{10})-1}
+where :math:`m` is the fraction which is open (so :math:`(1-m)` must
+be the fraction which is closed), :math:`\alpha_m` is the opening
+rate, :math:`\beta_m` is the closing rate, and :math:`t` is time.
 
-    \beta_n = 0.125*exp(\frac{V}{80})
+Now to add this equation into the component we created in Step 1.
+Once the maths is created, the process of adding it is very simple, and follows
+the same pattern as adding anything to anything else: there is a `setMath`
+command which which does the job nicely.  The more difficult part is creating
+the maths itself.  This was covered in :ref:`Tutorial 3<tutorial3_cpp>` and there
+are other resources on the :mathml2:`W3 resource pages for MathML2 <>` too.
 
-    \frac {dn} {dt} = \alpha_n*(1-n) - \beta_n*n
+Consider the equation above, converted here into MathML2 format:
 
-.. container:: dothis
-
-    **3.b** Create the appropriate MathML to represent the equations above, and
-    add to the nGate component.  As in the previous tutorial, you
-    can copy this from the file provided in the
-    :code:`resources/tutorial5_mathml.txt` file if you prefer.
-
-.. container:: dothis
-
-    **3.c** Add the nGate component into the model, and validate it.
-
-During step 3.c your validation should have alerted you to a set of missing
-units in the component.  These are not attached to a variable, but to a
-constant inside the MathML, but still need to be present in the parent model.
-
-.. container:: dothis
-
-    **3.d** Create the missing units and add to the model.  Confirm that the
-    model is now valid.
-
-----------------------------------------
-4: Connect the components to one another
-----------------------------------------
-In order for components to be able to relate to one another, we have to define
-two things.  Firstly, the hierarchy in which they exist - this is called the
-*encapsulation* and determines which components are able to access others. Each
-component is only visible to its direct parents, direct children, and siblings
-(those which share a direct parent).  Secondly, we need to define the way in
-which the varaibles within the component relate to those outside it.  This is
-done by creating *equivalent variables*.
-
-.. container:: dothis
-
-    **4.a** Create an encapsulation hierarchy for our three components.  In
-    this tutorial, we need an arrangement such that:
-
-    - the "environment" component stands alone as a child of the model.  We don't
-      need to change anything there.
-    - the "nGate" should exist entirely inside the
-      "PotassiumChannel" gate.  This hierarchy is created by adding the
-      "nGate" component into the "PotassiumChannel" component,
-      *instead* of adding it to the model.  Because an item can only have one
-      parent, we can remove the gate component from the model (we added it in step
-      3.c) simply by adding it to the channel component now.  It will have its
-      parent updated, and the model's children will be updated too.
-
-
-.. code-block:: cpp
-
-    potassiumChannel->addComponent(nGate);
-
-.. container:: dothis
-
-    **4.b** Print the model to the screen to check your component hierarchy.
-    It should contain the section below where a *child component* is listed.
-
-.. container:: terminal
-
-    | ...
-    |    Component[0] has 1 child components:
-    |        Component[0] has name: 'nGate'
-    |        Component[0] has 5 variables:
-    |        Variable[0] has name: 'V'
-    |        Variable[0] has units: 'millivolt'
-    |        Variable[1] has name: 't'
-    |        Variable[1] has units: 'millisecond'
-    |        Variable[2] has name: 'alpha_n'
-    |        Variable[2] has units: 'per_millisecond'
-    |        Variable[3] has name: 'beta_n'
-    |        Variable[3] has units: 'per_millisecond'
-    |        Variable[4] has name: 'n'
-    |        Variable[4] has units: 'dimensionless'
-    | ...
-    |
-
-After defining how the components are arranged, we need to define which
-variables can access each other, and how.  This is done by making variables
-in different components *equivalent* to one another:
-
-.. code-block:: cpp
-
-    // Making the firstVariable and secondVariable equivalent to each other
-    libcellml::Variable::addEquivalence(firstVariable, secondVariable);
-
-In our model we have defined an "environment" component which we'll use to
-control all of the independent variables (time, voltage) during the simulation
-process.
-
-.. container:: dothis
-
-    **4.c** Use the addEquivalence functionality to match the time and voltage
-    variables in the "environment" component with those in the other two.  Note
-    that if you have used the curly brackets {} to denote a limited scope for your
-    variable definitions earlier, you will need to retrieve the variables from
-    their components using their names, as they don't exist in the general scope of
-    the code:
-
-.. code-block:: cpp
-
-    // Retrieving the pointers to the variables via their names and adding an equivalence
-    libcellml::Variable::addEquivalence(environment->variable("t"), potassiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(environment->variable("t"), nGate->variable("t"));
-
-.. container:: dothis
-
-    **4.d** Validate your model and print the errors to the terminal using the
-    :code:`printErrorsToTerminal` function.  You should see an error
-    similar to the one below.
-
-.. container:: terminal
-
-    **TODO** ?? put error here when the validation is working ??
-
-There are some restrictions on which variables can be matched like this.
-Variables can only be made equivalent if they are in neighbouring components;
-that is, a direct parent, direct child, or sibling component (one with the same
-parent).   We can add these two variables into the "PotassiumChannel" component
-as they are *sibling* components (their parent is the model)::
-
-    libcellml::Variable::addEquivalence(time_in_environment, time_in_channel);
-
-... but we *cannot* make an equivalence between the :code:`t` variable in the
-:code:`environment` component and the :code:`t` variable in the :code:`nGate`
-component, because that relationship is too distant.  Instead, we need to use
-the :code:`potassiumChannel` component as a go-between: it is a sibling of the
-:code:`environment` as well as a direct parent of the :code:`nGate`.
-
-.. container:: dothis
-
-    **4.e** Alter the equivalence arrangement you created in step 4.d so that
-    the neighbouring component rule is followed.  You will need to do this for
-    the variables representing time :math:`t` and voltage :math:`V` between all
-    three components, and the gating variable :math:`n` between the :code:`nGate`
-    and :code:`potassiumChannel` components.  Validate your model again.  You
-    should see a validation message similar to that shown below.
-
-.. container:: terminal
-
-    **TODO Put error messages here when they're working**
-
-The errors above are caused by the need to specify explicitly the kind of
-equivalence relationship which is allowed for each variable.  The default
-is :code:`none`, which prevents any equivalent connections, hence the error
-above.
-
-Here's how to think about equivalent variable interface types.  Imagine a
-family of components such that the mother has two children.  The interface
-types between the variables in these components needs to be specified as
-follows:
-
-- Between the siblings, the :code:`public` interface type.  Siblings know
-  everything about each other.
-- Between the children and their mother, the :code:`public` interface for
-  the children, but the :code:`private` interface for the mother.  Parents
-  can know everything about their children, but children do not know everything
-  about their parents.
-- A third option is included to enable more than one kind of relationship
-  to a variable, the :code:`public_and_private` type.  This is used where
-  successive generations mean that a variable needs to be :code:`private` in
-  one relationship and :code:`public` in another.  An uncle (the mother's
-  brother) and the mother have a sibling-type (ie: :code:`public`) interface,
-  but the mother must keep a :code:`private` interface for her children too.
-
-.. container:: dothis
-
-    **4.f**  Use the :code:`setInterfaceType` function for each of the shared
-    variables to specify their avaiable interfaces.  Re-validate your model and
-    confirm that it is now free of errors.
-
-------------------------------
-5: Define the driving function
-------------------------------
-In order to give the simulation something to actually simulate, we need to add
-a driving function as an input.  This simulation replicates a voltage clamp
-experiment wherein the input voltage is given a square wave and the current
-response measured, so we need to define the voltage in the
-:code:`environment` component as a function of time.  (At this stage we'll use
-the MathML markup as in previous tutorials, but in a future tutorial we'll
-introduce the idea of Resets items as an alternative approach.)  The MathML
-below shows how piecewise functions can be used to return the absolute value of
-a given :math:`x` variable. The :code:`<otherwise>` statement is there as a
-default, and can apply to more than one section of the axis.
+Left hand side: :math:`\frac{dm}{dt}`
 
 .. code-block:: xml
 
-    <piecewise>
-        <piece>
-            <apply><minus/><ci>x</ci></apply>
-            <apply><lt/><ci>x</ci><cn>0</cn></apply>
-        </piece>
-        <piece>
-            <cn>0</cn>
-            <apply><eq/><ci>x</ci><cn>0</cn></apply>
-        </piece>
-        <otherwise>
-            <ci>x</ci>
-        </otherwise>
-    </piecewise>
+            <apply>
+                <diff/>
+                <bvar>
+                    <ci>time</ci>
+                </bvar>
+                <ci>m</ci>
+            </apply>
 
-.. container:: dothis
+Right hand side: :math:`\alpha_m (1-m) ...`
 
-    **5.a** Create a MathML string representing a step change such that the
-    voltage variable is set to -85 millivolts between times of 5 and 15
-    milliseconds, and 0 otherwise.  Remember that you will need to specify both
-    the units as well as their namespace in each constant
-    :code:`<cn cellml:units="yourUnitsHere">`, and to specify the CellML
-    namespace itself in the maths header:
+.. code-block:: xml
+
+            <apply>
+                <minus/>
+                <apply>
+                    <times/>
+                    <ci>alpha_m</ci>
+                    <apply>
+                        <minus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <ci>m</ci>
+                    </apply>
+                </apply>
+
+:math:`... - \beta_m m`  **NB** The negative comes from the first :code:`minus`
+operation in the block above, indicating that the block below subtracted
+from the one above.
+
+.. code-block:: xml
+
+                <apply>
+                    <times/>
+                    <ci>beta_m</ci>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+
+All of this needs to be wrapped inside the :code:`<math>` tags, which will
+include a namespace definition, as well as the initial :code:`<apply>` and
+:code:`<eq/>` tags to assign the left and right-hand sides of the equation:
 
 .. code-block:: xml
 
     <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+            cellml="http://www.cellml.org/cellml/2.0#">
+        <apply>
+            <eq/>
+                ...
+        </apply>
+    </math>
+
+
+.. container:: nb
+
+    **libCellML will only take MathML2 format**, and **not** the more recent
+    MathML3 or MathML4 formats, which are targetted at presentation rather
+    than content alone.
+
+To proceed with this tutorial you can either write your own MathML string
+simply copy it from the :code:`resources/tutorial5/mathml.txt` file.
 
 .. container:: dothis
 
-    **5.b** Use the :code:`setMath` function to add your MathML string from
-    5.a to the :code:`environment` component.
+    **2.a** Create the MathML string(s) representing the following equations:
+
+.. math::
+    \frac{dn}{dt} = \alpha_n (1-n) - \beta_n n
+
+    i_K = g_K . n^{\gamma} . (V-E_K)
+
+... where :math:`\alpha_K` and :math:`\beta_K` are the rate constants for the
+opening and closing of the gate, :math:`g_K` is the open channel conductance,
+:math:`n` is the fraction of open gates, and :math:`\gamma` is the number of
+gates which exist in series in the channel, :math:`V` is the transmembrane
+voltage, and :math:`i_K` is the current flow through the channel.
+
+Three functions are available for accessing and editing the math block, these
+are:
+
+- :code:`setMath(input)` replaces the existing Math string with the `input`
+  string
+- :code:`appendMath(input)` adds the `input` string to the existing Math string
+- :code:`math()` returns the stored Math string
+
+.. container:: nb
+
+    **Note** that there is only one MathML block stored per component. Even if
+    there is more than one equation, they're all stored as one single
+    concatenated string.
 
 .. container:: dothis
 
-    **5.c** Call the validator to check that your model is free of errors.
-
---------------------------------
-6: Serialise and print the model
---------------------------------
+    **2.b** Use the manipulation functions listed above to add your string(s)
+    to the component you created in 1.a.
 
 .. container:: dothis
 
-    **6.a** As in :ref:`Tutorial 1<tutorial1_cpp>`, use the :code:`Printer` module
-    to serialise the model, and then write it to a file.
+    **2.c** Submit your model to the validator.  Expected errors at this stage
+    will be similar to those below, relating to not yet defined variables and
+    units:
+
+.. container:: terminal
+
+    | Description: MathML ci element has the child text 'alpha_n' which does not
+    |    correspond with any variable names present in component
+    |    'HodgkinHuxleySingleIonChannel' and is not a variable defined within a bvar
+    |    element.
+    | Description: Math has a cn element with a cellml:units attribute
+    |    'per_millivolt_millisecond' that is not a valid reference to units in
+    |    component 'HodgkinHuxleySingleIonChannel' or a standard unit.
+    |
+
+3. Define the variables and their units
+---------------------------------------
+Now that the mathematical behaviour is defined, the variables that have been
+used also need to be defined.  Each variable needs a name which is equal to the
+term inside the :code:`<ci>` tags in the MathML, as well as units defined in
+the model.
 
 .. container:: dothis
 
-    **6.b** Go and have a cuppa, you're done!
+    **3.a** Use the validator output or the MathML you've written to determine
+    the variables which you'll need to declare.  These must be created, named, and
+    added to the component.  Need help? See :ref:`Tutorial 2<tutorial2_cpp>`.
+
+.. container:: nb
+
+    **Note** Remember that the names you give the variables in this step must be
+    the same as the names used between the :code:`<ci>` tags inside your MathML
+    string.
+
+As well as a name and a parent component, each variable needs :code:`Units`.
+These are specified using the :code:`setUnits` function for a variable, just
+as you did in :ref:`Tutorial 3<tutorial3_cpp>`.  The units you'll need here are:
+
+- time, :math:`t`, has units of :code:`millisecond`
+- voltage, :math:`V`, has units of :code:`millivolt`
+- opening rate, :math:`\alpha_m` has units :code:`per_millisecond`
+- closing rate, :math:`\beta_m` has units :code:`per_millisecond`
+
+.. container:: dothis
+
+    **3.b** For each of the variables created in 3.a, use the
+    :code:`setUnits(name)` function to add the units you'll need.
+
+Even though the final variable in our equations has no units, CellML2 requires
+every variable to have some defined.  For the proportion of open gates
+:math:`m` use the units name :code:`dimensionless`.
+
+.. container:: dothis
+
+    **3.c** Submit your model to the validator.  Expected errors at this stage
+    will be similar to those below.
+
+.. container:: terminal
+
+    | - Description: Variable 'time' has an invalid units reference 'millisecond'
+    |   that does not correspond with a standard unit or units in the variable's
+    |   parent component or model. See section 11.1.1.2 in the CellML specification.
+    | - Description: Math has a cn element with a cellml:units attribute 'millivolt'
+    |   that is not a valid reference to units in component
+    |   'HodgkinHuxleySingleIonChannel' or a standard unit.
+    |
+
+
+4. Define the units and add to the model
+----------------------------------------
+
+The variables created above referenced unit names of :code:`millisecond`,
+:code:`millivolt`, :code:`per_millisecond`, and :code:`dimensionless`.  The
+:code:`dimensionless` units are already present, so we don't need to take any
+other action, but the other three need to be created and added.  This was
+covered in :ref:`Tutorial 3<tutorial3_cpp>` in case you need a reminder.
+
+.. container:: dothis
+
+    **4.a** Create the three units you need for this component, name, and define
+    them.
+
+.. container:: dothis
+
+    **4.b** Check the units related to constants (that is, the :code:`<cn>`
+    blocks) in the maths.  These units also need to be defined in the same way
+    and added to the model.
+
+.. container:: dothis
+
+    **4.c** Add all the new units into the model. Adding units to the model
+    allows other components (when you have them!) to use them as well.
+
+.. container:: dothis
+
+    **4.d** Validate the final model configuration.  There should be no errors
+    at this stage.  If you do encounter any, you can compare the code you've
+    created to that provided in the
+    :code:`resources/tutorial5/tutorial5_complete.cpp` file.
+
+Step 5: Serialise and write to a file
+-------------------------------------
+
+The final steps are to output our created model to a CellML2.0 file (which
+will be used in subsequent tutorials, so be sure to name it something
+meaningful!) as well as generating the C or Python files which we can use to
+investigate this component's operation in isolation.  We will do the code
+generation step first to take advantage of the additional error checks present
+inside the :code:`Generator`.
+
+.. container:: dothis
+
+    **5.a** Create a Generator item, set the profile (that is, the output
+    language) to your choice of C (the default) or Python (see below), and
+    then submit the model for processing.
+
+    .. code-block:: cpp
+
+    // Change the generated language from the default C to Python if need be
+    libcellml::GeneratorProfilePtr profile =
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+
+.. container:: dothis
+
+    **5.b** Check that the Generator has not encountered any errors.
+
+.. container:: dothis
+
+    **5.c** Retrieve the output code from the :code:`Generator`, remembering
+    that for output in C you will need both the :code:`interfaceCode` (the
+    header file contents) as well as the :code:`implementationCode` (the source
+    file contents), whereas for Python you need only output the
+    :code:`implementationCode`.  Write the file(s).
+
+
+The second step is the
+same as what was covered at the end of :ref:`Tutorial 2<tutorial2_cpp>` to use
+the :code:`Printer`; you can refer back to the code and/or instructions there
+if you need to.
+
+.. container:: dothis
+
+    **5.d** Create a Printer item and submit your model for serialisation.
+
+.. container:: dothis
+
+    **5.e** Write the serialised string output from the printer to a file.
+
+.. container:: dothis
+
+    **5.f** Go and have a cuppa, you're done!
