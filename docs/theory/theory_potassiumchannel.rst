@@ -130,6 +130,7 @@ demonstrated in :ref:`Tutorial 5<tutorial5>`.
     :name: potassium_component_structure
     :alt: Structure of the potassium channel component with its n-gate and environment component
     :align: center
+    :figwidth: 12cm
 
     Structure of the potassium channel component with its :math:`n`-gate and environment component
 
