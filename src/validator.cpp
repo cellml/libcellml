@@ -1263,7 +1263,6 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
 {
     std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
     std::vector<std::pair<VariablePtr, VariablePtr>> errorPairs;
-    //std::pair<size_t, size_t> verifyPair = std::make_pair(size_t(0), size_t(0)); // init
 
     // Check components.
     if (model->componentCount() > 0) {
@@ -1295,109 +1294,11 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
                                 err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);
                                 mValidator->addError(err);
                             }
-
-                        } else if (std::find(checkedPairs.begin(), checkedPairs.end(), firstCheckPairing) != checkedPairs.end()) {
-                            // Log all the pairings first, then outside of the loop we then log all the errors associated with each pairing
-                            errorPairs.push_back(firstCheckPairing);
-                        }
-
-                        /*auto equivalentVariable = variable->equivalentVariable(k);
-
-                        auto checkPairing = std::make_pair(variable, equivalentVariable);  // mapping to check
-
-                        //if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) == checkedPairs.end()) {
-                        // Swap the order for storage in the pair.
-                        checkPairing = std::make_pair(equivalentVariable, variable);
-
-                        if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) != checkedPairs.end()) {
-                            auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                            auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                            ErrorPtr err = Error::create();
-                            err->setDescription("Error: Equivalence mapping used more than once on '" + variable->name() + "' and '" + equivalentVariable->name() + "'.");
-                            err->setModel(model);
-                            err->setKind(Error::Kind::CONNECTION);
-                            err->setRule(SpecificationRule::MAP_VARIABLES_UNIQUE);
-                            mValidator->addError(err);
                         } 
-
-                        checkedPairs.push_back(checkPairing);
-
-                            //verifyPair = std::make_pair(j, k); // checking if the pair is already present in the mapping (i.e if we've mapped it twice)
-                            
-                            /*
-                            for (size_t m = 0; m < variable->equivalentVariableCount(); ++m) {
-                                auto checkEquivalentVariable = variable->equivalentVariable(m);
-                                auto checkcheckPairing = std::make_pair(checkEquivalentVariable, variable); // mapping to check
-
-                                if (std::find(checkedPairs.begin(), checkedPairs.end(), checkcheckPairing) != checkedPairs.end()) {
-                                    if (k != m) {
-                                        auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                                        auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                                        ErrorPtr err = Error::create();
-                                        err->setDescription("Error: Equivalence mapping used twice on '" + variable->name() + "' and '" + equivalentVariable->name() + "'.");
-                                        err->setModel(model);
-                                        err->setKind(Error::Kind::CONNECTION);
-                                        err->setRule(SpecificationRule::MAP_VARIABLES_UNIQUE);
-                                        mValidator->addError(err);
-                                    }
-                                }
-                            }
-                            */
-                        /*
-                        // Check equivalence
-                        bool equivalent = variable->units()->equivalent(variable->units(), equivalentVariable->units());
-
-                        if (!equivalent) {
-                            auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                            auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                            ErrorPtr err = Error::create();
-                            err->setDescription("Error: Variables '" + variable->name() + "' and '" + equivalentVariable->name() + "' do not have the same unit reduction.");
-                            err->setModel(model);
-                            err->setKind(Error::Kind::UNITS);
-                            err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);
-                            mValidator->addError(err);
-                        }
-
-                        // Search through entire vector of pairs and check for double ups
-                        if (k == variable->equivalentVariableCount() - 1) {
-                            checkedPairs.clear();
-                        }
-
-                        /*} /*else {
-                            if ((j == verifyPair.first) && (k != verifyPair.second)) {
-                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                                ErrorPtr err = Error::create();
-                                err->setDescription("Error: Equivalence mapping used twice on '" + variable->name() + "' and '" + equivalentVariable->name() + "'.");
-                                err->setModel(model);
-                                err->setKind(Error::Kind::CONNECTION);
-                                err->setRule(SpecificationRule::MAP_VARIABLES_UNIQUE);
-                                mValidator->addError(err);
-                            }*/
                     }
                 }
             }
         }
-    }
-
-    // Erasing all doubled up errorPairs- we don't want double error messages!
-    for (auto error : errorPairs) {
-        auto pairing = std::find(errorPairs.begin(), errorPairs.end(), std::make_pair(error.second, error.first)); // removing naturally symmetric pairings
-        if (pairing != errorPairs.end()) {
-            errorPairs.erase(pairing);
-        }
-    }
-
-    // Then another for loop to state all the error messages
-    for (auto error : errorPairs) {
-        auto unitsName = error.first->units() == nullptr ? "" : error.first->units()->name();
-        auto equivalentUnitsName = error.second->units() == nullptr ? "" : error.second->units()->name();
-        ErrorPtr err = Error::create();
-        err->setDescription("Error: Equivalence mapping used more than once on '" + error.first->name() + "' and '" + error.second->name() + "'.");
-        err->setModel(model);
-        err->setKind(Error::Kind::CONNECTION);
-        err->setRule(SpecificationRule::MAP_VARIABLES_UNIQUE);
-        mValidator->addError(err);
     }
 }
 
