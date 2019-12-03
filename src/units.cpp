@@ -468,8 +468,10 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
             if (found == unitsMap.end()) {
                 unitsMap.emplace(std::make_pair("dimensionless", 0.0));
                 it = unitsMap.erase(it);
+                --it;
             } else {
                 it = unitsMap.erase(it);
+                --it;
             }
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
