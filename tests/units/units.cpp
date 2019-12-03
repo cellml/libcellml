@@ -1474,5 +1474,64 @@ TEST(Units, compareEquivalentSameSizeButDifferentExponent)
 
 TEST(Units, compareEquivalentUnitsWhichAreDimensionless)
 {
+    libcellml::ModelPtr model = libcellml::Model::create();
 
+    // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians, etc.
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("testunit5");
+    u1->addUnit("metre", -2.0);
+    u1->addUnit("metre", 2.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("testunit6");
+    u2->addUnit("dimensionless");
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("testunit7");
+    u3->addUnit("steradian");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+    EXPECT_TRUE(libcellml::Units::equivalent(u2, u3));
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u3));
+}
+
+TEST(Units, compareEquivalentUnitsWhichAreNested)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    // millimetres
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", "milli"); // standard, prefix.
+
+    // mm^3
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("u1", 3.0); // standard, exponent.
+
+    // mm^6
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("u3");
+    u3->addUnit("u2", 2.0); // standard, exponent.
+
+    // m^6
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    u4->setName("u4");
+    u4->addUnit("u3", 15, 1.0); // standard, prefix, exponent.
+
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    u5->setName("u5");
+    u5->addUnit("metre", 6.0); // standard, exponent.
+
+    model->setName("model");
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u4, u5));
+    EXPECT_TRUE(libcellml::Units::equivalent(u5, u4));
 }
