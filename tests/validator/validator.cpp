@@ -2384,7 +2384,7 @@ TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-TEST(Validator, validateNonEquivalentUnitsofComponentsComplex)
+TEST(Validator, validateNonEquivalentUnitsOfComponentsComplex)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^2, candela^2, second^-1.", 
@@ -2458,7 +2458,7 @@ TEST(Validator, validateNonEquivalentUnitsofComponentsComplex)
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
-
+/*
 TEST(Validator, validateModelWithDuplicateMappingElement)
 {
     const std::vector<std::string> expectedErrors = {
@@ -2484,14 +2484,21 @@ TEST(Validator, validateModelWithDuplicateMappingElement)
     u1->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
 
     u2 = u1->clone();
+    u2->setName("u2");
 
-    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
-    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits(u1);
+    v2->setName("v2");
+    v2->setUnits(u2);
 
     model->addUnits(u1);
     model->addUnits(u2);
     c1->addVariable(v1);
     c2->addVariable(v2);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v2);
 
     v->validateModel(model);
 
@@ -2593,3 +2600,4 @@ TEST(Validator, duplicateMappingOnSameElement)
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
+*/
