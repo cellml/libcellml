@@ -61,9 +61,9 @@ int main()
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
     std::string mathFooter = "</math>";
 
-    //  1.f Assemble the entire MathML into the component
+    //  1.g Assemble the entire MathML into the component
 
-    //  1.g Call the validator and check for error so far.  We expect there to be 20 errors found,
+    //  1.h Call the validator and check for error so far.  We expect there to be 20 errors found,
     //      related to missing variables in the component.
 
     // ---------------------------------------------------------------------------
@@ -80,21 +80,21 @@ int main()
     // ---------------------------------------------------------------------------
     //  STEP 3: Create the Units and add them to the model
 
-    //  3.a Create the day and per_day units
+    //  3.a,b Create the day and per_day units
 
-    //  3.b Create the sharks and fishes base units, "number_of_sharks" and "thousands_of_fish"
+    //  3.c Create the sharks and fishes base units, "number_of_sharks" and "thousands_of_fish"
 
-    //  3.c Create the combined units for the constants
+    //  3.d Create the combined units for the constants
 
-    //  3.d Add the units to their variables
+    //  3.e Add the units to their variables
 
-    //  3.e Call the validator to check the model.  We expect one error regarding the missing units in the MathML.
+    //  3.f Call the validator to check the model.  We expect one error regarding the missing units in the MathML.
 
-    //  3.f Units for constants inside the MathML must be specified inside MathML the time.  This means
+    //  3.g Units for constants inside the MathML must be specified inside MathML the time.  This means
     //      we need to adjust equation1 to include the per_day units.  Remove all the maths from the component,
     //      and replace with the correct version of equation1.
 
-    //  3.g Call the validator to check.  Expect no errors.
+    //  3.h Call the validator to check.  Expect no errors.
 
     // ---------------------------------------------------------------------------
     //  STEP 4: Code generation
@@ -105,15 +105,17 @@ int main()
     //  4.b Check for errors found in the generator.  Expect errors related to missing initial conditions.
 
     //  4.c Add initial conditions to all variables except the base variable, time
-    //      and the constant c which will be computed. Reprocess the model.
+    //      and the constant c which will be computed.
 
-    //  4.d Because we've used the default profile (C) we need to output both the
+    //  4.d Reprocess the model.
+
+    //  4.e Because we've used the default profile (C) we need to output both the
     //      interfaceCode (the header file) and the implementationCode (source file)
     //      from the generator and write them.
 
-    //  4.e Change the generator profile to Python
+    //  4.f Change the generator profile to Python
 
-    //  4.f Retrieve the Python implementation code and write to a file
+    //  4.g Retrieve the Python implementation code and write to a file
 
-    //  4.g Go and have a cuppa, you're done!
+    //  4.h Go and have a cuppa, you're done!
 }
