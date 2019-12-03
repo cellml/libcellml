@@ -31,7 +31,7 @@ if __name__ == "__main__":
     model.setName("tutorial3_model")
 
     #   1.b   Create a component to use as an integrator, set its attributes and
-    #        add it to the model
+    #         add it to the model
     component = Component()
     component.setName("component")
     model.addComponent(component)

@@ -14,40 +14,45 @@
       - serialising and printing a model to a CellML file (T1)
 """
 
+from libcellml import Component, Generator, GeneratorProfile, Model, Units, Validator, Variable
+
+from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal
+
 if __name__ == "__main__":
     print("-----------------------------------------------------")
     print("     TUTORIAL 3: CREATE A MODEL USING THE API        ")
     print("-----------------------------------------------------")
 
     # ---------------------------------------------------------------------------
-    #   STEP 1: Create the model
+    #   STEP 1: Create the model instance
     #
-    #   1.a   Create a model instance
+    #   1.a   Create a Model
 
-    #   1.b   Create a component to use as an integrator, set its attributes and
-    #         add it to the model
+    #   1.b   Create a component, set its name and add it to the model
 
-    #   Check that it worked by printing to the terminal
-
-    #   1.c,d Create the MathML2 string representing the governing equation.  The
+    #   1.c,d,e Create the MathML2 string representing the governing equations.  The
     #        header and footer are below already.
     math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
     math_footer = '</math>'
 
-    #   1.e   Include the MathML strings in the component
+    #   1.f   Include the MathML strings in the component
 
-    #   1.f   Create a validator and use it to check the model so far
-
-    #   1.g   Create some variables and add them to the component
-
-    #   1.e   Assign units to the variables
-
-    # Check it worked by printing the model, the maths, and the validation errors to the terminal
+    #  1.g   Create a validator and use it to check the model so far
 
     # ---------------------------------------------------------------------------
-    #  STEP 2: Create the user-defined units
+    #   STEP 2: Create the variables
     #
-    #  From the validation errors printed above you'll see that none of the three
+
+    #  2.a  Create the variables listed by the validator: d, a, b, c, time, y_s, y_f
+
+    #  2.b  Add the variables into the component
+
+    #  2.c  Call the validator again to check the model
+
+    # ---------------------------------------------------------------------------
+    #  STEP 3: Create the user-defined units
+    #
+    #  From the validation errors printed above you'll see that none of the
     #  units we need are built-in. The good news is that we can create the ones
     #  we need from the set of built-in units, we just need to define the
     #  relationship.  NB: Even though units are used by Variables, which sit
@@ -55,39 +60,46 @@ if __name__ == "__main__":
     #  reuse Units when you have more than one component (more on that in
     #  Tutorial 5)
 
-    #  2.a  Define the relationship between our custom units and the built-in
+    #  3.a  Define the relationship between our custom units and the built-in
     #       units. There is a list of built-in units and their definitions
     #       available in section 19.2 of the CellML2 specification.
+    #       First we create the "day" and "per_day" units
 
-    #  2.b  Add the units to the model
 
-    #  2.c  Validate the model again and output the errors
+    #  3.b  Create the sharks and fishes base units.
 
-    #  2.d  Change the constant "b" to have a hard-coded value of 2.0 in the MathML
-    #       and amend the component's math block.
+    #  3.c  Create the combined units for the constants.  Note that each item included
+    #       with the addUnit command is multiplied to create the final Units definition
 
-    #  2.e  Create and define the constant "a" to have a value of 1.  Check that there
-    #       are no more validation errors.
+    #  3.d  Set the units to their respective variables
+
+    #  3.e  Call the validator again to check the model.
+    #       Expect one error regarding a missing unit in the MathML.
+
+    #  3.f  Units for constants inside the MathML must be specified at the time.
+    #       This means we need to adjust equation1 to include the per_day units.
+    #       We have to wipe all the existing MathML and replace it.
+
+    #  3.g  Validate once more, and expect there to be no errors this time.
 
     # ---------------------------------------------------------------------------
-    #  STEP 3: Output the model for solving
+    #  STEP 4: Code generation
     #
 
-    #  3.a  Create a Generator instance and use it to process the model.  Output
-    #       any errors to the terminal using the utility function print_errors_to_terminal
-    #       called with your generator as argument.
+    #  4.a Create a generator instance and pass it the model for processing.  The
+    #      default profile is to generate C code, but we can change this later.
 
-    #  3.b  Set the initial conditions of the distance variable such that x(t=0)=5 and
-    #       check that there are no more errors reported.
+    #  4.b Check for errors found in the generator
 
-    #  3.c  Check that the generator has the settings which we expect:
-    #       - the number of variables
-    #       - the language of output
-    #       - the variable of integration
-    #       - the type of model
+    #  4.c Add initial conditions to all variables except the base variable, time
+    #      and the constant c which will be computed. Reprocess the model.
 
-    #  3.d  Create the implementation code and print to a Python file
+    #  4.d Because we've used the default profile (C) we need to output both the
+    #      interfaceCode (the header file) and the implementationCode (source file)
+    #      from the generator and write them.
 
-    #  3.e  Go have a cuppa, you're done!
+    #  4.e Change the Generator profile to be Python instead of the default C
 
-    # TODO Need to add instructions for how to solve the generated code ...
+    #  4.f Create the implementation code and print to a Python file
+
+    #  4.g Go have a cuppa, you're done!
