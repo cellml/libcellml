@@ -2293,10 +2293,12 @@ TEST(Validator, validateUnitsOfCompenentsComplex)
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u1->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
     u2 = u1->clone();
+    u2->setName("u2");
 
     u3->setName("u3");
     u3->addUnit(libcellml::Units::StandardUnit::FARAD, 0, 1.0, 1.0);
     u4 = u3->clone();
+    u4->setName("u4");
 
     model->setName("model");
     c1->setName("c1");
@@ -2309,14 +2311,23 @@ TEST(Validator, validateUnitsOfCompenentsComplex)
     model->addUnits(u3);
     model->addUnits(u4);
 
-    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
-    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u2");
-    libcellml::VariablePtr v3 = createVariableWithUnits("v3", "u3");
-    libcellml::VariablePtr v4 = createVariableWithUnits("v4", "u4");
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+
+    v1->setName("v1");
+    v1->setUnits(u1);
+    v2->setName("v2");
+    v2->setUnits(u2);
+    v3->setName("v3");
+    v3->setUnits(u3);
+    v4->setName("v4");
+    v4->setUnits(u4);
 
     c1->addVariable(v1);
-    c1->addVariable(v2);
-    c2->addVariable(v3);
+    c1->addVariable(v3);
+    c2->addVariable(v2);
     c2->addVariable(v4);
 
     libcellml::Variable::addEquivalence(v1, v2);
