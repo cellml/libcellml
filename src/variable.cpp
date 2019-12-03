@@ -281,7 +281,8 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
 void Variable::VariableImpl::cleanExpiredVariables()
 {
     mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                                              [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
+                                              [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }),
+                               mEquivalentVariables.end());
 }
 
 bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
@@ -313,8 +314,8 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
  * @return True if the two given variables are equivalent, false otherwise.
  */
 bool haveEquivalentVariables(const Variable *variable1,
-                                                     const Variable *variable2,
-                                                     std::vector<const Variable *> &testedVariables)
+                             const Variable *variable2,
+                             std::vector<const Variable *> &testedVariables)
 {
     if (variable1 == variable2) {
         return true;
@@ -511,7 +512,7 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
 std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1,true)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         std::string id_1 = variable1->mPimpl->equivalentConnectionId(variable2);
         std::string id_2 = variable2->mPimpl->equivalentConnectionId(variable1);
         if (id_1 == id_2) {
