@@ -280,9 +280,7 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool
 
 void Variable::VariableImpl::cleanExpiredVariables()
 {
-    mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                                              [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }),
-                               mEquivalentVariables.end());
+    mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(), [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
 }
 
 bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
