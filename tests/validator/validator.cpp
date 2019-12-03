@@ -2341,7 +2341,7 @@ TEST(Validator, validateUnitsOfCompenentsComplex)
 TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.", 
+        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.",
         "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
@@ -2387,8 +2387,8 @@ TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
 TEST(Validator, validateNonEquivalentUnitsOfComponentsComplex)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^2, candela^2, second^-1.", 
-        "Variable 'v2' has units of 'u2' and an equivalent variable 'v3' with non-matching units of 'u3'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.", 
+        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^2, candela^2, second^-1.",
+        "Variable 'v2' has units of 'u2' and an equivalent variable 'v3' with non-matching units of 'u3'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.",
         "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
         "Error: Variables 'v2' and 'v3' do not have the same unit reduction.",
     };
