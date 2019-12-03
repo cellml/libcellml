@@ -1294,7 +1294,7 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
                                 err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);
                                 mValidator->addError(err);
                             }
-                        } 
+                        }
                     }
                 }
             }

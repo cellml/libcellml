@@ -428,18 +428,18 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             double expMult;
             double e;
             units->unitAttributes(i, ref, pre, e, expMult, id);
-            exp *= e;
             if (isStandardUnitName(ref)) {
                 auto unit = standardUnitsList.find(ref);
                 for (const auto &u : unit->second) {
                     if (unitsMap.find(u.first) == unitsMap.end()) {
-                        unitsMap.emplace(u.first, u.second * exp);
+                        unitsMap.emplace(u.first, u.second * e * exp);
                     } else {
                         auto ut = unitsMap.find(u.first);
-                        ut->second += u.second * exp;
+                        ut->second += u.second * e * exp;
                     }
                 }
             } else {
+                exp *= e;
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
@@ -459,8 +459,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
     UnitsMap unitsMap;
     updateUnitsMap(units, unitsMap);
 
-    
-    // dimensionality checks for dimensionless constants, removing as can throw unit errors
+    // dimensionality checks for exponents equal to zero in the map
     auto it = unitsMap.begin();
 
     while (it != unitsMap.end()) {
@@ -484,7 +483,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
         }
         ++it;
     }
-    
+
     return unitsMap;
 }
 
