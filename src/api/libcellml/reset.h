@@ -225,6 +225,16 @@ public:
      */
     std::string resetValueId() const;
 
+    /**
+     * @brief Create a clone of this reset.
+     *
+     * Creates a full separate copy of this reset without copying
+     * the parent.
+     *
+     * @return a new @c ResetPtr to the cloned reset.
+     */
+    ResetPtr clone() const;
+
 private:
     Reset(); /**< Constructor */
     explicit Reset(int order); /**< Constructor with int parameter */

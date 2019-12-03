@@ -36,7 +36,10 @@ namespace libcellml {
  */
 struct Debug
 {
-    Debug() = default; /**< Constructor */
+    explicit Debug(bool newLine = true)
+        : mNewLine(newLine)
+    {
+    }
 
     /**
      * @brief Destructor writes stream to standard output when deleted.
@@ -45,7 +48,10 @@ struct Debug
      */
     ~Debug()
     {
-        std::cout << mSS.str() << std::endl;
+        std::cout << mSS.str();
+        if (mNewLine) {
+            std::cout << std::endl;
+        }
     }
 
     /**
@@ -82,6 +88,7 @@ struct Debug
 
 private:
     std::ostringstream mSS;
+    bool mNewLine;
 };
 
 } // namespace libcellml
