@@ -1901,6 +1901,7 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1924,6 +1925,7 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
