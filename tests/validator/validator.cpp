@@ -1949,7 +1949,9 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
-    const std::vector<std::string> expectedErrors = {};
+    const std::vector<std::string> expectedErrors = {
+        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
