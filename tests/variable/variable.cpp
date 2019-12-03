@@ -1283,6 +1283,18 @@ TEST(Variable, removeIndirectEquivalence)
     EXPECT_TRUE(v2->hasEquivalentVariable(v3));
 }
 
+TEST(Variable, leaveExpiredVariable)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::Variable::addEquivalence(v1, v2);
+    v2.reset();
+    libcellml::Variable::addEquivalence(v1, v3);
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3));
+}
+
 TEST(Variable, addEquivalenceFirstParameterNullptr)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
