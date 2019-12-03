@@ -28,7 +28,7 @@ if __name__ == "__main__":
     #
     #   1.a   Allocate the ModelPtr
     model = Model()
-    model.setName("Tutorial3_model")
+    model.setName("tutorial3_model")
 
     #   1.b   Create a component to use as an integrator, set its attributes and
     #        add it to the model
@@ -39,66 +39,100 @@ if __name__ == "__main__":
     #   Checking that it worked
     print_model_to_terminal(model)
 
-    #   1.c,d Create the MathML2 string representing the governing equation.  The
+    #   1.c,d,e Create the MathML2 string representing the governing equation.  The
     #        header and footer are below already.
     math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
     math_footer = '</math>'
 
-    equation = "<apply><eq/>\
-                    <apply><diff/>\
-                        <bvar>\
-                            <ci>t</ci>\
-                        </bvar>\
-                        <ci>x</ci>\
-                    </apply>\
-                    <apply><plus/>\
-                        <apply><times/>\
-                            <ci>a</ci>\
-                            <ci>x</ci>\
-                        </apply>\
-                        <ci>b</ci>\
-                    </apply>\
-                </apply>"
+    equation1 = \
+        "<apply><eq/>"\
+        "   <ci>c</ci>"\
+        "   <apply><minus/>"\
+        "       <ci>a</ci>"\
+        "       <cn>2.0</cn>"\
+        "   </apply>"\
+        "</apply>"
 
-    #   1.e   Include the MathML strings in the component
+    equation2 = \
+        "<apply><eq/>"\
+        "   <apply><diff/>"\
+        "   <bvar><ci>time</ci></bvar>"\
+        "   <ci>y_s</ci>"\
+        "   </apply>"\
+        "   <apply><plus/>"\
+        "       <apply><times/>"\
+        "           <ci>a</ci>"\
+        "           <ci>y_s</ci>"\
+        "      </apply>"\
+        "      <apply><times/>"\
+        "          <ci>b</ci>"\
+        "          <ci>y_s</ci>"\
+        "          <ci>y_f</ci>"\
+        "      </apply>"\
+        "   </apply>"\
+        "</apply>"
+
+    equation3 =\
+        "<apply><eq/>"\
+        "   <apply><diff/>"\
+        "   <bvar><ci>time</ci></bvar>"\
+        "   <ci>y_f</ci>"\
+        "   </apply>"\
+        "   <apply><plus/>"\
+        "       <apply><times/>"\
+        "           <ci>c</ci>"\
+        "           <ci>y_f</ci>"\
+        "      </apply>"\
+        "      <apply><times/>"\
+        "          <ci>d</ci>"\
+        "          <ci>y_s</ci>"\
+        "          <ci>y_f</ci>"\
+        "      </apply>"\
+        "   </apply>"\
+        "</apply>"
+
+    #   1.f   Include the MathML strings in the component
     component.setMath(math_header)
-    component.appendMath(equation)
+    component.appendMath(equation1)
+    component.appendMath(equation2)
+    component.appendMath(equation3)
     component.appendMath(math_footer)
 
-    #  1.f   Create a validator and use it to check the model so far
+    #  1.g   Create a validator and use it to check the model so far
     validator = Validator()
     validator.validateModel(model)
     print_errors_to_terminal(validator)
 
-    #  1.g   Create some variables and add them to the component
-    time = Variable()
-    time.setName("t")
+    # ---------------------------------------------------------------------------
+    #   STEP 2: Create the variables
+    #
+
+    #  2.a  Create the variables listed by the validator: d, a, b, c, time, y_s, y_f
+    sharks = Variable("y_s")
+    fish = Variable("y_f")
+    time = Variable("time")
+    a = Variable("a")
+    b = Variable("b")
+    c = Variable("c")
+    d = Variable("d")
+
+    #  2.b  Add the variables into the component
+    component.addVariable(sharks)
+    component.addVariable(fish)
     component.addVariable(time)
+    component.addVariable(a)
+    component.addVariable(b)
+    component.addVariable(c)
+    component.addVariable(d)
 
-    distance = Variable()
-    distance.setName("x")
-    component.addVariable(distance)
-
-    #  1.e   Assign units to the variables
-    time.setUnits("millisecond")
-    distance.setUnits("league")
-
-    # Check it work and print the validation errors to the terminal
-    print("-----------------------------------------------------")
-    print("     Printing the model at Step 1        ")
-    print("-----------------------------------------------------")
-    print_model_to_terminal(model)
-
-    print("-----------------------------------------------------")
-    print("     Printing the validation errors after Step 1     ")
-    print("-----------------------------------------------------")
+    #  2.c  Call the validator again to check the model
     validator.validateModel(model)
     print_errors_to_terminal(validator)
 
     # ---------------------------------------------------------------------------
-    #  STEP 2: Create the user-defined units
+    #  STEP 3: Create the user-defined units
     #
-    #  From the validation errors printed above you'll see that none of the three
+    #  From the validation errors printed above you'll see that none of the
     #  units we need are built-in. The good news is that we can create the ones
     #  we need from the set of built-in units, we just need to define the
     #  relationship.  NB: Even though units are used by Variables, which sit
@@ -106,109 +140,123 @@ if __name__ == "__main__":
     #  reuse Units when you have more than one component (more on that in
     #  Tutorial 5)
 
-    #  2.a  Define the relationship between our custom units and the built-in
+    #  3.a  Define the relationship between our custom units and the built-in
     #       units. There is a list of built-in units and their definitions
     #       available in section 19.2 of the CellML2 specification.
-    millisecond = Units()
-    millisecond.setName("millisecond")
-    millisecond.addUnit("second", "milli")
-    # "second" is a built-in unit, used inside millisecond with the
-    # prefix "milli".  NB this is equivalent to specifying a prefix
-    # integer value of -3, corresponding to the power of 10 by
-    # which the base is multiplied.
+    #       First we create the "day" and "per_day" units
+    day = Units()
+    day.setName("day")
+    day.addUnit("second", 0, 1, 86400)
+    model.addUnits(day)
+    # "second" is a built-in unit, used inside "day" with the
+    # multiplier 84600.  NB this is equivalent to specifying a prefix
+    # integer value of 3, corresponding to the power of 10 by
+    # which the base is multiplied, as well as a multiplier of 86.4, etc
 
-    league = Units()
-    league.setName("league")
-    league.addUnit("metre", 3, 1.0, 5.556)
-    # "metre" is a built-in unit.  A league is equal to 5556m, but here
-    # we illustrate the overloaded function by passing a prefix of 3
-    # (indicating a factor of 10^3), an exponent of 1, and a
-    # multiplier of 5.556.
+    # The "per_day" unit is simply the inverse of the "day"
+    per_day = Units()
+    per_day.setName("per_day")
+    per_day.addUnit("day", -1)
+    model.addUnits(per_day)
 
-    #  2.b  Add the units to the model
-    model.addUnits(millisecond)
-    model.addUnits(league)
+    #  3.b  Create the sharks and fishes base units.
+    number_of_sharks = Units()
+    number_of_sharks.setName("number_of_sharks")
+    model.addUnits(number_of_sharks)
+    thousands_of_fish = Units()
+    thousands_of_fish.setName("thousands_of_fish")
+    model.addUnits(thousands_of_fish)
 
-    #  2.c  Validate the model again and output the errors
-    # validator.validateModel(model)
-    # print_errors_to_terminal(validator)
+    #  3.c  Create the combined units for the constants.  Note that each item included
+    #       with the addUnit command is multiplied to create the final Units definition
+    b_units = Units()
+    b_units.setName("per_shark_day")
+    b_units.addUnit("per_day")
+    b_units.addUnit("number_of_sharks", -1)
+    model.addUnits(b_units)
 
-    #  2.d  Change the constant "b" to have a hard-coded value of 2.0 in the MathML
-    #       and amend the component's math block.
-    equation2 = '<apply><eq/>\
-                    <apply><diff/>\
-                        <bvar>\
-                            <ci>t</ci>\
-                        </bvar>\
-                        <ci>x</ci>\
-                    </apply>\
-                    <apply><plus/>\
-                        <apply><times/>\
-                            <ci>a</ci>\
-                            <ci>x</ci>\
-                        </apply>\
-                        <cn cellml:units="league">2.0</cn>\
-                    </apply>\
-                </apply>'
+    d_units = Units()
+    d_units.setName("per_fish_day")
+    d_units.addUnit("per_day")
+    d_units.addUnit("thousands_of_fish", -1)
+    model.addUnits(d_units)
 
+    #  3.d  Set the units to their respective variables
+    time.setUnits(day)
+    sharks.setUnits(number_of_sharks)
+    fish.setUnits(thousands_of_fish)
+    a.setUnits(per_day)
+    b.setUnits(b_units)
+    c.setUnits(per_day)
+    d.setUnits(d_units)
+
+    #  3.e  Call the validator again to check the model.
+    #       Expect one error regarding a missing unit in the MathML.
+    validator.validateModel(model)
+
+    #  3.f  Units for constants inside the MathML must be specified at the time.
+    #       This means we need to adjust equation1 to include the per_day units.
+    #       We have to wipe all the existing MathML and replace it.
+    component.removeMath()
     component.setMath(math_header)
+    equation1 = \
+        "<apply><eq/>"\
+        "   <ci>c</ci>"\
+        "   <apply><minus/>"\
+        "       <ci>a</ci>"\
+        "       <cn cellml:units=\"per_day\">2.0</cn>"\
+        "   </apply>"\
+        "</apply>"
+    component.appendMath(equation1)
     component.appendMath(equation2)
+    component.appendMath(equation3)
     component.appendMath(math_footer)
 
-    #  2.e Create and define the constant "a" to have a value of -1.  Check that there
-    #      are no more validation errors.
-    a = Variable()
-    a.setName("a")
-    a.setUnits("dimensionless")
-    a.setInitialValue(-1.0)
-    component.addVariable(a)
-
-    print("-----------------------------------------------------")
-    print("     Printing the validation errors after Step 2     ")
-    print("-----------------------------------------------------")
-    validator.validateModel(model)
-    print_errors_to_terminal(validator)
+    #  3.g  Validate once more, and expect there to be no errors this time.
 
     # ---------------------------------------------------------------------------
-    #  STEP 3: Output the model for solving
+    #  STEP 4: Code generation
     #
 
-    #  3.a Create a Generator instance and use it to process the model.  Output
-    #      any errors to the terminal using the utility function printErrorsToTerminal
-    #      called with your generator as argument.
+    #  4.a Create a generator instance and pass it the model for processing.  The
+    #      default profile is to generate C code, but we can change this later.
     generator = Generator()
     generator.processModel(model)
+
+    # 4.b Check for errors found in the generator
     print_errors_to_terminal(generator)
 
-    #  3.b Set the initial conditions of the distance variable such that x(t=0)=5 and
-    #      check that there are no more errors reported.
-    distance.setInitialValue(5.0)
+    #  4.c Add initial conditions to all variables except the base variable, time
+    #      and the constant c which will be computed. Reprocess the model.
+    a.setInitialValue(1.2)
+    b.setInitialValue(-0.6)
+    d.setInitialValue(0.3)
+    sharks.setInitialValue(2.0)
+    fish.setInitialValue(1.0)
+
     generator.processModel(model)
     print_errors_to_terminal(generator)
 
-    #  3.c Check that the generator has the settings which we expect:
-    #      - the number of variables
-    #      - the language of output
-    #      - the variable of integration
-    #      - the type of model
-    print("-----------------------------------------------------")
-    print("       Investigating the Generator settings          ")
-    print("-----------------------------------------------------")
+    #  4.d Because we've used the default profile (C) we need to output both the
+    #      interfaceCode (the header file) and the implementationCode (source file)
+    #      from the generator and write them.
+    implementation_code_C = generator.implementationCode()
+    write_file = open("tutorial3_PredatorPrey_generated.c", "w")
+    write_file.write(implementation_code_C)
+    write_file.close()
 
-    print("Number of variables = {}".format(generator.variableCount()))
-    print("Variable of integration = {}".format(generator.voi().name()))
-    print("Number of states = {}".format(generator.stateCount()))
-    # print("Model type = " + get_model_type_from_enum(generator.modelType()))
+    interface_code = generator.interfaceCode()
+    write_file.open("tutorial3_PredatorPrey_generated.h","w")
+    write_file.write(interface_code)
+    write_file.close()
 
-    #  3.d Change the Generator profile to be Python instead of the default C
+    #  4.e Change the Generator profile to be Python instead of the default C
     profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
     generator.setProfile(profile)
 
-    #  3.e Create the implementation code and print to a Python file
+    #  4.f Create the implementation code and print to a Python file
+    implementation_code_python = generator.implementationCode()
+    write_file = open("tutorial3_PredatorPrey_generated.py", "w")
+    write_file.write(implementation_code_python)
 
-    implementation_code = generator.implementationCode()
-    write_file = open("tutorial3_generated.py", "w")
-    write_file.write(implementation_code)
-    print("The {} has been printed to tutorial3_generated.py".format(model.name()))
-
-    #  3.e Go have a cuppa, you're done!
+    #  4.g Go have a cuppa, you're done!
