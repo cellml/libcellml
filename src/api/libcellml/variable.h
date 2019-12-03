@@ -254,33 +254,21 @@ public:
      *
      * Tests to see if the argument variable exists in the set of this variable's equivalent
      * variables. Returns @c true if the argument variable is in this variable's equivalent
-     * variables and @c false otherwise.  The test will *not* traverse the equivalent network
-     * to determine if the two variables are equivalent.
+     * variables and @c false otherwise.  By default the test will *not* traverse the equivalent
+     * network to determine if the two variables are equivalent.
+     *
+     * If the optional parameter @p considerIndirectEquivalences is @c true then the test *will*
+     * consider the entire equivalence network that this variable is a part of.
      *
      * @param equivalentVariable The variable to check for in this variable's equivalent variables.
+     * @param considerIndirectEquivalences Optional parameter to expand the test to the entire
+     * equivalent network of this variable.
      *
-     * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
-     * and @c false otherwise.
-     *
-     * @deprecated This method is currently needed by our Printer and Validator classes, but this is
-     * not a method that a libCellML user should ever need. It will therefore be removed at some point.
+     * @return @c true if the @p equivalentVariable is in this variable's equivalent variables set or
+     * if @p considerIndirectEquivalences is @c true then @c true if the @p equivalentVariable is in
+     * this variable's equivalence network.  In all other cases @c false is returned.
      */
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
-
-    /**
-     * @brief Test whether the argument variable is equivalent to this variable.
-     *
-     * Tests to see if the argument variable is equivalent to this variable. Returns @c true if
-     * the argument variable is equivalent to this variable and @c false otherwise. The test will
-     * traverse through the equivalent network to determine if the argument variable is
-     * equivalent to this variable.
-     *
-     * @param equivalentVariable The variable to check for equivalence.
-     *
-     * @return @c true if the @p equivalentVariable is equivalent to this variable and
-     * @c false otherwise.
-     */
-    bool hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences = false) const;
 
     /**
      * @brief Set the units by @p name for this variable.

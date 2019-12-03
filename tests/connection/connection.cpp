@@ -63,7 +63,7 @@ TEST(Variable, hasNoEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
-    EXPECT_FALSE(v1->hasIndirectEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
 
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -73,21 +73,23 @@ TEST(Variable, hasNoEquivalentVariable)
     c->addVariable(v2);
 
     m->addComponent(c);
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
 
     c->removeVariable(v2);
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
 
     v2.reset();
-    EXPECT_FALSE(v1->hasIndirectEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
 }
 
 TEST(Variable, hasIndirectEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_TRUE(v1->hasIndirectEquivalentVariable(v2));
+    libcellml::Variable::addEquivalence(v2, v3);
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 }
 
 TEST(Connection, componentlessVariableInvalidConnection)

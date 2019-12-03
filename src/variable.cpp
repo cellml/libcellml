@@ -56,6 +56,13 @@ struct Variable::VariableImpl
     UnitsPtr mUnits = nullptr; /**< The units defined for this Variable.*/
 
     /**
+     * @brief Clean expired equivalent variables.
+     *
+     * Clean away any equivalent variables that have become expired.
+     */
+    void cleanExpiredVariables();
+
+    /**
      * @brief Private function to add an equivalent variable to the set for this variable.
      *
      * Add the argument equivalent variable to the set of equivalent variables for this
@@ -96,17 +103,7 @@ struct Variable::VariableImpl
      * @param equivalentVariable The variable to test for equivalence to this one.
      * @return @c true if the variables are equivalent @c false otherwise.
      */
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
-
-    /**
-     * @brief haveEquivalentVariables
-     * @param variable1
-     * @param variable2
-     * @param testedVariables
-     * @return
-     */
-    bool haveEquivalentVariables(const Variable *variable1, const Variable *variable2,
-                                 std::vector<const Variable *> &testedVariables) const;
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences = false) const;
 
     /**
      * @brief Test whether the argument variable is equivalent to this variable.
@@ -276,39 +273,48 @@ size_t Variable::equivalentVariableCount() const
     return mPimpl->mEquivalentVariables.size();
 }
 
-bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
 {
-    return mPimpl->hasEquivalentVariable(equivalentVariable);
+    return mPimpl->hasEquivalentVariable(equivalentVariable, considerIndirectEquivalences);
 }
 
-bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+void Variable::VariableImpl::cleanExpiredVariables()
 {
-    auto it = findEquivalentVariable(equivalentVariable);
-    if (it == mEquivalentVariables.end()) {
-        return false;
+    mEquivalentVariables.erase(std::remove_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                                              [=](const VariableWeakPtr &variableWeak) -> bool { return variableWeak.expired(); }), mEquivalentVariables.end());
+}
+
+bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences) const
+{
+    bool equivalent = false;
+    if (considerIndirectEquivalences) {
+        equivalent = hasIndirectEquivalentVariable(equivalentVariable);
+    } else {
+        auto it = findEquivalentVariable(equivalentVariable);
+        if (it == mEquivalentVariables.end()) {
+            return false;
+        }
+        equivalent = !it->expired();
     }
-    return !it->expired();
+
+    return equivalent;
 }
 
-bool Variable::hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const
-{
-    return mPimpl->hasIndirectEquivalentVariable(equivalentVariable);
-}
-
-bool Variable::VariableImpl::hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const
-{
-    if (mVariable == equivalentVariable.get()) {
-        return false;
-    }
-
-    std::vector<const Variable *> testedVariables;
-
-    return haveEquivalentVariables(mVariable, equivalentVariable.get(), testedVariables);
-}
-
-bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
+/**
+ * @brief Test if the two variables given are equivalent, directly or indirectly.
+ *
+ * Traverse the variable equivalence network to determine if the two given variables
+ * are equivalent.  Returns true if they are equivalent and false otherwise.
+ *
+ * @param variable1 The first variable to test.
+ * @param variable2 The second variable to test.
+ * @param testedVariables Vector of previoulsy tested variables.
+ *
+ * @return True if the two given variables are equivalent, false otherwise.
+ */
+bool haveEquivalentVariables(const Variable *variable1,
                                                      const Variable *variable2,
-                                                     std::vector<const Variable *> &testedVariables) const
+                                                     std::vector<const Variable *> &testedVariables)
 {
     if (variable1 == variable2) {
         return true;
@@ -332,8 +338,20 @@ bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
     return false;
 }
 
+bool Variable::VariableImpl::hasIndirectEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    if (mVariable == equivalentVariable.get()) {
+        return false;
+    }
+
+    std::vector<const Variable *> testedVariables;
+
+    return haveEquivalentVariables(mVariable, equivalentVariable.get(), testedVariables);
+}
+
 bool Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
+    cleanExpiredVariables();
     if (!hasEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
         mEquivalentVariables.push_back(weakEquivalentVariable);
@@ -345,6 +363,7 @@ bool Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariab
 
 bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
 {
+    cleanExpiredVariables();
     bool status = false;
     auto result = findEquivalentVariable(equivalentVariable);
     if (result != mEquivalentVariables.end()) {
@@ -462,7 +481,7 @@ void Variable::removeInterfaceType()
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
 {
-    if (variable1->hasIndirectEquivalentVariable(variable2) && variable2->hasIndirectEquivalentVariable(variable1)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         variable1->mPimpl->setEquivalentMappingId(variable2, mappingId);
         variable2->mPimpl->setEquivalentMappingId(variable1, mappingId);
     }
@@ -470,7 +489,7 @@ void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const Varia
 
 void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId)
 {
-    if (variable1->hasIndirectEquivalentVariable(variable2) && variable2->hasIndirectEquivalentVariable(variable1)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
         variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
     }
@@ -479,7 +498,7 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
 std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasIndirectEquivalentVariable(variable2) && variable2->hasIndirectEquivalentVariable(variable1)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         std::string id_1 = variable1->mPimpl->equivalentMappingId(variable2);
         std::string id_2 = variable2->mPimpl->equivalentMappingId(variable1);
         if (id_1 == id_2) {
@@ -492,7 +511,7 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
 std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasIndirectEquivalentVariable(variable2) && variable2->hasIndirectEquivalentVariable(variable1)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1,true)) {
         std::string id_1 = variable1->mPimpl->equivalentConnectionId(variable2);
         std::string id_2 = variable2->mPimpl->equivalentConnectionId(variable1);
         if (id_1 == id_2) {
@@ -504,7 +523,7 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 
 void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (variable1->hasIndirectEquivalentVariable(variable2) && variable2->hasIndirectEquivalentVariable(variable1)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         variable1->mPimpl->setEquivalentConnectionId(variable2, "");
         variable2->mPimpl->setEquivalentConnectionId(variable1, "");
     }
@@ -512,7 +531,7 @@ void Variable::removeEquivalenceConnectionId(const VariablePtr &variable1, const
 
 void Variable::removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (variable1->hasIndirectEquivalentVariable(variable2) && variable2->hasIndirectEquivalentVariable(variable1)) {
+    if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         variable1->mPimpl->setEquivalentMappingId(variable2, "");
         variable2->mPimpl->setEquivalentMappingId(variable1, "");
     }
