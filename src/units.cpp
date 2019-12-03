@@ -416,7 +416,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     if (units->isBaseUnit()) {
         auto found = unitsMap.find(units->name());
         if (found == unitsMap.end()) {
-            unitsMap.emplace(units->name(), 1.0);
+            unitsMap.emplace(units->name(), exp);
         } else {
             found->second += exp;
         }
@@ -426,7 +426,9 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             std::string pre;
             std::string id;
             double expMult;
-            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            double e;
+            units->unitAttributes(i, ref, pre, e, expMult, id);
+            exp *= e;
             if (isStandardUnitName(ref)) {
                 auto unit = standardUnitsList.find(ref);
                 for (const auto &u : unit->second) {
