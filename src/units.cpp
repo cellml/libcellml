@@ -431,8 +431,8 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             if (isStandardUnitName(ref)) {
                 auto unitsListIter = standardUnitsList.find(ref);
                 for (const auto &baseUnitsComponent : unitsListIter->second) {
-                    auto unitsIter = unitsMap.find(baseUnitsComponent.first);
-                    if (unitsIter == unitsMap.end()) {
+                    auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
+                    if (unitsMapIter == unitsMap.end()) {
                         unitsMap[baseUnitsComponent.first] = 0.0;
                     }
                     unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * uExp * exp;
