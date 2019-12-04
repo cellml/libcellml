@@ -260,8 +260,12 @@ struct Validator::ValidatorImpl
                             std::vector<std::vector<std::string>> &errorList);
 
     /**
-    * @brief checks model mapping to ensure all variables mapped to other variables have the same units.
+    * @brief Checks @p model mappings to ensure all variables mapped to other variables have the same units.
+    * Any errors are logged in the @c Validator.
     *
+    * The model is checked for any equivalence mapping across components. If a variable has a mapping to another variable,  
+    * then it is expected that the units for each variable in the mapping are equal. 
+    * 
     * @param model The model containing the variables and mappings to be tested.
     */
     void checkUnitHomogeneity(const ModelPtr &model);
@@ -1259,10 +1263,12 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
     }
 }
 
+using VariablePair = std::vector<std::pair<VariablePtr, VariablePtr>>;
+
 void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
 {
-    std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
-    std::vector<std::pair<VariablePtr, VariablePtr>> errorPairs;
+    VariablePair checkedPairs;
+    VariablePair errorPairs;
 
     // Check components.
     if (model->componentCount() > 0) {
@@ -1282,13 +1288,13 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
                             && (std::find(checkedPairs.begin(), checkedPairs.end(), secondCheckPairing) == checkedPairs.end())) {
                             checkedPairs.push_back(firstCheckPairing);
 
-                            // Check equivalence
+                            // Check equivalence. If not return error message
                             bool equivalent = variable->units()->equivalent(variable->units(), equivalentVariable->units());
                             if (!equivalent) {
                                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                                 ErrorPtr err = Error::create();
-                                err->setDescription("Error: Variables '" + variable->name() + "' and '" + equivalentVariable->name() + "' do not have the same unit reduction.");
+                                err->setDescription("Variables '" + variable->name() + "' and '" + equivalentVariable->name() + "' do not have the same unit reduction.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::UNITS);
                                 err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);

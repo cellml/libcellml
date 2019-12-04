@@ -1442,7 +1442,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     const std::vector<std::string> expectedErrors = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-        "Error: Variables 'tomayto' and 'tomahto' do not have the same unit reduction.",
+        "Variables 'tomayto' and 'tomahto' do not have the same unit reduction.",
     };
 
     // This one is now an error.
@@ -1674,7 +1674,7 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
-        "Error: Variables 'pjs' and 'pajamas' do not have the same unit reduction.",
+        "Variables 'pjs' and 'pajamas' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1835,7 +1835,7 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1882,7 +1882,7 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
         "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1903,7 +1903,7 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1927,7 +1927,7 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1950,7 +1950,7 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 TEST(Validator, unitMultiplierFactorDifference)
 {
     const std::vector<std::string> expectedErrors = {
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2350,7 +2350,7 @@ TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.",
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2397,8 +2397,8 @@ TEST(Validator, validateNonEquivalentUnitsOfComponentsComplex)
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^2, candela^2, second^-1.",
         "Variable 'v2' has units of 'u2' and an equivalent variable 'v3' with non-matching units of 'u3'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.",
-        "Error: Variables 'v1' and 'v2' do not have the same unit reduction.",
-        "Error: Variables 'v2' and 'v3' do not have the same unit reduction.",
+        "Variables 'v1' and 'v2' do not have the same unit reduction.",
+        "Variables 'v2' and 'v3' do not have the same unit reduction.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();

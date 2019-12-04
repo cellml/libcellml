@@ -426,16 +426,16 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             std::string pre;
             std::string id;
             double expMult;
-            double e;
-            units->unitAttributes(i, ref, pre, e, expMult, id);
+            double uExp;
+            units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
                 auto unit = standardUnitsList.find(ref);
                 for (const auto &u : unit->second) {
                     if (unitsMap.find(u.first) == unitsMap.end()) {
-                        unitsMap.emplace(u.first, u.second * e * exp);
+                        unitsMap.emplace(u.first, u.second * uExp * exp);
                     } else {
                         auto ut = unitsMap.find(u.first);
-                        ut->second += u.second * e * exp;
+                        ut->second += u.second * uExp * exp;
                     }
                 }
             } else {
@@ -446,7 +446,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                         unitsMap.clear();
                         break;
                     }
-                    updateUnitsMap(refUnits, unitsMap, e * exp);
+                    updateUnitsMap(refUnits, unitsMap, uExp * exp);
                 }
             }
         }
@@ -462,7 +462,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
     auto it = unitsMap.begin();
 
     while (it != unitsMap.end()) {
-        std::string unit = it->first;
+        //std::string unit = it->first;
         if (it->second == 0.0) {
             auto found = unitsMap.find("dimensionless");
             if (found == unitsMap.end()) {
@@ -476,10 +476,11 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
         }
-
+        
         if (it == unitsMap.end()) {
             break;
         }
+        
         ++it;
     }
 
