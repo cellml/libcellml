@@ -429,14 +429,13 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             double uExp;
             units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
-                auto unit = standardUnitsList.find(ref);
-                for (const auto &u : unit->second) {
-                    if (unitsMap.find(u.first) == unitsMap.end()) {
-                        unitsMap.emplace(u.first, u.second * uExp * exp);
-                    } else {
-                        auto ut = unitsMap.find(u.first);
-                        ut->second += u.second * uExp * exp;
+                auto unitsListIter = standardUnitsList.find(ref);
+                for (const auto &baseUnitsComponent : unitsListIter->second) {
+                    auto unitsIter = unitsMap.find(baseUnitsComponent.first);
+                    if (unitsIter == unitsMap.end()) {
+                        unitsMap[baseUnitsComponent.first] = 0.0;
                     }
+                    unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * uExp * exp;
                 }
             } else {
                 auto model = owningModel(units);
@@ -459,22 +458,21 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
     updateUnitsMap(units, unitsMap);
 
     // Checking for exponents of zero in the map, which can be removed.
+    bool requireDimensionless = false;
     auto it = unitsMap.begin();
     while (it != unitsMap.end()) {
         if (it->second == 0.0) {
-            auto found = unitsMap.find("dimensionless");
-            if (found == unitsMap.end()) {
-                unitsMap.emplace(std::make_pair("dimensionless", 0.0));
-                it = unitsMap.erase(it);
-                --it;
-            } else {
-                it = unitsMap.erase(it);
-                --it;
-            }
+            it = unitsMap.erase(it);
+            requireDimensionless = true;
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
+            ++it;
+        } else {
+            ++it;
         }
-        ++it;
+    }
+    if (requireDimensionless) {
+        unitsMap.emplace(std::make_pair("dimensionless", 0.0));
     }
 
     return unitsMap;
