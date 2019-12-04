@@ -475,9 +475,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
         }
-        if (it == unitsMap.end()) {
-            break;
-        }
+
         ++it;
     }
 
