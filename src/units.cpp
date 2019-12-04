@@ -460,7 +460,6 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
 
     // Checking for exponents of zero in the map, which can be removed.
     auto it = unitsMap.begin();
-
     while (it != unitsMap.end()) {
         if (it->second == 0.0) {
             auto found = unitsMap.find("dimensionless");
@@ -475,7 +474,6 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
         }
-
         ++it;
     }
 
