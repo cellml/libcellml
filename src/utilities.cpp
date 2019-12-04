@@ -485,7 +485,6 @@ InterfaceTypePair determineInterfaceType(const VariablePtr &variable1, const Var
             pair.first = Variable::InterfaceType::PUBLIC;
             pair.second = Variable::InterfaceType::PUBLIC;
         }
-
     }
 
     return pair;
