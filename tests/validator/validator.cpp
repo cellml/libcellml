@@ -2291,7 +2291,7 @@ TEST(Validator, variableEquivalenceValidNetwork)
 TEST(Validator, variableEquivalenceUnreachable)
 {
     const std::vector<std::string> e {
-        "Invalid equivalence between 'v1' and 'v2', the separation of components 'c1' and 'c2' is too great.",
+        "Invalid equivalence between 'v1' and 'v3', the separation of components 'c1' and 'c3' is too great.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2336,7 +2336,7 @@ TEST(Validator, variableEquivalenceUnreachable)
 TEST(Validator, variableInterfaceShoulbBePublic)
 {
     const std::vector<std::string> e {
-        "Interface for variable 'v1' is incorrect.",
+        "Variable 'v2' does not have the correct interface type for the equivalence with 'v1'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2365,7 +2365,7 @@ TEST(Validator, variableInterfaceShoulbBePublic)
 
     libcellml::Variable::addEquivalence(v1, v2);
 
-    v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
 
     validator->validateModel(model);
 
@@ -2375,7 +2375,7 @@ TEST(Validator, variableInterfaceShoulbBePublic)
 TEST(Validator, variableInterfaceShoulbBePrivate)
 {
     const std::vector<std::string> e {
-        "Interface for variable 'v1' is incorrect.",
+        "Variable 'v1' does not have the correct interface type for the equivalence with 'v2'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2413,7 +2413,7 @@ TEST(Validator, variableInterfaceShoulbBePrivate)
 TEST(Validator, variableInterfaceShoulbBePublicAndPrivate)
 {
     const std::vector<std::string> e {
-        "Interface for variable 'v1' is incorrect.",
+        "Variable 'v2' does not have the correct interface type for the equivalence with 'v1'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();

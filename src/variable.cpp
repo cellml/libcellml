@@ -27,17 +27,6 @@ limitations under the License.
 
 namespace libcellml {
 
-/**
- * @brief Map to convert an interface type into its string form.
- *
- * An internal map used to convert a Variable InterfaceType enum class member into its string form.
- */
-static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
-    {Variable::InterfaceType::NONE, "none"},
-    {Variable::InterfaceType::PRIVATE, "private"},
-    {Variable::InterfaceType::PUBLIC, "public"},
-    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
-
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 /**
@@ -200,31 +189,6 @@ VariablePtr Variable::create() noexcept
 VariablePtr Variable::create(const std::string &name) noexcept
 {
     return std::shared_ptr<Variable> {new Variable {name}};
-}
-
-using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::InterfaceType>;
-
-InterfaceTypePair determineInterfaceType(const VariablePtr &variable1, const VariablePtr &variable2)
-{
-    InterfaceTypePair pair = std::make_pair(Variable::InterfaceType::NONE, Variable::InterfaceType::NONE);
-
-    auto component1 = variable1->parent();
-    auto component2 = variable2->parent();
-    if (component1 != nullptr && component2 != nullptr) {
-        if (isEntityChildOf(component1, component2)) {
-            pair.first = Variable::InterfaceType::PUBLIC;
-            pair.second = Variable::InterfaceType::PRIVATE;
-        } else if (isEntityChildOf(component2, component1)) {
-            pair.first = Variable::InterfaceType::PRIVATE;
-            pair.second = Variable::InterfaceType::PUBLIC;
-        } else if (areEntitiesSiblings(component1, component2)) {
-            pair.first = Variable::InterfaceType::PUBLIC;
-            pair.second = Variable::InterfaceType::PUBLIC;
-        }
-
-    }
-
-    return pair;
 }
 
 void mergeInterfaceType(const VariablePtr &variable, Variable::InterfaceType interfaceType)
