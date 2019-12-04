@@ -458,11 +458,10 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
     UnitsMap unitsMap;
     updateUnitsMap(units, unitsMap);
 
-    // dimensionality checks for exponents equal to zero in the map
+    // Checking for exponents of zero in the map, which can be removed.
     auto it = unitsMap.begin();
 
     while (it != unitsMap.end()) {
-        //std::string unit = it->first;
         if (it->second == 0.0) {
             auto found = unitsMap.find("dimensionless");
             if (found == unitsMap.end()) {
@@ -476,11 +475,9 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
         } else if (it->first == "dimensionless") {
             it->second = 0.0;
         }
-        
         if (it == unitsMap.end()) {
             break;
         }
-        
         ++it;
     }
 
