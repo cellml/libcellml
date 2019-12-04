@@ -1343,3 +1343,35 @@ TEST(Variable, variableEquivalenceCannotInferrInterface)
     EXPECT_EQ("", v1->interfaceType());
     EXPECT_EQ("", v3->interfaceType());
 }
+
+TEST(Variable, variableEquivalencePromoteFromPrivate)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    v2->setInterfaceType("private");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    EXPECT_EQ("private", v1->interfaceType());
+    EXPECT_EQ("public_and_private", v2->interfaceType());
+}
