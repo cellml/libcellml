@@ -263,8 +263,9 @@ struct Validator::ValidatorImpl
     * @brief Checks @p model mappings to ensure all variables mapped to other variables have the same units.
     * Any errors are logged in the @c Validator.
     *
-    * The model is checked for any equivalence mapping across components. If a variable has a mapping to another variable,  
-    * then it is expected that the units for each variable in the mapping are equal. 
+    * The @c Model is checked for any equivalence mapping that exist across @c Components. If a variable has a  
+    * mapping to another variable, then it is expected that the units for each variable in the mapping are equal.  
+    * If not, then a @c Error is created and logged in the @c Validator.
     * 
     * @param model The model containing the variables and mappings to be tested.
     */
