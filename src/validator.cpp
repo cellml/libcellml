@@ -968,11 +968,7 @@ bool Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
 {
     auto result = interfaceTypeToString.find(interfaceType);
     const std::string interfaceTypeString = result->second;
-    if (variable->interfaceType().find(interfaceTypeString) == std::string::npos) {
-        return false;
-    }
-
-    return true;
+    return variable->interfaceType().find(interfaceTypeString) == std::string::npos;
 }
 
 void Validator::ValidatorImpl::validateEquivalenceInterface(const VariablePtr &variable1, const VariablePtr &variable2)
