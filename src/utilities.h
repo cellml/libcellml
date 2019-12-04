@@ -417,4 +417,8 @@ bool isStandardPrefixName(const std::string &name);
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
 
+bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
+
+bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
+
 } // namespace libcellml

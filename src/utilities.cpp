@@ -457,4 +457,15 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     return index;
 }
 
+bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
+{
+    return entity1->parent() == entity2;
+}
+
+bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
+{
+    auto entity1Parent = entity1->parent();
+    return entity1Parent != nullptr && entity1Parent == entity2->parent();
+}
+
 } // namespace libcellml
