@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_utils.h"
-
 #include "gtest/gtest.h"
 
 #include <libcellml>
+
+#include "test_utils.h"
 
 /*
  * The tests in this file are here to catch any branches of code that
@@ -2241,4 +2241,219 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     v->validateModel(model);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, variableEquivalenceValidNetwork)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    v1->setInterfaceType("public_and_private");
+    v2->setInterfaceType("public_and_private");
+    v3->setInterfaceType("public_and_private");
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(Validator, variableEquivalenceUnreachable)
+{
+    const std::vector<std::string> e {
+        "Invalid equivalence between 'v1' and 'v2', the separation of components 'c1' and 'c2' is too great.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    // invalid equivalence, too far away
+    libcellml::Variable::addEquivalence(v1, v3);
+    validator->validateModel(model);
+
+    EXPECT_EQ_ERRORS(e, validator);
+}
+
+TEST(Validator, variableInterfaceShoulbBePublic)
+{
+    const std::vector<std::string> e {
+        "Interface for variable 'v1' is incorrect.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ERRORS(e, validator);
+}
+
+TEST(Validator, variableInterfaceShoulbBePrivate)
+{
+    const std::vector<std::string> e {
+        "Interface for variable 'v1' is incorrect.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    validator->validateModel(model);
+
+    EXPECT_EQ_ERRORS(e, validator);
+}
+
+TEST(Validator, variableInterfaceShoulbBePublicAndPrivate)
+{
+    const std::vector<std::string> e {
+        "Interface for variable 'v1' is incorrect.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ERRORS(e, validator);
 }
