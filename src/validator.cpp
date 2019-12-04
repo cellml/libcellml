@@ -111,6 +111,21 @@ struct Validator::ValidatorImpl
     void validateConnections(const ModelPtr &model);
 
     /**
+     * @brief validateVariableInterfaces
+     * @param variable1
+     * @param variable2
+     */
+    void validateEquivalenceInterface(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief validateVariableInterface
+     * @param variable
+     * @param interfaceType
+     * @return
+     */
+    bool validateVariableInterface(const VariablePtr &variable, Variable::InterfaceType interfaceType);
+
+    /**
      * @brief Check if the provided @p name is a valid CellML identifier.
      *
      * Checks if the provided @p name is a valid CellML identifier according
@@ -949,6 +964,54 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     }
 }
 
+bool Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, Variable::InterfaceType interfaceType)
+{
+    auto result = interfaceTypeToString.find(interfaceType);
+    const std::string interfaceTypeString = result->second;
+    if (variable->interfaceType().find(interfaceTypeString) == std::string::npos) {
+        return false;
+    }
+
+    return true;
+}
+
+void Validator::ValidatorImpl::validateEquivalenceInterface(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    InterfaceTypePair pair = determineInterfaceType(variable1, variable2);
+    if (pair.first == Variable::InterfaceType::NONE && pair.second == Variable::InterfaceType::NONE) {
+        std::string component1Name;
+        std::string component2Name;
+        auto component1 = std::dynamic_pointer_cast<Component>(variable1->parent());
+        auto component2 = std::dynamic_pointer_cast<Component>(variable2->parent());
+        if (component1 != nullptr) {
+            component1Name = component1->name();
+        }
+        if (component2 != nullptr) {
+            component2Name = component2->name();
+        }
+        ErrorPtr err = Error::create();
+        err->setDescription("Invalid equivalence between '" + variable1->name() + "' and '" + variable2->name() + "', the separation of components '" + component1Name + "' and '" + component2Name + "' is too great.");
+        err->setVariable(variable1);
+        err->setKind(Error::Kind::CONNECTION);
+        mValidator->addError(err);
+    } else {
+        if (!validateVariableInterface(variable1, pair.first)) {
+            ErrorPtr err = Error::create();
+            err->setDescription("Variable '" + variable1->name() + "' does not have the correct interface type for the equivalence with '" + variable2->name() + "'.");
+            err->setVariable(variable1);
+            err->setKind(Error::Kind::CONNECTION);
+            mValidator->addError(err);
+        }
+        if (!validateVariableInterface(variable2, pair.second)) {
+            ErrorPtr err = Error::create();
+            err->setDescription("Variable '" + variable2->name() + "' does not have the correct interface type for the equivalence with '" + variable1->name() + "'.");
+            err->setVariable(variable2);
+            err->setKind(Error::Kind::CONNECTION);
+            mValidator->addError(err);
+        }
+    }
+}
+
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
     std::string hints;
@@ -990,7 +1053,9 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
                                 auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-                                if (!component2->hasVariable(equivalentVariable)) {
+                                if (component2 != nullptr && component2->hasVariable(equivalentVariable)) {
+                                    validateEquivalenceInterface(variable, equivalentVariable);
+                                } else {
                                     ErrorPtr err = Error::create();
                                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
                                     err->setModel(model);
