@@ -1486,8 +1486,8 @@ TEST(Units, isBaseUnitsImported)
 
     model->addUnits(u);
 
-    u->setImportSource(import);
     import->setModel(model);
+    u->setImportSource(import);
 
     EXPECT_TRUE(u->isImport());
     EXPECT_TRUE(u->isBaseUnit());
