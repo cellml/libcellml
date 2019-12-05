@@ -1,8 +1,14 @@
 /**
  *  TUTORIAL 4: INTERACT WITH GENERATED CODE
  *
- *  By the time you have worked through Tutorial 4 you will be able to: TODO
-
+ *  By the time you have worked through Tutorial 4 you will be able to:
+ *    - investigate and understand the contents of files created by the Generator
+ *    - integrate generated code into a simple solver to run a simulation
+ *
+ *  This tutorial assumes that you are comfortable with:
+ *    - interacting with a model and its entities using the API (see Tutorial 3)
+ *    - using the Generator functionality to output files in C or Python (Tutorial 3)
+ *
  */
 
 #include <fstream>
