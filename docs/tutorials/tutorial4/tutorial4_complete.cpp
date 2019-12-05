@@ -1,7 +1,7 @@
 /**
  *  TUTORIAL 4: INTERACT WITH GENERATED CODE
  *
- *  By the time you have worked through Tutorial 4 you will be able to:
+ *  By the time you have worked through Tutorial 4 you will be able to: TODO
 
  */
 
