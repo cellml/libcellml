@@ -1630,8 +1630,8 @@ TEST(Units, isNotBaseUnitButUnitIsBaseImport)
     u4->setImportSource(import);
     import->setModel(model);
 
-    EXPECT_TRUE(u3->isImport());
-    EXPECT_FALSE(u3->isBaseUnit()); // expect false as unit import is resolved but not base
+    EXPECT_TRUE(u4->isImport());
+    EXPECT_FALSE(u4->isBaseUnit()); // expect false as unit import is resolved but not base
 }
 
 TEST(Units, isBaseUnitAndUnitIsBaseImport)
