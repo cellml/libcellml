@@ -309,14 +309,21 @@ throughout the solution process.  This is done by calling the
         - write to the file
 
 
-5: Cleaning up
+5: Output
 ---------------
 
 .. container:: dothis
 
     **5.a** You can retrieve your solution from the file you've written
-    for plotting in your program of choice.
+    for plotting in your program of choice.  If all has gone well you should
+    see something similar to that shown in :numref:`sharks_and_fish` below.
 
+.. figure:: ../images/sharks_and_fish.png
+   :name: sharks_and_fish
+   :alt: Euler solution to the predator-prey model
+   :align: center
+
+   Euler solution to the predator-prey population model
 
 .. container:: dothis
 

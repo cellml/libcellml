@@ -64,9 +64,6 @@ pretend that you know nothing about the contents of the CellML model for which
 the files were generated, and take you through writing a general numerical
 solver.
 
-
-
-
 Classification of variables
 +++++++++++++++++++++++++++
 The :code:`Generator` then classifies all the :code:`Variable` items within
@@ -323,7 +320,7 @@ throughout the solution process.  This is done by calling the
         - write to the file
 
 
-5: Cleaning up
+5: Output
 ---------------
 
 .. container:: dothis
@@ -335,5 +332,17 @@ throughout the solution process.  This is done by calling the
 .. container:: dothis
 
     **5.b** You can retrieve your solution from the file you've written
-    for plotting in your program of choice. Then go and have a cuppa, you're
-    done!
+    for plotting in your program of choice.  If all has gone well you should
+    see something similar to that shown in :numref:`sharks_and_fish` below.
+
+.. figure:: ../images/sharks_and_fish.png
+   :name: sharks_and_fish
+   :alt: Euler solution to the predator-prey model
+   :align: center
+
+   Euler solution to the predator-prey population model
+
+
+.. container:: dothis
+
+    **5.c** Go and have a cuppa, you're done!
