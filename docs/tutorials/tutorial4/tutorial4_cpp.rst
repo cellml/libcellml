@@ -324,12 +324,13 @@ throughout the solution process.  This is done by calling the
 
 
 5: Cleaning up
---------------------------------------------------------------------------
+---------------
 
 .. container: dothis
 
     **5.a** Now it's time for housekeeping.  Use the :code:`deleteArray`
     function to free the three arrays you allocated in step 3.a.
+
 
 .. container: dothis
 
