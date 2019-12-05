@@ -1471,3 +1471,55 @@ TEST(Units, compareEquivalentSameSizeButDifferentExponent)
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
     EXPECT_FALSE(libcellml::Units::equivalent(u2, u1));
 }
+
+TEST(Units, isBaseUnitsImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    // Making a base unit
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("u");
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u->setImportSource(import);
+
+    EXPECT_TRUE(u->isImport());
+    EXPECT_TRUE(u->isBaseUnit());
+}
+
+TEST(Units, isNotBaseUnitsImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    
+    u1->setName("u1"); // Base unit 
+    u2->setName("u2");
+    u3->setName("u3");
+    u2->addUnit("u1", 0, 1.0);
+    u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u3->setName("u3");
+    u3->addUnit("u2", 0, 1.0, 1.0);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u3->setImportSource(import);
+    import->setModel(model);
+
+    EXPECT_TRUE(u3->isImport());
+    EXPECT_FALSE(u3->isBaseUnit());
+}
+
+TEST(Units, isNotBaseUnitsCheckUsingImport)
+{
+}
