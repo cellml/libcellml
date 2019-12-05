@@ -1,0 +1,52 @@
+.code.literal {
+    color:darkslategray;
+}
+
+pre {
+    border: none;
+    background-color:#eeeeee;
+    color: darkslategray;
+}
+
+.highlight {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color:#eeeeee;
+}
+
+div.figure a.image-reference {
+    border: none;
+}
+
+.dothis    {
+    border-left: 5px solid rgb(174, 189, 145);
+    background: rgb(234, 236, 234);
+    padding: 3px 3px 3px 8px;
+    margin-top:20px;
+    margin-bottom:20px;
+    line-height: 24px;
+    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+}
+
+.dothis > .guilabel {
+    color: rgb(30, 46, 0);
+}
+
+.nb {
+    border-left: 5px solid sandybrown;
+    background-color: rgb(255, 253, 247);
+    padding: 0px 0px 0px 8px;
+    margin-top:20px;
+    margin-bottom:20px;
+    line-height: 24px;
+    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+}
+
+.terminal {
+    border: none;
+    color: white;
+    background-color:#777777;
+    padding: 5px 0px 0px 10px;
+    font-family: 'Consolas', 'Deja Vu Sans Mono','Bitstream Vera Sans Mono', monospace;
+    font-size: 0.85em;
+}
