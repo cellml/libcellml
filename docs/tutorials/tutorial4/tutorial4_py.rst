@@ -38,12 +38,12 @@ your script for manipulation.  It's best to do this in a general manner, so by
 using the Python :code:`import some_thing as some_alias` idiom so that you can
 use the :code:`some_alias` throughout the rest of the code.
 
-.. container: dothis
+.. container:: dothis
 
     **1.a**  Import the file generated in Tutorial 3 using the aliasing idiom
     as above.
 
-.. container: dothis
+.. container:: dothis
 
     **1.b** The version which the generated code was created with is stored in
     the module in a variable called :code:`some_alias.LIBCELLML_VERSION`.
@@ -114,7 +114,7 @@ These are accessible in the imported module:
 
     - the :code:`VARIABLE_INFO` array is :code:`VARIABLE_COUNT` long.
 
-.. container: dothis
+.. container:: dothis
 
     **2.a** Retrieve the number of variables from the generated module, and print
     the information related to each of them to the terminal.
@@ -133,7 +133,7 @@ These are:
 
     - the :code:`STATE_INFO` array is :code:`STATE_COUNT` long.
 
-.. container: dothis
+.. container:: dothis
 
     **2.b** Retrieve the number of state variables from the generated code, and
     print the information related to each of them to the terminal.
@@ -142,7 +142,7 @@ The final information stored is the name and attributes of the base integration
 variable (variable of integration, VOI).  This is stored in :code:`VOI_INFO`,
 a dictionary with the same keys as the :code:`STATE_INFO` dictionaries.
 
-.. container: dothis
+.. container:: dothis
 
     **2.c** Retrieve the information about the VOI and print it to the
     terminal.
@@ -173,7 +173,7 @@ These are:
     - :code:`create_variable_array` will allocate an array of length
       :code:`VARIABLE_COUNT` and values of :code:`nan`.
 
-.. container: dothis
+.. container:: dothis
 
     **3.a** Allocate three arrays: one for the state variables,
     one for the rates, and one for the variables.
@@ -211,7 +211,7 @@ you'll see:
 From here we can see the correlation with the initial conditions we specified
 in Tutorial 3, and the equations above.
 
-.. container: dothis
+.. container:: dothis
 
     **3.b** Call the :code:`initialize_states_and_constants` function to
     initalise the arrays you created earlier.  Print them to the terminal for
@@ -228,7 +228,7 @@ items for which we specified an inital value have been applied, the constant
     def compute_computed_constants(variables):
       variables[3] = variables[0]-2.0
 
-.. container: dothis
+.. container:: dothis
 
     **3.c** Call the :code:`compute_computed_constants` function, and reprint
     the variables array to the terminal to check that the initial values for
@@ -249,7 +249,7 @@ three general parts to each iteration:
       could be any stepping method - we just use this one as it's very simple.
 
 
-.. container: dothis
+.. container:: dothis
 
     **4.a** Define some variables to control the total number of steps to take,
     and the size that those steps should be.  In this example it's safe to use
@@ -297,7 +297,7 @@ throughout the solution process.  This is done by calling the
       # This equation is the equivalent of d(fishes)/dt = c*y_fishes + d*y_sharks*y_fishes
       rates[1] = variables[3]*states[1]+variables[2]*states[0]*states[1]
 
-.. container: dothis
+.. container:: dothis
 
     **4.d** Iterate through the time interval [0,20] and update the state
     variables using the Euler update method: y[n+1] = y[n] + y'[n]*stepSize
@@ -312,12 +312,12 @@ throughout the solution process.  This is done by calling the
 5: Cleaning up
 ---------------
 
-.. container: dothis
+.. container:: dothis
 
     **5.a** You can retrieve your solution from the file you've written
     for plotting in your program of choice.
 
 
-.. container: dothis
+.. container:: dothis
 
     **5.b** Go and have a cuppa, you're done!

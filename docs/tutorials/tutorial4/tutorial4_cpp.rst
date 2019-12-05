@@ -35,18 +35,18 @@ Because this is for generated code in C we will need the files:
  - :download:`../resources/tutorial3_PredatorPrey_generated.h`
 
 
-.. container: dothis
+.. container:: dothis
 
     **1.a** Enter the path to the generated header/interface *.h file in the
     :code:`#include` section at the top of your main file.
 
 
-.. container: dothis
+.. container:: dothis
 
     **1.b** Add the name and path of the implementation *.cpp file into the
     CMakeLists.txt file so that it's built with your project.
 
-.. container: dothis
+.. container:: dothis
 
     **1.c** The version which the generated code was created with is stored in
     a variable called :code:`LIBCELLML_VERSION`.  Print this to the terminal
@@ -119,7 +119,7 @@ These are accessible in the generated code:
         - a :code:`type` enum field
     - the :code:`VARIABLE_INFO` array is :code:`VARIABLE_COUNT` long.
 
-.. container: dothis
+.. container:: dothis
 
     **2.a** Retrieve the number of variables from the generated code, and print
     the information related to each of them to the terminal.
@@ -139,7 +139,7 @@ These are:
 
     - the :code:`STATE_INFO` array is :code:`STATE_COUNT` long.
 
-.. container: dothis
+.. container:: dothis
 
     **2.b** Retrieve the number of state variables from the generated code, and
     print the information related to each of them to the terminal.
@@ -148,7 +148,7 @@ The final information stored is the name and attributes of the base integration
 variable (variable of integration, VOI).  This is stored in :code:`VOI_INFO`,
 a :code:`VariableInfo` item.
 
-.. container: dothis
+.. container:: dothis
 
     **2.c** Retrieve the information about the VOI and print it to the
     terminal.
@@ -181,7 +181,7 @@ These are:
     - :code:`createVariableArray` will allocate an array of length
       :code:`VARIABLE_COUNT` and element type :code:`double`.
 
-.. container: dothis
+.. container:: dothis
 
     **3.a** Allocate three arrays: one for the state variables,
     one for the rates, and one for the variables.
@@ -222,7 +222,7 @@ the last tutorial you'll see:
 From here we can see the correlation with the initial conditions we specified
 in Tutorial 3.
 
-.. container: dothis
+.. container:: dothis
 
     **3.b** Call the :code:`initializeStatesAndConstants` function to initalise
     the arrays you created earlier.  Print them to the terminal for checking.
@@ -240,7 +240,7 @@ items for which we specified an inital value have been applied, the constant
         variables[3] = variables[0]-2.0;    // c, constant in the rates equation for fish
     }
 
-.. container: dothis
+.. container:: dothis
 
     **3.c** Call the :code:`computeComputedConstants` function, and reprint the
     variables array to the terminal to check that the initial values for all
@@ -261,7 +261,7 @@ three general parts to each iteration:
       could be any stepping method - we just use this one as it's very simple.
 
 
-.. container: dothis
+.. container:: dothis
 
     **4.a** Define some variables to control the total number of steps to take,
     and the size that those steps should be.  In this example it's safe to use
@@ -326,17 +326,14 @@ throughout the solution process.  This is done by calling the
 5: Cleaning up
 ---------------
 
-.. container: dothis
+.. container:: dothis
 
     **5.a** Now it's time for housekeeping.  Use the :code:`deleteArray`
     function to free the three arrays you allocated in step 3.a.
 
 
-.. container: dothis
+.. container:: dothis
 
     **5.b** You can retrieve your solution from the file you've written
     for plotting in your program of choice. Then go and have a cuppa, you're
     done!
-
-
-
