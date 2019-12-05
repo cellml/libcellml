@@ -204,7 +204,7 @@ this model:
 with constants :math:`(a, b, d)=(1.2, -0.6, 0.3)` and initial
 condtions of :math:`y_s(t=0)=2.0` and :math:`y_f(t=0)=1.0`.
 
-If you look inside the implementation file (*.c/cpp) which was generated in
+If you look inside the implementation file (* .c/cpp) which was generated in
 the last tutorial you'll see:
 
 .. code-block:: cpp
