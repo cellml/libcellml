@@ -18,7 +18,8 @@ Resources:
     - If you did not complete Tutorial 7 you can download the file created there:
       :download:`../resources/tutorial8_MembraneModel.cellml`
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 
 0: Setup

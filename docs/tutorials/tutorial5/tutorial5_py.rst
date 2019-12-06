@@ -19,7 +19,8 @@ ones.  If you need to jump in at some intermediate stage
 you will find all the files created by the earlier tutorials in the
 :code:`resources` folder.
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 Overview
 ========

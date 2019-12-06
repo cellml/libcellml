@@ -14,7 +14,8 @@ Requirements:
     - :download:`tutorial3.cpp` Either the skeleton code, or ..
     - :download:`tutorial3_complete.cpp` the completed tutorial code
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 0: Setup
 ========

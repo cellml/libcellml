@@ -19,7 +19,8 @@ Resources:
     - If you did not complete Tutorial 5 you can download the file created there:
       :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 1: Create the model
 ===================

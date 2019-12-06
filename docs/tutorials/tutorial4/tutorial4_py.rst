@@ -15,7 +15,8 @@ By the end of this tutorial you will be able to:
 - use the simple solver provided to numerically integrate the governing
   equations of the model.
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 1: Include the generated code in this project
 =============================================

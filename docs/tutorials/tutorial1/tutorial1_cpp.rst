@@ -15,7 +15,8 @@ Requirements:
     - :download:`tutorial1_complete.cpp` the completed tutorial code
     - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 0: Setup
 ========

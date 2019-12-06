@@ -13,7 +13,8 @@ Requirements:
     - :download:`tutorial3.py` Either the skeleton code, or ..
     - :download:`tutorial3_complete.py` the completed tutorial code
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 0: Setup
 ========

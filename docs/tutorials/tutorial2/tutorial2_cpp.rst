@@ -18,7 +18,8 @@ Requirements:
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 0: Setup
 ========

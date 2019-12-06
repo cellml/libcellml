@@ -6,14 +6,15 @@ Tutorial 0: C++ installation
 
 **TODO** Update this with binary/Docker/something else installation instructions
 
-.. contents::
+.. contents:: Contents
+    :local:
 
 1: Create the libCellML library
 ===============================
 
 .. container:: dothis
 
-    :guilabel:`1.a` Create an empty folder and navigate into it, then create a further empty
+    **1.a** Create an empty folder and navigate into it, then create a further empty
     folder called :code:`libcellml`, and navigate into that one.
 
 .. code-block:: console
