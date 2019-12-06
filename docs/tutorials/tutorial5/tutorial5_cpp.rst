@@ -22,7 +22,7 @@ you will find all the files created by the earlier tutorials in the
     :local:
 
 Overview
-=========
+========
 The basic steps for model creation and output are the same as those in
 :ref:`Tutorial 3<tutorial3_cpp>`, but here you'll begin to create a model based on
 the Hodgkin Huxley model. All the biological and mathematical modelling

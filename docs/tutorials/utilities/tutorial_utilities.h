@@ -28,3 +28,5 @@ void insertIntoMathMLString(std::string &maths, std::string &addMe);
 
 std::string getModelTypeFromEnum(libcellml::Generator::ModelType myType);
 std::string getProfileFromEnum(libcellml::GeneratorProfile::Profile myType);
+
+void solveWithEuler(double stepSize, int stepCount, std::string outFileName);
