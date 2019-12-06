@@ -4,9 +4,12 @@
 Tutorial 4 Python: Generating code and simulation
 =================================================
 
-Getting started:  If you're reading this it's presumed that you're already
-comfortable with the deserlialisation and debugging functionality
-available in the libCellML library, and with the TODO
+This tutorial assumes that you are comfortable with:
+
+ - interacting with a model and its entities using the API (see
+   :ref:`Tutorial 3<tutorial3_py>`)
+ - using the Generator functionality to output files in C or Python
+   (see :ref:`Tutorial 3<tutorial3_py>`)
 
 By the end of this tutorial you will be able to:
 

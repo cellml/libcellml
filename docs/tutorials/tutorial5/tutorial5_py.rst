@@ -203,16 +203,16 @@ are:
     will be similar to those below, relating to not yet defined variables and
     units:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Description: MathML ci element has the child text 'alpha_n' which does not
-    |    correspond with any variable names present in component
-    |    'HodgkinHuxleySingleIonChannel' and is not a variable defined within a bvar
-    |    element.
-    | Description: Math has a cn element with a cellml:units attribute
-    |    'per_millivolt_millisecond' that is not a valid reference to units in
-    |    component 'HodgkinHuxleySingleIonChannel' or a standard unit.
-    |
+     Description: MathML ci element has the child text 'alpha_n' which does not
+        correspond with any variable names present in component
+        'HodgkinHuxleySingleIonChannel' and is not a variable defined within a bvar
+        element.
+     Description: Math has a cn element with a cellml:units attribute
+        'per_millivolt_millisecond' that is not a valid reference to units in
+        component 'HodgkinHuxleySingleIonChannel' or a standard unit.
+
 
 ---------------------------------------
 3. Define the variables and their units
@@ -257,16 +257,16 @@ every variable to have some defined.  For the proportion of open gates
     **3.c** Submit your model to the validator.  Expected errors at this stage
     will be similar to those below.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | - Description: Variable 'time' has an invalid units reference 'millisecond'
-    |   that does not correspond with a standard unit or units in the variable's
-    |   parent component or model. See section 11.1.1.2 in the CellML specification.
-    |
-    | - Description: Math has a cn element with a cellml:units attribute 'millivolt'
-    |   that is not a valid reference to units in component
-    |   'HodgkinHuxleySingleIonChannel' or a standard unit.
-    |
+     - Description: Variable 'time' has an invalid units reference 'millisecond'
+       that does not correspond with a standard unit or units in the variable's
+       parent component or model. See section 11.1.1.2 in the CellML specification.
+
+     - Description: Math has a cn element with a cellml:units attribute 'millivolt'
+       that is not a valid reference to units in component
+       'HodgkinHuxleySingleIonChannel' or a standard unit.
+
 
 ----------------------------------------
 4. Define the units and add to the model

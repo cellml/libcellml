@@ -206,24 +206,24 @@ done by creating *equivalent variables*.
     **4.b** Print the model to the screen to check your component hierarchy.
     It should contain the section below where a *child component* is listed.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | ...
-    |    Component[0] has 1 child components:
-    |        Component[0] has name: 'nGate'
-    |        Component[0] has 5 variables:
-    |        Variable[0] has name: 'V'
-    |        Variable[0] has units: 'millivolt'
-    |        Variable[1] has name: 't'
-    |        Variable[1] has units: 'millisecond'
-    |        Variable[2] has name: 'alpha_n'
-    |        Variable[2] has units: 'per_millisecond'
-    |        Variable[3] has name: 'beta_n'
-    |        Variable[3] has units: 'per_millisecond'
-    |        Variable[4] has name: 'n'
-    |        Variable[4] has units: 'dimensionless'
-    | ...
-    |
+     ...
+        Component[0] has 1 child components:
+            Component[0] has name: 'nGate'
+            Component[0] has 5 variables:
+            Variable[0] has name: 'V'
+            Variable[0] has units: 'millivolt'
+            Variable[1] has name: 't'
+            Variable[1] has units: 'millisecond'
+            Variable[2] has name: 'alpha_n'
+            Variable[2] has units: 'per_millisecond'
+            Variable[3] has name: 'beta_n'
+            Variable[3] has units: 'per_millisecond'
+            Variable[4] has name: 'n'
+            Variable[4] has units: 'dimensionless'
+     ...
+
 
 After defining how the components are arranged, we need to define which
 variables can access each other, and how.  This is done by making variables
@@ -259,7 +259,7 @@ process.
     :code:`printErrorsToTerminal` function.  You should see an error
     similar to the one below.
 
-.. container:: terminal
+.. code-block:: terminal
 
     **TODO** ?? put error here when the validation is working ??
 
@@ -286,7 +286,7 @@ the :code:`potassiumChannel` component as a go-between: it is a sibling of the
     and :code:`potassiumChannel` components.  Validate your model again.  You
     should see a validation message similar to that shown below.
 
-.. container:: terminal
+.. code-block:: terminal
 
     **TODO Put error messages here when they're working**
 

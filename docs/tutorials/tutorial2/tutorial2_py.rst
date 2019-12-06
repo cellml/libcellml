@@ -39,12 +39,12 @@ started in each of the :code:`tutorial*.py` files.
 
 This should give the output:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | -----------------------------------------------
-    |   TUTORIAL 2: ERROR CHECKING AND VALIDATION
-    | -----------------------------------------------
-    |
+     -----------------------------------------------
+       TUTORIAL 2: ERROR CHECKING AND VALIDATION
+     -----------------------------------------------
+
 
 1: Create a Model from the contents of a CellML file
 ====================================================
@@ -150,15 +150,15 @@ code at any stage.  If you haven't been doing so already, then do it now, and
 take a look at what you've printed.  This section works through each of the
 errors found and shows you how to fix them.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Validator error[0]:
-    |    Description: CellML identifiers must not begin with a European numeric character [0-9].
-    |    See section 3.1.4 in the CellML specification.
-    | Validator error[1]:
-    |    Description: Variable does not have a valid name attribute.
-    |    See section 11.1.1.1 in the CellML specification.
-    |
+     Validator error[0]:
+        Description: CellML identifiers must not begin with a European numeric character [0-9].
+        See section 3.1.4 in the CellML specification.
+     Validator error[1]:
+        Description: Variable does not have a valid name attribute.
+        See section 11.1.1.1 in the CellML specification.
+
 
 These errors refer to the same thing, but are better read in reverse order.
 Variables (and everything else in CellML which specifies a name attribute)
@@ -186,14 +186,14 @@ the variable name:
 
 On to the next error.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Validator error[2]:
-    |    Description: Variable 'b' has an invalid units reference 'i_am_not_a_unit'
-    |    that does not correspond with a standard unit or units in the variable's
-    |    parent component or model.
-    |    See section 11.1.1.2 in the CellML specification.
-    |
+     Validator error[2]:
+        Description: Variable 'b' has an invalid units reference 'i_am_not_a_unit'
+        that does not correspond with a standard unit or units in the variable's
+        parent component or model.
+        See section 11.1.1.2 in the CellML specification.
+
 
 Variables must have a unit defined.  These can be either something from
 the built-in list within libCellML (which you can read in the
@@ -221,14 +221,14 @@ it to be :code:`"dimensionless"` instead.
 
 -----
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Validator error[3]:
-    |    Description: Variable 'c' has an invalid initial value
-    |    'this_variable_doesnt_exist'. Initial values must be a real number
-    |    string or a variable reference.
-    |    See section 11.1.2.2 in the CellML specification.
-    |
+     Validator error[3]:
+        Description: Variable 'c' has an invalid initial value
+        'this_variable_doesnt_exist'. Initial values must be a real number
+        string or a variable reference.
+        See section 11.1.2.2 in the CellML specification.
+
 
 We can either access members by their index or their name, as shown above,
 or we can create a pointer to them instead (as below). Initial values (if set)
@@ -251,16 +251,16 @@ must be a valid variable name in the same component, or a real number.
 
 -----
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Validator error[4]:
-    |    Description: CellML identifiers must contain one or more basic Latin
-    |    alphabetic characters.
-    |    See section 3.1.3 in the CellML specification.
-    | Validator error[5]:
-    |    Description: Variable 'd' does not have a valid units attribute.
-    |    See section 11.1.1.2 in the CellML specification.
-    |
+     Validator error[4]:
+        Description: CellML identifiers must contain one or more basic Latin
+        alphabetic characters.
+        See section 3.1.3 in the CellML specification.
+     Validator error[5]:
+        Description: Variable 'd' does not have a valid units attribute.
+        See section 11.1.1.2 in the CellML specification.
+
 
 These two errors go together too.  Because we haven't defined a :code:`units`
 attribute for variable :code:`d`, it effectively has a blank name, which is not
@@ -274,7 +274,7 @@ allowed.  Simply assigning units to the variable will fix both errors.
 
 -----
 
-.. container:: terminal
+.. code-block:: terminal
 
     Description: MathML ci element has the child text 'a' which does not
         correspond with any variable names present in component
@@ -300,25 +300,25 @@ Let's have a look at our corrected model by calling that same utility function
 which we used earlier to print it to the screen.  You should see something like
 this:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    |    The model name is: 'tutorial_2_model'
-    |    The model id is: 'tutorial 2 id has spaces'
-    |    The model defines 0 custom units:
-    |    The model has 1 components:
-    |        Component[0] has name: 'i_am_a_component'
-    |        Component[0] has id: 'my_component_id'
-    |        Component[0] has 4 variables:
-    |            Variable[0] has name: 'a'
-    |            Variable[0] has units: 'dimensionless'
-    |            Variable[1] has name: 'b'
-    |            Variable[1] has units: 'dimensionless'
-    |            Variable[2] has name: 'c'
-    |            Variable[2] has initial_value: '20'
-    |            Variable[2] has units: 'dimensionless'
-    |            Variable[3] has name: 'd'
-    |            Variable[3] has units: 'dimensionless'
-    |
+        The model name is: 'tutorial_2_model'
+        The model id is: 'tutorial 2 id has spaces'
+        The model defines 0 custom units:
+        The model has 1 components:
+            Component[0] has name: 'i_am_a_component'
+            Component[0] has id: 'my_component_id'
+            Component[0] has 4 variables:
+                Variable[0] has name: 'a'
+                Variable[0] has units: 'dimensionless'
+                Variable[1] has name: 'b'
+                Variable[1] has units: 'dimensionless'
+                Variable[2] has name: 'c'
+                Variable[2] has initial_value: '20'
+                Variable[2] has units: 'dimensionless'
+                Variable[3] has name: 'd'
+                Variable[3] has units: 'dimensionless'
+
 
 5: Serialise and output the model to a file
 ===========================================

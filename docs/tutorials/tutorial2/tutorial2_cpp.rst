@@ -217,7 +217,7 @@ it to be :code:`"dimensionless"` instead.
 
 -----
 
-.. container:: terminal
+.. code-block:: terminal
 
     Validator error[3]:
         Description: Variable 'c' has an invalid initial value
@@ -246,7 +246,7 @@ must be a valid variable name in the same component, or a real number.
 
 -----
 
-.. container:: terminal
+.. code-block:: terminal
 
     Validator error[4]:
         Description: CellML identifiers must contain one or more basic Latin
@@ -268,7 +268,7 @@ allowed.  Simply assigning units to the variable will fix both errors.
 
 -----
 
-.. container:: terminal
+.. code-block:: terminal
 
     Description: MathML ci element has the child text 'a' which does not
         correspond with any variable names present in component
@@ -293,24 +293,24 @@ Let's have a look at our corrected model by calling that same utility function
 which we used earlier to print it to the screen.  You should see something like
 this:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    |    The model name is: 'tutorial_2_model'
-    |    The model id is: 'tutorial 2 id has spaces'
-    |    The model defines 0 custom units:
-    |    The model has 1 components:
-    |        Component[0] has name: 'i_am_a_component'
-    |        Component[0] has id: 'my_component_id'
-    |        Component[0] has 4 variables:
-    |            Variable[0] has name: 'a'
-    |            Variable[0] has units: 'dimensionless'
-    |            Variable[1] has name: 'b'
-    |            Variable[1] has units: 'dimensionless'
-    |            Variable[2] has name: 'c'
-    |            Variable[2] has initial_value: '20'
-    |            Variable[2] has units: 'dimensionless'
-    |            Variable[3] has name: 'd'
-    |            Variable[3] has units: 'dimensionless'
+        The model name is: 'tutorial_2_model'
+        The model id is: 'tutorial 2 id has spaces'
+        The model defines 0 custom units:
+        The model has 1 components:
+            Component[0] has name: 'i_am_a_component'
+            Component[0] has id: 'my_component_id'
+            Component[0] has 4 variables:
+                Variable[0] has name: 'a'
+                Variable[0] has units: 'dimensionless'
+                Variable[1] has name: 'b'
+                Variable[1] has units: 'dimensionless'
+                Variable[2] has name: 'c'
+                Variable[2] has initial_value: '20'
+                Variable[2] has units: 'dimensionless'
+                Variable[3] has name: 'd'
+                Variable[3] has units: 'dimensionless'
 
 Step 5: Serialise and output the model to a file
 ================================================

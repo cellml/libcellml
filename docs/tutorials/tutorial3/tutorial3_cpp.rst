@@ -239,16 +239,16 @@ functions available to manipulate maths are:
 
 You should see an output similar to that shown below:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | The validator has found 18 errors!
-    |   Validator error[0]:
-    |     Description: MathML ci element has the child text 'c' which does not correspond with any variable
-    |     names present in component 'predator_prey_component'.
-    |   ...
-    |   Validator error[3]:
-    |     Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
-    |   ...
+     The validator has found 18 errors!
+       Validator error[0]:
+         Description: MathML ci element has the child text 'c' which does not correspond with any variable
+         names present in component 'predator_prey_component'.
+       ...
+       Validator error[3]:
+         Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
+       ...
 
 Running the validator will alert you variables in the MathML that don't (yet)
 exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_cpp>`.
@@ -281,12 +281,12 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_cpp>`
 
 .. code-block:: terminal
 
-    | Validator error[0]:
-    |   Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
-    |     See section 3.1.3 in the CellML specification.
-    | Validator error[1]:
-    |   Description: Variable 'a' does not have a valid units attribute.
-    |     See section 11.1.1.2 in the CellML specification.
+     Validator error[0]:
+       Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
+         See section 3.1.3 in the CellML specification.
+     Validator error[1]:
+       Description: Variable 'a' does not have a valid units attribute.
+         See section 11.1.1.2 in the CellML specification.
 
 
 3: Built-in and customised units
@@ -341,17 +341,17 @@ you'll need to define it, but it's easy to see that it's based on the built-in
 For convenience libCellML gives a variety of options for defining such scaling
 factors:
 
-- | either through the use of named prefixes which are listed on the
+-  either through the use of named prefixes which are listed on the
    :ref:`Prefix page<prefixes>`:
-  |    eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`
-- | by defining an integer or integer string as a prefix which represents the
+      eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`
+-  by defining an integer or integer string as a prefix which represents the
     :math:`log_{10}` of the scaling factor:
-  |    eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3`
+      eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3`
    gives a scaling factor of :math:`10^{-3}=0.001`
-  |    NB: using an integer string like :code:`prefix="-3"` gives the same
+      NB: using an integer string like :code:`prefix="-3"` gives the same
    result
-- | by defining the scaling factor directly, as a multiplier:
-  |    eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`
+-  by defining the scaling factor directly, as a multiplier:
+      eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`
 
 The overloaded argument option list is shown below:
 
@@ -465,14 +465,14 @@ and to include the units in the model.
     **3.f** Call the validator to check your model for errors.  You should see an
     output similar to that shown below.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | The validator has found 2 errors!
-    |   Validator error[0]:
-    |     Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
-    |     See section 3.1.3 in the CellML specification.
-    |   Validator error[1]:
-    |     Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
+     The validator has found 2 errors!
+       Validator error[0]:
+         Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
+         See section 3.1.3 in the CellML specification.
+       Validator error[1]:
+         Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
 
 These messages are really referring to just one issue.  In the first MathML
 equation we used a real number :code:`<cn>2.0</cn>` without specifying any
@@ -546,27 +546,27 @@ functionality to be able to work.  These are:
     generator to check it.  You should see an output similar to that shown
     below.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | The generator has found 6 errors!
-    |  Generator error[0]:
-    |    Description: Variable 'a' in component 'predator_prey_component' of model 'tutorial_3_model'
-    |    is not computed.
-    |  Generator error[1]:
-    |     Description: Variable 'b' in component 'predator_prey_component' of model 'tutorial_3_model'
-    |     is not computed.
-    |  Generator error[2]:
-    |     Description: Variable 'c' in component 'predator_prey_component' of model 'tutorial_3_model'
-    |     is not computed.
-    |  Generator error[3]:
-    |     Description: Variable 'd' in component 'predator_prey_component' of model 'tutorial_3_model'
-    |     is not computed.
-    |  Generator error[4]:
-    |     Description: Variable 'y_f' in component 'predator_prey_component' of model 'tutorial_3_model'
-    |     is used in an ODE, but it is not initialised.
-    |  Generator error[5]:
-    |     Description: Variable 'y_s' in component 'predator_prey_component' of model 'tutorial_3_model'
-    |     is used in an ODE, but it is not initialised.
+     The generator has found 6 errors!
+      Generator error[0]:
+        Description: Variable 'a' in component 'predator_prey_component' of model 'tutorial_3_model'
+        is not computed.
+      Generator error[1]:
+         Description: Variable 'b' in component 'predator_prey_component' of model 'tutorial_3_model'
+         is not computed.
+      Generator error[2]:
+         Description: Variable 'c' in component 'predator_prey_component' of model 'tutorial_3_model'
+         is not computed.
+      Generator error[3]:
+         Description: Variable 'd' in component 'predator_prey_component' of model 'tutorial_3_model'
+         is not computed.
+      Generator error[4]:
+         Description: Variable 'y_f' in component 'predator_prey_component' of model 'tutorial_3_model'
+         is used in an ODE, but it is not initialised.
+      Generator error[5]:
+         Description: Variable 'y_s' in component 'predator_prey_component' of model 'tutorial_3_model'
+         is used in an ODE, but it is not initialised.
 
 
 The error messages above refer to the fact that though our model has passed

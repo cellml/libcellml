@@ -99,19 +99,19 @@ by simply printing the combined model to the screen.
     containing maths and variables, both of which reference units that we haven't
     yet included in the combined model:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | The validator has found 13 errors!
-    | Validator error[0]:
-    |   Description: Variable 'V' has an invalid units reference 'mV' that does not correspond
-    |   with a standard unit or units in the variable's parent component or model.
-    |   See section 11.1.1.2 in the CellML specification.
+    The validator has found 13 errors!
+    Validator error[0]:
+      Description: Variable 'V' has an invalid units reference 'mV' that does not correspond
+      with a standard unit or units in the variable's parent component or model.
+      See section 11.1.1.2 in the CellML specification.
     |
-    |  ...
+     ...
     |
-    | Validator error[8]:
-    |   Description: Math has a cn element with a cellml:units attribute 'microA_per_cm2' that
-    |   is not a valid reference to units in the model 'Tutorial8_HHModel' or a standard unit.
+    Validator error[8]:
+      Description: Math has a cn element with a cellml:units attribute 'microA_per_cm2' that
+      is not a valid reference to units in the model 'Tutorial8_HHModel' or a standard unit.
     |
 
 .. container:: dothis
@@ -144,13 +144,13 @@ behaviour of a gated sodium gate and stored it inside a model.
     components encapsulated by the sodium channel component - the :code:`mGate`
     and :code:`hGate` components - are imported as well.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Model 'Tutorial8_HHModel' has 1 components
-    |  - Component 'membrane' has 1 child components
-    |     - Component 'sodiumChannel' has 2 child components
-    |        - Component 'mGate' has 0 child components
-    |        - Component 'hGate' has 0 child components
+    Model 'Tutorial8_HHModel' has 1 components
+     - Component 'membrane' has 1 child components
+        - Component 'sodiumChannel' has 2 child components
+           - Component 'mGate' has 0 child components
+           - Component 'hGate' has 0 child components
     |
 
 .. container:: dothis
@@ -184,7 +184,7 @@ related to units, but you will still need to address the illegal connections
 between variables in the newly-moved sodium channel *component* and the old
 environment component in the sodium channel *model*.
 
-.. container:: terminal
+.. code-block:: terminal
 
     **PUT ERRORS HERE WHEN VALIDATOR IS WORKING**
 
@@ -296,13 +296,13 @@ the unit names.  The function can be used like this:
 
     potassium_channel.component("nGate").setMath(n_gate_maths)
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Switched units 'millivolt' for units 'mV'
-    | Switched units 'millisecond' for units 'ms'
-    | Switched units 'per_millisecond' for units 'per_ms'
-    | Switched units 'per_millivolt_millisecond' for units 'per_mV_ms'
-    | Switched units 'milliS_per_cm2' for units 'mS_per_cm2'
+    Switched units 'millivolt' for units 'mV'
+    Switched units 'millisecond' for units 'ms'
+    Switched units 'per_millisecond' for units 'per_ms'
+    Switched units 'per_millivolt_millisecond' for units 'per_mV_ms'
+    Switched units 'milliS_per_cm2' for units 'mS_per_cm2'
     |
 
 .. container:: dothis
@@ -327,16 +327,16 @@ the unit names.  The function can be used like this:
 Now your model should have the encapsulation structure shown below.  You can
 check this in the same way as you did in step 2.b.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Model 'Tutorial8_HHModel' has 1 components
-    | - Component 'membrane' has 3 child components
-    |  - Component 'sodiumChannel' has 2 child components
-    |      - Component 'mGate' has 0 child components
-    |      - Component 'hGate' has 0 child components
-    |  - Component 'potassiumChannel' has 1 child components
-    |      - Component 'nGate' has 0 child components
-    |  - Component 'leakageCurrent' has 0 child components
+    Model 'Tutorial8_HHModel' has 1 components
+    - Component 'membrane' has 3 child components
+     - Component 'sodiumChannel' has 2 child components
+         - Component 'mGate' has 0 child components
+         - Component 'hGate' has 0 child components
+     - Component 'potassiumChannel' has 1 child components
+         - Component 'nGate' has 0 child components
+     - Component 'leakageCurrent' has 0 child components
     |
 
 The final component you need to add is an :code:`environment` component for
@@ -365,14 +365,14 @@ diagram below:
             |____ membrane (V, t)
                     |
                     |____ sodiumChannel (V, t, h, m)
-                    |       |
-                    |       |____ hGate (h, V, t)
-                    |       |
-                    |       |____ mGate (m, V, t)
+                          |
+                          |____ hGate (h, V, t)
+                          |
+                          |____ mGate (m, V, t)
                     |
                     |____ potassiumChannel (n, V, t)
-                    |       |
-                    |       |____ nGate (n, V, t)
+                          |
+                          |____ nGate (n, V, t)
                     |
                     |____ leakageCurrent (V)
 

@@ -9,8 +9,7 @@ comfortable with the serlialisation, mainipulation, and debugging functionality
 available in the libCellML library.  If not, please see the earlier tutorials
 which introduce these issues:
 
-- :ref:`Tutorial 1: Reading, writing, and 'rithmetic in a CellML file
-  <tutorial1_cpp>`
+- :ref:`Tutorial 1: Reading and writing a CellML file <tutorial1_cpp>`
 - :ref:`Tutorial 2: Debugging, error checking, and validation<tutorial2_cpp>`
 - :ref:`Tutorial 3: Creating a model using the API<tutorial3_cpp>`
 
@@ -22,7 +21,7 @@ you will find all the files created by the earlier tutorials in the
 .. contents:: Contents
     :local:
 
-Overview:
+Overview
 =========
 The basic steps for model creation and output are the same as those in
 :ref:`Tutorial 3<tutorial3_cpp>`, but here you'll begin to create a model based on
@@ -155,9 +154,6 @@ include a namespace definition, as well as the initial :code:`<apply>` and
     MathML3 or MathML4 formats, which are targetted at presentation rather
     than content alone.
 
-To proceed with this tutorial you can either write your own MathML string
-simply copy it from the :code:`resources/tutorial5/mathml.txt` file.
-
 .. container:: dothis
 
     **2.a** Create the MathML string(s) representing the following equations:
@@ -200,14 +196,14 @@ are:
 
 .. code-block:: terminal
 
-    | Description: MathML ci element has the child text 'alpha_n' which does not
-    |    correspond with any variable names present in component
-    |    'HodgkinHuxleySingleIonChannel' and is not a variable defined within a bvar
-    |    element.
-    | Description: Math has a cn element with a cellml:units attribute
-    |    'per_millivolt_millisecond' that is not a valid reference to units in
-    |    component 'HodgkinHuxleySingleIonChannel' or a standard unit.
-    |
+     Description: MathML ci element has the child text 'alpha_n' which does not
+        correspond with any variable names present in component
+        'HodgkinHuxleySingleIonChannel' and is not a variable defined within a bvar
+        element.
+     Description: Math has a cn element with a cellml:units attribute
+        'per_millivolt_millisecond' that is not a valid reference to units in
+        component 'HodgkinHuxleySingleIonChannel' or a standard unit.
+
 
 3. Define the variables and their units
 =======================================
@@ -251,15 +247,15 @@ every variable to have some defined.  For the proportion of open gates
     **3.c** Submit your model to the validator.  Expected errors at this stage
     will be similar to those below.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | - Description: Variable 'time' has an invalid units reference 'millisecond'
-    |   that does not correspond with a standard unit or units in the variable's
-    |   parent component or model. See section 11.1.1.2 in the CellML specification.
-    | - Description: Math has a cn element with a cellml:units attribute 'millivolt'
-    |   that is not a valid reference to units in component
-    |   'HodgkinHuxleySingleIonChannel' or a standard unit.
-    |
+     - Description: Variable 'time' has an invalid units reference 'millisecond'
+       that does not correspond with a standard unit or units in the variable's
+       parent component or model. See section 11.1.1.2 in the CellML specification.
+     - Description: Math has a cn element with a cellml:units attribute 'millivolt'
+       that is not a valid reference to units in component
+       'HodgkinHuxleySingleIonChannel' or a standard unit.
+
 
 
 4. Define the units and add to the model

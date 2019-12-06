@@ -1,8 +1,8 @@
 .. _tutorial3:
 
-==========================================
-Tutorial 3: Create a model using the API
-==========================================
+==========================================================
+Tutorial 3: Create a model and generate code using the API
+==========================================================
 
 By the time you have worked through Tutorial 3 you will be able to:
 
