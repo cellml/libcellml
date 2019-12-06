@@ -6,7 +6,7 @@ Tutorial 3 Python: Model creation and code generation in the API
 
 The outline for this tutorial is shown on the :ref:`Tutorial 3<tutorial3>`
 page. These are the C++ instructions.  For the same tutorial in C++
-please see the :ref:`Tutorial 3 in C++<tutorial2_cpp>` page instead.
+please see the :ref:`Tutorial 3 in C++<tutorial3_py>` page instead.
 
 Requirements:
 
