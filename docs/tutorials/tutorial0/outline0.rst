@@ -5,8 +5,21 @@ Tutorial 0: Installation and testing
 ====================================
 
 This tutorial will walk you through the processes of installing, building,
-and installing the files associated with libCellML.
+and linking to the libCellML library.
 
-For installation for use with C++ please use the
-:ref:`C++ installation guide<tutorial0_cpp>`, and for Python please use the
-:ref:`Python installation guide<tutorial0_cpp>`.
+C++ instructions
+----------------
+Please see the :ref:`C++ instructions<tutorial0_cpp>` page.
+
+Requirements:
+
+    - The CMake file for building :download:`CMakeLists.txt`
+    - The source code from :download:`tutorial0.cpp`
+
+Python instructions
+-------------------
+Please see the :ref:`Python instructions<tutorial0_py>` page.
+
+Requirements:
+
+    - The source code from :download:`tutorial0.py`

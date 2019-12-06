@@ -15,26 +15,30 @@ Requirements:
     - :download:`tutorial1_complete.cpp` the completed tutorial code
     - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
-Step 0: Setup
--------------
+0: Setup
+========
 
 For each of the tutorials, there is template code provided for you to get
 started in each of the tutorial folders.
 
 .. container:: dothis
 
-    **>>** Navigate into the "tutorial1" folder and confirm that you're able to compile
+    **0.a** Navigate into the "tutorial1" folder and confirm that you're able to compile
     and run this template against the libCellML library
 
-.. code::
+.. code-block:: 256
 
     make
 
-Running the template::
+Running the template:
+
+.. code-block:: 256
 
     ./tutorial1
 
-... should give the output::
+... should give the output:
+
+.. code-block:: termi256nal
 
     -----------------------------------------------
     TUTORIAL 1: READING AND WRITING CELLML FILES
