@@ -390,7 +390,7 @@ example:
 
 .. container:: dothis
 
-    **3.a** Use the example above to create, name and define the units of "day"
+    **3.a** Use the example above to create, name and define the units of "month"
     which will represent your time variable.  This should be defined as a
     multiple of the built-in unit :code:`second`.
 
@@ -405,7 +405,7 @@ our :code:`millisecond` units, we could then use this definition to define the
 
 .. container:: dothis
 
-    **3.b** Create a :code:`Units` called "per_day" based on the one you just
+    **3.b** Create a :code:`Units` called "per_month" based on the one you just
     created, as shown above.
 
 The final type of unit is a custom irreducible unit.
@@ -439,8 +439,8 @@ by the need for dimensional consistency in our governing equations.
 
 .. container:: dothis
 
-    **3.d** Create two units representing "per fish day" (for the :code:`b`
-    variable) and "per fish day" (for the :code:`d` variable).
+    **3.d** Create two units representing "per fish month" (for the :code:`b`
+    variable) and "per fish month" (for the :code:`d` variable).
 
 The final two steps are to associate each variable with its appropriate units,
 and to include the units in the model.

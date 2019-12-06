@@ -155,9 +155,8 @@ int main()
     model->addUnits(day);
 
     libcellml::UnitsPtr month = libcellml::Units::create("month");
-    month->addUnit(day, 0, 1, 30); // base unit, prefix, exponent, multiplier
+    month->addUnit("day", 0, 1, 30); // base unit, prefix, exponent, multiplier
     model->addUnits(month);
-
 
     libcellml::UnitsPtr per_month = libcellml::Units::create("per_month");
     per_month->addUnit("month", -1); // base unit, exponent

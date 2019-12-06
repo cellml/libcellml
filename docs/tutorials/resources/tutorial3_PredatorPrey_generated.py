@@ -17,7 +17,7 @@ class VariableType(Enum):
     ALGEBRAIC = 3
 
 
-VOI_INFO = {"name": "time", "units": "day", "component": "component"}
+VOI_INFO = {"name": "time", "units": "month", "component": "component"}
 
 STATE_INFO = [
     {"name": "y_s", "units": "number_of_sharks", "component": "component"},
@@ -25,10 +25,10 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "a", "units": "per_day", "component": "component", "type": VariableType.CONSTANT},
-    {"name": "b", "units": "per_shark_day", "component": "component", "type": VariableType.CONSTANT},
-    {"name": "d", "units": "per_fish_day", "component": "component", "type": VariableType.CONSTANT},
-    {"name": "c", "units": "per_day", "component": "component", "type": VariableType.COMPUTED_CONSTANT}
+    {"name": "a", "units": "per_month", "component": "component", "type": VariableType.CONSTANT},
+    {"name": "b", "units": "per_shark_month", "component": "component", "type": VariableType.CONSTANT},
+    {"name": "d", "units": "per_fish_month", "component": "component", "type": VariableType.CONSTANT},
+    {"name": "c", "units": "per_month", "component": "component", "type": VariableType.COMPUTED_CONSTANT}
 ]
 
 
