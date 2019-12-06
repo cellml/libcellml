@@ -203,7 +203,7 @@ if __name__ == "__main__":
     equation1 = \
         "<apply><eq/>"\
         "   <ci>c</ci>"\
-        "   <apply><minus/>"\
+        "   <apply><plus/>"\
         "       <ci>a</ci>"\
         "       <cn cellml:units=\"per_day\">2.0</cn>"\
         "   </apply>"\
