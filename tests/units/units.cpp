@@ -1518,7 +1518,7 @@ TEST(Units, isNotBaseUnitsImported)
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u3->setName("u3");
     u3->addUnit("u2", 0, 1.0, 1.0);
-    u4->setName("u3");
+    u4->setName("some_u");
 
     model->addUnits(u1);
     model->addUnits(u2);
@@ -1526,9 +1526,10 @@ TEST(Units, isNotBaseUnitsImported)
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
-
     import->setModel(model);
+    
     u4->setImportSource(import); // u4 part of a separate model
+    u4->setImportReference("u3");
 
     EXPECT_TRUE(u4->isImport());
     EXPECT_FALSE(u4->isBaseUnit());
@@ -1551,7 +1552,7 @@ TEST(Units, isNotBaseUnitsCheckUsingImport)
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u3->setName("u3");
     u3->addUnit("u2", 0, 1.0, 1.0);
-    u4->setName("u3");
+    u4->setName("some_u");
 
     model->addUnits(u1);
     model->addUnits(u2);
@@ -1559,14 +1560,13 @@ TEST(Units, isNotBaseUnitsCheckUsingImport)
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
-
     import->setModel(model);
 
     EXPECT_FALSE(u4->isImport());
     EXPECT_TRUE(u4->isBaseUnit()); // expect true as unit is not declared to be an import
 }
 
-TEST(Units, isNotBaseUnitsImportUnresolved)
+TEST(Units, isBaseUnitsImportModelUnresolved)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("model");
@@ -1583,7 +1583,7 @@ TEST(Units, isNotBaseUnitsImportUnresolved)
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u3->setName("u3");
     u3->addUnit("u2", 0, 1.0, 1.0);
-    u4->setName("u3");
+    u4->setName("some_u");
 
     model->addUnits(u1);
     model->addUnits(u2);
@@ -1593,12 +1593,13 @@ TEST(Units, isNotBaseUnitsImportUnresolved)
     import->setUrl("I_am_a_url");
 
     u4->setImportSource(import);
+    u4->setImportReference("u3");
 
     EXPECT_TRUE(u4->isImport());
     EXPECT_FALSE(u4->isBaseUnit()); // expect false as unit import is unresolved
 }
 
-TEST(Units, isBaseUnitImportUnresolved)
+TEST(Units, isBaseUnitImportReferenceUnresolved)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("model");
@@ -1607,7 +1608,7 @@ TEST(Units, isBaseUnitImportUnresolved)
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u");
     libcellml::UnitsPtr u2 = libcellml::Units::create();
-    u2->setName("u");
+    u2->setName("some_other_u");
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
@@ -1615,9 +1616,10 @@ TEST(Units, isBaseUnitImportUnresolved)
     model->addUnits(u1);
 
     u2->setImportSource(import);
+    import->setModel(model);
 
     EXPECT_TRUE(u2->isImport());
-    EXPECT_FALSE(u2->isBaseUnit()); // expect false as model import unresolved
+    EXPECT_FALSE(u2->isBaseUnit()); // expect false as import ref name unresolved
 }
 
 TEST(Units, isNotBaseUnitButUnitIsBaseImport)
@@ -1637,7 +1639,7 @@ TEST(Units, isNotBaseUnitButUnitIsBaseImport)
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u3->setName("u3");
     u3->addUnit("u2", 0, 1.0, 1.0);
-    u4->setName("u3"); // u4 is the same unit as u3, but has been imported
+    u4->setName("some_other_u"); 
 
     model->addUnits(u1);
     model->addUnits(u2);
@@ -1645,9 +1647,10 @@ TEST(Units, isNotBaseUnitButUnitIsBaseImport)
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
+    import->setModel(model);
 
     u4->setImportSource(import);
-    import->setModel(model);
+    u4->setImportReference("u3");
 
     EXPECT_TRUE(u4->isImport());
     EXPECT_FALSE(u4->isBaseUnit()); // expect false as unit import is resolved but not base
@@ -1670,7 +1673,7 @@ TEST(Units, isBaseUnitAndUnitIsBaseImport)
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u3->setName("u3");
     u3->addUnit("u2", 0, 1.0, 1.0);
-    u4->setName("u1"); // u4 is the same unit as u1, but has been imported
+    u4->setName("some_other_u"); // u4 is the same unit as u1, but has been imported
 
     model->addUnits(u1);
     model->addUnits(u2);
@@ -1678,9 +1681,10 @@ TEST(Units, isBaseUnitAndUnitIsBaseImport)
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
+    import->setModel(model);
 
     u4->setImportSource(import);
-    import->setModel(model);
+    u4->setImportReference("u1");
 
     EXPECT_TRUE(u4->isImport());
     EXPECT_TRUE(u4->isBaseUnit()); // expect true as unit import is resolved and is base
