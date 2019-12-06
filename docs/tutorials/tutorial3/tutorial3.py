@@ -5,6 +5,7 @@
       - create a new model and its child entities from scratch using the API
       - define custom combinations of built-in units
       - define your own custom units independent from the built-in units
+      - use the Generator to create C or Python code representing the model
 
     This tutorial assumes that you are comfortable with:
       - accessing and adjusting names of items inside a model hierarchy (T2)
@@ -19,9 +20,9 @@ from libcellml import Component, Generator, GeneratorProfile, Model, Units, Vali
 from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal
 
 if __name__ == "__main__":
-    print("-----------------------------------------------------")
-    print("     TUTORIAL 3: CREATE A MODEL USING THE API        ")
-    print("-----------------------------------------------------")
+    print("-------------------------------------------------------------")
+    print(" TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API")
+    print("-------------------------------------------------------------")
 
     # ---------------------------------------------------------------------------
     #   STEP 1: Create the model instance

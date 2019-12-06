@@ -32,9 +32,9 @@ Running the template::
 
 .. container:: terminal
 
-    | -----------------------------------------------
-    |    TUTORIAL 3: CREATE A MODEL USING THE API
-    | -----------------------------------------------
+    | ---------------------------------------------------------------
+    |    TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API
+    | ---------------------------------------------------------------
     |
 
 ---------------------------------
@@ -51,7 +51,7 @@ up a :code:`Model` instance, and creating a component inside it.
 
     **1.a**
     Create a new :code:`Model` using the
-    ``libcellml::SomethingPtr something = libcellml::Something::create("myThingName");``
+    :code:`libcellml::SomethingPtr something = libcellml::Something::create("myThingName");`
     idiom to create and name your model.
 
 .. container:: dothis
@@ -75,7 +75,7 @@ The system of equations which describe the populations are given by:
 
 .. math::
 
-    c = a - 2.0
+    c = a + 2.0
 
     \frac{dy_s}{dt} =f(sharks, fish, time) = a y_s + b y_s y_f
 
@@ -83,7 +83,7 @@ The system of equations which describe the populations are given by:
 
 
 where :math:`y_s` and :math:`y_f` are the number of sharks and thousands of
-fish respectively, and the constants :math:`(a, b, d)=(1.2, -0.6, 0.3)`
+fish respectively, and the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)`
 govern their behaviour.  It's clear that the value of constant :math:`c` is
 easily calculable from the first equation, but we will leave it in this form
 to better illustrate the operation of the :code:`Generator` later on.
@@ -104,7 +104,7 @@ Looking at the top equation first, the MathML2 representation of
 
     <apply><eq/>
        <ci>c</ci>
-       <apply><minus/>
+       <apply><olus/>
            <ci>a</ci>
            <cn>2.0</cn>
        </apply>
@@ -114,13 +114,13 @@ Four things can be seen here:
 
 - the :code:`<apply>` opening and :code:`</apply>` closing tags which surround
   the *operations*,
-- the *operations* tags like :code:`<eq/>` and :code:`<minus/>` (or :code:`<plus/>`,
+- the *operations* tags like :code:`<eq/>` and :code:`<plus/>` (or :code:`<minus/>`,
   :code:`<times/>`, :code:`<divide/>`) which stand alone rather than in an
   open/close pair,
 - the :code:`<ci>` opening and :code:`</ci>` closing tags which surround the
   variable names, and
 - the :code:`<cn>` opening and :code:`</cn>` closing tags which surround the
-  constant :math:`0.5` value.
+  constant :math:`2.0` value.
 
 .. container:: dothis
 
@@ -581,9 +581,9 @@ the same :code:`setInitialValue` function.
 
 .. container:: dothis
 
-    **4.c** Set the values of the constants :math:`(a, b, d)=(1.2, -0.6, 0.3)`
-    and the initial conditions such that :math:`y_f(t=0)=1.0` and
-    :math:`y_s(t=0)=2.0`.  Note that:
+    **4.c** Set the values of the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)`
+    and the initial conditions such that :math:`y_f(t=0)=2.0` and
+    :math:`y_s(t=0)=1.0`.  Note that:
 
     - the constant :math:`c` will be calculated by our equation 1, so does
       not need to be specified,

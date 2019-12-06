@@ -17,7 +17,6 @@ By the end of this tutorial you will be able to:
 
 1: Include the generated code in this project
 =============================================
-
 In :ref:`Tutorial 3<tutorial3>` you created a CellML model representing the
 population dynamics in a predator-prey situation, and used the
 :code:`Generator` to write files which can be run using a numerical integration
@@ -52,7 +51,7 @@ use the :code:`some_alias` throughout the rest of the code.
     :ref:`Tutorial 0<tutorial0>`.
 
 2: Investigate the information items in the generated files
----------------------------------------------------------------------------
+===========================================================
 This step is about figuring out what's contained in the generated file, and
 demonstrating how you can use it to run your simulation.
 
@@ -148,7 +147,7 @@ a dictionary with the same keys as the :code:`STATE_INFO` dictionaries.
     terminal.
 
 3: Investigate the functions provided in the generated files
--------------------------------------------------------------------------------
+============================================================
 As well as the information items, the generated module also contains functions
 which are derived from the governing equations in the MathML blocks in the
 original CellML model.
@@ -237,7 +236,7 @@ items for which we specified an inital value have been applied, the constant
 Now we're ready to begin solving the model.
 
 4: Iterate through the solution
---------------------------------------------------------------------------
+===============================
 This part will make use of a simple routine to step through the solution
 iterations using the Euler method to update the state variables.  Following
 initialisation of some solution controls (time step, end point) there are
@@ -310,7 +309,7 @@ throughout the solution process.  This is done by calling the
 
 
 5: Output
----------------
+=========
 
 .. container:: dothis
 

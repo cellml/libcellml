@@ -41,9 +41,9 @@ population.  In maths this relationship can be written:
 
     \frac{dy_f}{dt} =f(sharks, fishes, time) = c y_f + d y_s y_f
 
-where the constants :math:`(a, b, c, d)=(1.2, -0.6, -0.8, 0.3)` and we'll use
-the initial condtions of :math:`y_s(t=0)=2.0` and
-:math:`y_f(t=0)=1.0`.
+where the constants :math:`(a, b, c, d)=(-0.8, 0.3, 1.2, -0.6)` and we'll use
+the initial condtions of :math:`y_s(t=0)=1.0` and
+:math:`y_f(t=0)=2.0`.
 
 In order to model these unusual populations you'll need to create your own
 custom units, to enter and check these governing equations in MathML syntax,

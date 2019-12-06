@@ -1,10 +1,11 @@
 /**
- *  TUTORIAL 3: MODEL CREATION THROUGH THE API
+ *  TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API
  *
  *  By the time you have worked through Tutorial 3 you will be able to:
  *    - create a new model and its child entities from scratch using the API
  *    - define custom combinations of built-in units
  *    - define your own custom units independent from the built-in units
+ *    - use the Generator to create C or Python code representing the model
  *
  *  This tutorial assumes that you are comfortable with:
  *    - accessing and adjusting names of items inside a model hierarchy (T2)
@@ -12,11 +13,6 @@
  *    - accessing the errors produced by a validator and using them to correct
  *      the model (T2)
  *    - serialising and printing a model to a CellML file (T1)
- */
-
-/**
- *  TUTORIAL 3: MODEL CREATION AND GENERATION THROUGH THE API
- *
  */
 
 #include <fstream>
@@ -29,9 +25,9 @@
 
 int main()
 {
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   TUTORIAL 3: CREATE A MODEL USING THE API" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------" << std::endl;
+    std::cout << " TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API" << std::endl;
+    std::cout << "-------------------------------------------------------------" << std::endl;
 
     // ---------------------------------------------------------------------------
     //  STEP 1: Create the model, component and maths
@@ -65,7 +61,7 @@ int main()
     std::string equation1 =
         "<apply><eq/>"
         "   <ci>c</ci>"
-        "   <apply><minus/>"
+        "   <apply><plus/>"
         "       <ci>a</ci>"
         "       <cn>2.0</cn>"
         "   </apply>"
@@ -228,11 +224,11 @@ int main()
 
     //  4.c Add initial conditions to all variables except the base variable, time
     //      and the constant c which will be computed. Reprocess the model.
-    a->setInitialValue(1.2);
-    b->setInitialValue(-0.6);
-    d->setInitialValue(0.3);
-    sharks->setInitialValue(2.0);
-    fish->setInitialValue(1.0);
+    a->setInitialValue(-0.8);
+    b->setInitialValue(0.3);
+    d->setInitialValue(-0.6);
+    sharks->setInitialValue(1.0);
+    fish->setInitialValue(2.0);
 
     generator->processModel(model);
     printErrorsToTerminal(generator);

@@ -5,6 +5,7 @@
       - create a new model and its child entities from scratch using the API
       - define custom combinations of built-in units
       - define your own custom units independent from the built-in units
+      - use the Generator to create C or Python code representing the model
 
     This tutorial assumes that you are comfortable with:
       - accessing and adjusting names of items inside a model hierarchy (T2)
@@ -19,9 +20,9 @@ from libcellml import Component, Generator, GeneratorProfile, Model, Units, Vali
 from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal
 
 if __name__ == "__main__":
-    print("-----------------------------------------------------")
-    print("     TUTORIAL 3: CREATE A MODEL USING THE API        ")
-    print("-----------------------------------------------------")
+    print("-------------------------------------------------------------")
+    print(" TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API")
+    print("-------------------------------------------------------------")
 
     # ---------------------------------------------------------------------------
     #   STEP 1: Create the model instance
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     equation1 = \
         "<apply><eq/>"\
         "   <ci>c</ci>"\
-        "   <apply><minus/>"\
+        "   <apply><plus/>"\
         "       <ci>a</ci>"\
         "       <cn>2.0</cn>"\
         "   </apply>"\
@@ -146,11 +147,11 @@ if __name__ == "__main__":
     #       First we create the "day" and "per_day" units
     day = Units()
     day.setName("day")
-    day.addUnit("second", 0, 1, 86400)
+    day.addUnit("second", "3", 1, 86.4)
     model.addUnits(day)
     # "second" is a built-in unit, used inside "day" with the
     # multiplier 84600.  NB this is equivalent to specifying a prefix
-    # integer value of 3, corresponding to the power of 10 by
+    # string value of 3, corresponding to the power of 10 by
     # which the base is multiplied, as well as a multiplier of 86.4, etc
 
     # The "per_day" unit is simply the inverse of the "day"
@@ -228,11 +229,11 @@ if __name__ == "__main__":
 
     #  4.c Add initial conditions to all variables except the base variable, time
     #      and the constant c which will be computed. Reprocess the model.
-    a.setInitialValue(1.2)
-    b.setInitialValue(-0.6)
-    d.setInitialValue(0.3)
-    sharks.setInitialValue(2.0)
-    fish.setInitialValue(1.0)
+    a.setInitialValue(-0.8)
+    b.setInitialValue(0.3)
+    d.setInitialValue(-0.6)
+    sharks.setInitialValue(1.0)
+    fish.setInitialValue(2.0)
 
     generator.processModel(model)
     print_errors_to_terminal(generator)
@@ -246,7 +247,7 @@ if __name__ == "__main__":
     write_file.close()
 
     interface_code = generator.interfaceCode()
-    write_file.open("tutorial3_PredatorPrey_generated.h","w")
+    write_file = open("tutorial3_PredatorPrey_generated.h","w")
     write_file.write(interface_code)
     write_file.close()
 
@@ -258,5 +259,7 @@ if __name__ == "__main__":
     implementation_code_python = generator.implementationCode()
     write_file = open("tutorial3_PredatorPrey_generated.py", "w")
     write_file.write(implementation_code_python)
+
+    print("All the files have been printed.")
 
     #  4.g Go have a cuppa, you're done!
