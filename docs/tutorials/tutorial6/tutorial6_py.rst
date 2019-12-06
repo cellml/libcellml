@@ -17,9 +17,10 @@ Resources:
     - If you did not complete Tutorial 5 you can download the file created there:
       :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
 
--------------------
+.. contents::
+
 1: Create the model
--------------------
+===================
 By now you should be familiar and comfortable with using the API to create
 the model instance, and normally that's how you'd start ... but not this time.
 If you completed Tutorial 5 you will have created a model representing a
@@ -77,9 +78,8 @@ can access the items contained inside a model by index as well as by name.
     **1.d** Retrieve the component from the model and rename it to
     "potassiumChannel".
 
----------------------------------------
 2: Include more components in the model
----------------------------------------
+=======================================
 This tutorial is intended to illustrate the use of more than one component,
 and how they're connected to each other.  Let's get started with creating two
 additional components: one to represent the environment variables which will be
@@ -106,9 +106,8 @@ gate.
 
     **2.d** Check that the model is valid so far using your validator instance.
 
-------------------------------------
 3: Create a component for the n-gate
-------------------------------------
+====================================
 The last component that we need to create is an update from our Tutorial 5
 model such that the rate constants :math:`\alpha` and :math:`\beta` become
 functions of voltage.  We have another choice to make.  We could either:
@@ -170,9 +169,8 @@ constant inside the MathML, but still need to be present in the parent model.
     **3.d** Create the missing units and add to the model.  Confirm that the
     model is now valid.
 
-----------------------------------------
 4: Connect the components to one another
-----------------------------------------
+========================================
 In order for components to be able to relate to one another, we have to define
 two things.  Firstly, the hierarchy in which they exist - this is called the
 *encapsulation* and determines which components are able to access others. Each
@@ -285,7 +283,7 @@ the :code:`potassiumChannel` component as a go-between: it is a sibling of the
     and :code:`potassiumChannel` components.  Validate your model again.  You
     should see a validation message similar to that shown below.
 
-.. container:: terminal
+.. code-block:: terminal
 
     **TODO Put error messages here when they're working**
 
@@ -318,9 +316,8 @@ follows:
     variables to specify their avaiable interfaces.  Re-validate your model and
     confirm that it is now free of errors.
 
-------------------------------
 5: Define the driving function
-------------------------------
+==============================
 In order to give the simulation something to actually simulate, we need to add
 a driving function as an input.  This simulation replicates a voltage clamp
 experiment wherein the input voltage is given a square wave and the current
@@ -371,9 +368,8 @@ default, and can apply to more than one section of the axis.
 
     **5.c** Call the validator to check that your model is free of errors.
 
---------------------------------
 6: Serialise and print the model
---------------------------------
+================================
 
 .. container:: dothis
 

@@ -1,8 +1,8 @@
 ..  _tutorial5_cpp:
 
------------------------------------------
-Tutorial 5: Modelling a gated ion channel
------------------------------------------
+=============================================
+Tutorial 5 C++: Modelling a gated ion channel
+=============================================
 
 If you're reading this it's presumed that you're already
 comfortable with the serlialisation, mainipulation, and debugging functionality
@@ -19,9 +19,10 @@ ones.  If you need to jump in at some intermediate stage
 you will find all the files created by the earlier tutorials in the
 :code:`resources` folder.
 
-Overview:
----------
+.. contents::
 
+Overview:
+=========
 The basic steps for model creation and output are the same as those in
 :ref:`Tutorial 3<tutorial3_cpp>`, but here you'll begin to create a model based on
 the Hodgkin Huxley model. All the biological and mathematical modelling
@@ -43,7 +44,7 @@ structure given in the :code:`tutorial5.cpp` file, or to simply read the
 finished code given in the :code:`tutorial5_complete.cpp` file.
 
 1: Create the model and component items
----------------------------------------
+=======================================
 Following the same procedures as in previous tutorials, our first step is to
 create new model and component instances.  We haven't encountered it yet, but
 the real power of modelling comes from our ability to use and reuse different
@@ -70,7 +71,7 @@ biological and mathematical theory behind this particular model in
     Create a validator and use it to verify that your model has no errors.
 
 2: Define the mathematical behaviour
-------------------------------------
+====================================
 The next step is to define what the component actually *does*.  In this case,
 its purpose is to represent a collection of gates in series in order to model
 the channel behaviour.  Let's start with the simple ODE below:
@@ -196,7 +197,7 @@ are:
     will be similar to those below, relating to not yet defined variables and
     units:
 
-.. container:: terminal
+.. code-block:: terminal
 
     | Description: MathML ci element has the child text 'alpha_n' which does not
     |    correspond with any variable names present in component
@@ -208,7 +209,7 @@ are:
     |
 
 3. Define the variables and their units
----------------------------------------
+=======================================
 Now that the mathematical behaviour is defined, the variables that have been
 used also need to be defined.  Each variable needs a name which is equal to the
 term inside the :code:`<ci>` tags in the MathML, as well as units defined in
@@ -261,8 +262,7 @@ every variable to have some defined.  For the proportion of open gates
 
 
 4. Define the units and add to the model
-----------------------------------------
-
+========================================
 The variables created above referenced unit names of :code:`millisecond`,
 :code:`millivolt`, :code:`per_millisecond`, and :code:`dimensionless`.  The
 :code:`dimensionless` units are already present, so we don't need to take any
@@ -292,9 +292,8 @@ covered in :ref:`Tutorial 3<tutorial3_cpp>` in case you need a reminder.
     created to that provided in the
     :code:`resources/tutorial5/tutorial5_complete.cpp` file.
 
-Step 5: Serialise and write to a file
--------------------------------------
-
+5: Serialise and write to a file
+================================
 The final steps are to output our created model to a CellML2.0 file (which
 will be used in subsequent tutorials, so be sure to name it something
 meaningful!) as well as generating the C or Python files which we can use to
@@ -326,7 +325,6 @@ inside the :code:`Generator`.
     header file contents) as well as the :code:`implementationCode` (the source
     file contents), whereas for Python you need only output the
     :code:`implementationCode`.  Write the file(s).
-
 
 The second step is the
 same as what was covered at the end of :ref:`Tutorial 2<tutorial2_cpp>` to use

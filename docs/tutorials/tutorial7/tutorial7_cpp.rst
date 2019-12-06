@@ -19,9 +19,10 @@ Resources:
     - If you did not complete Tutorial 5 you can download the file created there:
       :download:`../resources/tutorial7_SodiumChannelModel.cellml`
 
+.. contents::
 
 0: Setup
---------
+========
 
 .. container:: dothis
 
@@ -32,7 +33,7 @@ Resources:
     **0.b** Create a validator for later use.
 
 1: Create the sodium channel component
---------------------------------------
+======================================
 
 .. container:: dothis
 
@@ -80,7 +81,7 @@ Resources:
     **1.e** Validate that the model is now free of errors.
 
 2: Create the m-gate component
-------------------------------
+==============================
 
 .. container:: dothis
 
@@ -124,7 +125,7 @@ Resources:
 
 
 3: Create the h-gate component
-------------------------------
+==============================
 
 .. container:: dothis
 
@@ -152,11 +153,10 @@ where:
     **3.d** Check that the model is valid to this point.
 
 4: Create the environment component
------------------------------------
-
-As in the previous Tutorial 5 we need to create an environment component which
-we'll use to control the time and voltage in which the channels operate.  As
-before we define two variables:
+===================================
+As in the previous :ref:`Tutorial 5<tutorial5_cpp>` we need to create an
+environment component which we'll use to control the time and voltage in which
+the channels operate.  As before we define two variables:
 
 - :math:`V` voltage, mV
 - :math:`t` time, ms
@@ -170,8 +170,7 @@ We will add the driving function later.
     errors.
 
 5: Connect the components
--------------------------
-
+=========================
 At this stage we should have three components in the hierarchy below:
 ::
 
@@ -209,8 +208,7 @@ the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_cpp>` that:
     appropriate interface type using the :code:`setInterfaceType` function.
 
 6: Set the driving function
----------------------------
-
+===========================
 The last step in defining your model behaviour is the driving function.  As in
 the other tutorials, this is a voltage clamp such that the voltage is held at
 a value of -20mV in the interval 5ms < t < 15 ms and -85mV otherwise.
@@ -229,8 +227,7 @@ these values throughout the model.
 
 
 7: Write the model to a CellML file
------------------------------------
-
+===================================
 Finally - provided your model is valid - you can serialise it and output to a
 file.  This file will be used in later tutorials when we combine it with the
 potassium channel model to simulate a neuron **TODO??**.

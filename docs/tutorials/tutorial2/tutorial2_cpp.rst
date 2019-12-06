@@ -18,8 +18,7 @@ Requirements:
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 0: Setup
 ========

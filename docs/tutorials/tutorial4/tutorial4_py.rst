@@ -1,8 +1,8 @@
 .. _tutorial4_py:
 
-==========================================
-Tutorial 4: Generating code and simulation
-==========================================
+=================================================
+Tutorial 4 Python: Generating code and simulation
+=================================================
 
 Getting started:  If you're reading this it's presumed that you're already
 comfortable with the deserlialisation and debugging functionality
@@ -14,6 +14,8 @@ By the end of this tutorial you will be able to:
   for integrating
 - use the simple solver provided to numerically integrate the governing
   equations of the model.
+
+.. contents::
 
 1: Include the generated code in this project
 =============================================
@@ -96,7 +98,6 @@ We can see the results of this classification process in the generated code:
       {"name": "d", "units": "per_1000fish_day", "component": "predator_prey_component", "type": VariableType.CONSTANT},
       {"name": "c", "units": "per_day", "component": "predator_prey_component", "type": VariableType.COMPUTED_CONSTANT}
   ]
-
 
 These are accessible in the imported module:
 
@@ -257,7 +258,6 @@ three general parts to each iteration:
     **4.b** Create a file for output and open it.  We'll simply write the
     solution directly to the file instead of allocating memory for storage.
     Name your columns with VOI and the state variable names and units.
-
 
 Specification of the variables
 ++++++++++++++++++++++++++++++

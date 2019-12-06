@@ -20,10 +20,10 @@ Resources:
     - If you did not complete Tutorial 7 you can download the file created there:
       :download:`../resources/tutorial8_MembraneModel.cellml`
 
-----------------
-0: Set the stage
-----------------
+.. contents::
 
+0: Set the stage
+==============================================
 We'll start by creating the utilities that we'll use later on.
 
 .. container:: dothis
@@ -34,9 +34,8 @@ We'll start by creating the utilities that we'll use later on.
     - a :code:`Validator` instance for debugging purposes
     - a :code:`ModelPtr` model to attach everything into
 
-------------------------------
 1: Read the membrane component
-------------------------------
+==============================================
 
 .. container:: dothis
 
@@ -123,10 +122,8 @@ by simply printing the combined model to the screen.
     **1.e** Validate the combined model once more and check that it is now free
     of errors.
 
-------------------------------------
 2: Read the sodium channel component
-------------------------------------
-
+==============================================
 In :ref:`Tutorial 7<tutorial7_cpp>` you created a component to represent the
 behaviour of a gated sodium gate and stored it inside a model.
 
@@ -221,9 +218,8 @@ variables:
 
     **2.f** Validate the combined model to see that it is now free of errors.
 
------------------------------------------
 3: Import the potassium channel component
------------------------------------------
+==============================================
 Now we simply need to repeat the same process for our potassium channel
 component and add it to the combined model.
 
@@ -325,9 +321,8 @@ the unit names.  The function can be used like this:
     :code:`potassiumChannelModel`, and validate that the combined model
     is now free of errors.
 
--------------------------------------
 4: Read the current leakage component
--------------------------------------
+==============================================
 
 .. container:: dothis
 
@@ -338,9 +333,8 @@ the unit names.  The function can be used like this:
     and make any adjustments you need to until your combined model is free of
     errors.
 
------------------------------------
 5: Create the environment component
------------------------------------
+==============================================
 Now your model should have the encapsulation structure shown below.  You can
 check this in the same way as you did in step 2.b.
 
@@ -368,9 +362,9 @@ the simulation as well as the membrane voltage :math:`V`.
     **5.b** Include the local environment variables that you'll need, including
     their units, and validate that your model is free of errors.
 
------------------------------------
+
 6: Connect the equivalent variables
------------------------------------
+==============================================
 The encapsulation structure for this model has several tiers, as shown in the
 diagram below:
 
@@ -413,9 +407,8 @@ which are shared with an adjacent component.
 
     **6.c** Validate that the final model is free of errors.
 
-------------------------------
 7: Define the driving function
-------------------------------
+==============================================
 In contrast to earlier tutorials, this simulation will not be a voltage clamp
 experiment, but will model instead the response to a stimulus current in the
 membrane. You've already got some maths inside the :code:`membrane`
@@ -445,8 +438,7 @@ add a definition for this stimulus current.
     std::string membraneMathML = membrane->math();
     insertIntoMathMLString(membraneMathML, stimulusEquation);
 
--------------------
 8: Output the model
--------------------
+==============================================
 Finally you're ready to write the model ready for simulation.  You know the
 drill.

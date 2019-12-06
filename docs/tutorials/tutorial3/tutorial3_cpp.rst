@@ -14,8 +14,7 @@ Requirements:
     - :download:`tutorial3.cpp` Either the skeleton code, or ..
     - :download:`tutorial3_complete.cpp` the completed tutorial code
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 0: Setup
 ========

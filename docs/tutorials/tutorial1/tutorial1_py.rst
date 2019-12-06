@@ -1,7 +1,7 @@
 ..  _tutorial1_py:
 
 ================================================================
-Tutorial 1 Python instructions: Reading and writing CellML files
+Tutorial 1 Python: Reading and writing CellML files
 ================================================================
 
 For overview, please see the :ref:`Tutorial 1 overview page<tutorial1>`.
@@ -14,8 +14,7 @@ Requirements:
     - :download:`tutorial1_complete.py` the completed tutorial code
     - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 0: Setup
 ========

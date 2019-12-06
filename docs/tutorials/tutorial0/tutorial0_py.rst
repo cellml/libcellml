@@ -6,8 +6,7 @@ Tutorial 0: Python-based installation
 
 **TODO* Update this with pip installation instructions??
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 1: Create the libCellML library
 ==========================================================

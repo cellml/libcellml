@@ -1,8 +1,8 @@
 .. _tutorial3_cpp:
 
-=============================================================
-Tutorial 3 C++: Model creation and code generation in the API
-=============================================================
+================================================================
+Tutorial 3 Python: Model creation and code generation in the API
+================================================================
 
 The outline for this tutorial is shown on the :ref:`Tutorial 3<tutorial3>`
 page. These are the C++ instructions.  For the same tutorial in C++
@@ -13,8 +13,7 @@ Requirements:
     - :download:`tutorial3.py` Either the skeleton code, or ..
     - :download:`tutorial3_complete.py` the completed tutorial code
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 0: Setup
 ========
@@ -35,7 +34,6 @@ template:
     |    TUTORIAL 3: CREATE A MODEL USING THE API
     | -----------------------------------------------
     |
-
 
 1: Set up the governing equations
 =================================

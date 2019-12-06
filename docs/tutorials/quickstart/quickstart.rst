@@ -15,8 +15,7 @@ you'd rather start with a gentler introduction, please start from
 This section explains the basic classes inside libCellML, and the most commonly
 used functionality associated with them.
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 
 General API strategy for use

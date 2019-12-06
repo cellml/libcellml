@@ -17,10 +17,10 @@ Requirements:
     - :download:`../utilities/tutorial_utilities.py` Utility functions for
       use in the tutorials.
 
--------------
-0: Setup
--------------
+.. contents::
 
+0: Setup
+========
 For each of the tutorials, there is template code provided for you to get
 started in each of the :code:`tutorial*.py` files.
 
@@ -45,9 +45,8 @@ This should give the output:
     | -----------------------------------------------
     |
 
----------------------------------------------------------
 1: Create a Model from the contents of a CellML file
----------------------------------------------------------
+====================================================
 
 .. container:: dothis
 
@@ -55,10 +54,9 @@ This should give the output:
     As you did in Tutorial 1, use the :code:`Parser` to create a model
     from the :Code:`resources/tutorial2.cellml` file provided.
 
-----------------------------------------------------
-2: Print the contents of the file to the screen
-----------------------------------------------------
 
+2: Print the contents of the file to the screen
+====================================================
 Instead of duplicating the work you did throughout the middle steps of
 :ref:`Tutorial 1<tutorial1_py>`, we've provided you with a set of utility
 functions in the :code:`tutorial_utilities.py` file which will help with
@@ -144,10 +142,8 @@ CellML2.0 specification document for reference.
                 r=specification_heading
                 ))
 
------------------------------------------
 3: Fix the errors that were reported
------------------------------------------
-
+====================================================
 As you go through these tutorials you should be able to compile and run your
 code at any stage.  If you haven't been doing so already, then do it now, and
 take a look at what you've printed.  This section works through each of the
@@ -296,10 +292,9 @@ instead.
     Fix up this last error, and check for yourself that your corrected
     model is now error-free.
 
-------------------------------------------
-4: Have a look at the corrected model
-------------------------------------------
 
+4: Have a look at the corrected model
+=====================================
 Let's have a look at our corrected model by calling that same utility function
 which we used earlier to print it to the screen.  You should see something like
 this:
@@ -324,9 +319,8 @@ this:
     |            Variable[3] has units: 'dimensionless'
     |
 
-------------------------------------------------
 5: Serialise and output the model to a file
-------------------------------------------------
+===========================================
 
 .. container:: dothis
 

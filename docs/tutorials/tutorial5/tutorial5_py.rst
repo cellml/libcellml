@@ -1,8 +1,8 @@
 ..  _tutorial5_py:
 
-==========================================
-Tutorial 5: Modelling a gated ion channel
-==========================================
+================================================
+Tutorial 5 Python: Modelling a gated ion channel
+================================================
 
 If you're reading this it's presumed that you're already
 comfortable with the serlialisation, mainipulation, and debugging functionality
@@ -19,10 +19,10 @@ ones.  If you need to jump in at some intermediate stage
 you will find all the files created by the earlier tutorials in the
 :code:`resources` folder.
 
----------
-Overview
----------
+.. contents::
 
+Overview
+========
 The basic steps for model creation and output are the same as those in
 :ref:`Tutorial 3<tutorial3_py>`, but here you'll begin to create a model based on
 the Hodgkin Huxley model. All the biological and mathematical modelling

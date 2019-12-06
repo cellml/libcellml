@@ -1,8 +1,8 @@
 .. _tutorial4_cpp:
 
-==========================================
-Tutorial 4: Generating code and simulation
-==========================================
+==============================================
+Tutorial 4 C++: Generating code and simulation
+==============================================
 
 Getting started:  If you're reading this it's presumed that you're already
 comfortable with the deserlialisation and debugging functionality
@@ -15,8 +15,7 @@ By the end of this tutorial you will be able to:
 - use the simple solver provided to numerically integrate the governing
   equations of the model.
 
-.. toctree::
- :maxdepth: -1
+.. contents::
 
 1: Include the generated code in this project
 =============================================
