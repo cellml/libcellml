@@ -14,33 +14,36 @@ Requirements:
     - :download:`tutorial1_complete.py` the completed tutorial code
     - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
-Step 0: Setup
--------------
+.. toctree::
+
+0: Setup
+========
 
 For each of the tutorials, there is template code provided for you to get
 started in each of the :code:`tutorial*.py` files.
 
 .. container:: dothis
 
-    **>>** Confirm that you're able to run the :code:`tutorial1.py`
-    template against the libCellML library.  To run the skeleton code,
-    navigate into the :code:`tutorials` directory.  To run the completed
-    tutorial, navigate into the :code:`tutorials_completed` directory.
+    **0.a** Confirm that you're able to run the :code:`tutorial1.py`
+    template against the libCellML library.  Navigate into the
+    :code:`tutorial1` directory and run the skeleton code file,
+    :code:`tutorial1.py`.
 
-.. code::
+.. code-block:: terminal
 
-    cd tutorials
+    cd tutorial1
     python tutorial1.py
 
-This should give the output::
+This should give the output:
 
-    |-----------------------------------------------------
-    |    TUTORIAL 1: READING AND WRITING CellML2 FILES
-    |-----------------------------------------------------
+.. code-block:: terminal
 
-Step 1: Deserialising a CellML file
------------------------------------
+    -----------------------------------------------------
+        TUTORIAL 1: READING AND WRITING CellML2 FILES
+    -----------------------------------------------------
 
+1: Deserialising a CellML file
+==============================
 CellML is a format in which all the information is stored in a strictly
 hierarchical  - or *serialised* - way.  In order for this information
 to be transformed into a
@@ -83,9 +86,8 @@ point.
 Now we have a *deserialsied* CellML model which we can manipulate using the
 libCellML library.
 
-Step 2: Investigate the contents of the model
----------------------------------------------
-
+2: Investigate the contents of the model
+========================================
 Now that we have a model, let's see what's inside it.  All retrieval functions
 - where you want to read something about any item - are callable from simple
 functions naming the thing you want. For example, to find the name of the model
@@ -164,8 +166,8 @@ components for :ref:`Tutorial 5<tutorial6_py>`.
     later tutorials, but for now, retrieve the MathML string from your
     component using the :code:`math()` function, and print it to the screen.
 
-Step 3: Serialise the model and output
---------------------------------------
+3: Serialise the model and output
+=================================
 Now that you've seen how to *deserialise* a CellML file into a model using the
 :code:`Parser`, it's time to go in the other direction.  This reverse operation
 is handled by the :code:`Printer`, which will transform a model into a string

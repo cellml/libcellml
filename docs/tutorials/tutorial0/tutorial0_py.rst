@@ -6,9 +6,11 @@ Tutorial 0: Python-based installation
 
 **TODO* Update this with pip installation instructions??
 
------------------------------------------------------
+.. toctree::
+
+
 1: Create the libCellML library
------------------------------------------------------
+==========================================================
 
 .. container:: dothis
 
@@ -65,9 +67,8 @@ Your folder structure should now look like this:
             +--source
                 +-- ( ... contains the files you cloned )
 
--------------------------------------------
 2: Build and install the library
--------------------------------------------
+==========================================================
 
 .. container:: dothis
 
@@ -123,9 +124,9 @@ Your directory structure should now look like:
                 +--source
                     +-- ( ... the files you cloned in step 1.b )
 
-------------------------------
+
 3: Create the tutorials
-------------------------------
+==========================================================
 
 .. container:: dothis
 
@@ -189,9 +190,9 @@ only the folder name inside your :code:`tutorials` folder:
             +--tutorials_complete
             +--utilities
 
--------------------------------------------------------
+
 4: Test the installation by running your first tutorial
--------------------------------------------------------
+==========================================================
 If all has gone well so far you should see four folders:
 
 - The :code:`documentation` folder contains an offline copy of the tutorials'

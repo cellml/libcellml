@@ -18,30 +18,33 @@ Requirements:
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
 
--------------
-0: Setup
--------------
+.. toctree::
 
+0: Setup
+========
 Navigate into the :code:`tutorial2` folder and check that you can build the
-template against the libCellML library successfully::
+template against the libCellML library successfully:
+
+.. code-block:: terminal
 
     make
 
-Running the template::
+Running the template:
+
+.. code-block:: terminal
 
     ./tutorial2
 
 ... should give the output:
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | -----------------------------------------------
-    |   TUTORIAL 2: ERROR CHECKING AND VALIDATION
-    | -----------------------------------------------
+    -----------------------------------------------
+       TUTORIAL 2: ERROR CHECKING AND VALIDATION
+    -----------------------------------------------
 
----------------------------------------------------------
 1: Create a Model from the contents of a CellML file
----------------------------------------------------------
+====================================================
 
 .. container:: dothis
 
@@ -49,9 +52,8 @@ Running the template::
     As you did in Tutorial 1, use the :code:`Parser` to create a model
     from the "Tutorial2.cellml" file provided.
 
-----------------------------------------------------
 2: Print the contents of the file to the screen
-----------------------------------------------------
+===============================================
 
 Instead of duplicating the work you did throughout the middle steps of Tutorial
 1, we've provided you with a set of utility functions in the
@@ -138,15 +140,14 @@ specification document for reference.
                     << " in the CellML specification." << std::endl;
     }
 
-Step 3: Fix the errors that were reported
------------------------------------------
-
+3: Fix the errors that were reported
+====================================
 As you go through these tutorials you should be able to compile and run your
 code at any stage.  If you haven't been doing so already, then do it now, and
 take a look at what you've printed.  This section works through each of the
 errors found and shows you how to fix them.
 
-.. container:: terminal
+.. code-block:: terminal
 
     Validator error[0]:
         Description: CellML identifiers must not begin with a European numeric character [0-9].
@@ -181,13 +182,13 @@ the variable name:
 
 On to the next error.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    | Validator error[2]:
-    |    Description: Variable 'b' has an invalid units reference 'i_am_not_a_unit'
-    |    that does not correspond with a standard unit or units in the variable's
-    |    parent component or model.
-    |    See section 11.1.1.2 in the CellML specification.
+    Validator error[2]:
+        Description: Variable 'b' has an invalid units reference 'i_am_not_a_unit'
+        that does not correspond with a standard unit or units in the variable's
+        parent component or model.
+        See section 11.1.1.2 in the CellML specification.
 
 Variables must have a unit defined.  These can be either something from
 the built-in list within libCellML (which you can read in the

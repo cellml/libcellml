@@ -15,6 +15,8 @@ Requirements:
     - :download:`tutorial1_complete.cpp` the completed tutorial code
     - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
+.. toctree::
+
 0: Setup
 ========
 
@@ -26,29 +28,26 @@ started in each of the tutorial folders.
     **0.a** Navigate into the "tutorial1" folder and confirm that you're able to compile
     and run this template against the libCellML library
 
-.. code-block:: terminal256
-    :bgdark:
+.. code-block:: terminal
 
     make
 
 Running the template:
 
-.. code-block:: 256
-    :bgdark:
+.. code-block:: terminal
 
     ./tutorial1
 
 ... should give the output:
 
-.. code-block:: 256
-    :bg: dark
+.. code-block:: terminal
 
     -----------------------------------------------
     TUTORIAL 1: READING AND WRITING CELLML FILES
     -----------------------------------------------
 
-Step 1: Deserialising a CellML file
------------------------------------
+1: Deserialising a CellML file
+==============================
 
 CellML is a format in which all the information is stored in a strict
 hierarchical way.  In order for this information to be transformed into a
@@ -93,8 +92,8 @@ point.
 Now we have a *deserialsied* CellML model which we can manipulate using the
 libCellML library.
 
-Step 2: Investigate the contents of the model
----------------------------------------------
+2: Investigate the contents of the model
+========================================
 
 Now that we have a model, let's see what's inside it.  All retrieval functions
 - where you want to read something about any item - are callable from simple
@@ -176,8 +175,8 @@ components for Tutorial 6.
     later tutorials, but for now, retrieve the MathML string from your
     component using the :code:`math()` function, and print it to the screen.
 
-Step 3: Serialise the model and output
---------------------------------------
+3: Serialise the model and output
+=================================
 Now that you've seen how to *deserialise* a CellML file into a model using the
 :code:`Parser`, it's time to go in the other direction.  This reverse operation
 is handled by the :code:`Printer`, which will transform a model into a string
