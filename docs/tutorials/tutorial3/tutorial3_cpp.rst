@@ -14,9 +14,11 @@ Requirements:
     - :download:`tutorial3.cpp` Either the skeleton code, or ..
     - :download:`tutorial3_complete.cpp` the completed tutorial code
 
---------
+.. toctree::
+ :maxdepth: -1
+
 0: Setup
---------
+========
 
 Navigate into the :code:`tutorial3` folder and check that you can build the
 template against the libCellML library successfully::
@@ -37,13 +39,9 @@ Running the template::
     | ---------------------------------------------------------------
     |
 
----------------------------------
+
 1: Set up the governing equations
----------------------------------
-
-TODO Need something here about when to use shared pointers and when to use
-concrete instances?
-
+=================================
 Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting
 up a :code:`Model` instance, and creating a component inside it.
 
@@ -255,9 +253,9 @@ You should see an output similar to that shown below:
 Running the validator will alert you variables in the MathML that don't (yet)
 exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_cpp>`.
 
------------------------
+
 2: Create the variables
------------------------
+=======================
 
 .. container:: dothis
 
@@ -290,9 +288,9 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_cpp>`
     |   Description: Variable 'a' does not have a valid units attribute.
     |     See section 11.1.1.2 in the CellML specification.
 
---------------------------------
+
 3: Built-in and customised units
---------------------------------
+================================
 Linking variables to the *name* of their units is straightforward, but in
 order to be able to use them we need to also define what the name actually
 *means* by creating the units themselves.  Some basic units have been defined
@@ -507,9 +505,9 @@ present.
 
     **3.h** Check that the model is now free of validation errors.
 
-----------------------------------------------------
+
 4: Use code generation to change the output langauge
-----------------------------------------------------
+====================================================
 Some exciting new functionality of libCellML is its ability to generate a
 runable file from a model description.  This means that if you already have
 a solver in either C or Python, you can simply translate your model from here

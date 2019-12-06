@@ -15,6 +15,9 @@ By the end of this tutorial you will be able to:
 - use the simple solver provided to numerically integrate the governing
   equations of the model.
 
+.. toctree::
+ :maxdepth: -1
+
 1: Include the generated code in this project
 =============================================
 
@@ -54,7 +57,7 @@ Because this is for generated code in C we will need the files:
     using, just like in :ref:`Tutorial 0<tutorial0>`.
 
 2: Investigate the information items in the generated files
----------------------------------------------------------------------------
+===========================================================
 This step is about figuring out what's contained in the generated files, and
 demonstrating how you can use them to run your simulation.
 
@@ -151,7 +154,7 @@ a :code:`VariableInfo` item.
     terminal.
 
 3: Investigate the functions provided in the generated files
----------------------------------------------------------------------------
+============================================================
 As well as the information items, the generated code also contains functions
 which are derived from the governing equations in the MathML blocks in the
 original CellML model.
@@ -167,7 +170,6 @@ things:
 
 Allocating arrays
 +++++++++++++++++
-
 Because we're writing this tutorial based around a general situation, we can
 use the helper functions provided to allocate these arrays to the right size.
 These are:
@@ -185,7 +187,6 @@ These are:
 
 Defining the initial values
 +++++++++++++++++++++++++++
-
 After allocating these arrays, we need to fill them with the information.
 In :ref:`Tutorial 3<tutorial3>` we used three equations to define
 this model:
@@ -246,7 +247,7 @@ items for which we specified an inital value have been applied, the constant
 Now we're ready to begin solving the model.
 
 4: Iterate through the solution
---------------------------------------------------------------------------
+===============================
 This part will make use of a simple routine to step through the solution
 iterations using the Euler method to update the state variables.  Following
 initialisation of some solution controls (time step, end point) there are
@@ -256,7 +257,6 @@ three general parts to each iteration:
     - computing the gradient functions or rates at the current timestep
     - updating the state variables using an Euler* step.  * Note that this
       could be any stepping method - we just use this one as it's very simple.
-
 
 .. container:: dothis
 
@@ -321,13 +321,12 @@ throughout the solution process.  This is done by calling the
 
 
 5: Output
----------------
+=========
 
 .. container:: dothis
 
     **5.a** Now it's time for housekeeping.  Use the :code:`deleteArray`
     function to free the three arrays you allocated in step 3.a.
-
 
 .. container:: dothis
 
@@ -341,7 +340,6 @@ throughout the solution process.  This is done by calling the
    :align: center
 
    Euler solution to the predator-prey population model
-
 
 .. container:: dothis
 

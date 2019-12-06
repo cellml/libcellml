@@ -13,29 +13,32 @@ Requirements:
     - :download:`tutorial3.py` Either the skeleton code, or ..
     - :download:`tutorial3_complete.py` the completed tutorial code
 
---------
-0: Setup
---------
+.. toctree::
+ :maxdepth: -1
 
+0: Setup
+========
 Navigate into the :code:`tutorial3` folder and check that you can run the
 skeleton code against the libCellML library successfully.  Running the
-template::
+template:
 
+.. code-block:: terminal
+
+    cd terminal3
     python tutorial3.py
 
 ... should give the output:
 
-.. container:: terminal
+.. code-block:: terminal
 
     | -----------------------------------------------
     |    TUTORIAL 3: CREATE A MODEL USING THE API
     | -----------------------------------------------
     |
 
----------------------------------
-1: Set up the governing equations
----------------------------------
 
+1: Set up the governing equations
+=================================
 Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting
 up a :code:`Model` instance, and creating a component inside it.
 
@@ -247,9 +250,8 @@ You should see an output similar to that shown below:
 Running the validator will alert you variables in the MathML that don't (yet)
 exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
 
------------------------
 2: Create the variables
------------------------
+=======================
 
 .. container:: dothis
 
@@ -282,9 +284,8 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
     |   Description: Variable 'a' does not have a valid units attribute.
     |     See section 11.1.1.2 in the CellML specification.
 
---------------------------------
 3: Built-in and customised units
---------------------------------
+================================
 Linking variables to the *name* of their units is straightforward, but in
 order to be able to use them we need to also define what the name actually
 *means* by creating the units themselves.  Some basic units have been defined
@@ -497,9 +498,8 @@ present.
 
     **3.h** Check that the model is now free of validation errors.
 
-----------------------------------------------------
 4: Use code generation to change the output langauge
-----------------------------------------------------
+====================================================
 Some exciting new functionality of libCellML is its ability to generate a
 runable file from a model description.  This means that if you already have
 a solver in either C or Python, you can simply translate your model from here

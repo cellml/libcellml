@@ -16,6 +16,7 @@ Requirements:
     - :download:`../resources/tutorial1.cellml` The input CellML file to read
 
 .. toctree::
+ :maxdepth: -1
 
 0: Setup
 ========

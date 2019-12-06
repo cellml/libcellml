@@ -19,6 +19,7 @@ Requirements:
       use in the tutorials.
 
 .. toctree::
+ :maxdepth: -1
 
 0: Setup
 ========
@@ -137,7 +138,7 @@ specification document for reference.
 
         // Printing the specification reference to the screen:
         std::cout << "    See section " << validatorError->specificationHeading()
-                    << " in the CellML specification." << std::endl;
+                  << " in the CellML specification." << std::endl;
     }
 
 3: Fix the errors that were reported
