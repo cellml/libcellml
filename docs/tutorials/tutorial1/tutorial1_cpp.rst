@@ -27,21 +27,21 @@ started in each of the tutorial folders.
     and run this template against the libCellML library
 
 .. code-block:: terminal
-    :bg:dark
+    :bg: "dark"
 
     make
 
 Running the template:
 
 .. code-block:: terminal
-    :bg:dark
+    :bg: "dark"
 
     ./tutorial1
 
 ... should give the output:
 
 .. code-block:: terminal
-    :bg:dark
+    :bg:"dark"
 
     -----------------------------------------------
     TUTORIAL 1: READING AND WRITING CELLML FILES
