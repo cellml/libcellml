@@ -19,26 +19,26 @@ Requirements:
 
 0: Setup
 ========
-
 Navigate into the :code:`tutorial3` folder and check that you can build the
-template against the libCellML library successfully::
+template against the libCellML library successfully:
+
+.. code-block:: terminal
 
     make
 
-Running the template::
+Running the template:
+
+.. code-block:: terminal
 
     ./tutorial3
 
 ... should give the output:
 
+.. code-block:: terminal
 
-.. container:: terminal
-
-    | ---------------------------------------------------------------
-    |    TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API
-    | ---------------------------------------------------------------
-    |
-
+    ---------------------------------------------------------------
+        TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API
+    ---------------------------------------------------------------
 
 1: Set up the governing equations
 =================================

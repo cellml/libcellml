@@ -31,10 +31,9 @@ template:
 
 .. code-block:: terminal
 
-    | -----------------------------------------------
-    |    TUTORIAL 3: CREATE A MODEL USING THE API
-    | -----------------------------------------------
-    |
+     -----------------------------------------------
+        TUTORIAL 3: CREATE A MODEL USING THE API
+     -----------------------------------------------
 
 1: Set up the governing equations
 =================================

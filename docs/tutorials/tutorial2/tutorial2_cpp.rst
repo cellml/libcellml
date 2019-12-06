@@ -288,8 +288,7 @@ instead.
     model is now error-free.
 
 Step 4: Have a look at the corrected model
-------------------------------------------
-
+==========================================
 Let's have a look at our corrected model by calling that same utility function
 which we used earlier to print it to the screen.  You should see something like
 this:
@@ -314,13 +313,13 @@ this:
     |            Variable[3] has units: 'dimensionless'
 
 Step 5: Serialise and output the model to a file
-------------------------------------------------
+================================================
 
 .. container:: dothis
 
     **5.a**
-    Just as you did in Tutorial 1, create a :code:`Printer` and use it
-    to serialise your model to a string.
+    Just as you did in :ref:`Tutorial 1<tutorial1_cpp>`, create a
+    :code:`Printer` and use it to serialise your model to a string.
 
 .. container:: dothis
 
