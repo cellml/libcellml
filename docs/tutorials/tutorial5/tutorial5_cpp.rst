@@ -256,8 +256,6 @@ every variable to have some defined.  For the proportion of open gates
        that is not a valid reference to units in component
        'HodgkinHuxleySingleIonChannel' or a standard unit.
 
-
-
 4. Define the units and add to the model
 ========================================
 The variables created above referenced unit names of :code:`millisecond`,
@@ -306,10 +304,10 @@ inside the :code:`Generator`.
 
     .. code-block:: cpp
 
-    // Change the generated language from the default C to Python if need be
-    libcellml::GeneratorProfilePtr profile =
-        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-    generator->setProfile(profile);
+        // Change the generated language from the default C to Python if need be
+        libcellml::GeneratorProfilePtr profile =
+            libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+        generator->setProfile(profile);
 
 .. container:: dothis
 
