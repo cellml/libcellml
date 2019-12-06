@@ -26,19 +26,19 @@ started in each of the tutorial folders.
     **0.a** Navigate into the "tutorial1" folder and confirm that you're able to compile
     and run this template against the libCellML library
 
-.. code-block:: 256
+.. code-block:: console bg:dark
 
     make
 
 Running the template:
 
-.. code-block:: 256
+.. code-block:: terminal dark
 
     ./tutorial1
 
 ... should give the output:
 
-.. code-block:: termi256nal
+.. code-block:: 256
 
     -----------------------------------------------
     TUTORIAL 1: READING AND WRITING CELLML FILES
