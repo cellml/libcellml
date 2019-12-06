@@ -44,8 +44,8 @@ Requirements:
 If you did not complete :ref:`Tutorial 3<tutorial 3>` you can download the
 files created by the :code:`Generator` from the :code:`resources` folder. These
 are:
- - :download:`../resources/tutorial4_PredatorPrey_generated.c` The C implementation/source file
- - :download:`../resources/tutorial4_PredatorPrey_generated.h` The C interface/header file
+ - :download:`../resources/tutorial3_PredatorPrey_generated.c` The C implementation/source file
+ - :download:`../resources/tutorial3_PredatorPrey_generated.h` The C interface/header file
 
 Python instructions
 -------------------
@@ -60,4 +60,4 @@ Requirements:
 
 If you did not complete :ref:`Tutorial 3<tutorial 3>` you can download the
 files created by the :code:`Generator` from the :code:`resources` folder. This is:
- - :download:`../resources/tutorial4_PredatorPrey_generated.py` The Python implementation/source file
+ - :download:`../resources/tutorial3_PredatorPrey_generated.py` The Python implementation/source file
