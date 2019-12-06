@@ -44,9 +44,8 @@ files attached.  You can choose to either create your own code from the
 structure given in the :code:`tutorial5.py` file, or to simply read the
 finished code given in the :code:`tutorial5_complete.py` file.
 
----------------------------------------
 1: Create the model and component items
----------------------------------------
+=======================================
 Following the same procedures as in previous tutorials, our first step is to
 create new model and component instances.  We haven't encountered it yet, but
 the real power of modelling comes from our ability to use and reuse different
@@ -72,9 +71,8 @@ biological and mathematical theory behind this particular model in
     **1.c**
     Create a validator and use it to verify that your model has no errors.
 
-------------------------------------
 2: Define the mathematical behaviour
-------------------------------------
+====================================
 The next step is to define what the component actually *does*.  In this case,
 its purpose is to represent a collection of gates in series in order to model
 the channel behaviour.  Let's start with the simple ODE below:
@@ -213,10 +211,8 @@ are:
         'per_millivolt_millisecond' that is not a valid reference to units in
         component 'HodgkinHuxleySingleIonChannel' or a standard unit.
 
-
----------------------------------------
 3. Define the variables and their units
----------------------------------------
+========================================
 Now that the mathematical behaviour is defined, the variables that have been
 used also need to be defined.  Each variable needs a name which is equal to the
 term inside the :code:`<ci>` tags in the MathML, as well as units defined in
@@ -267,10 +263,8 @@ every variable to have some defined.  For the proportion of open gates
        that is not a valid reference to units in component
        'HodgkinHuxleySingleIonChannel' or a standard unit.
 
-
-----------------------------------------
 4. Define the units and add to the model
-----------------------------------------
+========================================
 The variables created above referenced unit names of :code:`millisecond`,
 :code:`millivolt`, :code:`per_millisecond`, and :code:`dimensionless`.  The
 :code:`dimensionless` units are already present, so we don't need to take any
@@ -300,9 +294,8 @@ covered in :ref:`Tutorial 3<tutorial3_py>` in case you need a reminder.
     created to that provided in the
     :code:`resources/tutorials_complete/tutorial5_complete.py` file.
 
--------------------------------------
-Step 5: Serialise and write to a file
--------------------------------------
+5: Serialise and write to a file
+==================================
 The final step is to output our created model to a CellML2.0 file.  This file
 will be used in subsequent tutorials, so be sure to name it something
 meaningful!  This step is the same as what was covered at the end of
@@ -319,4 +312,7 @@ instructions there if you need to.
 
 .. container:: dothis
 
-    **5.c** Go and have a cuppa, you're done!
+    **5.c** Check that your files have been written correctly.  You should have
+    both the generated files (either *.c/h or *.py) as well as the *.cellml
+    file.  If they're present and correct, then go and have a cuppa, you're
+    done!

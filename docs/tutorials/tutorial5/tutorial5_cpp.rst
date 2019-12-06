@@ -298,20 +298,20 @@ inside the :code:`Generator`.
 
 .. container:: dothis
 
-    **5.a** Create a Generator item, set the profile (that is, the output
+    **5.a** Create a :code:`Generator` item, set the profile (that is, the output
     language) to your choice of C (the default) or Python (see below), and
     then submit the model for processing.
 
-    .. code-block:: cpp
+.. code-block:: cpp
 
-        // Change the generated language from the default C to Python if need be
-        libcellml::GeneratorProfilePtr profile =
-            libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-        generator->setProfile(profile);
+    // Change the generated language from the default C to Python if need be
+    libcellml::GeneratorProfilePtr profile =
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
 
 .. container:: dothis
 
-    **5.b** Check that the Generator has not encountered any errors.
+    **5.b** Check that the :code:`Generator` has not encountered any errors.
 
 .. container:: dothis
 
@@ -328,7 +328,7 @@ if you need to.
 
 .. container:: dothis
 
-    **5.d** Create a Printer item and submit your model for serialisation.
+    **5.d** Create a :code:`Printer` item and submit your model for serialisation.
 
 .. container:: dothis
 
@@ -336,4 +336,7 @@ if you need to.
 
 .. container:: dothis
 
-    **5.f** Go and have a cuppa, you're done!
+    **5.f** Check that your files have been written correctly.  You should have
+    both the generated files (either *.c/h or *.py) as well as the *.cellml
+    file.  If they're present and correct, then go and have a cuppa, you're
+    done!
