@@ -1474,22 +1474,28 @@ TEST(Units, compareEquivalentSameSizeButDifferentExponent)
 
 TEST(Units, isBaseUnitsImported)
 {
-    libcellml::ModelPtr model = libcellml::Model::create();
-    model->setName("model");
+    libcellml::ModelPtr unitsDefinitionModel = libcellml::Model::create();
 
     // Making a base unit
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u");
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-    u2->setName("u");
 
-    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
-    import->setUrl("I_am_a_url");
+    unitsDefinitionModel->addUnits(u1);
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("some_u");
+
+    libcellml::ImportSourcePtr importSource = libcellml::ImportSource::create();
+    importSource->setUrl("I_am_a_url");
+    importSource->setModel(unitsDefinitionModel);
+
+    u2->setImportSource(importSource);
+    u2->setImportReference("u");
 
     model->addUnits(u1);
-
-    import->setModel(model);
-    u2->setImportSource(import);
 
     EXPECT_TRUE(u2->isImport());
     EXPECT_TRUE(u2->isBaseUnit());
