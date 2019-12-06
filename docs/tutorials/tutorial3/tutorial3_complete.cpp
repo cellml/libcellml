@@ -149,14 +149,19 @@ int main()
     // ---------------------------------------------------------------------------
     //  STEP 3: Create the Units and add them to the model
 
-    //  3.a Create the day and per_day units
+    //  3.a Create the day, month, and per_month units
     libcellml::UnitsPtr day = libcellml::Units::create("day");
     day->addUnit("second", 0, 1, 86400); // base unit, prefix, exponent, multiplier
     model->addUnits(day);
 
-    libcellml::UnitsPtr per_day = libcellml::Units::create("per_day");
-    per_day->addUnit("day", -1); // base unit, exponent
-    model->addUnits(per_day);
+    libcellml::UnitsPtr month = libcellml::Units::create("month");
+    month->addUnit(day, 0, 1, 30); // base unit, prefix, exponent, multiplier
+    model->addUnits(month);
+
+
+    libcellml::UnitsPtr per_month = libcellml::Units::create("per_month");
+    per_month->addUnit("month", -1); // base unit, exponent
+    model->addUnits(per_month);
 
     //  3.b Create the sharks and fishes base units
     libcellml::UnitsPtr number_of_sharks = libcellml::Units::create("number_of_sharks");
@@ -165,21 +170,21 @@ int main()
     model->addUnits(thousands_of_fish);
 
     //  3.c Combined units for the constants
-    libcellml::UnitsPtr b_units = libcellml::Units::create("per_shark_day");
-    b_units->addUnit("per_day");
+    libcellml::UnitsPtr b_units = libcellml::Units::create("per_shark_month");
+    b_units->addUnit("per_month");
     b_units->addUnit("number_of_sharks", -1);
     model->addUnits(b_units);
 
-    libcellml::UnitsPtr d_units = libcellml::Units::create("per_1000fish_day");
-    d_units->addUnit("per_day");
+    libcellml::UnitsPtr d_units = libcellml::Units::create("per_1000fish_month");
+    d_units->addUnit("per_month");
     d_units->addUnit("thousands_of_fish", -1);
     model->addUnits(d_units);
 
     //  3.d Add the units to their variables
-    time->setUnits(day);
-    a->setUnits(per_day);
+    time->setUnits(month);
+    a->setUnits(per_month);
     b->setUnits(b_units);
-    c->setUnits(per_day);
+    c->setUnits(per_month);
     d->setUnits(d_units);
     sharks->setUnits(number_of_sharks);
     fish->setUnits(thousands_of_fish);
@@ -189,7 +194,7 @@ int main()
     printErrorsToTerminal(validator);
 
     //  3.f Units for constants inside the MathML must be specified at the time.  This means we need to adjust
-    //      equation1 to include the per_day units.  We have to wipe all the existing MathML and replace it.
+    //      equation1 to include the per_month units.  We have to wipe all the existing MathML and replace it.
     component->removeMath();
     component->setMath(mathHeader);
     equation1 =
@@ -197,7 +202,7 @@ int main()
         "   <ci>c</ci>"
         "   <apply><plus/>"
         "       <ci>a</ci>"
-        "       <cn cellml:units=\"per_day\">2.0</cn>"
+        "       <cn cellml:units=\"per_month\">2.0</cn>"
         "   </apply>"
         "</apply>";
 

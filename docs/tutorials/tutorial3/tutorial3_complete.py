@@ -149,16 +149,20 @@ if __name__ == "__main__":
     day.setName("day")
     day.addUnit("second", "3", 1, 86.4)
     model.addUnits(day)
+
     # "second" is a built-in unit, used inside "day" with the
     # multiplier 84600.  NB this is equivalent to specifying a prefix
     # string value of 3, corresponding to the power of 10 by
     # which the base is multiplied, as well as a multiplier of 86.4, etc
 
-    # The "per_day" unit is simply the inverse of the "day"
-    per_day = Units()
-    per_day.setName("per_day")
-    per_day.addUnit("day", -1)
-    model.addUnits(per_day)
+    month = Units("month")
+    month.addUnit(day, 1, 30) # Setting a month to be 30 days
+
+    # The "per_month" unit is simply the inverse of the "month"
+    per_month = Units()
+    per_month.setName("per_month")
+    per_month.addUnit("month", -1)
+    model.addUnits(per_month)
 
     #  3.b  Create the sharks and fishes base units.
     number_of_sharks = Units()
@@ -171,24 +175,24 @@ if __name__ == "__main__":
     #  3.c  Create the combined units for the constants.  Note that each item included
     #       with the addUnit command is multiplied to create the final Units definition
     b_units = Units()
-    b_units.setName("per_shark_day")
-    b_units.addUnit("per_day")
+    b_units.setName("per_shark_month")
+    b_units.addUnit("per_month")
     b_units.addUnit("number_of_sharks", -1)
     model.addUnits(b_units)
 
     d_units = Units()
-    d_units.setName("per_fish_day")
-    d_units.addUnit("per_day")
+    d_units.setName("per_fish_month")
+    d_units.addUnit("per_month")
     d_units.addUnit("thousands_of_fish", -1)
     model.addUnits(d_units)
 
     #  3.d  Set the units to their respective variables
-    time.setUnits(day)
+    time.setUnits(month)
     sharks.setUnits(number_of_sharks)
     fish.setUnits(thousands_of_fish)
-    a.setUnits(per_day)
+    a.setUnits(per_month)
     b.setUnits(b_units)
-    c.setUnits(per_day)
+    c.setUnits(per_month)
     d.setUnits(d_units)
 
     #  3.e  Call the validator again to check the model.
@@ -196,7 +200,7 @@ if __name__ == "__main__":
     validator.validateModel(model)
 
     #  3.f  Units for constants inside the MathML must be specified at the time.
-    #       This means we need to adjust equation1 to include the per_day units.
+    #       This means we need to adjust equation1 to include the per_month units.
     #       We have to wipe all the existing MathML and replace it.
     component.removeMath()
     component.setMath(math_header)
@@ -205,7 +209,7 @@ if __name__ == "__main__":
         "   <ci>c</ci>"\
         "   <apply><plus/>"\
         "       <ci>a</ci>"\
-        "       <cn cellml:units=\"per_day\">2.0</cn>"\
+        "       <cn cellml:units=\"per_month\">2.0</cn>"\
         "   </apply>"\
         "</apply>"
     component.appendMath(equation1)
