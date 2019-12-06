@@ -323,7 +323,7 @@ throughout the solution process.  This is done by calling the
    :alt: Euler solution to the predator-prey model
    :align: center
 
-   Euler solution to the predator-prey population model
+   Euler solution to the predator-prey population model.
 
 .. container:: dothis
 
