@@ -1527,7 +1527,7 @@ TEST(Units, isNotBaseUnitsImported)
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
     import->setModel(model);
-    
+
     u4->setImportSource(import); // u4 part of a separate model
     u4->setImportReference("u3");
 
@@ -1639,7 +1639,7 @@ TEST(Units, isNotBaseUnitButUnitIsBaseImport)
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u3->setName("u3");
     u3->addUnit("u2", 0, 1.0, 1.0);
-    u4->setName("some_other_u"); 
+    u4->setName("some_other_u");
 
     model->addUnits(u1);
     model->addUnits(u2);
