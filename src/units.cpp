@@ -217,8 +217,8 @@ bool Units::isBaseUnit() const
         ImportSourcePtr importedSource = importSource();
         if (importedSource != nullptr) {
             ModelPtr model = importedSource->model();
-            if (model != nullptr && model->hasUnits(name())) {
-                auto unit = model->units(name());
+            if (model != nullptr && model->hasUnits(importReference())) {
+                auto unit = model->units(importReference());
                 return unit->unitCount() == 0;
             }
         }
