@@ -329,11 +329,13 @@ public:
     /**
      * @brief Flatten this model.
      *
-     * Instatiates all imports and removes them from this model.
+     * Instantiates all imports and removes them from this model.
      * The result is a self-contained model requiring no external
-     * resources
+     * resources and having no imports.
      *
      * The effects of this method cannot be undone.
+     *
+     * @sa clone
      */
     void flatten();
 
