@@ -794,7 +794,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-TEST(Validator, validateInvalidConnections)
+TEST(Validator, validateInvalidEquivalences)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
@@ -819,9 +819,12 @@ TEST(Validator, validateInvalidConnections)
     comp3->setName("component3");
     comp4->setName("component4");
     v1_1->setName("variable1_1");
+    v1_1->setInterfaceType("public");
     v1_2->setName("variable1_2");
     v2->setName("variable2");
+    v2->setInterfaceType("public");
     v3->setName("variable3");
+    v3->setInterfaceType("public");
     v4->setName("variable4");
 
     v1_1->setUnits("dimensionless");
@@ -849,6 +852,8 @@ TEST(Validator, validateInvalidConnections)
     libcellml::Variable::addEquivalence(v1_1, v3);
     // Make v4 a variable without a parent component.
     comp4->removeVariable(v4);
+    // Remove when removeVariable properly sets the parent to nullptr.
+    v4->setParent(nullptr);
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
@@ -1408,6 +1413,12 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
 
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 {
+    const std::vector<std::string> expectedErrors = {
+        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
+        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' with non-matching units of 'testunit1'. The mismatch is: metre^-1.",
+    };
+
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr comp1 = libcellml::Component::create();
@@ -1417,7 +1428,9 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     libcellml::VariablePtr v2 = libcellml::Variable::create();
 
     v1->setName("tomayto");
+    v1->setInterfaceType("public");
     v2->setName("tomahto");
+    v2->setInterfaceType("public");
     m->setName("callthewholethingoff");
     comp1->addVariable(v1);
     comp2->addVariable(v2);
@@ -1438,11 +1451,6 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     v2->setUnits(u2);
     m->addUnits(u1);
     m->addUnits(u2);
-
-    const std::vector<std::string> expectedErrors = {
-        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-    };
 
     // This one is now an error.
     libcellml::Variable::addEquivalence(v1, v2);
@@ -1534,7 +1542,9 @@ TEST(Validator, unitEquivalenceBasicDimensionlessUnits)
     libcellml::VariablePtr v2 = libcellml::Variable::create();
 
     v1->setName("tomayto");
+    v1->setInterfaceType("public");
     v2->setName("tomahto");
+    v2->setInterfaceType("public");
 
     m->setName("callthewholethingoff");
     comp1->addVariable(v1);
@@ -1615,6 +1625,8 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v2, v3);
 
+    m->fixVariableInterfaces();
+
     validator->validateModel(m);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
@@ -1672,7 +1684,9 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3."};
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
+        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1, multiplication factor of 10^-3.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -1752,6 +1766,8 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     // Off by (metre)^1: testing nested unit equivalence.
     libcellml::Variable::addEquivalence(v13, v14);
 
+    m->fixVariableInterfaces();
+
     validator->validateModel(m);
 
     EXPECT_EQ_ERRORS(expectedErrors, validator);
@@ -1773,7 +1789,9 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
     libcellml::VariablePtr v2 = libcellml::Variable::create();
 
     v1->setName("v1");
+    v1->setInterfaceType("public");
     v2->setName("v2");
+    v2->setInterfaceType("public");
 
     // millimetres
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -1832,6 +1850,7 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
+        "Variable 'v2' has units of 'bunch_of_bananas' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-10, banana^5.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1878,6 +1897,7 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
         "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
+        "Variable 'v2' has units of '' and an equivalent variable 'v1' with non-matching units of ''. The mismatch is: ",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1898,6 +1918,7 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
+        "Variable 'v2' has units of 'second' and an equivalent variable 'v1' with non-matching units of 'metre'. The mismatch is: metre^-1, second^1.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1921,6 +1942,7 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
+        "Variable 'v2' has units of 'gram' and an equivalent variable 'v1' with non-matching units of 'litre'. The mismatch is: kilogram^1, metre^-3.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2181,7 +2203,9 @@ TEST(Validator, unitEquivalenceMultiplier)
     libcellml::VariablePtr v2 = libcellml::Variable::create();
 
     v1->setName("v1");
+    v1->setInterfaceType("public");
     v2->setName("v2");
+    v2->setInterfaceType("public");
     m->setName("model");
     comp1->setName("comp1");
     comp2->setName("comp2");
@@ -2280,9 +2304,9 @@ TEST(Validator, variableEquivalenceValidNetwork)
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v2, v3);
 
-    v1->setInterfaceType("public_and_private");
+    v1->setInterfaceType("public");
     v2->setInterfaceType("public_and_private");
-    v3->setInterfaceType("public_and_private");
+    v3->setInterfaceType("public");
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
@@ -2291,7 +2315,8 @@ TEST(Validator, variableEquivalenceValidNetwork)
 TEST(Validator, variableEquivalenceUnreachable)
 {
     const std::vector<std::string> e {
-        "Invalid equivalence between 'v1' and 'v3', the separation of components 'c1' and 'c3' is too great.",
+        "The equivalence between 'v1' on component 'c1'  and 'v3' on component 'c3' is not possible, the separation is too great.",
+        "The equivalence between 'v3' on component 'c3'  and 'v1' on component 'c1' is not possible, the separation is too great.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2333,10 +2358,82 @@ TEST(Validator, variableEquivalenceUnreachable)
     EXPECT_EQ_ERRORS(e, validator);
 }
 
-TEST(Validator, variableInterfaceShoulbBePublic)
+TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 {
     const std::vector<std::string> e {
-        "Variable 'v2' does not have the correct interface type for the equivalence with 'v1'.",
+        "Variable 'v1' has an interaface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
+        "The equivalence between 'v2' on component 'c2'  and 'v4' on component 'c4' is not possible, the separation is too great.",
+        "The equivalence between 'v4' on component 'c4'  and 'v2' on component 'c2' is not possible, the separation is too great.",
+    };
+
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
+    libcellml::ComponentPtr c5 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+    c4->setName("c4");
+    c5->setName("c5");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+    c1->addComponent(c3);
+    c2->addComponent(c5);
+    c3->addComponent(c4);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+    v1->setInterfaceType("public");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+    v2->setInterfaceType("public_and_private");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+    v3->setInterfaceType("public");
+
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    v4->setName("v4");
+    v4->setUnits("dimensionless");
+
+    libcellml::VariablePtr v5 = libcellml::Variable::create();
+    v5->setName("v5");
+    v5->setUnits("dimensionless");
+    v5->setInterfaceType("public");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    c4->addVariable(v4);
+    c5->addVariable(v5);
+
+    // invalid equivalence, too far away
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v2, v5);
+
+    validator->validateModel(model);
+
+    EXPECT_EQ_ERRORS(e, validator);
+}
+
+TEST(Validator, variableInterfaceShouldBePublic)
+{
+    const std::vector<std::string> e {
+        "Variable 'v1' has no interaface type set. The interface type required is 'public'.",
+        "Variable 'v2' has an interaface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2372,10 +2469,10 @@ TEST(Validator, variableInterfaceShoulbBePublic)
     EXPECT_EQ_ERRORS(e, validator);
 }
 
-TEST(Validator, variableInterfaceShoulbBePrivate)
+TEST(Validator, variableInterfaceShouldBePrivate)
 {
     const std::vector<std::string> e {
-        "Variable 'v1' does not have the correct interface type for the equivalence with 'v2'.",
+        "Variable 'v1' has an interaface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2405,15 +2502,53 @@ TEST(Validator, variableInterfaceShoulbBePrivate)
     libcellml::Variable::addEquivalence(v1, v2);
 
     v1->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+
     validator->validateModel(model);
 
     EXPECT_EQ_ERRORS(e, validator);
 }
 
-TEST(Validator, variableInterfaceShoulbBePublicAndPrivate)
+TEST(Validator, variableInterfaceCouldBePrivateButSetToPublicAndPrivate)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
 {
     const std::vector<std::string> e {
-        "Variable 'v2' does not have the correct interface type for the equivalence with 'v1'.",
+        "Variable 'v2' has an interaface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public_and_private'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2450,6 +2585,8 @@ TEST(Validator, variableInterfaceShoulbBePublicAndPrivate)
 
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v2, v3);
+
+    model->fixVariableInterfaces();
 
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
 

@@ -468,26 +468,68 @@ bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
     return entity1Parent != nullptr && entity1Parent == entity2->parent();
 }
 
-InterfaceTypePair determineInterfaceType(const VariablePtr &variable1, const VariablePtr &variable2)
-{
-    InterfaceTypePair pair = std::make_pair(Variable::InterfaceType::NONE, Variable::InterfaceType::NONE);
+using PublicPrivateRequiredPair = std::pair<bool, bool>;
 
-    auto component1 = variable1->parent();
-    auto component2 = variable2->parent();
-    if (component1 != nullptr && component2 != nullptr) {
-        if (isEntityChildOf(component1, component2)) {
-            pair.first = Variable::InterfaceType::PUBLIC;
-            pair.second = Variable::InterfaceType::PRIVATE;
-        } else if (isEntityChildOf(component2, component1)) {
-            pair.first = Variable::InterfaceType::PRIVATE;
-            pair.second = Variable::InterfaceType::PUBLIC;
-        } else if (areEntitiesSiblings(component1, component2)) {
-            pair.first = Variable::InterfaceType::PUBLIC;
-            pair.second = Variable::InterfaceType::PUBLIC;
+PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const VariablePtr &variable)
+{
+    PublicPrivateRequiredPair pair = std::make_pair(false, false);
+    for (size_t index = 0; index < variable->equivalentVariableCount() && !(pair.first && pair.second); ++index) {
+        auto equivalentVariable = variable->equivalentVariable(index);
+        auto componentOfVariable = variable->parent();
+        auto componentOfEquivalentVariable = equivalentVariable->parent();
+        if (componentOfVariable == nullptr || componentOfEquivalentVariable == nullptr) {
+            return std::make_pair(false, false);
+        }
+        if (isEntityChildOf(componentOfVariable, componentOfEquivalentVariable)) {
+            pair.first = true;
+        } else if (isEntityChildOf(componentOfEquivalentVariable, componentOfVariable)) {
+            pair.second = true;
+        } else if(areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)) {
+            pair.first = true;
+        } else {
+            return std::make_pair(false, false);
         }
     }
 
     return pair;
+}
+
+Variable::InterfaceType interfaceTypeFor(const PublicPrivateRequiredPair &pair)
+{
+    Variable::InterfaceType interfaceType = Variable::InterfaceType::NONE;
+    if (pair.first && pair.second) {
+        interfaceType = Variable::InterfaceType::PUBLIC_AND_PRIVATE;
+    } else if (pair.first) {
+        interfaceType = Variable::InterfaceType::PUBLIC;
+    } else if (pair.second) {
+        interfaceType = Variable::InterfaceType::PRIVATE;
+    }
+
+    return interfaceType;
+}
+
+Variable::InterfaceType determineInterfaceType(const VariablePtr &variable)
+{
+    auto publicAndOrPrivatePair = publicAndOrPrivateInterfaceTypeRequired(variable);
+
+    return interfaceTypeFor(publicAndOrPrivatePair);
+}
+
+using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
+
+void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto variable = component->variable(index);
+        if (variable->equivalentVariableCount() > 0) {
+            if (std::find(variables.begin(), variables.end(), variable) == variables.end()) {
+                variables.push_back(variable);
+            }
+        }
+    }
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        findAllVariablesWithEquivalences(component->component(index), variables);
+    }
 }
 
 } // namespace libcellml
