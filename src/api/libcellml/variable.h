@@ -381,8 +381,6 @@ public:
     void setInterfaceType(const std::string &interfaceType);
 
     /**
-     * @overload
-     *
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable from the available
@@ -391,6 +389,8 @@ public:
      * @sa interfaceType
      *
      * @param interfaceType The enum interface type to set for this variable.
+     *
+     * @overload
      */
     void setInterfaceType(InterfaceType interfaceType);
 
@@ -411,6 +411,17 @@ public:
      * Clears the interface type for this variable.
      */
     void removeInterfaceType();
+
+    /**
+     * @brief Test if this variable has the given interface type.
+     *
+     * Test if this variable has the smae interface as @p interfaceType.
+     *
+     * @param interfaceType The interface type to test for.
+     *
+     * @return True if the interface type is the same as the given interface type, false otherwise.
+     */
+    bool hasInterfaceType(InterfaceType interfaceType) const;
 
     /**
      * @brief Create a clone of this variable.

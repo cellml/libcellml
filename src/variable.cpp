@@ -191,28 +191,9 @@ VariablePtr Variable::create(const std::string &name) noexcept
     return std::shared_ptr<Variable> {new Variable {name}};
 }
 
-void mergeInterfaceType(const VariablePtr &variable, Variable::InterfaceType interfaceType)
-{
-    if (interfaceType != Variable::InterfaceType::NONE) {
-        Variable::InterfaceType newInterfaceType = interfaceType;
-        auto existingInterfaceType = variable->interfaceType();
-        if (existingInterfaceType == "public" && interfaceType == Variable::InterfaceType::PRIVATE) {
-            newInterfaceType = Variable::InterfaceType::PUBLIC_AND_PRIVATE;
-        } else if (existingInterfaceType == "private" && interfaceType == Variable::InterfaceType::PUBLIC) {
-            newInterfaceType = Variable::InterfaceType::PUBLIC_AND_PRIVATE;
-        } else if (existingInterfaceType == "public_and_private") {
-            newInterfaceType = Variable::InterfaceType::PUBLIC_AND_PRIVATE;
-        }
-        variable->setInterfaceType(newInterfaceType);
-    }
-}
-
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     if (variable1 != nullptr && variable2 != nullptr) {
-        InterfaceTypePair pair = determineInterfaceType(variable1, variable2);
-        mergeInterfaceType(variable1, pair.first);
-        mergeInterfaceType(variable2, pair.second);
         variable1->mPimpl->setEquivalentTo(variable2);
         variable2->mPimpl->setEquivalentTo(variable1);
     }
@@ -435,6 +416,11 @@ std::string Variable::interfaceType() const
 void Variable::removeInterfaceType()
 {
     mPimpl->mInterfaceType.clear();
+}
+
+bool Variable::hasInterfaceType(InterfaceType interfaceType) const
+{
+    return mPimpl->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
 }
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
