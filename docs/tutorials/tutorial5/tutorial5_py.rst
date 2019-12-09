@@ -78,11 +78,11 @@ its purpose is to represent a collection of gates in series in order to model
 the channel behaviour.  Let's start with the simple ODE below:
 
 .. math::
-    \frac{dm}{dt} = \alpha_m (1-m) - \beta_m m
+    \frac{dm}{dt} = \alpha_n (1-n) - \beta_n n
 
-where :math:`m` is the fraction which is open (so :math:`(1-m)` must
-be the fraction which is closed), :math:`\alpha_m` is the opening
-rate, :math:`\beta_m` is the closing rate, and :math:`t` is time.
+where :math:`n` is the fraction which is open (so :math:`(1-n)` must
+be the fraction which is closed), :math:`\alpha_n` is the opening
+rate, :math:`\beta_n` is the closing rate, and :math:`t` is time.
 
 Now to add this equation into the component we created in Step 1.
 Once the maths is created, the process of adding it is very simple, and follows
@@ -102,10 +102,10 @@ Left hand side: :math:`\frac{dm}{dt}`
                 <bvar>
                     <ci>time</ci>
                 </bvar>
-                <ci>m</ci>
+                <ci>n</ci>
             </apply>
 
-Right hand side: :math:`\alpha_m (1-m) ...`
+Right hand side: :math:`\alpha_n (1-n) ...`
 
 .. code-block:: xml
 
@@ -113,15 +113,15 @@ Right hand side: :math:`\alpha_m (1-m) ...`
                 <minus/>
                 <apply>
                     <times/>
-                    <ci>alpha_m</ci>
+                    <ci>alpha_n</ci>
                     <apply>
                         <minus/>
                         <cn cellml:units="dimensionless">1</cn>
-                        <ci>m</ci>
+                        <ci>n</ci>
                     </apply>
                 </apply>
 
-:math:`... - \beta_m m`  **NB** The negative comes from the first :code:`minus`
+:math:`... - \beta_n n`  **NB** The negative comes from the first :code:`minus`
 operation in the block above, indicating that the block below subtracted
 from the one above.
 
@@ -129,8 +129,8 @@ from the one above.
 
                 <apply>
                     <times/>
-                    <ci>beta_m</ci>
-                    <ci>m</ci>
+                    <ci>beta_n</ci>
+                    <ci>n</ci>
                 </apply>
             </apply>
 
@@ -236,8 +236,8 @@ as you did in :ref:`Tutorial 3<tutorial3_py>`.  The units you'll need here are:
 
 - time, :math:`t`, has units of :code:`millisecond`
 - voltage, :math:`V`, has units of :code:`millivolt`
-- opening rate, :math:`\alpha_m` has units :code:`per_millisecond`
-- closing rate, :math:`\beta_m` has units :code:`per_millisecond`
+- opening rate, :math:`\alpha_n` has units :code:`per_millisecond`
+- closing rate, :math:`\beta_n` has units :code:`per_millisecond`
 
 .. container:: dothis
 
@@ -246,7 +246,7 @@ as you did in :ref:`Tutorial 3<tutorial3_py>`.  The units you'll need here are:
 
 Even though the final variable in our equations has no units, CellML2 requires
 every variable to have some defined.  For the proportion of open gates
-:math:`m` use the units name :code:`dimensionless`.
+:math:`n` use the units name :code:`dimensionless`.
 
 .. container:: dothis
 
