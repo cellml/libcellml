@@ -61,6 +61,9 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::clone
 "Create a copy of this model.";
 
+%feature("docstring") libcellml::Model::fixVariableInterfaces
+"Fix variable interfaces throughout the model.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
