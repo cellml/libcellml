@@ -78,7 +78,7 @@ its purpose is to represent a collection of gates in series in order to model
 the channel behaviour.  Let's start with the simple ODE below:
 
 .. math::
-    \frac{dm}{dt} = \alpha_n (1-n) - \beta_n n
+    \frac{dn}{dt} = \alpha_n (1-n) - \beta_n n
 
 where :math:`n` is the fraction which is open (so :math:`(1-n)` must
 be the fraction which is closed), :math:`\alpha_n` is the opening
@@ -93,7 +93,7 @@ are other resources on the :mathml2:`W3 resource pages for MathML2 <>` too.
 
 Consider the equation above, converted here into MathML2 format:
 
-Left hand side: :math:`\frac{dm}{dt}`
+Left hand side: :math:`\frac{dn}{dt}`
 
 .. code-block:: xml
 

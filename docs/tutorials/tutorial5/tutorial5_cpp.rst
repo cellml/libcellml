@@ -92,7 +92,7 @@ are other resources on the :mathml2:`W3 resource pages for MathML2 <>` too.
 
 Consider the equation above, converted here into MathML2 format:
 
-Left hand side: :math:`\frac{dm}{dt}`
+Left hand side: :math:`\frac{dn}{dt}`
 
 .. code-block:: xml
 
