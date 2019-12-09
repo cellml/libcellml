@@ -86,6 +86,8 @@ We can see the results of this classification process in the generated code:
 
 .. code-block:: python
 
+  # Inside the generated "tutorial3_PredatorPrey_generated.py" file
+
   # Defining the VOI variable of integration, its units and the name of its parent component
   VOI_INFO = {"name": "time", "units": "day", "component": "predator_prey_component"}
 
@@ -204,7 +206,8 @@ you'll see:
 
 .. code-block:: python
 
-    # tutorial3_PredatorPrey_generated.py
+    # Inside the generated "tutorial3_PredatorPrey_generated.py" file
+
     def initialize_states_and_constants(states, variables):
       states[0] = 2.0
       states[1] = 1.0
@@ -228,7 +231,7 @@ items for which we specified an inital value have been applied, the constant
 
 .. code-block:: python
 
-    # tutorial3_PredatorPrey_generated.cpp
+    # Inside the generated "tutorial3_PredatorPrey_generated.py" file
     def compute_computed_constants(variables):
       variables[3] = variables[0]-2.0
 
@@ -272,7 +275,7 @@ case.
 
 .. code-block:: python
 
-    # tutorial3_PredatorPrey_generated.py
+    # Inside the generated "tutorial3_PredatorPrey_generated.py" file
     def compute_variables(voi, states, rates, variables):
       pass
 
@@ -289,7 +292,8 @@ throughout the solution process.  This is done by calling the
 
 .. code-block:: python
 
-    # tutorial3_PredatorPrey_generated.py
+    # Inside the generated "tutorial3_PredatorPrey_generated.py" file
+
     def compute_rates(voi, states, rates, variables):
       # The "rates" array contains the gradient functions for each of the variables
       # which are being integrated (the "states")
