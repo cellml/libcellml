@@ -209,6 +209,8 @@ static const std::map<Variable::InterfaceType, const std::string> interfaceTypeT
 
 using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::InterfaceType>;
 
+using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
+
 /**
  * @brief Convert the @p candidate @c std::string to a @c double.
  *
@@ -435,6 +437,8 @@ bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
 
 bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
 
-InterfaceTypePair determineInterfaceType(const VariablePtr &variable1, const VariablePtr &variable2);
+Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
+
+void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 } // namespace libcellml

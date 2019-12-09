@@ -420,6 +420,9 @@ void Variable::removeInterfaceType()
 
 bool Variable::hasInterfaceType(InterfaceType interfaceType) const
 {
+    if (interfaceType == Variable::InterfaceType::NONE && mPimpl->mInterfaceType.empty()) {
+        return true;
+    }
     return mPimpl->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
 }
 
