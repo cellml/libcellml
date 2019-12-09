@@ -71,7 +71,7 @@ determine the full path to the source model relative to this one.";
 "Determine if any Component or Units is an import.";
 
 %feature("docstring") libcellml::Model::flatten
-"Resolve all imported Components and Units to make this model self-contained.";
+"Instantiate all imported Components and Units to make this model self-contained.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
