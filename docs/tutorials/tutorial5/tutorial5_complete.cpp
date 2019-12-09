@@ -233,9 +233,6 @@ int main()
     //      language) to your choice of C (the default) or Python (see below), and
     //      submit the model for processing.
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
-    libcellml::GeneratorProfilePtr profile =
-        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-    generator->setProfile(profile);
     generator->processModel(model);
 
     //  5.b Check that the Generator has not encountered any errors.
@@ -248,15 +245,20 @@ int main()
     //      file contents), whereas for Python you need only output the
     //      implementationCode.  Write the file(s).
 
-    // std::ofstream outFile("tutorial4_generated.h");
-    // outFile << generator->interfaceCode();
-    // outFile.close();
+    std::ofstream outFile("tutorial4_generated.h");
+    outFile << generator->interfaceCode();
+    outFile.close();
 
-    // outFile.open("tutorial4_generated.c");
-    // outFile << generator->implementationCode();
-    // outFile.close();
+    outFile.open("tutorial4_generated.c");
+    outFile << generator->implementationCode();
+    outFile.close();
 
-    std::ofstream outFile("tutorial4_generated.py");
+    libcellml::GeneratorProfilePtr profile =
+    libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+    generator->processModel(model);
+
+    outFile.open("tutorial4_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
 
