@@ -1,12 +1,16 @@
 cmake_minimum_required(VERSION 3.10.2)
-set(INPUT "" CACHE FILEPATH  "Enter the base name of the .c and .h files output from the generator.")
+# Delete the previous cache and configured files from this directory before configuring again
+file(REMOVE [CMakeCache.txt Makefile cmake_install.cmake modelToSolve.cpp *.h])
+file(REMOVE_RECURSE [CMakeFiles])
 
-get_filename_component(INPUTNAME ${INPUT} NAME)
-get_filename_component(INPUTDIR ${INPUT} DIRECTORY)
+set(INPUT "" CACHE FILEPATH "Please enter the base name of the generated files to solve (without extension) using the syntax -DINPUT=your_filename")
 
 if("${INPUT}" STREQUAL "")
         message(FATAL_ERROR "Please enter the base name of the generated files to solve (without extension) using the syntax -DINPUT=your_filename")
 endif()
+
+get_filename_component(INPUTNAME ${INPUT} NAME)
+get_filename_component(INPUTDIR ${INPUT} DIRECTORY)
 
 set(PROJECT_NAME solve_${INPUTNAME})
 
@@ -14,15 +18,18 @@ project(${PROJECT_NAME} VERSION 0.1.0)
 set(libCellML_DIR "../../libcellml/install/lib/cmake/libCellML")
 find_package(libCellML REQUIRED)
 
-
-if(EXISTS "${INPUTDIR}/${INPUTNAME}.cpp")
+if(EXISTS "${INPUTDIR}/${INPUTNAME}.c")
+        configure_file("${INPUTDIR}/${INPUTNAME}.c" "${CMAKE_BINARY_DIR}/modelToSolve.cpp" COPYONLY)
+elseif(EXISTS "${INPUTDIR}/${INPUTNAME}.cpp")
         configure_file("${INPUTDIR}/${INPUTNAME}.cpp" "${CMAKE_BINARY_DIR}/modelToSolve.cpp" COPYONLY)
-elseif(EXISTS "${INPUTDIR}/${INPUTNAME}.c")
-        configure_file("${INPUTDUR}/${INPUTNAME}.c" "${CMAKE_BINARY_DIR}/modelToSolve.cpp" COPYONLY)
 endif()
 
-configure_file(${INPUTDIR}/${INPUTNAME}.h "${CMAKE_BINARY_DIR}/modelToSolve.h" COPYONLY)
-configure_file(${INPUTDIR}/${INPUTNAME}.h "${CMAKE_BINARY_DIR}/${INPUTNAME}.h" COPYONLY)
+configure_file("${INPUTDIR}/${INPUTNAME}.h" "${CMAKE_BINARY_DIR}/modelToSolve.h" COPYONLY)
+configure_file("${INPUTDIR}/${INPUTNAME}.h" "${CMAKE_BINARY_DIR}/${INPUTNAME}.h" COPYONLY)
+# TODO This line is a workaround because at present the generator expects the header file to be called "model.h"
+# We don't want users to have to modify the generated code, so until there's a better way for users to set
+# this in the API, this should stay here.  Yes, it's super-clumsy :(
+configure_file("${INPUTDIR}/${INPUTNAME}.h" "${CMAKE_BINARY_DIR}/model.h" COPYONLY)
 
 set (PROJECT_SRC
         simpleSolver.cpp

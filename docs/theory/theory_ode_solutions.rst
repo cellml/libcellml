@@ -273,6 +273,8 @@ is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
       # This equation is the equivalent of d(fishes)/dt = c*fishes + d*sharks*fishes
       rates[1] = variables[2]*states[1]+variables[3]*states[0]*states[1]
 
+
+.. _solving_the_model:
 Solving the model
 =================
 A simple numerical integration method like :euler_method:`Euler's method <>`
@@ -302,6 +304,7 @@ Simple implementations are provided which will take the generated files,
 from both the C and Python generator profiles, and solve the system of
 equations.
 
+.. _solving_the_model_in_C:
 Using the simple solver for C files
 +++++++++++++++++++++++++++++++++++
 In C++ you can use the code provided in the :code:`tutorials/solver` directory
@@ -326,12 +329,12 @@ to include the generated code.
   **1.b** The next step is to build your generated code into the solver code.
   From inside the :code:`tutorials/solver` directory, use the CMake command
   line to point to your generated files.  **NB** It's assumed that both of the
-  header and source files have the same base filename (eg: basefilename.c
-  and basefilename.h).  The general CMake command is below.
+  header and source files have the same base filename (eg: baseFileName.c
+  and baseFileName.h).  The general CMake command is below.
 
 .. code-block:: terminal
 
-  cmake -DINPUT=/path/to/your/files/basefilename .
+  cmake -DINPUT=/path/to/your/files/baseFileName .
 
 .. container:: nb
 
@@ -360,7 +363,7 @@ If all has gone well you should see the output similar to:
     -- Detecting CXX compile features - done
 
     1) First use 'make -j' to build the file for running
-    2) Then solve by running: ./solve_basefilename with the arguments:
+    2) Then solve by running: ./solve_baseFileName with the arguments:
       -n  step_total
       -dt step_size
 
@@ -380,19 +383,20 @@ If all has gone well you should see the output similar to:
 .. container:: dothis
 
   **1.d** Finally you're ready to solve your model.  The executable will have
-  been given the prefix :code:`solve_` and then your :code:`basefilename`, and
+  been given the prefix :code:`solve_` and then your :code:`baseFileName`, and
   can be run using the command line flags :code:`-n` to indicate the number of
   steps to run, and :code:`-dt` to indicate the step size, for example:
 
   .. code-block:: terminal
 
-    ./solve_basefilename -n 20000 -dt 0.001
+    ./solve_baseFileName -n 20000 -dt 0.001
 
 The parameters read from the file, along with your command line arguments are
 printed to the terminal for checking, and the results of the simulation
 written to a tab-delimited file with the extension :code:`_solution.txt` after
-your basefilename.
+your baseFileName.
 
+.. _solving_the_model_in_python:
 Using a simple solver for Python files
 ++++++++++++++++++++++++++++++++++++++
 In Python this is available through the :cellsolver:`cellsolver package <>`.

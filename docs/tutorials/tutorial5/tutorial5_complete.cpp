@@ -245,11 +245,11 @@ int main()
     //      file contents), whereas for Python you need only output the
     //      implementationCode.  Write the file(s).
 
-    std::ofstream outFile("tutorial4_generated.h");
+    std::ofstream outFile("tutorial5_IonChannelModel_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
 
-    outFile.open("tutorial4_generated.c");
+    outFile.open("tutorial5_IonChannelModel_generated.c");
     outFile << generator->implementationCode();
     outFile.close();
 
@@ -258,7 +258,7 @@ int main()
     generator->setProfile(profile);
     generator->processModel(model);
 
-    outFile.open("tutorial4_generated.py");
+    outFile.open("tutorial5_IonChannelModel_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
 
@@ -267,7 +267,7 @@ int main()
     std::string serialisedModelString = printer->printModel(model);
 
     //  5.e Write the serialised string output from the printer to a file.
-    std::string outFileName = "tutorial4_IonChannelModel.cellml";
+    std::string outFileName = "tutorial5_IonChannelModel.cellml";
     outFile.open(outFileName);
     outFile << serialisedModelString;
     outFile.close();

@@ -1,6 +1,6 @@
 /**
  *  SIMPLE SOLVER
- *  
+ *
  *  Very simple implementation of an Euler-stepping solver intended to solve
  *  files created using the libCellML::Generator functionality.  This file needs to be
  *  built with the accompanying CMakeLists file, which will copy the input file to a
@@ -67,6 +67,9 @@ int main(int argc, char **argv)
     for (size_t s = 0; s < STATE_COUNT; ++s) {
         outFile << "\t" << STATE_INFO[s].name;
     }
+    for (size_t s = 0; s < VARIABLE_COUNT; ++s) {
+        outFile << "\t" << VARIABLE_INFO[s].name;
+    }
     outFile << std::endl;
 
     for (size_t step = 0; step < stepCount; ++step) {
@@ -77,6 +80,9 @@ int main(int argc, char **argv)
         for (size_t s = 0; s < STATE_COUNT; ++s) {
             myStateVariables[s] = myStateVariables[s] + myRates[s] * stepSize;
             outFile << "\t" << myStateVariables[s];
+        }
+        for (size_t s = 0; s < VARIABLE_COUNT; ++s) {
+            outFile << "\t" << myVariables[s];
         }
         outFile << "\n";
     }
