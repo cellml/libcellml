@@ -1689,3 +1689,109 @@ TEST(Units, isBaseUnitAndUnitIsBaseImport)
     EXPECT_TRUE(u4->isImport());
     EXPECT_TRUE(u4->isBaseUnit()); // expect true as unit import is resolved and is base
 }
+
+TEST(Units, isBaseUnitImportedTwice)
+{
+    libcellml::ModelPtr m1 = libcellml::Model::create();
+    m1->setName("m1");
+    libcellml::ModelPtr m2 = libcellml::Model::create();
+    m2->setName("m2");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    libcellml::UnitsPtr u6 = libcellml::Units::create();
+    libcellml::UnitsPtr u7 = libcellml::Units::create();
+
+    u1->setName("u1"); // Base unit
+    u2->setName("u2");
+    u3->setName("u3");
+    u2->addUnit("u1", 0, 1.0);
+    u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u3->setName("u3");
+    u3->addUnit("u2", 0, 1.0, 1.0);
+    u4->setName("some_other_u"); // u4 is the same unit as u1, but has been imported
+    u5->setName("u5");
+    u5->addUnit(libcellml::Units::StandardUnit::STERADIAN, 0, 1.0, 1.0);
+    u6->setName("u6");
+    u6->addUnit("u5", 0, 1.0, 1.0);
+    u7->setName("yet_some_other_u"); // u7 is the same unit as u1
+
+    m1->addUnits(u1);
+    m1->addUnits(u2);
+    m1->addUnits(u3);
+    m2->addUnits(u4);
+    m2->addUnits(u5);
+    m2->addUnits(u6);
+
+    libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
+    i1->setUrl("I_am_a_url");
+    i1->setModel(m2);
+    u7->setImportSource(i1);
+    u7->setImportReference("some_other_u");
+
+    libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
+    i2->setUrl("I_am_another_url");
+    i2->setModel(m1);
+    u4->setImportSource(i2);
+    u4->setImportReference("u1");
+
+    EXPECT_TRUE(u7->isImport());
+    EXPECT_TRUE(u4->isImport());
+    EXPECT_TRUE(u7->isBaseUnit()); // expect true as unit import is resolved and is base
+}
+
+TEST(Units, isNotBaseUnitImportedTwice)
+{
+    libcellml::ModelPtr m1 = libcellml::Model::create();
+    m1->setName("m1");
+    libcellml::ModelPtr m2 = libcellml::Model::create();
+    m2->setName("m2");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    libcellml::UnitsPtr u6 = libcellml::Units::create();
+    libcellml::UnitsPtr u7 = libcellml::Units::create();
+
+    u1->setName("u1"); // Base unit
+    u2->setName("u2");
+    u3->setName("u3");
+    u2->addUnit("u1", 0, 1.0);
+    u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u3->setName("u3");
+    u3->addUnit("u2", 0, 1.0, 1.0);
+    u4->setName("some_other_u"); // u4 is the same unit as u1, but has been imported
+    u5->setName("u5");
+    u5->addUnit(libcellml::Units::StandardUnit::STERADIAN, 0, 1.0, 1.0);
+    u6->setName("u6");
+    u6->addUnit("u5", 0, 1.0, 1.0);
+    u7->setName("yet_some_other_u"); // u7 is the same unit as u1
+
+    m1->addUnits(u1);
+    m1->addUnits(u2);
+    m1->addUnits(u3);
+    m2->addUnits(u4);
+    m2->addUnits(u5);
+    m2->addUnits(u6);
+
+    libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
+    i1->setUrl("I_am_a_url");
+    i1->setModel(m2);
+    u7->setImportSource(i1);
+    u7->setImportReference("some_other_u");
+
+    libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
+    i2->setUrl("I_am_another_url");
+    i2->setModel(m1);
+    u4->setImportSource(i2);
+    u4->setImportReference("u3");
+
+    EXPECT_TRUE(u7->isImport());
+    EXPECT_TRUE(u4->isImport());
+    EXPECT_FALSE(u7->isBaseUnit()); // expect false as unit import is resolved and is not base
+}
