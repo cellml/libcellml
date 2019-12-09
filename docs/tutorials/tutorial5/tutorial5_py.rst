@@ -461,6 +461,5 @@ in the solution shown below in :numref:`tutorial5_image`.
    :name: tutorial5_image
    :alt: Parameter behaviour for ion channel gate
    :align: center
-   :figwidth: 8cm
 
    Behaviour of the current and ion channel status with time.
