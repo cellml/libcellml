@@ -342,15 +342,16 @@ For convenience libCellML gives a variety of options for defining such scaling
 factors:
 
 -  either through the use of named prefixes which are listed on the
-   :ref:`Prefix page<prefixes>`:
-      eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`
+   :ref:`Prefix page<prefixes>`,
+   eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`
+
 -  by defining an integer or integer string as a prefix which represents the
-    :math:`log_{10}` of the scaling factor:
+    :math:`log_{10}` of the scaling factor,
       eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3`
    gives a scaling factor of :math:`10^{-3}=0.001`
       NB: using an integer string like :code:`prefix="-3"` gives the same
    result
--  by defining the scaling factor directly, as a multiplier:
+-  by defining the scaling factor directly, as a multiplier,
       eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`
 
 The overloaded argument option list is shown below:
