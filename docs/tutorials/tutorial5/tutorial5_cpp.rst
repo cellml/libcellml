@@ -451,7 +451,7 @@ your base file name.
 Running your generated model for 50 steps with a step size of 0.1ms results
 in the solution shown below in :numref:`tutorial5_image`.
 
-.. figure:: ../images/tutorial5_image.png
+.. figure:: /tutorials/images/tutorial5_image.png
    :name: tutorial5_image
    :alt: Parameter behaviour for ion channel gate
    :align: center
