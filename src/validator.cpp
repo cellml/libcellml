@@ -985,7 +985,7 @@ bool reachableEquivalence(const VariablePtr &variable1, const VariablePtr &varia
         reachable = true;
     } else if (isEntityChildOf(parent2, parent1)) {
         reachable = true;
-    } else if(areEntitiesSiblings(parent1, parent2)) {
+    } else if (areEntitiesSiblings(parent1, parent2)) {
         reachable = true;
     }
 
@@ -1130,10 +1130,10 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 }
 
 bool unitsAreEquivalent(const ModelPtr &model,
-                                                  const VariablePtr &v1,
-                                                  const VariablePtr &v2,
-                                                  std::string &hints,
-                                                  double &multiplier)
+                        const VariablePtr &v1,
+                        const VariablePtr &v2,
+                        std::string &hints,
+                        double &multiplier)
 {
     std::map<std::string, double> unitMap = {};
 
@@ -1208,11 +1208,11 @@ bool unitsAreEquivalent(const ModelPtr &model,
 }
 
 void updateBaseUnitCount(const ModelPtr &model,
-                                                   std::map<std::string, double> &unitMap,
-                                                   double &multiplier,
-                                                   const std::string &uName,
-                                                   double uExp, double logMult,
-                                                   int direction)
+                         std::map<std::string, double> &unitMap,
+                         double &multiplier,
+                         const std::string &uName,
+                         double uExp, double logMult,
+                         int direction)
 {
     if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
