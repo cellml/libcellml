@@ -213,13 +213,12 @@ UnitsPtr Units::create(const std::string &name) noexcept
 bool Units::isBaseUnit() const
 {
     if (isImport()) {
-        // If our model is unresolved or our import source is unresolved then return false
         ImportSourcePtr importedSource = importSource();
         if (importedSource != nullptr) {
             ModelPtr model = importedSource->model();
             if (model != nullptr && model->hasUnits(importReference())) {
                 auto unit = model->units(importReference());
-                return unit->unitCount() == 0;
+                return unit->isBaseUnit(); // Call isBaseUnit recursively until unit is no longer an import
             }
         }
         return false;
