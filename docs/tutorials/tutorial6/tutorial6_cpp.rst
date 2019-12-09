@@ -17,7 +17,7 @@ Resources:
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
     - If you did not complete Tutorial 5 you can download the file created there:
-      :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
+      :download:`../resources/tutorial5_IonChannelModel.cellml`
 
 .. contents:: Contents
     :local:
@@ -154,9 +154,7 @@ Next we need to define this new dependency of the :math:`\alpha` and
 .. container:: dothis
 
     **3.b** Create the appropriate MathML to represent the equations above, and
-    add to the nGate component.  As in the previous tutorial, you
-    can copy this from the file provided in the
-    :code:`resources/tutorial6_mathml.txt` file if you prefer.
+    add to the nGate component.
 
 .. container:: dothis
 
@@ -371,8 +369,8 @@ default, and can apply to more than one section of the axis.
 
     **5.c** Call the validator to check that your model is free of errors.
 
-6: Serialise and print the model
-================================
+6: Serialise the model and generate code
+========================================
 
 .. container:: dothis
 
