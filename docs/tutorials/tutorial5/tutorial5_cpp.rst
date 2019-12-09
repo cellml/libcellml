@@ -287,7 +287,7 @@ covered in :ref:`Tutorial 3<tutorial3_cpp>` in case you need a reminder.
     created to that provided in the
     :code:`resources/tutorial5/tutorial5_complete.cpp` file.
 
-5: Serialise and write to a file
+5: Serialise and generate code
 ================================
 The final steps are to output our created model to a CellML2.0 file (which
 will be used in subsequent tutorials, so be sure to name it something
@@ -311,7 +311,17 @@ inside the :code:`Generator`.
 
 .. container:: dothis
 
-    **5.b** Check that the :code:`Generator` has not encountered any errors.
+    **5.b** Check the :code:`Generator` for errors.  At this stage you can
+    expect errors related to non-initialised variables.  Go back and set the
+    following initial conditions:
+
+    - :math:`V(t=0)=0`
+    - :math:`n(t=0)=0`
+    - :math:`E_K(t=0)=-85`
+    - :math:`g_K(t=0)=36`
+    - :math:`\gamma(t=0)=4`
+    - :math:`\alpha_n(t=0)=1`
+    - :math:`\beta_n(t=0)=2`
 
 .. container:: dothis
 

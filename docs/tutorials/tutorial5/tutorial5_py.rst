@@ -294,25 +294,173 @@ covered in :ref:`Tutorial 3<tutorial3_py>` in case you need a reminder.
     created to that provided in the
     :code:`resources/tutorials_complete/tutorial5_complete.py` file.
 
-5: Serialise and write to a file
-==================================
-The final step is to output our created model to a CellML2.0 file.  This file
+5: Serialise and generate code
+================================
+The final steps are to output our created model to a CellML2.0 file (which
 will be used in subsequent tutorials, so be sure to name it something
-meaningful!  This step is the same as what was covered at the end of
-:ref:`Tutorial 2<tutorial2_py>`; you can refer back to the code and/or
-instructions there if you need to.
+meaningful!) as well as generating the C or Python files which we can use to
+investigate this component's operation in isolation.  We will do the code
+generation step first to take advantage of the additional error checks present
+inside the :code:`Generator`.
 
 .. container:: dothis
 
-    **5.a** Create a :code:`Printer` item and submit your model for serialisation.
+    **5.a** Create a :code:`Generator` item, set the profile (that is, the output
+    language) to your choice of C (the default) or Python (see below), and
+    then submit the model for processing.
+
+.. code-block:: python
+
+    # Change the generated language from the default C to Python if need be
+    profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
+    generator.setProfile(profile)
 
 .. container:: dothis
 
-    **5.b** Write the serialised string output from the printer to a file.
+    **5.b** Check the :code:`Generator` for errors.  At this stage you can
+    expect errors related to non-initialised variables.  Go back and set the
+    following initial conditions:
+
+    - :math:`V(t=0)=0`
+    - :math:`n(t=0)=0`
+    - :math:`E_K(t=0)=-85`
+    - :math:`g_K(t=0)=36`
+    - :math:`\gamma(t=0)=4`
+    - :math:`\alpha_n(t=0)=1`
+    - :math:`\beta_n(t=0)=2`
 
 .. container:: dothis
 
-    **5.c** Check that your files have been written correctly.  You should have
+    **5.c** Retrieve the output code from the :code:`Generator`, remembering
+    that for output in C you will need both the :code:`interfaceCode` (the
+    header file contents) as well as the :code:`implementationCode` (the source
+    file contents), whereas for Python you need only output the
+    :code:`implementationCode`.  Write the file(s).
+
+The second step is the
+same as what was covered at the end of :ref:`Tutorial 2<tutorial2_cpp>` to use
+the :code:`Printer`; you can refer back to the code and/or instructions there
+if you need to.
+
+.. container:: dothis
+
+    **5.d** Create a :code:`Printer` item and submit your model for serialisation.
+
+.. container:: dothis
+
+    **5.e** Write the serialised string output from the printer to a CellML file.
+
+.. container:: dothis
+
+    **5.f** Check that your files have been written correctly.  You should have
     both the generated files (either *.c/h or *.py) as well as the *.cellml
-    file.  If they're present and correct, then go and have a cuppa, you're
-    done!
+    file.
+
+
+6: Simulate the behavior of the gate
+====================================
+At this stage you should have four new files created:
+
+- the CellML file of your model.  This will be used in later tutorials as you
+  work toward building the whole Hodgkin-Huxley model.
+- the generated file for the Python profile (an example for changing profiles
+  only)
+- the generated files for the C profile, the header and source files.
+
+These last two files can be used in conjuction with a simple solver to model
+the behaviour of this ion channel.
+
+.. container:: dothis
+
+    **6.a** Navigate to the :code:`tutorials/solver` directory.
+
+.. code-block:: terminal
+
+  cd ../tutorials/solver
+
+Because the code you've generated needs to be built at the same time as the
+solver code is built, each different model requires rebuilding a new solver
+executable which includes the generated code.
+
+.. container:: dothis
+
+  **6.b**
+  From inside the :code:`tutorials/solver` directory, use the CMake command
+  line to point to your generated files.  **NB** It's assumed that both of the
+  header and source files have the same base filename (eg: baseFileName.c
+  and baseFileName.h).  The general CMake command is below.
+
+.. code-block:: terminal
+
+  cmake -DINPUT=../tutorial5/baseFileName .
+
+.. container:: nb
+
+  Note that the fullstop in the cmake command sets both the source and binary
+  directories to the solver directory.  This is because even though your
+  generated files are elsewhere, the solver code and CMakeLists.txt file are
+  in *this* directory, and the executable will end up here too.
+
+If all has gone well you should see the output similar to:
+
+.. code-block:: terminal
+
+    -- The C compiler identification is AppleClang 10.0.1.10010046
+    -- The CXX compiler identification is AppleClang 10.0.1.10010046
+    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc
+    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc -- works
+    -- Detecting C compiler ABI info
+    -- Detecting C compiler ABI info - done
+    -- Detecting C compile features
+    -- Detecting C compile features - done
+    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++
+    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ -- works
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
+
+    1) First use 'make -j' to build the file for running
+    2) Then solve by running: ./solve_baseFileName with the arguments:
+      -n  step_total
+      -dt step_size
+
+    -- Configuring done
+    -- Generating done
+    -- Build files have been written to: /path/to/your/stuff/tutorials/solver
+
+.. container:: dothis
+
+  **6.c** Following the instructions in the output, next you need to build the
+  executable by entering:
+
+  .. code-block:: terminal
+
+    make -j
+
+.. container:: dothis
+
+  **6.d** Finally you're ready to solve your model.  The executable will have
+  been given the prefix :code:`solve_` and then your :code:`baseFileName`, and
+  can be run using the command line flags :code:`-n` to indicate the number of
+  steps to run, and :code:`-dt` to indicate the step size, for example:
+
+  .. code-block:: terminal
+
+    ./solve_baseFileName -n 50 -dt 0.1
+
+The parameters read from the file, along with your command line arguments are
+printed to the terminal for checking, and the results of the simulation
+written to a tab-delimited file with the extension :code:`_solution.txt` after
+your base file name.
+
+Running your generated model for 50 steps with a step size of 0.1ms results
+in the solution shown below in :numref:`tutorial5_image`.
+
+.. figure:: ../images/tutorial5_image.png
+   :name: tutorial5_image
+   :alt: Parameter behaviour for ion channel gate
+   :align: center
+   :figwidth: 8cm
+
+   Behaviour of the current and ion channel status with time.

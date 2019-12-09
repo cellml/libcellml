@@ -9,7 +9,7 @@
         - create and include user-defined units (Tutorial 3)
 """
 
-from libcellml import Component, Model, Printer, Validator, Variable, Units
+from libcellml import Component, Generator, GeneratorProfile, Model, Printer, Validator, Variable, Units
 
 from tutorial_utilities import print_errors_to_terminal
 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     n = Variable()
     n.setName("n")
     n.setUnits("dimensionless")
-    n.setInitialValue(1.0)
+    n.setInitialValue(0.0)
 
     E_K = Variable()
     E_K.setName("E_K")
@@ -215,16 +215,50 @@ if __name__ == "__main__":
     print_errors_to_terminal(validator)
 
     print("-----------------------------------------------")
-    print("  STEP 5: Serialise and print the model")
+    print(" STEP 5: Serialise the model and generate code")
     print("-----------------------------------------------")
 
-    #  5.a Create a Printer item and submit your model for serialisation.
+    #  5.a Create a generator instance and pass it the model for processing.  The
+    #      default profile is to generate C code, but we can change this later.
+    generator = Generator()
+    generator.processModel(model)
+
+    #  5.b Check for errors found in the generator
+    print_errors_to_terminal(generator)
+
+    #  5.c Retrieve the output code from the Generator, remembering
+    #      that for output in C you will need both the interfaceCode (the
+    #      header file contents) as well as the implementationCode (the source
+    #      file contents), whereas for Python you need only output the
+    #      implementationCode.  Write the file(s).
+
+    implementation_code_C = generator.implementationCode()
+    write_file = open("tutorial5_IonChannelModel_generated.c", "w")
+    write_file.write(implementation_code_C)
+    write_file.close()
+
+    interface_code = generator.interfaceCode()
+    write_file = open("tutorial5_IonChannelModel_generated.h","w")
+    write_file.write(interface_code)
+    write_file.close()
+
+    profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
+    generator.setProfile(profile)
+
+    implementation_code_python = generator.implementationCode()
+    write_file = open("tutorial5_IonChannelModel_generated.py", "w")
+    write_file.write(implementation_code_python)
+    write_file.close()
+
+    #  5.d Create a Printer item and submit the model for serialisaion
     printer = Printer()
-    serialised_model = printer.printModel(model)
+    serialised_model_string = printer.printModel(model)
 
-    #  5.b Write the serialised string output from the printer to a file.
-    write_file = open("tutorial4_printed.cellml", "w")
-    write_file.write(serialised_model)
-    print("The {} has been printed to tutorial4_printed.cellml".format(model.name()))
+    #  5.e Write the serialsied model to a file
+    write_file = open("tutorial5_IonChannelModel.cellml", "w")
+    write_file.write(serialised_model_string)
+    write_file.close()
 
-    #  5.c Go and have a cuppa, you're done!
+    print("The generated files and serialised CellML file have been written.")
+
+    #  5.f The model can now be simulated using the solver.
