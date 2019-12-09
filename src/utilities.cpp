@@ -484,7 +484,7 @@ PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const Variable
             pair.first = true;
         } else if (isEntityChildOf(componentOfEquivalentVariable, componentOfVariable)) {
             pair.second = true;
-        } else if(areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)) {
+        } else if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)) {
             pair.first = true;
         } else {
             return std::make_pair(false, false);
