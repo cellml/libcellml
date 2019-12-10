@@ -215,6 +215,18 @@ UnitsPtr Units::create(const std::string &name) noexcept
 
 bool Units::isBaseUnit() const
 {
+    if (isImport()) {
+        ImportSourcePtr importedSource = importSource();
+        if (importedSource != nullptr) {
+            ModelPtr model = importedSource->model();
+            if (model != nullptr && model->hasUnits(importReference())) {
+                auto unit = model->units(importReference());
+                return unit->isBaseUnit(); // Call isBaseUnit recursively until unit is no longer an import
+            }
+        }
+        return false;
+    }
+
     return unitCount() == 0;
 }
 
