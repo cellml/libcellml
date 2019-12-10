@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial4_FirstOrderModel">
+  <units name="millisecond">
+    <unit prefix="milli" units="second"/>
+  </units>
+  <units name="millivolt">
+    <unit prefix="milli" units="volt"/>
+  </units>
+  <units name="per_millisecond">
+    <unit exponent="-1" units="millisecond"/>
+  </units>
+  <units name="microA_per_cm2">
+    <unit prefix="micro" units="ampere"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+  <units name="milliS_per_cm2">
+    <unit prefix="milli" units="siemens"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+  <component name="IonChannel">
+    <variable name="t" units="millisecond"/>
+    <variable name="V" units="millivolt" initial_value="0"/>
+    <variable name="E_K" units="millivolt" initial_value="-85"/>
+    <variable name="gamma" units="dimensionless" initial_value="4"/>
+    <variable name="i_K" units="microA_per_cm2"/>
+    <variable name="g_K" units="milliS_per_cm2" initial_value="36"/>
+    <variable name="alpha_n" units="per_millisecond" initial_value="1"/>
+    <variable name="beta_n" units="per_millisecond" initial_value="2"/>
+    <variable name="n" units="dimensionless" initial_value="0"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#"><apply><eq/><apply><diff/><bvar><ci>t</ci></bvar><ci>n</ci></apply><apply><minus/><apply><times/><ci>alpha_n</ci><apply><minus/><cn cellml:units="dimensionless">1</cn><ci>n</ci></apply></apply><apply><times/><ci>beta_n</ci><ci>n</ci></apply></apply></apply><apply><eq/><ci>i_K</ci><apply><times/><ci>g_K</ci><apply><minus/><ci>V</ci><ci>E_K</ci></apply><apply><power/><ci>n</ci><ci>gamma</ci></apply></apply></apply></math>
+  </component>
+</model>

@@ -377,6 +377,41 @@ default, and can apply to more than one section of the axis.
     **6.a** As in :ref:`Tutorial 1<tutorial1_cpp>`, use the :code:`Printer` module
     to serialise the model, and then write it to a file.
 
+
+TODO
+
+.. figure:: /tutorials/images/tutorial6_voltage.png
+   :name: tutorial6_voltage
+   :alt: voltage step input
+   :align: center
+
+   Voltage clamp stimulus.
+
+
+.. figure:: /tutorials/images/tutorial6_ngate.png
+   :name: tutorial6_ngate
+   :alt: n-gate dynamics
+   :align: center
+
+   n-gate dynamics in response to voltage clamp stimulus.
+
+
+.. figure:: /tutorials/images/tutorial6_K_conductance.png
+   :name: tutorial6_K_conductance
+   :alt: Potassium channel conductance
+   :align: center
+
+   Potassium channel conductance.
+
+
+.. figure:: /tutorials/images/tutorial6_current.png
+   :name: tutorial6_current
+   :alt: Potassium channel current
+   :align: center
+
+   Potassium channel current.
+
+
 .. container:: dothis
 
     **6.b** Go and have a cuppa, you're done!

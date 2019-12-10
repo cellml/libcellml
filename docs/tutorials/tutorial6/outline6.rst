@@ -1,7 +1,7 @@
 .. _tutorial6:
 
 ============================================
-Tutorial 5: Working with multiple components
+Tutorial 6: Working with multiple components
 ============================================
 
 Getting started:  If you're reading this it's presumed that you're already
