@@ -1545,7 +1545,7 @@ TEST(Units, isBaseUnitsImportModelUnresolved)
     u2->setImportReference("u1");
 
     EXPECT_TRUE(u2->isImport());
-    EXPECT_TRUE(u2->importSource()->model() == nullptr);
+    EXPECT_EQ(u2->importSource()->model(), nullptr);
     EXPECT_FALSE(u2->isBaseUnit());
 }
 
@@ -1581,11 +1581,11 @@ TEST(Units, isBaseUnitImportedTwice)
 
     libcellml::UnitsPtr u_i1 = libcellml::Units::create();
     libcellml::UnitsPtr u_i2 = libcellml::Units::create();
-    libcellml::UnitsPtr u_import = libcellml::Units::create();
+    libcellml::UnitsPtr u_i0 = libcellml::Units::create();
 
+    u_i0->setName("some_other_u");
     u_i1->setName("u_i1");
     u_i2->setName("u_i2");
-    u_import->setName("some_other_u");
 
     m_i1->addUnits(u_i1);
     m_i2->addUnits(u_i2);
@@ -1593,18 +1593,19 @@ TEST(Units, isBaseUnitImportedTwice)
     libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
     i2->setUrl("I_am_a_url");
     i2->setModel(m_i2);
-    u_import->setImportSource(i2);
-    u_import->setImportReference("u_i2");
+    u_i1->setImportSource(i2);
+    u_i1->setImportReference("u_i2");
 
     libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
     i1->setUrl("I_am_another_url");
     i1->setModel(m_i1);
-    u_i2->setImportSource(i1);
-    u_i2->setImportReference("u_i1");
+    u_i0->setImportSource(i1);
+    u_i0->setImportReference("u_i1");
 
-    EXPECT_TRUE(u_import->isImport());
-    EXPECT_TRUE(u_i2->isImport());
-    EXPECT_TRUE(u_import->isBaseUnit());
+    EXPECT_TRUE(u_i0->isImport());
+    EXPECT_TRUE(u_i1->isImport());
+    EXPECT_FALSE(u_i2->isImport());
+    EXPECT_TRUE(u_i0->isBaseUnit());
 }
 
 TEST(Units, isNotBaseUnitImportedTwice)
@@ -1616,12 +1617,12 @@ TEST(Units, isNotBaseUnitImportedTwice)
 
     libcellml::UnitsPtr u_i1 = libcellml::Units::create();
     libcellml::UnitsPtr u_i2 = libcellml::Units::create();
-    libcellml::UnitsPtr u_import = libcellml::Units::create();
+    libcellml::UnitsPtr u_i0 = libcellml::Units::create();
 
-    u_i1->setName("u_i1");
-    u_i1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
     u_i2->setName("u_i2");
-    u_import->setName("some_other_u");
+    u_i2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u_i1->setName("u_i1");
+    u_i0->setName("some_other_u");
 
     m_i1->addUnits(u_i1);
     m_i2->addUnits(u_i2);
@@ -1629,16 +1630,17 @@ TEST(Units, isNotBaseUnitImportedTwice)
     libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
     i2->setUrl("I_am_a_url");
     i2->setModel(m_i2);
-    u_import->setImportSource(i2);
-    u_import->setImportReference("u_i2");
+    u_i1->setImportSource(i2);
+    u_i1->setImportReference("u_i2");
 
     libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
     i1->setUrl("I_am_another_url");
     i1->setModel(m_i1);
-    u_i2->setImportSource(i1);
-    u_i2->setImportReference("u_i1");
+    u_i0->setImportSource(i1);
+    u_i0->setImportReference("u_i1");
 
-    EXPECT_TRUE(u_import->isImport());
-    EXPECT_TRUE(u_i2->isImport());
-    EXPECT_FALSE(u_import->isBaseUnit());
+    EXPECT_TRUE(u_i0->isImport());
+    EXPECT_TRUE(u_i1->isImport());
+    EXPECT_FALSE(u_i2->isImport());
+    EXPECT_FALSE(u_i0->isBaseUnit());
 }
