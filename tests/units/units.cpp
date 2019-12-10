@@ -1568,7 +1568,7 @@ TEST(Units, isBaseUnitImportReferenceUnresolved)
     import->setModel(model);
 
     EXPECT_TRUE(u2->isImport());
-    EXPECT_TRUE(u2->importReference() == "");
+    EXPECT_TRUE(u2->importReference().empty());
     EXPECT_FALSE(u2->isBaseUnit());
 }
 
