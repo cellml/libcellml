@@ -108,10 +108,10 @@ if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FL
 endif()
 
 if(WIN32)
-  find_program(MAKENSIS_EXE NAMES ${PREFERRED_NSIS_NAMES} makensis)
+  find_program(MAKENSIS_EXE NAMES ${PREFERRED_NSIS_NAMES} makensis
+    HINTS "C:/Program\ Files/NSIS/" "C:/Program\ Files\ (x86)/NSIS/")
   mark_as_advanced(MAKENSIS_EXE)
-  if(MAKENSIS_EXE OR EXISTS "C:/Program\ Files/NSIS/makensis.exe"
-      OR EXISTS "C:/Program\ Files\ (x86)/NSIS/makensis.exe")
+  if(MAKENSIS_EXE)
     set(NSIS_FOUND TRUE)
   else()
     set(NSIS_FOUND FALSE)
