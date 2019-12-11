@@ -2264,6 +2264,11 @@ TEST(Validator, validateMathDimensionallyEquivalentUnits)
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("u");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, 2, 1.0, 1.0);
+    u->addUnit(libcellml::Units::StandardUnit::JOULE, 3, 2.0, 1.0);
 
     m->setName("modelName");
     c->setName("componentName");
@@ -2272,58 +2277,16 @@ TEST(Validator, validateMathDimensionallyEquivalentUnits)
     v3->setName("C");
     v1->setInitialValue("1.0");
     v2->setInitialValue("-1.0");
-    v1->setUnits("dimensionless");
-    v2->setUnits("dimensionless");
-    v3->setUnits("dimensionless");
+    v1->setUnits(u);
+    v2->setUnits(u);
+    v3->setUnits(u);
 
     c->addVariable(v1);
     c->addVariable(v2);
     c->addVariable(v3);
     c->setMath(math);
     m->addComponent(c);
-
-    v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
-}
-
-TEST(Validator, validateMathNotDimensionallyEquivalentUnits)
-{
-    const std::string math =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>C</ci>\n"
-        "    <apply>\n"
-        "      <plus/>\n"
-        "      <ci>A</ci>\n"
-        "      <ci>B</ci>\n"
-        "    </apply>\n"
-        "  </apply>\n"
-        "</math>\n";
-
-    libcellml::ValidatorPtr v = libcellml::Validator::create();
-    libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c = libcellml::Component::create();
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-    libcellml::VariablePtr v3 = libcellml::Variable::create();
-
-    m->setName("modelName");
-    c->setName("componentName");
-    v1->setName("A");
-    v2->setName("B");
-    v3->setName("C");
-    v1->setInitialValue("1.0");
-    v2->setInitialValue("-1.0");
-    v1->setUnits("dimensionless");
-    v2->setUnits("dimensionless");
-    v3->setUnits("dimensionless");
-
-    c->addVariable(v1);
-    c->addVariable(v2);
-    c->addVariable(v3);
-    c->setMath(math);
-    m->addComponent(c);
+    m->addUnits(u);
 
     v->validateModel(m);
     EXPECT_EQ(size_t(0), v->errorCount());
@@ -2331,6 +2294,12 @@ TEST(Validator, validateMathNotDimensionallyEquivalentUnits)
 
 TEST(Validator, validateMathNotEquivalentUnits)
 {
+    const std::vector<std::string> expectedErrors = {
+        "Component 'componentName' has an invalid math operation '+' for variable 'A', which has units of 'u1', and variable 'B,' which has units of 'dimensionless'. The mismatch is A^1.0, kg^1.0, m^2.0, s^-2.0.",
+        "Component 'componentName' has an invalid math operation '=' for variable 'C', which has units of 'u2', and variable 'A,' which has units of 'u1'. The mismatch is A^1.0, m^2.0, s^-2.0.",
+        "Component 'componentName' has an invalid math operation '=' for variable 'C', which has units of 'u2', and variable 'B,' which has units of 'dimensionless'. The mismatch is kg^1.0.",
+    };
+    
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
@@ -2350,6 +2319,14 @@ TEST(Validator, validateMathNotEquivalentUnits)
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
     libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::JOULE, 0, 2.0, 1.0);
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::KILOGRAM, 0, 1.0, 1.0);
 
     m->setName("modelName");
     c->setName("componentName");
@@ -2358,16 +2335,192 @@ TEST(Validator, validateMathNotEquivalentUnits)
     v3->setName("C");
     v1->setInitialValue("1.0");
     v2->setInitialValue("-1.0");
-    v1->setUnits("dimensionless");
+    v1->setUnits(u1);
     v2->setUnits("dimensionless");
-    v3->setUnits("dimensionless");
+    v3->setUnits(u2);
 
     c->addVariable(v1);
     c->addVariable(v2);
     c->addVariable(v3);
     c->setMath(math);
     m->addComponent(c);
+    m->addUnits(u1);
+    m->addUnits(u2);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateMathNotDimensionallyEquivalentUnits)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Component 'componentName' has a multiplier mismatch for operation '=', for variable 'C' and expression 'A+B'. The mismatch is 1000.0.",
+    };
+    
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>C</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    x = libcellml::XmlDoc::XmlDoc(); 
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::JOULE, 0, 2.0, 1.0);
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::KILOGRAM, 0, 1.0, 1.0);
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("C");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits(u1);
+    v2->setUnits("dimensionless");
+    v3->setUnits(u2);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    v->validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateMathDimensionallyEquivalentUnitsComplex)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Component 'componentName' has a multiplier mismatch for operation '=', for variable 'C' and expression 'A+B'. The mismatch is 1000.0.",
+    };
+
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>C</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <apply>\n"
+        "           "      
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::JOULE, 0, 2.0, 1.0);
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::KILOGRAM, 0, 1.0, 1.0);
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("C");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits(u1);
+    v2->setUnits("dimensionless");
+    v3->setUnits(u2);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    v->validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateMathNotDimensionallyEquivalentUnitsComplex)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Component 'componentName' has a multiplier mismatch for operation '=', for variable 'C' and expression 'A+B'. The mismatch is 1000.0.",
+    };
+
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>C</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::JOULE, 0, 2.0, 1.0);
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::KILOGRAM, 0, 1.0, 1.0);
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("C");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits(u1);
+    v2->setUnits("dimensionless");
+    v3->setUnits(u2);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    v->validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
