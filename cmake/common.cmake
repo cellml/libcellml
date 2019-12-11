@@ -242,7 +242,7 @@ function(GET_SYSTEM_NAME RETURN_SYSTEM_NAME)
       set(SYSTEM_NAME Unix-Based)
     endif()
   else()
-      message( FATAL_ERROR "Don't yet know this system." )
+    message( FATAL_ERROR "Don't yet know this system." )
   endif()
 
   string(REPLACE "\n" "_" SYSTEM_NAME ${SYSTEM_NAME})
