@@ -48,9 +48,15 @@ elseif(UNIX)
 
   set(CPACK_GENERATOR "TGZ")
   string(FIND ${LIBCELLML_SYSTEM} "Ubuntu" INDEX)
-  if(INDEX EQUAL 0)
+  debian_based(_DEB_SYSTEM)
+  redhat_based(_RPM_SYSTEM)
+  if(_DEB_SYSTEM)
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "libCellML Developers") #required
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libxml2")
     list(APPEND CPACK_GENERATOR "DEB")
+  endif()
+  if(_RPM_SYSTEM)
+    list(APPEND CPACK_GENERATOR "RPM")
   endif()
 endif()
 
