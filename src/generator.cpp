@@ -593,6 +593,7 @@ struct Generator::GeneratorImpl
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
+    void processEquationUnitsAst(const GeneratorEquationAstPtr &ast);
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
@@ -1287,6 +1288,11 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
+void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAstPtr &ast)
+{
+
+}
+
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                                       const GeneratorInternalVariablePtr &variable2)
 {
@@ -1369,6 +1375,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
+            processEquationUnitsAst(equation->mAst);
         }
     }
 
