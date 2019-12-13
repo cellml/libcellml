@@ -1290,6 +1290,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
 void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAstPtr &ast)
 {
+    /*
     // We get our head AST node and then iterate down the tree to recursively check the units of each subtree.
     // First we call our private helper function to create the AST tree.
     createAst(ast);
@@ -1328,12 +1329,77 @@ void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAs
     }
 
     // then work our way up: we update our units map at every step and compare it with whatever is above for BOTH subtrees
-
     // Once we have checked all subtrees we then check the equality of both subtrees using our unitmaps built up above
+    */
+
+    // Empty AST
+    if (ast == nullptr) {
+        return;
+    }
+
+    // If we have a leaf node, we return the units mapping
+    if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+        // return the units mapping for that node
+        // add it to the current units mapping
+    }
+
+    // Evaluate left subtree
+    processEquationUnitsAst(ast->mLeft);
+
+    // Evaluate right subtree
+    processEquationUnitsAst(ast->mRight);
+
+    // Check which operator to apply
+    // Want to check +, -, eq, neq, leq, geq here to find the units mapping
+    if ((ast->mType == libcellml::GeneratorEquationAst::Type::PLUS) || (ast->mType == libcellml::GeneratorEquationAst::Type::MINUS) || (ast->mType == libcellml::GeneratorEquationAst::Type::EQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::LEQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::GEQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::NEQ)) {
+        // In here we check both unit mappings of the respective subtrees, if it fails then we return an error message, otherwise "combine" unit mappings by returning one of them
+
+        //return l_val + r_val;
+    }
+
+    // times and divide means we add and subtract the powers in the model
+    if (ast->mType == libcellml::GeneratorEquationAst::Type::TIMES || ast->mType == libcellml::GeneratorEquationAst::Type::DIVIDE) {
+        // Add/subtract units mapping, returning afterwards
+
+        //return l_val - r_val;
+    }
+
+    // Power and Root means we multiply and divide respectively
+    if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER || ast->mType == libcellml::GeneratorEquationAst::Type::ROOT) {
+        // First check that the power is dimensionless. If it isn't, return error message
+
+        // If it is, then multiply the constant with the current units mapping and return
+    }
+
+    // Checking all log and trig functions for dimensionlessness
+    if (ast->mType == libcellml::GeneratorEquationAst::Type::LN || ast->mType == libcellml::GeneratorEquationAst::Type::LOG) {
+        // Check to make sure log base units and log base itself are the same - this is the only case which will result in dimensionlessness
+
+        // If not, return an error stating log base units and logged function are incompatible
+    }
+
+
+    // All trig arguments should be dimensionless
+    if (ast->mType == libcellml::GeneratorEquationAst::Type::ACOS) {
+    
+    }
+
+    // Anything else we aren't particulary worried about in terms of units, we simply combine units mappings and then return to move onto the next function call where we may reach units 
+    // Which need to be compared
+
+        // Otherwise return unit mapping as is to find the correct unit mapping constructed
+        return l_val / r_val;
 }
 
-// Helper function to firstly create the AST mapping to iterate through when checking units
-void createAst(const GeneratorEquationAstPtr &ast)
+
+// This function should probably return an int instead and then we can distinguish what "type" we have to examine for the node - this saves excessiely long if statements 
+bool checkNodeType(libcellml::GeneratorEquationAst::Type type)
+{
+    return false;
+}
+
+    // Helper function to firstly create the AST mapping to iterate through when checking units
+    void createAst(const GeneratorEquationAstPtr &ast)
 {
     // We get our head ast node and then iterate down the tree to recursively check the units of each subtree.
     GeneratorEquationAstPtr astParent = ast->mParent.lock();
