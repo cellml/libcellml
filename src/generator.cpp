@@ -1354,7 +1354,7 @@ void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAs
     if ((ast->mType == libcellml::GeneratorEquationAst::Type::PLUS) || (ast->mType == libcellml::GeneratorEquationAst::Type::MINUS) || (ast->mType == libcellml::GeneratorEquationAst::Type::EQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::LEQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::GEQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::NEQ)) {
         // In here we check both unit mappings of the respective subtrees, if it fails then we return an error message, otherwise "combine" unit mappings by returning one of them
 
-        //return l_val + r_val;
+        //check unitmap
     }
 
     // times and divide means we add and subtract the powers in the model
@@ -1378,28 +1378,242 @@ void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAs
         // If not, return an error stating log base units and logged function are incompatible
     }
 
-
     // All trig arguments should be dimensionless
     if (ast->mType == libcellml::GeneratorEquationAst::Type::ACOS) {
-    
     }
 
-    // Anything else we aren't particulary worried about in terms of units, we simply combine units mappings and then return to move onto the next function call where we may reach units 
+    // Anything else we aren't particulary worried about in terms of units, we simply combine units mappings and then return to move onto the next function call where we may reach units
     // Which need to be compared
 
-        // Otherwise return unit mapping as is to find the correct unit mapping constructed
-        return l_val / r_val;
+    // Otherwise return unit mapping as is to find the correct unit mapping constructed
+    return l_val / r_val;
 }
 
+// Checks unit equivalences
 
-// This function should probably return an int instead and then we can distinguish what "type" we have to examine for the node - this saves excessiely long if statements 
-bool checkNodeType(libcellml::GeneratorEquationAst::Type type)
+bool unitsAreEquivalent(const ModelPtr &model,
+                        const VariablePtr &v1,
+                        const VariablePtr &v2,
+                        std::string &hints,
+                        double &multiplier)
 {
-    return false;
+    std::map<std::string, double> unitMap = {};
+
+    for (const auto &baseUnits : baseUnitsList) {
+        unitMap[baseUnits] = 0.0;
+    }
+
+    std::string ref;
+    hints = "";
+    multiplier = 0.0;
+
+    if (v1->units() == nullptr || v2->units() == nullptr) {
+        return false;
+    }
+
+    if (model->hasUnits(v1->units()->name())) {
+        UnitsPtr u1 = Units::create();
+        u1 = model->units(v1->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
+    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
+        ref = v1->units()->name();
+        unitMap.at(ref) += 1.0;
+    } else if (isStandardUnitName(v1->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
+    }
+
+    if (model->hasUnits(v2->units()->name())) {
+        UnitsPtr u2 = Units::create();
+        u2 = model->units(v2->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
+    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
+        ref = v2->units()->name();
+        unitMap.at(v2->units()->name()) -= 1.0;
+    } else if (isStandardUnitName(v2->units()->name())) {
+        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
+    }
+
+    // Remove "dimensionless" from base unit testing.
+    unitMap.erase("dimensionless");
+
+    bool status = true;
+    for (const auto &basePair : unitMap) {
+        if (basePair.second != 0.0) {
+            std::string num = std::to_string(basePair.second);
+            num.erase(num.find_last_not_of('0') + 1, num.length());
+            if (num.back() == '.') {
+                num.pop_back();
+            }
+            hints += basePair.first + "^" + num + ", ";
+            status = false;
+        }
+    }
+
+    if (multiplier != 0.0) {
+        // NB: multiplication errors are only reported when there is a base error mismatch too, does not trigger it alone.
+        // The multiplication mismatch will be returned through the multiplier argument in all cases.
+        std::string num = std::to_string(multiplier);
+        num.erase(num.find_last_not_of('0') + 1, num.length());
+        if (num.back() == '.') {
+            num.pop_back();
+        }
+        hints += "multiplication factor of 10^" + num + ", ";
+    }
+
+    // Remove the final trailing comma from the hints string.
+    if (hints.length() > 2) {
+        hints.pop_back();
+        hints.back() = '.';
+    }
+
+    return status;
 }
 
-    // Helper function to firstly create the AST mapping to iterate through when checking units
-    void createAst(const GeneratorEquationAstPtr &ast)
+void updateBaseUnitCount(const ModelPtr &model,
+                         std::map<std::string, double> &unitMap,
+                         double &multiplier,
+                         const std::string &uName,
+                         double uExp, double logMult,
+                         int direction)
+{
+    if (model->hasUnits(uName)) {
+        UnitsPtr u = model->units(uName);
+        if (!u->isBaseUnit()) {
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double exp;
+            double mult;
+            double expMult;
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->unitAttributes(i, ref, pre, exp, expMult, id);
+                mult = std::log10(expMult);
+                if (!isStandardUnitName(ref)) {
+                    updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                } else {
+                    for (const auto &iter : standardUnitsList.at(ref)) {
+                        unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
+                    }
+                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+                }
+            }
+        } else if (unitMap.find(uName) == unitMap.end()) {
+            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+            multiplier += direction * logMult;
+        }
+    } else if (isStandardUnitName(uName)) {
+        for (const auto &iter : standardUnitsList.at(uName)) {
+            unitMap.at(iter.first) += direction * (iter.second * uExp);
+        }
+        multiplier += direction * logMult;
+    }
+}
+
+// This function should probably return an int instead and then we can distinguish what "type" we have to examine for the node - this saves excessiely long if statements and creating an enum class.
+// Return 1 for all direct comparision operations
+// Return 2 for all units adding operations - iteratively add the units map for times/divide
+// Return 3 for all units multiplying/dividing operations
+// Return 4 for all ln/log operations (where we have to check the base)
+// Return 5 for all trig operations as we have to check dimensionlessness) 
+// Return 6 for diff as we have to check bottom variable in a specific way
+// Any other returns? possibley, but for now these are the main ones
+int checkNodeType(libcellml::GeneratorEquationAst::Type type)
+{
+    if (type == libcellml::GeneratorEquationAst::Type::PLUS) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::MINUS) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::EQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::LEQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::NEQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::GEQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::LT) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::GT) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::MINUS) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::MIN) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::MAX) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::NEQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::GEQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::TIMES) {
+        return 2;
+    } else if (type == libcellml::GeneratorEquationAst::Type::DIVIDE) {
+        return 2;
+    } else if (type == libcellml::GeneratorEquationAst::Type::POWER) {
+        return 3;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ROOT) {
+        return 3;
+    } else if (type == libcellml::GeneratorEquationAst::Type::LN) {
+        return 4;
+    } else if (type == libcellml::GeneratorEquationAst::Type::LOG) {
+        return 4;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ASIN) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ASINH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::SIN) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::SINH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACOS) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACOSH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::COS) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::COSH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ATAN) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ATANH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::TAN) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::TANH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ASEC) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ASECH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::SEC) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::SECH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACSC) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACSCH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::CSC) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::CSCH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACOT) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACOTH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::COT) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::COTH) {
+        return 5;
+    } else if (type == libcellml::GeneratorEquationAst::Type::DIFF) {
+        return 6;
+    }
+
+    return 0;
+}
+
+// Helper function to firstly create the AST mapping to iterate through when checking units
+void createAst(const GeneratorEquationAstPtr &ast)
 {
     // We get our head ast node and then iterate down the tree to recursively check the units of each subtree.
     GeneratorEquationAstPtr astParent = ast->mParent.lock();
