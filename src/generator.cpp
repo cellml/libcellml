@@ -593,7 +593,7 @@ struct Generator::GeneratorImpl
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
-    void processEquationUnitsAst(const GeneratorEquationAstPtr &ast);
+    void processEquationUnits(const GeneratorEquationAstPtr &ast);
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
@@ -1288,7 +1288,17 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
-void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAstPtr &ast)
+// Units mapping declared to implement when checking units for variables
+using UnitsMap = std::map<std::string, double>;
+
+// Shim function to create a continguous viod declaration in the private implementation
+void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
+{
+
+
+}
+
+UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast)
 {
     /*
     // We get our head AST node and then iterate down the tree to recursively check the units of each subtree.
