@@ -1332,15 +1332,12 @@ void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAs
     // Once we have checked all subtrees we then check the equality of both subtrees using our unitmaps built up above
     */
 
+    // We implement a postorder traversal for the tree. We want to check units going up the tree, so we should recursively access the tree until we find a node which is a leaf, 
+    // which should always be a units/varaible node anyways.
+
     // Empty AST
     if (ast == nullptr) {
         return;
-    }
-
-    // If we have a leaf node, we return the units mapping
-    if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-        // return the units mapping for that node
-        // add it to the current units mapping
     }
 
     // Evaluate left subtree
@@ -1349,44 +1346,52 @@ void Generator::GeneratorImpl::processEquationUnitsAst(const GeneratorEquationAs
     // Evaluate right subtree
     processEquationUnitsAst(ast->mRight);
 
+    // If we have a leaf node, we return the units mapping
+    if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+        // return the units mapping for that node
+        // add it to the current units mapping
+    }
+
+    int type = checkNodeType(ast->mType);
+
     // Check which operator to apply
     // Want to check +, -, eq, neq, leq, geq here to find the units mapping
-    if ((ast->mType == libcellml::GeneratorEquationAst::Type::PLUS) || (ast->mType == libcellml::GeneratorEquationAst::Type::MINUS) || (ast->mType == libcellml::GeneratorEquationAst::Type::EQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::LEQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::GEQ) || (ast->mType == libcellml::GeneratorEquationAst::Type::NEQ)) {
+    if (type == 1) {
         // In here we check both unit mappings of the respective subtrees, if it fails then we return an error message, otherwise "combine" unit mappings by returning one of them
 
         //check unitmap
     }
 
     // times and divide means we add and subtract the powers in the model
-    if (ast->mType == libcellml::GeneratorEquationAst::Type::TIMES || ast->mType == libcellml::GeneratorEquationAst::Type::DIVIDE) {
+    if (type == 2) {
         // Add/subtract units mapping, returning afterwards
 
         //return l_val - r_val;
     }
 
     // Power and Root means we multiply and divide respectively
-    if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER || ast->mType == libcellml::GeneratorEquationAst::Type::ROOT) {
+    if (type == 3) {
         // First check that the power is dimensionless. If it isn't, return error message
 
         // If it is, then multiply the constant with the current units mapping and return
     }
 
     // Checking all log and trig functions for dimensionlessness
-    if (ast->mType == libcellml::GeneratorEquationAst::Type::LN || ast->mType == libcellml::GeneratorEquationAst::Type::LOG) {
+    if (type == 4) {
         // Check to make sure log base units and log base itself are the same - this is the only case which will result in dimensionlessness
 
         // If not, return an error stating log base units and logged function are incompatible
     }
 
     // All trig arguments should be dimensionless
-    if (ast->mType == libcellml::GeneratorEquationAst::Type::ACOS) {
+    if (type == 5) {
     }
 
     // Anything else we aren't particulary worried about in terms of units, we simply combine units mappings and then return to move onto the next function call where we may reach units
     // Which need to be compared
 
     // Otherwise return unit mapping as is to find the correct unit mapping constructed
-    return l_val / r_val;
+    return unitsMap;
 }
 
 // Checks unit equivalences
