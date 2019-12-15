@@ -1295,68 +1295,49 @@ using UnitsMap = std::map<std::string, double>;
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
 {
     UnitsMap unitMap;
-    processEquationUnitsAst(ast, unitMap);
+    unitMap = processEquationUnitsAst(ast, unitMap);
 }
 
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap)
 {
     if (ast->mLeft == nullptr && ast->mRight == nullptr) {
         unitMap = createUnitsMapping(ast->mVariable);
-        return unitMap
+        return unitMap;
     }
 
-    // Evaluate left subtree
-    processEquationUnitsAst(ast->mLeft);
+    // We know if we have reached an internal vertex that we *should* have a mathematical operation as it's type.
+    if (ast->mLeft != nullptr || ast->mRight != nullptr) {
+        // Evaluate left, right subtrees first
+        UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap);
+        UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap);
 
-    // Evaluate right subtree
-    processEquationUnitsAst(ast->mRight);
+        int type = checkNodeType(ast->mType);
 
-    // If we have a leaf node, we return the units mapping
-    if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-        // return the units mapping for that node
-        // add it to the current units mapping
+        // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
+        if (type == 1) {
+        }
+
+        // Multiply, Divide: add mappings
+        if (type == 2) {
+        }
+
+        // Power, Root means we multiply/divide mapping. Check that power is dimensionless.
+        if (type == 3) {
+        }
+
+        // Log functions should have same units and base
+        if (type == 4) {
+        }
+
+        // All trig arguments should be dimensionless
+        if (type == 5) {
+        }
     }
+}
 
-    int type = checkNodeType(ast->mType);
+UnitsMap createUnitsMapping(libcellml::VariablePtr var)
+{
 
-    // Check which operator to apply
-    // Want to check +, -, eq, neq, leq, geq here to find the units mapping
-    if (type == 1) {
-        // In here we check both unit mappings of the respective subtrees, if it fails then we return an error message, otherwise "combine" unit mappings by returning one of them
-
-        //check unitmap
-    }
-
-    // times and divide means we add and subtract the powers in the model
-    if (type == 2) {
-        // Add/subtract units mapping, returning afterwards
-
-        //return l_val - r_val;
-    }
-
-    // Power and Root means we multiply and divide respectively
-    if (type == 3) {
-        // First check that the power is dimensionless. If it isn't, return error message
-
-        // If it is, then multiply the constant with the current units mapping and return
-    }
-
-    // Checking all log and trig functions for dimensionlessness
-    if (type == 4) {
-        // Check to make sure log base units and log base itself are the same - this is the only case which will result in dimensionlessness
-
-        // If not, return an error stating log base units and logged function are incompatible
-    }
-
-    // All trig arguments should be dimensionless
-    if (type == 5) {
-    }
-
-    // Anything else we aren't particulary worried about in terms of units, we simply combine units mappings and then return to move onto the next function call where we may reach units
-    // Which need to be compared
-
-    // Otherwise return unit mapping as is to find the correct unit mapping constructed
-    return unitsMap;
 }
 
 // Checks unit equivalences
