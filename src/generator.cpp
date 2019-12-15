@@ -1294,60 +1294,15 @@ using UnitsMap = std::map<std::string, double>;
 // Shim function to create a continguous viod declaration in the private implementation
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
 {
-
-
+    UnitsMap unitMap;
+    processEquationUnitsAst(ast, unitMap);
 }
 
-UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast)
+UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap)
 {
-    /*
-    // We get our head AST node and then iterate down the tree to recursively check the units of each subtree.
-    // First we call our private helper function to create the AST tree.
-    createAst(ast);
-
-    // Every internal node within the tree is some kind of mathematical expression.
-    // So, if we want to check nodes, we should first check whether they have any children or not. If they have
-    // children, they are math nodes, leaves are variables with units which can be examined
     if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-        // update units mapping in here
-        GeneratorEquationAstPtr parent = ast->mParent.lock();
-        if (parent->mType == libcellml::GeneratorEquationAst::Type::EQ || 
-            ast->mType == libcellml::GeneratorEquationAst::Type::LEQ || 
-            ast->mType == libcellml::GeneratorEquationAst::Type::GEQ || 
-            ast->mType == libcellml::GeneratorEquationAst::Type::NEQ) {
-            
-        }
-    }
-
-            UnitsMap leftTree;
-    UnitsMap rightTree;
-
-    // find each smallest node (as part of the left and right subtrees) in the subtree for maths
-    if (ast->mLeft != nullptr) {
-        processEquationUnitsAst(ast->mLeft);
-    }
-    if (ast->mRight != nullptr) {
-        processEquationUnitsAst(ast->mRight);
-    }
-
-    // If the current position in the AST is at the top equals sign, evaluate the final units mapping and return
-    if (ast->mType == libcellml::GeneratorEquationAst::Type::EQ || ast->mType == libcellml::GeneratorEquationAst::Type::LEQ || ast->mType == libcellml::GeneratorEquationAst::Type::GEQ || ast->mType == libcellml::GeneratorEquationAst::Type::NEQ) {
-    }
-
-    if (ast->mType == libcellml::GeneratorEquationAst::Type::PLUS || ast->mType == libcellml::GeneratorEquationAst::Type::MINUS) {
-        return;
-    }
-
-    // then work our way up: we update our units map at every step and compare it with whatever is above for BOTH subtrees
-    // Once we have checked all subtrees we then check the equality of both subtrees using our unitmaps built up above
-    */
-
-    // We implement a postorder traversal for the tree. We want to check units going up the tree, so we should recursively access the tree until we find a node which is a leaf, 
-    // which should always be a units/varaible node anyways.
-
-    // Empty AST
-    if (ast == nullptr) {
-        return;
+        unitMap = createUnitsMapping(ast->mVariable);
+        return unitMap
     }
 
     // Evaluate left subtree
@@ -1531,7 +1486,7 @@ void updateBaseUnitCount(const ModelPtr &model,
 // Return 4 for all ln/log operations (where we have to check the base)
 // Return 5 for all trig operations as we have to check dimensionlessness) 
 // Return 6 for diff as we have to check bottom variable in a specific way
-// Any other returns? possibley, but for now these are the main ones
+// Any other returns? possibly, but for now these are the main ones
 int checkNodeType(libcellml::GeneratorEquationAst::Type type)
 {
     if (type == libcellml::GeneratorEquationAst::Type::PLUS) {
@@ -1623,33 +1578,7 @@ int checkNodeType(libcellml::GeneratorEquationAst::Type type)
     } else if (type == libcellml::GeneratorEquationAst::Type::DIFF) {
         return 6;
     }
-
     return 0;
-}
-
-// Helper function to firstly create the AST mapping to iterate through when checking units
-void createAst(const GeneratorEquationAstPtr &ast)
-{
-    // We get our head ast node and then iterate down the tree to recursively check the units of each subtree.
-    GeneratorEquationAstPtr astParent = ast->mParent.lock();
-    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
-    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr; //locks arguments as to allow for tree traversal
-
-    // Recursively traverse the AST to create it
-    if (ast->mLeft != nullptr) {
-        createAst(ast->mLeft);
-    }
-    if (ast->mRight != nullptr) {
-        createAst(ast->mRight);
-    }
-}
-
-// Helper function to update the units mapping at every step of the way, so as to provide hints of what is wrong if the units are either dimensionally inconsistent,
-// or not equivalent at all. Similar to current implementation of units validation.
-using UnitsMap = std::map<std::string, double>;
-
-void updateUnitMapping(UnitsMap unitMap, VariablePtr variabletoadd)
-{
 }
 
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
