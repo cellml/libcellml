@@ -258,18 +258,6 @@ struct Validator::ValidatorImpl
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
                             std::vector<std::string> &history,
                             std::vector<std::vector<std::string>> &errorList);
-
-    /**
-    * @brief Checks @p model mappings to ensure all variables mapped to other variables have the same units.
-    *
-    * The @c Model is checked for any equivalence mapping that exist across @c Components. If a variable has a  
-    * mapping to another variable, then it is expected that the units for each variable in the mapping are equal.  
-    * If not, then a @c Error is created and logged in the @c Validator.
-    * 
-    * @param model The model containing the variables and mappings to be tested.
-    
-    void checkUnitHomogeneity(const ModelPtr &model);
-    */
 };
 
 Validator::Validator()
@@ -381,9 +369,6 @@ void Validator::validateModel(const ModelPtr &model)
 
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
-
-    // Validate all mappings have equivalent units
-    //mPimpl->checkUnitHomogeneity(model);
 }
 
 void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names)
@@ -1263,51 +1248,5 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
         }
     }
 }
-/*
-using VariablePair = std::vector<std::pair<VariablePtr, VariablePtr>>;
-
-void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
-{
-    VariablePair checkedPairs;
-    VariablePair errorPairs;
-
-    // Check components.
-    if (model->componentCount() > 0) {
-        for (size_t i = 0; i < model->componentCount(); ++i) {
-            auto component = model->component(i);
-            // Check variables.
-            for (size_t j = 0; j < component->variableCount(); ++j) {
-                auto variable = component->variable(j);
-                if (variable->equivalentVariableCount() > 0) {
-                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                        // Check both equivalence pairings
-                        auto equivalentVariable = variable->equivalentVariable(k);
-                        auto firstCheckPairing = std::make_pair(variable, equivalentVariable);
-                        auto secondCheckPairing = std::make_pair(equivalentVariable, variable);
-
-                        if ((std::find(checkedPairs.begin(), checkedPairs.end(), firstCheckPairing) == checkedPairs.end())
-                            && (std::find(checkedPairs.begin(), checkedPairs.end(), secondCheckPairing) == checkedPairs.end())) {
-                            checkedPairs.push_back(firstCheckPairing);
-
-                            // Check equivalence. If not return error message
-                            bool equivalent = variable->units()->equivalent(variable->units(), equivalentVariable->units());
-                            if (!equivalent) {
-                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                                ErrorPtr err = Error::create();
-                                err->setDescription("Variables '" + variable->name() + "' and '" + equivalentVariable->name() + "' do not have the same unit reduction.");
-                                err->setModel(model);
-                                err->setKind(Error::Kind::UNITS);
-                                err->setRule(SpecificationRule::MAP_VARIABLES_EQUIVALENT);
-                                mValidator->addError(err);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-*/
 
 } // namespace libcellml
