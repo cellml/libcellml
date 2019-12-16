@@ -1295,120 +1295,204 @@ using UnitsMap = std::map<std::string, double>;
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
 {
     UnitsMap unitMap;
-    unitMap = processEquationUnitsAst(ast, unitMap);
+    std::vector<std::string> errors;
+    double multiplier = 0.0;
+    unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
+
+    if (!errors.empty()) {
+        for (int i = 0; i < errors.size(); ++i) {
+            ErrorPtr err = Error::create();
+            err->setDescription(errors[i]);
+            err->setKind(Error::Kind::UNITS);
+            mGenerator->addError(err);
+        }
+    }
 }
 
-UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap)
+UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
 {
+    GeneratorEquationAstPtr astParent = ast->mParent.lock();
+    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
+    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
+
     if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-        unitMap = createUnitsMapping(ast->mVariable);
+        ComponentPtr component = std::dynamic_pointer_cast<Component>(ast->mVariable->parent());
+        ModelPtr model = owningModel(component);
+        UnitsPtr u = model->units(ast->mVariable->units()->name());
+        updateBaseUnitCount(model, unitMap, multiplier, u->name(), 1, 0, direction);
         return unitMap;
     }
 
     // We know if we have reached an internal vertex that we *should* have a mathematical operation as it's type.
     if (ast->mLeft != nullptr || ast->mRight != nullptr) {
         // Evaluate left, right subtrees first
-        UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap);
-        UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap);
+        UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
+        UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
 
         int type = checkNodeType(ast->mType);
 
         // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
         if (type == 1) {
+            std::string hints = "";
+            bool check = (mapsAreEquivalent(leftMap, rightMap, hints) && multiplier == 0.0);
+            if (check == true) {
+                return leftMap; // Return the units as we traverse up the tree TODO: Find a good way of determining which units to return based on the previous direction input
+            } else {
+                VariablePtr variable = ast->mVariable;
+                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+                ModelPtr model = owningModel(component);
+
+                std::string err = "The units in the expression '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' of model '" + model->name()
+                                  + "' are not equivalent. The unit mismatch is " + hints
+                                  + "' and the multiplier mismatch is " + std::to_string(multiplier);
+                errors.push_back(err);
+                return leftMap;
+            }
         }
 
-        // Multiply, Divide: add mappings
+        // Multiply, Divide: add mappings, no interest in unit compatibility.
         if (type == 2) {
+            UnitsMap newMapping;
+            if (ast->mType == libcellml::GeneratorEquationAst::Type::TIMES) {
+                newMapping = addMappings(leftMap, rightMap, 1);
+            } else {
+                newMapping = addMappings(leftMap, rightMap, -1);
+            }
+            // TODO: account for multipliers which are not zero, and update the new multiplier.
+            return newMapping;
+
         }
 
-        // Power, Root means we multiply/divide mapping. Check that power is dimensionless.
+        // Power, Root means we multiply/divide mapping. Check that power/root operation is dimensionless.
         if (type == 3) {
+            if (isDimensionless(rightMap)) {
+                // TODO: Find way of getting the dimensionless exponent and multiplying it with the leftMap.
+            } else {
+                std::string hints = "";
+                for (const auto unit : rightMap) {
+                    if (unit.second != 0.0) {
+                        std::string num = std::to_string(unit.second);
+                        num.erase(num.find_last_not_of('0') + 1, num.length());
+                        if (num.back() == '.') {
+                            num.pop_back();
+                        }
+                        hints += unit.first + "^" + num + ", ";
+                    }
+                }
+                if (hints.length() > 2) {
+                    hints.pop_back();
+                    hints.back() = '.';
+                }
+                VariablePtr variable = ast->mVariable;
+                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+                ModelPtr model = owningModel(component);
+
+                std::string err = "The exponent in the expression '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' of model '" + model->name()
+                                  + "' is not dimensionless. The units of the exponent are" + hints;
+                errors.push_back(err);
+                return leftMap;
+            }
         }
 
         // Log functions should have same units and base
         if (type == 4) {
+            std::string hints = "";
+            bool check = mapsAreEquivalent(rightMap, leftMap, hints);
+            if (check == true) {
+                leftMap.clear(); // All logarithm operations output a dimensionless number.
+                leftMap.emplace(std::make_pair("dimensionless", 0.0));
+                //TODO: Figure out way of returning the multiplier from the logarithm operation - probably add it as another argument to the function
+                return leftMap;
+            } else {
+                VariablePtr variable = ast->mVariable;
+                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+                ModelPtr model = owningModel(component);
+
+                std::string err = "The units in the expression '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' of model '" + model->name()
+                                  + "' are not dimensionless. The unit mismatch between logarithm and base is: " + hints;
+                errors.push_back(err);
+                return leftMap;
+            }
         }
 
         // All trig arguments should be dimensionless
         if (type == 5) {
+            if (isDimensionless(leftMap)) {
+                leftMap.clear(); // All trig operations output a dimensionless number.
+                leftMap.emplace(std::make_pair("dimensionless", 0.0));
+                //TODO: Figure out way of returning the multiplier from the trig operation - probably add it as another argument to the function
+                return leftMap;
+            } else {
+                std::string hints = "";
+                for (const auto unit : leftMap) {
+                    if (unit.second != 0.0) {
+                        std::string num = std::to_string(unit.second);
+                        num.erase(num.find_last_not_of('0') + 1, num.length());
+                        if (num.back() == '.') {
+                            num.pop_back();
+                        }
+                        hints += unit.first + "^" + num + ", ";
+                    }
+                }
+                if (hints.length() > 2) {
+                    hints.pop_back();
+                    hints.back() = '.';
+                }
+                VariablePtr variable = ast->mVariable;
+                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+                ModelPtr model = owningModel(component);
+
+                std::string err = "The exponent in the expression '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' of model '" + model->name()
+                                  + "' is not dimensionless. The units in the function are" + hints;
+                errors.push_back(err);
+                return leftMap;
+            }
         }
     }
 }
 
-UnitsMap createUnitsMapping(libcellml::VariablePtr var)
+// TODO: implement function for base unit addition and subtraction. operation here indicates whether 
+// we want to add units (times), or subtract (divide).
+UnitsMap addMappings(UnitsMap map1, UnitsMap map2, int operation)
 {
-
+    
 }
 
-// Checks unit equivalences
-
-bool unitsAreEquivalent(const ModelPtr &model,
-                        const VariablePtr &v1,
-                        const VariablePtr &v2,
-                        std::string &hints,
-                        double &multiplier)
+// Helper function to check map equivalences 
+bool mapsAreEquivalent(UnitsMap map1, UnitsMap map2, std::string &hints)
 {
-    std::map<std::string, double> unitMap = {};
-
+    UnitsMap mapping;
     for (const auto &baseUnits : baseUnitsList) {
-        unitMap[baseUnits] = 0.0;
+        mapping[baseUnits] = 0.0;
     }
-
-    std::string ref;
-    hints = "";
-    multiplier = 0.0;
-
-    if (v1->units() == nullptr || v2->units() == nullptr) {
-        return false;
+    for (const auto &unit : map1) {
+        mapping[unit.first] += unit.second;
     }
-
-    if (model->hasUnits(v1->units()->name())) {
-        UnitsPtr u1 = Units::create();
-        u1 = model->units(v1->units()->name());
-        updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(v1->units()->name()) != unitMap.end()) {
-        ref = v1->units()->name();
-        unitMap.at(ref) += 1.0;
-    } else if (isStandardUnitName(v1->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v1->units()->name(), 1, 0, 1);
-    }
-
-    if (model->hasUnits(v2->units()->name())) {
-        UnitsPtr u2 = Units::create();
-        u2 = model->units(v2->units()->name());
-        updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(v2->units()->name()) != unitMap.end()) {
-        ref = v2->units()->name();
-        unitMap.at(v2->units()->name()) -= 1.0;
-    } else if (isStandardUnitName(v2->units()->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, v2->units()->name(), 1, 0, -1);
+    for (const auto &unit : map2) {
+        mapping[unit.first] -= unit.second;
     }
 
     // Remove "dimensionless" from base unit testing.
-    unitMap.erase("dimensionless");
-
-    bool status = true;
-    for (const auto &basePair : unitMap) {
-        if (basePair.second != 0.0) {
-            std::string num = std::to_string(basePair.second);
+    mapping.erase("dimensionless");
+    bool equivalent = true;
+    for (const auto &unit : mapping) {
+        if (unit.second != 0.0) {
+            std::string num = std::to_string(unit.second);
             num.erase(num.find_last_not_of('0') + 1, num.length());
             if (num.back() == '.') {
                 num.pop_back();
             }
-            hints += basePair.first + "^" + num + ", ";
-            status = false;
+            hints += unit.first + "^" + num + ", ";
+            equivalent = false;
         }
-    }
-
-    if (multiplier != 0.0) {
-        // NB: multiplication errors are only reported when there is a base error mismatch too, does not trigger it alone.
-        // The multiplication mismatch will be returned through the multiplier argument in all cases.
-        std::string num = std::to_string(multiplier);
-        num.erase(num.find_last_not_of('0') + 1, num.length());
-        if (num.back() == '.') {
-            num.pop_back();
-        }
-        hints += "multiplication factor of 10^" + num + ", ";
     }
 
     // Remove the final trailing comma from the hints string.
@@ -1417,9 +1501,21 @@ bool unitsAreEquivalent(const ModelPtr &model,
         hints.back() = '.';
     }
 
-    return status;
+    return equivalent;
 }
 
+// Helper function to check dimensionlessness
+bool isDimensionless(UnitsMap map)
+{
+    for (const auto &u : map) {
+        if (u.second != 0.0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Create the inital units mapping, right at the bottom of the AST
 void updateBaseUnitCount(const ModelPtr &model,
                          std::map<std::string, double> &unitMap,
                          double &multiplier,
@@ -1460,12 +1556,12 @@ void updateBaseUnitCount(const ModelPtr &model,
     }
 }
 
-// This function should probably return an int instead and then we can distinguish what "type" we have to examine for the node - this saves excessiely long if statements and creating an enum class.
-// Return 1 for all direct comparision operations
+// Helper function to determine type of operation on the internal node - determines how we treat the two units mappings.
+// Return 1 for all direct comparison operations
 // Return 2 for all units adding operations - iteratively add the units map for times/divide
 // Return 3 for all units multiplying/dividing operations
 // Return 4 for all ln/log operations (where we have to check the base)
-// Return 5 for all trig operations as we have to check dimensionlessness) 
+// Return 5 for all trig operations as we have to check dimensionlessness)
 // Return 6 for diff as we have to check bottom variable in a specific way
 // Any other returns? possibly, but for now these are the main ones
 int checkNodeType(libcellml::GeneratorEquationAst::Type type)
@@ -1495,6 +1591,8 @@ int checkNodeType(libcellml::GeneratorEquationAst::Type type)
     } else if (type == libcellml::GeneratorEquationAst::Type::NEQ) {
         return 1;
     } else if (type == libcellml::GeneratorEquationAst::Type::GEQ) {
+        return 1;
+    } else if (type == libcellml::GeneratorEquationAst::Type::ASSIGNMENT) {
         return 1;
     } else if (type == libcellml::GeneratorEquationAst::Type::TIMES) {
         return 2;
@@ -1644,7 +1742,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
-            processEquationUnitsAst(equation->mAst);
+            processEquationUnits(equation->mAst);
         }
     }
 
