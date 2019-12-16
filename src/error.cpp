@@ -294,8 +294,7 @@ static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::CONNECTION_MAP_VARIABLES, "17.1.4"},
     {SpecificationRule::MAP_VARIABLES_VARIABLE1, "18.1.1"},
     {SpecificationRule::MAP_VARIABLES_VARIABLE2, "18.1.2"},
-    {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"},
-    {SpecificationRule::MAP_VARIABLES_EQUIVALENT, "19.10.6"}};
+    {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"}};
 
 std::string Error::specificationHeading() const
 {
