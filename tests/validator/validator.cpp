@@ -1442,7 +1442,6 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     const std::vector<std::string> expectedErrors = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-        "Variables 'tomayto' and 'tomahto' do not have the same unit reduction.",
     };
 
     // This one is now an error.
@@ -1674,7 +1673,6 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
-        "Variables 'pjs' and 'pajamas' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1835,7 +1833,6 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1882,7 +1879,6 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
         "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1903,7 +1899,6 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1927,7 +1922,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1949,9 +1943,7 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
-    };
+    const std::vector<std::string> expectedErrors = {};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
@@ -2246,221 +2238,6 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     c1->addVariable(createVariableWithUnits("v", "dimensionless"));
     c2->addVariable(createVariableWithUnits("v", "non_existent_shallow"));
     c3->addVariable(createVariableWithUnits("v", "non_existent_deep"));
-
-    v->validateModel(model);
-
-    EXPECT_EQ_ERRORS(expectedErrors, v);
-}
-
-TEST(Validator, validateUnitsOfCompenentsSimple)
-{
-    libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr c = libcellml::Component::create();
-
-    libcellml::ValidatorPtr v = libcellml::Validator::create();
-
-    libcellml::UnitsPtr u = libcellml::Units::create();
-
-    u->setName("u1");
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
-    u->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
-
-    model->setName("model");
-    c->setName("c1");
-
-    model->addComponent(c);
-    model->addUnits(u);
-
-    libcellml::VariablePtr v1 = createVariableWithUnits("v1", "u1");
-    libcellml::VariablePtr v2 = createVariableWithUnits("v2", "u1");
-
-    c->addVariable(v1);
-    c->addVariable(v2);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-
-    v->validateModel(model);
-
-    EXPECT_EQ(size_t(0), v->errorCount());
-}
-
-TEST(Validator, validateUnitsOfCompenentsComplex)
-{
-    libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = libcellml::Component::create();
-    libcellml::ComponentPtr c2 = libcellml::Component::create();
-
-    libcellml::ValidatorPtr v = libcellml::Validator::create();
-
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-    libcellml::UnitsPtr u3 = libcellml::Units::create();
-    libcellml::UnitsPtr u4 = libcellml::Units::create();
-
-    u1->setName("u1");
-    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
-    u1->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
-    u2 = u1->clone();
-    u2->setName("u2");
-
-    u3->setName("u3");
-    u3->addUnit(libcellml::Units::StandardUnit::FARAD, 0, 1.0, 1.0);
-    u4 = u3->clone();
-    u4->setName("u4");
-
-    model->setName("model");
-    c1->setName("c1");
-    c2->setName("c2");
-
-    model->addComponent(c1);
-    model->addComponent(c2);
-    model->addUnits(u1);
-    model->addUnits(u2);
-    model->addUnits(u3);
-    model->addUnits(u4);
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-    libcellml::VariablePtr v3 = libcellml::Variable::create();
-    libcellml::VariablePtr v4 = libcellml::Variable::create();
-
-    v1->setName("v1");
-    v1->setUnits(u1);
-    v2->setName("v2");
-    v2->setUnits(u2);
-    v3->setName("v3");
-    v3->setUnits(u3);
-    v4->setName("v4");
-    v4->setUnits(u4);
-
-    c1->addVariable(v1);
-    c1->addVariable(v3);
-    c2->addVariable(v2);
-    c2->addVariable(v4);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v3, v4);
-
-    v->validateModel(model);
-
-    EXPECT_EQ(size_t(0), v->errorCount());
-}
-
-TEST(Validator, validateNonEquivalentUnitsOfComponentsSimple)
-{
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.",
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
-    };
-
-    libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = libcellml::Component::create();
-    libcellml::ComponentPtr c2 = libcellml::Component::create();
-
-    libcellml::ValidatorPtr v = libcellml::Validator::create();
-
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-
-    u1->setName("u1");
-    u1->addUnit(libcellml::Units::StandardUnit::COULOMB, 0, 1.0, 1.0);
-    u2->setName("u2");
-    u2->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
-
-    model->setName("model");
-    c1->setName("c1");
-    c2->setName("c2");
-    model->addComponent(c1);
-    model->addComponent(c2);
-    model->addUnits(u1);
-    model->addUnits(u2);
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-
-    v1->setName("v1");
-    v1->setUnits(u1);
-    v2->setName("v2");
-    v2->setUnits(u2);
-
-    c1->addVariable(v1);
-    c2->addVariable(v2);
-    libcellml::Variable::addEquivalence(v1, v2);
-
-    v->validateModel(model);
-
-    EXPECT_EQ_ERRORS(expectedErrors, v);
-}
-
-TEST(Validator, validateNonEquivalentUnitsOfComponentsComplex)
-{
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'u1' and an equivalent variable 'v2' with non-matching units of 'u2'. The mismatch is: ampere^2, candela^2, second^-1.",
-        "Variable 'v2' has units of 'u2' and an equivalent variable 'v3' with non-matching units of 'u3'. The mismatch is: ampere^-1, kilogram^-1, metre^1, second^3.",
-        "Variables 'v1' and 'v2' do not have the same unit reduction.",
-        "Variables 'v2' and 'v3' do not have the same unit reduction.",
-    };
-
-    libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = libcellml::Component::create();
-    libcellml::ComponentPtr c2 = libcellml::Component::create();
-    libcellml::ComponentPtr c3 = libcellml::Component::create();
-
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-    libcellml::UnitsPtr u3 = libcellml::Units::create();
-    libcellml::UnitsPtr u4 = libcellml::Units::create();
-
-    libcellml::ValidatorPtr v = libcellml::Validator::create();
-
-    model->setName("model");
-    c1->setName("c1");
-    c2->setName("c2");
-    c3->setName("c3");
-
-    model->addComponent(c1);
-    model->addComponent(c2);
-    model->addComponent(c3);
-
-    u1->setName("u1");
-    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
-    u1->addUnit(libcellml::Units::StandardUnit::CANDELA, 0, 2.0, 1.0);
-
-    u2->setName("u2");
-    u2->addUnit(libcellml::Units::StandardUnit::COULOMB, 0, 1.0, 1.0);
-
-    u3->setName("u3");
-    u3->addUnit(libcellml::Units::StandardUnit::PASCAL, 0, 1.0, 1.0);
-    u4 = u3->clone();
-    u4->setName("u4");
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-    libcellml::VariablePtr v3 = libcellml::Variable::create();
-    libcellml::VariablePtr v4 = libcellml::Variable::create();
-
-    v1->setName("v1");
-    v1->setUnits(u1);
-    v2->setName("v2");
-    v2->setUnits(u2);
-    v3->setName("v3");
-    v3->setUnits(u3);
-    v4->setName("v4");
-    v4->setUnits(u4);
-
-    c1->addVariable(v1);
-    c1->addVariable(v2);
-    c2->addVariable(v3);
-    c3->addVariable(v4);
-
-    model->addUnits(u1);
-    model->addUnits(u2);
-    model->addUnits(u3);
-    model->addUnits(u4);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v2, v3);
-    libcellml::Variable::addEquivalence(v3, v4);
 
     v->validateModel(model);
 
