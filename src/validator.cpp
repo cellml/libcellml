@@ -267,8 +267,9 @@ struct Validator::ValidatorImpl
     * If not, then a @c Error is created and logged in the @c Validator.
     * 
     * @param model The model containing the variables and mappings to be tested.
-    */
+    
     void checkUnitHomogeneity(const ModelPtr &model);
+    */
 };
 
 Validator::Validator()
@@ -382,7 +383,7 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 
     // Validate all mappings have equivalent units
-    mPimpl->checkUnitHomogeneity(model);
+    //mPimpl->checkUnitHomogeneity(model);
 }
 
 void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names)
@@ -1262,7 +1263,7 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
         }
     }
 }
-
+/*
 using VariablePair = std::vector<std::pair<VariablePtr, VariablePtr>>;
 
 void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
@@ -1307,5 +1308,6 @@ void Validator::ValidatorImpl::checkUnitHomogeneity(const ModelPtr &model)
         }
     }
 }
+*/
 
 } // namespace libcellml

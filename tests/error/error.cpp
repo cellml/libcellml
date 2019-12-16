@@ -141,9 +141,6 @@ void testSpecificationRule(const libcellml::ErrorPtr &e)
     case libcellml::SpecificationRule::IMPORT_UNITS_REF:
         EXPECT_EQ("6.1.2", e->specificationHeading());
         break;
-    case libcellml::SpecificationRule::MAP_VARIABLES_EQUIVALENT:
-        EXPECT_EQ("19.10.6", e->specificationHeading());
-        break;
     case libcellml::SpecificationRule::MAP_VARIABLES_UNIQUE:
         EXPECT_EQ("18.1.3", e->specificationHeading());
         break;
@@ -325,9 +322,6 @@ TEST(Error, specificationRule)
     e->setRule(libcellml::SpecificationRule::IMPORT_UNITS_REF);
     ++count;
     testSpecificationRule(e);
-    e->setRule(libcellml::SpecificationRule::MAP_VARIABLES_EQUIVALENT);
-    ++count;
-    testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::MAP_VARIABLES_UNIQUE);
     ++count;
     testSpecificationRule(e);
@@ -406,5 +400,5 @@ TEST(Error, specificationRule)
     e->setRule(libcellml::SpecificationRule::VARIABLE_UNITS);
     ++count;
     testSpecificationRule(e);
-    EXPECT_EQ(size_t(52), count);
+    EXPECT_EQ(size_t(51), count);
 }
