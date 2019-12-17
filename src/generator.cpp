@@ -1362,7 +1362,6 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             }
             // TODO: account for multipliers which are not zero, and update the new multiplier.
             return newMapping;
-
         }
 
         // Power, Root means we multiply/divide mapping. Check that power/root operation is dimensionless.
@@ -1459,14 +1458,33 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     }
 }
 
-// TODO: implement function for base unit addition and subtraction. operation here indicates whether 
+// TODO: implement function for base unit addition and subtraction. operation here indicates whether
 // we want to add units (times), or subtract (divide).
 UnitsMap addMappings(UnitsMap map1, UnitsMap map2, int operation)
 {
-    
+    for (const auto &unit : map2) {
+        auto it = map1.find(unit.first);
+        it->second += operation * unit.second;
+    }
+    return map1;
 }
 
-// Helper function to check map equivalences 
+// TODO: implement function for exponent/root operations, we multiply if positive or divide if negative
+UnitsMap multiplyMappings(UnitsMap map, GeneratorEquationAstPtr ast)
+{
+    if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER) {
+        for (auto &unit : map) {
+            unit.second = unit.second * std::stoi(ast->mValue);
+        }
+    } else {
+        for (auto &unit : map) {
+            unit.second = unit.second/std::stoi(ast->mValue);
+        }
+    }
+    return map;
+}
+
+// Helper function to check map equivalences
 bool mapsAreEquivalent(UnitsMap map1, UnitsMap map2, std::string &hints)
 {
     UnitsMap mapping;
