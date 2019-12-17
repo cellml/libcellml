@@ -145,11 +145,11 @@ Next we need to define this new dependency of the :math:`\alpha` and
 
 .. math::
 
-    \alpha_n = \frac{0.01*(V+10)}{exp(\frac{V+10}{10})-1}
+    \alpha_n = \frac {0.01(V+10)} {\exp(0.1(V+10))-1}
 
-    \beta_n = 0.125*exp(\frac{V}{80})
+    \beta_n = 0.125 \exp(0.0125V)
 
-    \frac {dn} {dt} = \alpha_n*(1-n) - \beta_n*n
+    \frac {dn} {dt} = \alpha_n(1-n) - \beta_n n
 
 .. container:: dothis
 
