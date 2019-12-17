@@ -1,12 +1,12 @@
 .. _tutorial6_cpp:
 
 ================================================
-Tutorial 5 C++: Working with multiple components
+Tutorial 6 C++: Working with multiple components
 ================================================
 
-The outline for this tutorial is shown on the :ref:`Tutorial 5<tutorial6>`
+The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>`
 page. These are the C++ instructions.  For the same tutorial in Python
-please see the :ref:`Tutorial 5 in Python<tutorial6_py>` page instead.
+please see the :ref:`Tutorial 6 in Python<tutorial6_py>` page instead.
 
 Resources:
 
@@ -112,7 +112,7 @@ gate.
 3: Create a component for the n-gate
 ====================================
 The last component that we need to create is an update from our Tutorial 5
-model such that the rate constants :math:`alpha` and :math:`beta` become
+model such that the rate constants :math:`\alpha` and :math:`\beta` become
 functions of voltage.  We have another choice.  We could either:
 
 - remove all the mathematics from our existing PotassiumChannel component
@@ -378,7 +378,7 @@ default, and can apply to more than one section of the axis.
     to serialise the model, and then write it to a file.
 
 
-TODO
+
 
 .. figure:: /tutorials/images/tutorial6_voltage.png
    :name: tutorial6_voltage

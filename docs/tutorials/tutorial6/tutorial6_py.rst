@@ -1,12 +1,12 @@
 .. _tutorial6_py:
 
 ===================================================
-Tutorial 5 Python: Working with multiple components
+Tutorial 6 Python: Working with multiple components
 ===================================================
 
-The outline for this tutorial is shown on the :ref:`Tutorial 5<tutorial6>`
+The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>`
 page. These are the Python instructions.  For the same tutorial in C++
-please see the :ref:`Tutorial 5 in C++<tutorial6_cpp>` page instead.
+please see the :ref:`Tutorial 6 in C++<tutorial6_cpp>` page instead.
 
 Resources:
 
