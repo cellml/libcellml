@@ -4,6 +4,9 @@
 Tutorial 6 C++: Working with multiple components
 ================================================
 
+**TODO** The code doesn't match the instructions - waiting for the variable parent
+issues to be sorted out.
+
 The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>`
 page. These are the C++ instructions.  For the same tutorial in Python
 please see the :ref:`Tutorial 6 in Python<tutorial6_py>` page instead.

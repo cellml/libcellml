@@ -4,6 +4,9 @@
 Tutorial 6 Python: Working with multiple components
 ===================================================
 
+**TODO** The code doesn't match the instructions - waiting for the variable parent
+issues to be sorted out.
+
 The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>`
 page. These are the Python instructions.  For the same tutorial in C++
 please see the :ref:`Tutorial 6 in C++<tutorial6_cpp>` page instead.
@@ -146,7 +149,7 @@ Next we need to define this new dependency of the :math:`\alpha` and
 
     \alpha_n = \frac{0.01(V+10)}{\exp(0.1(V+10))-1}
 
-    \beta_n = 0.125 \exp(0.0125V)
+    \beta_n = 0.125 \exp (0.0125 V)
 
     \frac {dn} {dt} = \alpha_n(1-n) - \beta_n n
 
