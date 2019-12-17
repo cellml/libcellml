@@ -1,22 +1,23 @@
 """
-    TUTORIAL 5: COMPONENTS AND CONNECTIONS
+    TUTORIAL 6: COMPONENTS AND CONNECTIONS
 
     This tutorial explores the ability of CellML to represent more than one
     modelled process at a time using components with connections between them.
-    By the time you have worked through Tutorial 5 you will be able to:
+    By the time you have worked through Tutorial 6 you will be able to:
         - import a Component or Units item from an existing CellML file
         - assemble a multi-component model using the API
         - inter-connect the components using the equivalent variables
         functionality
         - validate and debug the constructed model
 
-    Tutorial 5 assumes that you are already comfortable with:
+    Tutorial 6 assumes that you are already comfortable with:
         - file manipulation and summarising using the utility functions
         - model creation through the API
         - debugging the model using the Validator functionality
  """
 
-from libcellml import Component, Parser, Printer, Units, Variable, Validator
+from libcellml import Component, Generator, GeneratorProfile, Model, Parser, Printer, \
+    Units, Variable, Validator
 
 from tutorial_utilities import print_model_to_terminal, print_errors_to_terminal, \
     print_encapsulation_structure_to_terminal
@@ -27,264 +28,385 @@ if __name__ == "__main__":
     print("    STEP 1: Read the ion channel component           ")
     print("-----------------------------------------------------")
 
-    #  1.a Read the model created in Tutorial 4.  Note that if you didn't
-    #      do that tutorial you can simply copy the CellML file
-    #      from resources/tutorial4_IonChannelModel.cellml
-    read_file = open("../resources/tutorial4_IonChannelModel.cellml", "r")
-    parser = Parser()
-    model = parser.parseModel(read_file.read())
-    model.setName("Tutorial5_PotassiumChannelModel")
+    # TODO Temporarily removing this section until the parent pointers are working properly
+    # #  1.a Read the model created in Tutorial 4.  Note that if you didn't
+    # #      do that tutorial you can simply copy the CellML file
+    # #      from resources/tutorial4_IonChannelModel.cellml
+    # read_file = open("../resources/tutorial5_IonChannelModel.cellml", "r")
+    # parser = Parser()
+    # model = parser.parseModel(read_file.read())
+    # model.setName("Tutorial6_PotassiumChannelModel")
 
-    #  1.b Print the parsed model to the terminal and check its contents
-    print_model_to_terminal(model)
+    # #  1.b Print the parsed model to the terminal and check its contents
+    # print_model_to_terminal(model)
 
-    #  1.c Create a Validator and use it to check that the model is ok so far
-    #      by printing the errors to the terminal
+    # #  1.c Create a Validator and use it to check that the model is ok so far
+    # #      by printing the errors to the terminal
+    # validator = Validator()
+    # validator.validateModel(model)
+    # print_errors_to_terminal(validator)
+
+    # #  1.d Retrieve the component and name it "potassiumChannel"
+    # potassium_channel = model.component(0)
+    # potassium_channel.setName("potassiumChannel")
+
     validator = Validator()
-    validator.validateModel(model)
-    print_errors_to_terminal(validator)
-
-    #  1.d Retrieve the component and name it "potassiumChannel"
-    potassium_channel = model.component(0)
-    potassium_channel.setName("potassiumChannel")
-
-    print("-----------------------------------------------")
-    print("  STEP 2: Create the environment component")
-    print("-----------------------------------------------")
-
-    #  2.a  Creating the new environment component
-    environment = Component()
-    environment.setName("environment")
-
-    #  2.b  Add variables to the component.  Use the if True statement to create a limited scope for the variable
-    #       definition
-
-    if True:
-        V = Variable()
-        V.setName("V")
-        V.setUnits("millivolt")
-        environment.addVariable(V)
-
-        t = Variable()
-        t.setName("t")
-        t.setUnits("millisecond")
-        environment.addVariable(t)
-
-    #  2.c Add the new component to the model
-    model.addComponent(environment)
-
-    #  2.d Calling the validator to check that our model is valid so far.
-    validator.validateModel(model)
-    print_errors_to_terminal(validator)
-
-    print("-----------------------------------------------")
-    print("  STEP 3: Define the n-gate component ")
-    print("-----------------------------------------------")
-
-    #  3.a Creating the n-gate component and the variables it contains
-
-    nGate = Component()
-    nGate.setName("nGate")
-
     math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
     math_footer = '</math>'
 
-    if True:
-        V = Variable()
-        V.setName("V")
-        V.setUnits("millivolt")
-        nGate.addVariable(V)
-
-        t = Variable()
-        t.setName("t")
-        t.setUnits("millisecond")
-        nGate.addVariable(t)
-
-        alpha_n = Variable()
-        alpha_n.setName("alpha_n")
-        alpha_n.setUnits("per_millisecond")
-        nGate.addVariable(alpha_n)
-
-        beta_n = Variable()
-        beta_n.setName("beta_n")
-        beta_n.setUnits("per_millisecond")
-        nGate.addVariable(beta_n)
-
-        n = Variable()
-        n.setName("n")
-        n.setUnits("dimensionless")
-        nGate.addVariable(n)
-
-        #  3.b Creating the MathML for the n-gate component and adding it in.
-        equation1 = \
-            '<apply>\
-                <eq/>\
-                <ci>alpha_n</ci>\
-                <apply>\
-                    <divide/>\
-                    <apply>\
-                        <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="per_millivolt_millisecond">0.01</cn>\
-                        <apply>\
-                            <plus/>\
-                            <ci>V</ci>\
-                            <cn cellml:units="millivolt">10</cn>\
-                        </apply>\
-                    </apply>\
-                    <apply>\
-                        <minus/>\
-                        <apply>\
-                            <exp/>\
-                            <apply>\
-                                <divide/>\
-                                <apply>\
-                                    <plus/>\
-                                    <ci>V</ci>\
-                                    <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">10</cn>\
-                                </apply>\
-                                <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">10</cn>\
-                            </apply>\
-                        </apply>\
-                        <cn cellml:units="dimensionless">1</cn>\
-                    </apply>\
-                </apply>\
-            </apply>'
-
-        equation2 = \
-            '<apply>\
-                <eq/>\
-                <ci>beta_n</ci>\
-                <apply>\
-                    <times/>\
-                    <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="per_millisecond">0.125</cn>\
-                    <apply>\
-                        <exp/>\
-                        <apply>\
-                            <divide/>\
-                            <ci>V</ci>\
-                            <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">80</cn>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>'
-
-        equation3 = \
-            '<apply>\
-                <eq/>\
-                <apply>\
-                    <diff/>\
-                    <bvar>\
-                        <ci>t</ci>\
-                    </bvar>\
-                    <ci>n</ci>\
-                </apply>\
-                <apply>\
-                    <minus/>\
-                    <apply>\
-                        <times/>\
+    model = Model("Tutorial6_PotassiumChannelModel")
+    n_gate = Component("nGate")
+    equation1 = \
+        '<apply><eq/>\
+               <apply><diff/>\
+                   <bvar><ci>t</ci></bvar>\
+                   <ci>n</ci>\
+               </apply>\
+               <apply><minus/>\
+                   <apply><times/>\
                         <ci>alpha_n</ci>\
-                        <apply>\
-                            <minus/>\
-                            <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="dimensionless">1</cn>\
-                            <ci>n</ci>\
+                        <apply><minus/>\
+                           <cn cellml:units="dimensionless">1</cn>\
+                           <ci>n</ci>\
                         </apply>\
-                    </apply>\
-                    <apply>\
-                        <times/>\
-                        <ci>beta_n</ci>\
-                        <ci>n</ci>\
-                    </apply>\
-                </apply>\
+                   </apply>\
+                   <apply><times/>\
+                       <ci>beta_n</ci>\
+                       <ci>n</ci>\
+                   </apply>\
+               </apply>\
             </apply>'
 
-        nGate.setMath(math_header)
-        nGate.appendMath(equation1)
-        nGate.appendMath(equation2)
-        nGate.appendMath(equation3)
-        nGate.appendMath(math_footer)
+    equation2 = \
+        '<apply><eq/>\
+               <ci>alpha_n</ci>\
+               <apply><divide/>\
+                   <apply><times/>\
+                       <cn cellml:units="per_millivolt_millisecond">0.01</cn>\
+                       <apply><plus/>\
+                           <ci>V</ci>\
+                           <cn cellml:units="millivolt">10</cn>\
+                       </apply> \
+                   </apply>\
+                   <apply><minus/>\
+                       <apply><exp/>\
+                           <apply><divide/>\
+                               <apply><plus/>\
+                                   <ci>V</ci>\
+                                   <cn cellml:units="millivolt">10</cn>\
+                               </apply> \
+                               <cn cellml:units="millivolt">10</cn>\
+                           </apply>\
+                       </apply>\
+                       <cn cellml:units="dimensionless">1</cn>\
+                   </apply>\
+               </apply>\
+            </apply>'
 
-    #  3.c Add the n-gate component into the model.
-    model.addComponent(nGate)
+    equation3 = \
+        '<apply><eq/>\
+               <ci>beta_n</ci>\
+               <apply><times/>\
+                   <cn cellml:units="per_millisecond">0.125</cn>\
+                   <apply><exp/>\
+                       <apply><divide/>\
+                           <ci>V</ci>\
+                           <cn cellml:units="millivolt">80</cn>\
+                       </apply>\
+                   </apply>\
+               </apply>\
+            </apply>'
 
-    #  3.d Add the missing units (connected to the constant in equation 1) and recheck the validation
-    per_mVms = Units()
-    per_mVms.setName("per_millivolt_millisecond")
-    per_mVms.addUnit("volt", "milli", -1)
-    per_mVms.addUnit("second", "milli", -1)
-    model.addUnits(per_mVms)
+    n_gate.setMath(math_header)
+    n_gate.appendMath(equation1)
+    n_gate.appendMath(equation2)
+    n_gate.appendMath(equation3)
+    n_gate.appendMath(math_footer)
+
+    t = Variable("t")
+    t.setUnits("millisecond")
+    n_gate.addVariable(t)
+
+    V = Variable("V")
+    V.setUnits("millivolt")
+    n_gate.addVariable(V)
+
+    alpha_n = Variable("alpha_n")
+    alpha_n.setUnits("per_millisecond")
+    n_gate.addVariable(alpha_n)
+
+    beta_n = Variable("beta_n")
+    beta_n.setUnits("per_millisecond")
+    n_gate.addVariable(beta_n)
+
+    n = Variable("n")
+    n.setUnits("dimensionless")
+    n.setInitialValue(0.325)
+    n_gate.addVariable(n)
+
+    ms = Units("millisecond")
+    ms.addUnit("second", "milli")
+
+    mV = Units("millivolt")
+    mV.addUnit("volt", "milli")
+
+    per_ms = Units("per_millisecond")
+    per_ms.addUnit("millisecond", -1.0)
+
+    per_mV_ms = Units("per_millivolt_millisecond")
+    per_mV_ms.addUnit("per_millisecond")
+    per_mV_ms.addUnit("millivolt", -1)
+
+    #  Add these units into the model
+    model.addUnits(ms)
+    model.addUnits(mV)
+    model.addUnits(per_ms)
+    model.addUnits(per_mV_ms)
+
     validator.validateModel(model)
     print_errors_to_terminal(validator)
-    print_encapsulation_structure_to_terminal(model)
 
     print("-----------------------------------------------")
-    print("  STEP 4: Define the component hierarchy       ")
+    print(" STEP 2: Define the potassium_channel component ")
     print("-----------------------------------------------")
 
-    #  4.a Change the nGate component to be a child of the potassiumChannel component
-    model.removeComponent(nGate)
-    potassium_channel.addComponent(nGate)
+    #  2.a Create the potassium_channel component and add to the model.
+    potassium_channel = Component("potassium_channel")
+    model.addComponent(potassium_channel)
+    potassium_channel.addComponent(n_gate)
+
+    # #  2.b Move the variables out of the n_gate and into to the potassium_channel component.
+    # potassium_channel.addVariable(n_gate.variable("E_K"))
+    # potassium_channel.addVariable(n_gate.variable("i_K"))
+    # potassium_channel.addVariable(n_gate.variable("g_K"))
+
+    # # TODO removing the variables from their old component, shouldn't be needed??
+    # n_gate.removeVariable("E_K")
+    # n_gate.removeVariable("i_K")
+    # n_gate.removeVariable("g_K")
+    # n_gate.removeVariable("gamma") # this one needs removal anyway?
+
+    #  2.c Create the remaining variables for the potassium channel
+    E_K = Variable("E_K")
+    E_K.setUnits("millivolt")
+    # E_K.setInitialValue(-85.0)
+    potassium_channel.addVariable(E_K)
+
+    i_K = Variable("i_K")
+    i_K.setUnits("microA_per_cm2")
+    potassium_channel.addVariable(i_K)
+
+    g_K = Variable("g_K")
+    g_K.setUnits("milliS_per_cm2")
+    g_K.setInitialValue(36.0)
+    potassium_channel.addVariable(g_K)
+
+    V = Variable("V")
+    V.setUnits("millivolt")
+    potassium_channel.addVariable(V)
+
+    t = Variable("t")
+    t.setUnits("millisecond")
+    potassium_channel.addVariable(t)
+
+    n = Variable("n")
+    n.setUnits("dimensionless")
+    potassium_channel.addVariable(n)
+
+    Ko = Variable("Ko")
+    Ko.setUnits("millimol")
+    potassium_channel.addVariable(Ko)
+
+    Ki = Variable("Ki")
+    Ki.setUnits("millimol")
+    potassium_channel.addVariable(Ki)
+
+    RTF = Variable("RTF")
+    RTF.setUnits("millivolt")
+    potassium_channel.addVariable(RTF)
+
+    K_conductance = Variable("K_conductance")
+    K_conductance.setUnits("milliS_per_cm2")
+    potassium_channel.addVariable(K_conductance)
+
+    #  2.d Defining the maths inside the potassium_channel component
+    equation1 = \
+        '<apply><eq/>\
+            <ci>E_K</ci>\
+            <apply><times/>\
+                <ci>RTF</ci>\
+                <apply><ln/>\
+                    <apply><divide/>\
+                        <ci>Ko</ci>\
+                        <ci>Ki</ci>\
+                    </apply>\
+                </apply>\
+            </apply>\
+        </apply>'
+
+    equation2 = \
+        '<apply><eq/>\
+            <ci>K_conductance</ci>\
+            <apply><times/>\
+                <ci>g_K</ci>\
+                <apply><power/>\
+                    <ci>n</ci>\
+                    <cn cellml:units="dimensionless">4</cn>\
+                </apply>\
+            </apply>\
+       </apply>'
+
+    equation3 = \
+        '<apply><eq/>\
+            <ci>i_K</ci>\
+            <apply><times/>\
+                <ci>K_conductance</ci>\
+                <apply><minus/>\
+                    <ci>V</ci>\
+                    <ci>E_K</ci>\
+                </apply>\
+            </apply >\
+       </apply>'
+
+    potassium_channel.setMath(math_header)
+    potassium_channel.appendMath(equation1)
+    potassium_channel.appendMath(equation2)
+    potassium_channel.appendMath(equation3)
+    potassium_channel.appendMath(math_footer)
+
+    #  2.e Check for errors.  Expect warnings about the undefined units in the maths and in the
+    #      new variables added.
+    validator.validateModel(model)
+    print_errors_to_terminal(validator)
+
+    #  2.f Add the missing units and recheck the validation
+    mM = Units("millimol")
+    mM.addUnit("mole", "milli")
+
+    microA_per_cm2 = Units()
+    microA_per_cm2.setName("microA_per_cm2")
+    microA_per_cm2.addUnit("ampere", "micro")
+    microA_per_cm2.addUnit("metre", "centi", -2.0)
+
+    mS_per_cm2 = Units()
+    mS_per_cm2.setName("milliS_per_cm2")
+    mS_per_cm2.addUnit("siemens", "milli")
+    mS_per_cm2.addUnit("metre", "centi", -2.0)
+
+    model.addUnits(mM)
+    model.addUnits(microA_per_cm2)
+    model.addUnits(mS_per_cm2)
+
+    validator.validateModel(model)
+    print_errors_to_terminal(validator)
+
+    print("-----------------------------------------------")
+    print("  STEP 3: Create the environment component")
+    print("-----------------------------------------------")
+
+    #  3.a Creating the new environment component
+    environment = Component()
+    environment.setName("environment")
+
+    #  3.b Add variables to the component.
+    V = Variable("V")
+    V.setUnits("millivolt")
+    environment.addVariable(V)
+
+    t = Variable("t")
+    t.setUnits("millisecond")
+    environment.addVariable(t)
+
+    #  3.c Add the new component to the model
+    model.addComponent(environment)
+
+    #  3.d Calling the validator to check that our model is valid so far.
+    validator.validateModel(model)
+    print_errors_to_terminal(validator)
+
+    print("-----------------------------------------------")
+    print("   STEP 4: Define the component hierarchy      ")
+    print("-----------------------------------------------")
+
+    #  4.a Change the n_gate component to be a child of the potassium_channel component
+    # n_gate.removeParent()
+    # model.removeComponent(n_gate)
+    # potassium_channel.addComponent(n_gate)
 
     #  4.b Verify the component hierarchy by printing the model to the screen
-    print_encapsulation_structure_to_terminal(model)
+    print_model_to_terminal(model)
 
     #  4.c Define the equivalent variables between components.  Note that because
-    #      the variables have been defined within a limited scope (using the if True as above)
+    #      the variables have been defined within a limited scope (using the {} above)
     #      you will need to retrieve them from each component first.
-    # Variable.addEquivalence(environment.variable("t"), potassium_channel.variable("t"))
+    Variable.addEquivalence(environment.variable(
+        "t"), potassium_channel.variable("t"))
+    Variable.addEquivalence(environment.variable(
+        "V"), potassium_channel.variable("V"))
+
+    # TODO not sure what's happening here - this line below should fail as not neighbouring components,
+    # creates a validation error but should be allowed?
+    # Variable::addEquivalence(environment.variable("t"), n_gate.variable("t"))
 
     #  4.d Validating the model: this should show an error reporting that an
-    #      invalid connection has been made between the environment and nGate
+    #      invalid connection has been made between the environment and n_gate
     #      components
+
     # TODO This should produce a validation error but currently does not?
-    print(2)
-    validator.validateModel(model)
-    print(3)
-    print_errors_to_terminal(validator)
+    # validator.validateModel(model)
+    # print_errors_to_terminal(validator)
 
     #  4.e  Fix the connection error above, and add the voltage and gating variable equivalences
-    Variable.removeEquivalence(environment.variable("t"), nGate.variable("t"))
-    Variable.addEquivalence(potassium_channel.variable("t"), nGate.variable("t"))
-    Variable.addEquivalence(environment.variable("V"), potassium_channel.variable("V"))
-    Variable.addEquivalence(potassium_channel.variable("V"), nGate.variable("V"))
-    Variable.addEquivalence(potassium_channel.variable("n"), nGate.variable("n"))
+    # Variable::removeEquivalence(environment.variable("t"), n_gate.variable("t"))
 
-    #  4.f Add the interface specification.  The environment component is a sibling of the potassiumChannel
-    #      component, so they will both use the public interface.  The nGate component is a child of the
-    #      potassiumChannel, so will use the public interface.  The potassiumChannel is the parent of the
-    #      nGate component, so will need an additional private interface.  The nGate will have a public
-    #      interface to its parent, the potassiumChannel.  Thus for the V and t variables:
-    #          - environment -> public
-    #          - potassiumChannel -> public_and_private
-    #          - nGate -> public
-    #      Because the n variable is shared only between the potassiumChannel and the nGate, we don't need to
+    Variable.addEquivalence(
+        potassium_channel.variable("t"), n_gate.variable("t"))
+    Variable.addEquivalence(
+        potassium_channel.variable("V"), n_gate.variable("V"))
+    Variable.addEquivalence(
+        potassium_channel.variable("n"), n_gate.variable("n"))
+
+    # TODO This should produce a validation error but currently does not?
+    validator.validateModel(model)
+    print_errors_to_terminal(validator)
+
+    #  4.f Add the interface specification.  The environment component is a sibling of the potassium_channel
+    #      component, so they will both use the public interface.  The n_gate component is a child of the
+    #      potassium_channel, so will use the public interface.  The potassium_channel is the parent of the
+    #      n_gate component, so will need an additional private interface.  The n_gate will have a public
+    #      interface to its parent, the potassium_channel.  Thus for the V and t variables:
+    #          - environment . public
+    #          - potassium_channel . public_and_private
+    #          - n_gate . public
+    #      Because the n variable is shared only between the potassium_channel and the n_gate, we don't need to
     #      use the public_and_private designation there just private on the parent and public on the child.
 
     environment.variable("t").setInterfaceType("public")
     environment.variable("V").setInterfaceType("public")
     potassium_channel.variable("t").setInterfaceType("public_and_private")
     potassium_channel.variable("V").setInterfaceType("public_and_private")
-    nGate.variable("t").setInterfaceType("public")
-    nGate.variable("V").setInterfaceType("public")
+    n_gate.variable("t").setInterfaceType("public")
+    n_gate.variable("V").setInterfaceType("public")
     potassium_channel.variable("n").setInterfaceType("private")
-    nGate.variable("n").setInterfaceType("public")
+    n_gate.variable("n").setInterfaceType("public")
 
     validator.validateModel(model)
     print_errors_to_terminal(validator)
 
     print("-----------------------------------------------")
-    print("  STEP 5: Define the driving function ")
+    print("     STEP 5: Define the driving function       ")
     print("-----------------------------------------------")
 
     #  5.a Define a MathML string representing the voltage clamp
-    voltageClampMaths = \
-        '<apply>\
-            <eq/>\
+    voltage_clamp_maths = \
+        '<apply><eq/>\
             <ci>V</ci>\
             <piecewise>\
                 <piece>\
                     <cn cellml:units="millivolt">0</cn>\
                     <apply><lt/><ci>t</ci><cn cellml:units="millisecond">5</cn></apply>\
                 </piece>\
-                    <piece>\
+                <piece>\
                     <cn cellml:units="millivolt">0</cn>\
                     <apply><gt/><ci>t</ci><cn cellml:units="millisecond">15</cn></apply>\
                 </piece>\
@@ -296,7 +418,7 @@ if __name__ == "__main__":
 
     #  5.b Add this to the maths for the environment component.
     environment.setMath(math_header)
-    environment.appendMath(voltageClampMaths)
+    environment.appendMath(voltage_clamp_maths)
     environment.appendMath(math_footer)
 
     #  5.c Validate the model including this new maths block
@@ -304,14 +426,47 @@ if __name__ == "__main__":
     print_errors_to_terminal(validator)
 
     print("-----------------------------------------------")
-    print("    STEP 6: Serialise and print the model      ")
+    print("    STEP 6: Generate code and output model  ")
     print("-----------------------------------------------")
 
-    #  6.a Create a Printer item and submit your model for serialisation.
-    printer = Printer()
-    serialised_model = printer.printModel(model)
-    write_file = open("Tutorial5_PotassiumChannelModel.cellml", "w")
-    write_file.write(serialised_model)
-    print("The {} has been printed to Tutorial5_PotassiumChannelModel.cellml".format(model.name()))
+    #  6.a Call the generator to process the model and output errors to the terminal
+    #      Expect errors related to initialisation/non-computation of variables in the potassium channel.
+    generator = Generator()
+    generator.processModel(model)
+    print_errors_to_terminal(generator)
 
-    #  6.b Go and have a cuppa, you're done!
+    #  6.b Initialise the variables: Ko = 3, Ki = 90, RTF = 25,
+    potassium_channel.variable("Ko").setInitialValue(3)
+    potassium_channel.variable("Ki").setInitialValue(90)
+    potassium_channel.variable("RTF").setInitialValue(25)
+
+    generator.processModel(model)
+    print_errors_to_terminal(generator)
+
+    header_file = open("tutorial6_PotassiumChannelModel_generated.h", "w")
+    header_file.write(generator.interfaceCode())
+    header_file.close()
+
+    source_file = open("tutorial6_PotassiumChannelModel_generated.c", "w")
+    source_file.write(generator.implementationCode())
+    source_file.close()
+
+    profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
+    generator.setProfile(profile)
+    generator.processModel(model)
+
+    python_file = open("tutorial6_PotassiumChannelModel_generated.py", "w")
+    python_file.write(generator.implementationCode())
+    python_file.close()
+
+    print("The generated '"+model.name() +
+          "' model has been writen to: tutorial6_PotassiumChannelModel_generated.[c,h,py]")
+
+    #  6.a Serialise the model and output to a CellML file
+    printer = Printer()
+    out_file = open("tutorial6_PotassiumChannelModel.cellml", "w")
+    out_file.write(printer.printModel(model))
+    out_file.close()
+
+    print("The created '" + model.name() +
+          "' model has been printed to tutorial6_PotassiumChannelModel.cellml")

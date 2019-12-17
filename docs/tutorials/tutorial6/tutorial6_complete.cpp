@@ -67,7 +67,7 @@ int main()
     //  1.e Remove its maths
     nGate->removeMath();
     {
-std::string equation1 =
+        std::string equation1 =
             "<apply><eq/>"
             "   <apply><diff/>"
             "       <bvar><ci>t</ci></bvar>"
