@@ -140,13 +140,14 @@ if __name__ == "__main__":
 
         # Computing the rates at this step
         model.compute_rates(time, my_state_variables, my_rates, my_variables)
-
         row = "{}\t{}".format(step,time)
+
         # Computing the solution at the next step using Euler to advance
         for s in range(0, model.STATE_COUNT):
             my_state_variables[s] = my_state_variables[s] + my_rates[s] * step_size
             row += "\t{}".format(my_state_variables[s])
 
+        # Update the variables
         model.compute_variables(time, my_state_variables, my_rates, my_variables)
         for s in range(0, model.VARIABLE_COUNT):
             row += "\t{}".format(my_variables[s])
