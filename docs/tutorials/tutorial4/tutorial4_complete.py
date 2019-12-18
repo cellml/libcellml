@@ -90,7 +90,10 @@ if __name__ == "__main__":
         print("  {} = {}".format(model.STATE_INFO[v]['name'],my_state_variables[v]))
 
     #  3.c Compute the constants and variables
+    time = 0.0
     model.compute_computed_constants(my_variables)
+    model.compute_variables(time, my_state_variables, my_rates, my_variables)
+    model.compute_rates(time, my_state_variables, my_rates, my_variables)
     print("The completed initial conditions for variables are:")
     for v in range(0, model.VARIABLE_COUNT):
         print("  {} = {}".format(model.VARIABLE_INFO[v]['name'],my_variables[v]))
@@ -103,7 +106,6 @@ if __name__ == "__main__":
     #  4.a Set the variables which determine how long the solution will run for:
     #      - step size
     #      - number of steps to take
-    time = 0.0
     step_size = 0.01
     step_count = 2000
 

@@ -32,6 +32,7 @@ Tutorials for users
     tutorial2/outline2
     tutorial3/outline3
     tutorial4/outline4
+    solver/solver
     tutorial5/outline5
     tutorial6/outline6
     tutorial7/outline7
