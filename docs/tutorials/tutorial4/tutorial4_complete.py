@@ -79,7 +79,10 @@ if __name__ == "__main__":
     my_state_variables = model.create_states_array()
 
     #  3.b Initialise the arrays and print them to the screen for checking
+    time = 0.0
     model.initialize_states_and_constants(my_state_variables, my_variables)
+    model.compute_rates(time, my_state_variables, my_rates, my_variables)
+    model.compute_variables(time, my_state_variables, my_rates, my_variables)
 
     print("The initial conditions for variables are:")
     for v in range(0, model.VARIABLE_COUNT):
@@ -114,11 +117,13 @@ if __name__ == "__main__":
     my_rates = model.create_states_array()
 
     #  4.c Create a file for output and open it.
-
     row = "iteration\t{}({})".format(model.VOI_INFO['name'], model.VOI_INFO['units'])
     for s in range(0, model.STATE_COUNT):
         row += "\t{}({})".format(model.STATE_INFO[s]['name'], model.STATE_INFO[s]['units'])
+    for s in range(0, model.VARIABLE_COUNT):
+        row += "\t{}({})".format(model.VARIABLE_INFO[s]['name'], model.VARIABLE_INFO[s]['units'])
     row += "\n"
+
     write_file = open("tutorial4_solution.txt", "w")
     write_file.write(row)
 
@@ -129,11 +134,9 @@ if __name__ == "__main__":
     #          - compute the rates
     #          - compute the state variables using the update method above
     #          - print to a file
+
     for step in range(0, step_count):
         time = step * step_size
-
-        # Compute the variables at this step
-        model.compute_variables(time, my_state_variables, my_rates, my_variables)
 
         # Computing the rates at this step
         model.compute_rates(time, my_state_variables, my_rates, my_variables)
@@ -143,6 +146,11 @@ if __name__ == "__main__":
         for s in range(0, model.STATE_COUNT):
             my_state_variables[s] = my_state_variables[s] + my_rates[s] * step_size
             row += "\t{}".format(my_state_variables[s])
+
+        model.compute_variables(time, my_state_variables, my_rates, my_variables)
+        for s in range(0, model.VARIABLE_COUNT):
+            row += "\t{}".format(my_variables[s])
+
         row+= "\n"
         write_file.write(row)
 
