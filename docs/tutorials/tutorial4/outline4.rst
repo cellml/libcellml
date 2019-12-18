@@ -1,8 +1,8 @@
 .. _tutorial4:
 
-========================================
-Tutorial 4: Understanding generated code
-========================================
+=================================================================
+Tutorial 4: Understanding generated code and running a simulation
+=================================================================
 
 By the time you have worked through Tutorial 4 you will be able to:
 

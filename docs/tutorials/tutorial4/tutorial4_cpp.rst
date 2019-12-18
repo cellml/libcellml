@@ -1,8 +1,8 @@
 .. _tutorial4_cpp:
 
-==============================================
-Tutorial 4 C++: Generating code and simulation
-==============================================
+=======================================================
+Tutorial 4 C++: Generating code and model simulation
+=======================================================
 
 This tutorial assumes that you are comfortable with:
 

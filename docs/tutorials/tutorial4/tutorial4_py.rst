@@ -1,8 +1,8 @@
 .. _tutorial4_py:
 
-=================================================
-Tutorial 4 Python: Generating code and simulation
-=================================================
+=======================================================
+Tutorial 4 Python: Generating code and model simulation
+=======================================================
 
 This tutorial assumes that you are comfortable with:
 
