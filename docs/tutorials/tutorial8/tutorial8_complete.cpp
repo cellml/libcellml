@@ -301,10 +301,17 @@ int main()
     membrane->setMath(membraneMathML);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 8: Output the final model" << std::endl;
+    std::cout << "   STEP 8: Generate the model and print        " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    auto generator = libcellml::Generator::create();
+    generator->processModel(model);
+
+    printErrorsToTerminal(generator);
+
+
+
+    auto printer=libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(model);
     std::string outFileName = "tutorial8_HodgkinHuxleyModel.cellml";
     std::ofstream outFile(outFileName);
@@ -313,4 +320,9 @@ int main()
 
     std::cout << "The created '" << model->name()
               << "' model has been printed to: " << outFileName << std::endl;
+
+
+
+
+
 }

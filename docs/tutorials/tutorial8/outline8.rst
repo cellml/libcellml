@@ -16,8 +16,8 @@ By the end of this tutorial you will be able to:
 - appreciate the consistency needed throughout the imports to avoid renaming
   units.
 
-Backgrond
----------
+Background
+----------
 
 **TODO** Add the references to the cable equation and leakage stuff here ...
 

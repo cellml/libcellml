@@ -310,17 +310,18 @@ throughout the solution process.  This is done by calling the
         rates[1] = variables[3]*states[1]+variables[2]*states[0]*states[1];
     }
 
+**TODO** Check which order to call these in? rates or variables first?
+
 .. container:: dothis
 
-    **4.d** Iterate through the time interval [0,20] and update the state
-    variables using the Euler update method: x[n+1] = x[n] + x'[n]*stepSize
-    At each step you will need to:
+    **4.c** Iterate through the time interval [0,20] and update the state
+    variables using the Euler update method:
+    :code:`x[n+1] = x[n] + x'[n]*stepSize`. At each step you will need to:
 
         - recompute the variables
         - recompute the rates
         - compute the state variables using the update method above
         - write to the file
-
 
 5: Output
 =========

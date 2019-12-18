@@ -221,13 +221,19 @@ in Tutorial 3, and the equations above.
 .. container:: dothis
 
     **3.b** Call the :code:`initialize_states_and_constants` function to
-    initalise the arrays you created earlier.  Print them to the terminal for
-    checking.
+    initalise some of the arrays you created earlier.  Print them to the
+    terminal for checking.
+
+.. container:: nb
+
+    Calling the :code:`initialize_states_and_constants` function does not
+    set the initial value of the other :code:`Variable` objects.
 
 Printing to the terminal should show you that while the CellML :code:`Variable`
-items for which we specified an inital value have been applied, the constant
-:code:`c` has not yet been evaluated.  There's a second helper function
-:code:`compute_computed_constants(variables)` which will do this for you.
+items representing states and constants for which we specified an initial value
+have been applied, the constant :code:`c` has not yet been evaluated.  There's
+a second helper function :code:`compute_computed_constants(variables)` which
+will do this for you.
 
 .. code-block:: python
 
@@ -254,7 +260,6 @@ three general parts to each iteration:
     - computing the gradient functions or rates at the current timestep
     - updating the state variables using an Euler* step.  * Note that this
       could be any stepping method - we just use this one as it's very simple.
-
 
 .. container:: dothis
 
@@ -304,9 +309,11 @@ throughout the solution process.  This is done by calling the
       # This equation is the equivalent of d(fishes)/dt = c*y_fishes + d*y_sharks*y_fishes
       rates[1] = variables[3]*states[1]+variables[2]*states[0]*states[1]
 
+**TODO** Check which order to call these in? rates or variables first?
+
 .. container:: dothis
 
-    **4.d** Iterate through the time interval [0,20] and update the state
+    **4.c** Iterate through the time interval [0,20] and update the state
     variables using the Euler update method: y[n+1] = y[n] + y'[n]*stepSize
     At each step you will need to:
 
@@ -314,7 +321,6 @@ throughout the solution process.  This is done by calling the
         - recompute the rates
         - compute the state variables using the update method above
         - write to the file
-
 
 5: Output
 =========

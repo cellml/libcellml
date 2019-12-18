@@ -53,15 +53,23 @@ int main(int argc, char **argv)
 
     initializeStatesAndConstants(myStateVariables, myVariables);
     computeComputedConstants(myVariables);
+    computeRates(time, myStateVariables, myRates, myVariables);
+    computeVariables(time, myStateVariables, myRates, myVariables);
 
     std::cout << "   INITIAL CONDITIONS" << std::endl;
     std::cout << "-------------------------------------------------------------" << std::endl;
     for (size_t i = 0; i < STATE_COUNT; ++i) {
         std::cout << "      " << STATE_INFO[i].name << "(" << VOI_INFO.name << " = 0) = " << myStateVariables[i] << std::endl;
     }
+    for (size_t i = 0; i < VARIABLE_COUNT; ++i) {
+        std::cout << "      " << VARIABLE_INFO[i].name << "(" << VOI_INFO.name << " = 0) = " << myVariables[i] << std::endl;
+    }
+
     std::cout << std::endl;
     std::string outFileName = args["input"] + "_solution.txt";
     std::ofstream outFile(outFileName);
+
+    // Header line for output file
     outFile << "iteration";
     outFile << "\t" << VOI_INFO.name << " (" << VOI_INFO.units << ")";
     for (size_t s = 0; s < STATE_COUNT; ++s) {
@@ -72,15 +80,28 @@ int main(int argc, char **argv)
     }
     outFile << std::endl;
 
-    for (size_t step = 0; step < stepCount; ++step) {
+    // Initial conditions in output file
+    outFile << 0;
+    outFile << "\t" << 0;
+    for (size_t s = 0; s < STATE_COUNT; ++s) {
+        outFile << "\t" << myStateVariables[s];
+    }
+    for (size_t s = 0; s < VARIABLE_COUNT; ++s) {
+        outFile << "\t" << myVariables[s];
+    }
+    outFile << std::endl;
+
+
+    // Solution columns in output file
+    for (size_t step = 1; step < stepCount; ++step) {
         time = step * stepSize;
-        computeVariables(time, myStateVariables, myRates, myVariables);
         computeRates(time, myStateVariables, myRates, myVariables);
         outFile << step << "\t " << time;
         for (size_t s = 0; s < STATE_COUNT; ++s) {
             myStateVariables[s] = myStateVariables[s] + myRates[s] * stepSize;
             outFile << "\t" << myStateVariables[s];
         }
+        computeVariables(time, myStateVariables, myRates, myVariables); // update states before updating variables?
         for (size_t s = 0; s < VARIABLE_COUNT; ++s) {
             outFile << "\t" << myVariables[s];
         }

@@ -17,7 +17,7 @@ Resources:
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
     - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model
-    - If you did not complete Tutorial 7 you can download the file created there:
+    - If you did not complete Tutorial 7 you can download the file created there from:
       :download:`../resources/tutorial8_MembraneModel.cellml`
 
 .. contents:: Contents
@@ -33,21 +33,21 @@ We'll start by creating the utilities that we'll use later on.
 
     - a :code:`Parser` instance to deserialise the models
     - a :code:`Validator` instance for debugging purposes
-    - a :code:`ModelPtr` model to attach everything into
+    - a :code:`Model` model to attach everything into
 
 1: Read the membrane component
 ==============================================
 
 .. container:: dothis
 
-    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6_cpp>` TODO CHECK for the potassium
+    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6_cpp>` for the potassium
     channel, parse the :code:`Tutorial8_MembraneModel.cellml` file and save the
     deserialised model to a new model instance (*not* the one you've already
     created above - a new one). If you'd like, use the
     :code:`printModelToTerminal` utility function to check it has been read
     correctly, and the validator to make sure that it is valid on its own.
 
-At this stage you will have two :code:`ModelPtr` items - an empty one you
+At this stage you will have two :code:`Model` items - an empty one you
 created in 0.a which will become your combined model,
 and the one you've just read from the file.
 
@@ -65,10 +65,10 @@ and the one you've just read from the file.
     **Note** that the :code:`addComponent` and :code:`addVariable` functions
     have a built-in check which will prevent them from having one parent:
 
-        - if a :code:`VariablePtr` or :code:`ComponentPtr` has a :code:`nullptr`
+        - if a :code:`Variable` or :code:`Component` has a :code:`nullptr`
           parent, then calling an :code:`addComponent` or :code:`addVariable`
           function will insert that item into the parent component.
-        - if a :code:`VariablePtr` or :code:`ComponentPtr` already has a
+        - if a :code:`Variable` or :code:`Component` already has a
           :code:`parent()` component, then nothing will be changed.
         - if you need to move parent ownership of a variable or a component
           you need to first call the :code:`clearParent()` function **before**
@@ -104,14 +104,16 @@ by simply printing the combined model to the screen.
 
     The validator has found 13 errors!
     Validator error[0]:
-      Description: Variable 'V' has an invalid units reference 'mV' that does not correspond with a standard unit or units in the variable's parent component or model.
+      Description: Variable 'V' has an invalid units reference 'mV' that does not
+      correspond with a standard unit or units in the variable's parent component or model.
       See section 11.1.1.2 in the CellML specification.
-    |
-     ...
-    |
+
+    ...
+
     Validator error[8]:
-      Description: Math has a cn element with a cellml:units attribute 'microA_per_cm2' that is not a valid reference to units in the model 'Tutorial8_HHModel' or a standard unit.
-    |
+      Description: Math has a cn element with a cellml:units attribute 'microA_per_cm2'
+      that is not a valid reference to units in the model 'Tutorial8_HHModel' or a standard unit.
+
 
 .. container:: dothis
 
@@ -188,7 +190,7 @@ environment component in the sodiumChannelModel.
 
     **PUT ERRORS HERE WHEN VALIDATOR IS WORKING**
 
-Recall the idiom you used in :ref:`Tutorial 5<tutorial6_cpp>` to *create* the
+Recall the idiom you used in :ref:`Tutorial 6<tutorial6_cpp>` to *create* the
 connections between equivalent variables:
 
 .. code-block:: cpp
@@ -227,7 +229,7 @@ component and add it to the combined model.
 .. container:: dothis
 
     **3.a-b** Repeat the process above to import the potassium channel
-    component that was created in :ref:`Tutorial 5<tutorial6_cpp>` into the
+    component that was created in :ref:`Tutorial 6<tutorial6_cpp>` into the
     membrane component.  Note that if you did not complete that tutorial
     you can simply copy the :code:`tutorial6_PotassiumComponentModel.cellml`
     file from the :code:`resources/tutorial8` folder.
@@ -357,7 +359,7 @@ the simulation as well as the membrane voltage :math:`V`.
 
 .. container:: dothis
 
-    **5.a** Create a new :code:`ComponentPtr` to represent the environment,
+    **5.a** Create a new :code:`Component` to represent the environment,
     and add it to your combined model as a top-level component.
 
     **5.b** Include the local environment variables that you'll need, including
@@ -378,14 +380,14 @@ diagram below:
             |____ membrane (V, t)
                     |
                     |____ sodiumChannel (V, t, h, m)
-                          |
-                          |____ hGate (h, V, t)
-                          |
-                          |____ mGate (m, V, t)
+                    |      |
+                    |      |____ hGate (h, V, t)
+                    |      |
+                    |      |____ mGate (m, V, t)
                     |
                     |____ potassiumChannel (n, V, t)
-                          |
-                          |____ nGate (n, V, t)
+                    |      |
+                    |      |____ nGate (n, V, t)
                     |
                     |____ leakageCurrent (V)
 
@@ -396,13 +398,14 @@ which are shared with an adjacent component.
 .. container:: dothis
 
     **6.a** Set the equivalent variables according to the diagram above.  Note
-    that the gates remain connected to the sodium and potassium channels and don't
+    that the gates remain connected to the sodium and potassium channels, so don't
     need to be added again.
 
 .. container:: dothis
 
-    **6.b** Using the same interface type rules as in Tutorial 7, set the
-    interface type for the missing interfaces.
+    **6.b** Using the same interface type rules as in
+    :ref:`Tutorial 7<tutorial7>`, set the interface type for the missing
+    interfaces.
 
 .. container:: dothis
 
@@ -443,3 +446,13 @@ add a definition for this stimulus current.
 ==============================================
 Finally you're ready to write the model ready for simulation.  You know the
 drill.
+
+.. container:: dothis
+
+    **8.a** Create a :code:`Generator` instance and pass the model to it for
+    processing.
+
+.. container:: dothis
+
+    **8.b** Check the :code:`Generator` for errors.  You can expect to see ones
+    related to:
