@@ -251,6 +251,10 @@ Now we're ready to begin solving the model.
 
 4: Iterate through the solution
 ===============================
+You can make use of the :cellsolver:`cellsolver package <>` to solve the
+generated model, or follow the simple steps below to write your own solver
+instead.
+
 This part will make use of a simple routine to step through the solution
 iterations using the Euler method to update the state variables.  Following
 initialisation of some solution controls (time step, end point) there are
@@ -314,8 +318,8 @@ throughout the solution process.  This is done by calling the
 .. container:: dothis
 
     **4.c** Iterate through the time interval [0,20] and update the state
-    variables using the Euler update method: y[n+1] = y[n] + y'[n]*stepSize
-    At each step you will need to:
+    variables using the Euler update method:
+    :code:`y[n+1] = y[n] + y'[n]*stepSize`.  At each step you will need to:
 
         - recompute the variables
         - recompute the rates

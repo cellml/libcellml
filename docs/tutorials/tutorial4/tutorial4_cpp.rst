@@ -250,6 +250,10 @@ Now we're ready to begin solving the model.
 
 4: Iterate through the solution
 ===============================
+A simple solver has been provided for you and is described in the
+:ref:`Theory of ODE section <theory_ode_solutions>`, or you can
+easily write your own following the steps below.
+
 This part will make use of a simple routine to step through the solution
 iterations using the Euler method to update the state variables.  Following
 initialisation of some solution controls (time step, end point) there are
