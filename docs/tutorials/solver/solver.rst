@@ -111,9 +111,10 @@ your baseFileName.
 Python profile solver
 =====================
 
-The :download:`simplesolver.py` script is a very simple implementation of
-the Euler stepping method in Python.  The theory on which it's based can
-be found on the :ref:`Theory of ODE solver<theory_ode_solutions>` page.
+The :download:`simplesolver.py<simplesolver.py>` script is a very simple
+implementation of the Euler stepping method in Python.  The theory on which
+it's based can be found on the
+:ref:`Theory of ODE solver<theory_ode_solutions>` page.
 
 Requirements:
 
@@ -125,24 +126,59 @@ from the command line as below:
 
 .. container:: dothis
 
-    1.  Navigate into the "solver" directory
+    **1.**  Navigate into the "solver" directory
 
-.. container:: terminal
+.. code-block:: terminal
 
-    cd path/to/your/tutorials/solver
+    cd your_base_path/tutorials/solver
 
 .. container:: dothis
 
-    2.  Call the solver.  To do this you'll need to enter:
+    **2.**  Run the solver.  To do this you'll need to enter:
 
         - :code:`-m` the path to the generated file to run, relative to the solver
           directory
         - :code:`-dt` the step size for the integration variable to take, and ...
         - :code:`-n` the total number of steps to take.
 
-.. container:: terminal
+.. code-block:: terminal
 
-    python3 simplesolver -m path_to_your_file -n number_of_steps -dt step_size
+    python3 simplesolver.py -m path_to_your_file -n number_of_steps -dt step_size
+
+You should see output to the terminal which echoes the settings and initial
+conditions, as below.  An example file for running is provided for you in the
+:code:`resources/tutorial3_PredatorPrey_generated.py` file, which can be run for
+2000 steps and a step size of 0.01.  Running this will give you the terminal
+output:
+
+.. code-block:: terminal
+
+    python3 simplesolver.py -m ../resources/tutorial3_PredatorPrey_generated.py -dt 0.01 -n 2000
+
+    ====================================================================
+       SIMPLE SOLVER: ../resources/tutorial3_PredatorPrey_generated
+    --------------------------------------------------------------------
+
+       VARIABLE OF INTEGRATION (units, stepsize)
+    --------------------------------------------------------------------
+          time (day, 0.01)
+          2000 steps
+
+       STATE VARIABLES (units, initial value)
+    --------------------------------------------------------------------
+          y_s (number_of_sharks, 1.0)
+          y_f (thousands_of_fish, 2.0)
+
+       VARIABLES (units, initial value)
+    --------------------------------------------------------------------
+          a (per_day, -0.8)
+          b (per_shark_day, 0.3)
+          d (per_fish_day, -0.6)
+          c (per_day, -2.8)
+
+       SOLUTION written to ../resources/tutorial3_PredatorPrey_generated_solution.txt
+    ====================================================================
 
 The output is a tab delimited file with the ending :code:`_solution.txt` after
-the input file name, which can be opened by the plotting program of your choice.
+the input file name (note that it's in the same directory as the running file too),
+which can be opened by the plotting program of your choice.
