@@ -129,7 +129,7 @@ The results of the computation, with an end time of 40ms, and Euler step of
    :alt: Driving function for the voltage clamp
    :align: center
 
-   Driving function for the voltage clamp
+   Driving function for the voltage clamps
 
 
 .. figure:: ../images/tut7_mgraph.png
