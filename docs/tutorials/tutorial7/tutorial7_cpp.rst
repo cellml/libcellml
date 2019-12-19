@@ -230,10 +230,10 @@ these values throughout the model.
 
     .. math::
 
-          g_Na(t=0) = 120;
-          E_Na(t=0) = 35;
-          h(t=0)=0.6;
-          m(t=0)=0.05;
+          g_{Na}(t=0) = 120 \\
+          E_{Na}(t=0) = 35 \\
+          h(t=0)=0.6 \\
+          m(t=0)=0.05 \\
 
 
 8: Generate and output the model
