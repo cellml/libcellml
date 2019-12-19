@@ -3,6 +3,12 @@
 ===========================
 A model of a sodium channel
 ===========================
+The second ion channel in Hodgkin-Huxley model controls sodium.
+The theory here is the basis for the the practical modelling
+tutorial in :ref:`Tutorial 7<tutorial7>`.
+
+.. contents::
+    :local:
 
 Theory
 ------
@@ -109,16 +115,13 @@ useful to group them into one **sodium_channel** component.
     interface* allows a parent to talk to its children and a *public
     interface* allows siblings to talk among themselves and to their parents.
 
-Simulation process
-------------------
+Simulation and results
+----------------------
 The behaviour of the sodium channel was simulated using the
 :ref:`simple solver<solver>` provided to run the code generated
 in :ref:`Tutorial 7<tutorial7>`.  Three voltage-step experiments
 were run with voltage conditions of
 (a) -85mV to -20mV, (b) -85mV to 0mV and (c) -85mV to +20mV.
-
-Results
--------
 The results of the computation, with an end time of 40ms, and Euler step of
 0.01ms are shown in :numref:`sodium_v` to :numref:`sodium_i` below.
 

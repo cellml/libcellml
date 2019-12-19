@@ -6,7 +6,16 @@
 A model of ion channel gating and current
 =========================================
 
+This chapter describes a generic ion channel, and provides a foundation for
+later chapters where specific channels of sodium and potassium are described.
+The theory here is the basis for the the practical modelling tutorial in
+:ref:`Tutorial 5<tutorial5>`.
 
+.. contents::
+   :local:
+
+Theory
+------
 A good example of a model based on a first order equation is the one
 used by Hodgkin and Huxley :cite:`10` to describe the gating behaviour of an
 ion channel. Before we describe the
@@ -233,42 +242,47 @@ where
 
 is the steady state current through the open gate.
 
-The solution of these equations for the parameters indicated above is
-illustrated in :numref:`ocr_tut_ocr_4_ion_ch`.
 
-.. figure:: images/opencor_four_gate_ion_channel.png
-   :name: ocr_tut_ocr_4_ion_ch
-   :alt: OpenCOR solution to 4 gate ion channel model
+.. _ion_gate_status:
+.. figure:: images/tut5_gate.png
+   :name: ion_gate_status
+   :alt: Gate status
    :align: center
 
-   The behaviour of an ion channel with :math:`\gamma = 4`
-   gates transitioning from the closed to the open state at a membrane
-   voltage :math:`V = 0`. The opening and closing rate constants are
-   :math:`\alpha_{y} = 1` ms\ :sup:`-1` and :math:`\beta_{y} = 2`
-   ms\ :sup:`-1`. The ion channel has an open conductance of
-   :math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
-   equilibrium potential of :math:`E_{Y} = - 85` mV. The upper transient is
-   the response :math:`y\left( t \right)` for each gate and the lower trace
-   is the current through the channel. Note the slow start to the current
-   trace in comparison with the single gate transient
-   :math:`y\left( t \right)`.
+The behaviour of an ion channel with :math:`\gamma = 4`
+gates transitioning from the closed to the open state at a membrane
+voltage :math:`V = 0` is shown in :numref:`ion_gate_status` and
+:numref:`ion_current`. The opening and closing rate constants are
+:math:`\alpha_{y} = 1` ms\ :sup:`-1` and :math:`\beta_{y} = 2`
+ms\ :sup:`-1`. The ion channel has an open conductance of
+:math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
+equilibrium potential of :math:`E_{Y} = - 85` mV.
+
+The upper transient shown in :numref:`ion_gate_status` is
+the response :math:`y\left( t \right)` for each gate and the lower trace
+is the current through the channel.
+
+Note the slow start to the current
+trace in comparison with the single gate transient
+:math:`y\left( t \right)`.
 
 The model of a gated ion channel presented here is used in the next two
-sections for the neural potassium and sodium channels and then in
-Section 11 for cardiac ion channels. The gates make the channel
-conductance time dependent and, as we will see in the next section, the
+sections for the neural potassium and sodium channels. The gates create the
+time dependence of the channel's conductance through the
 experimentally observed voltage dependence of the gating rate constants
-:math:`\alpha_{y}` and :math:`\beta_{y}` means that the channel
+:math:`\alpha_{y}` and :math:`\beta_{y}`.  This means that the channel
 conductance (including the open channel conductance) is voltage
 dependent. For a partially open channel (:math:`y < 1`), the steady
 state conductance is
 :math:`\left( y_{\infty} \right)^{\gamma}{.\overset{\overline{}}{g}}_{Y}`,
 where :math:`y_{\infty} = \frac{\alpha_{y}}{\alpha_{y} + \beta_{y}}`.
-Moreover the gating time constants
+The gating time constants
 :math:`\tau = \frac{1}{\alpha_{y} + \beta_{y}}` are therefore also
 voltage dependent. Both of these voltage dependent factors of ion
-channel gating are important in explaining channel properties, as we
-show now for the neural potassium and sodium ion channels.
+channel gating are important in explaining channel properties, as is
+described in the next sections for the neural
+:ref:`potassium<theory_potassiumchannel>` and
+:ref:`sodium ion channels<theory_sodiumchannel>`.
 
 ---------------------------
 

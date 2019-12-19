@@ -3,7 +3,7 @@
 .. _theory_potassiumchannel:
 
 ================================
-A model of the potassium channel
+A model of a potassium channel
 ================================
 
 We now deal specifically with the application of the ion channel model
@@ -12,6 +12,11 @@ theory<theory_iongates>` to
 the Hodgkin and Huxley (HH) potassium channel. This theory is the basis for
 the practical modelling tutorial in :ref:`Tutorial 6<tutorial6>`.
 
+.. contents::
+    :local:
+
+Theory
+------
 Following the convention
 introduced by Hodgkin and Huxley, the gating variable for the potassium
 channel is :math:`n` and the number of gates in series is
@@ -34,7 +39,7 @@ positive charge on :math:`K^{+}`) is:
     \right\rbrack_{o}}{\left\lbrack K^{+} \right\rbrack_{i}} =
     25\ln\frac{3}{90} = - 85\text{ mV}
 
-As noted above, :math:`E_K`: is called the *equilibrium potential* since it is
+The :math:`E_K`: term is called the *equilibrium potential* since it is
 the potential across the cell membrane when the channel is open but no
 current is flowing.  This happens when the electrostatic driving force from the
 potential (voltage) difference between internal and external ion *charges*
