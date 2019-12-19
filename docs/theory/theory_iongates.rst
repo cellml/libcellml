@@ -246,8 +246,18 @@ is the steady state current through the open gate.
 .. _ion_gate_status:
 .. figure:: images/tut5_gate.png
    :name: ion_gate_status
-   :alt: Gate status
+   :alt: Gate status for a single gate
    :align: center
+
+   Gate status for one gate
+
+.. _ion_current:
+.. figure:: images/tut5_current.png
+   :name: _ion_current
+   :alt: Ion current
+   :align: center
+
+   Ion current for :math:`\gamma=4` gates.
 
 The behaviour of an ion channel with :math:`\gamma = 4`
 gates transitioning from the closed to the open state at a membrane
@@ -259,17 +269,15 @@ ms\ :sup:`-1`. The ion channel has an open conductance of
 equilibrium potential of :math:`E_{Y} = - 85` mV.
 
 The upper transient shown in :numref:`ion_gate_status` is
-the response :math:`y\left( t \right)` for each gate and the lower trace
-is the current through the channel.
-
-Note the slow start to the current
-trace in comparison with the single gate transient
-:math:`y\left( t \right)`.
+the response :math:`y\left( t \right)` for each gate and
+:numref:`ion_current` shows the current through the channel.
+Note the slow start to the current trace in comparison with the single
+gate transient :math:`y\left( t \right)`.
 
 The model of a gated ion channel presented here is used in the next two
 sections for the neural potassium and sodium channels. The gates create the
-time dependence of the channel's conductance through the
-experimentally observed voltage dependence of the gating rate constants
+transience of the channel's conductance through the
+voltage dependence of the gating rate constants
 :math:`\alpha_{y}` and :math:`\beta_{y}`.  This means that the channel
 conductance (including the open channel conductance) is voltage
 dependent. For a partially open channel (:math:`y < 1`), the steady
