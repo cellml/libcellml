@@ -27,17 +27,17 @@ positive charge on :math:`K^{+}`) is:
 
 .. math::
 
-    E_{k} = \frac{RT}{zF} \ln\frac{\left\lbrack K^{+}
+    E_{K} = \frac{RT}{zF} \ln\frac{\left\lbrack K^{+}
     \right\rbrack_{o}}{\left\lbrack K^{+} \right\rbrack_{i}} =
     25\ln\frac{3}{90} = - 85\text{ mV}
 
-As noted above, this is called the *equilibrium potential* since it is
+As noted above, :math:`E_K`: is called the *equilibrium potential* since it is
 the potential across the cell membrane when the channel is open but no
-current is flowing because the electrostatic driving force from the
-potential (voltage) difference between internal and external ion charges
+current is flowing.  This happens when the electrostatic driving force from the
+potential (voltage) difference between internal and external ion *charges*
 is exactly matched by the entropic driving force from the ion
-concentration difference. :math:`n^{4}\bar{g}_{K}` is
-the channel conductance.
+*concentration* difference. The channel conductance is given by
+:math:`n^{4}\bar{g}_{K}`.
 
 The gating kinetics are described (as before) by:
 
@@ -116,15 +116,17 @@ variables as described below.
 An aside: Equivalent variables
 ------------------------------
 Variables are contained within components in order to make the models
-modular, and enabling the sharing and reuse of their different entities.
+modular, and to enable the sharing and reuse of their different entities.
 But along with this containment functionality comes the need for the
 enclosed variables to communicate with one another across these artificial
-walls.  This is done by creating *equivalent variable maps*, where a variable
-in one component is mapped through an interface to a corresponding variable in
-another.  More information about how components can be nested to
+barriers.  This is done by creating *equivalent variable maps*, wherein a variable
+in one component is mapped through an *interface* to a corresponding variable in
+another.
+
+More information about how components can be nested to
 create a hierarchical *encapsulation structure* is shown in more detail in
 the next chapter, :ref:`A model of a sodium channel<theory_sodiumchannel>` and
-demonstrated in :ref:`Tutorial 5<tutorial6>`.
+demonstrated in :ref:`Tutorial 6<tutorial6>`.
 
 .. figure:: images/potassium_component_structure.png
     :name: potassium_component_structure
@@ -137,15 +139,6 @@ demonstrated in :ref:`Tutorial 5<tutorial6>`.
 
 Simulation and results
 ----------------------
-
-Note that several other features have been added:
-
--  the event control *select case* which indicates that the voltage is
-   specified to jump from 0mV to -85mV at t = 5ms then back to 0mV at
-   t = 15ms. This is only used here in order to test the K channel model;
-   when the potassium_channel component is later imported into a neuron
-   model, **the environment component is not imported**.
-
 Running the simulation up to an ending point of t = 40ms with a timestep
 of 0.1 we can solve the equations for the potassium channel with a voltage step
 condition in which the membrane voltage is clamped initially at 0mV and
@@ -198,7 +191,6 @@ the Nernst potential increase from -85mV to -55mV and a negative
 (inward) current flowing during the period when the membrane voltage is
 clamped to -85mV. The cell is now in a ‘hyperpolarised’ state because
 the potential is less than the equilibrium potential.
-
 
 Next steps
 ----------
