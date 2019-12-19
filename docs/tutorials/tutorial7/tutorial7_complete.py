@@ -38,50 +38,24 @@ if __name__ == "__main__":
     #  1.b Add the MathML representing the governing equations
     if True:
         equation1 = \
-            '<apply>\
-                <eq/>\
-                <ci>E_Na</ci>\
-                <apply>\
-                    <times/>\
-                    <ci>RTF</ci>\
-                    <apply>\
-                        <log/>\
-                        <apply>\
-                            <divide/>\
-                            <ci>Nao</ci>\
-                            <ci>Nai</ci>\
-                        </apply>\
+            '<apply><eq/>\
+                <ci>Na_conductance</ci>\
+                <apply><times/>\
+                    <ci>g_Na</ci>\
+                    <ci>h</ci>\
+                    <apply><power/>\
+                        <ci>m</ci>\
+                        <cn cellml:units=\"dimensionless\">3</cn>\
                     </apply>\
                 </apply>\
             </apply>'
 
         equation2 = \
-            '<apply>\
-                <eq/>\
-                <ci>Na_conductance</ci>\
-                <apply>\
-                    <times/>\
-                    <apply>\
-                        <power/>\
-                        <ci>m</ci>\
-                        <apply>\
-                            <times/>\
-                            <cn cellml:units="dimensionless">3</cn>\
-                            <ci>h</ci>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>'
-
-        equation3 = \
-            '<apply>\
-                <eq/>\
+            '<apply><eq/>\
                 <ci>i_Na</ci>\
-                <apply>\
-                    <times/>\
+                <apply><times/>\
                     <ci>Na_conductance</ci>\
-                    <apply>\
-                        <minus/>\
+                    <apply><minus/>\
                         <ci>V</ci>\
                         <ci>E_Na</ci>\
                     </apply>\
@@ -91,7 +65,6 @@ if __name__ == "__main__":
         sodium_channel.setMath(math_header)
         sodium_channel.appendMath(equation1)
         sodium_channel.appendMath(equation2)
-        sodium_channel.appendMath(equation3)
         sodium_channel.appendMath(math_footer)
 
     #  1.c Add the variables
@@ -132,24 +105,6 @@ if __name__ == "__main__":
         i_Na.setName("i_Na")
         i_Na.setUnits("microA_per_cm2")
         sodium_channel.addVariable(i_Na)
-
-        Nao = Variable()
-        Nao.setName("Nao")
-        Nao.setUnits("mM")
-        Nao.setInitialValue(140)
-        sodium_channel.addVariable(Nao)
-
-        Nai = Variable()
-        Nai.setName("Nai")
-        Nai.setUnits("mM")
-        Nai.setInitialValue(30)
-        sodium_channel.addVariable(Nai)
-
-        RTF = Variable()
-        RTF.setName("RTF")
-        RTF.setUnits("mV")
-        RTF.setInitialValue(25)
-        sodium_channel.addVariable(RTF)
 
         Na_conductance = Variable()
         Na_conductance.setName("Na_conductance")
@@ -200,35 +155,31 @@ if __name__ == "__main__":
     #  2.b Add the MathML strings which govern the behavior of this gate
     if True:
         equation1 = \
-            '<apply>\
-                <eq/>\
+            '<apply><eq/>\
                 <ci>alpha_m</ci>\
-                <apply>\
-                    <divide/>\
-                    <apply>\
-                        <times/>\
-                        <cn cellml:units="per_mV_ms">0.1</cn>\
-                        <apply>\
-                            <plus/>\
+                <apply><divide/>\
+                    <apply><times/>\
+                        <apply><minus/>\
+                            <cn cellml:units=\"per_mV_ms\">0.1</cn>\
+                        </apply>\
+                        <apply><plus/>\
                             <ci>V</ci>\
-                            <cn cellml:units="mV">25</cn>\
+                            <cn cellml:units=\"mV\">50</cn>\
                         </apply>\
                     </apply>\
-                    <apply>\
-                        <minus/>\
-                        <apply>\
-                            <exp/>\
-                            <apply>\
-                                <divide/>\
-                                <apply>\
-                                    <plus/>\
-                                    <ci>V</ci>\
-                                    <cn cellml:units="mV">25</cn>\
+                    <apply><minus/>\
+                        <apply><exp/>\
+                            <apply><divide/>\
+                                <apply><minus/>\
+                                    <apply><plus/>\
+                                        <ci>V</ci>\
+                                        <cn cellml:units=\"mV\">50</cn>\
+                                    </apply>\
                                 </apply>\
-                                <cn cellml:units="mV">10</cn>\
+                                <cn cellml:units=\"mV\">10</cn>\
                             </apply>\
                         </apply>\
-                        <cn cellml:units="dimensionless">1</cn>\
+                        <cn cellml:units=\"dimensionless\">1</cn>\
                     </apply>\
                 </apply>\
             </apply>'
@@ -237,11 +188,16 @@ if __name__ == "__main__":
             '<apply><eq/>\
                 <ci>beta_m</ci>\
                 <apply><times/>\
-                    <cn cellml:units="per_ms">4</cn>\
+                    <cn cellml:units=\"per_ms\">4</cn>\
                     <apply><exp/>\
                         <apply><divide/>\
-                            <ci>V</ci>\
-                            <cn cellml:units="mV">18</cn>\
+                            <apply><minus/>\
+                                <apply><plus/>\
+                                    <ci>V</ci>\
+                                    <cn cellml:units=\"mV\">75</cn>\
+                                </apply>\
+                            </apply>\
+                            <cn cellml:units=\"mV\">18</cn>\
                         </apply>\
                     </apply>\
                 </apply>\
@@ -259,7 +215,7 @@ if __name__ == "__main__":
                     <apply><times/>\
                         <ci>alpha_m</ci>\
                         <apply><minus/>\
-                            <cn cellml:units="dimensionless">1</cn>\
+                            <cn cellml:units=\"dimensionless\">1</cn>\
                             <ci>m</ci>\
                         </apply>\
                     </apply>\
@@ -302,7 +258,6 @@ if __name__ == "__main__":
 
         m = Variable()
         m.setName("m")
-        m.setInitialValue(0.05)
         m.setUnits("dimensionless")
         mGate.addVariable(m)
 
@@ -333,11 +288,16 @@ if __name__ == "__main__":
             '<apply><eq/>\
                 <ci>alpha_h</ci>\
                 <apply><times/>\
-                    <cn cellml:units="per_ms">0.07</cn>\
+                    <cn cellml:units=\"per_ms\">0.07</cn>\
                     <apply><exp/>\
                         <apply><divide/>\
-                            <ci>V</ci>\
-                            <cn cellml:units="mV">20</cn>\
+                            <apply><minus/>\
+                                <apply><plus/>\
+                                    <ci>V</ci>\
+                                    <cn cellml:units=\"mV\">75</cn>\
+                                </apply>\
+                            </apply>\
+                            <cn cellml:units=\"mV\">20</cn>\
                         </apply>\
                     </apply>\
                 </apply>\
@@ -347,15 +307,20 @@ if __name__ == "__main__":
             '<apply><eq/>\
                 <ci>beta_h</ci>\
                 <apply><divide/>\
-                    <cn cellml:units="per_ms">1</cn>\
-                    <apply><exp/>\
-                        <apply><divide/>\
-                            <apply><plus/>\
-                                <ci>V</ci>\
-                                <cn cellml:units="mV">30</cn>\
+                    <cn cellml:units=\"per_ms\">1</cn>\
+                    <apply><plus/>\
+                        <apply><exp/>\
+                            <apply><divide/>\
+                                <apply><minus/>\
+                                    <apply><plus/>\
+                                        <ci>V</ci>\
+                                        <cn cellml:units=\"mV\">45</cn>\
+                                    </apply>\
+                                </apply>\
+                                <cn cellml:units=\"mV\">10</cn>\
                             </apply>\
-                            <cn cellml:units="mV">10</cn>\
                         </apply>\
+                        <cn cellml:units=\"dimensionless\">1</cn>\
                     </apply>\
                 </apply>\
             </apply>'
@@ -372,7 +337,7 @@ if __name__ == "__main__":
                     <apply><times/>\
                         <ci>alpha_h</ci>\
                         <apply><minus/>\
-                            <cn cellml:units="dimensionless">1</cn>\
+                            <cn cellml:units=\"dimensionless\">1</cn>\
                             <ci>h</ci>\
                         </apply>\
                     </apply>\
@@ -456,7 +421,8 @@ if __name__ == "__main__":
     print("-----------------------------------------------")
 
     #  5.a Connecting the equivalent variables between all the components
-    Variable.addEquivalence(environment.variable("t"), sodium_channel.variable("t"))
+    Variable.addEquivalence(environment.variable("t"),
+                            sodium_channel.variable("t"))
     Variable.addEquivalence(sodium_channel.variable("t"), mGate.variable("t"))
     Variable.addEquivalence(sodium_channel.variable("t"), hGate.variable("t"))
     environment.variable("t").setInterfaceType("public")
@@ -464,7 +430,8 @@ if __name__ == "__main__":
     mGate.variable("t").setInterfaceType("public")
     hGate.variable("t").setInterfaceType("public")
 
-    Variable.addEquivalence(environment.variable("V"), sodium_channel.variable("V"))
+    Variable.addEquivalence(environment.variable("V"),
+                            sodium_channel.variable("V"))
     Variable.addEquivalence(sodium_channel.variable("V"), mGate.variable("V"))
     Variable.addEquivalence(sodium_channel.variable("V"), hGate.variable("V"))
     environment.variable("V").setInterfaceType("public")
@@ -489,9 +456,8 @@ if __name__ == "__main__":
 
     #  6.a Create the MathML controlling the driving function
     if True:
-        voltageClampMaths = \
-            '<apply>\
-                <eq/>\
+        voltage_clamp_maths = \
+            '<apply><eq/>\
                 <ci>V</ci>\
                 <piecewise>\
                     <piece>\
@@ -509,7 +475,7 @@ if __name__ == "__main__":
             </apply>'
 
         environment.setMath(math_header)
-        environment.appendMath(voltageClampMaths)
+        environment.appendMath(voltage_clamp_maths)
         environment.appendMath(math_footer)
 
     #  6.b Validate the final model
@@ -517,15 +483,13 @@ if __name__ == "__main__":
     print_errors_to_terminal(validator)
 
     print("-----------------------------------------------")
-    print("    STEP 7: Serialise and print the model ")
+    print("    STEP 7: Set the initial conditions")
     print("-----------------------------------------------")
 
-    printer = Printer()
-    serialised_model = printer.printModel(model)
-    out_file = "tutorial7_SodiumChannelModel.cellml"
-    write_file = open(out_file, "w")
-    write_file.write(serialised_model)
-    print("The {m} has been printed to {n}".format(m=model.name(), n=out_file))
+    sodium_channel.variable("g_Na").setInitialValue(120)
+    sodium_channel.variable("E_Na").setInitialValue(35)
+    hGate.variable("h").setInitialValue(0.6)
+    mGate.variable("m").setInitialValue(0.05)
 
     print("-----------------------------------------------")
     print("   STEP 8: Generate a Python file")
@@ -542,3 +506,10 @@ if __name__ == "__main__":
     write_file = open("tutorial7_generated.py", "w")
     write_file.write(implementation_code)
     print("The {} has been printed to tutorial7_generated.py".format(model.name()))
+
+    printer = Printer()
+    serialised_model = printer.printModel(model)
+    out_file = "tutorial7_SodiumChannelModel.cellml"
+    write_file = open(out_file, "w")
+    write_file.write(serialised_model)
+    print("The {m} has been printed to {n}".format(m=model.name(), n=out_file))

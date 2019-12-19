@@ -20,7 +20,6 @@ int main()
 {
     //  0 Setup stuff that is used throughout
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
-
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("Tutorial7_SodiumChannelModel");
 
@@ -28,7 +27,7 @@ int main()
     std::string mathFooter = "</math>";
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 1: Creating the sodium channel" << std::endl;
+    std::cout << " STEP 1: Creating the sodium channel component " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a Create the compont instance, name it, and add to the model
@@ -39,50 +38,24 @@ int main()
     //  1.b Add the MathML representing the governing equations
     {
         std::string equation1 =
-            "<apply>\
-                <eq/>\
-                <ci>E_Na</ci>\
-                <apply>\
-                    <times/>\
-                    <ci>RTF</ci>\
-                    <apply>\
-                        <log/>\
-                        <apply>\
-                            <divide/>\
-                            <ci>Nao</ci>\
-                            <ci>Nai</ci>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>";
-        std::string equation2 =
-            "<apply>\
-                <eq/>\
+            "<apply><eq/>\
                 <ci>Na_conductance</ci>\
-                <apply>\
-                    <times/>\
+                <apply><times/>\
                     <ci>g_Na</ci>\
-                    <apply>\
-                        <power/>\
+                    <ci>h</ci>\
+                    <apply><power/>\
                         <ci>m</ci>\
-                        <apply>\
-                            <times/>\
-                            <cn cellml:units=\"dimensionless\">3</cn>\
-                            <ci>h</ci>\
-                        </apply>\
+                        <cn cellml:units=\"dimensionless\">3</cn>\
                     </apply>\
                 </apply>\
             </apply>";
 
-        std::string equation3 =
-            "<apply>\
-                <eq/>\
+        std::string equation2 =
+            "<apply><eq/>\
                 <ci>i_Na</ci>\
-                <apply>\
-                    <times/>\
+                <apply><times/>\
                     <ci>Na_conductance</ci>\
-                    <apply>\
-                        <minus/>\
+                    <apply><minus/>\
                         <ci>V</ci>\
                         <ci>E_Na</ci>\
                     </apply>\
@@ -92,7 +65,6 @@ int main()
         sodiumChannel->setMath(mathHeader);
         sodiumChannel->appendMath(equation1);
         sodiumChannel->appendMath(equation2);
-        sodiumChannel->appendMath(equation3);
         sodiumChannel->appendMath(mathFooter);
     }
 
@@ -121,7 +93,7 @@ int main()
         libcellml::VariablePtr g_Na = libcellml::Variable::create();
         g_Na->setName("g_Na");
         g_Na->setUnits("mS_per_cm2");
-        g_Na->setInitialValue(120);
+
         sodiumChannel->addVariable(g_Na);
 
         libcellml::VariablePtr E_Na = libcellml::Variable::create();
@@ -133,24 +105,6 @@ int main()
         i_Na->setName("i_Na");
         i_Na->setUnits("microA_per_cm2");
         sodiumChannel->addVariable(i_Na);
-
-        libcellml::VariablePtr Nao = libcellml::Variable::create();
-        Nao->setName("Nao");
-        Nao->setUnits("mM");
-        Nao->setInitialValue(140);
-        sodiumChannel->addVariable(Nao);
-
-        libcellml::VariablePtr Nai = libcellml::Variable::create();
-        Nai->setName("Nai");
-        Nai->setUnits("mM");
-        Nai->setInitialValue(30);
-        sodiumChannel->addVariable(Nai);
-
-        libcellml::VariablePtr RTF = libcellml::Variable::create();
-        RTF->setName("RTF");
-        RTF->setUnits("mV");
-        RTF->setInitialValue(25);
-        sodiumChannel->addVariable(RTF);
 
         libcellml::VariablePtr Na_conductance = libcellml::Variable::create();
         Na_conductance->setName("Na_conductance");
@@ -202,30 +156,26 @@ int main()
     //  2.b Add the MathML strings which govern the behavior of this gate
     {
         std::string equation1 =
-            "<apply>\
-                <eq/>\
+            "<apply><eq/>\
                 <ci>alpha_m</ci>\
-                <apply>\
-                    <divide/>\
-                    <apply>\
-                        <times/>\
-                        <cn cellml:units=\"per_mV_ms\">0.1</cn>\
-                        <apply>\
-                            <plus/>\
+                <apply><divide/>\
+                    <apply><times/>\
+                        <apply><minus/>\
+                            <cn cellml:units=\"per_mV_ms\">0.1</cn>\
+                        </apply>\
+                        <apply><plus/>\
                             <ci>V</ci>\
-                            <cn cellml:units=\"mV\">25</cn>\
+                            <cn cellml:units=\"mV\">50</cn>\
                         </apply>\
                     </apply>\
-                    <apply>\
-                        <minus/>\
-                        <apply>\
-                            <exp/>\
-                            <apply>\
-                                <divide/>\
-                                <apply>\
-                                    <plus/>\
-                                    <ci>V</ci>\
-                                    <cn cellml:units=\"mV\">25</cn>\
+                    <apply><minus/>\
+                        <apply><exp/>\
+                            <apply><divide/>\
+                                <apply><minus/>\
+                                    <apply><plus/>\
+                                        <ci>V</ci>\
+                                        <cn cellml:units=\"mV\">50</cn>\
+                                    </apply>\
                                 </apply>\
                                 <cn cellml:units=\"mV\">10</cn>\
                             </apply>\
@@ -242,7 +192,12 @@ int main()
                     <cn cellml:units=\"per_ms\">4</cn>\
                     <apply><exp/>\
                         <apply><divide/>\
-                            <ci>V</ci>\
+                            <apply><minus/>\
+                                <apply><plus/>\
+                                    <ci>V</ci>\
+                                    <cn cellml:units=\"mV\">75</cn>\
+                                </apply>\
+                            </apply>\
                             <cn cellml:units=\"mV\">18</cn>\
                         </apply>\
                     </apply>\
@@ -307,7 +262,7 @@ int main()
         libcellml::VariablePtr m = libcellml::Variable::create();
         m->setName("m");
         m->setUnits("dimensionless");
-        m->setInitialValue(0.05);
+
         mGate->addVariable(m);
     } // ends local scope for mGate component
 
@@ -319,6 +274,11 @@ int main()
     per_mV_ms->addUnit("second", "milli", -1);
     per_mV_ms->addUnit("volt", "milli", -1);
     model->addUnits(per_mV_ms);
+
+    libcellml::UnitsPtr per_ms = libcellml::Units::create();
+    per_ms->setName("per_ms");
+    per_ms->addUnit("second", "milli", -1);
+    model->addUnits(per_ms);
 
     validator->validateModel(model);
     printErrorsToTerminal(validator);
@@ -341,7 +301,12 @@ int main()
                     <cn cellml:units=\"per_ms\">0.07</cn>\
                     <apply><exp/>\
                         <apply><divide/>\
-                            <ci>V</ci>\
+                            <apply><minus/>\
+                                <apply><plus/>\
+                                    <ci>V</ci>\
+                                    <cn cellml:units=\"mV\">75</cn>\
+                                </apply>\
+                            </apply>\
                             <cn cellml:units=\"mV\">20</cn>\
                         </apply>\
                     </apply>\
@@ -353,14 +318,19 @@ int main()
                 <ci>beta_h</ci>\
                 <apply><divide/>\
                     <cn cellml:units=\"per_ms\">1</cn>\
-                    <apply><exp/>\
-                        <apply><divide/>\
-                            <apply><plus/>\
-                                <ci>V</ci>\
-                                <cn cellml:units=\"mV\">30</cn>\
+                    <apply><plus/>\
+                        <apply><exp/>\
+                            <apply><divide/>\
+                                <apply><minus/>\
+                                    <apply><plus/>\
+                                        <ci>V</ci>\
+                                        <cn cellml:units=\"mV\">45</cn>\
+                                    </apply>\
+                                </apply>\
+                                <cn cellml:units=\"mV\">10</cn>\
                             </apply>\
-                            <cn cellml:units=\"mV\">10</cn>\
                         </apply>\
+                        <cn cellml:units=\"dimensionless\">1</cn>\
                     </apply>\
                 </apply>\
             </apply>";
@@ -420,15 +390,8 @@ int main()
         libcellml::VariablePtr h = libcellml::Variable::create();
         h->setName("h");
         h->setUnits("dimensionless");
-        h->setInitialValue(1.0);
         hGate->addVariable(h);
     } // ends local scope for hGate variables
-
-    //  3.d Add the missing units
-    libcellml::UnitsPtr per_ms = libcellml::Units::create();
-    per_ms->setName("per_ms");
-    per_ms->addUnit("second", "milli", -1);
-    model->addUnits(per_ms);
 
     validator->validateModel(model);
     printErrorsToTerminal(validator);
@@ -493,14 +456,13 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "       STEP 6: Set the driving function" << std::endl;
+    std::cout << "   STEP 6: Set the driving function" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  6.a Create the MathML controlling the driving function
     {
         std::string voltageClampMaths =
-            "<apply>\
-                <eq/>\
+            "<apply><eq/>\
                 <ci>V</ci>\
                 <piecewise>\
                     <piece>\
@@ -525,28 +487,24 @@ int main()
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    // std::cout << "-----------------------------------------------" << std::endl;
-    // std::cout << "    STEP 7: Serialse and print the model " << std::endl;
-    // std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "    STEP 7: Set the initial conditions " << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::PrinterPtr printer=libcellml::Printer::create();
-    std::string serialisedModelString = printer->printModel(model);
-    std::string outFileName = "tutorial7_SodiumChannelModel.cellml";
-    std::ofstream outFile(outFileName);
-    outFile << serialisedModelString;
-    outFile.close();
+    sodiumChannel->variable("g_Na")->setInitialValue(120);
+    sodiumChannel->variable("E_Na")->setInitialValue(35);
+    hGate->variable("h")->setInitialValue(0.6);
+    mGate->variable("m")->setInitialValue(0.05);
 
-    std::cout << "The created '" << model->name()
-              << "' model has been printed to: " << outFileName << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "    STEP 8: Generate and output the model " << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
 
-    // std::cout << "-----------------------------------------------" << std::endl;
-    // std::cout << "    STEP 7: Generate and output the model " << std::endl;
-    // std::cout << "-----------------------------------------------" << std::endl;
-
-    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
+    std::ofstream outFile;
     outFile.open("tutorial7_SodiumChannelModel.h");
     outFile << generator->interfaceCode();
     outFile.close();
@@ -555,6 +513,20 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    std::cout << "The generated code has been output into tutorial7_SodiumChannelModel.c ";
-    std::cout << "and tutorial7_SodiumChannelModel.h." << std::endl;
+    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+    generator->processModel(model);
+
+    outFile.open("tutorial7_SodiumChannelModel.py");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    outFile.open("tutorial7_SodiumChannelModel.cellml");
+    outFile << printer->printModel(model);
+    outFile.close();
+
+    std::cout << "The model has been output into tutorial7_SodiumChannelModel.[c,h,py,cellml]"
+              << std::endl;
+
 }
