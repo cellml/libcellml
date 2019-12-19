@@ -121,7 +121,7 @@ Three voltage-step experiments were run with voltage conditions of
 Results
 -------
 The results of the computation, with an end time of 40ms, and Euler step of
-0.001ms are shown in :numref:`` below.
+0.01ms are shown in :numref:`tut7_Vgraph` to :numref:`tut7_Naigraph` below.
 
 
 .. figure:: images/tut7_Vgraph.png
@@ -164,12 +164,9 @@ The results of the computation, with an end time of 40ms, and Euler step of
    Sodium current
 
 
-
-
-
-
-
-
+Notable results
+----------------
+Of particular note in the results are these features:
 
 i.   The kinetics of the :math:`m`-gate are much faster than the
      :math:`h`-gate.
@@ -196,9 +193,6 @@ iv.  The only time current :math:`i_{Na}` flows through the
 
 v.   The large sodium current :math:`i_{Na}` is an inward current
      and hence negative.
-
-
-
 
 
 Next steps
