@@ -113,9 +113,8 @@ Simulation process
 ------------------
 The behaviour of the sodium channel was simulated using the
 :ref:`simple solver<solver>` provided to run the code generated
-in :ref:`Tutorial 7<tutorial7>`.
-
-Three voltage-step experiments were run with voltage conditions of
+in :ref:`Tutorial 7<tutorial7>`.  Three voltage-step experiments
+were run with voltage conditions of
 (a) -85mV to -20mV, (b) -85mV to 0mV and (c) -85mV to +20mV.
 
 Results
@@ -215,5 +214,5 @@ channel<theory__potassiumchannel>` as well as a leakage current model.
 .. [#]  The original version of the Hodgkin-Huxley paper used:
        :math:`\alpha_m = \frac{0.1(V+25)} {\exp\left(0.1(V+25)\right)-1}`,
        :math:`\beta_m = 4 \exp \left(\frac{V}{18}\right)`,
-       :math:`\alpha_h = 0.07 \exp {\frac{V}{20}}`,
+       :math:`\alpha_h = 0.07 \exp {\left(\frac{V}{20}\right)}`,
        :math:`\beta_h = \frac{1}{\exp\left(0.1(V+30)\right)+1}`.
