@@ -121,9 +121,9 @@ Three voltage-step experiments were run with voltage conditions of
 Results
 -------
 The results of the computation, with an end time of 40ms, and Euler step of
-0.01ms are shown in :numref:`tut7_Vgraph` to :numref:`tut7_Naigraph` below.
+0.01ms are shown in :numref:`sodium_v` to :numref:`sodium_i` below.
 
-
+.. _sodium_v:
 .. figure:: images/tut7_Vgraph.png
    :name: tut7_Vgraph
    :alt: Driving function for the voltage clamp
@@ -132,6 +132,7 @@ The results of the computation, with an end time of 40ms, and Euler step of
    Driving function for the voltage clamps
 
 
+.. _sodium_m:
 .. figure:: images/tut7_mgraph.png
    :name: tut7_mgraph
    :alt: m-gate dynamics
@@ -140,6 +141,7 @@ The results of the computation, with an end time of 40ms, and Euler step of
    m-gate dynamics
 
 
+.. _sodium_h:
 .. figure:: images/tut7_hgraph.png
    :name: tut7_hgraph
    :alt: h-gate dynamics
@@ -148,6 +150,7 @@ The results of the computation, with an end time of 40ms, and Euler step of
    h-gate dynamics
 
 
+.. _sodium_g:
 .. figure:: images/tut7_Nacond_graph.png
    :name: tut7_Nacond_graph
    :alt: Sodium conductance
@@ -156,6 +159,7 @@ The results of the computation, with an end time of 40ms, and Euler step of
    Sodium conductance
 
 
+.. _sodium_i:
 .. figure:: images/tut7_iNagraph.png
    :name: tut7_Naigraph
    :alt: Sodium current
