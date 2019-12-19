@@ -268,11 +268,12 @@ printing of the model to a CellML file for use in later tutorials.
 You can solve the model to simulate the dynamics of the sodium gate using the
 supplied solver.  Instructions for running this are given on the
 :ref:`Simple solver for generated models<solver>` page.  You should see the
-behaviour shown in the figures below.  The theory of this channel's operation
+behaviour shown in the figures below by the red line representing a voltage
+step to -20mV.  The theory of this channel's operation
 is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
 
 
-.. figure:: ../images/tut7_Vgraph.png
+.. figure:: ../../theory/images/tut7_Vgraph.png
    :name: tut7_Vgraph
    :alt: Driving function for the voltage clamp
    :align: center
@@ -280,7 +281,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    Driving function for the voltage clamp
 
 
-.. figure:: ../images/tut7_mgraph.png
+.. figure:: ../../theory/images/tut7_mgraph.png
    :name: tut7_mgraph
    :alt: m-gate dynamics
    :align: center
@@ -288,7 +289,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    m-gate dynamics
 
 
-.. figure:: ../images/tut7_hgraph.png
+.. figure:: ../../theory/images/tut7_hgraph.png
    :name: tut7_hgraph
    :alt: h-gate dynamics
    :align: center
@@ -296,7 +297,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    h-gate dynamics
 
 
-.. figure:: ../images/tut7_Nacond_graph.png
+.. figure:: ../../theory/images/tut7_Nacond_graph.png
    :name: tut7_Nacond_graph
    :alt: Sodium conductance
    :align: center
@@ -304,7 +305,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    Sodium conductance
 
 
-.. figure:: ../images/tut7_iNagraph.png
+.. figure:: ../../theory/images/tut7_iNagraph.png
    :name: tut7_Naigraph
    :alt: Sodium current
    :align: center
