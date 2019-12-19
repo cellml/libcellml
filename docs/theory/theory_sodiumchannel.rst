@@ -212,11 +212,8 @@ channel<theory__potassiumchannel>` as well as a leakage current model.
 
 .. rubric:: Footnotes
 
-.. [#] The Hodgkin-Huxley paper used: **TODO**
-
-    .. math::
-
-       \alpha_m = \frac{0.1(V+25)}{\exp\left({0.1(V+25)\right)-1} \\
-       \beta_m = 4\exp\left({\frac{V}{18}\right) \\
-       \alpha_h = 0.07e^{\frac{V}{20}} \\
-       \beta_h = \frac{1}{\exp\left(0.1(V+30)\right)+1} \\
+.. [#]  The original version of the Hodgkin-Huxley paper used:
+       :math:`\alpha_m = \frac{0.1(V+25)}{\exp\left({0.1(V+25)\right)-1}`,
+       :math:`\beta_m = 4\exp\left({\frac{V}{18}\right)`,
+       :math:`\alpha_h = 0.07e^{\frac{V}{20}}`,
+       :math:`\beta_h = \frac{1}{\exp\left(0.1(V+30)\right)+1}`.
