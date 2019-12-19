@@ -9,7 +9,10 @@ A model of the potassium channel
 We now deal specifically with the application of the ion channel model
 discussed in :ref:`the previous chapter on ion gates
 theory<theory_iongates>` to
-the Hodgkin and Huxley (HH) potassium channel. Following the convention
+the Hodgkin and Huxley (HH) potassium channel. This theory is the basis for
+the practical modelling tutorial in :ref:`Tutorial 6<tutorial6>`.
+
+Following the convention
 introduced by Hodgkin and Huxley, the gating variable for the potassium
 channel is :math:`n` and the number of gates in series is
 :math:`\gamma = 4`, therefore:
@@ -149,30 +152,31 @@ At 0mV, the steady state value of the :math:`n`-gate is
 :math:`n_{\infty} = \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} =` 0.324
 and, at -85mV, :math:`n_{\infty} = \ `\ 0.945.
 
-The voltage traces are shown at the top of
-:numref:`kinetics_of_potassium_ch`.
-
-The :math:`n`-gate
-response, shown next, is to open further from its partially open value
-of :math:`n =`\ 0.324 at 0mV and then plateau at an almost fully open
-state of :math:`n =`\ 0.945 at the Nernst potential -85mV before closing
-again as the voltage is stepped back to 0mV. Note that the gate opening
+The voltage traces are shown in :numref:`_potassium_voltage`.
+The :math:`n`-gate response in :numref:`potassium_ngate`
+shows it opening beyond its initial partially open value
+of :math:`n =`\ 0.324 at 0mV, to plateau at an almost fully open
+state of :math:`n =`\ 0.945 at the Nernst potential of -85mV, before closing
+again as the voltage is stepped back to 0mV. Note that the opening
 behaviour (set by the voltage dependence of the :math:`\alpha_{n}`
 opening rate constant) is faster than the closing behaviour (set by the
 voltage dependence of the :math:`\beta_{n}` closing rate constant). The
 channel conductance (:math:`= n^{4}\bar{g}_K`) is
-shown next – note the initial s-shaped conductance increase caused by
-the :math:`n^{4}` (four gates in series) effect on conductance. Finally
-the channel current :math:`i_{K} =` conductance
-:math:`\times\left( V - E_{K} \right)` is shown at the bottom. Because the
-voltage is clamped at the Nernst potential (-85mV) during the time period
-when the gate is opening, there is no current flow, but when the voltage
-is stepped back to 0mV, the open gates begin to close and the
-conductance declines but now there is a voltage gradient to drive an
-outward (positive) current flow through the partially open channel –
-albeit briefly since the channel is closing.
+shown in :numref:`potassium_conductance`.  Note the initial s-shaped
+conductance increase caused by the effect of the four gates in series
+:math:`n^{4}`
+effect on conductance. Finally the channel current
+:math:`i_{K} = g_{Na}\left( V - E_{K} \right)` is shown in
+:numref:`potassium_current`.
+There is no current flow during the time when the voltage is clamped at the
+Nernst potential (-85mV) when the gate is opening.  When the voltage
+is stepped back to 0mV the open gates begin to close and the
+conductance declines, but as there is a voltage gradient it drives an
+outward (positive) current flow through the partially open channel.  Current
+can only flowswhen there is a non-zero conductance and a non-zero voltage
+gradient. This is called the ‘tail current’.
 
-
+.. _potassium_voltage:
 .. figure:: images/tutorial6_voltage.png
     :name: potassium_voltage
     :alt: Membrane voltage clamp function
@@ -181,6 +185,7 @@ albeit briefly since the channel is closing.
     Membrane voltage clamp step from 0mv to -85mV and back.
 
 
+.. _potassium_ngate:
 .. figure:: images/tutorial6_ngate.png
     :name: potassium_ngate
     :alt: N-gate response
@@ -189,6 +194,7 @@ albeit briefly since the channel is closing.
     First-order response of the n-gate to the voltage change.
 
 
+.. _potassium_conductance:
 .. figure:: images/tutorial6_K_conductance.png
     :name: potassium_conductance
     :alt: Condunctance dynamics of potassium channel
@@ -197,6 +203,7 @@ albeit briefly since the channel is closing.
     Potassium channel conductance dynamics
 
 
+.. _potassium_current:
 .. figure:: images/tutorial6_current.png
     :name: potassium_current
     :alt: Potassium channel current
@@ -204,14 +211,6 @@ albeit briefly since the channel is closing.
 
     Potassium channel current response
 
-
-   Kinetics of the potassium channel gates for a voltage
-   step from 0mV to -85mV. The voltage clamp step is shown at the top, then
-   the n gate first order response, then the channel conductance, then the
-   channel current. Notice how the conductance is slightly slower to turn
-   on (due to the four gates in series) but fast to inactivate. Current
-   only flows when there is a non-zero conductance and a non-zero voltage
-   gradient. This is called the ‘tail current’.
 
 Note that the simulation above includes the Nernst equation with
 its dependence on the concentrations
