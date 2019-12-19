@@ -115,17 +115,23 @@ The behaviour of the sodium channel was simulated using the
 :ref:`simple solver<solver>` provided to run the code generated
 in :ref:`Tutorial 7<tutorial7>`.
 
-Three voltage
+Three voltage-step experiments were run with voltage conditions of
+(a) -85mV to -20mV, (b) -85mV to 0mV and (c) -85mV to +20mV.
+
+**TODO** do these experiments ...
+
 
 Results
 -------
-The results of the computation, with an end time of 40 and
-time interval of 0.001, are shown in :numref:`ocr_tut_kin_na_ch_vs` with
-plots :math:`V\left( t \right)`, :math:`m\left( t \right)`,
-:math:`h\left( t \right)`, :math:`g_{Na}\left( t \right)` and
-:math:`i_{Na}(t)` for voltage steps from (a) -85mV to -20mV,
-(b) -85mV to 0mV and (c) -85mV to 20mV. There are several
-things to note:
+The results of the computation, with an end time of 40ms, and Euler step of
+0.001ms are shown in
+
+
+
+
+
+
+
 
 i.   The kinetics of the :math:`m`-gate are much faster than the
      :math:`h`-gate.
@@ -153,16 +159,8 @@ iv.  The only time current :math:`i_{Na}` flows through the
 v.   The large sodium current :math:`i_{Na}` is an inward current
      and hence negative.
 
-Note that the bottom trace does not quite line up at t=0 because the
-values shown on the axes are computed automatically and hence can take
-more or less space depending on their magnitude.
 
-.. figure:: images/kinetics_na_ch_voltages.png
-   :name: ocr_tut_kin_na_ch_vs
-   :alt: Kinetics of the sodium channel gates for voltage steps to (a) -20mV, (b) 0mV, and (c) 20mV.
-   :align: left
 
-   Kinetics of the sodium channel gates for voltage steps to (a) -20mV, (b) 0mV, and (c) 20mV.
 
 
 Next steps
@@ -180,9 +178,9 @@ channel<theory__potassiumchannel>` as well as a leakage current model.
 
 .. [#] The Hodgkin-Huxley paper used: **TODO**
 
-    .. code::
+    .. math::
 
-       \alpha_m = \frac{0.1(v+25)}{\exp\left({0.1(v+25)\right)-1}
-       \beta_m = 4\exp\left({\frac{v}{18}\right)
-       \alpha_h = 0.07e^{\frac{v}{20}}
-       \beta_h = \frac{1}{\exp\left(0.1(v+30)\right)+1}
+       \alpha_m = \frac{0.1(V+25)}{\exp\left({0.1(V+25)\right)-1} \\
+       \beta_m = 4\exp\left({\frac{V}{18}\right) \\
+       \alpha_h = 0.07e^{\frac{V}{20}} \\
+       \beta_h = \frac{1}{\exp\left(0.1(V+30)\right)+1} \\
