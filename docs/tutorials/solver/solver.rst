@@ -9,6 +9,10 @@ outlined in the :ref:`Theory of ODE solvers<theory_ode_solutions>` page.
 This section describes how to use the simple solvers provided to run models
 generated with either the C or Python profiles.
 
+.. contents:: Contents
+    :local:
+
+
 C profile solver
 ================
 In C++ you can use the code provided in the :code:`tutorials/solver` directory

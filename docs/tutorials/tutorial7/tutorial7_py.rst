@@ -226,17 +226,93 @@ these values throughout the model.
 
     **6.b** Validate the final model and confirm that it is error free.
 
-7: Write the model to a CellML file
-==============================================
-Finally - provided your model is valid - you can serialise it and output to a
-file.  This file will be used in later tutorials when we combine it with the
-potassium channel model to simulate a neuron **TODO??**.
+7: Set the initial conditions
+=============================
 
 .. container:: dothis
 
-    **7.a** Use the :code:`Printer` functionality to serialise your model, and
-    output it to a file.
+    **7.a** Set the initial conditions for the solver.  These are:
+
+    .. math::
+
+          g_Na(t=0) = 120 \\
+          E_Na(t=0) = 35 \\
+          h(t=0)=0.6 \\
+          m(t=0)=0.05 \\
+
+8: Generate and output the model
+===================================
+The last step is to output the model.  As previously, this happens in two ways:
+the generation of code that can be solved here, and the serialisation and
+printing of the model to a CellML file for use in later tutorials.
 
 .. container:: dothis
 
-    **7.b** Go and have a cuppa - you're done!
+    **8.a** Create a :code:`Generator` instance and submit the model for
+    processing.  Check that there are no errors found during the processing.
+
+.. container:: dothis
+
+    **8.b** Write the interface code (.h header) and implementation code
+    (.c source) to files.
+
+
+.. container:: dothis
+
+    **8.c**  Create a `GeneratorProfile` and use it to change to Python.
+    Reprocess the model, and write the implementation code (.py source) to
+    a file.
+
+
+.. container:: dothis
+
+    **8.d** Create a :code:`Printer` to serialise your model, and output it
+    to a CellML file.
+
+9: Run the model
+================
+You can solve the model to simulate the dynamics of the sodium gate using the
+supplied solver.  Instructions for running this are given on the
+:ref:`Simple solver for generated models<solver>` page.  You should see the
+behaviour shown in the figures below.  The theory of this channel's operation
+is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
+
+
+.. figure:: ../images/tut7_Vgraph.png
+   :name: tut7_Vgraph
+   :alt: Driving function for the voltage clamp
+   :align: center
+
+   Driving function for the voltage clamp
+
+
+.. figure:: ../images/tut7_mgraph.png
+   :name: tut7_mgraph
+   :alt: m-gate dynamics
+   :align: center
+
+   m-gate dynamics
+
+
+.. figure:: ../images/tut7_hgraph.png
+   :name: tut7_hgraph
+   :alt: h-gate dynamics
+   :align: center
+
+   h-gate dynamics
+
+
+.. figure:: ../images/tut7_Nacond_graph.png
+   :name: tut7_Nacond_graph
+   :alt: Sodium conductance
+   :align: center
+
+   Sodium conductance
+
+
+.. figure:: ../images/tut7_iNagraph.png
+   :name: tut7_Naigraph
+   :alt: Sodium current
+   :align: center
+
+   Sodium current

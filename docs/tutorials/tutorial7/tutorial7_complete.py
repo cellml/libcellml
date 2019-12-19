@@ -492,7 +492,7 @@ if __name__ == "__main__":
     mGate.variable("m").setInitialValue(0.05)
 
     print("-----------------------------------------------")
-    print("   STEP 8: Generate a Python file")
+    print("   STEP 8: Generate and output the model")
     print("-----------------------------------------------")
 
     generator = Generator()
