@@ -19,8 +19,8 @@
 int main()
 {
     //  0 Setup stuff that is used throughout
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ModelPtr model = libcellml::Model::create();
+    auto validator = libcellml::Validator::create();
+    auto model = libcellml::Model::create();
     model->setName("Tutorial7_SodiumChannelModel");
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
@@ -31,7 +31,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a Create the compont instance, name it, and add to the model
-    libcellml::ComponentPtr sodiumChannel = libcellml::Component::create();
+    auto sodiumChannel = libcellml::Component::create();
     sodiumChannel->setName("sodiumChannel");
     model->addComponent(sodiumChannel);
 
@@ -70,43 +70,42 @@ int main()
 
     //  1.c Add the variables
     {
-        libcellml::VariablePtr V = libcellml::Variable::create();
+        auto V = libcellml::Variable::create();
         V->setName("V");
         V->setUnits("mV");
         sodiumChannel->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create();
+        auto t = libcellml::Variable::create();
         t->setName("t");
         t->setUnits("ms");
         sodiumChannel->addVariable(t);
 
-        libcellml::VariablePtr h = libcellml::Variable::create();
+        auto h = libcellml::Variable::create();
         h->setName("h");
         h->setUnits("dimensionless");
         sodiumChannel->addVariable(h);
 
-        libcellml::VariablePtr m = libcellml::Variable::create();
+        auto m = libcellml::Variable::create();
         m->setName("m");
         m->setUnits("dimensionless");
         sodiumChannel->addVariable(m);
 
-        libcellml::VariablePtr g_Na = libcellml::Variable::create();
+        auto g_Na = libcellml::Variable::create();
         g_Na->setName("g_Na");
         g_Na->setUnits("mS_per_cm2");
-
         sodiumChannel->addVariable(g_Na);
 
-        libcellml::VariablePtr E_Na = libcellml::Variable::create();
+        auto E_Na = libcellml::Variable::create();
         E_Na->setName("E_Na");
         E_Na->setUnits("mV");
         sodiumChannel->addVariable(E_Na);
 
-        libcellml::VariablePtr i_Na = libcellml::Variable::create();
+        auto i_Na = libcellml::Variable::create();
         i_Na->setName("i_Na");
         i_Na->setUnits("microA_per_cm2");
         sodiumChannel->addVariable(i_Na);
 
-        libcellml::VariablePtr Na_conductance = libcellml::Variable::create();
+        auto Na_conductance = libcellml::Variable::create();
         Na_conductance->setName("Na_conductance");
         Na_conductance->setUnits("mS_per_cm2");
         sodiumChannel->addVariable(Na_conductance);
@@ -114,30 +113,25 @@ int main()
 
     //  1.d Add the units
 
-    libcellml::UnitsPtr mV = libcellml::Units::create();
-    mV->setName("mV");
+    auto mV = libcellml::Units::create("mV");
     mV->addUnit("volt", "milli");
     model->addUnits(mV);
 
-    libcellml::UnitsPtr ms = libcellml::Units::create();
-    ms->setName("ms");
+    auto ms = libcellml::Units::create("ms");
     ms->addUnit("second", "milli");
     model->addUnits(ms);
 
-    libcellml::UnitsPtr mS_per_cm2 = libcellml::Units::create();
-    mS_per_cm2->setName("mS_per_cm2");
+    auto mS_per_cm2 = libcellml::Units::create("mS_per_cm2");
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2);
     model->addUnits(mS_per_cm2);
 
-    libcellml::UnitsPtr microA_per_cm2 = libcellml::Units::create();
-    microA_per_cm2->setName("microA_per_cm2");
+    auto microA_per_cm2 = libcellml::Units::create("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2);
     model->addUnits(microA_per_cm2);
 
-    libcellml::UnitsPtr mM = libcellml::Units::create();
-    mM->setName("mM");
+    auto mM = libcellml::Units::create("mM");
     mM->addUnit("mole", "milli");
     model->addUnits(mM);
 
@@ -149,8 +143,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  2.a Create the component and add it to the sodium channel component
-    libcellml::ComponentPtr mGate = libcellml::Component::create();
-    mGate->setName("mGate");
+    auto mGate = libcellml::Component::create("mGate");
     sodiumChannel->addComponent(mGate);
 
     //  2.b Add the MathML strings which govern the behavior of this gate
@@ -239,44 +232,36 @@ int main()
     //      add the variables needed
 
     {
-        libcellml::VariablePtr V = libcellml::Variable::create();
-        V->setName("V");
+        auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
         mGate->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create();
-        t->setName("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("ms");
         mGate->addVariable(t);
 
-        libcellml::VariablePtr alpha_m = libcellml::Variable::create();
-        alpha_m->setName("alpha_m");
+        auto alpha_m = libcellml::Variable::create("alpha_m");
         alpha_m->setUnits("per_ms");
         mGate->addVariable(alpha_m);
 
-        libcellml::VariablePtr beta_m = libcellml::Variable::create();
-        beta_m->setName("beta_m");
+        auto beta_m = libcellml::Variable::create("beta_m");
         beta_m->setUnits("per_ms");
         mGate->addVariable(beta_m);
 
-        libcellml::VariablePtr m = libcellml::Variable::create();
-        m->setName("m");
+        auto m = libcellml::Variable::create("m");
         m->setUnits("dimensionless");
-
         mGate->addVariable(m);
     } // ends local scope for mGate component
 
     //  2.d Call the validator to check the model - expect errors related to
     //      units missing from the model.  Add them in as needed.
 
-    libcellml::UnitsPtr per_mV_ms = libcellml::Units::create();
-    per_mV_ms->setName("per_mV_ms");
+    auto per_mV_ms = libcellml::Units::create("per_mV_ms");
     per_mV_ms->addUnit("second", "milli", -1);
     per_mV_ms->addUnit("volt", "milli", -1);
     model->addUnits(per_mV_ms);
 
-    libcellml::UnitsPtr per_ms = libcellml::Units::create();
-    per_ms->setName("per_ms");
+    auto per_ms = libcellml::Units::create("per_ms");
     per_ms->addUnit("second", "milli", -1);
     model->addUnits(per_ms);
 
@@ -288,8 +273,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  3.a Create the hGate component and add it to the sodium channel component
-    libcellml::ComponentPtr hGate = libcellml::Component::create();
-    hGate->setName("hGate");
+    auto hGate = libcellml::Component::create("hGate");
     sodiumChannel->addComponent(hGate);
 
     //  3.b Adding the MathML strings
@@ -367,28 +351,23 @@ int main()
 
     //  3.c Adding the variables
     {
-        libcellml::VariablePtr V = libcellml::Variable::create();
-        V->setName("V");
+        auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
         hGate->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create();
-        t->setName("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("ms");
         hGate->addVariable(t);
 
-        libcellml::VariablePtr alpha_h = libcellml::Variable::create();
-        alpha_h->setName("alpha_h");
+        auto alpha_h = libcellml::Variable::create("alpha_h");
         alpha_h->setUnits("per_ms");
         hGate->addVariable(alpha_h);
 
-        libcellml::VariablePtr beta_h = libcellml::Variable::create();
-        beta_h->setName("beta_h");
+        auto beta_h = libcellml::Variable::create("beta_h");
         beta_h->setUnits("per_ms");
         hGate->addVariable(beta_h);
 
-        libcellml::VariablePtr h = libcellml::Variable::create();
-        h->setName("h");
+        auto h = libcellml::Variable::create("h");
         h->setUnits("dimensionless");
         hGate->addVariable(h);
     } // ends local scope for hGate variables
@@ -401,25 +380,21 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  4.a Creating the new environment component
-    libcellml::ComponentPtr environment = libcellml::Component::create();
-    environment->setName("environment");
+    auto environment = libcellml::Component::create("environment");
+    model->addComponent(environment);
 
     //  4.b Add variables to the component.
     {
-        libcellml::VariablePtr V = libcellml::Variable::create();
-        V->setName("V");
+        auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
         environment->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create();
-        t->setName("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("ms");
         environment->addVariable(t);
     } // end of the environment scope for variables
 
-    //  4.c Add the new component to the model and validate
-    model->addComponent(environment);
-
+    //  4.c Validate
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
@@ -491,6 +466,11 @@ int main()
     std::cout << "    STEP 7: Set the initial conditions " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
+    //  7.a The initial conditions are:
+    //          g_Na(t=0) = 120
+    //          E_Na(t=0) = 35
+    //          h(t=0)=0.6
+    //          m(t=0)=0.05
     sodiumChannel->variable("g_Na")->setInitialValue(120);
     sodiumChannel->variable("E_Na")->setInitialValue(35);
     hGate->variable("h")->setInitialValue(0.6);
@@ -500,10 +480,14 @@ int main()
     std::cout << "    STEP 8: Generate and output the model " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    //  8.a Create a Generator instance and submit your model for processing.
+    //      Check that there are no errors reported by the generator.
+    auto generator = libcellml::Generator::create();
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
+    //  8.b Write the interface code (.h header) and implementation code
+    //      (.c source) to files.
     std::ofstream outFile;
     outFile.open("tutorial7_SodiumChannelModel.h");
     outFile << generator->interfaceCode();
@@ -513,7 +497,10 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    //  8.c Create a `GeneratorProfile` and use it to change to Python.
+    //      Reprocess the model, and write the implementation code (.py source) to
+    //      a file.
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 
@@ -521,7 +508,9 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    libcellml::PrinterPtr printer=libcellml::Printer::create();
+
+    //  8.d Create a Printer to serialise your model, and output it to a CellML file.
+    auto printer=libcellml::Printer::create();
     outFile.open("tutorial7_SodiumChannelModel.cellml");
     outFile << printer->printModel(model);
     outFile.close();
@@ -529,4 +518,5 @@ int main()
     std::cout << "The model has been output into tutorial7_SodiumChannelModel.[c,h,py,cellml]"
               << std::endl;
 
+    //  8.e Go and have a cuppa, you're done!
 }
