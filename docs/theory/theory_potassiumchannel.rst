@@ -139,16 +139,20 @@ demonstrated in :ref:`Tutorial 6<tutorial6>`.
 
 Simulation and results
 ----------------------
-Running the simulation up to an ending point of t = 40ms with a timestep
-of 0.1 we can solve the equations for the potassium channel with a voltage step
-condition in which the membrane voltage is clamped initially at 0mV and
-then stepped down to -85mV for 10ms before being returned to 0mV. At
-0mV, the steady state value of the :math:`n`-gate is
+The behaviour of the potassium channel can be simulated using the
+:ref:`simple solver<solver>` provided to run the code generated
+in :ref:`Tutorial 6<tutorial6>`.  A step change in membrane voltage between 0mV
+and -85mV and back gives the behaviour shown in ?? to ?? below.  These were
+created using a timestep of 0.01ms to an ending time of 40ms.
+
+At 0mV, the steady state value of the :math:`n`-gate is
 :math:`n_{\infty} = \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} =` 0.324
 and, at -85mV, :math:`n_{\infty} = \ `\ 0.945.
 
 The voltage traces are shown at the top of
-:numref:`kinetics_of_potassium_ch`. The :math:`n`-gate
+:numref:`kinetics_of_potassium_ch`.
+
+The :math:`n`-gate
 response, shown next, is to open further from its partially open value
 of :math:`n =`\ 0.324 at 0mV and then plateau at an almost fully open
 state of :math:`n =`\ 0.945 at the Nernst potential -85mV before closing
@@ -168,10 +172,38 @@ conductance declines but now there is a voltage gradient to drive an
 outward (positive) current flow through the partially open channel –
 albeit briefly since the channel is closing.
 
-.. figure:: images/kinetics_of_potassium_ch.png
-   :name: kinetics_of_potassium_ch
-   :alt: Kinetics of the potassium channel
-   :align: center
+
+.. figure:: images/tutorial6_voltage.png
+    :name: potassium_voltage
+    :alt: Membrane voltage clamp function
+    :align: center
+
+    Membrane voltage clamp step from 0mv to -85mV and back.
+
+
+.. figure:: images/tutorial6_ngate.png
+    :name: potassium_ngate
+    :alt: N-gate response
+    :align: center
+
+    First-order response of the n-gate to the voltage change.
+
+
+.. figure:: images/tutorial6_K_conductance.png
+    :name: potassium_conductance
+    :alt: Condunctance dynamics of potassium channel
+    :align: center
+
+    Potassium channel conductance dynamics
+
+
+.. figure:: images/tutorial6_current.png
+    :name: potassium_current
+    :alt: Potassium channel current
+    :align: center
+
+    Potassium channel current response
+
 
    Kinetics of the potassium channel gates for a voltage
    step from 0mV to -85mV. The voltage clamp step is shown at the top, then
