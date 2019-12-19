@@ -15,8 +15,10 @@ you'd rather start with a gentler introduction, please start from
 This section explains the basic classes inside libCellML, and the most commonly
 used functionality associated with them.
 
-.. contents::
+Contents
 
+.. contents::
+    :locals:
 
 General API strategy for use
 ============================

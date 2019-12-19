@@ -104,7 +104,7 @@ Interpretation into a CellML model
 Defining components serves two purposes: it preserves a modular
 structure for CellML models, and allows these component modules to be
 imported into other models, as demonstrated in
-:ref:`Tutorial 5<tutorial6>`. For the
+:ref:`Tutorial 6<tutorial6>`. For the
 potassium channel model we define components representing (i) the
 environment, (ii) the potassium channel conductivity, and (iii) the
 dynamics of the :math:`n`-gate as shown in **TODO**.

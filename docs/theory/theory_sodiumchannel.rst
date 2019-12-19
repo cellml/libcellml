@@ -26,7 +26,9 @@ Nernst potential for the sodium channel (:math:`z=1`) is:
 
 .. math::
 
-   E_{Na} = \frac{RT}{zF}ln\frac{\left\lbrack Na^{+} \right\rbrack_{o}}{\left\lbrack Na^{+} \right\rbrack_{i}} = 25 \ln\frac{140}{30} = 35\text{mV}.
+   E_{Na} = \frac{RT}{zF}\ln\frac{\left\lbrack Na^{+} \right\rbrack_{o}}{\left\lbrack Na^{+} \right\rbrack_{i}} = 25 \ln\frac{140}{30} = 35\text{mV}.
+
+**TODO** ... this doesn't equal 35 ...??
 
 The gating kinetics are described by:
 
@@ -41,20 +43,20 @@ experimentally [#]_ to be:
 
 .. math::
 
-   \alpha_{m} = \frac{- 0.1\left( V + 50 \right)} {\exp \left( - 0.1 \left( V + 50 \right) \right) - 1}; \\[5pt]
-   \beta_{m} = 4 \exp \left( {\frac{- \left( V + 75 \right)}{18}} \right); \\[5pt]
-   \alpha_{h} = 0.07\exp\left( {\frac{- \left( V + 75 \right)}{20}}\right); \\[5pt]
-   \beta_{h} = \frac{1} {\exp\left({ {- 0.1 \left( V + 45 \right)}}\right) + 1}
+   \alpha_{m} = \frac{- 0.1\left( V + 50 \right)} {e^ {\left( - 0.1 \left( V + 50 \right) \right)} - 1} \\[5pt]
+   \beta_{m} = 4 \exp \left( {\frac{- \left( V + 75 \right)}{18}} \right) \\[5pt]
+   \alpha_{h} = 0.07\exp\left( {\frac{- \left( V + 75 \right)}{20}}\right) \\[5pt]
+   \beta_{h} = \frac{1} {e^{\left({ {- 0.1 \left( V + 45 \right)}}\right)} + 1}
 
 Interpretation as a CellML model
 --------------------------------
-Before we construct a CellML model of the sodium channel, we first
+Before we construct a model of the sodium channel, we first
 introduce some further CellML concepts that help deal with the
-complexity of biological models: first the use of *encapsulation groups*
-and *public* and *private interfaces* to control the visibility of
-information in modular CellML components.  To understand encapsulation,
-it is useful to use terms like ‘parent’, ‘child’ and ‘sibling’, to describe the
-relationships between components.  This is illustrated in
+complexity inherent in biological modelling.  First we'll look at the use of
+*encapsulation groups* and *public* and *private* interfaces to control the
+visibility of information in modular CellML components.  To understand
+encapsulation, it is useful to use terms like ‘parent’, ‘child’ and ‘sibling’,
+to describe the relationships between components.  This is illustrated in
 :numref:`encapsulation_parent_structure` below:
 
 .. _encapsulation_parent_structure:
@@ -65,24 +67,26 @@ relationships between components.  This is illustrated in
 
     Encapsulation structure of nested components in a parent-child-sibling structure.
 
-Beyond convenience, defining an encapsulation structure also controls which
+Defining an encapsulation structure controls which
 components are able to see and be seen by which others, as defined by the
 available interface types:
 
-- By default, no interfaces exist between components.  The types of interface
-  listed below are those which are *possible*; they must be specified
-  before they can be used. This is the default, but may be specified explicitly
-  using the *none* interface type.
-- A *public* interface is available between siblings, and from a child to its
-  parent. This is also true of top-level components, such as the 'grandparent'
-  and 'no relation' components.
-- A *private* interface is available from a parent to its child(ren).
-- Both *public* and *private* interfaces are available using the
-  *public_and_private* type, needed where there is more than one level of
-  nesting
-  (for example, a grandparent-parent-child structure).  Here, the parent must
-  define a *public_and_private* interface type as it is both the child of the
-  grandparent, and the parent of the child.
+- By default, no interface exists between components.  The types of interface
+  listed below are those which are *possible*; but each must be explicitly
+  specified before it can be used. While :code:`none` is the
+  implied default, it may be specified explicitly as well.
+- A :code:`public` interface is available between siblings. This is also true
+  of top-level components (which are siblings with a :code:`Model` parent),
+  such as the 'grandparent' and 'no relation' components
+  in :numref:`encapsulation_parent_structure`.  A :code:`public` interface
+  is also available *from* a child *to* its parent (note direction).
+- A :code:`private` interface is available *from* a parent *to* its child(ren),
+  again noting the direction.
+- Both :code:`public` and :code:`private` interfaces are available using the
+  :code:`public_and_private` type, needed where there is more than one level of
+  nesting  (for example, a grandparent-parent-child structure).  Here, the
+  parent must define a :code:`public_and_private` interface type as it is both
+  the child of the grandparent, and the parent of the child.
 - Communication through the aunt-child, grandparent-child, and cousin-parent
   relationships is not possible as there is no available interface.
   Communication with the no-relation component is only possible with the
@@ -91,7 +95,7 @@ available interface types:
 We define the CellML components **sodium_channel_m_gate** and
 **sodium_channel_h_gate** below. Each of these components has its own
 equations (voltage-dependent gates and first-order gate kinetics) but
-they are both parts of one protein – the sodium channel – and it is
+they are both parts of one protein – the sodium channel – so it is
 useful to group them into one **sodium_channel** component.
 
 .. _sodium_channel_encap_structure:
@@ -107,16 +111,16 @@ useful to group them into one **sodium_channel** component.
 
 Simulation process
 ------------------
-A simulation of the sodium gate's operation using OpenCOR is summarised
-in ?? to ?? below. Other solvers in Python or C++ could have been utilised
-by using the code generation functionality to output the appropriate files.
+The behaviour of the sodium channel was simulated using the
+:ref:`simple solver<solver>` provided to run the code generated
+in :ref:`Tutorial 7<tutorial7>`.
 
-**TODO** link to code generation tutorial for this component
+Three voltage
 
 Results
 -------
 The results of the computation, with an end time of 40 and
-time interval of 0.1, are shown in :numref:`ocr_tut_kin_na_ch_vs` with
+time interval of 0.001, are shown in :numref:`ocr_tut_kin_na_ch_vs` with
 plots :math:`V\left( t \right)`, :math:`m\left( t \right)`,
 :math:`h\left( t \right)`, :math:`g_{Na}\left( t \right)` and
 :math:`i_{Na}(t)` for voltage steps from (a) -85mV to -20mV,

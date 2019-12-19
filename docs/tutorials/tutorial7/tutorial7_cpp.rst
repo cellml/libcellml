@@ -237,7 +237,7 @@ these values throughout the model.
 
 
 8: Generate and output the model
-===================================
+================================
 The last step is to output the model.  As previously, this happens in two ways:
 the generation of code that can be solved here, and the serialisation and
 printing of the model to a CellML file for use in later tutorials.
@@ -252,13 +252,11 @@ printing of the model to a CellML file for use in later tutorials.
     **8.b** Write the interface code (.h header) and implementation code
     (.c source) to files.
 
-
 .. container:: dothis
 
     **8.c**  Create a `GeneratorProfile` and use it to change to Python.
     Reprocess the model, and write the implementation code (.py source) to
     a file.
-
 
 .. container:: dothis
 
