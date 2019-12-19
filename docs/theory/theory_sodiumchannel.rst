@@ -118,13 +118,51 @@ in :ref:`Tutorial 7<tutorial7>`.
 Three voltage-step experiments were run with voltage conditions of
 (a) -85mV to -20mV, (b) -85mV to 0mV and (c) -85mV to +20mV.
 
-**TODO** do these experiments ...
-
-
 Results
 -------
 The results of the computation, with an end time of 40ms, and Euler step of
-0.001ms are shown in
+0.001ms are shown in :numref:`` below.
+
+
+.. figure:: ../images/tut7_Vgraph.png
+   :name: tut7_Vgraph
+   :alt: Driving function for the voltage clamp
+   :align: center
+
+   Driving function for the voltage clamp
+
+
+.. figure:: ../images/tut7_mgraph.png
+   :name: tut7_mgraph
+   :alt: m-gate dynamics
+   :align: center
+
+   m-gate dynamics
+
+
+.. figure:: ../images/tut7_hgraph.png
+   :name: tut7_hgraph
+   :alt: h-gate dynamics
+   :align: center
+
+   h-gate dynamics
+
+
+.. figure:: ../images/tut7_Nacond_graph.png
+   :name: tut7_Nacond_graph
+   :alt: Sodium conductance
+   :align: center
+
+   Sodium conductance
+
+
+.. figure:: ../images/tut7_iNagraph.png
+   :name: tut7_Naigraph
+   :alt: Sodium current
+   :align: center
+
+   Sodium current
+
 
 
 
