@@ -6,7 +6,7 @@
 
 #include "tutorial_utilities.h"
 
-void printModelToTerminal(auto &model)
+void printModelToTerminal(libcellml::ModelPtr &model)
 {
     std::cout << "The model name is: '" << model->name() << "'" << std::endl;
     if (model->id() != "") {
@@ -32,7 +32,7 @@ void printModelToTerminal(auto &model)
     }
 }
 
-void printComponentToTerminal(const auto &component, size_t const c, std::string const spacer)
+void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
 {
     std::cout << spacer << "Component[" << c << "] has name: '"
               << component->name() << "'" << std::endl;
@@ -80,7 +80,7 @@ void printComponentToTerminal(const auto &component, size_t const c, std::string
     }
 }
 
-void printErrorsToTerminal(auto &item)
+void printErrorsToTerminal(libcellml::ValidatorPtr &item)
 {
     //  2.b   Check whether there were errors returned from the item
     int numberOfValidationErrors = item->errorCount();
@@ -107,7 +107,7 @@ void printErrorsToTerminal(auto &item)
     }
 }
 
-void printErrorsToTerminal(auto &item)
+void printErrorsToTerminal(libcellml::GeneratorPtr &item)
 {
     //  2.b   Check whether there were errors returned from the item
     int numberOfErrors = item->errorCount();
@@ -230,7 +230,7 @@ std::string getProfileFromEnum(libcellml::GeneratorProfile::Profile myType)
     return myTypeAsString;
 }
 
-void printEncapsulationStructureToTerminal(auto &model)
+void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model)
 {
     // Prints the encapsulation structure of the model to the terminal
     std::string spacer = "  - ";
@@ -244,7 +244,7 @@ void printEncapsulationStructureToTerminal(auto &model)
     }
 }
 
-void printComponentOnlyToTerminal(auto &component, std::string spacer)
+void printComponentOnlyToTerminal(libcellml::ComponentPtr &component, std::string spacer)
 {
     std::cout << spacer << "Component '" << component->name() << "' has " << component->componentCount() << " child components" << std::endl;
     for (size_t c = 0; c < component->componentCount(); c++) {
