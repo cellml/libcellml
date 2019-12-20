@@ -23,11 +23,12 @@ int main() {
   //  STEP 1:   Create a CellML Model from the contents of a CellML file
   //
   //  1.a   Open the file and read its contents into a buffer stream
-  std::ifstream inFile("../resources/tutorial1.cellml");
+  std::string inFileName = "../resources/tutorial1.cellml";
+  std::ifstream inFile(inFileName);
   std::stringstream inFileContents;
   inFileContents << inFile.rdbuf();
 
-  std::cout << "Opening the CellML file: " << inFileName << std::endl;
+  std::cout << "Opening the CellML file" << std::endl;
 
   //  1.b   Create a libCellML Parser, and use it to parse the fileContents
   //        string and convert it into a CellML Model structure
