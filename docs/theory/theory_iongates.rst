@@ -146,19 +146,14 @@ where :math:`E_{Y}` is the "equilibrium" or "Nernst" potential for
 .. figure:: images/balance_forces.png
    :name: ocr_tut_bal_force
    :alt: Balance of entropic and electrostatic forces
-   :align: right
    :width: 45%
 
    The balance between :purple:`entropic` and :red:`electrostatic` forces
    determines the Nernst potential.
 
-.. figure:: images/open_ch_linear_iv.png
-   :name: ocr_tut_open_ch_iv
-   :alt: Open channel linear IV
-   :align: right
-   :width: 45%
 
-   Open channel linear current-voltage relation
+Mathematical modelling
+----------------------
 
 For an open channel the electrochemical current flow is driven by the
 open channel conductance :math:`{\overset{\overline{}}{g}}_{Y}` times
@@ -173,6 +168,13 @@ This defines a linear current-voltage relation ("Ohm's law") as shown in
 :numref:`ocr_tut_open_ch_iv`. The gates to be discussed below modify this
 open channel conductance.
 
+.. figure:: images/open_ch_linear_iv.png
+   :name: ocr_tut_open_ch_iv
+   :alt: Open channel linear IV
+   :figwidth: 45%
+
+   Open channel linear current-voltage relation
+
 .. figure:: images/ion_ch_gating.png
    :name: ocr_tut_ion_ch_gating
    :alt: Ion channel gating kinetics
@@ -181,6 +183,7 @@ open channel conductance.
    Ion channel gating kinetics. :math:`y` is the fraction of gates in the open
    state. :math:`\alpha_n` and :math:`\beta_n` are the rate constants for
    opening and closing, respectively.
+
 
 .. figure:: images/transient_beh_gates.png
    :name: ocr_tut_trans_gate_beh
@@ -191,8 +194,7 @@ open channel conductance.
    that the right hand graph has an initial S-shaped increase, reflecting the
    multiple gates in series.
 
-Mathematical modelling
-----------------------
+
 To describe the time dependent transition between the closed and open
 states of the channel, Hodgkin and Huxley introduced the idea of channel
 gates that control the passage of ions through a membrane ion channel.
