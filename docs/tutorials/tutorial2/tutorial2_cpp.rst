@@ -28,7 +28,8 @@ template against the libCellML library successfully:
 
 .. code-block:: terminal
 
-    make
+    cmake .
+    make -j
 
 Running the template:
 

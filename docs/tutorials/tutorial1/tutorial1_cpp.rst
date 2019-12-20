@@ -31,7 +31,8 @@ started in each of the tutorial folders.
 
 .. code-block:: terminal
 
-    make
+    cmake .
+    make -j
 
 Running the template:
 
