@@ -210,12 +210,12 @@ The constant :math:`A` can be interpreted as:
 
 as in the previous example and, with :math:`y\left( 0 \right) = 0` (i.e.
 all gates initially shut), the solution looks like
-:numref:`Fig. %s(a) <ocr_tut_trans_gate_beh>`.  The experimental data obtained
+:numref:`Fig. %s(a) <gate_behaviour>`.  The experimental data obtained
 by Hodgkin and Huxley for the squid axon indicated that the initial current
-flow began more slowly, as in :numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`.
+flow began more slowly, as in :numref:`Fig. %s(b) <gate_behaviour>`.
 
 .. figure:: images/transient_beh_gates.png
-   :name: ocr_tut_trans_gate_beh
+   :name: gate_behaviour
    :alt: Transient gate behaviour
    :figwidth: 50%
    :align: center
@@ -250,8 +250,6 @@ ms\ :sup:`-1`. The ion channel has an open conductance of
 :math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
 equilibrium potential of :math:`E_{Y} = - 85` mV.
 
-
-.. _ion_gate_status:
 .. figure:: images/tut5.png
    :name: ion_gate_status
    :alt: Gate status for a single gate, and current through four gates
@@ -259,8 +257,6 @@ equilibrium potential of :math:`E_{Y} = - 85` mV.
 
    Dynamics of opening status for a single gate, and the resulting current
    for :math:`\gamma=4` gates in series.
-
-
 
 The green line in :numref:`ion_gate_status` is
 the response :math:`y\left( t \right)` for each gate and
