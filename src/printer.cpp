@@ -157,7 +157,7 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
             if (variable->equivalentVariableCount() > 0) {
                 for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                     VariablePtr equivalentVariable = variable->equivalentVariable(k);
-                    if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
+                    if (equivalentVariable->hasEquivalentVariable(variable)) {
                         VariablePair variablePair = std::make_pair(variable, equivalentVariable);
                         VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
                         bool pairFound = false;
