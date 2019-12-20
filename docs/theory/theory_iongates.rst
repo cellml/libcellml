@@ -224,13 +224,13 @@ all gates initially shut), the solution looks like
 
 The experimental data obtained by Hodgkin and Huxley for the squid axon,
 however, indicated that the initial current flow began more slowly
-(:numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`) and they modelled this
+(:numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`).  They modelled this
 by assuming that the ion channel had
 :math:`\gamma` gates in series so that conduction would only occur when
-all gates were at least partially open. Since :math:`y` is the
+each gate was at least partially open. Since :math:`y` is the
 probability of a gate being open, :math:`y^{\gamma}` is the probability
 of all :math:`\gamma` gates being open (since they are assumed to be
-independent) and the current through the channel is
+independent), so the current through the channel is:
 
 .. math::
 
