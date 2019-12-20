@@ -27,7 +27,7 @@ int main()
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
     auto generator = libcellml::Generator::create();
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
     std::cout << "-----------------------------------------------" << std::endl;
@@ -68,65 +68,65 @@ int main()
     nGate->removeMath();
     {
         std::string equation1 =
-            "<apply><eq/>"
-            "   <apply><diff/>"
-            "       <bvar><ci>t</ci></bvar>"
-            "       <ci>n</ci>"
-            "   </apply>" // end diff
-            "   <apply><minus/>"
-            "       <apply><times/>"
-            "            <ci>alpha_n</ci>"
-            "            <apply><minus/>"
-            "               <cn cellml:units=\"dimensionless\">1</cn>"
-            "               <ci>n</ci>"
-            "            </apply>" // end minus
-            "       </apply>" // end times
-            "       <apply><times/>"
-            "           <ci>beta_n</ci>"
-            "           <ci>n</ci>"
-            "       </apply>" // end times
-            "   </apply>" // end minus
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <apply><diff/>\n"
+            "       <bvar><ci>t</ci></bvar>\n"
+            "       <ci>n</ci>\n"
+            "   </apply>\n" // end diff
+            "   <apply><minus/>\n"
+            "       <apply><times/>\n"
+            "            <ci>alpha_n</ci>\n"
+            "            <apply><minus/>\n"
+            "               <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "               <ci>n</ci>\n"
+            "            </apply>\n" // end minus
+            "       </apply>\n" // end times
+            "       <apply><times/>\n"
+            "           <ci>beta_n</ci>\n"
+            "           <ci>n</ci>\n"
+            "       </apply>\n" // end times
+            "   </apply>\n" // end minus
+            "</apply>\n"; // end eq
 
         std::string equation2 =
-            "<apply><eq/>"
-            "   <ci>alpha_n</ci>"
-            "   <apply><divide/>"
-            "       <apply><times/>"
-            "           <cn cellml:units=\"per_millivolt_millisecond\">0.01</cn>"
-            "           <apply><plus/>"
-            "               <ci>V</ci>"
-            "               <cn cellml:units=\"millivolt\">10</cn>"
-            "           </apply>" // end plus
-            "       </apply>" // end times, end denominator
-            "       <apply><minus/>"
-            "           <apply><exp/>"
-            "               <apply><divide/>"
-            "                   <apply><plus/>"
-            "                       <ci>V</ci>"
-            "                       <cn cellml:units=\"millivolt\">10</cn>"
-            "                   </apply>" // end plus
-            "                   <cn cellml:units=\"millivolt\">10</cn>"
-            "               </apply>" // end divide
-            "           </apply>" // end exp
-            "           <cn cellml:units=\"dimensionless\">1</cn>"
-            "       </apply>" // end minus
-            "   </apply>" // end divide
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <ci>alpha_n</ci>\n"
+            "   <apply><divide/>\n"
+            "       <apply><times/>\n"
+            "           <cn cellml:units=\"per_millivolt_millisecond\">0.01</cn>\n"
+            "           <apply><plus/>\n"
+            "               <ci>V</ci>\n"
+            "               <cn cellml:units=\"millivolt\">10</cn>\n"
+            "           </apply>\n" // end plus
+            "       </apply>\n" // end times, end denominator
+            "       <apply><minus/>\n"
+            "           <apply><exp/>\n"
+            "               <apply><divide/>\n"
+            "                   <apply><plus/>\n"
+            "                       <ci>V</ci>\n"
+            "                       <cn cellml:units=\"millivolt\">10</cn>\n"
+            "                   </apply>\n" // end plus
+            "                   <cn cellml:units=\"millivolt\">10</cn>\n"
+            "               </apply>\n" // end divide
+            "           </apply>\n" // end exp
+            "           <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "       </apply>\n" // end minus
+            "   </apply>\n" // end divide
+            "</apply>\n"; // end eq
 
         std::string equation3 =
-            "<apply><eq/>"
-            "   <ci>beta_n</ci>"
-            "   <apply><times/>"
-            "       <cn cellml:units=\"per_millisecond\">0.125</cn>"
-            "       <apply><exp/>"
-            "           <apply><divide/>"
-            "               <ci>V</ci>"
-            "               <cn cellml:units=\"millivolt\">80</cn>"
-            "           </apply>" // end divide
-            "       </apply>" // end exp
-            "   </apply>" // end times
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <ci>beta_n</ci>\n"
+            "   <apply><times/>\n"
+            "       <cn cellml:units=\"per_millisecond\">0.125</cn>\n"
+            "       <apply><exp/>\n"
+            "           <apply><divide/>\n"
+            "               <ci>V</ci>\n"
+            "               <cn cellml:units=\"millivolt\">80</cn>\n"
+            "           </apply>\n" // end divide
+            "       </apply>\n" // end exp
+            "   </apply>\n" // end times
+            "</apply>\n"; // end eq
 
         nGate->setMath(mathHeader);
         nGate->appendMath(equation1);
@@ -142,65 +142,65 @@ int main()
     auto nGate = libcellml::Component::create("nGate");
     {
         std::string equation1 =
-            "<apply><eq/>"
-            "   <apply><diff/>"
-            "       <bvar><ci>t</ci></bvar>"
-            "       <ci>n</ci>"
-            "   </apply>" // end diff
-            "   <apply><minus/>"
-            "       <apply><times/>"
-            "            <ci>alpha_n</ci>"
-            "            <apply><minus/>"
-            "               <cn cellml:units=\"dimensionless\">1</cn>"
-            "               <ci>n</ci>"
-            "            </apply>" // end minus
-            "       </apply>" // end times
-            "       <apply><times/>"
-            "           <ci>beta_n</ci>"
-            "           <ci>n</ci>"
-            "       </apply>" // end times
-            "   </apply>" // end minus
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <apply><diff/>\n"
+            "       <bvar><ci>t</ci></bvar>\n"
+            "       <ci>n</ci>\n"
+            "   </apply>\n" // end diff
+            "   <apply><minus/>\n"
+            "       <apply><times/>\n"
+            "            <ci>alpha_n</ci>\n"
+            "            <apply><minus/>\n"
+            "               <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "               <ci>n</ci>\n"
+            "            </apply>\n" // end minus
+            "       </apply>\n" // end times
+            "       <apply><times/>\n"
+            "           <ci>beta_n</ci>\n"
+            "           <ci>n</ci>\n"
+            "       </apply>\n" // end times
+            "   </apply>\n" // end minus
+            "</apply>\n"; // end eq
 
         std::string equation2 =
-            "<apply><eq/>"
-            "   <ci>alpha_n</ci>"
-            "   <apply><divide/>"
-            "       <apply><times/>"
-            "           <cn cellml:units=\"per_millivolt_millisecond\">0.01</cn>"
-            "           <apply><plus/>"
-            "               <ci>V</ci>"
-            "               <cn cellml:units=\"millivolt\">10</cn>"
-            "           </apply>" // end plus
-            "       </apply>" // end times, end denominator
-            "       <apply><minus/>"
-            "           <apply><exp/>"
-            "               <apply><divide/>"
-            "                   <apply><plus/>"
-            "                       <ci>V</ci>"
-            "                       <cn cellml:units=\"millivolt\">10</cn>"
-            "                   </apply>" // end plus
-            "                   <cn cellml:units=\"millivolt\">10</cn>"
-            "               </apply>" // end divide
-            "           </apply>" // end exp
-            "           <cn cellml:units=\"dimensionless\">1</cn>"
-            "       </apply>" // end minus
-            "   </apply>" // end divide
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <ci>alpha_n</ci>\n"
+            "   <apply><divide/>\n"
+            "       <apply><times/>\n"
+            "           <cn cellml:units=\"per_millivolt_millisecond\">0.01</cn>\n"
+            "           <apply><plus/>\n"
+            "               <ci>V</ci>\n"
+            "               <cn cellml:units=\"millivolt\">10</cn>\n"
+            "           </apply>\n" // end plus
+            "       </apply>\n" // end times, end denominator
+            "       <apply><minus/>\n"
+            "           <apply><exp/>\n"
+            "               <apply><divide/>\n"
+            "                   <apply><plus/>\n"
+            "                       <ci>V</ci>\n"
+            "                       <cn cellml:units=\"millivolt\">10</cn>\n"
+            "                   </apply>\n" // end plus
+            "                   <cn cellml:units=\"millivolt\">10</cn>\n"
+            "               </apply>\n" // end divide
+            "           </apply>\n" // end exp
+            "           <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "       </apply>\n" // end minus
+            "   </apply>\n" // end divide
+            "</apply>\n"; // end eq
 
         std::string equation3 =
-            "<apply><eq/>"
-            "   <ci>beta_n</ci>"
-            "   <apply><times/>"
-            "       <cn cellml:units=\"per_millisecond\">0.125</cn>"
-            "       <apply><exp/>"
-            "           <apply><divide/>"
-            "               <ci>V</ci>"
-            "               <cn cellml:units=\"millivolt\">80</cn>"
-            "           </apply>" // end divide
-            "       </apply>" // end exp
-            "   </apply>" // end times
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <ci>beta_n</ci>\n"
+            "   <apply><times/>\n"
+            "       <cn cellml:units=\"per_millisecond\">0.125</cn>\n"
+            "       <apply><exp/>\n"
+            "           <apply><divide/>\n"
+            "               <ci>V</ci>\n"
+            "               <cn cellml:units=\"millivolt\">80</cn>\n"
+            "           </apply>\n" // end divide
+            "       </apply>\n" // end exp
+            "   </apply>\n" // end times
+            "</apply>\n"; // end eq
 
         nGate->setMath(mathHeader);
         nGate->appendMath(equation1);
@@ -315,40 +315,40 @@ int main()
 
         //  2.d Defining the maths inside the potassiumChannel component
         std::string equation1 =
-            "<apply><eq/>"
-            "   <ci>E_K</ci>"
-            "   <apply><times/>"
-            "       <ci>RTF</ci>"
-            "       <apply><ln/>"
-            "           <apply><divide/>"
-            "               <ci>Ko</ci>"
-            "               <ci>Ki</ci>"
-            "           </apply>" // end divide
-            "       </apply>" // end ln
-            "   </apply>" // end times
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <ci>E_K</ci>\n"
+            "   <apply><times/>\n"
+            "       <ci>RTF</ci>\n"
+            "       <apply><ln/>\n"
+            "           <apply><divide/>\n"
+            "               <ci>Ko</ci>\n"
+            "               <ci>Ki</ci>\n"
+            "           </apply>\n" // end divide
+            "       </apply>\n" // end ln
+            "   </apply>\n" // end times
+            "</apply>\n"; // end eq
         std::string equation2 =
-            "<apply><eq/>"
-            "   <ci>K_conductance</ci>"
-            "   <apply><times/>"
-            "       <ci>g_K</ci>"
-            "       <apply><power/>"
-            "           <ci>n</ci>"
-            "           <cn cellml:units=\"dimensionless\">4</cn>"
-            "       </apply>" // end pow
-            "   </apply>" // end times
-            "</apply>"; //end eq
+            "<apply><eq/>\n"
+            "   <ci>K_conductance</ci>\n"
+            "   <apply><times/>\n"
+            "       <ci>g_K</ci>\n"
+            "       <apply><power/>\n"
+            "           <ci>n</ci>\n"
+            "           <cn cellml:units=\"dimensionless\">4</cn>\n"
+            "       </apply>\n" // end pow
+            "   </apply>\n" // end times
+            "</apply>\n"; //end eq
         std::string equation3 =
-            "<apply><eq/>"
-            "   <ci>i_K</ci>"
-            "   <apply><times/>"
-            "       <ci>K_conductance</ci>"
-            "       <apply><minus/>"
-            "           <ci>V</ci>"
-            "           <ci>E_K</ci>"
-            "       </apply>" //end minus
-            "   </apply>" // end times
-            "</apply>"; // end eq
+            "<apply><eq/>\n"
+            "   <ci>i_K</ci>\n"
+            "   <apply><times/>\n"
+            "       <ci>K_conductance</ci>\n"
+            "       <apply><minus/>\n"
+            "           <ci>V</ci>\n"
+            "           <ci>E_K</ci>\n"
+            "       </apply>\n" //end minus
+            "   </apply>\n" // end times
+            "</apply>\n"; // end eq
 
         potassiumChannel->setMath(mathHeader);
         potassiumChannel->appendMath(equation1);
@@ -505,7 +505,7 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 6: Call generator and check for errors  " << std::endl;
+    std::cout << "  STEP 6: Generate and initalise" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  6.a Call the generator to process the model and output errors to the terminal
@@ -524,7 +524,7 @@ int main()
     printErrorsToTerminal(generator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 7: Output the model  " << std::endl;
+    std::cout << "  STEP 7: Output the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  7.a Write the interface code to a .h file

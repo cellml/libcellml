@@ -35,7 +35,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  2.a   Define the mathematics.
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
 
     //  2.b   Add the maths to the component.  Note that there is only one maths
     //        string stored, so parts which are appended must create a viable

@@ -23,7 +23,7 @@ int main()
 
     auto model = libcellml::Model::create("Tutorial7_SodiumChannelModel");
 
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
     std::cout << "-----------------------------------------------" << std::endl;

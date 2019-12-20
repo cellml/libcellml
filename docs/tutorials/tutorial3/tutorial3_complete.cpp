@@ -101,7 +101,7 @@ int main()
         "   </apply>\n"
         "</apply>\n";
 
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
     //  1.f Add the maths strings in to the component
@@ -195,13 +195,13 @@ int main()
     component->removeMath();
     component->setMath(mathHeader);
     equation1 =
-        "<apply><eq/>"
-        "   <ci>c</ci>"
-        "   <apply><plus/>"
-        "       <ci>a</ci>"
-        "       <cn cellml:units=\"per_month\">2.0</cn>"
-        "   </apply>"
-        "</apply>";
+        "<apply><eq/>\n"
+        "   <ci>c</ci>\n"
+        "   <apply><plus/>\n"
+        "       <ci>a</ci>\n"
+        "       <cn cellml:units=\"per_month\">2.0</cn>\n"
+        "   </apply>\n"
+        "</apply>\n";
 
     component->appendMath(equation1);
     component->appendMath(equation2);
@@ -255,6 +255,9 @@ int main()
     outFile.open("tutorial3_PredatorPrey_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
+
+    //  The next tutorial will take you through the process of running the simulation
+    //  described by this model.
 
     //  4.g Go and have a cuppa, you're done!
 }

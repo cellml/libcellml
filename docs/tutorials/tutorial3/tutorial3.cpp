@@ -58,7 +58,7 @@ int main()
 
     //  1.c,d,e Create strings representing the governing equations in MathML2.
     //          The header and footer strings are provided for you below.
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
     //  1.g Assemble the entire MathML into the component
