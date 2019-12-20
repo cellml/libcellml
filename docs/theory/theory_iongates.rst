@@ -146,8 +146,8 @@ where :math:`E_{Y}` is the "equilibrium" or "Nernst" potential for
 .. figure:: images/balance_forces.png
    :name: ocr_tut_bal_force
    :alt: Balance of entropic and electrostatic forces
-   :width: 8cm
    :align: center
+   :width: 30%
 
    The balance between :purple:`entropic` and :red:`electrostatic` forces
    determines the Nernst potential.
@@ -155,6 +155,7 @@ where :math:`E_{Y}` is the "equilibrium" or "Nernst" potential for
 
 Mathematical modelling
 ----------------------
+
 For an open channel the electrochemical current flow is driven by the
 open channel conductance :math:`{\overset{\overline{}}{g}}_{Y}` times
 the difference between the transmembrane voltage :math:`V` and the
@@ -165,46 +166,27 @@ Nernst potential for that ion:
     {\overset{\overline{}}{i}}_{Y}\mathbf{=}{\overset{\overline{}}{g}}_{Y}\left( V - E_{Y} \right)
 
 This defines a linear current-voltage relation ("Ohm's law") as shown in
-:numref:`open_channel`. The gates to be discussed below modify this
-open channel conductance.
+:numref:`Fig. %s(a) <ion_gates_theory>`. The specific characteristics of a channel's
+behaviour depend on how its gates modify the open channel conductance.
 
-.. |i1| image:: images/open_ch_linear_iv.png
-   :name: open_channel
+
+.. figure:: images/ion_gates_theory.png
+   :name: ion_gates_theory
    :alt: Open channel linear IV
+   :align: right
 
-.. |i2| image:: images/ion_ch_gating.png
-   :name: ocr_tut_ion_ch_gating
-   :alt: Ion channel gating kinetics
-
-.. |i3| image:: images/transient_beh_gates.png
-   :name: ocr_tut_trans_gate_beh
-   :alt: Transient gate behaviour
-
-.. table::
-    :align: center
-
-    +--------+--------+--------+
-    | |i1|   |  |i2|  |   |i3| |
-    +--------+--------+--------+
-
-Open channel linear current-voltage relation
-
-Ion channel gating kinetics. :math:`y` is the fraction of gates in the open
-state. :math:`\alpha_n` and :math:`\beta_n` are the rate constants for
-opening and closing, respectively.
-
-
-Transient behaviour for one gate (left) and γ gates in series (right). Note
-that the right hand graph has an initial S-shaped increase, reflecting the
-multiple gates in series.
-
+   (a) Open channel linear current-voltage relation.  (b) Ion channel gating
+   kinetics. :math:`y` is the fraction of gates in the open state.
+   :math:`\alpha_n` and :math:`\beta_n` are the rate constants for opening and
+   closing, respectively.
 
 To describe the time dependent transition between the closed and open
 states of the channel, Hodgkin and Huxley introduced the idea of channel
 gates that control the passage of ions through a membrane ion channel.
 If the fraction of gates that are open is :math:`y`, the fraction of gates
 that are closed is :math:`1-y`, and a first order ODE can be used to describe
-the transition between the two states (see :numref:`ocr_tut_ion_ch_gating`):
+the transition between the two states
+(see :numref:`Fig. %s(b) <ion_gates_theory>`).
 
 .. math::
 
@@ -228,6 +210,16 @@ The constant :math:`A` can be interpreted as:
 as in the previous example and, with :math:`y\left( 0 \right) = 0` (i.e.
 all gates initially shut), the solution looks like
 :numref:`Fig. %s(a) <ocr_tut_trans_gate_beh>`.
+
+.. figure:: images/transient_beh_gates.png
+   :name: ocr_tut_trans_gate_beh
+   :alt: Transient gate behaviour
+   :figwidth: 50%
+   :align: center
+
+   Transient behaviour for one gate (left) and γ gates in series (right). Note
+   that the right hand graph has an initial S-shaped increase, reflecting the
+   multiple gates in series.
 
 The experimental data obtained by Hodgkin and Huxley for the squid axon,
 however, indicated that the initial current flow began more slowly
