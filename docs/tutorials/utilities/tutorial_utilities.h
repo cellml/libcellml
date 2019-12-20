@@ -15,8 +15,8 @@ void printModelToTerminal(libcellml::ModelPtr &model);
 /**
  * @brief Prints the validation errors to the terminal
  */
-void printErrorsToTerminal(const libcellml::Validator &validator);
-void printErrorsToTerminal(const libcellml::Generator &generator);
+void printErrorsToTerminal(libcellml::ValidatorPtr &item);
+void printErrorsToTerminal(libcellml::GeneratorPtr &item);
 void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer);
 void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model);
 void printComponentOnlyToTerminal(libcellml::ComponentPtr &component, std::string spacer);
