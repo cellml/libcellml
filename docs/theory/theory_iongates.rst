@@ -254,7 +254,7 @@ is the steady state current through the open gate.
 
 .. _ion_current:
 .. figure:: images/tut5_current.png
-   :name: _ion_current
+   :name: ion_current
    :alt: Ion current
    :align: center
 
