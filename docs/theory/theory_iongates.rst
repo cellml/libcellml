@@ -223,8 +223,8 @@ all gates initially shut), the solution looks like
    multiple gates in series.
 
 The experimental data obtained by Hodgkin and Huxley for the squid axon,
-however, indicated that the initial current flow began more slowly
-(:numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`).  They modelled this
+however, indicated that the initial current flow began more slowly, as in
+:numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`.  They modelled this
 by assuming that the ion channel had
 :math:`\gamma` gates in series so that conduction would only occur when
 each gate was at least partially open. Since :math:`y` is the
@@ -244,12 +244,13 @@ where
 
 is the steady state current through the open gate.
 
+
+
 .. _ion_gate_status:
 .. figure:: images/tut5.png
    :name: ion_gate_status
    :alt: Gate status for a single gate, and current through four gates
    :align: center
-   :width: 12cm
 
    Dynamics of opening status for a single gate, and the resulting current
    for :math:`\gamma=4` gates in series.
