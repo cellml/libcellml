@@ -20,8 +20,7 @@ int main()
 {
     //  0 Setup stuff that is used throughout
     auto validator = libcellml::Validator::create();
-    auto model = libcellml::Model::create();
-    model->setName("Tutorial7_SodiumChannelModel");
+    auto model = libcellml::Model::create("Tutorial7_SodiumChannelModel");
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
     std::string mathFooter = "</math>";
@@ -38,29 +37,29 @@ int main()
     //  1.b Add the MathML representing the governing equations
     {
         std::string equation1 =
-            "<apply><eq/>\
-                <ci>Na_conductance</ci>\
-                <apply><times/>\
-                    <ci>g_Na</ci>\
-                    <ci>h</ci>\
-                    <apply><power/>\
-                        <ci>m</ci>\
-                        <cn cellml:units=\"dimensionless\">3</cn>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>Na_conductance</ci>\n"
+            "    <apply><times/>\n"
+            "        <ci>g_Na</ci>\n"
+            "        <ci>h</ci>\n"
+            "        <apply><power/>\n"
+            "            <ci>m</ci>\n"
+            "            <cn cellml:units=\"dimensionless\">3</cn>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         std::string equation2 =
-            "<apply><eq/>\
-                <ci>i_Na</ci>\
-                <apply><times/>\
-                    <ci>Na_conductance</ci>\
-                    <apply><minus/>\
-                        <ci>V</ci>\
-                        <ci>E_Na</ci>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>i_Na</ci>\n"
+            "    <apply><times/>\n"
+            "        <ci>Na_conductance</ci>\n"
+            "        <apply><minus/>\n"
+            "            <ci>V</ci>\n"
+            "            <ci>E_Na</ci>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         sodiumChannel->setMath(mathHeader);
         sodiumChannel->appendMath(equation1);
@@ -70,49 +69,40 @@ int main()
 
     //  1.c Add the variables
     {
-        auto V = libcellml::Variable::create();
-        V->setName("V");
+        auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
         sodiumChannel->addVariable(V);
 
-        auto t = libcellml::Variable::create();
-        t->setName("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("ms");
         sodiumChannel->addVariable(t);
 
-        auto h = libcellml::Variable::create();
-        h->setName("h");
+        auto h = libcellml::Variable::create("h");
         h->setUnits("dimensionless");
         sodiumChannel->addVariable(h);
 
-        auto m = libcellml::Variable::create();
-        m->setName("m");
+        auto m = libcellml::Variable::create("m");
         m->setUnits("dimensionless");
         sodiumChannel->addVariable(m);
 
-        auto g_Na = libcellml::Variable::create();
-        g_Na->setName("g_Na");
+        auto g_Na = libcellml::Variable::create("g_Na");
         g_Na->setUnits("mS_per_cm2");
         sodiumChannel->addVariable(g_Na);
 
-        auto E_Na = libcellml::Variable::create();
-        E_Na->setName("E_Na");
+        auto E_Na = libcellml::Variable::create("E_Na");
         E_Na->setUnits("mV");
         sodiumChannel->addVariable(E_Na);
 
-        auto i_Na = libcellml::Variable::create();
-        i_Na->setName("i_Na");
+        auto i_Na = libcellml::Variable::create("i_Na");
         i_Na->setUnits("microA_per_cm2");
         sodiumChannel->addVariable(i_Na);
 
-        auto Na_conductance = libcellml::Variable::create();
-        Na_conductance->setName("Na_conductance");
+        auto Na_conductance = libcellml::Variable::create("Na_conductance");
         Na_conductance->setUnits("mS_per_cm2");
         sodiumChannel->addVariable(Na_conductance);
     }
 
     //  1.d Add the units
-
     auto mV = libcellml::Units::create("mV");
     mV->addUnit("volt", "milli");
     model->addUnits(mV);
@@ -149,76 +139,76 @@ int main()
     //  2.b Add the MathML strings which govern the behavior of this gate
     {
         std::string equation1 =
-            "<apply><eq/>\
-                <ci>alpha_m</ci>\
-                <apply><divide/>\
-                    <apply><times/>\
-                        <apply><minus/>\
-                            <cn cellml:units=\"per_mV_ms\">0.1</cn>\
-                        </apply>\
-                        <apply><plus/>\
-                            <ci>V</ci>\
-                            <cn cellml:units=\"mV\">50</cn>\
-                        </apply>\
-                    </apply>\
-                    <apply><minus/>\
-                        <apply><exp/>\
-                            <apply><divide/>\
-                                <apply><minus/>\
-                                    <apply><plus/>\
-                                        <ci>V</ci>\
-                                        <cn cellml:units=\"mV\">50</cn>\
-                                    </apply>\
-                                </apply>\
-                                <cn cellml:units=\"mV\">10</cn>\
-                            </apply>\
-                        </apply>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>alpha_m</ci>\n"
+            "    <apply><divide/>\n"
+            "        <apply><times/>\n"
+            "            <apply><minus/>\n"
+            "                <cn cellml:units=\"per_mV_ms\">0.1</cn>\n"
+            "            </apply>\n"
+            "            <apply><plus/>\n"
+            "                <ci>V</ci>\n"
+            "                <cn cellml:units=\"mV\">50</cn>\n"
+            "            </apply>\n"
+            "        </apply>\n"
+            "        <apply><minus/>\n"
+            "            <apply><exp/>\n"
+            "                <apply><divide/>\n"
+            "                    <apply><minus/>\n"
+            "                        <apply><plus/>\n"
+            "                            <ci>V</ci>\n"
+            "                            <cn cellml:units=\"mV\">50</cn>\n"
+            "                        </apply>\n"
+            "                    </apply>\n"
+            "                    <cn cellml:units=\"mV\">10</cn>\n"
+            "                </apply>\n"
+            "            </apply>\n"
+            "            <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         std::string equation2 =
-            "<apply><eq/>\
-                <ci>beta_m</ci>\
-                <apply><times/>\
-                    <cn cellml:units=\"per_ms\">4</cn>\
-                    <apply><exp/>\
-                        <apply><divide/>\
-                            <apply><minus/>\
-                                <apply><plus/>\
-                                    <ci>V</ci>\
-                                    <cn cellml:units=\"mV\">75</cn>\
-                                </apply>\
-                            </apply>\
-                            <cn cellml:units=\"mV\">18</cn>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>beta_m</ci>\n"
+            "    <apply><times/>\n"
+            "        <cn cellml:units=\"per_ms\">4</cn>\n"
+            "        <apply><exp/>\n"
+            "            <apply><divide/>\n"
+            "                <apply><minus/>\n"
+            "                    <apply><plus/>\n"
+            "                        <ci>V</ci>\n"
+            "                        <cn cellml:units=\"mV\">75</cn>\n"
+            "                    </apply>\n"
+            "                </apply>\n"
+            "                <cn cellml:units=\"mV\">18</cn>\n"
+            "            </apply>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         std::string equation3 =
-            "<apply><eq/>\
-                <apply><diff/>\
-                    <bvar>\
-                        <ci>t</ci>\
-                    </bvar>\
-                    <ci>m</ci>\
-                </apply>\
-                <apply><minus/>\
-                    <apply><times/>\
-                        <ci>alpha_m</ci>\
-                        <apply><minus/>\
-                            <cn cellml:units=\"dimensionless\">1</cn>\
-                            <ci>m</ci>\
-                        </apply>\
-                    </apply>\
-                    <apply><times/>\
-                        <ci>m</ci>\
-                        <ci>beta_m</ci>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <apply><diff/>\n"
+            "        <bvar>\n"
+            "            <ci>t</ci>\n"
+            "        </bvar>\n"
+            "        <ci>m</ci>\n"
+            "    </apply>\n"
+            "    <apply><minus/>\n"
+            "        <apply><times/>\n"
+            "            <ci>alpha_m</ci>\n"
+            "           <apply><minus/>\n"
+            "                <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "                <ci>m</ci>\n"
+            "            </apply>\n"
+            "        </apply>\n"
+            "        <apply><times/>\n"
+            "            <ci>m</ci>\n"
+            "            <ci>beta_m</ci>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         mGate->setMath(mathHeader);
         mGate->appendMath(equation1);
@@ -230,7 +220,8 @@ int main()
 
     //  2.c Call the validator - expect errors related to missing variables, then
     //      add the variables needed
-
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
     {
         auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
@@ -255,7 +246,6 @@ int main()
 
     //  2.d Call the validator to check the model - expect errors related to
     //      units missing from the model.  Add them in as needed.
-
     auto per_mV_ms = libcellml::Units::create("per_mV_ms");
     per_mV_ms->addUnit("second", "milli", -1);
     per_mV_ms->addUnit("volt", "milli", -1);
@@ -279,68 +269,68 @@ int main()
     //  3.b Adding the MathML strings
     {
         std::string equation1 =
-            "<apply><eq/>\
-                <ci>alpha_h</ci>\
-                <apply><times/>\
-                    <cn cellml:units=\"per_ms\">0.07</cn>\
-                    <apply><exp/>\
-                        <apply><divide/>\
-                            <apply><minus/>\
-                                <apply><plus/>\
-                                    <ci>V</ci>\
-                                    <cn cellml:units=\"mV\">75</cn>\
-                                </apply>\
-                            </apply>\
-                            <cn cellml:units=\"mV\">20</cn>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>alpha_h</ci>\n"
+            "    <apply><times/>\n"
+            "        <cn cellml:units=\"per_ms\">0.07</cn>\n"
+            "        <apply><exp/>\n"
+            "            <apply><divide/>\n"
+            "                <apply><minus/>\n"
+            "                    <apply><plus/>\n"
+            "                        <ci>V</ci>\n"
+            "                        <cn cellml:units=\"mV\">75</cn>\n"
+            "                    </apply>\n"
+            "                </apply>\n"
+            "                <cn cellml:units=\"mV\">20</cn>\n"
+            "            </apply>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         std::string equation2 =
-            "<apply><eq/>\
-                <ci>beta_h</ci>\
-                <apply><divide/>\
-                    <cn cellml:units=\"per_ms\">1</cn>\
-                    <apply><plus/>\
-                        <apply><exp/>\
-                            <apply><divide/>\
-                                <apply><minus/>\
-                                    <apply><plus/>\
-                                        <ci>V</ci>\
-                                        <cn cellml:units=\"mV\">45</cn>\
-                                    </apply>\
-                                </apply>\
-                                <cn cellml:units=\"mV\">10</cn>\
-                            </apply>\
-                        </apply>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>beta_h</ci>\n"
+            "    <apply><divide/>\n"
+            "        <cn cellml:units=\"per_ms\">1</cn>\n"
+            "        <apply><plus/>\n"
+            "            <apply><exp/>\n"
+            "                <apply><divide/>\n"
+            "                    <apply><minus/>\n"
+            "                        <apply><plus/>\n"
+            "                            <ci>V</ci>\n"
+            "                            <cn cellml:units=\"mV\">45</cn>\n"
+            "                        </apply>\n"
+            "                    </apply>\n"
+            "                    <cn cellml:units=\"mV\">10</cn>\n"
+            "                </apply>\n"
+            "            </apply>\n"
+            "            <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         std::string equation3 =
-            "<apply><eq/>\
-                <apply><diff/>\
-                    <bvar>\
-                        <ci>t</ci>\
-                    </bvar>\
-                    <ci>h</ci>\
-                </apply>\
-                <apply><minus/>\
-                    <apply><times/>\
-                        <ci>alpha_h</ci>\
-                        <apply><minus/>\
-                            <cn cellml:units=\"dimensionless\">1</cn>\
-                            <ci>h</ci>\
-                        </apply>\
-                    </apply>\
-                    <apply><times/>\
-                        <ci>h</ci>\
-                        <ci>beta_h</ci>\
-                    </apply>\
-                </apply>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <apply><diff/>\n"
+            "        <bvar>\n"
+            "            <ci>t</ci>\n"
+            "        </bvar>\n"
+            "        <ci>h</ci>\n"
+            "    </apply>\n"
+            "    <apply><minus/>\n"
+            "        <apply><times/>\n"
+            "            <ci>alpha_h</ci>\n"
+            "            <apply><minus/>\n"
+            "                <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "                <ci>h</ci>\n"
+            "            </apply>\n"
+            "        </apply>\n"
+            "        <apply><times/>\n"
+            "            <ci>h</ci>\n"
+            "            <ci>beta_h</ci>\n"
+            "        </apply>\n"
+            "    </apply>\n"
+            "</apply>";
 
         hGate->setMath(mathHeader);
         hGate->appendMath(equation1);
@@ -349,7 +339,7 @@ int main()
         hGate->appendMath(mathFooter);
     } // ends local scope for hGate maths
 
-    //  3.c Adding the variables
+    //  3.c Add the variables
     {
         auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
@@ -379,7 +369,7 @@ int main()
     std::cout << "  STEP 4: Creating the environment component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  4.a Creating the new environment component
+    //  4.a Create the new environment component
     auto environment = libcellml::Component::create("environment");
     model->addComponent(environment);
 
@@ -437,22 +427,22 @@ int main()
     //  6.a Create the MathML controlling the driving function
     {
         std::string voltageClampMaths =
-            "<apply><eq/>\
-                <ci>V</ci>\
-                <piecewise>\
-                    <piece>\
-                        <cn cellml:units=\"mV\">-85</cn>\
-                        <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">5</cn></apply>\
-                    </piece>\
-                        <piece>\
-                        <cn cellml:units=\"mV\">-85</cn>\
-                        <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">15</cn></apply>\
-                    </piece>\
-                    <otherwise>\
-                        <cn cellml:units=\"mV\">-20</cn>\
-                    </otherwise>\
-                </piecewise>\
-            </apply>";
+            "<apply><eq/>\n"
+            "    <ci>V</ci>\n"
+            "    <piecewise>\n"
+            "        <piece>\n"
+            "            <cn cellml:units=\"mV\">-85</cn>\n"
+            "            <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">5</cn></apply>\n"
+            "        </piece>\n"
+            "            <piece>\n"
+            "            <cn cellml:units=\"mV\">-85</cn>\n"
+            "            <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">15</cn></apply>\n"
+            "        </piece>\n"
+            "        <otherwise>\n"
+            "            <cn cellml:units=\"mV\">-20</cn>\n"
+            "        </otherwise>\n"
+            "    </piecewise>\n"
+            "</apply>";
         environment->setMath(mathHeader);
         environment->appendMath(voltageClampMaths);
         environment->appendMath(mathFooter);
@@ -463,10 +453,16 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 7: Set the initial conditions " << std::endl;
+    std::cout << "    STEP 7: Generate and initialise " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  7.a The initial conditions are:
+    //  7.a Create a Generator instance and submit the model for processing.
+    //      Expect errors related to uninitialised variables.
+    auto generator = libcellml::Generator::create();
+    generator->processModel(model);
+    printErrorsToTerminal(generator);
+
+    //  7.b Add the initial conditions that are required.
     //          g_Na(t=0) = 120
     //          E_Na(t=0) = 35
     //          h(t=0)=0.6
@@ -476,17 +472,15 @@ int main()
     hGate->variable("h")->setInitialValue(0.6);
     mGate->variable("m")->setInitialValue(0.05);
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 8: Generate and output the model " << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  8.a Create a Generator instance and submit your model for processing.
-    //      Check that there are no errors reported by the generator.
-    auto generator = libcellml::Generator::create();
+    //  7.c Process the model again and check that it is now free of errors.
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
-    //  8.b Write the interface code (.h header) and implementation code
+    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "    STEP 8: Output the model " << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
+
+    //  8.a Write the interface code (.h header) and implementation code
     //      (.c source) to files.
     std::ofstream outFile;
     outFile.open("tutorial7_SodiumChannelModel.h");
@@ -497,7 +491,7 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    //  8.c Create a `GeneratorProfile` and use it to change to Python.
+    //  8.b Create a `GeneratorProfile` and use it to change to Python.
     //      Reprocess the model, and write the implementation code (.py source) to
     //      a file.
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
@@ -508,9 +502,8 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-
-    //  8.d Create a Printer to serialise your model, and output it to a CellML file.
-    auto printer=libcellml::Printer::create();
+    //  8.c Create a Printer to serialise your model, and output it to a CellML file.
+    auto printer = libcellml::Printer::create();
     outFile.open("tutorial7_SodiumChannelModel.cellml");
     outFile << printer->printModel(model);
     outFile.close();
@@ -518,5 +511,6 @@ int main()
     std::cout << "The model has been output into tutorial7_SodiumChannelModel.[c,h,py,cellml]"
               << std::endl;
 
-    //  8.e Go and have a cuppa, you're done!
+    //  8.d Please seen the tutorial instructions for how to run this simulation using
+    //      the simple solver provided.  Then go and have a cuppa, you're done!
 }

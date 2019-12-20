@@ -21,8 +21,7 @@
 int main()
 {
     //  0.a Create a new model instance representing the combined model and name it.
-    auto model = libcellml::Model::create();
-    model->setName("Tutorial8_HHModel");
+    auto model = libcellml::Model::create("Tutorial8_HHModel");
     auto validator = libcellml::Validator::create();
     auto parser = libcellml::Parser::create();
 
@@ -226,20 +225,16 @@ int main()
     printEncapsulationStructureToTerminal(model);
 
     //  5.a Creating the environment component and adding it to the model
-    auto environment = libcellml::Component::create();
-    environment->setName("environment");
+    auto environment = libcellml::Component::create("environment");
     model->addComponent(environment);
 
     //  5.b Add variables to the environment component.
     {
-        auto V = libcellml::Variable::create();
-        V->setName("V");
-        V->setInitialValue(-85);
+        auto V = libcellml::Variable::create("V");
         V->setUnits("mV");
         environment->addVariable(V);
 
-        auto t = libcellml::Variable::create();
-        t->setName("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("ms");
         environment->addVariable(t);
     } // end of the environment scope for variables
@@ -278,40 +273,44 @@ int main()
     //  7.a Create a MathML string to represent the stimulus current i_stim, which
     //      is set to 100 microA/cm^2 between t=1ms < t < t=1.2ms.
     std::string stimulusEquation =
-            "<apply><eq/>\
-                <ci>i_stim</ci>\
-                <piecewise>\
-                    <piece>\
-                        <cn cellml:units=\"microA_per_cm2\">0</cn>\
-                        <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">1</cn></apply>\
-                    </piece>\
-                        <piece>\
-                        <cn cellml:units=\"microA_per_cm2\">0</cn>\
-                        <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">1.2</cn></apply>\
-                    </piece>\
-                    <otherwise>\
-                        <cn cellml:units=\"microA_per_cm2\">100</cn>\
-                    </otherwise>\
-                </piecewise>\
-            </apply>";
+        "<apply><eq/>\n"
+        "    <ci>i_stim</ci>\n"
+        "    <piecewise>\n"
+        "        <piece>\n"
+        "            <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
+        "            <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">1</cn></apply>\n"
+        "        </piece>\n"
+        "            <piece>\n"
+        "            <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
+        "            <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">1.2</cn></apply>\n"
+        "        </piece>\n"
+        "        <otherwise>\n"
+        "            <cn cellml:units=\"microA_per_cm2\">100</cn>\n"
+        "        </otherwise>\n"
+        "    </piecewise>\n"
+        "</apply>\n";
 
-    //  7.b Add before the closing </math> tag in the membrane component
-    std::string membraneMathML = membrane->math();
-    insertIntoMathMLString(membraneMathML, stimulusEquation);
-    membrane->setMath(membraneMathML);
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 8: Generate the model and print        " << std::endl;
+    std::cout << "   STEP 8: Generate the model and initialise" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
+    //  8.a Create a Generator and submit the model for processing.  Expect errors
+    //      related to missing initial conditions.
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
-
     printErrorsToTerminal(generator);
 
+    //  8.b Initialise the values required.
+    environment->variables("V")->setInitialValue(-85);
 
+    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "   STEP 9: Output the final model" << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
 
-    auto printer=libcellml::Printer::create();
+    auto printer = libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(model);
     std::string outFileName = "tutorial8_HodgkinHuxleyModel.cellml";
     std::ofstream outFile(outFileName);
@@ -320,9 +319,4 @@ int main()
 
     std::cout << "The created '" << model->name()
               << "' model has been printed to: " << outFileName << std::endl;
-
-
-
-
-
 }

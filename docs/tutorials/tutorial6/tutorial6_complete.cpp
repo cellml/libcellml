@@ -275,7 +275,6 @@ int main()
     {
         auto E_K = libcellml::Variable::create("E_K");
         E_K->setUnits("millivolt");
-        // E_K->setInitialValue(-85.0);
         potassiumChannel->addVariable(E_K);
 
         auto i_K = libcellml::Variable::create("i_K");
@@ -284,7 +283,6 @@ int main()
 
         auto g_K = libcellml::Variable::create("g_K");
         g_K->setUnits("milliS_per_cm2");
-        g_K->setInitialValue(36.0);
         potassiumChannel->addVariable(g_K);
 
         auto V = libcellml::Variable::create("V");
@@ -368,13 +366,11 @@ int main()
     auto mM = libcellml::Units::create("millimol");
     mM->addUnit("mole", "milli");
 
-    auto microA_per_cm2 = libcellml::Units::create();
-    microA_per_cm2->setName("microA_per_cm2");
+    auto microA_per_cm2 = libcellml::Units::create("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2.0);
 
-    auto mS_per_cm2 = libcellml::Units::create();
-    mS_per_cm2->setName("milliS_per_cm2");
+    auto mS_per_cm2 = libcellml::Units::create("milliS_per_cm2");
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
 
@@ -390,20 +386,17 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  3.a Creating the new environment component
-    auto environment = libcellml::Component::create();
-    environment->setName("environment");
+    auto environment = libcellml::Component::create("environment");
 
     //  3.b Add variables to the component.  Use brackets to define the scope of
     //      these variables. This means that we can use variables with the same
     //      symbol elsewhere.
     {
-        auto V = libcellml::Variable::create();
-        V->setName("V");
+        auto V = libcellml::Variable::create("V");
         V->setUnits("millivolt");
         environment->addVariable(V);
 
-        auto t = libcellml::Variable::create();
-        t->setName("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("millisecond");
         environment->addVariable(t);
     } // end of the environment scope for variables
@@ -485,23 +478,22 @@ int main()
 
     //  5.a Define a MathML string representing the voltage clamp
     std::string voltageClampMaths =
-        "<apply><eq/>"
-        "   <ci>V</ci>"
-        // "   <cn cellml:units=\"millivolt\">0</cn>"
-        "   <piecewise>"
-        "       <piece>"
-        "           <cn cellml:units=\"millivolt\">0</cn>"
-        "           <apply><lt/><ci>t</ci><cn cellml:units=\"millisecond\">5</cn></apply>"
-        "       </piece>"
-        "       <piece>"
-        "           <cn cellml:units=\"millivolt\">0</cn>"
-        "           <apply><gt/><ci>t</ci><cn cellml:units=\"millisecond\">15</cn></apply>"
-        "       </piece>"
-        "       <otherwise>"
-        "           <cn cellml:units=\"millivolt\">-85</cn>"
-        "       </otherwise>"
-        "   </piecewise>"
-        "</apply>";
+        "<apply><eq/>\n"
+        "   <ci>V</ci>\n"
+        "   <piecewise>\n"
+        "       <piece>\n"
+        "           <cn cellml:units=\"millivolt\">0</cn>\n"
+        "           <apply><lt/><ci>t</ci><cn cellml:units=\"millisecond\">5</cn></apply>\n"
+        "       </piece>\n"
+        "       <piece>\n"
+        "           <cn cellml:units=\"millivolt\">0</cn>\n"
+        "           <apply><gt/><ci>t</ci><cn cellml:units=\"millisecond\">15</cn></apply>\n"
+        "       </piece>\n"
+        "       <otherwise>\n"
+        "           <cn cellml:units=\"millivolt\">-85</cn>\n"
+        "       </otherwise>\n"
+        "   </piecewise>\n"
+        "</apply>\n";
 
     //  5.b Add this to the maths for the environment component.
     environment->setMath(mathHeader);
@@ -513,7 +505,7 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 6: Generate code and output model  " << std::endl;
+    std::cout << "  STEP 6: Call generator and check for errors  " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  6.a Call the generator to process the model and output errors to the terminal
@@ -521,40 +513,51 @@ int main()
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
-    //  6.b Initialise the variables: Ko = 3, Ki = 90, RTF = 25,
+    //  6.b Initialise the variables: Ko = 3, Ki = 90, RTF = 25, g_K = 36.0
     potassiumChannel->variable("Ko")->setInitialValue(3);
     potassiumChannel->variable("Ki")->setInitialValue(90);
     potassiumChannel->variable("RTF")->setInitialValue(25);
+    potassiumChannel->variable("g_K")->setInitialValue(36.0);
 
+    //  6.c Call the generator again and verify that there are no more errors.
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
+    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "  STEP 7: Output the model  " << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
+
+    //  7.a Write the interface code to a .h file
     std::ofstream outFile("tutorial6_PotassiumChannelModel_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
 
+    //  7.b Write the implementation code to a .c file
     outFile.open("tutorial6_PotassiumChannelModel_generated.c");
     outFile << generator->implementationCode();
     outFile.close();
 
+    //  7.c Change the profile to Python and reprocess the model
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 
+    //  7.d Write the Python implementation code to a .py file
     outFile.open("tutorial6_PotassiumChannelModel_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
 
-    std::cout << "The generated '" << model->name()
-              << "' model has been writen to: tutorial6_PotassiumChannelModel_generated.[c,h,py]" << std::endl;
-
-    //  6.a Serialise the model and output to a CellML file
+    //  7.e Serialise the model using a Printer and write to a CellML file
     auto printer = libcellml::Printer::create();
     outFile.open("tutorial6_PotassiumChannelModel_generated.cellml");
     outFile << printer->printModel(model);
     outFile.close();
 
     std::cout << "The created '" << model->name()
-              << "' model has been printed to tutorial6_PotassiumChannelModel_generated.cellml" << std::endl;
+              << "' model has been output to tutorial6_PotassiumChannelModel_generated.[cellml,py,c,h]" << std::endl;
+
+    //  7.f Please see the instructions in the tutorial for how to run a
+    //      simulation of this model using the simple solver provided.
+    //      Then go and have a cuppa, you're done!
 
 }

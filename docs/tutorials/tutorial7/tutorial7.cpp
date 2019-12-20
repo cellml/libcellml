@@ -21,8 +21,7 @@ int main()
     //  0 Setup stuff that is used throughout
     auto validator = libcellml::Validator::create();
 
-    auto model = libcellml::Model::create();
-    model->setName("Tutorial7_SodiumChannelModel");
+    auto model = libcellml::Model::create("Tutorial7_SodiumChannelModel");
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
     std::string mathFooter = "</math>";
@@ -83,7 +82,7 @@ int main()
     //  5.a Connecting the equivalent variables between all the components
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "       STEP 6: Set the driving function" << std::endl;
+    std::cout << "  STEP 6: Set the driving function" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  6.a Create the MathML controlling the driving function
@@ -91,7 +90,7 @@ int main()
     //  6.b Validate the final model
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 7: Serialse and print the model " << std::endl;
+    std::cout << "  STEP 7: Serialse and print the model " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
 

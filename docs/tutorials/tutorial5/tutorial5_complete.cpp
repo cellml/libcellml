@@ -45,53 +45,53 @@ int main()
 
     // dy/dt = alpha_y*(1-y) - beta_y*y
     std::string equation1 =
-        "<apply>\
-            <eq/>\
-            <apply>\
-                <diff/>\
-                <bvar>\
-                    <ci>t</ci>\
-                </bvar>\
-                <ci>n</ci>\
-            </apply>\
-            <apply>\
-                <minus/>\
-                <apply>\
-                    <times/>\
-                    <ci>alpha_n</ci>\
-                    <apply>\
-                        <minus/>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                        <ci>n</ci>\
-                    </apply>\
-                </apply>\
-                <apply>\
-                    <times/>\
-                    <ci>beta_n</ci>\
-                    <ci>n</ci>\
-                </apply>\
-            </apply>\
-        </apply>";
+        "<apply>\n"
+        "    <eq/>\n"
+        "    <apply>\n"
+        "        <diff/>\n"
+        "        <bvar>\n"
+        "            <ci>t</ci>\n"
+        "        </bvar>\n"
+        "        <ci>n</ci>\n"
+        "    </apply>\n"
+        "    <apply>\n"
+        "        <minus/>\n"
+        "        <apply>\n"
+        "            <times/>\n"
+        "            <ci>alpha_n</ci>\n"
+        "            <apply>\n"
+        "                <minus/>\n"
+        "                <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "                <ci>n</ci>\n"
+        "            </apply>\n"
+        "        </apply>\n"
+        "        <apply>\n"
+        "            <times/>\n"
+        "            <ci>beta_n</ci>\n"
+        "            <ci>n</ci>\n"
+        "        </apply>\n"
+        "    </apply>\n"
+        "</apply>";
     // i_y = g_y*power(y,gamma)*(V-E_y)
     std::string equation2 =
-        "<apply>\
-            <eq/>\
-            <ci>i_K</ci>\
-            <apply>\
-                <times/>\
-                <ci>g_K</ci>\
-                <apply>\
-                    <minus/>\
-                    <ci>V</ci>\
-                    <ci>E_K</ci>\
-                </apply>\
-                <apply>\
-                    <power/>\
-                    <ci>n</ci>\
-                    <ci>gamma</ci>\
-                </apply>\
-            </apply>\
-        </apply>";
+        "<apply>\n"
+        "    <eq/>\n"
+        "    <ci>i_K</ci>\n"
+        "    <apply>\n"
+        "        <times/>\n"
+        "        <ci>g_K</ci>\n"
+        "        <apply>\n"
+        "            <minus/>\n"
+        "            <ci>V</ci>\n"
+        "            <ci>E_K</ci>\n"
+        "        </apply>\n"
+        "        <apply>\n"
+        "            <power/>\n"
+        "            <ci>n</ci>\n"
+        "            <ci>gamma</ci>\n"
+        "        </apply>\n"
+        "    </apply>\n"
+        "</apply>\n";
     std::string mathFooter = "</math>";
 
     //  2.b   Add the maths to the component.  Note that there is only one maths
@@ -118,51 +118,32 @@ int main()
     //        Note that the names given to variables must be the same as that used
     //        within the <ci> blocks in the MathML string we created in step 2.a.
 
-    auto t = libcellml::Variable::create();
-    t->setName("t");
+    auto t = libcellml::Variable::create("t");
     t->setUnits("millisecond");
-    // Note: time is our integration base variable so is not initialised
 
-    auto V = libcellml::Variable::create();
-    V->setName("V");
+    auto V = libcellml::Variable::create("V");
     V->setUnits("millivolt");
-    V->setInitialValue(0.0);
 
-    auto alpha_n = libcellml::Variable::create();
-    alpha_n->setName("alpha_n");
+    auto alpha_n = libcellml::Variable::create("alpha_n");
     alpha_n->setUnits("per_millisecond");
-    alpha_n->setInitialValue(1.0);
 
-    auto beta_n = libcellml::Variable::create();
-    beta_n->setName("beta_n");
+    auto beta_n = libcellml::Variable::create("beta_n");
     beta_n->setUnits("per_millisecond");
-    beta_n->setInitialValue(2.0);
 
-    auto n = libcellml::Variable::create();
-    n->setName("n");
+    auto n = libcellml::Variable::create("n");
     n->setUnits("dimensionless");
-    n->setInitialValue(1.0);
 
-    auto E_K = libcellml::Variable::create();
-    E_K->setName("E_K");
+    auto E_K = libcellml::Variable::create("E_K");
     E_K->setUnits("millivolt");
-    E_K->setInitialValue(-85.0);
 
-    auto i_K = libcellml::Variable::create();
-    i_K->setName("i_K");
+    auto i_K = libcellml::Variable::create("i_K");
     i_K->setUnits("microA_per_cm2");
-    // Note that no initial value is needed for this variable as its value
-    // is defined by equation2
 
-    auto g_K = libcellml::Variable::create();
-    g_K->setName("g_K");
+    auto g_K = libcellml::Variable::create("g_K");
     g_K->setUnits("milliS_per_cm2");
-    g_K->setInitialValue(36.0);
 
-    auto gamma = libcellml::Variable::create();
-    gamma->setName("gamma");
+    auto gamma = libcellml::Variable::create("gamma");
     gamma->setUnits("dimensionless");
-    gamma->setInitialValue(4.0);
 
     //  3.c Adding the variables to the component.  Note that Variables are
     //      added by their pointer (cf. their name)
@@ -190,25 +171,20 @@ int main()
     //      microA_per_cm2, and milliS_per_cm2. Note that the dimensionless
     //      units are part of those built-in already, so do not need to be
     //      defined here.
-    auto ms = libcellml::Units::create();
-    ms->setName("millisecond");
+    auto ms = libcellml::Units::create("millisecond");
     ms->addUnit("second", "milli");
 
-    auto mV = libcellml::Units::create();
-    mV->setName("millivolt");
+    auto mV = libcellml::Units::create("millivolt");
     mV->addUnit("volt", "milli");
 
-    auto per_ms = libcellml::Units::create();
-    per_ms->setName("per_millisecond");
+    auto per_ms = libcellml::Units::create("per_millisecond");
     per_ms->addUnit("millisecond", -1.0);
 
-    auto microA_per_cm2 = libcellml::Units::create();
-    microA_per_cm2->setName("microA_per_cm2");
+    auto microA_per_cm2 = libcellml::Units::create("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2.0);
 
-    auto mS_per_cm2 = libcellml::Units::create();
-    mS_per_cm2->setName("milliS_per_cm2");
+    auto mS_per_cm2 = libcellml::Units::create("milliS_per_cm2");
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
 
@@ -224,25 +200,41 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Output the model" << std::endl;
+    std::cout << "  STEP 5: Set the initial conditions" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  5.a Create a Generator item, set the profile (that is, the output
+    //  5.a Finally we can set the initial conditions for the simulation.  Note that
+    //      variables of integration (VOI, in this case, time, t) must not be
+    //      initialised; to do so will cause an error to be returned from the Generator
+    //      later.  Variables whose value can be calculated from the equations
+    //      do not need to be initialised either.
+    V->setInitialValue(0.0);
+    alpha_n->setInitialValue(1.0);
+    beta_n->setInitialValue(2.0);
+    n->setInitialValue(1.0);
+    E_K->setInitialValue(-85.0);
+    g_K->setInitialValue(36.0);
+    gamma->setInitialValue(4.0);
+
+    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "  STEP 6: Output the model" << std::endl;
+    std::cout << "-----------------------------------------------" << std::endl;
+
+    //  6.a Create a Generator item, set the profile (that is, the output
     //      language) to your choice of C (the default) or Python (see below), and
     //      submit the model for processing.
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
 
-    //  5.b Check that the Generator has not encountered any errors.
+    //  6.b Check that the Generator has not encountered any errors.
     printErrorsToTerminal(generator);
     assert(generator->errorCount() == 0);
 
-    //  5.c Retrieve the output code from the Generator, remembering
+    //  6.c Retrieve the output code from the Generator, remembering
     //      that for output in C you will need both the interfaceCode (the
     //      header file contents) as well as the implementationCode (the source
     //      file contents), whereas for Python you need only output the
     //      implementationCode.  Write the file(s).
-
     std::ofstream outFile("tutorial5_IonChannelModel_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
@@ -252,7 +244,7 @@ int main()
     outFile.close();
 
     auto profile =
-    libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 
@@ -260,11 +252,11 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    //  5.d Create a Printer item and submit your model for serialisation.
+    //  6.d Create a Printer item and submit your model for serialisation.
     auto printer = libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(model);
 
-    //  5.e Write the serialised string output from the printer to a file.
+    //  6.e Write the serialised string output from the printer to a file.
     std::string outFileName = "tutorial5_IonChannelModel.cellml";
     outFile.open(outFileName);
     outFile << serialisedModelString;
@@ -273,5 +265,6 @@ int main()
     std::cout << "The created '" << model->name()
               << "' model has been printed to: " << outFileName << std::endl;
 
-    //  5.f Go and have a cuppa, you're done!
+    //  6.f Please see the instructions for how to run your simulation using
+    //      the simple solver provided.  Then go and have a cuppa, you're done!
 }
