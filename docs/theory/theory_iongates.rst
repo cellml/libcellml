@@ -14,8 +14,8 @@ The theory here is the basis for the the practical modelling tutorial in
 .. contents::
    :local:
 
-Understanding entropy
----------------------
+Chemical theory and entropy
+---------------------------
 A good example of a model based on a first order equation is the one
 used by Hodgkin and Huxley :cite:`10` to describe the gating behaviour of an
 ion channel. Before we describe the
@@ -103,8 +103,8 @@ where
 is the 'universal gas constant'\ [#]_. At 25°C (:math:`298K`)
 :math:`{RT} \approx 2.5 \text{ }(kJ.mol^{-1})`.
 
-
-
+Electrical theory
+-----------------
 Every positively charged ion that crosses the membrane raises the
 potential difference and produces an electrostatic driving force that
 opposes the entropic force (see :numref:`ocr_tut_bal_force`). To move an
@@ -191,6 +191,8 @@ open channel conductance.
    that the right hand graph has an initial S-shaped increase, reflecting the
    multiple gates in series.
 
+Mathematical modelling
+----------------------
 To describe the time dependent transition between the closed and open
 states of the channel, Hodgkin and Huxley introduced the idea of channel
 gates that control the passage of ions through a membrane ion channel.
@@ -243,40 +245,33 @@ where
 
 is the steady state current through the open gate.
 
-
 .. _ion_gate_status:
-.. figure:: images/tut5_gate.png
+.. figure:: images/tut5.png
    :name: ion_gate_status
-   :alt: Gate status for a single gate
+   :alt: Gate status for a single gate, and current through four gates
    :align: center
    :width: 12cm
 
-   Dynamics of opening status for a single gate
-
-.. _ion_current:
-.. figure:: images/tut5_current.png
-   :name: ion_current
-   :alt: Ion current
-   :align: center
-   :width: 12cm
-
-   Ion current for :math:`\gamma=4` gates.
+   Dynamics of opening status for a single gate, and the resulting current
+   for :math:`\gamma=4` gates in series.
 
 The behaviour of an ion channel with :math:`\gamma = 4`
 gates transitioning from the closed to the open state at a membrane
-voltage :math:`V = 0` is shown in :numref:`ion_gate_status` and
-:numref:`ion_current`. The opening and closing rate constants are
+voltage :math:`V = 0` is shown in :numref:`ion_gate_status`. The opening and
+closing rate constants are
 :math:`\alpha_{y} = 1` ms\ :sup:`-1` and :math:`\beta_{y} = 2`
 ms\ :sup:`-1`. The ion channel has an open conductance of
 :math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
 equilibrium potential of :math:`E_{Y} = - 85` mV.
 
-The upper transient shown in :numref:`ion_gate_status` is
+The green line in :numref:`ion_gate_status` is
 the response :math:`y\left( t \right)` for each gate and
-:numref:`ion_current` shows the current through the channel.
+the blue line shows the current through the channel.
 Note the slow start to the current trace in comparison with the single
 gate transient :math:`y\left( t \right)`.
 
+Next steps
+----------
 The model of a gated ion channel presented here is used in the next two
 sections for the neural potassium and sodium channels. The gates create the
 transience of the channel's conductance through the
