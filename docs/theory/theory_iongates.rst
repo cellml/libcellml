@@ -210,7 +210,9 @@ The constant :math:`A` can be interpreted as:
 
 as in the previous example and, with :math:`y\left( 0 \right) = 0` (i.e.
 all gates initially shut), the solution looks like
-:numref:`Fig. %s(a) <ocr_tut_trans_gate_beh>`.
+:numref:`Fig. %s(a) <ocr_tut_trans_gate_beh>`.  The experimental data obtained
+by Hodgkin and Huxley for the squid axon indicated that the initial current
+flow began more slowly, as in :numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`.
 
 .. figure:: images/transient_beh_gates.png
    :name: ocr_tut_trans_gate_beh
@@ -222,14 +224,10 @@ all gates initially shut), the solution looks like
    that the right hand graph has an initial S-shaped increase, reflecting the
    multiple gates in series.
 
-The experimental data obtained by Hodgkin and Huxley for the squid axon,
-however, indicated that the initial current flow began more slowly, as in
-:numref:`Fig. %s(b) <ocr_tut_trans_gate_beh>`.  They modelled this
-by assuming that the ion channel had
-:math:`\gamma` gates in series so that conduction would only occur when
-each gate was at least partially open. Since :math:`y` is the
-probability of a gate being open, :math:`y^{\gamma}` is the probability
-of all :math:`\gamma` gates being open (since they are assumed to be
+Hodgkin and Huxley modelled this by proposing a series of gates within the ion
+channel. Conduction can only occur when each gate is at least partially open.
+Since :math:`y` is the probability of a gate being open, :math:`y^{\gamma}` is
+the probability of :math:`\gamma` gates being open (since they are assumed to be
 independent), so the current through the channel is:
 
 .. math::
@@ -242,8 +240,15 @@ where
 
     {\overset{\overline{}}{i}}_{Y}{= \overset{\overline{}}{g}}_{Y}\left( V - E_{Y} \right)
 
-is the steady state current through the open gate.
-
+is the steady state current through the open gate. The behaviour of an ion
+channel with :math:`\gamma = 4`
+gates transitioning from the closed to the open state at a membrane
+voltage :math:`V = 0` is shown in :numref:`ion_gate_status`. The opening and
+closing rate constants are
+:math:`\alpha_{y} = 1` ms\ :sup:`-1` and :math:`\beta_{y} = 2`
+ms\ :sup:`-1`. The ion channel has an open conductance of
+:math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
+equilibrium potential of :math:`E_{Y} = - 85` mV.
 
 
 .. _ion_gate_status:
@@ -255,14 +260,7 @@ is the steady state current through the open gate.
    Dynamics of opening status for a single gate, and the resulting current
    for :math:`\gamma=4` gates in series.
 
-The behaviour of an ion channel with :math:`\gamma = 4`
-gates transitioning from the closed to the open state at a membrane
-voltage :math:`V = 0` is shown in :numref:`ion_gate_status`. The opening and
-closing rate constants are
-:math:`\alpha_{y} = 1` ms\ :sup:`-1` and :math:`\beta_{y} = 2`
-ms\ :sup:`-1`. The ion channel has an open conductance of
-:math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
-equilibrium potential of :math:`E_{Y} = - 85` mV.
+
 
 The green line in :numref:`ion_gate_status` is
 the response :math:`y\left( t \right)` for each gate and
