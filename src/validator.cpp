@@ -987,22 +987,16 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 mValidator->addError(err);
                             }
 
-                            if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
+                            if (equivalentVariable->hasEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
                                 auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-                                if (!component2->hasVariable(equivalentVariable)) {
+                                if (component2 == nullptr || !component2->hasVariable(equivalentVariable)) {
                                     ErrorPtr err = Error::create();
-                                    err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
+                                    err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
                                     err->setModel(model);
                                     err->setKind(Error::Kind::CONNECTION);
                                     mValidator->addError(err);
                                 }
-                            } else {
-                                ErrorPtr err = Error::create();
-                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-                                err->setModel(model);
-                                err->setKind(Error::Kind::CONNECTION);
-                                mValidator->addError(err);
                             }
                         }
                     }

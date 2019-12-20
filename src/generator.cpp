@@ -739,7 +739,7 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
 
     for (const auto &internalVariable : mInternalVariables) {
         if ((variable == internalVariable->mVariable)
-            || variable->hasEquivalentVariable(internalVariable->mVariable)) {
+            || variable->hasEquivalentVariable(internalVariable->mVariable, true)) {
             return internalVariable;
         }
     }
@@ -1227,7 +1227,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                 mVoi = variable;
             }
         } else if ((variable != mVoi)
-                   && !variable->hasEquivalentVariable(mVoi)) {
+                   && !variable->hasEquivalentVariable(mVoi, true)) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
             ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());

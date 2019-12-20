@@ -471,40 +471,6 @@ TEST(Variable, nullParentOfVariable)
     EXPECT_EQ(nullptr, v->parent());
 }
 
-TEST(Variable, hasDirectEquivalentVariable)
-{
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-    libcellml::VariablePtr v3 = libcellml::Variable::create();
-
-    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
-    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v2));
-    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v3));
-
-    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v1));
-    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
-    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v3));
-
-    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
-    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v2));
-    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
-
-    libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v2, v3);
-
-    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
-    EXPECT_TRUE(v1->hasDirectEquivalentVariable(v2));
-    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v3));
-
-    EXPECT_TRUE(v2->hasDirectEquivalentVariable(v1));
-    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
-    EXPECT_TRUE(v2->hasDirectEquivalentVariable(v3));
-
-    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
-    EXPECT_TRUE(v3->hasDirectEquivalentVariable(v2));
-    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
-}
-
 TEST(Variable, hasEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
@@ -528,15 +494,49 @@ TEST(Variable, hasEquivalentVariable)
 
     EXPECT_FALSE(v1->hasEquivalentVariable(v1));
     EXPECT_TRUE(v1->hasEquivalentVariable(v2));
-    EXPECT_TRUE(v1->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v3));
 
     EXPECT_TRUE(v2->hasEquivalentVariable(v1));
     EXPECT_FALSE(v2->hasEquivalentVariable(v2));
     EXPECT_TRUE(v2->hasEquivalentVariable(v3));
 
-    EXPECT_TRUE(v3->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v1));
     EXPECT_TRUE(v3->hasEquivalentVariable(v2));
     EXPECT_FALSE(v3->hasEquivalentVariable(v3));
+}
+
+TEST(Variable, hasIndirectEquivalentVariable)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+
+    EXPECT_FALSE(v1->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v3, true));
+
+    EXPECT_FALSE(v2->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v3, true));
+
+    EXPECT_FALSE(v3->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v3, true));
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    EXPECT_FALSE(v1->hasEquivalentVariable(v1, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
+
+    EXPECT_TRUE(v2->hasEquivalentVariable(v1, true));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v2, true));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3, true));
+
+    EXPECT_TRUE(v3->hasEquivalentVariable(v1, true));
+    EXPECT_TRUE(v3->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v3, true));
 }
 
 TEST(Variable, addVariableToUnnamedComponent)
@@ -1164,4 +1164,244 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(e);
     EXPECT_EQ(size_t(0), parser->errorCount());
+}
+
+TEST(Variable, parentlessUsingRemoveVariable)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    m->addComponent(comp1);
+
+    EXPECT_TRUE(v1->hasParent());
+    // Make a variable without a parent component.
+    comp1->removeVariable(v1);
+
+    EXPECT_EQ(size_t(0), comp1->variableCount());
+    EXPECT_FALSE(v1->hasParent());
+    EXPECT_EQ(nullptr, v1->parent());
+}
+
+TEST(Variable, parentlessUsingRemoveAllVariables)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp1->addVariable(v2);
+    m->addComponent(comp1);
+
+    EXPECT_TRUE(v1->hasParent());
+    EXPECT_TRUE(v2->hasParent());
+
+    // Make a variable without a parent component.
+    comp1->removeAllVariables();
+
+    EXPECT_EQ(size_t(0), comp1->variableCount());
+    EXPECT_FALSE(v1->hasParent());
+    EXPECT_FALSE(v2->hasParent());
+    EXPECT_EQ(nullptr, v1->parent());
+    EXPECT_EQ(nullptr, v2->parent());
+}
+
+TEST(Variable, removeIndirectEquivalence)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp1->addVariable(v2);
+    comp1->addVariable(v3);
+    m->addComponent(comp1);
+
+    EXPECT_TRUE(v1->hasParent());
+    EXPECT_TRUE(v2->hasParent());
+    EXPECT_TRUE(v3->hasParent());
+
+    // Make v1=v2=v3
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v1, v3);
+
+    // All variables connected ...
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
+
+    // ... but not directly through v1-v2
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3));
+
+    // Attempt to remove v1=v2
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(v1, v2));
+
+    // But cannot remove indirect equivalence
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2)); // It never was anyway, no change here
+
+    // Nothing else should have changed here
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3, true));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3));
+}
+
+TEST(Variable, leaveExpiredVariable)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::Variable::addEquivalence(v1, v2);
+    v2.reset();
+    libcellml::Variable::addEquivalence(v1, v3);
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3));
+}
+
+TEST(Variable, addEquivalenceFirstParameterNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(nullptr, v1));
+}
+
+TEST(Variable, addEquivalenceSecondParameterNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, nullptr));
+}
+
+TEST(Variable, addEquivalenceBothParametersNullptr)
+{
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(nullptr, nullptr));
+}
+
+TEST(Variable, removeEquivalenceFirstParametersNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(nullptr, v1));
+}
+
+TEST(Variable, removeEquivalenceSecondParametersNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+
+    v1->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+
+    m->addComponent(comp1);
+
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(v1, nullptr));
+}
+
+TEST(Variable, removeEquivalenceBothParametersNullptr)
+{
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(nullptr, nullptr));
+}
+
+TEST(Variable, hasEquivalentVariableWithNullptr)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    c1->setName("component1");
+    v1->setName("variable1");
+    v1->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    EXPECT_FALSE(v1->hasEquivalentVariable(nullptr));
 }
