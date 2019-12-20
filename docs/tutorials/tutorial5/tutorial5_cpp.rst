@@ -305,7 +305,7 @@ inside the :code:`Generator`.
 .. code-block:: cpp
 
     // Change the generated language from the default C to Python if need be
-    libcellml::GeneratorProfilePtr profile =
+    auto profile =
         libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
 

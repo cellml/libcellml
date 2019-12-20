@@ -36,8 +36,8 @@ int main() {
   std::stringstream inFileContents;
   inFileContents << inFile.rdbuf();
   std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
-  libcellml::ParserPtr parser = libcellml::Parser::create();
-  libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
+  auto parser = libcellml::Parser::create();
+  auto model = parser->parseModel(inFileContents.str());
 
   // ---------------------------------------------------------------------------
   //  STEP 2:   Print the contents of the model to the terminal so that we can
@@ -56,7 +56,7 @@ int main() {
   std::cout << "-----------------------------------------------" << std::endl;
   std::cout << "       Validating the parsed model" << std::endl;
   std::cout << "-----------------------------------------------" << std::endl;
-  libcellml::ValidatorPtr validator = libcellml::Validator::create();
+  auto validator = libcellml::Validator::create();
   validator->validateModel(model);
 
   //  2.b   Check whether there were errors returned from the validator
@@ -129,7 +129,7 @@ int main() {
   //  or we can create a pointer to them instead.
   //  Initial values (if set) must be a valid variable name in the same
   //  component, or a real number.
-  libcellml::VariablePtr variableC = model->component(0)->variable("c");
+  auto variableC = model->component(0)->variable("c");
   variableC->setInitialValue(20.0);
 
   // 3.d
@@ -143,7 +143,7 @@ int main() {
   //  These two errors go together too.  Because we haven't defined a units
   //  attribute for variable 'd', it effectively has a blank name, which is not
   //  allowed.  Simply assigning a unit to the variable will fix both errors.
-  libcellml::VariablePtr variableD = model->component(0)->variable("d");
+  auto variableD = model->component(0)->variable("d");
   variableD->setUnits("dimensionless");
 
   // 3.e
@@ -173,7 +173,7 @@ int main() {
             << " errors in the model." << std::endl;
 
   //  STEP 6:   Print corrected model to a file
-  libcellml::PrinterPtr printer=libcellml::Printer::create();
+  auto printer=libcellml::Printer::create();
   std::string serialisedModelString = printer->printModel(model);
   std::string outFileName = "tutorial1_printed.cellml";
   std::ofstream outFile(outFileName);

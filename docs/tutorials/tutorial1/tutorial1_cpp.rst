@@ -84,11 +84,11 @@ point.
 .. code-block:: cpp
 
     // Create a parser instance
-    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto parser = libcellml::Parser::create();
 
     // Create a ModelPtr instance and populate it with the string contents
     // from the inFileContents item:
-    libcellml::ModelPtr myFirstModel = parser->parseModel(inFileContents.str());
+    auto myFirstModel = parser->parseModel(inFileContents.str());
 
 Now we have a *deserialsied* CellML model which we can manipulate using the
 libCellML library.
@@ -142,7 +142,7 @@ type) using the same idiom as the names and ids:
 
     // Retrieving the 33rd component from myFirstModel.  Note the indexing
     // from zero.
-    libcellml::ComponentPtr thirtyThirdComponent = myFirstModel->component(32);
+    auto thirtyThirdComponent = myFirstModel->component(32);
 
 .. container:: dothis
 
@@ -185,7 +185,7 @@ for file output.
 
 .. code-block:: cpp
 
-    libcellml::PrinterPtr printer=libcellml::Printer::create();
+    auto printer = libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(myFirstModel);
 
 .. container:: dothis

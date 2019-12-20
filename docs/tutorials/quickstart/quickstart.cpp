@@ -23,7 +23,7 @@ int main()
 
     //  1.b   Create a libCellML Parser, and use it to parse the inFileContents
     //        stream and return it as a ModelPtr instance
-    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
 
     //  1.c   Print to the terminal to see the model contents
@@ -157,7 +157,7 @@ int main()
     std::cout << "The " << outFileName << " has been written." << std::endl;
 
     //  4.e  Change the generator profile from C to Python and reprocess
-    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 

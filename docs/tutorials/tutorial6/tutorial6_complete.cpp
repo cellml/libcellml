@@ -48,7 +48,7 @@ int main()
     inFileContents << inFile.rdbuf();
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
-    libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
+    auto model = parser->parseModel(inFileContents.str());
     model->setName("Tutorial6_PotassiumChannelModel");
 
     //  1.b Print to the screen and notice that there are three variables in
@@ -61,7 +61,7 @@ int main()
     printErrorsToTerminal(validator);
 
     //  1.d Retrieve and rename the component.
-    libcellml::ComponentPtr nGate = model->component(0);
+    auto nGate = model->component(0);
     nGate->setName("nGate");
 
     //  1.e Remove its maths
@@ -256,7 +256,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  2.a Create the potassiumChannel component and add to the model.
-    libcellml::ComponentPtr potassiumChannel = libcellml::Component::create("potassiumChannel");
+    auto potassiumChannel = libcellml::Component::create("potassiumChannel");
     model->addComponent(potassiumChannel);
     potassiumChannel->addComponent(nGate);
 
@@ -273,45 +273,45 @@ int main()
 
     //  2.c Create the remaining variables for the potassium channel
     {
-        libcellml::VariablePtr E_K = libcellml::Variable::create("E_K");
+        auto E_K = libcellml::Variable::create("E_K");
         E_K->setUnits("millivolt");
         // E_K->setInitialValue(-85.0);
         potassiumChannel->addVariable(E_K);
 
-        libcellml::VariablePtr i_K = libcellml::Variable::create("i_K");
+        auto i_K = libcellml::Variable::create("i_K");
         i_K->setUnits("microA_per_cm2");
         potassiumChannel->addVariable(i_K);
 
-        libcellml::VariablePtr g_K = libcellml::Variable::create("g_K");
+        auto g_K = libcellml::Variable::create("g_K");
         g_K->setUnits("milliS_per_cm2");
         g_K->setInitialValue(36.0);
         potassiumChannel->addVariable(g_K);
 
-        libcellml::VariablePtr V = libcellml::Variable::create("V");
+        auto V = libcellml::Variable::create("V");
         V->setUnits("millivolt");
         potassiumChannel->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create("t");
+        auto t = libcellml::Variable::create("t");
         t->setUnits("millisecond");
         potassiumChannel->addVariable(t);
 
-        libcellml::VariablePtr n = libcellml::Variable::create("n");
+        auto n = libcellml::Variable::create("n");
         n->setUnits("dimensionless");
         potassiumChannel->addVariable(n);
 
-        libcellml::VariablePtr Ko = libcellml::Variable::create("Ko");
+        auto Ko = libcellml::Variable::create("Ko");
         Ko->setUnits("millimol");
         potassiumChannel->addVariable(Ko);
 
-        libcellml::VariablePtr Ki = libcellml::Variable::create("Ki");
+        auto Ki = libcellml::Variable::create("Ki");
         Ki->setUnits("millimol");
         potassiumChannel->addVariable(Ki);
 
-        libcellml::VariablePtr RTF = libcellml::Variable::create("RTF");
+        auto RTF = libcellml::Variable::create("RTF");
         RTF->setUnits("millivolt");
         potassiumChannel->addVariable(RTF);
 
-        libcellml::VariablePtr K_conductance = libcellml::Variable::create("K_conductance");
+        auto K_conductance = libcellml::Variable::create("K_conductance");
         K_conductance->setUnits("milliS_per_cm2");
         potassiumChannel->addVariable(K_conductance);
 
@@ -365,15 +365,15 @@ int main()
     printErrorsToTerminal(validator);
 
     //  2.f Add the missing units and recheck the validation
-    libcellml::UnitsPtr mM = libcellml::Units::create("millimol");
+    auto mM = libcellml::Units::create("millimol");
     mM->addUnit("mole", "milli");
 
-    libcellml::UnitsPtr microA_per_cm2 = libcellml::Units::create();
+    auto microA_per_cm2 = libcellml::Units::create();
     microA_per_cm2->setName("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2.0);
 
-    libcellml::UnitsPtr mS_per_cm2 = libcellml::Units::create();
+    auto mS_per_cm2 = libcellml::Units::create();
     mS_per_cm2->setName("milliS_per_cm2");
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
@@ -390,19 +390,19 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  3.a Creating the new environment component
-    libcellml::ComponentPtr environment = libcellml::Component::create();
+    auto environment = libcellml::Component::create();
     environment->setName("environment");
 
     //  3.b Add variables to the component.  Use brackets to define the scope of
     //      these variables. This means that we can use variables with the same
     //      symbol elsewhere.
     {
-        libcellml::VariablePtr V = libcellml::Variable::create();
+        auto V = libcellml::Variable::create();
         V->setName("V");
         V->setUnits("millivolt");
         environment->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create();
+        auto t = libcellml::Variable::create();
         t->setName("t");
         t->setUnits("millisecond");
         environment->addVariable(t);

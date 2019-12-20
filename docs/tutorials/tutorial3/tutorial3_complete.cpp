@@ -33,7 +33,7 @@ int main()
     //  STEP 1: Create the model, component and maths
     //
     //  1.a   Create the ModelPtr
-    libcellml::ModelPtr model = libcellml::Model::create();
+    auto model = libcellml::Model::create();
     model->setName("tutorial_3_model");
     model->setId("tutorial_3_model_id");
 
@@ -43,7 +43,7 @@ int main()
 
     //  1.b   Create a component to use as an integrator, set its attributes and
     //        add it to the model
-    libcellml::ComponentPtr component = libcellml::Component::create();
+    auto component = libcellml::Component::create();
     component->setName("predator_prey_component");
     model->addComponent(component);
 
@@ -115,7 +115,7 @@ int main()
 
     //  1.g Call the validator and check for error so far.  We expect there to be 20 errors found, related to missing variables
     //      in the component.
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    auto validator = libcellml::Validator::create();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
@@ -124,13 +124,13 @@ int main()
 
     //  2.a Create the variables listed by the validator: d, a, b, c, time, y_s, y_f
 
-    libcellml::VariablePtr sharks = libcellml::Variable::create("y_s");
-    libcellml::VariablePtr fish = libcellml::Variable::create("y_f");
-    libcellml::VariablePtr time = libcellml::Variable::create("time");
-    libcellml::VariablePtr a = libcellml::Variable::create("a");
-    libcellml::VariablePtr b = libcellml::Variable::create("b");
-    libcellml::VariablePtr c = libcellml::Variable::create("c");
-    libcellml::VariablePtr d = libcellml::Variable::create("d");
+    auto sharks = libcellml::Variable::create("y_s");
+    auto fish = libcellml::Variable::create("y_f");
+    auto time = libcellml::Variable::create("time");
+    auto a = libcellml::Variable::create("a");
+    auto b = libcellml::Variable::create("b");
+    auto c = libcellml::Variable::create("c");
+    auto d = libcellml::Variable::create("d");
 
     //  2.b Add the variables into the component
 
@@ -150,31 +150,31 @@ int main()
     //  STEP 3: Create the Units and add them to the model
 
     //  3.a Create the day, month, and per_month units
-    libcellml::UnitsPtr day = libcellml::Units::create("day");
+    auto day = libcellml::Units::create("day");
     day->addUnit("second", 0, 1, 86400); // base unit, prefix, exponent, multiplier
     model->addUnits(day);
 
-    libcellml::UnitsPtr month = libcellml::Units::create("month");
+    auto month = libcellml::Units::create("month");
     month->addUnit("day", 0, 1, 30); // base unit, prefix, exponent, multiplier
     model->addUnits(month);
 
-    libcellml::UnitsPtr per_month = libcellml::Units::create("per_month");
+    auto per_month = libcellml::Units::create("per_month");
     per_month->addUnit("month", -1); // base unit, exponent
     model->addUnits(per_month);
 
     //  3.b Create the sharks and fishes base units
-    libcellml::UnitsPtr number_of_sharks = libcellml::Units::create("number_of_sharks");
-    libcellml::UnitsPtr thousands_of_fish = libcellml::Units::create("thousands_of_fish");
+    auto number_of_sharks = libcellml::Units::create("number_of_sharks");
+    auto thousands_of_fish = libcellml::Units::create("thousands_of_fish");
     model->addUnits(number_of_sharks);
     model->addUnits(thousands_of_fish);
 
     //  3.c Combined units for the constants
-    libcellml::UnitsPtr b_units = libcellml::Units::create("per_shark_month");
+    auto b_units = libcellml::Units::create("per_shark_month");
     b_units->addUnit("per_month");
     b_units->addUnit("number_of_sharks", -1);
     model->addUnits(b_units);
 
-    libcellml::UnitsPtr d_units = libcellml::Units::create("per_1000fish_month");
+    auto d_units = libcellml::Units::create("per_1000fish_month");
     d_units->addUnit("per_month");
     d_units->addUnit("thousands_of_fish", -1);
     model->addUnits(d_units);
@@ -220,7 +220,7 @@ int main()
 
     //  4.a Create a generator instance and pass it the model for processing.  The
     //      default profile is to generate C code, but we can change this later.
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto generator = libcellml::Generator::create();
     generator->processModel(model);
 
     //  4.b Check for errors found in the generator
@@ -249,7 +249,7 @@ int main()
     outFile.close();
 
     //  4.e Change the generator profile to Python
-    libcellml::GeneratorProfilePtr profile =
+    auto profile =
         libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
 

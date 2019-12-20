@@ -31,8 +31,8 @@ int main() {
 
   //  1.b   Create a libCellML Parser, and use it to parse the fileContents
   //        string and convert it into a CellML Model structure
-  libcellml::ParserPtr parser = libcellml::Parser::create();
-  libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
+  auto parser = libcellml::Parser::create();
+  auto model = parser->parseModel(inFileContents.str());
 
   // ---------------------------------------------------------------------------
   //  STEP 2:   Investigate the model we've just loaded and see what's inside it
@@ -57,7 +57,7 @@ int main() {
   //  2.c   Return the name and id of the first component and print them to
   //        the screen.
 
-  libcellml::ComponentPtr component = model->component(0);
+  auto component = model->component(0);
   std::string componentName = component->name();
   std::string componentId = component->id();
   std::cout << "  Component[0] has name: " << componentName << std::endl;
@@ -71,7 +71,7 @@ int main() {
             << numberOfVariables << " variable(s):" << std::endl;
 
   for (size_t v = 0; v < numberOfVariables; ++v) {
-    libcellml::VariablePtr variable = component->variable(v);
+    auto variable = component->variable(v);
     std::string variableName = variable->name();
 
     std::cout << "    Variable[" << v << "] has name: " << variableName
@@ -91,7 +91,7 @@ int main() {
   //  STEP 3: Print the model to another CellML file
   //  3.a   Create a Printer and use it to serialise the model to a string
 
-  libcellml::PrinterPtr printer=libcellml::Printer::create();
+  auto printer=libcellml::Printer::create();
   std::string serialisedModelString = printer->printModel(model);
 
   //  3.b   Write the serialised string to a file

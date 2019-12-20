@@ -80,7 +80,7 @@ what's missing or incorrect as you go.  This is really easy:
 
 .. code-block:: cpp
 
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    auto validator = libcellml::Validator::create();
     validator->validateModel(yourModelHere);
 
 .. container:: dothis
@@ -232,7 +232,7 @@ must be a valid variable name in the same component, or a real number.
 .. code-block:: cpp
 
     // Retrieving a pointer for the problem variable with a combo of names and index
-    libcellml::VariablePtr variableC = model->component(0)->variable("c");
+    auto variableC = model->component(0)->variable("c");
 
     // Fixing the initial value of the variable.  Note that this could also be a
     // variable name in the same component.

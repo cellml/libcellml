@@ -19,9 +19,9 @@
 int main()
 {
     //  0 Setup stuff that is used throughout
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    auto validator = libcellml::Validator::create();
 
-    libcellml::ModelPtr model = libcellml::Model::create();
+    auto model = libcellml::Model::create();
     model->setName("Tutorial7_SodiumChannelModel");
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";

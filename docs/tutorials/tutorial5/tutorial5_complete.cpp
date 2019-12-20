@@ -24,17 +24,17 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a   Create the model instance
-    libcellml::ModelPtr model = libcellml::Model::create();
+    auto model = libcellml::Model::create();
     model->setName("Tutorial4_FirstOrderModel");
 
     //  1.b   Create a component and add it into the model
-    libcellml::ComponentPtr component = libcellml::Component::create();
+    auto component = libcellml::Component::create();
     component->setName("IonChannel");
     model->addComponent(component);
 
     //  1.c   Call the validator and print the messages to the terminal.
     //        No errors are expected at this stage.
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    auto validator = libcellml::Validator::create();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
@@ -120,48 +120,48 @@ int main()
     //        Note that the names given to variables must be the same as that used
     //        within the <ci> blocks in the MathML string we created in step 2.a.
 
-    libcellml::VariablePtr t = libcellml::Variable::create();
+    auto t = libcellml::Variable::create();
     t->setName("t");
     t->setUnits("millisecond");
     // Note: time is our integration base variable so is not initialised
 
-    libcellml::VariablePtr V = libcellml::Variable::create();
+    auto V = libcellml::Variable::create();
     V->setName("V");
     V->setUnits("millivolt");
     V->setInitialValue(0.0);
 
-    libcellml::VariablePtr alpha_n = libcellml::Variable::create();
+    auto alpha_n = libcellml::Variable::create();
     alpha_n->setName("alpha_n");
     alpha_n->setUnits("per_millisecond");
     alpha_n->setInitialValue(1.0);
 
-    libcellml::VariablePtr beta_n = libcellml::Variable::create();
+    auto beta_n = libcellml::Variable::create();
     beta_n->setName("beta_n");
     beta_n->setUnits("per_millisecond");
     beta_n->setInitialValue(2.0);
 
-    libcellml::VariablePtr n = libcellml::Variable::create();
+    auto n = libcellml::Variable::create();
     n->setName("n");
     n->setUnits("dimensionless");
     n->setInitialValue(1.0);
 
-    libcellml::VariablePtr E_K = libcellml::Variable::create();
+    auto E_K = libcellml::Variable::create();
     E_K->setName("E_K");
     E_K->setUnits("millivolt");
     E_K->setInitialValue(-85.0);
 
-    libcellml::VariablePtr i_K = libcellml::Variable::create();
+    auto i_K = libcellml::Variable::create();
     i_K->setName("i_K");
     i_K->setUnits("microA_per_cm2");
     // Note that no initial value is needed for this variable as its value
     // is defined by equation2
 
-    libcellml::VariablePtr g_K = libcellml::Variable::create();
+    auto g_K = libcellml::Variable::create();
     g_K->setName("g_K");
     g_K->setUnits("milliS_per_cm2");
     g_K->setInitialValue(36.0);
 
-    libcellml::VariablePtr gamma = libcellml::Variable::create();
+    auto gamma = libcellml::Variable::create();
     gamma->setName("gamma");
     gamma->setUnits("dimensionless");
     gamma->setInitialValue(4.0);
@@ -192,24 +192,24 @@ int main()
     //      microA_per_cm2, and milliS_per_cm2. Note that the dimensionless
     //      units are part of those built-in already, so do not need to be
     //      defined here.
-    libcellml::UnitsPtr ms = libcellml::Units::create();
+    auto ms = libcellml::Units::create();
     ms->setName("millisecond");
     ms->addUnit("second", "milli");
 
-    libcellml::UnitsPtr mV = libcellml::Units::create();
+    auto mV = libcellml::Units::create();
     mV->setName("millivolt");
     mV->addUnit("volt", "milli");
 
-    libcellml::UnitsPtr per_ms = libcellml::Units::create();
+    auto per_ms = libcellml::Units::create();
     per_ms->setName("per_millisecond");
     per_ms->addUnit("millisecond", -1.0);
 
-    libcellml::UnitsPtr microA_per_cm2 = libcellml::Units::create();
+    auto microA_per_cm2 = libcellml::Units::create();
     microA_per_cm2->setName("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2.0);
 
-    libcellml::UnitsPtr mS_per_cm2 = libcellml::Units::create();
+    auto mS_per_cm2 = libcellml::Units::create();
     mS_per_cm2->setName("milliS_per_cm2");
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
@@ -232,7 +232,7 @@ int main()
     //  5.a Create a Generator item, set the profile (that is, the output
     //      language) to your choice of C (the default) or Python (see below), and
     //      submit the model for processing.
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    auto generator = libcellml::Generator::create();
     generator->processModel(model);
 
     //  5.b Check that the Generator has not encountered any errors.
@@ -253,7 +253,7 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    libcellml::GeneratorProfilePtr profile =
+    auto profile =
     libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
@@ -263,7 +263,7 @@ int main()
     outFile.close();
 
     //  5.d Create a Printer item and submit your model for serialisation.
-    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    auto printer = libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(model);
 
     //  5.e Write the serialised string output from the printer to a file.

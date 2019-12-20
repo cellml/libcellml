@@ -21,10 +21,10 @@
 int main()
 {
     //  0.a Create a new model instance representing the combined model and name it.
-    libcellml::ModelPtr model = libcellml::Model::create();
+    auto model = libcellml::Model::create();
     model->setName("Tutorial8_HHModel");
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+    auto parser = libcellml::Parser::create();
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "    STEP 1: Read the membrane component" << std::endl;
@@ -39,13 +39,13 @@ int main()
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
     // 1.b  Create a temporary model for the membrane
-    libcellml::ModelPtr membraneModel = parser->parseModel(inFileContents.str());
+    auto membraneModel = parser->parseModel(inFileContents.str());
     membraneModel->setName("membraneModel");
 
     //  1.b Extract the membrane component from the parsed model and add it
     //      to the combined model.  Note that the membrane component's parent
     //      must be cleared before adding it to the model.
-    libcellml::ComponentPtr membrane = membraneModel->component("membrane");
+    auto membrane = membraneModel->component("membrane");
     membrane->removeParent();
     model->addComponent(membrane);
 
@@ -78,13 +78,13 @@ int main()
 
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
-    libcellml::ModelPtr sodiumChannelModel = parser->parseModel(inFileContents.str());
+    auto sodiumChannelModel = parser->parseModel(inFileContents.str());
     sodiumChannelModel->setName("sodiumChannelModel");
 
     //  2.b Extract the sodiumChannel component from the parsed model and add it
     //      to the one created at the beginning, and check the structure of the
     //      encapsulation using the utility function printEncapsulationStructureToTerminal(model)
-    libcellml::ComponentPtr sodiumChannel = sodiumChannelModel->component("sodiumChannel");
+    auto sodiumChannel = sodiumChannelModel->component("sodiumChannel");
     sodiumChannel->removeParent();
     membrane->addComponent(sodiumChannel);
     printEncapsulationStructureToTerminal(model);
@@ -130,12 +130,12 @@ int main()
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
     //  3.a Deserialising the file and reading into the potassiumChannelModel
-    libcellml::ModelPtr potassiumChannelModel = parser->parseModel(inFileContents.str());
+    auto potassiumChannelModel = parser->parseModel(inFileContents.str());
     potassiumChannelModel->setName("potassiumChannelModel");
 
     //  3.b Extract the potassiumChannel component from the parsed model and add it
     //      to the combined model, and check the contents
-    libcellml::ComponentPtr potassiumChannel = potassiumChannelModel->component("potassiumChannel");
+    auto potassiumChannel = potassiumChannelModel->component("potassiumChannel");
     potassiumChannel->removeParent();
     membrane->addComponent(potassiumChannel);
 
@@ -206,12 +206,12 @@ int main()
     std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
     //  4.a Deserialising the file and reading into the leakageCurrentModel
-    libcellml::ModelPtr leakageCurrentModel = parser->parseModel(inFileContents.str());
+    auto leakageCurrentModel = parser->parseModel(inFileContents.str());
     leakageCurrentModel->setName("leakageCurrentModel");
 
     //  4.b Extract the leakageCurrent component from the parsed model and add it
     //      to the combined model, and check the contents
-    libcellml::ComponentPtr leakageCurrent = leakageCurrentModel->component("leakageCurrent");
+    auto leakageCurrent = leakageCurrentModel->component("leakageCurrent");
     leakageCurrent->removeParent();
     membrane->addComponent(leakageCurrent);
 
@@ -226,19 +226,19 @@ int main()
     printEncapsulationStructureToTerminal(model);
 
     //  5.a Creating the environment component and adding it to the model
-    libcellml::ComponentPtr environment = libcellml::Component::create();
+    auto environment = libcellml::Component::create();
     environment->setName("environment");
     model->addComponent(environment);
 
     //  5.b Add variables to the environment component.
     {
-        libcellml::VariablePtr V = libcellml::Variable::create();
+        auto V = libcellml::Variable::create();
         V->setName("V");
         V->setInitialValue(-85);
         V->setUnits("mV");
         environment->addVariable(V);
 
-        libcellml::VariablePtr t = libcellml::Variable::create();
+        auto t = libcellml::Variable::create();
         t->setName("t");
         t->setUnits("ms");
         environment->addVariable(t);

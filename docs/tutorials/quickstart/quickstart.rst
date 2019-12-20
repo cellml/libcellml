@@ -67,7 +67,7 @@ In C++:
     inFileContents << inFile.rdbuf();
 
     // Creating a Parser instance
-    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto parser = libcellml::Parser::create();
 
     // Deserialising the CellML contents of the parsed file into a Model pointer
     libcellml::ModelPtr model = parser->parseModel(inFileContents.str());

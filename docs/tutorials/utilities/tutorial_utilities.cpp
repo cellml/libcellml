@@ -6,7 +6,7 @@
 
 #include "tutorial_utilities.h"
 
-void printModelToTerminal(libcellml::ModelPtr &model)
+void printModelToTerminal(auto &model)
 {
     std::cout << "The model name is: '" << model->name() << "'" << std::endl;
     if (model->id() != "") {
@@ -26,13 +26,13 @@ void printModelToTerminal(libcellml::ModelPtr &model)
               << " components:" << std::endl;
     for (size_t c = 0; c < model->componentCount(); ++c) {
         // 2.c  Printing the attributes of the component
-        libcellml::ComponentPtr component = model->component(c);
+        auto component = model->component(c);
         std::string spacer = "  ";
         printComponentToTerminal(component, c, spacer);
     }
 }
 
-void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
+void printComponentToTerminal(const auto &component, size_t const c, std::string const spacer)
 {
     std::cout << spacer << "Component[" << c << "] has name: '"
               << component->name() << "'" << std::endl;
@@ -73,14 +73,14 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
                   << " child components:" << std::endl;
 
         for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
-            libcellml::ComponentPtr child = component->component(c2);
+            auto child = component->component(c2);
             std::string oneMoreSpacer = spacer + "  ";
             printComponentToTerminal(child, c2, oneMoreSpacer);
         }
     }
 }
 
-void printErrorsToTerminal(libcellml::ValidatorPtr &item)
+void printErrorsToTerminal(auto &item)
 {
     //  2.b   Check whether there were errors returned from the item
     int numberOfValidationErrors = item->errorCount();
@@ -107,7 +107,7 @@ void printErrorsToTerminal(libcellml::ValidatorPtr &item)
     }
 }
 
-void printErrorsToTerminal(libcellml::GeneratorPtr &item)
+void printErrorsToTerminal(auto &item)
 {
     //  2.b   Check whether there were errors returned from the item
     int numberOfErrors = item->errorCount();
@@ -230,7 +230,7 @@ std::string getProfileFromEnum(libcellml::GeneratorProfile::Profile myType)
     return myTypeAsString;
 }
 
-void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model)
+void printEncapsulationStructureToTerminal(auto &model)
 {
     // Prints the encapsulation structure of the model to the terminal
     std::string spacer = "  - ";
@@ -239,17 +239,17 @@ void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model)
               << " components" << std::endl;
 
     for (size_t c = 0; c < model->componentCount(); ++c) {
-        libcellml::ComponentPtr child = model->component(c);
+        auto child = model->component(c);
         printComponentOnlyToTerminal(child, spacer);
     }
 }
 
-void printComponentOnlyToTerminal(libcellml::ComponentPtr &component, std::string spacer)
+void printComponentOnlyToTerminal(auto &component, std::string spacer)
 {
     std::cout << spacer << "Component '" << component->name() << "' has " << component->componentCount() << " child components" << std::endl;
     for (size_t c = 0; c < component->componentCount(); c++) {
         std::string anotherSpacer = "    " + spacer;
-        libcellml::ComponentPtr child = component->component(c);
+        auto child = component->component(c);
         printComponentOnlyToTerminal(child, anotherSpacer);
     }
 }

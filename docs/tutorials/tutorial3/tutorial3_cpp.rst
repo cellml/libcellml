@@ -378,7 +378,7 @@ example:
 .. code-block:: cpp
 
     // Declaring, naming, and defining a "millisecond" unit pointer
-    libcellml::UnitsPtr ms = libcellml::Units::create("millisecond");
+    auto ms = libcellml::Units::create("millisecond");
 
     // The manner of specification here is agnostic: all three definitions are identical.
     ms->addUnit("second", "milli");  // reference unit and built-in prefix
@@ -416,13 +416,13 @@ own.  Here's an example.
 .. code-block:: cpp
 
     // Create a custom irreducible unit named "banana"
-    libcellml::UnitsPtr uBanana = libcellml::Units::create();
+    auto uBanana = libcellml::Units::create();
     uBanana->setName("banana");
 
     // Note that when a UnitsPtr is defined with a name only, it is effectively irreducible.
 
     // Create a new compound unit based on the "banana" unit above
-    libcellml::UnitsPtr uBunchOfBananas = libcellml::Units::create();
+    auto uBunchOfBananas = libcellml::Units::create();
     u2->setName("bunch_of_bananas");
     u2->addUnit("banana", 5.0);  // include bananas^5 in the bunch_of_bananas unit
 
@@ -519,7 +519,7 @@ The generator is instantiated in the same way as the other items:
 .. code-block:: cpp
 
     // Instantiate the generator and submit the model to it for processing
-    libcellml::GeneratorPtr generator=libcellml::Generator::create();
+    auto generator=libcellml::Generator::create();
     generator->processModel(model);
 
 The :code:`Generator` has to re-interpret all of the maths, including the
@@ -629,7 +629,7 @@ We can change the profile to Python using the following expression:
 .. code-block:: cpp
 
     // Change the generated language from the default C to Python
-    libcellml::GeneratorProfilePtr profile =
+    auto profile =
         libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
 
