@@ -63,7 +63,7 @@ Because this is for generated code in C we will use the files:
 
 .. container:: dothis
 
-    **1.d** The version which the generated code was created with is stored in
+    **1.c** The version which the generated code was created with is stored in
     a variable called :code:`LIBCELLML_VERSION`.  Print this to the terminal
     and check that it matches the version of libCellML library which you're
     using, just like in :ref:`Tutorial 0<tutorial0>`.
@@ -314,14 +314,14 @@ throughout the solution process.  This is done by calling the
 
     void computeRates(double voi, double *states, double *rates, double *variables)
     {
-        // The "rates" array contains the gradient functions for each of the variables
-        // which are being integrated (the "states")
+        // The "rates" array contains the gradient function for each of the variables
+        // which is being integrated (the "states")
 
         // This equation is the equivalent of d(sharks)/dt = a*y_sharks + b*y_sharks*y_fishes
-        rates[0] = variables[0]*states[0]+variables[1]*states[0]*states[1];
+        rates[0] = variables[0]*states[0] + variables[1]*states[0]*states[1];
 
         // This equation is the equivalent of d(fishes)/dt = c*y_fishes + d*y_sharks*y_fishes
-        rates[1] = variables[3]*states[1]+variables[2]*states[0]*states[1];
+        rates[1] = variables[3]*states[1] + variables[2]*states[0]*states[1];
     }
 
 **TODO** Check which order to call these in? rates or variables first?

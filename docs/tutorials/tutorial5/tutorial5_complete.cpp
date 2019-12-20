@@ -41,57 +41,57 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  2.a   Define the mathematics.
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
 
     // dy/dt = alpha_y*(1-y) - beta_y*y
     std::string equation1 =
-        "<apply>\n"
-        "    <eq/>\n"
-        "    <apply>\n"
-        "        <diff/>\n"
-        "        <bvar>\n"
-        "            <ci>t</ci>\n"
-        "        </bvar>\n"
-        "        <ci>n</ci>\n"
-        "    </apply>\n"
-        "    <apply>\n"
-        "        <minus/>\n"
-        "        <apply>\n"
-        "            <times/>\n"
-        "            <ci>alpha_n</ci>\n"
-        "            <apply>\n"
-        "                <minus/>\n"
-        "                <cn cellml:units=\"dimensionless\">1</cn>\n"
-        "                <ci>n</ci>\n"
-        "            </apply>\n"
-        "        </apply>\n"
-        "        <apply>\n"
-        "            <times/>\n"
-        "            <ci>beta_n</ci>\n"
-        "            <ci>n</ci>\n"
-        "        </apply>\n"
-        "    </apply>\n"
+        "<apply>"
+            "<eq/>"
+            "<apply>"
+                "<diff/>"
+                "<bvar>"
+                    "<ci>t</ci>"
+                "</bvar>"
+                "<ci>y</ci>"
+            "</apply>"
+            "<apply>"
+                "<minus/>"
+                "<apply>"
+                    "<times/>"
+                    "<ci>alpha_y</ci>"
+                    "<apply>"
+                        "<minus/>"
+                        "<cn cellml:units=\"dimensionless\">1</cn>"
+                        "<ci>y</ci>"
+                    "</apply>"
+                "</apply>"
+                "<apply>"
+                    "<times/>"
+                    "<ci>beta_y</ci>"
+                    "<ci>y</ci>"
+                "</apply>"
+            "</apply>"
         "</apply>";
     // i_y = g_y*power(y,gamma)*(V-E_y)
     std::string equation2 =
-        "<apply>\n"
-        "    <eq/>\n"
-        "    <ci>i_K</ci>\n"
-        "    <apply>\n"
-        "        <times/>\n"
-        "        <ci>g_K</ci>\n"
-        "        <apply>\n"
-        "            <minus/>\n"
-        "            <ci>V</ci>\n"
-        "            <ci>E_K</ci>\n"
-        "        </apply>\n"
-        "        <apply>\n"
-        "            <power/>\n"
-        "            <ci>n</ci>\n"
-        "            <ci>gamma</ci>\n"
-        "        </apply>\n"
-        "    </apply>\n"
-        "</apply>\n";
+        "<apply>"
+            "<eq/>"
+            "<ci>i_K</ci>"
+            "<apply>"
+                "<times/>"
+                "<ci>g_y</ci>"
+                "<apply>"
+                    "<minus/>"
+                    "<ci>V</ci>"
+                    "<ci>E_y</ci>"
+                "</apply>"
+                "<apply>"
+                    "<power/>"
+                    "<ci>y</ci>"
+                    "<ci>gamma</ci>"
+                "</apply>"
+            "</apply>"
+        "</apply>";
     std::string mathFooter = "</math>";
 
     //  2.b   Add the maths to the component.  Note that there is only one maths
@@ -124,38 +124,49 @@ int main()
     auto V = libcellml::Variable::create("V");
     V->setUnits("millivolt");
 
-    auto alpha_n = libcellml::Variable::create("alpha_n");
-    alpha_n->setUnits("per_millisecond");
+    auto alpha_y = libcellml::Variable::create("alpha_y");
+    alpha_y->setUnits("per_millisecond");
 
-    auto beta_n = libcellml::Variable::create("beta_n");
-    beta_n->setUnits("per_millisecond");
 
-    auto n = libcellml::Variable::create("n");
-    n->setUnits("dimensionless");
+    auto beta_y = libcellml::Variable::create("beta_y");
+    beta_y->setUnits("per_millisecond");
+    beta_y->setInitialValue(2.0);
 
-    auto E_K = libcellml::Variable::create("E_K");
-    E_K->setUnits("millivolt");
+    auto y = libcellml::Variable::create("y");
+    y->setName("y");
+    y->setUnits("dimensionless");
+    y->setInitialValue(0.0);
 
-    auto i_K = libcellml::Variable::create("i_K");
+    auto E_y = libcellml::Variable::create("E_y");
+    E_y->setUnits("millivolt");
+    E_y->setInitialValue(-85.0);
+
+    libcellml::VariablePtr i_K = libcellml::Variable::create("i_K");
     i_K->setUnits("microA_per_cm2");
+    // Note that no initial value is needed for this variable as its value
+    // is defined by equation2
 
-    auto g_K = libcellml::Variable::create("g_K");
-    g_K->setUnits("milliS_per_cm2");
+    libcellml::VariablePtr g_y = libcellml::Variable::create("g_y");
+    g_y->setName("g_y");
+    g_y->setUnits("milliS_per_cm2");
+    g_y->setInitialValue(36.0);
 
-    auto gamma = libcellml::Variable::create("gamma");
+    libcellml::VariablePtr gamma = libcellml::Variable::create();
+    gamma->setName("gamma");
     gamma->setUnits("dimensionless");
+    gamma->setInitialValue(4.0);
 
     //  3.c Adding the variables to the component.  Note that Variables are
     //      added by their pointer (cf. their name)
     component->addVariable(t);
     component->addVariable(V);
-    component->addVariable(E_K);
+    component->addVariable(E_y);
     component->addVariable(gamma);
     component->addVariable(i_K);
-    component->addVariable(g_K);
-    component->addVariable(alpha_n);
-    component->addVariable(beta_n);
-    component->addVariable(n);
+    component->addVariable(g_y);
+    component->addVariable(alpha_y);
+    component->addVariable(beta_y);
+    component->addVariable(y);
 
     //  3.d Call the validator and print the messages to the terminal.
     //      Expected errors refer to units refered to by these variables, but
@@ -200,21 +211,16 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Set the initial conditions" << std::endl;
+    std::cout << "  STEP 5: Set the initial conditions" <<std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  5.a Finally we can set the initial conditions for the simulation.  Note that
-    //      variables of integration (VOI, in this case, time, t) must not be
-    //      initialised; to do so will cause an error to be returned from the Generator
-    //      later.  Variables whose value can be calculated from the equations
-    //      do not need to be initialised either.
     V->setInitialValue(0.0);
-    alpha_n->setInitialValue(1.0);
-    beta_n->setInitialValue(2.0);
-    n->setInitialValue(1.0);
-    E_K->setInitialValue(-85.0);
-    g_K->setInitialValue(36.0);
-    gamma->setInitialValue(4.0);
+    alpha_y->setInitialValue(1.0);
+    beta_y->setInitialValue(2.0);
+    E_y->setInitialValue(-85);
+    g_y->setInitialValue(36);
+    gamma->setInitialValue(4);
+    y->setInitialValue(0);
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  STEP 6: Output the model" << std::endl;
@@ -223,7 +229,7 @@ int main()
     //  6.a Create a Generator item, set the profile (that is, the output
     //      language) to your choice of C (the default) or Python (see below), and
     //      submit the model for processing.
-    auto generator = libcellml::Generator::create();
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
     generator->processModel(model);
 
     //  6.b Check that the Generator has not encountered any errors.
@@ -235,6 +241,7 @@ int main()
     //      header file contents) as well as the implementationCode (the source
     //      file contents), whereas for Python you need only output the
     //      implementationCode.  Write the file(s).
+
     std::ofstream outFile("tutorial5_IonChannelModel_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
@@ -243,7 +250,7 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    auto profile =
+    libcellml::GeneratorProfilePtr profile =
         libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
@@ -252,8 +259,11 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
+    std::cout << "The generated '" << model->name()
+              << "' model has been writen to: tutorial5_IonChannelModel_generated.[c,h,py]" << std::endl;
+
     //  6.d Create a Printer item and submit your model for serialisation.
-    auto printer = libcellml::Printer::create();
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string serialisedModelString = printer->printModel(model);
 
     //  6.e Write the serialised string output from the printer to a file.
@@ -265,6 +275,5 @@ int main()
     std::cout << "The created '" << model->name()
               << "' model has been printed to: " << outFileName << std::endl;
 
-    //  6.f Please see the instructions for how to run your simulation using
-    //      the simple solver provided.  Then go and have a cuppa, you're done!
+    //  5.f Go and have a cuppa, you're done!
 }

@@ -33,11 +33,7 @@ int main()
 
     //  1.b Add the name and path of the implementation *.c file in the CMakeLists.txt file
 
-    //  1.c Open your generated source *.cpp file and change the name of the header it includes
-    //      using the #includ` statement to be the name of your generated header *.h file.
-    //      By default this is #include "model.h".
-
-    //  1.d Check that the versions match
+    //  1.c Check that the versions match
     std::cout << "The generated code used libCellML version " << LIBCELLML_VERSION << std::endl;
     std::cout << "The library version of libCellML is " << libcellml::versionString() << std::endl;
 

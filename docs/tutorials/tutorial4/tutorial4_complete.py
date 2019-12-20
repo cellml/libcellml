@@ -77,6 +77,7 @@ if __name__ == "__main__":
     #      and variables
     my_variables = model.create_variables_array()
     my_state_variables = model.create_states_array()
+    my_rates = model.create_states_array()
 
     #  3.b Initialise the arrays and print them to the screen for checking
     time = 0.0
