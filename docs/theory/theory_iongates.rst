@@ -173,7 +173,8 @@ behaviour depend on how its gates modify the open channel conductance.
 .. figure:: images/ion_gates_theory.png
    :name: ion_gates_theory
    :alt: Open channel linear IV
-   :align: right
+   :align: center
+   :width: 12cm
 
    (a) Open channel linear current-voltage relation.  (b) Ion channel gating
    kinetics. :math:`y` is the fraction of gates in the open state.
