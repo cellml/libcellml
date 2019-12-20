@@ -14,8 +14,8 @@ The theory here is the basis for the the practical modelling tutorial in
 .. contents::
    :local:
 
-Theory
-------
+Understanding entropy
+---------------------
 A good example of a model based on a first order equation is the one
 used by Hodgkin and Huxley :cite:`10` to describe the gating behaviour of an
 ion channel. Before we describe the
@@ -35,6 +35,7 @@ driving an ion through the pore is calculated from the change in
     :name: distribution_microstates
     :alt: Distribution of microstates
     :align: center
+    :width: 50%
 
     Distribution of microstates in a system :cite:`11`. The 16 particles in a
     confined region (left) have only one possible arrangement (:math:`W=1`) and
@@ -102,14 +103,7 @@ where
 is the 'universal gas constant'\ [#]_. At 25°C (:math:`298K`)
 :math:`{RT} \approx 2.5 \text{ }(kJ.mol^{-1})`.
 
-.. figure:: images/balance_forces.png
-   :name: ocr_tut_bal_force
-   :alt: Balance of entropic and electrostatic forces
-   :align: right
-   :figwidth: 250
 
-   The balance between :purple:`entropic` and :red:`electrostatic` forces
-   determines the Nernst potential.
 
 Every positively charged ion that crosses the membrane raises the
 potential difference and produces an electrostatic driving force that
@@ -149,11 +143,20 @@ where :math:`E_{Y}` is the "equilibrium" or "Nernst" potential for
 :math:`\frac{{RT}}{F} =
 \frac{2.5\times10^{3}\ }{0.96\times10^{5}}\text{ }(J.C^{-1}) \approx 25mV`.
 
+.. figure:: images/balance_forces.png
+   :name: ocr_tut_bal_force
+   :alt: Balance of entropic and electrostatic forces
+   :align: right
+   :width: 45%
+
+   The balance between :purple:`entropic` and :red:`electrostatic` forces
+   determines the Nernst potential.
+
 .. figure:: images/open_ch_linear_iv.png
    :name: ocr_tut_open_ch_iv
    :alt: Open channel linear IV
    :align: right
-   :figwidth: 250
+   :width: 45%
 
    Open channel linear current-voltage relation
 
@@ -173,8 +176,7 @@ open channel conductance.
 .. figure:: images/ion_ch_gating.png
    :name: ocr_tut_ion_ch_gating
    :alt: Ion channel gating kinetics
-   :align: right
-   :figwidth: 250
+   :figwidth: 45%
 
    Ion channel gating kinetics. :math:`y` is the fraction of gates in the open
    state. :math:`\alpha_n` and :math:`\beta_n` are the rate constants for
@@ -183,8 +185,7 @@ open channel conductance.
 .. figure:: images/transient_beh_gates.png
    :name: ocr_tut_trans_gate_beh
    :alt: Transient gate behaviour
-   :align: right
-   :figwidth: 250
+   :figwidth: 45%
 
    Transient behaviour for one gate (left) and γ gates in series (right). Note
    that the right hand graph has an initial S-shaped increase, reflecting the
@@ -249,7 +250,7 @@ is the steady state current through the open gate.
    :alt: Gate status for a single gate
    :align: center
 
-   Gate status for one gate
+   Dynamics of opening status for a single gate
 
 .. _ion_current:
 .. figure:: images/tut5_current.png
