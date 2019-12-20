@@ -416,14 +416,12 @@ own.  Here's an example.
 .. code-block:: cpp
 
     // Create a custom irreducible unit named "banana"
-    auto uBanana = libcellml::Units::create();
-    uBanana->setName("banana");
+    auto uBanana = libcellml::Units::create("banana");
 
     // Note that when a UnitsPtr is defined with a name only, it is effectively irreducible.
 
     // Create a new compound unit based on the "banana" unit above
-    auto uBunchOfBananas = libcellml::Units::create();
-    u2->setName("bunch_of_bananas");
+    auto uBunchOfBananas = libcellml::Units::create("bunch_of_bananas");
     u2->addUnit("banana", 5.0);  // include bananas^5 in the bunch_of_bananas unit
 
 .. container:: dothis

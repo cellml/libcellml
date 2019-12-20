@@ -24,12 +24,10 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a   Create the model instance
-    auto model = libcellml::Model::create();
-    model->setName("Tutorial4_FirstOrderModel");
+    auto model = libcellml::Model::create("Tutorial4_FirstOrderModel");
 
     //  1.b   Create a component and add it into the model
-    auto component = libcellml::Component::create();
-    component->setName("IonChannel");
+    auto component = libcellml::Component::create("IonChannel");
     model->addComponent(component);
 
     //  1.c   Call the validator and print the messages to the terminal.

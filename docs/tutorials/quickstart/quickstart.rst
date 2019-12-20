@@ -219,10 +219,8 @@ In C++:
 
 .. code-block:: cpp
 
-    // Create a new model
-    auto model = libcellml::Model::create();
-    // Set the name
-    model->setName("my_model");
+    // Create a new named model
+    auto model = libcellml::Model::create("my_model");
     // Retrieve the name
     std::string modelName = model->name();
 

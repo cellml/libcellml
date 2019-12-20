@@ -33,8 +33,7 @@ int main()
     //  STEP 1: Create the model, component and maths
     //
     //  1.a   Create the ModelPtr
-    auto model = libcellml::Model::create();
-    model->setName("tutorial_3_model");
+    auto model = libcellml::Model::create("tutorial_3_model");
     model->setId("tutorial_3_model_id");
 
     //  Check that it worked
@@ -43,8 +42,7 @@ int main()
 
     //  1.b   Create a component to use as an integrator, set its attributes and
     //        add it to the model
-    auto component = libcellml::Component::create();
-    component->setName("predator_prey_component");
+    auto component = libcellml::Component::create("predator_prey_component");
     model->addComponent(component);
 
     //  Check that it worked
@@ -59,49 +57,49 @@ int main()
 
     //  1.c,d,e Create the MathML2 strings representing the governing equations
     std::string equation1 =
-        "<apply><eq/>"
-        "   <ci>c</ci>"
-        "   <apply><plus/>"
-        "       <ci>a</ci>"
-        "       <cn>2.0</cn>"
-        "   </apply>"
-        "</apply>";
+        "<apply><eq/>\n"
+        "   <ci>c</ci>\n"
+        "   <apply><plus/>\n"
+        "       <ci>a</ci>\n"
+        "       <cn>2.0</cn>\n"
+        "   </apply>\n"
+        "</apply>\n";
     std::string equation2 =
-        "<apply><eq/>"
-        "   <apply><diff/>"
-        "   <bvar><ci>time</ci></bvar>"
-        "   <ci>y_s</ci>"
-        "   </apply>"
-        "   <apply><plus/>"
-        "       <apply><times/>"
-        "           <ci>a</ci>"
-        "           <ci>y_s</ci>"
-        "      </apply>"
-        "      <apply><times/>"
-        "          <ci>b</ci>"
-        "          <ci>y_s</ci>"
-        "          <ci>y_f</ci>"
-        "      </apply>"
-        "   </apply>"
-        "</apply>";
+        "<apply><eq/>\n"
+        "   <apply><diff/>\n"
+        "   <bvar><ci>time</ci></bvar>\n"
+        "   <ci>y_s</ci>\n"
+        "   </apply>\n"
+        "   <apply><plus/>\n"
+        "       <apply><times/>\n"
+        "           <ci>a</ci>\n"
+        "           <ci>y_s</ci>\n"
+        "      </apply>\n"
+        "      <apply><times/>\n"
+        "          <ci>b</ci>\n"
+        "          <ci>y_s</ci>\n"
+        "          <ci>y_f</ci>\n"
+        "      </apply>\n"
+        "   </apply>\n"
+        "</apply>\n";
     std::string equation3 =
-        "<apply><eq/>"
-        "   <apply><diff/>"
-        "   <bvar><ci>time</ci></bvar>"
-        "   <ci>y_f</ci>"
-        "   </apply>"
-        "   <apply><plus/>"
-        "       <apply><times/>"
-        "           <ci>c</ci>"
-        "           <ci>y_f</ci>"
-        "      </apply>"
-        "      <apply><times/>"
-        "          <ci>d</ci>"
-        "          <ci>y_s</ci>"
-        "          <ci>y_f</ci>"
-        "      </apply>"
-        "   </apply>"
-        "</apply>";
+        "<apply><eq/>\n"
+        "   <apply><diff/>\n"
+        "   <bvar><ci>time</ci></bvar>\n"
+        "   <ci>y_f</ci>\n"
+        "   </apply>\n"
+        "   <apply><plus/>\n"
+        "       <apply><times/>\n"
+        "           <ci>c</ci>\n"
+        "           <ci>y_f</ci>\n"
+        "      </apply>\n"
+        "      <apply><times/>\n"
+        "          <ci>d</ci>\n"
+        "          <ci>y_s</ci>\n"
+        "          <ci>y_f</ci>\n"
+        "      </apply>\n"
+        "   </apply>\n"
+        "</apply>\n";
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
     std::string mathFooter = "</math>";
