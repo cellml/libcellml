@@ -249,6 +249,7 @@ is the steady state current through the open gate.
    :name: ion_gate_status
    :alt: Gate status for a single gate
    :align: center
+   :width: 12cm
 
    Dynamics of opening status for a single gate
 
@@ -257,6 +258,7 @@ is the steady state current through the open gate.
    :name: ion_current
    :alt: Ion current
    :align: center
+   :width: 12cm
 
    Ion current for :math:`\gamma=4` gates.
 
