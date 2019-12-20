@@ -240,15 +240,23 @@ where
 
     {\overset{\overline{}}{i}}_{Y}{= \overset{\overline{}}{g}}_{Y}\left( V - E_{Y} \right)
 
-is the steady state current through the open gate. The behaviour of an ion
-channel with :math:`\gamma = 4`
+is the steady state current through the open gate.
+
+Simulation and results
+----------------------
+The formulation of a model for the generic ion channel described here is the
+focus of :ref:`Tutorial 5<tutorial5>`.  The results shown here come from that
+model, where parameters representing :math:`\gamma = 4`
 gates transitioning from the closed to the open state at a membrane
-voltage :math:`V = 0` is shown in :numref:`ion_gate_status`. The opening and
-closing rate constants are
+voltage :math:`V = 0`, and opening and closing rate constants of
 :math:`\alpha_{y} = 1` ms\ :sup:`-1` and :math:`\beta_{y} = 2`
-ms\ :sup:`-1`. The ion channel has an open conductance of
-:math:`{\overset{\overline{}}{g}}_{Y} = 36` mS.cm\ :sup:`-2` and an
-equilibrium potential of :math:`E_{Y} = - 85` mV.
+ms\ :sup:`-1`.
+
+The modelled behaviour of a single gate is shown by the green line in
+:numref:`ion_gate_status`, and the resulting channel current for four
+gates in series by the blue line. Note the slow start to the current trace
+in comparison with the single gate transient :math:`y\left( t \right)`, as
+observed experimentally by Hodgkin and Huxley.
 
 .. figure:: images/tut5.png
    :name: ion_gate_status
@@ -258,11 +266,6 @@ equilibrium potential of :math:`E_{Y} = - 85` mV.
    Dynamics of opening status for a single gate, and the resulting current
    for :math:`\gamma=4` gates in series.
 
-The green line in :numref:`ion_gate_status` is
-the response :math:`y\left( t \right)` for each gate and
-the blue line shows the current through the channel.
-Note the slow start to the current trace in comparison with the single
-gate transient :math:`y\left( t \right)`.
 
 Next steps
 ----------
