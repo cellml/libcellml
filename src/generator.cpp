@@ -717,7 +717,7 @@ size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
 XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, size_t index) const
 {
     // Return the nth child element of the given node, skipping anything that is
-    // not int he MathML namespace.
+    // not in the MathML namespace.
 
     XmlNodePtr res = node->firstChild();
     size_t childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
