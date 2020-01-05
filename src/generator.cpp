@@ -1548,66 +1548,80 @@ void updateBaseUnitCount(const ModelPtr &model,
             multiplier += direction * logMult;
         }
     } else if (isStandardUnitName(uName)) {
+        if (unitMap.find(uName) == unitMap.end()) {
+            unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
+        } 
+        
         for (const auto &iter : standardUnitsList.at(uName)) {
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
+       
         multiplier += direction * logMult;
     }
 }
 
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
-{   
+{
+    /*
     direction += 1;
     auto var = ast->mVariable;
     multiplier += 1;
     direction = 1;
     errors.clear();
     return unitMap;
+    */
     
-    /*
-    GeneratorEquationAstPtr astParent = ast->mParent.lock();
-    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
-    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
+    if (ast != nullptr) {
+        /*GeneratorEquationAstPtr astParent = ast->mParent.lock();
+        GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
+        GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;*/
 
-    if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-        ComponentPtr component = std::dynamic_pointer_cast<Component>(ast->mVariable->parent());
-        ModelPtr model = owningModel(component);
-        UnitsPtr u = model->units(ast->mVariable->units()->name());
-        updateBaseUnitCount(model, unitMap, multiplier, u->name(), 1, 0, direction);
-        return unitMap;
-    }
-
-    // We know if we have reached an internal vertex that we *should* have a mathematical operation as it's type.
-    if (ast->mLeft != nullptr || ast->mRight != nullptr) {
-        // Evaluate left, right subtrees first
-        UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
-        UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
-
-        int type = checkNodeType(ast->mType);
-
-        // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
-        if (type == 1) {
-            std::string hints = "";
-            bool check = (mapsAreEquivalent(leftMap, rightMap, hints) && multiplier == 0.0);
-            if (check == true) {
-                return leftMap; // Return the units as we traverse up the tree TODO: Find a good way of determining which units to return based on the previous direction input
-            } else {
-                VariablePtr variable = ast->mVariable;
-                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                ModelPtr model = owningModel(component);
-
-                std::string err = "The units in the expression '" + variable->name()
-                                  + "' in component '" + component->name()
-                                  + "' of model '" + model->name()
-                                  + "' are not equivalent. The unit mismatch is " + hints
-                                  + "' and the multiplier mismatch is " + std::to_string(multiplier);
-                    "There is an error";
-                errors.push_back(err);
-                return leftMap;
-            }
+        if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+            //ComponentPtr component = std::dynamic_pointer_cast<Component>(ast->mVariable->parent());
+            ModelPtr model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
+            /*UnitsPtr u = model->units(ast->mVariable->units()->name());
+            u->setName(ast->mVariable->units()->name());*/
+            std::string uName = (ast->mVariable->units() == nullptr) ? ast->mVariable->units()->name() : "dimensionless";
+            updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+            return unitMap;
         }
 
-       
+        // We know if we have reached an internal vertex that we *should* have a mathematical operation as it's type.
+        if (ast->mLeft != nullptr || ast->mRight != nullptr) {
+            // Evaluate left, right subtrees first
+            UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
+            UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
+
+            int type = checkNodeType(ast->mType);
+
+            // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
+            if (type == 1) {
+                std::string hints = "";
+                bool check = (mapsAreEquivalent(leftMap, rightMap, hints) && multiplier == 0.0);
+                if (check == true) {
+                    return leftMap; // Return the units as we traverse up the tree TODO: Find a good way of determining which units to return based on the previous direction input
+                } else {
+                    VariablePtr variable = ast->mVariable;
+                    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+                    ModelPtr model = owningModel(component);
+
+                    /*
+                    std::string err = "The units in the expression '" + variable->name()
+                                      + "' in component '" + component->name()
+                                      + "' of model '" + model->name()
+                                      + "' are not equivalent. The unit mismatch is " + hints
+                                      + "' and the multiplier mismatch is " + std::to_string(multiplier);*/
+                    std::string err = "There is an error";
+
+                    errors.push_back(err);
+                    return leftMap;
+                }
+            }
+        }
+    }
+    return unitMap;
+
+    /*
 
         // Multiply, Divide: add mappings, no interest in unit compatibility.
         if (type == 2) {
@@ -1718,8 +1732,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     */
 }
 
-
-// Shim function to create a continguous viod declaration in the private implementation
+// Shim function to create a contiguous void declaration in the private implementation
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
 {
     UnitsMap unitMap;
