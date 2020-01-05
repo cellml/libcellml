@@ -150,10 +150,10 @@ std::string printMath(const std::string &math, const std::string &indent)
 
 void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
 {
-    for (size_t j = 0; j < component->variableCount(); ++j) {
-        VariablePtr variable = component->variable(j);
-        for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-            VariablePtr equivalentVariable = variable->equivalentVariable(k);
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        VariablePtr variable = component->variable(i);
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            VariablePtr equivalentVariable = variable->equivalentVariable(j);
             if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                 VariablePair variablePair = std::make_pair(variable, equivalentVariable);
                 VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
