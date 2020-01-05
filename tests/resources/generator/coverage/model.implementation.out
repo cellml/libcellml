@@ -114,8 +114,8 @@ void initializeStatesAndConstants(double *states, double *variables)
     variables[181] = 0.0;
     variables[182] = 2.71828182845905;
     variables[183] = 3.14159265358979;
-    variables[184] = 1.0/0.0;
-    variables[185] = sqrt(-1.0);
+    variables[184] = INFINITY;
+    variables[185] = NAN;
 }
 
 void computeComputedConstants(double *variables)
@@ -283,11 +283,11 @@ void computeComputedConstants(double *variables)
     variables[167] = asech(variables[0]);
     variables[168] = acsch(variables[0]);
     variables[169] = acoth(2.0*variables[0]);
-    variables[170] = (gt(variables[0], variables[1]))?variables[0]:sqrt(-1.0);
+    variables[170] = (gt(variables[0], variables[1]))?variables[0]:NAN;
     variables[171] = (gt(variables[0], variables[1]))?variables[0]:variables[2];
-    variables[172] = (gt(variables[0], variables[1]))?variables[0]:(gt(variables[2], variables[3]))?variables[2]:(gt(variables[4], variables[5]))?variables[4]:sqrt(-1.0);
+    variables[172] = (gt(variables[0], variables[1]))?variables[0]:(gt(variables[2], variables[3]))?variables[2]:(gt(variables[4], variables[5]))?variables[4]:NAN;
     variables[173] = (gt(variables[0], variables[1]))?variables[0]:(gt(variables[2], variables[3]))?variables[2]:(gt(variables[4], variables[5]))?variables[4]:variables[6];
-    variables[174] = 123.0+((gt(variables[0], variables[1]))?variables[0]:sqrt(-1.0));
+    variables[174] = 123.0+((gt(variables[0], variables[1]))?variables[0]:NAN);
     variables[179] = variables[0];
 }
 
