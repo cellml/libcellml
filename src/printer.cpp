@@ -154,7 +154,7 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
         VariablePtr variable = component->variable(i);
         for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
             VariablePtr equivalentVariable = variable->equivalentVariable(j);
-            if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
+            if (equivalentVariable->hasEquivalentVariable(variable)) {
                 VariablePair variablePair = std::make_pair(variable, equivalentVariable);
                 VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
                 bool pairFound = false;
