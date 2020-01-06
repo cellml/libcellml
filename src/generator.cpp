@@ -1371,17 +1371,22 @@ bool isBottomVariableOperator(const GeneratorEquationAstPtr &ast)
 // Units mapping declared to implement when checking units for variables
 using UnitsMap = std::map<std::string, double>;
 
-// Function which adds the unit mappings if we have a times or divide operator in the AST.
-UnitsMap addMappings(UnitsMap map1, UnitsMap map2, int operation)
+// Function which adds the unit mappings together if we have a times or divide operator in the AST.
+UnitsMap addMappings(UnitsMap firstMap, UnitsMap secondMap, int operation)
 {
-    for (const auto &unit : map2) {
-        auto it = map1.find(unit.first);
-        it->second += operation * unit.second;
+    for (const auto &unit : secondMap) {
+        auto it = firstMap.find(unit.first);
+        if (it == firstMap.end()) {
+            firstMap.emplace(std::pair<std::string, double>(unit.first, operation * unit.second));
+        } else {
+            it->second += operation * unit.second;
+        }
     }
-    return map1;
+    return firstMap;
 }
 
 // Function which multiplies mappings if we have a power or root operator in the AST.
+// Note: This is cuurently an incorrect implementation of this method.
 UnitsMap multiplyMappings(UnitsMap map, GeneratorEquationAstPtr ast)
 {
     if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER) {
@@ -1397,16 +1402,16 @@ UnitsMap multiplyMappings(UnitsMap map, GeneratorEquationAstPtr ast)
 }
 
 // Helper function to check map equivalences
-bool mapsAreEquivalent(UnitsMap map1, UnitsMap map2, std::string &hints)
+bool mapsAreEquivalent(UnitsMap firstMap, UnitsMap secondMap, std::string &hints)
 {
     UnitsMap mapping;
     for (const auto &baseUnits : baseUnitsList) {
         mapping[baseUnits] = 0.0;
     }
-    for (const auto &unit : map1) {
+    for (const auto &unit : firstMap) {
         mapping[unit.first] += unit.second;
     }
-    for (const auto &unit : map2) {
+    for (const auto &unit : secondMap) {
         mapping[unit.first] -= unit.second;
     }
 
@@ -1468,6 +1473,9 @@ void updateBaseUnitCount(const ModelPtr &model,
                     updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 } else {
                     for (const auto &iter : standardUnitsList.at(ref)) {
+                        if (unitMap.find(iter.first) == unitMap.end()) {
+                            unitMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
+                        }
                         unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
                     multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
@@ -1506,41 +1514,35 @@ VariablePtr getVariable(GeneratorEquationAstPtr ast)
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
 {
     if (ast != nullptr) {
-        /*GeneratorEquationAstPtr astParent = ast->mParent.lock();
-        GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
-        GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;*/
-
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            // Have a check for if the markup is CI or CN. If it's CN, then we simply add dimensionless to the mapping (CI denotes a number, not a variable).
-            // If it's CI, then we do all of our normal checks for the owningModel etc.
+            
+            // Have a check for if the markup is CI or CN. If it's CN, then return the mapping (just a number, no units). Otherwise, create a mapping.
             if (ast->mType == libcellml::GeneratorEquationAst::Type::CN) {
                 return unitMap;
             }
 
-            //ComponentPtr component = std::dynamic_pointer_cast<Component>(ast->mVariable->parent());
             ModelPtr model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
-            /*UnitsPtr u = model->units(ast->mVariable->units()->name());
-            u->setName(ast->mVariable->units()->name());*/
-            std::string uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "Dimensionless";
-            if (uName == "Dimensionless") {
+            std::string uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "dimensionless";
+            if (uName == "dimensionless") {
                 return unitMap;
             }
             updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
             return unitMap;
         }
 
-        // We know if we have reached an internal vertex that we *should* have a mathematical operation as it's type.
+        // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
+            
             // Evaluate left, right subtrees first
             UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
             UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
 
-            // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
+            // Plus, Minus, any unit comparisons where units have to be exactly the same.
             if (isDirectComparisonOperator(ast)) {
                 std::string hints = "";
                 bool check = (mapsAreEquivalent(leftMap, rightMap, hints) && multiplier == 0.0);
                 if (check == true) {
-                    return leftMap; // Return the units as we traverse up the tree TODO: Find a good way of determining which units to return based on the previous direction input
+                    return leftMap; // Return the units as we traverse up the tree //TODO: Find a good way of determining which units to return based on the previous direction input
                 } else {
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
@@ -1554,6 +1556,20 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     return leftMap;
                 }
             }
+
+            // Multiply, Divide: add mappings, no interest in unit compatibility.
+            if (isMultiplicativeOperator(ast)) {
+                UnitsMap newMapping;
+                if (ast->mType == libcellml::GeneratorEquationAst::Type::TIMES) {
+                    newMapping = addMappings(leftMap, rightMap, 1);
+                } else {
+                    newMapping = addMappings(leftMap, rightMap, -1);
+                }
+                // TODO: account for multipliers which are not zero, and update the new multiplier.
+                return newMapping;
+            }
+
+
         }
     }
     return unitMap;
