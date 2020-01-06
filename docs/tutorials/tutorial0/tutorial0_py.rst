@@ -135,27 +135,26 @@ the initial cloned directory.
 
 You should see a list of directories like this:
 
-- images (ignore this one)
-- quickstart (ignore this one too)
-- resources
-    - This directory contains input files for tutorials which you'll need later
-      on.  These tutorials have been designed
-      so that they will build from one to another, but if you've missed an
-      earlier tutorial you can always copy the required files from this folder
-      instead.
-- solver
-    - The solver directory has simple scripts to run a numerical integration on
-      your model.
-- tutorial0 (- tutorial8)
-    - The tutorial directories contain the bulk of what you'll need, including
-      skeleton code to get you started, as well as instructions for both C++
-      and Python, and completed code in case you get stuck.
-- utilities
-    - The utilities directory contains some commonly used scripts and functions
-      which make life easier.
+    - images (ignore this one)
+    - quickstart (ignore this one too)
+    - resources
+        - This directory contains input files for tutorials which you'll need later
+          on.  These tutorials have been designed
+          so that they will build from one to another, but if you've missed an
+          earlier tutorial you can always copy the required files from this folder
+          instead.
+    - solver
+        - The solver directory has simple scripts to run a numerical integration on
+          your model.
+    - tutorial0 (- tutorial8)
+        - The tutorial directories contain the bulk of what you'll need, including
+          skeleton code to get you started, as well as instructions for both C++
+          and Python, and completed code in case you get stuck.
+    - utilities
+        - The utilities directory contains some commonly used scripts and functions
+          which make life easier.
 
-Finally, let's test that the installation has worked by building and running
-Tutorial 0.
+Finally, let's test that the installation has worked by running Tutorial 0.
 
 .. container:: dothis
 
