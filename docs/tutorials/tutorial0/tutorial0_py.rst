@@ -42,13 +42,14 @@ Your folder structure is now:
 .. container:: dothis
 
     **1.c** Rename the cloned :code:`libcellml` folder to be :code:`source`, and create
-    two sibling folders called :code:`build` and :code:`install`:
+    three sibling folders called :code:`build`, :code:`install`, and :code:`tutorials`:
 
 .. code-block:: console
 
     mv libcellml source
     mkdir build
     mkdir install
+    mkdir tutorials
 
 Your folder structure should now look like this:
 
@@ -61,7 +62,8 @@ Your folder structure should now look like this:
             +-- ( ... empty )
         +--source
             +-- ( ... contains the files you cloned )
-
+        +--tutorials
+            +-- ( ... empty )
 
 2: Build and install the library
 ================================
@@ -74,7 +76,7 @@ Your folder structure should now look like this:
 .. code-block:: console
 
     cd build
-    cmake -DINSTALL_PREFIX=../install ../source
+    cmake -DINSTALL_PREFIX=../install -DTUT_PREFIX=../tutorials ../source
     make -j
 
 You should see output which runs through some checks (make sure they all pass),
@@ -118,20 +120,26 @@ Your directory structure should now look like:
             +--lib
         +--source
             +-- ( ... the files you cloned in step 1.b )
+        +--tutorials
+            +-- ( ... a collection of folders explained below )
 
 3: Test the installation by running your first tutorial
 =======================================================
 All the documentation and tutorials are inside the :code:`docs` folder within
-the initial cloned directory.
+the initial cloned directory, but in order to keep your source tree clean,
+the :code:`tutorials` directory has been copied into the directory given by the
+:code:`-DTUT_PREFIX` argument when you built the library.  If you've used the
+same structure as outlined here, this will be the
+:code:`MyLibCellMLDirectory/tutorials` directory.
 
 .. container:: dothis
 
-    **3.a** Navigate into the :code:`MyLibCellMLDirectory/source/docs/tutorials` directory
-    to see the documentation and tutorials:
+    **3.a** Navigate into the :code:`MyLibCellMLDirectory/tutorials` directory
+    to see its contents:
 
 .. code-block:: console
 
-    cd source/docs/tutorials
+    cd tutorials
 
 You should see a list of directories like this:
 
@@ -146,7 +154,7 @@ You should see a list of directories like this:
     - solver
         - The solver directory has simple scripts to run a numerical integration on
           your model.
-    - tutorial0 (- tutorial8)
+    - tutorial0 ( ... to tutorial8)
         - The tutorial directories contain the bulk of what you'll need, including
           skeleton code to get you started, as well as instructions for both C++
           and Python, and completed code in case you get stuck.
