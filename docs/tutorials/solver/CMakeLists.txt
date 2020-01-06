@@ -15,7 +15,7 @@ get_filename_component(INPUTDIR ${INPUT} DIRECTORY)
 set(PROJECT_NAME solve_${INPUTNAME})
 
 project(${PROJECT_NAME} VERSION 0.1.0)
-set(libCellML_DIR "../../libcellml/install/lib/cmake/libCellML")
+set(libCellML_DIR "../../../../install/lib/cmake/libCellML")
 find_package(libCellML REQUIRED)
 
 if(EXISTS "${INPUTDIR}/${INPUTNAME}.c")
