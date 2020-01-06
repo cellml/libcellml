@@ -1,8 +1,8 @@
 ..  _tutorial0_cpp:
 
-============================
-Tutorial 0: C++ installation
-============================
+===========================================
+Tutorial 0: Installation and testing in C++
+===========================================
 
 **TODO** Update this with binary/Docker/something else installation instructions
 
@@ -14,15 +14,12 @@ Tutorial 0: C++ installation
 
 .. container:: dothis
 
-    **1.a** Create an empty folder and navigate into it, then create a further empty
-    folder called :code:`libcellml`, and navigate into that one.
+    **1.a** Create an empty folder and navigate into it.
 
 .. code-block:: console
 
     mkdir MyLibCellMLDirectory
     cd MyLibCellMLDirectory
-    mkdir libcellml
-    cd libcellml
 
 .. container:: dothis
 
@@ -39,9 +36,7 @@ Your folder structure is now:
 
     -- MyLibCellMLDirectory
         +--libcellml
-            +--libcellml
-                +-- ( ... contains the files you cloned )
-
+            +-- ( ... contains the files you cloned )
 
 .. container:: dothis
 
@@ -59,21 +54,20 @@ Your folder structure should now look like this:
 .. code-block:: text
 
     -- MyLibCellMLDirectory
-        +--libcellml
-            +--build
-                +-- ( ... empty )
-            +--install
-                +-- ( ... empty )
-            +--source
-                +-- ( ... contains the files you cloned )
+        +--build
+            +-- ( ... empty )
+        +--install
+            +-- ( ... empty )
+        +--source
+            +-- ( ... contains the files you cloned )
 
 
 2: Build and install the library
-==========================================================
+================================
 
 .. container:: dothis
 
-    **2.a** Navigate into the :code:`MyLibCellMLDirectory/libcellml/build` directory
+    **2.a** Navigate into the :code:`MyLibCellMLDirectory/build` directory
     to make the library:
 
 .. code-block:: console
@@ -90,7 +84,7 @@ and finishes with a message like this:
        ( ... lots of checks ... )
     -- Configuring done
     -- Generating done
-    -- Build files have been written to: /Users/YourName/MyLibCellMLDirectory/libcellml/build
+    -- Build files have been written to: /Users/YourName/MyLibCellMLDirectory/build
 
 .. container:: dothis
 
@@ -107,8 +101,8 @@ like this:
 
     Install the project...
     -- Install configuration: "Debug"
-    -- Installing: /Users/YourName/MyLibCellMLDirectory/libcellml/build/../install/lib/libcellmld.0.2.0.dylib
-    -- Installing: /Users/kmoy001/MyLibCellMLDirectory/libcellml/build/../install/lib/libcellmld.dylib
+    -- Installing: /Users/YourName/MyLibCellMLDirectory/build/../install/lib/libcellmld.0.2.0.dylib
+    -- Installing: /Users/kmoy001/MyLibCellMLDirectory/build/../install/lib/libcellmld.dylib
         ...
 
 Your directory structure should now look like:
@@ -116,150 +110,103 @@ Your directory structure should now look like:
 .. code-block:: text
 
     -- MyLibCellMLDirectory
-            +--libcellml
-                +--build
-                    +-- ( ... lots of files from the build )
-                +--install
-                    +--include
-                    +--lib
-                +--source
-                    +-- ( ... the files you cloned in step 1.b )
+        +--build
+            +-- ( ... lots of files from the build )
+        +--install
+            +--include
+            +--lib
+        +--source
+            +-- ( ... the files you cloned in step 1.b )
 
-
-3: Create the tutorials
-==========================================================
-
-.. container:: dothis
-
-    **3.a** Change back into the top directory (:code:`MyLibCellMLDirectory`),
-    and create a directory for the tutorials.
-
-.. code-block:: console
-
-    cd ../../
-    mkdir tutorials
-
-Your directory structure should now look like:
-
-.. code-block:: text
-
-    -- MyLibCellMLDirectory
-        +--libcellml
-            ( ... all the files created in steps 1 and 2 )
-        +--tutorials
-            ( ... empty )
+3: Test the installation by running your first tutorial
+=======================================================
+All the documentation and tutorials are inside the :code:`docs` folder within
+the initial cloned directory.
 
 .. container:: dothis
 
-    **3.b** Change into the new :code:`tutorials` directory and clone the
-    flavour of tutorials that you're interested in.
-
-For C++:
+    **3.a** Navigate into the :code:`MyLibCellMLDirectory/source/docs/tutorials` directory
+    to see the documentation and tutorials:
 
 .. code-block:: console
 
-    cd tutorials
-    git clone https://github.com/kerimoyle/libcellml-tutorials-cpp.git
+    cd source/docs/tutorials
 
-For Python:
+You should see a list of directories like this:
 
-.. code-block:: console
-
-    cd tutorials
-    git clone https://github.com/kerimoyle/libcellml-tutorials-python.git
-
-Your folder structure should now look like what's shown below.  Note that
-whichever flavour of tutorial you have cloned does not alter the structure,
-only the folder name inside your :code:`tutorials` folder:
-
-.. code-block:: text
-
-    -- MyLibCellMLDirectory
-        +--libcellml
-            +--build
-                +-- ( ... lots of files from your earlier make command )
-            +--install
-                +-- include
-                +-- lib
-            +--source
-                +-- ( ... lots of files from your first git clone )
-     +--tutorials
-        +--libcellml-tutorials-yourCodeFlavour
-            +--documentation
-            +--resources
-            +--tutorials
-            +--tutorials_complete
-            +--utilities
-
-
-4: Test the installation by running your first tutorial
-==========================================================
-If all has gone well so far you should see four folders:
-
-- The :code:`documentation` folder contains an offline copy of the tutorials'
-  documentation.  This is also available online at **TODO**.  To use your
-  offline copy, simply open the :code:`index.html` file in your favourite
-  web browser.
-- The :code:`resources` folder contains files and code snippets that will
-  help you out as you go through the tutorials.  They have been designed
-  so that they will build from one to another, but if you've missed an
-  earlier tutorial you can always copy the required files from this folder
-  instead.
-- The :code:`tutorials` folder contains skeleton code for each of the
-  tutorials.  This code has comments which mimic the instructions so will
-  take you through it all one step at a time.
-- The :code:`tutorials_complete` folder contains a working version of each
-  of the tutorials.  If you're short on time, or struggling with any of the
-  steps you can just check the code provided here.
-- The :code:`utilities` folder has files with a few simple routines which
-  will help you with the tutorials.
+- images (ignore this one)
+- quickstart (ignore this one too)
+- resources
+    - This directory contains input files for tutorials which you'll need later
+      on.  These tutorials have been designed
+      so that they will build from one to another, but if you've missed an
+      earlier tutorial you can always copy the required files from this folder
+      instead.
+- solver
+    - The solver directory has simple scripts to run a numerical integration on
+      your model.
+- tutorial0 (- tutorial8)
+    - The tutorial directories contain the bulk of what you'll need, including
+      skeleton code to get you started, as well as instructions for both C++
+      and Python, and completed code in case you get stuck.
+- utilities
+    - The utilities directory contains some commonly used scripts and functions
+      which make life easier.
 
 Finally, let's test that the installation has worked by building and running
 Tutorial 0.
 
 .. container:: dothis
 
-    **4.a** Navigate into the :code:`tutorials/tutorial0` directory to run CMake to
+    **3.b** Navigate into the :code:`tutorial0` directory to run CMake to
     create the Makefile.
 
 .. code-block:: console
 
-    cd tutorials/tutorial0
+    cd tutorial0
     cmake .
 
-.. container:: dothis
-
-    **4.b**  If this is correct you should see an output ending similar to this:
+If this is correct you should see an output ending similar to this:
 
 .. code-block:: console
 
+    -- The C compiler identification is AppleClang 10.0.1.10010046
+    -- The CXX compiler identification is AppleClang 10.0.1.10010046
+    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc
+    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc -- works
+    -- Detecting C compiler ABI info
+    -- Detecting C compiler ABI info - done
+    -- Detecting C compile features
+    -- Detecting C compile features - done
+    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++
+    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ -- works
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
     -- Configuring done
     -- Generating done
-    -- Build files have been written to: /Users/YourName/MyLibCellMLDirectory/tutorials/libcellml-tutorials-cpp/tutorials/tutorial0
+    -- Build files have been written to: /Users/YourName/MyLibCellMLDirectory/source/docs/tutorials/tutorial0
 
 If this isn't what you see then please see the Troubleshooting section TODO
 
 .. container:: dothis
 
-    **4.c** Now build the :code:`tutorial0` example
-
+    **3.c** Now build the :code:`tutorial0` example
 
 .. code-block:: console
 
     make -j
 
-
 .. container:: dothis
 
-    **4.d** Finally, run the program to give the following output:
+    **3.d** Finally, run the program to output the welcome and version number
+    of the linked libCellML installation:
 
 
 .. code-block:: console
 
     ./tutorial0
-
-
-.. code-block:: console
 
     -----------------------------------------------
         Welcome to libCellML!
@@ -269,4 +216,4 @@ If this isn't what you see then please see the Troubleshooting section TODO
 
 .. container:: dothis
 
-    **4.e** Go and have a cuppa, you're done!
+    **3.e** Go and have a cuppa, you're done!
