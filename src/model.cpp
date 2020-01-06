@@ -242,12 +242,12 @@ void linkComponentVariableUnits(const ComponentPtr &component)
     }
 }
 
-void traversComponentTreeLinkingUnits(const ComponentPtr &component)
+void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
 {
     linkComponentVariableUnits(component);
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
-        traversComponentTreeLinkingUnits(c);
+        traverseComponentTreeLinkingUnits(c);
     }
 }
 
@@ -255,7 +255,7 @@ void Model::linkUnits()
 {
     for (size_t index = 0; index < componentCount(); ++index) {
         auto c = component(index);
-        traversComponentTreeLinkingUnits(c);
+        traverseComponentTreeLinkingUnits(c);
     }
 }
 
@@ -274,12 +274,12 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
     return unlinked;
 }
 
-bool traveseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
+bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
 {
     bool unlinkedUnits = areComponentVariableUnitsUnlinked(component);
     for (size_t index = 0; index < component->componentCount() && !unlinkedUnits; ++index) {
         auto c = component->component(index);
-        unlinkedUnits = traveseComponentTreeForUnlinkedUnits(c);
+        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c);
     }
     return unlinkedUnits;
 }
@@ -289,7 +289,7 @@ bool Model::hasUnlinkedUnits()
     bool unlinkedUnits = false;
     for (size_t index = 0; index < componentCount() && !unlinkedUnits; ++index) {
         auto c = component(index);
-        unlinkedUnits = traveseComponentTreeForUnlinkedUnits(c);
+        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c);
     }
     return unlinkedUnits;
 }
@@ -417,14 +417,14 @@ bool Model::hasUnresolvedImports() const
     return unresolvedImports;
 }
 
-bool hasComponentImports(const ComponentEntityConstPtr &parentComponentEntity)
+bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 {
     bool importsPresent = false;
-    for (size_t n = 0; n < parentComponentEntity->componentCount() && !importsPresent; ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        importsPresent = component->isImport();
+    for (size_t n = 0; n < componentEntity->componentCount() && !importsPresent; ++n) {
+        libcellml::ComponentPtr childComponent = componentEntity->component(n);
+        importsPresent = childComponent->isImport();
         if (!importsPresent) {
-            importsPresent = hasComponentImports(component);
+            importsPresent = hasComponentImports(childComponent);
         }
     }
     return importsPresent;

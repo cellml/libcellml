@@ -101,7 +101,7 @@ TEST(Parser, emptyModelString)
 {
     const std::string e;
     const std::vector<std::string> expectedErrors = {
-        "Model passed to 'parseModel' is empty.",
+        "Model is empty.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
