@@ -1870,7 +1870,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "2dca85c1fb39bc623ff23fce64e75d26bab6e384";
+        res = profileContentsSha1 != "88b463c76b0bd6bc2c88292b7d5f2a22ec16ab74";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
