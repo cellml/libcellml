@@ -39,7 +39,7 @@ positive charge on :math:`K^{+}`) is:
     \right\rbrack_{o}}{\left\lbrack K^{+} \right\rbrack_{i}} =
     25\ln\frac{3}{90} = - 85\text{ mV}
 
-The :math:`E_K`: term is called the *equilibrium potential* since it is
+The :math:`E_K` term is called the *equilibrium potential* since it is
 the potential across the cell membrane when the channel is open but no
 current is flowing.  This happens when the electrostatic driving force from the
 potential (voltage) difference between internal and external ion *charges*

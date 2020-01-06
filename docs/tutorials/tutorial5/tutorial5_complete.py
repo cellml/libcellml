@@ -1,5 +1,5 @@
 """
-    TUTORIAL 4: Mathematical behaviour and units
+    TUTORIAL 5: Modelling a gated ion channel
 
     This tutorial assumes that you can already:
         - read and deserialise a CellML model from a file (Tutorial 1)
@@ -7,6 +7,8 @@
         - navigate through the hierarchy of the model (Tutorial 2)
         - serialise and print a Model structure to a CellML file (Tutorial 1)
         - create and include user-defined units (Tutorial 3)
+        - use the Generator to output a runable model (Tutorial 3, 4)
+        - use the simple solver to simulate behaviour (Tutorial 4)
 """
 
 from libcellml import Component, Generator, GeneratorProfile, Model, Printer, Validator, Variable, Units
@@ -15,9 +17,9 @@ from tutorial_utilities import print_errors_to_terminal
 
 if __name__ == "__main__":
 
-    print("-----------------------------------------------------")
-    print("    STEP 1: Create the model and component           ")
-    print("-----------------------------------------------------")
+    print("-----------------------------------------------")
+    print("  STEP 1: Create the model and component       ")
+    print("-----------------------------------------------")
 
     #  1.a   Create the model instance
     model = Model()

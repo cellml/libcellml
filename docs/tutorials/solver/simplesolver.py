@@ -1,7 +1,7 @@
 """
     SIMPLE SOLVER for CellML models generated using the Python profile.
 
-    This script uses Euler updates to solve a set of differential equations. 
+    This script uses Euler updates to solve a set of differential equations.
 
     Usage:
         python3 simplesolver.py:
@@ -10,7 +10,7 @@
             -dt step size to use.
 
     The solution will be written to a tab-delimited text file in the same directory
-    as the running file, with the extension _solution.txt added to the run file name. 
+    as the running file, with the extension _solution.txt added to the run file name.
 
 """
 
@@ -84,19 +84,19 @@ if __name__ == "__main__":
     args = process_arguments(sys.argv)
     model = module_from_file(args['m'])
 
-    print()
-    print()
+    print("\n")
+    print("\n")
     print("====================================================================")
     print("   SIMPLE SOLVER: {}".format(args['m']))
     print("--------------------------------------------------------------------")
-    print()
+    print("\n")
     print("   VARIABLE OF INTEGRATION (units, stepsize)")
     print("--------------------------------------------------------------------")
     print("      {} ({}, {})".format(model.VOI_INFO['name'],
                                      model.VOI_INFO['units'],
                                      args['dt']))
     print("      {} steps".format(args['n']))
-    print()
+    print("\n")
     print("   STATE VARIABLES (units, initial value)")
     print("--------------------------------------------------------------------")
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
                                          model.STATE_INFO[i]['units'],
                                          my_state_variables[i]))
 
-    print()
+    print("\n")
     print("   VARIABLES (units, initial value)")
     print("--------------------------------------------------------------------")
 
@@ -161,8 +161,8 @@ if __name__ == "__main__":
 
     write_file.close()
 
-    print()
+    print("\n")
     print("   SOLUTION written to {}".format(write_file_name))
     print("====================================================================")
-    print()
-    print()
+    print("\n")
+    print("\n")

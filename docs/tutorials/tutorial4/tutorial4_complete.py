@@ -159,7 +159,7 @@ if __name__ == "__main__":
     write_file.close()
 
     # --------------------------------------------------------------------------
-    #  STEP 5: Output the results
+    #  STEP 5: Check the results
 
     #  5.a Go and have a cuppa, you're done!
     print("The results have been written to 'tutorial4_solution.txt'")

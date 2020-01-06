@@ -13,6 +13,9 @@ which introduce these issues:
 - :ref:`Tutorial 2: Debugging, error checking, and validation<tutorial2_cpp>`
 - :ref:`Tutorial 3: Creating a model using the API<tutorial3_cpp>`
 
+This tutorial is in C++; for the same tutorial in Python please see the
+:ref:`Tutorial 5 Python<tutorial5_py>` page instead.
+
 From this point onwards the tutorials will build on work done in the previous
 ones.  If you need to jump in at some intermediate stage
 you will find all the files created by the earlier tutorials in the

@@ -81,7 +81,7 @@ def print_errors_to_terminal(item):
             validation_error = item.error(e)
             specification = validation_error.specificationHeading()
             print("  Validator error[{e}]:".format(e=e))
-            print("     Description: {d}".format(d=validation_error.description()))
+            print("    Description: {d}".format(d=validation_error.description()))
             if specification != "":
                 print("    See section {s} in the CellML specification.".format(s=specification))
 

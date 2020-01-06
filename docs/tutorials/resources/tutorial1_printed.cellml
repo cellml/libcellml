@@ -5,13 +5,13 @@
     <variable name="b" units="dimensionless" interface="public_and_private"/>
     <variable name="c" units="dimensionless" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
-    			<apply><eq/>
-    				<ci>a</ci>
-    				<apply><plus/>
-    					<ci>b</ci>
-    					<ci>c</ci>
-    				</apply>
-    			</apply>
-    		</math>
+          <apply><eq/>
+            <ci>a</ci>
+            <apply><plus/>
+              <ci>b</ci>
+              <ci>c</ci>
+            </apply>
+          </apply>
+        </math>
   </component>
 </model>

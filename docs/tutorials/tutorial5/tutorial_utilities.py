@@ -81,9 +81,11 @@ def print_errors_to_terminal(item):
             validation_error = item.error(e)
             specification = validation_error.specificationHeading()
             print("  Validator error[{e}]:".format(e=e))
-            print("     Description: {d}".format(d=validation_error.description()))
+            print("    Description: {d}".format(d=validation_error.description()))
             if specification != "":
                 print("    See section {s} in the CellML specification.".format(s=specification))
+
+    print()
 
 
 def switch_units_in_maths(maths, units_in, units_out):
@@ -132,6 +134,7 @@ def print_encapsulation_structure_to_terminal(model):
     for c in range(0, model.componentCount()):
         child_component = model.component(c)
         print_component_only_to_terminal(child_component, spacer)
+    print()
 
 
 def print_component_only_to_terminal(component, spacer):
@@ -144,3 +147,4 @@ def print_component_only_to_terminal(component, spacer):
         another_spacer = "    " + spacer
         child_component = component.component(c)
         print_component_only_to_terminal(child_component, another_spacer)
+    print()
