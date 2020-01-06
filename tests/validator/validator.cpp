@@ -592,7 +592,7 @@ TEST(Validator, invalidMathMLVariables)
 TEST(Validator, invalidSimpleMathmlCellMLUnits)
 {
     const std::string math =
-        "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\""
         "    <bvar>\n"
         "      <ci cellml:units=\"dimensionless\">B</ci>\n"
