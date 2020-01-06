@@ -28,7 +28,7 @@ template against the libCellML library successfully:
 
 .. code-block:: terminal
 
-    cmake .
+    cmake -DINSTALL_PREFIX=../../install .
     make -j
 
 Running the template:

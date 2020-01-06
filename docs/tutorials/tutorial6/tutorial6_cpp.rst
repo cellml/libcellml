@@ -25,6 +25,45 @@ Resources:
 .. contents:: Contents
     :local:
 
+0: Setup
+========
+Navigate into the :code:`tutorial6` folder and check that you can build the
+template against the libCellML library successfully:
+
+.. code-block:: terminal
+
+    cmake -DINSTALL_PREFIX=../../install .
+    make -j
+
+Running the template:
+
+.. code-block:: terminal
+
+    ./tutorial6
+
+... should give the output of the section headings which you'll complete here:
+
+.. code-block:: terminal
+
+    -----------------------------------------------
+      STEP 1: Read the ion channel component
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 2: Create the environment component
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 3: Define the n-gate component
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 4: Define the component hierarchy
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 5: Define the driving function
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 6: Serialise and print the model
+    -----------------------------------------------
+
 1: Create the model
 ===================
 By now you should be familiar and comfortable with using the API to create

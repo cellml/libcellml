@@ -27,9 +27,9 @@ int main()
     std::cout << "  STEP 1: Read the ion channel component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  1.a Read the model created in Tutorial 4.  Note that if you didn't
+    //  1.a Read the model created in Tutorial 5.  Note that if you didn't
     //      do that tutorial you can simply copy the CellML file
-    //      from resources/tutorial4_IonChannelModel.cellml
+    //      from resources/tutorial5_IonChannelModel.cellml
 
 
     //  1.b Print the parsed model to the terminal and check its contents
@@ -43,7 +43,7 @@ int main()
     std::cout << "  STEP 2: Create the environment component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  2.a Creating the new environment component
+    //  2.a Create the new environment component
 
     //  2.b Add variables to the component.  Use { } brackets to define the scope of
     //      these variables. This means that we can use variables with the same
@@ -54,13 +54,13 @@ int main()
 
     //  2.c Add the new component to the model
 
-    //  2.d Calling the validator to check that our model is valid so far.
+    //  2.d Call the validator to check that our model is valid so far.
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  STEP 3: Define the n-gate component " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  3.a Creating the n-gate component and the variables it contains
+    //  3.a Create the n-gate component and the variables it contains
 
     //  3.c Add the n-gate component into the model.
 
@@ -78,11 +78,11 @@ int main()
     //      the variables have been defined within a limited scope (using the {} above)
     //      you will need to retrieve them from each component first.
 
-    //  4.d Validating the model: this should show an error reporting that an
+    //  4.d Validate the model: this should show an error reporting that an
     //      invalid connection has been made between the environment and nGate
     //      components
 
-    //  4.e  Fix the connection error above, and add the voltage and gating variable equivalences
+    //  4.e Fix the connection error above, and add the voltage and gating variable equivalences
 
     //  4.f Add the interface specification.  The environment component is a sibling of the potassiumChannel
     //      component, so they will both use the public interface.  The nGate component is a child of the
@@ -106,7 +106,7 @@ int main()
     //  5.c Validate the model including this new maths block
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 6: Serialse and print the model " << std::endl;
+    std::cout << "  STEP 6: Serialise and print the model " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
 }

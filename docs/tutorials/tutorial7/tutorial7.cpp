@@ -1,13 +1,14 @@
 /**
  *      TUTORIAL 7: Creating the Sodium Channel
+ *
  *  This tutorial is an opportunity to practise creating models from
  *  scratch using the libCellML API.  The model you create here will
- *  be used later on in Tutorial ??.
+ *  be used later on in Tutorial 8.
  *
  *  Tutorial 7 assumes that you are already comfortable with:
  *    - the concept of component hierarchy and encapsulation (Tutorial 5)
  *    - the use of the API to create all of the entities in a model (Tutorial 3)
- *    - the content MathML2 markup for mathematical equations (Tutorial 4)
+ *    - the content MathML2 markup for mathematical equations (Tutorial 3)
  *    - serialisation and printing of a model to a CellML file (Tutorial 1)
  */
 
@@ -27,7 +28,7 @@ int main()
     std::string mathFooter = "</math>";
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 1: Creating the sodium channel" << std::endl;
+    std::cout << "  STEP 1: Create the sodium channel" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a Create the compont instance, name it, and add to the model
@@ -39,7 +40,7 @@ int main()
     //  1.d Add the units
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 2: Creating the m-gate" << std::endl;
+    std::cout << "  STEP 2: Create the m-gate" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  2.a Create the component and add it to the sodium channel component
@@ -54,32 +55,32 @@ int main()
 
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 3: Creating the h-gate" << std::endl;
+    std::cout << "  STEP 3: Create the h-gate" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  3.a Create the hGate component and add it to the sodium channel component
 
-    //  3.b Adding the MathML strings for this component
+    //  3.b Add the MathML strings for this component
 
-    //  3.c Adding the variables for this component
+    //  3.c Add the variables for this component
 
     //  3.d Add the missing units
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 4: Creating the environment component" << std::endl;
+    std::cout << "  STEP 4: Create the environment component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  4.a Creating the new environment component
+    //  4.a Create the new environment component
 
     //  4.b Add variables to the component.
 
     //  4.c Add the new component to the model and validate
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Connecting variables and components" << std::endl;
+    std::cout << "  STEP 5: Connect the variables and components" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  5.a Connecting the equivalent variables between all the components
+    //  5.a Connect the equivalent variables between all the components
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  STEP 6: Set the driving function" << std::endl;
@@ -90,7 +91,7 @@ int main()
     //  6.b Validate the final model
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 7: Serialse and print the model " << std::endl;
+    std::cout << "  STEP 7: Serialise and print the model " << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
 

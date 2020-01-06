@@ -46,6 +46,42 @@ files attached.  You can choose to either create your own code from the
 structure given in the :code:`tutorial5.cpp` file, or to simply read the
 finished code given in the :code:`tutorial5_complete.cpp` file.
 
+0: Setup
+========
+Navigate into the :code:`tutorial5` folder and check that you can build the
+template against the libCellML library successfully:
+
+.. code-block:: terminal
+
+    cmake -DINSTALL_PREFIX=../../install .
+    make -j
+
+Running the template:
+
+.. code-block:: terminal
+
+    ./tutorial5
+
+... should give the output:
+
+.. code-block:: terminal
+
+    -----------------------------------------------
+      STEP 1: Create the model and component
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 2: Define the mathematical behaviour
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 3: Define the variables and their units
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 4: Define the units and add to the model
+    -----------------------------------------------
+    -----------------------------------------------
+      STEP 5: Serialise and print the model
+    -----------------------------------------------
+
 1: Create the model and component items
 =======================================
 Following the same procedures as in previous tutorials, our first step is to
