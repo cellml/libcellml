@@ -592,7 +592,13 @@ TEST(Validator, invalidMathMLVariables)
 TEST(Validator, invalidSimpleMathmlCellMLUnits)
 {
     const std::string math =
-        "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply><bvar><ci cellml:units=\"dimensionless\">B</ci></bvar></apply></math>";
+        "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\""
+        "    <bvar>\n"
+        "      <ci cellml:units=\"dimensionless\">B</ci>\n"
+        "    </bvar>\n"
+        "  </apply>\n"
+        "</math>";
     const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
