@@ -609,6 +609,10 @@ struct Generator::GeneratorImpl
     bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
+    // Functions to check the type of an AST pointer, in order to correctly compare the units.
+    bool isDirectComparison(const GeneratorEquationAstPtr &ast) const;
+    bool is
+
     std::string replace(std::string string, const std::string &from,
                         const std::string &to);
 
@@ -1296,6 +1300,11 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 // Return 5 for all trig operations as we have to check dimensionlessness)
 // Return 6 for diff as we have to check bottom variable in a specific way
 // Any other returns? possibly, but for now these are the main ones
+bool isDirectComparison(const libcellml::GeneratorEquationAstPtr &ast)
+{
+    return isRelationalOperator()
+}
+
 int checkNodeType(libcellml::GeneratorEquationAst::Type type)
 {
     if (type == libcellml::GeneratorEquationAst::Type::PLUS) {
@@ -1550,12 +1559,12 @@ void updateBaseUnitCount(const ModelPtr &model,
     } else if (isStandardUnitName(uName)) {
         if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
-        } 
-        
+        }
+
         for (const auto &iter : standardUnitsList.at(uName)) {
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
-       
+
         multiplier += direction * logMult;
     }
 }
@@ -1570,13 +1579,18 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     errors.clear();
     return unitMap;
     */
-    
+
     if (ast != nullptr) {
         /*GeneratorEquationAstPtr astParent = ast->mParent.lock();
         GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
         GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;*/
 
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+            // Have a check for if the markup is CI or CN. If it's CN, then we simply add dimensionless from the mapping
+            // If it's CI, then we do all of our normal checks for the owningModel etc.
+            if (ast->mType == libcellml::GeneratorEquationAst::Type::CN) {
+            }
+
             //ComponentPtr component = std::dynamic_pointer_cast<Component>(ast->mVariable->parent());
             ModelPtr model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
             /*UnitsPtr u = model->units(ast->mVariable->units()->name());
@@ -1595,7 +1609,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             int type = checkNodeType(ast->mType);
 
             // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
-            if (type == 1) {
+            if (is) {
                 std::string hints = "";
                 bool check = (mapsAreEquivalent(leftMap, rightMap, hints) && multiplier == 0.0);
                 if (check == true) {
@@ -1973,6 +1987,12 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         }
     }
+}
+
+bool Generator::GeneratorImpl::isDirectComparison(const GeneratorEquationAstPtr &ast) const
+{
+    return ((ast->mType == GeneratorEquationAst::Type::ASSIGNMENT)
+            && mProfile->hasAssignmentOperator())
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
