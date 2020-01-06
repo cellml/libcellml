@@ -297,6 +297,6 @@ set(CONFIG_FILES
 
 # Copy the tutorials out of the source tree into a sibling directory
 
-set(LIBCELLML_TUTORIAL_DIR "" CACHE PATH "Please enter the path to where you'd like to install the tutorials using the syntax -DLIBCELLML_TUTORIAL_DIR=your_path")
-file(MAKE_DIRECTORY ${LIBCELLML_TUTORIAL_DIR})
-file(COPY ${TUTORIAL_SRC_DIRECTORY} DESTINATION ${LIBCELLML_TUTORIAL_DIR})
+set(TUT_PREFIX "" CACHE PATH "Please enter the path to where you'd like to install the tutorials using the syntax -DTUT_PREFIX=your_path")
+file(MAKE_DIRECTORY ${TUT_PREFIX})
+file(COPY ${TUTORIAL_SRC_DIRECTORY} DESTINATION ${TUT_PREFIX})
