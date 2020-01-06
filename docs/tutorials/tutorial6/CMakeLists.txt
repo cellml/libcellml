@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.10.2)
 set(PROJECT_NAME tutorial6)
 
 project(${PROJECT_NAME} VERSION 0.1.0)
-set(libCellML_DIR "../../../../install/lib/cmake/libCellML")
+set(INSTALL_PREFIX "" CACHE PATH "Please enter the path to the libCellML install directory using the syntax -DINSTALL_PREFIX=your_path")
+set(libCellML_DIR "${INSTALL_PREFIX}/lib/cmake/libCellML")
 find_package(libCellML REQUIRED)
 
 set (PROJECT_SRC

@@ -293,7 +293,7 @@ set(CONFIG_FILES
 )
 
 # Copy the tutorials out of the source tree into a sibling directory
-
 set(TUT_PREFIX "" CACHE PATH "Please enter the path to where you'd like to install the tutorials using the syntax -DTUT_PREFIX=your_path")
 file(GLOB TUT_FILES ${TUTORIAL_SRC_DIRECTORY}/tutorials/*)
 file(COPY ${TUT_FILES} DESTINATION ${TUT_PREFIX})
+message(STATUS "Tutorials have been written to: ${TUT_PREFIX}")
