@@ -1499,23 +1499,36 @@ void updateBaseUnitCount(const ModelPtr &model,
 }
 
 // Grabs a variable associated with the model, so we can return an error message
-VariablePtr getVariable(GeneratorEquationAstPtr ast)
+VariablePtr getVariable(const GeneratorEquationAstPtr &ast)
 {
-    while (ast->mVariable == nullptr) {
-        if (ast->mLeft != nullptr) {
-            ast = ast->mLeft;
+    if (ast->mVariable != nullptr) {
+        return ast->mVariable;
+    }
+    if (ast->mLeft != nullptr) {
+        return getVariable(ast->mLeft);
+    }
+    if (ast->mRight != nullptr) {
+        return getVariable(ast->mRight);
+    }
+    return nullptr;
+
+    /*
+    GeneratorEquationAstPtr curr = ast;
+    while (curr->mVariable == nullptr) {
+        if (curr->mLeft != nullptr) {
+            curr = curr->mLeft;
         } else {
-            ast = ast->mRight;
+            curr = curr->mRight;
         }
     }
-    return ast->mVariable;
+    return curr->mVariable;
+    */
 }
 
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
 {
     if (ast != nullptr) {
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            
             // Have a check for if the markup is CI or CN. If it's CN, then return the mapping (just a number, no units). Otherwise, create a mapping.
             if (ast->mType == libcellml::GeneratorEquationAst::Type::CN) {
                 return unitMap;
@@ -1532,7 +1545,6 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
-            
             // Evaluate left, right subtrees first
             UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
             UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
@@ -1545,8 +1557,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     return leftMap; // Return the units as we traverse up the tree //TODO: Find a good way of determining which units to return based on the previous direction input
                 } else {
                     VariablePtr variable = getVariable(ast);
-                    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                    ModelPtr model = owningModel(component);
+                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()): nullptr;
+                    ModelPtr model = (component != nullptr) ? owningModel(component): nullptr;
                     std::string err = "The units in the expression '" + variable->name()
                                       + "' in component '" + component->name()
                                       + "' of model '" + model->name()
@@ -1568,8 +1580,6 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 // TODO: account for multipliers which are not zero, and update the new multiplier.
                 return newMapping;
             }
-
-
         }
     }
     return unitMap;
