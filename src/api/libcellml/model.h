@@ -267,7 +267,7 @@ public:
      *
      * Any @c Variables found that are not linked to model @c Units will be
      * linked. If a Variable has units that are not attached to the model
-     * then the units will added to the model as well.
+     * then the units will be added to the model as well.
      */
     void linkUnits();
 

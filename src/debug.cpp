@@ -16,7 +16,7 @@ limitations under the License.
 
 #ifdef ENABLE_HANDY_DEBUGGING_FUNCTIONS
 
-#    include "debug.h"
+#include "debug.h"
 
 namespace libcellml {
 

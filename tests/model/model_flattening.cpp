@@ -68,7 +68,7 @@ TEST(ModelFlattening, modelWithUnresolvedImports)
 
 TEST(ModelFlattening, importedUnits)
 {
-    const std::string unitsDefiniitonModel =
+    const std::string unitsDefinitionModel =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"units\">\n"
         "  <units name=\"ms\">\n"
@@ -95,7 +95,7 @@ TEST(ModelFlattening, importedUnits)
     auto parser = libcellml::Parser::create();
 
     auto modelWithUnitsImports = parser->parseModel(modelImportingUnits);
-    auto modelUnitsDefinitions = parser->parseModel(unitsDefiniitonModel);
+    auto modelUnitsDefinitions = parser->parseModel(unitsDefinitionModel);
 
     EXPECT_TRUE(modelWithUnitsImports->hasUnresolvedImports());
 
@@ -114,7 +114,7 @@ TEST(ModelFlattening, importedUnits)
 
     // Check that we haven't changed the imported model.
     auto aModelUnitsDefinitions = printer->printModel(modelUnitsDefinitions);
-    auto eModelUnitsDefinitions = printer->printModel(parser->parseModel(unitsDefiniitonModel));
+    auto eModelUnitsDefinitions = printer->printModel(parser->parseModel(unitsDefinitionModel));
     EXPECT_EQ(eModelUnitsDefinitions, aModelUnitsDefinitions);
 }
 
@@ -604,8 +604,7 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
     auto a = printer->printModel(model);
     auto modelNonImportVersion = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
     auto e = printer->printModel(modelNonImportVersion);
-    // Sadly cannot get the order of the connections to match each other, everything else does.
-    // EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 
     auto generator = libcellml::Generator::create();
 

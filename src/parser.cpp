@@ -231,7 +231,7 @@ ModelPtr Parser::parseModel(const std::string &input)
     ModelPtr model = Model::create();
     if (input.empty()) {
         ErrorPtr err = Error::create();
-        err->setDescription("Model passed to 'parseModel' is empty.");
+        err->setDescription("Model is empty.");
         err->setKind(Error::Kind::XML);
         err->setModel(model);
         addError(err);
