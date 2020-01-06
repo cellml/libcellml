@@ -1497,9 +1497,10 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
         GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;*/
 
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            // Have a check for if the markup is CI or CN. If it's CN, then we simply add dimensionless from the mapping
+            // Have a check for if the markup is CI or CN. If it's CN, then we simply add dimensionless to the mapping (CI denotes a number, not a variable).
             // If it's CI, then we do all of our normal checks for the owningModel etc.
             if (ast->mType == libcellml::GeneratorEquationAst::Type::CN) {
+                return unitMap;
             }
 
             //ComponentPtr component = std::dynamic_pointer_cast<Component>(ast->mVariable->parent());
@@ -1527,15 +1528,11 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     VariablePtr variable = ast->mVariable;
                     ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
                     ModelPtr model = owningModel(component);
-
-                    /*
                     std::string err = "The units in the expression '" + variable->name()
                                       + "' in component '" + component->name()
                                       + "' of model '" + model->name()
                                       + "' are not equivalent. The unit mismatch is " + hints
-                                      + "' and the multiplier mismatch is " + std::to_string(multiplier);*/
-                    std::string err = "There is an error";
-
+                                      + "' and the multiplier mismatch is " + std::to_string(multiplier);
                     errors.push_back(err);
                     return leftMap;
                 }
@@ -1902,12 +1899,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         }
     }
-}
-
-bool Generator::GeneratorImpl::isDirectComparison(const GeneratorEquationAstPtr &ast) const
-{
-    return ((ast->mType == GeneratorEquationAst::Type::ASSIGNMENT)
-            && mProfile->hasAssignmentOperator())
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
