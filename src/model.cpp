@@ -733,10 +733,10 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Copy over units used in imported component to this model.
         for (const auto &u : requiredUnits) {
             if (!model->hasUnits(u)) {
-                size_t count = 1;
+                size_t count = 0;
                 while (!model->hasUnits(u) && model->hasUnits(u->name())) {
                     auto name = u->name();
-                    name += "_" + convertToString(count++);
+                    name += "_" + convertToString(++count);
                     u->setName(name);
                 }
                 model->addUnits(u);
