@@ -121,6 +121,13 @@ set(HEADER_FILES
   ${MATHML_CONFIG_H}
 )
 
+set(TUTORIAL_SRC_DIRECTORY
+  ${CMAKE_CURRENT_SOURCE_DIR}/docs/tutorials
+)
+set(TUTORIAL_DIRECTORY
+  ${CMAKE_TUTORIAL_DIRECTORY}
+)
+
 # Only does anything if configuration target is Visual Studio.
 group_source_to_dir_structure(
   ${SOURCE_FILES}
@@ -287,3 +294,9 @@ set(CONFIG_FILES
   ${MATHML_CONFIG_H_IN}
   PARENT_SCOPE
 )
+
+# Copy the tutorials out of the source tree into a sibling directory
+
+set(LIBCELLML_TUTORIAL_DIR "" CACHE PATH "Please enter the path to where you'd like to install the tutorials using the syntax -DLIBCELLML_TUTORIAL_DIR=your_path")
+file(MAKE_DIRECTORY ${LIBCELLML_TUTORIAL_DIR})
+file(COPY ${TUTORIAL_SRC_DIRECTORY} DESTINATION ${LIBCELLML_TUTORIAL_DIR})
