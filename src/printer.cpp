@@ -142,7 +142,7 @@ std::string printMath(const std::string &math, const std::string &indent)
     std::string repr;
     std::istringstream lines(math);
     std::string line;
-    while (std::getline(lines, line, '\n')) {
+    while (std::getline(lines, line)) {
         repr += indent + line + "\n";
     }
     return repr;
