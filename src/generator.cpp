@@ -609,10 +609,6 @@ struct Generator::GeneratorImpl
     bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
-    // Functions to check the type of an AST pointer, in order to correctly compare the units.
-    bool isDirectComparison(const GeneratorEquationAstPtr &ast) const;
-    bool is
-
     std::string replace(std::string string, const std::string &from,
                         const std::string &to);
 
@@ -1292,164 +1288,89 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
-// Helper function to determine type of operation on the internal node - determines how we treat the two units mappings.
-// Return 1 for all direct comparison operations
-// Return 2 for all units adding operations - iteratively add the units map for times/divide
-// Return 3 for all units multiplying/dividing operations
-// Return 4 for all ln/log operations (where we have to check the base)
-// Return 5 for all trig operations as we have to check dimensionlessness)
-// Return 6 for diff as we have to check bottom variable in a specific way
-// Any other returns? possibly, but for now these are the main ones
-bool isDirectComparison(const libcellml::GeneratorEquationAstPtr &ast)
+// Functions to determine type of operation on the internal node, which dictates how we treat child unit mappings.
+bool isDirectComparisonOperator(const GeneratorEquationAstPtr &ast)
 {
-    return isRelationalOperator()
+    const GeneratorEquationAst::Type type = ast->mType;
+    return (type == libcellml::GeneratorEquationAst::Type::ASSIGNMENT)
+           || (type == libcellml::GeneratorEquationAst::Type::PLUS)
+           || (type == libcellml::GeneratorEquationAst::Type::MINUS)
+           || (type == libcellml::GeneratorEquationAst::Type::EQ)
+           || (type == libcellml::GeneratorEquationAst::Type::LEQ)
+           || (type == libcellml::GeneratorEquationAst::Type::NEQ)
+           || (type == libcellml::GeneratorEquationAst::Type::GEQ)
+           || (type == libcellml::GeneratorEquationAst::Type::LT)
+           || (type == libcellml::GeneratorEquationAst::Type::GT)
+           || (type == libcellml::GeneratorEquationAst::Type::MIN)
+           || (type == libcellml::GeneratorEquationAst::Type::MAX);
 }
 
-int checkNodeType(libcellml::GeneratorEquationAst::Type type)
+bool isMultiplicativeOperator(const GeneratorEquationAstPtr &ast)
 {
-    if (type == libcellml::GeneratorEquationAst::Type::PLUS) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::MINUS) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::EQ) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::LEQ) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::NEQ) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::GEQ) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::LT) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::GT) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::MINUS) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::MIN) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::MAX) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::NEQ) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::GEQ) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ASSIGNMENT) {
-        return 1;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::TIMES) {
-        return 2;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::DIVIDE) {
-        return 2;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::POWER) {
-        return 3;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ROOT) {
-        return 3;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::LN) {
-        return 4;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::LOG) {
-        return 4;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ASIN) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ASINH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::SIN) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::SINH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ACOS) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ACOSH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::COS) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::COSH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ATAN) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ATANH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::TAN) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::TANH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ASEC) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ASECH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::SEC) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::SECH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ACSC) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ACSCH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::CSC) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::CSCH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ACOT) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::ACOTH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::COT) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::COTH) {
-        return 5;
-    }
-    if (type == libcellml::GeneratorEquationAst::Type::DIFF) {
-        return 6;
-    }
-    return 0;
+    const GeneratorEquationAst::Type type = ast->mType;
+    return (type == libcellml::GeneratorEquationAst::Type::TIMES)
+           || (type == libcellml::GeneratorEquationAst::Type::DIVIDE);
+}
+
+bool isExponentOperator(const GeneratorEquationAstPtr &ast)
+{
+    const GeneratorEquationAst::Type type = ast->mType;
+    return (type == libcellml::GeneratorEquationAst::Type::POWER)
+           || (type == libcellml::GeneratorEquationAst::Type::ROOT);
+}
+
+bool isLogarithmicOperator(const GeneratorEquationAstPtr &ast)
+{
+    const GeneratorEquationAst::Type type = ast->mType;
+    return (type == libcellml::GeneratorEquationAst::Type::LN)
+           || (type == libcellml::GeneratorEquationAst::Type::LOG);
+}
+
+bool isTrigonometricOperator(const GeneratorEquationAstPtr &ast)
+{
+    const GeneratorEquationAst::Type type = ast->mType;
+    return (type == libcellml::GeneratorEquationAst::Type::ASIN)
+           || (type == libcellml::GeneratorEquationAst::Type::ASINH)
+           || (type == libcellml::GeneratorEquationAst::Type::SIN)
+           || (type == libcellml::GeneratorEquationAst::Type::SINH)
+           || (type == libcellml::GeneratorEquationAst::Type::ACOS)
+           || (type == libcellml::GeneratorEquationAst::Type::ACOSH)
+           || (type == libcellml::GeneratorEquationAst::Type::COS)
+           || (type == libcellml::GeneratorEquationAst::Type::COSH)
+           || (type == libcellml::GeneratorEquationAst::Type::ATAN)
+           || (type == libcellml::GeneratorEquationAst::Type::ATANH)
+           || (type == libcellml::GeneratorEquationAst::Type::TAN)
+           || (type == libcellml::GeneratorEquationAst::Type::TANH)
+           || (type == libcellml::GeneratorEquationAst::Type::ASEC)
+           || (type == libcellml::GeneratorEquationAst::Type::ASECH)
+           || (type == libcellml::GeneratorEquationAst::Type::SECH)
+           || (type == libcellml::GeneratorEquationAst::Type::SEC)
+           || (type == libcellml::GeneratorEquationAst::Type::ACSC)
+           || (type == libcellml::GeneratorEquationAst::Type::ACSCH)
+           || (type == libcellml::GeneratorEquationAst::Type::CSC)
+           || (type == libcellml::GeneratorEquationAst::Type::CSCH)
+           || (type == libcellml::GeneratorEquationAst::Type::ACOT)
+           || (type == libcellml::GeneratorEquationAst::Type::ACOTH)
+           || (type == libcellml::GeneratorEquationAst::Type::COT)
+           || (type == libcellml::GeneratorEquationAst::Type::COTH);
+}
+
+bool isDerivativeOperator(const GeneratorEquationAstPtr &ast)
+{
+    const GeneratorEquationAst::Type type = ast->mType;
+    return type == libcellml::GeneratorEquationAst::Type::DIFF;
+}
+
+bool isBottomVariableOperator(const GeneratorEquationAstPtr &ast)
+{
+    const GeneratorEquationAst::Type type = ast->mType;
+    return type == libcellml::GeneratorEquationAst::Type::BVAR;
 }
 
 // Units mapping declared to implement when checking units for variables
 using UnitsMap = std::map<std::string, double>;
 
-// TODO: implement function for base unit addition and subtraction. operation here indicates whether
-// we want to add units (times), or subtract (divide).
+// Function which adds the unit mappings if we have a times or divide operator in the AST.
 UnitsMap addMappings(UnitsMap map1, UnitsMap map2, int operation)
 {
     for (const auto &unit : map2) {
@@ -1459,7 +1380,7 @@ UnitsMap addMappings(UnitsMap map1, UnitsMap map2, int operation)
     return map1;
 }
 
-// TODO: implement function for exponent/root operations, we multiply if positive or divide if negative
+// Function which multiplies mappings if we have a power or root operator in the AST.
 UnitsMap multiplyMappings(UnitsMap map, GeneratorEquationAstPtr ast)
 {
     if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER) {
@@ -1523,7 +1444,6 @@ bool isDimensionless(UnitsMap map)
     return true;
 }
 
-// Create the inital units mapping, right at the bottom of the AST
 void updateBaseUnitCount(const ModelPtr &model,
                          std::map<std::string, double> &unitMap,
                          double &multiplier,
@@ -1571,15 +1491,6 @@ void updateBaseUnitCount(const ModelPtr &model,
 
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
 {
-    /*
-    direction += 1;
-    auto var = ast->mVariable;
-    multiplier += 1;
-    direction = 1;
-    errors.clear();
-    return unitMap;
-    */
-
     if (ast != nullptr) {
         /*GeneratorEquationAstPtr astParent = ast->mParent.lock();
         GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
@@ -1606,10 +1517,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
             UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
 
-            int type = checkNodeType(ast->mType);
-
             // Plus, Minus, any unit comparisons where units have to be *exactly* the same.
-            if (is) {
+            if (isDirectComparisonOperator(ast)) {
                 std::string hints = "";
                 bool check = (mapsAreEquivalent(leftMap, rightMap, hints) && multiplier == 0.0);
                 if (check == true) {
@@ -1638,7 +1547,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     /*
 
         // Multiply, Divide: add mappings, no interest in unit compatibility.
-        if (type == 2) {
+        if (isMultiplicativeOperator(ast)) {
             UnitsMap newMapping;
             if (ast->mType == libcellml::GeneratorEquationAst::Type::TIMES) {
                 newMapping = addMappings(leftMap, rightMap, 1);
@@ -1650,7 +1559,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
         }
 
         // Power, Root means we multiply/divide mapping. Check that power/root operation is dimensionless.
-        if (type == 3) {
+        if (isExponentialOperator(ast)) {
             if (isDimensionless(rightMap)) {
                 // TODO: Find way of getting the dimensionless exponent and multiplying it with the leftMap.
             } else {
@@ -1683,7 +1592,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
         }
 
         // Log functions should have same units and base
-        if (type == 4) {
+        if (isLogarithmicOperator(ast)) {
             std::string hints = "";
             bool check = mapsAreEquivalent(rightMap, leftMap, hints);
             if (check == true) {
@@ -1706,7 +1615,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
         }
 
         // All trig arguments should be dimensionless
-        if (type == 5) {
+        if (isTrigonometricOperator(ast)) {
             if (isDimensionless(leftMap)) {
                 leftMap.clear(); // All trig operations output a dimensionless number.
                 leftMap.emplace(std::make_pair("dimensionless", 0.0));
@@ -1739,6 +1648,12 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 errors.push_back(err);
                 return leftMap;
             }
+        }
+
+        if(isDerivativeOperator(ast)) {
+        }
+
+        if(isBottomVariable(ast)) {
         }
         
     }
