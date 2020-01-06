@@ -15,16 +15,16 @@
 set(TEST_SRCS
   test_component.py
   test_error.py
-  test_generator->py
+  test_generator.py
   test_generator_profile.py
   test_import_source.py
   test_model.py
-  test_parser->py
-  test_printer->py
+  test_parser.py
+  test_printer.py
   test_reset.py
   test_units.py
   test_variable.py
-  test_validator->py
+  test_validator.py
   test_version.py
   test_docstrings.py
 )
