@@ -22,7 +22,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include <libxml/parser->h>
+#include <libxml/parser.h>
 
 TEST(Parser, parseValidXmlDirectlyUsingLibxml)
 {

@@ -14,10 +14,10 @@
 Specification. Any errors will be logged in the `Validator`.";
 
 %{
-#include "libcellml/validator->h"
+#include "libcellml/validator.h"
 %}
 
 %create_constructor(Validator)
 
 %include "libcellml/types.h"
-%include "libcellml/validator->h"
+%include "libcellml/validator.h"

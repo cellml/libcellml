@@ -59,7 +59,7 @@ preparing for code generation.";
 "Return the implementation code for the :class:`Model` processed.";
 
 %{
-#include "libcellml/generator->h"
+#include "libcellml/generator.h"
 %}
 
 %pythonappend libcellml::Generator::Generator %{
@@ -72,4 +72,4 @@ self.setProfile(profile)
 %create_constructor(Generator)
 
 %include "libcellml/types.h"
-%include "libcellml/generator->h"
+%include "libcellml/generator.h"

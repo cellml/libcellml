@@ -16,10 +16,10 @@
 "Serialises the given :class:`Model` to an XML string.";
 
 %{
-#include "libcellml/printer->h"
+#include "libcellml/printer.h"
 %}
 
 %create_constructor(Printer)
 
 %include "libcellml/types.h"
-%include "libcellml/printer->h"
+%include "libcellml/printer.h"
