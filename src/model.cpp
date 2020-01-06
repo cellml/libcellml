@@ -629,22 +629,22 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
     return rebasedMap;
 }
 
-void getComponentNames(const ComponentPtr &component, NameList &names)
+void componentNames(const ComponentPtr &component, NameList &names)
 {
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
         names.push_back(c->name());
-        getComponentNames(c, names);
+        componentNames(c, names);
     }
 }
 
-NameList getComponentNames(const ModelPtr &model)
+NameList componentNames(const ModelPtr &model)
 {
     NameList names;
     for (size_t index = 0; index < model->componentCount(); ++index) {
         auto component = model->component(index);
         names.push_back(component->name());
-        getComponentNames(component, names);
+        componentNames(component, names);
     }
     return names;
 }
@@ -671,7 +671,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         auto importedComponent = importModel->component(component->importReference());
 
         // Determine names of components already in use.
-        NameList componentNames = getComponentNames(model);
+        NameList compNames = componentNames(model);
 
         // Determine the stack for the destination component.
         IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
@@ -706,7 +706,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         for (const auto &entry : newComponentNames) {
             std::string newName = entry.first;
             size_t count = 1;
-            while (std::find(componentNames.begin(), componentNames.end(), newName) != componentNames.end()) {
+            while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
                 newName += "_" + convertToString(count++);
             }
             if (newName != entry.first) {
