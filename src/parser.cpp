@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/parser.h"
 
+#include <algorithm>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
