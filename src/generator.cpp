@@ -21,6 +21,7 @@ limitations under the License.
 #include <list>
 #include <regex>
 #include <sstream>
+#include <stack>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -1489,6 +1490,19 @@ void updateBaseUnitCount(const ModelPtr &model,
     }
 }
 
+// Grabs a variable associated with the model, so we can return an error message
+VariablePtr getVariable(GeneratorEquationAstPtr ast)
+{
+    while (ast->mVariable == nullptr) {
+        if (ast->mLeft != nullptr) {
+            ast = ast->mLeft;
+        } else {
+            ast = ast->mRight;
+        }
+    }
+    return ast->mVariable;
+}
+
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
 {
     if (ast != nullptr) {
@@ -1507,7 +1521,10 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             ModelPtr model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
             /*UnitsPtr u = model->units(ast->mVariable->units()->name());
             u->setName(ast->mVariable->units()->name());*/
-            std::string uName = (ast->mVariable->units() == nullptr) ? ast->mVariable->units()->name() : "dimensionless";
+            std::string uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "Dimensionless";
+            if (uName == "Dimensionless") {
+                return unitMap;
+            }
             updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
             return unitMap;
         }
@@ -1525,7 +1542,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 if (check == true) {
                     return leftMap; // Return the units as we traverse up the tree TODO: Find a good way of determining which units to return based on the previous direction input
                 } else {
-                    VariablePtr variable = ast->mVariable;
+                    VariablePtr variable = getVariable(ast);
                     ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
                     ModelPtr model = owningModel(component);
                     std::string err = "The units in the expression '" + variable->name()
