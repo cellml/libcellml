@@ -210,7 +210,7 @@ You should see an output similar to this:
 .. code-block:: console
 
     Scanning dependencies of target tutorial0
-    [ 50%] Building CXX object CMakeFiles/tutorial1.dir/tutorial0.cpp.o
+    [ 50%] Building CXX object CMakeFiles/tutorial0.dir/tutorial0.cpp.o
     [100%] Linking CXX executable tutorial0
     [100%] Built target tutorial0
 
