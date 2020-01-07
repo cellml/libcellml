@@ -19,6 +19,8 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
+#include "internaltypes.h"
+
 namespace libcellml {
 
 /**
@@ -90,5 +92,8 @@ private:
     std::ostringstream mSS;
     bool mNewLine;
 };
+
+void printStack(const IndexStack &stack);
+void printEquivalenceMap(const EquivalenceMap &map);
 
 } // namespace libcellml
