@@ -8,7 +8,7 @@
  *  This tutorial assumes that you are comfortable with:
  *    - interacting with a model and its entities using the API (see Tutorial 3)
  *    - using the Generator functionality to output files in C or Python (Tutorial 3)
- *
+ *    - the basic idea of numerical integration using Euler's method (see ODE Theory)
  */
 
 #include <fstream>
@@ -18,7 +18,7 @@
 #include <libcellml>
 
 #include "../utilities/tutorial_utilities.h"
-#include "tutorial3_PredatorPrey_generated.h"
+#include "../resources/tutorial3_PredatorPrey_generated.h"
 
 int main()
 {
@@ -27,15 +27,24 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     // ---------------------------------------------------------------------------
-    //  STEP 1: Include the generated code in this project
+    //  STEP 1: Include the generated code in this project.  Note that most of these
+    //          steps occur in other files.
 
-    //  1.a Enter the path to the generated header/interface *.h file in the #includes above
+    //  1.a Enter the path to the generated header/interface *.h file in the #include block above
 
-    //  1.b Add the name and path of the implementation *.c file in the CMakeLists.txt file
+    //  1.b If necessary, change the extension of the implementation *.c file to be *.cpp 
 
-    //  1.c Check that the versions match
+    //  1.c Add the name and path of the implementation *.cpp file in the CMakeLists.txt file
+
+    //  1.d Open the implementation file *.cpp file and change the default #include "model.h"
+    //      to be the name of your interface *.h file
+
+    //  1.e Check that the versions match
     std::cout << "The generated code used libCellML version " << LIBCELLML_VERSION << std::endl;
     std::cout << "The library version of libCellML is " << libcellml::versionString() << std::endl;
+
+    //  1.f Call cmake to create the Makefile.  Call make -j to build the executable.
+    //      Run the code so far to check that the libCellML versions match.
 
     // ---------------------------------------------------------------------------
     // STEP 2: Investigate the contents of the generated files

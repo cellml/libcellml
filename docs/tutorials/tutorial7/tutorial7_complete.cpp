@@ -37,29 +37,29 @@ int main()
     //  1.b Add the MathML representing the governing equations
     {
         std::string equation1 =
-            "<apply><eq/>\n"
+            "  <apply><eq/>\n"
             "    <ci>Na_conductance</ci>\n"
             "    <apply><times/>\n"
-            "        <ci>g_Na</ci>\n"
-            "        <ci>h</ci>\n"
-            "        <apply><power/>\n"
-            "            <ci>m</ci>\n"
-            "            <cn cellml:units=\"dimensionless\">3</cn>\n"
-            "        </apply>\n"
+            "      <ci>g_Na</ci>\n"
+            "      <ci>h</ci>\n"
+            "      <apply><power/>\n"
+            "        <ci>m</ci>\n"
+            "        <cn cellml:units=\"dimensionless\">3</cn>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
         std::string equation2 =
-            "<apply><eq/>\n"
+            "  <apply><eq/>\n"
             "    <ci>i_Na</ci>\n"
             "    <apply><times/>\n"
-            "        <ci>Na_conductance</ci>\n"
-            "        <apply><minus/>\n"
-            "            <ci>V</ci>\n"
-            "            <ci>E_Na</ci>\n"
-            "        </apply>\n"
+            "      <ci>Na_conductance</ci>\n"
+            "      <apply><minus/>\n"
+            "        <ci>V</ci>\n"
+            "        <ci>E_Na</ci>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
         sodiumChannel->setMath(mathHeader);
         sodiumChannel->appendMath(equation1);
@@ -136,79 +136,79 @@ int main()
     auto mGate = libcellml::Component::create("mGate");
     sodiumChannel->addComponent(mGate);
 
-    //  2.b Add the MathML strings which govern the behavior of this gate
+    //  2.b Add the MathML strings which govern the behaviour of this gate
     {
-        std::string equation1 =
-            "<apply><eq/>\n"
+        std::string equation1 = 
+            "  <apply><eq/>\n"
             "    <ci>alpha_m</ci>\n"
             "    <apply><divide/>\n"
-            "        <apply><times/>\n"
+            "      <apply><times/>\n"
+            "        <apply><minus/>\n"
+            "          <cn cellml:units=\"per_mV_ms\">0.1</cn>\n"
+            "        </apply>\n"
+            "        <apply><plus/>\n"
+            "          <ci>V</ci>\n"
+            "          <cn cellml:units=\"mV\">50</cn>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "      <apply><minus/>\n"
+            "        <apply><exp/>\n"
+            "          <apply><divide/>\n"
             "            <apply><minus/>\n"
-            "                <cn cellml:units=\"per_mV_ms\">0.1</cn>\n"
-            "            </apply>\n"
-            "            <apply><plus/>\n"
+            "              <apply><plus/>\n"
             "                <ci>V</ci>\n"
             "                <cn cellml:units=\"mV\">50</cn>\n"
+            "              </apply>\n"
             "            </apply>\n"
+            "            <cn cellml:units=\"mV\">10</cn>\n"
+            "          </apply>\n"
             "        </apply>\n"
-            "        <apply><minus/>\n"
-            "            <apply><exp/>\n"
-            "                <apply><divide/>\n"
-            "                    <apply><minus/>\n"
-            "                        <apply><plus/>\n"
-            "                            <ci>V</ci>\n"
-            "                            <cn cellml:units=\"mV\">50</cn>\n"
-            "                        </apply>\n"
-            "                    </apply>\n"
-            "                    <cn cellml:units=\"mV\">10</cn>\n"
-            "                </apply>\n"
-            "            </apply>\n"
-            "            <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "        </apply>\n"
+            "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
-        std::string equation2 =
-            "<apply><eq/>\n"
+        std::string equation2 = 
+            "  <apply><eq/>\n"
             "    <ci>beta_m</ci>\n"
             "    <apply><times/>\n"
-            "        <cn cellml:units=\"per_ms\">4</cn>\n"
-            "        <apply><exp/>\n"
-            "            <apply><divide/>\n"
-            "                <apply><minus/>\n"
-            "                    <apply><plus/>\n"
-            "                        <ci>V</ci>\n"
-            "                        <cn cellml:units=\"mV\">75</cn>\n"
-            "                    </apply>\n"
-            "                </apply>\n"
-            "                <cn cellml:units=\"mV\">18</cn>\n"
+            "      <cn cellml:units=\"per_ms\">4</cn>\n"
+            "      <apply><exp/>\n"
+            "        <apply><divide/>\n"
+            "          <apply><minus/>\n"
+            "            <apply><plus/>\n"
+            "              <ci>V</ci>\n"
+            "              <cn cellml:units=\"mV\">75</cn>\n"
             "            </apply>\n"
+            "          </apply>\n"
+            "          <cn cellml:units=\"mV\">18</cn>\n"
             "        </apply>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
-        std::string equation3 =
-            "<apply><eq/>\n"
+        std::string equation3 = 
+            "  <apply><eq/>\n"
             "    <apply><diff/>\n"
-            "        <bvar>\n"
-            "            <ci>t</ci>\n"
-            "        </bvar>\n"
-            "        <ci>m</ci>\n"
+            "      <bvar>\n"
+            "        <ci>t</ci>\n"
+            "      </bvar>\n"
+            "      <ci>m</ci>\n"
             "    </apply>\n"
             "    <apply><minus/>\n"
-            "        <apply><times/>\n"
-            "            <ci>alpha_m</ci>\n"
-            "           <apply><minus/>\n"
-            "                <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "                <ci>m</ci>\n"
-            "            </apply>\n"
+            "      <apply><times/>\n"
+            "        <ci>alpha_m</ci>\n"
+            "        <apply><minus/>\n"
+            "          <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "          <ci>m</ci>\n"
             "        </apply>\n"
-            "        <apply><times/>\n"
-            "            <ci>m</ci>\n"
-            "            <ci>beta_m</ci>\n"
-            "        </apply>\n"
+            "      </apply>\n"
+            "      <apply><times/>\n"
+            "        <ci>m</ci>\n"
+            "        <ci>beta_m</ci>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
         mGate->setMath(mathHeader);
         mGate->appendMath(equation1);
@@ -268,69 +268,69 @@ int main()
 
     //  3.b Adding the MathML strings
     {
-        std::string equation1 =
-            "<apply><eq/>\n"
+        std::string equation1 = 
+            "  <apply><eq/>\n"
             "    <ci>alpha_h</ci>\n"
             "    <apply><times/>\n"
-            "        <cn cellml:units=\"per_ms\">0.07</cn>\n"
-            "        <apply><exp/>\n"
-            "            <apply><divide/>\n"
-            "                <apply><minus/>\n"
-            "                    <apply><plus/>\n"
-            "                        <ci>V</ci>\n"
-            "                        <cn cellml:units=\"mV\">75</cn>\n"
-            "                    </apply>\n"
-            "                </apply>\n"
-            "                <cn cellml:units=\"mV\">20</cn>\n"
+            "      <cn cellml:units=\"per_ms\">0.07</cn>\n"
+            "      <apply><exp/>\n"
+            "        <apply><divide/>\n"
+            "          <apply><minus/>\n"
+            "            <apply><plus/>\n"
+            "              <ci>V</ci>\n"
+            "              <cn cellml:units=\"mV\">75</cn>\n"
             "            </apply>\n"
+            "          </apply>\n"
+            "          <cn cellml:units=\"mV\">20</cn>\n"
             "        </apply>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
-        std::string equation2 =
-            "<apply><eq/>\n"
+        std::string equation2 = 
+            "  <apply><eq/>\n"
             "    <ci>beta_h</ci>\n"
             "    <apply><divide/>\n"
-            "        <cn cellml:units=\"per_ms\">1</cn>\n"
-            "        <apply><plus/>\n"
-            "            <apply><exp/>\n"
-            "                <apply><divide/>\n"
-            "                    <apply><minus/>\n"
-            "                        <apply><plus/>\n"
-            "                            <ci>V</ci>\n"
-            "                            <cn cellml:units=\"mV\">45</cn>\n"
-            "                        </apply>\n"
-            "                    </apply>\n"
-            "                    <cn cellml:units=\"mV\">10</cn>\n"
-            "                </apply>\n"
+            "      <cn cellml:units=\"per_ms\">1</cn>\n"
+            "      <apply><plus/>\n"
+            "        <apply><exp/>\n"
+            "          <apply><divide/>\n"
+            "            <apply><minus/>\n"
+            "              <apply><plus/>\n"
+            "                <ci>V</ci>\n"
+            "                <cn cellml:units=\"mV\">45</cn>\n"
+            "              </apply>\n"
             "            </apply>\n"
-            "            <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "            <cn cellml:units=\"mV\">10</cn>\n"
+            "          </apply>\n"
             "        </apply>\n"
+            "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
-        std::string equation3 =
-            "<apply><eq/>\n"
+        std::string equation3 = 
+            "  <apply><eq/>\n"
             "    <apply><diff/>\n"
-            "        <bvar>\n"
-            "            <ci>t</ci>\n"
-            "        </bvar>\n"
-            "        <ci>h</ci>\n"
+            "       <bvar>\n"
+            "         <ci>t</ci>\n"
+            "       </bvar>\n"
+            "       <ci>h</ci>\n"
             "    </apply>\n"
             "    <apply><minus/>\n"
-            "        <apply><times/>\n"
-            "            <ci>alpha_h</ci>\n"
-            "            <apply><minus/>\n"
-            "                <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "                <ci>h</ci>\n"
-            "            </apply>\n"
+            "      <apply><times/>\n"
+            "        <ci>alpha_h</ci>\n"
+            "        <apply><minus/>\n"
+            "          <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "          <ci>h</ci>\n"
             "        </apply>\n"
-            "        <apply><times/>\n"
-            "            <ci>h</ci>\n"
-            "            <ci>beta_h</ci>\n"
-            "        </apply>\n"
+            "      </apply>\n"
+            "      <apply><times/>\n"
+            "        <ci>h</ci>\n"
+            "        <ci>beta_h</ci>\n"
+            "      </apply>\n"
             "    </apply>\n"
-            "</apply>";
+            "  </apply>\n";
 
         hGate->setMath(mathHeader);
         hGate->appendMath(equation1);
@@ -427,22 +427,22 @@ int main()
     //  6.a Create the MathML controlling the driving function
     {
         std::string voltageClampMaths =
-            "<apply><eq/>\n"
+            "  <apply><eq/>\n"
             "    <ci>V</ci>\n"
             "    <piecewise>\n"
-            "        <piece>\n"
-            "            <cn cellml:units=\"mV\">-85</cn>\n"
-            "            <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">5</cn></apply>\n"
-            "        </piece>\n"
-            "            <piece>\n"
-            "            <cn cellml:units=\"mV\">-85</cn>\n"
-            "            <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">15</cn></apply>\n"
-            "        </piece>\n"
-            "        <otherwise>\n"
-            "            <cn cellml:units=\"mV\">-20</cn>\n"
-            "        </otherwise>\n"
+            "      <piece>\n"
+            "        <cn cellml:units=\"mV\">-85</cn>\n"
+            "        <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">5</cn></apply>\n"
+            "      </piece>\n"
+            "      <piece>\n"
+            "        <cn cellml:units=\"mV\">-85</cn>\n"
+            "        <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">15</cn></apply>\n"
+            "      </piece>\n"
+            "      <otherwise>\n"
+            "        <cn cellml:units=\"mV\">-20</cn>\n"
+            "      </otherwise>\n"
             "    </piecewise>\n"
-            "</apply>";
+            "  </apply>\n";
         environment->setMath(mathHeader);
         environment->appendMath(voltageClampMaths);
         environment->appendMath(mathFooter);

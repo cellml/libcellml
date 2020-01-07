@@ -100,7 +100,7 @@ by simply printing the combined model to the screen.
     containing maths and variables, both of which reference units that we haven't
     yet included in the combined model:
 
-.. code-block:: terminal
+.. code-block:: console
 
     The validator has found 13 errors!
     Validator error[0]:
@@ -146,7 +146,7 @@ behaviour of a gated sodium gate and stored it inside a model.
     components encapsulated by the :code:`sodiumChannel` component - the :code:`mGate`
     and :code:`hGate` components - are imported as well.
 
-.. code-block:: terminal
+.. code-block:: console
 
     Model 'Tutorial8_HHModel' has 1 components
      - Component 'membrane' has 1 child components
@@ -186,7 +186,7 @@ related to units, but you will still need to address the illegal connections
 between variables in the newly-moved sodiumChannel component and the old
 environment component in the sodiumChannelModel.
 
-.. code-block:: terminal
+.. code-block:: console
 
     **PUT ERRORS HERE WHEN VALIDATOR IS WORKING**
 
@@ -308,7 +308,7 @@ the unit names.  The function can be used like this:
 
     potassiumChannel->component("nGate")->setMath(nGateMaths);
 
-.. code-block:: terminal
+.. code-block:: console
 
     Switched units 'millivolt' for units 'mV'
     Switched units 'millisecond' for units 'ms'
@@ -341,7 +341,7 @@ the unit names.  The function can be used like this:
 Now your model should have the encapsulation structure shown below.  You can
 check this in the same way as you did in step 2.b.
 
-.. code-block:: terminal
+.. code-block:: console
 
     Model 'Tutorial8_HHModel' has 1 components
     - Component 'membrane' has 3 child components

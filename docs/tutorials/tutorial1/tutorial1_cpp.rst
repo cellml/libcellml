@@ -29,20 +29,20 @@ started in each of the tutorial folders.
     **0.a** Navigate into the "tutorial1" folder and confirm that you're able to compile
     and run this template against the libCellML library
 
-.. code-block:: terminal
+.. code-block:: console
 
     cmake -DINSTALL_PREFIX=../../install .
     make -j
 
 Running the template:
 
-.. code-block:: terminal
+.. code-block:: console
 
     ./tutorial1
 
 ... should give the output:
 
-.. code-block:: terminal
+.. code-block:: console
 
     -----------------------------------------------
     TUTORIAL 1: READING AND WRITING CELLML FILES

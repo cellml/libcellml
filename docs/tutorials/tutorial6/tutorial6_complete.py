@@ -51,71 +51,72 @@ if __name__ == "__main__":
     # potassium_channel.setName("potassiumChannel")
 
     validator = Validator()
-    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
+    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n'
     math_footer = '</math>'
 
     model = Model("Tutorial6_PotassiumChannelModel")
     n_gate = Component("nGate")
     equation1 = \
-        '<apply><eq/>\
-               <apply><diff/>\
-                   <bvar><ci>t</ci></bvar>\
-                   <ci>n</ci>\
-               </apply>\
-               <apply><minus/>\
-                   <apply><times/>\
-                        <ci>alpha_n</ci>\
-                        <apply><minus/>\
-                           <cn cellml:units="dimensionless">1</cn>\
-                           <ci>n</ci>\
-                        </apply>\
-                   </apply>\
-                   <apply><times/>\
-                       <ci>beta_n</ci>\
-                       <ci>n</ci>\
-                   </apply>\
-               </apply>\
-            </apply>'
+        '  <apply><eq/>\n'\
+        '    <apply><diff/>\n'\
+        '      <bvar><ci>t</ci></bvar>\n'\
+        '      <ci>n</ci>\n'\
+        '    </apply>\n'\
+        '    <apply><minus/>\n'\
+        '      <apply><times/>\n'\
+        '        <ci>alpha_n</ci>\n'\
+        '        <apply><minus/>\n'\
+        '          <cn cellml:units="dimensionless">1</cn>\n'\
+        '          <ci>n</ci>\n'\
+        '        </apply>\n'\
+        '      </apply>\n'\
+        '      <apply><times/>\n'\
+        '        <ci>beta_n</ci>\n'\
+        '        <ci>n</ci>\n'\
+        '      </apply>\n'\
+        '    </apply>\n'\
+        '  </apply>\n'
 
     equation2 = \
-        '<apply><eq/>\
-               <ci>alpha_n</ci>\
-               <apply><divide/>\
-                   <apply><times/>\
-                       <cn cellml:units="per_millivolt_millisecond">0.01</cn>\
-                       <apply><plus/>\
-                           <ci>V</ci>\
-                           <cn cellml:units="millivolt">10</cn>\
-                       </apply> \
-                   </apply>\
-                   <apply><minus/>\
-                       <apply><exp/>\
-                           <apply><divide/>\
-                               <apply><plus/>\
-                                   <ci>V</ci>\
-                                   <cn cellml:units="millivolt">10</cn>\
-                               </apply> \
-                               <cn cellml:units="millivolt">10</cn>\
-                           </apply>\
-                       </apply>\
-                       <cn cellml:units="dimensionless">1</cn>\
-                   </apply>\
-               </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>alpha_n</ci>\n'\
+            '    <apply><divide/>\n'\
+            '      <apply><times/>\n'\
+            '        <cn cellml:units="per_millivolt_millisecond">0.01</cn>\n'\
+            '        <apply><plus/>\n'\
+            '          <ci>V</ci>\n'\
+            '          <cn cellml:units="millivolt">10</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><minus/>\n'\
+            '        <apply><exp/>\n'\
+            '          <apply><divide/>\n'\
+            '            <apply><plus/>\n'\
+            '              <ci>V</ci>\n'\
+            '              <cn cellml:units="millivolt">10</cn>\n'\
+            '            </apply>\n'\
+            '            <cn cellml:units="millivolt">10</cn>\n'\
+            '          </apply>\n'\
+            '        </apply>\n'\
+            '        <cn cellml:units="dimensionless">1</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
     equation3 = \
-        '<apply><eq/>\
-               <ci>beta_n</ci>\
-               <apply><times/>\
-                   <cn cellml:units="per_millisecond">0.125</cn>\
-                   <apply><exp/>\
-                       <apply><divide/>\
-                           <ci>V</ci>\
-                           <cn cellml:units="millivolt">80</cn>\
-                       </apply>\
-                   </apply>\
-               </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>beta_n</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <cn cellml:units="per_millisecond">0.125</cn>\n'\
+            '      <apply><exp/>\n'\
+            '        <apply><divide/>\n'\
+            '          <ci>V</ci>\n'\
+            '          <cn cellml:units="millivolt">80</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
+
 
     n_gate.setMath(math_header)
     n_gate.appendMath(equation1)
@@ -231,42 +232,40 @@ if __name__ == "__main__":
 
     #  2.d Defining the maths inside the potassium_channel component
     equation1 = \
-        '<apply><eq/>\
-            <ci>E_K</ci>\
-            <apply><times/>\
-                <ci>RTF</ci>\
-                <apply><ln/>\
-                    <apply><divide/>\
-                        <ci>Ko</ci>\
-                        <ci>Ki</ci>\
-                    </apply>\
-                </apply>\
-            </apply>\
-        </apply>'
-
+            '  <apply><eq/>\n'\
+            '    <ci>E_K</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>RTF</ci>\n'\
+            '      <apply><ln/>\n'\
+            '        <apply><divide/>\n'\
+            '          <ci>Ko</ci>\n'\
+            '          <ci>Ki</ci>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
     equation2 = \
-        '<apply><eq/>\
-            <ci>K_conductance</ci>\
-            <apply><times/>\
-                <ci>g_K</ci>\
-                <apply><power/>\
-                    <ci>n</ci>\
-                    <cn cellml:units="dimensionless">4</cn>\
-                </apply>\
-            </apply>\
-       </apply>'
-
+            '  <apply><eq/>\n'\
+            '    <ci>K_conductance</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>g_K</ci>\n'\
+            '      <apply><power/>\n'\
+            '        <ci>n</ci>\n'\
+            '        <cn cellml:units="dimensionless">4</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
     equation3 = \
-        '<apply><eq/>\
-            <ci>i_K</ci>\
-            <apply><times/>\
-                <ci>K_conductance</ci>\
-                <apply><minus/>\
-                    <ci>V</ci>\
-                    <ci>E_K</ci>\
-                </apply>\
-            </apply >\
-       </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>i_K</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>K_conductance</ci>\n'\
+            '      <apply><minus/>\n'\
+            '        <ci>V</ci>\n'\
+            '        <ci>E_K</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
     potassium_channel.setMath(math_header)
     potassium_channel.appendMath(equation1)
@@ -399,22 +398,22 @@ if __name__ == "__main__":
 
     #  5.a Define a MathML string representing the voltage clamp
     voltage_clamp_maths = \
-        '<apply><eq/>\
-            <ci>V</ci>\
-            <piecewise>\
-                <piece>\
-                    <cn cellml:units="millivolt">0</cn>\
-                    <apply><lt/><ci>t</ci><cn cellml:units="millisecond">5</cn></apply>\
-                </piece>\
-                <piece>\
-                    <cn cellml:units="millivolt">0</cn>\
-                    <apply><gt/><ci>t</ci><cn cellml:units="millisecond">15</cn></apply>\
-                </piece>\
-                <otherwise>\
-                    <cn cellml:units="millivolt">-85</cn>\
-                </otherwise>\
-            </piecewise>\
-        </apply>'
+        '  <apply><eq/>\n'\
+        '    <ci>V</ci>\n'\
+        '    <piecewise>\n'\
+        '      <piece>\n'\
+        '        <cn cellml:units="millivolt">0</cn>\n'\
+        '        <apply><lt/><ci>t</ci><cn cellml:units="millisecond">5</cn></apply>\n'\
+        '      </piece>\n'\
+        '      <piece>\n'\
+        '        <cn cellml:units="millivolt">0</cn>\n'\
+        '        <apply><gt/><ci>t</ci><cn cellml:units="millisecond">15</cn></apply>\n'\
+        '      </piece>\n'\
+        '      <otherwise>\n'\
+        '        <cn cellml:units="millivolt">-85</cn>\n'\
+        '      </otherwise>\n'\
+        '    </piecewise>\n'\
+        '  </apply>\n'\
 
     #  5.b Add this to the maths for the environment component.
     environment.setMath(math_header)
@@ -426,7 +425,7 @@ if __name__ == "__main__":
     print_errors_to_terminal(validator)
 
     print("-----------------------------------------------")
-    print("    STEP 6: Generate code and output model  ")
+    print("    STEP 6: Generate code and output model     ")
     print("-----------------------------------------------")
 
     #  6.a Call the generator to process the model and output errors to the terminal

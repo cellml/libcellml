@@ -207,7 +207,7 @@ done by creating *equivalent variables*.
     **4.b** Print the model to the screen to check your component hierarchy.
     It should contain the section below where a *child component* is listed.
 
-.. code-block:: terminal
+.. code-block:: console
 
      ...
         Component[0] has 1 child components:
@@ -258,7 +258,7 @@ process.
     :code:`print_errors_to_terminal` function.  You should see an error
     similar to the one below.
 
-.. code-block:: terminal
+.. code-block:: console
 
     **TODO** ?? put error here when the validation is working ??
 
@@ -287,7 +287,7 @@ the :code:`potassiumChannel` component as a go-between: it is a sibling of the
     and :code:`potassiumChannel` components.  Validate your model again.  You
     should see a validation message similar to that shown below.
 
-.. code-block:: terminal
+.. code-block:: console
 
     **TODO Put error messages here when they're working**
 

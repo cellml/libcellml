@@ -1,6 +1,12 @@
 /* The content of this file was generated using the C profile of libCellML 0.2.0. */
 
+// ------------------------- Begin manual changes ---------------------------------
+// TUTORIAL 4, Step 1.d Change the default #include "model.h" to be the name of the
+//                      interface *.h file from the Generator.
+
 #include "tutorial3_PredatorPrey_generated.h"
+
+// -------------------------- End manual changes ----------------------------------
 
 #include <math.h>
 #include <stdlib.h>

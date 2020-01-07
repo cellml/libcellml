@@ -40,54 +40,45 @@ if __name__ == "__main__":
     print("-----------------------------------------------")
 
     #  2.a   Define the mathematics.
-    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
+    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n'
     equation1 = \
-        '<apply>\
-            <eq/>\
-            <apply>\
-                <diff/>\
-                <bvar>\
-                    <ci>t</ci>\
-                </bvar>\
-                <ci>n</ci>\
-            </apply>\
-            <apply>\
-                <minus/>\
-                <apply>\
-                    <times/>\
-                    <ci>alpha_n</ci>\
-                    <apply>\
-                        <minus/>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                        <ci>n</ci>\
-                    </apply>\
-                </apply>\
-                <apply>\
-                    <times/>\
-                    <ci>beta_n</ci>\
-                    <ci>n</ci>\
-                </apply>\
-            </apply>\
-        </apply>'
+        '  <apply><eq/>\n'\
+        '    <apply><diff/>\n'\
+        '      <bvar>\n'\
+        '        <ci>t</ci>\n'\
+        '      </bvar>\n'\
+        '      <ci>n</ci>\n'\
+        '    </apply>\n'\
+        '    <apply><minus/>\n'\
+        '      <apply><times/>\n'\
+        '        <ci>alpha_n</ci>\n'\
+        '        <apply><minus/>\n'\
+        '          <cn cellml:units="dimensionless">1</cn>\n'\
+        '          <ci>n</ci>\n'\
+        '        </apply>\n'\
+        '      </apply>\n'\
+        '      <apply><times/>\n'\
+        '        <ci>beta_n</ci>\n'\
+        '        <ci>n</ci>\n'\
+        '      </apply>\n'\
+        '    </apply>\n'\
+        '  </apply>\n'
+
     equation2 = \
-        '<apply>\
-            <eq/>\
-            <ci>i_K</ci>\
-            <apply>\
-                <times/>\
-                <ci>g_K</ci>\
-                <apply>\
-                    <minus/>\
-                    <ci>V</ci>\
-                    <ci>E_K</ci>\
-                </apply>\
-                <apply>\
-                    <power/>\
-                    <ci>n</ci>\
-                    <ci>gamma</ci>\
-                </apply>\
-            </apply>\
-        </apply>'
+        '  <apply><eq/>\n'\
+        '    <ci>i_K</ci>\n'\
+        '    <apply><times/>\n'\
+        '      <ci>g_K</ci>\n'\
+        '      <apply><minus/>\n'\
+        '        <ci>V</ci>\n'\
+        '        <ci>E_K</ci>\n'\
+        '      </apply>\n'\
+        '      <apply><power/>\n'\
+        '        <ci>n</ci>\n'\
+        '        <ci>gamma</ci>\n'\
+        '      </apply>\n'\
+        '    </apply>\n'\
+        '  </apply>\n'
     math_footer = '</math>'
 
     #  2.b   Add the maths to the component.  Note that there is only one maths
@@ -217,11 +208,10 @@ if __name__ == "__main__":
     print_errors_to_terminal(validator)
 
     print("-----------------------------------------------")
-    print(" STEP 5: Serialise the model and generate code")
+    print(" STEP 5: Serialise the model and generate code ")
     print("-----------------------------------------------")
 
-    #  5.a Create a generator instance and pass it the model for processing.  The
-    #      default profile is to generate C code, but we can change this later.
+    #  5.a Create a generator instance and pass it the model for processing.  
     generator = Generator()
     generator.processModel(model)
 
@@ -233,6 +223,9 @@ if __name__ == "__main__":
     #      header file contents) as well as the implementationCode (the source
     #      file contents), whereas for Python you need only output the
     #      implementationCode.  Write the file(s).
+
+    profile = GeneratorProfile(GeneratorProfile.Profile.C)
+    generator.setProfile(profile)
 
     implementation_code_C = generator.implementationCode()
     write_file = open("tutorial5_IonChannelModel_generated.c", "w")
@@ -261,6 +254,6 @@ if __name__ == "__main__":
     write_file.write(serialised_model_string)
     write_file.close()
 
-    print("The generated files and serialised CellML file have been written.")
+    print("The generated files and serialised CellML files have been written to tutorial5_IonChannelModel.[py,c,h,cellml]")
 
     #  5.f The model can now be simulated using the solver.

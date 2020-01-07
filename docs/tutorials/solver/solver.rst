@@ -31,7 +31,7 @@ Requirements:
   **1.a** Assuming you've already generated code using the C profile, open a
   terminal window and navigate into the :code:`tutorials/solver` directory.
 
-.. code-block:: terminal
+.. code-block:: console
 
   cd your_base_path/tutorials/solver
 
@@ -47,7 +47,7 @@ to include the generated code.
   header and source files have the same base filename (eg: baseFileName.c
   and baseFileName.h).  The general CMake command is below.
 
-.. code-block:: terminal
+.. code-block:: console
 
   cmake -DINPUT=/path/to/your/files/baseFileName .
 
@@ -60,7 +60,7 @@ to include the generated code.
 
 If all has gone well you should see the output similar to:
 
-.. code-block:: terminal
+.. code-block:: console
 
     -- The C compiler identification is AppleClang 10.0.1.10010046
     -- The CXX compiler identification is AppleClang 10.0.1.10010046
@@ -91,7 +91,7 @@ If all has gone well you should see the output similar to:
   **1.c** Following the instructions in the output, next you need to build the
   executable by entering:
 
-  .. code-block:: terminal
+  .. code-block:: console
 
     make -j
 
@@ -102,7 +102,7 @@ If all has gone well you should see the output similar to:
   can be run using the command line flags :code:`-n` to indicate the number of
   steps to run, and :code:`-dt` to indicate the step size, for example:
 
-  .. code-block:: terminal
+  .. code-block:: console
 
     ./solve_baseFileName -n 20000 -dt 0.001
 
@@ -132,7 +132,7 @@ from the command line as below:
 
     **1.**  Navigate into the "solver" directory
 
-.. code-block:: terminal
+.. code-block:: console
 
     cd your_base_path/tutorials/solver
 
@@ -145,7 +145,7 @@ from the command line as below:
         - :code:`-dt` the step size for the integration variable to take, and ...
         - :code:`-n` the total number of steps to take.
 
-.. code-block:: terminal
+.. code-block:: console
 
     python3 simplesolver.py -m path_to_your_file -n number_of_steps -dt step_size
 
@@ -155,7 +155,7 @@ conditions, as below.  An example file for running is provided for you in the
 2000 steps and a step size of 0.01.  Running this will give you the terminal
 output:
 
-.. code-block:: terminal
+.. code-block:: console
 
     python3 simplesolver.py -m ../resources/tutorial3_PredatorPrey_generated.py -dt 0.01 -n 2000
 

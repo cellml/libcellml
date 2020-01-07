@@ -39,14 +39,16 @@ Because this is for generated code in Python we will need the file:
  - :download:`../resources/tutorial3_PredatorPrey_generated.py`
 
 The generated code exists in its own module which can be imported directly into
-your script for manipulation.  It's best to do this in a general manner, so by
-using the Python :code:`import some_thing as some_alias` idiom so that you can
-use the :code:`some_alias` throughout the rest of the code.
+your script for manipulation.  It's best to do this in a general manner, so
+using the Python :code:`import some_thing as some_alias` idiom you can then
+use :code:`some_alias` throughout the rest of the code.
 
 .. container:: dothis
 
     **1.a**  Import the file generated in Tutorial 3 using the aliasing idiom
-    as above.
+    as above.  Note that this will need to be in the same directory as your
+    script, or a child - you cannot reference it from its current location in
+    the :code:`resources` directory; you'll need to move or copy it here.
 
 .. container:: dothis
 
@@ -123,7 +125,9 @@ These are accessible in the imported module:
 .. container:: dothis
 
     **2.a** Retrieve the number of variables from the generated module, and print
-    the information related to each of them to the terminal.
+    the information related to each of them to the terminal.  If you aliased your
+    imported module as :code:`model` then these can be accessed using
+    :code:`model.SOMETHING`.
 
 Secondly we have similar information items related to the state variables.
 These are:

@@ -57,49 +57,49 @@ int main()
 
     //  1.c,d,e Create the MathML2 strings representing the governing equations
     std::string equation1 =
-        "<apply><eq/>\n"
-        "   <ci>c</ci>\n"
-        "   <apply><plus/>\n"
-        "       <ci>a</ci>\n"
-        "       <cn>2.0</cn>\n"
-        "   </apply>\n"
-        "</apply>\n";
+        "  <apply><eq/>\n"
+        "    <ci>c</ci>\n"
+        "    <apply><plus/>\n"
+        "      <ci>a</ci>\n"
+        "      <cn>2.0</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n";
     std::string equation2 =
-        "<apply><eq/>\n"
-        "   <apply><diff/>\n"
-        "   <bvar><ci>time</ci></bvar>\n"
-        "   <ci>y_s</ci>\n"
-        "   </apply>\n"
-        "   <apply><plus/>\n"
-        "       <apply><times/>\n"
-        "           <ci>a</ci>\n"
-        "           <ci>y_s</ci>\n"
+        "  <apply><eq/>\n"
+        "    <apply><diff/>\n"
+        "      <bvar><ci>time</ci></bvar>\n"
+        "      <ci>y_s</ci>\n"
+        "    </apply>\n"
+        "    <apply><plus/>\n"
+        "      <apply><times/>\n"
+        "        <ci>a</ci>\n"
+        "        <ci>y_s</ci>\n"
         "      </apply>\n"
         "      <apply><times/>\n"
-        "          <ci>b</ci>\n"
-        "          <ci>y_s</ci>\n"
-        "          <ci>y_f</ci>\n"
+        "        <ci>b</ci>\n"
+        "        <ci>y_s</ci>\n"
+        "        <ci>y_f</ci>\n"
         "      </apply>\n"
-        "   </apply>\n"
-        "</apply>\n";
+        "    </apply>\n"
+        "  </apply>\n";
     std::string equation3 =
-        "<apply><eq/>\n"
-        "   <apply><diff/>\n"
-        "   <bvar><ci>time</ci></bvar>\n"
-        "   <ci>y_f</ci>\n"
-        "   </apply>\n"
-        "   <apply><plus/>\n"
-        "       <apply><times/>\n"
-        "           <ci>c</ci>\n"
-        "           <ci>y_f</ci>\n"
+        "  <apply><eq/>\n"
+        "    <apply><diff/>\n"
+        "      <bvar><ci>time</ci></bvar>\n"
+        "      <ci>y_f</ci>\n"
+        "    </apply>\n"
+        "    <apply><plus/>\n"
+        "      <apply><times/>\n"
+        "        <ci>c</ci>\n"
+        "        <ci>y_f</ci>\n"
         "      </apply>\n"
         "      <apply><times/>\n"
-        "          <ci>d</ci>\n"
-        "          <ci>y_s</ci>\n"
-        "          <ci>y_f</ci>\n"
+        "        <ci>d</ci>\n"
+        "        <ci>y_s</ci>\n"
+        "        <ci>y_f</ci>\n"
         "      </apply>\n"
-        "   </apply>\n"
-        "</apply>\n";
+        "    </apply>\n"
+        "  </apply>\n";
 
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
@@ -195,13 +195,13 @@ int main()
     component->removeMath();
     component->setMath(mathHeader);
     equation1 =
-        "<apply><eq/>\n"
-        "   <ci>c</ci>\n"
-        "   <apply><plus/>\n"
-        "       <ci>a</ci>\n"
-        "       <cn cellml:units=\"per_month\">2.0</cn>\n"
-        "   </apply>\n"
-        "</apply>\n";
+        "  <apply><eq/>\n"
+        "    <ci>c</ci>\n"
+        "    <apply><plus/>\n"
+        "      <ci>a</ci>\n"
+        "      <cn cellml:units=\"per_month\">2.0</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n";
 
     component->appendMath(equation1);
     component->appendMath(equation2);
@@ -211,7 +211,7 @@ int main()
     //  3.g Expect there to be no errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
-    assert(validator->errorCount()==0);
+    assert(validator->errorCount() == 0);
 
     // ---------------------------------------------------------------------------
     //  STEP 4: Code generation
@@ -255,6 +255,8 @@ int main()
     outFile.open("tutorial3_PredatorPrey_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
+
+    std::cout << "The generated files have been written to tutorial3_PredatorPrey_generated.[c,h,py]." << std::endl;
 
     //  The next tutorial will take you through the process of running the simulation
     //  described by this model.

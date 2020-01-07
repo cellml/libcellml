@@ -51,20 +51,20 @@ finished code given in the :code:`tutorial5_complete.cpp` file.
 Navigate into the :code:`tutorial5` folder and check that you can build the
 template against the libCellML library successfully:
 
-.. code-block:: terminal
+.. code-block:: console
 
     cmake -DINSTALL_PREFIX=../../install .
     make -j
 
 Running the template:
 
-.. code-block:: terminal
+.. code-block:: console
 
     ./tutorial5
 
 ... should give the output:
 
-.. code-block:: terminal
+.. code-block:: console
 
     -----------------------------------------------
       STEP 1: Create the model and component
@@ -233,7 +233,7 @@ are:
     will be similar to those below, relating to not yet defined variables and
     units:
 
-.. code-block:: terminal
+.. code-block:: console
 
      Description: MathML ci element has the child text 'alpha_n' which does not
         correspond with any variable names present in component
@@ -286,7 +286,7 @@ every variable to have some defined.  For the proportion of open gates
     **3.c** Submit your model to the validator.  Expected errors at this stage
     will be similar to those below.
 
-.. code-block:: terminal
+.. code-block:: console
 
      - Description: Variable 'time' has an invalid units reference 'millisecond'
        that does not correspond with a standard unit or units in the variable's
@@ -400,14 +400,17 @@ At this stage you should have four new files created:
   only)
 - the generated files for the C profile, the header and source files.
 
-These last two files can be used in conjuction with a simple solver to model
-the behaviour of this ion channel.
+These last three files can be used in conjuction with a simple solver to model
+the behaviour of this ion channel.  Because this tutorial is in C++ we
+give instructions for the C++ solver.  For the Python solver please see
+:ref:`the Python Tutorial 5 instructions<tutorial5_py>` or
+:ref:`the general solver instructions<solver>`.
 
 .. container:: dothis
 
     **6.a** Navigate to the :code:`tutorials/solver` directory.
 
-.. code-block:: terminal
+.. code-block:: console
 
   cd ../tutorials/solver
 
@@ -423,7 +426,7 @@ executable which includes the generated code.
   header and source files have the same base filename (eg: baseFileName.c
   and baseFileName.h).  The general CMake command is below.
 
-.. code-block:: terminal
+.. code-block:: console
 
   cmake -DINPUT=../tutorial5/baseFileName .
 
@@ -436,7 +439,7 @@ executable which includes the generated code.
 
 If all has gone well you should see the output similar to:
 
-.. code-block:: terminal
+.. code-block:: console
 
     -- The C compiler identification is AppleClang 10.0.1.10010046
     -- The CXX compiler identification is AppleClang 10.0.1.10010046
@@ -467,7 +470,7 @@ If all has gone well you should see the output similar to:
   **6.c** Following the instructions in the output, next you need to build the
   executable by entering:
 
-  .. code-block:: terminal
+  .. code-block:: console
 
     make -j
 
@@ -478,7 +481,7 @@ If all has gone well you should see the output similar to:
   can be run using the command line flags :code:`-n` to indicate the number of
   steps to run, and :code:`-dt` to indicate the step size, for example:
 
-  .. code-block:: terminal
+  .. code-block:: console
 
     ./solve_baseFileName -n 50 -dt 0.1
 

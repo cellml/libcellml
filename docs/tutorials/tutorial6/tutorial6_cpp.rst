@@ -30,20 +30,20 @@ Resources:
 Navigate into the :code:`tutorial6` folder and check that you can build the
 template against the libCellML library successfully:
 
-.. code-block:: terminal
+.. code-block:: console
 
     cmake -DINSTALL_PREFIX=../../install .
     make -j
 
 Running the template:
 
-.. code-block:: terminal
+.. code-block:: console
 
     ./tutorial6
 
 ... should give the output of the section headings which you'll complete here:
 
-.. code-block:: terminal
+.. code-block:: console
 
     -----------------------------------------------
       STEP 1: Read the ion channel component
@@ -246,7 +246,7 @@ done by creating *equivalent variables*.
     **4.b** Print the model to the screen to check your component hierarchy.
     It should contain the section below where a *child component* is listed.
 
-.. code-block:: terminal
+.. code-block:: console
 
      ...
         Component[0] has 1 child components:
@@ -299,7 +299,7 @@ process.
     :code:`printErrorsToTerminal` function.  You should see an error
     similar to the one below.
 
-.. code-block:: terminal
+.. code-block:: console
 
     **TODO** ?? put error here when the validation is working ??
 
@@ -326,7 +326,7 @@ the :code:`potassiumChannel` component as a go-between: it is a sibling of the
     and :code:`potassiumChannel` components.  Validate your model again.  You
     should see a validation message similar to that shown below.
 
-.. code-block:: terminal
+.. code-block:: console
 
     **TODO Put error messages here when they're working**
 

@@ -22,20 +22,20 @@ Requirements:
 Navigate into the :code:`tutorial3` folder and check that you can build the
 template against the libCellML library successfully:
 
-.. code-block:: terminal
+.. code-block:: console
 
     cmake -DINSTALL_PREFIX=../../install .
     make -j
 
 Running the template:
 
-.. code-block:: terminal
+.. code-block:: console
 
     ./tutorial3
 
 ... should give the output:
 
-.. code-block:: terminal
+.. code-block:: console
 
     ---------------------------------------------------------------
         TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API
@@ -240,7 +240,7 @@ functions available to manipulate maths are:
 
 You should see an output similar to that shown below:
 
-.. code-block:: terminal
+.. code-block:: console
 
      The validator has found 18 errors!
        Validator error[0]:
@@ -280,7 +280,7 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_cpp>`
     variables.  Note that both these errors refer to the same thing: when the unit
     is missing the variable sees its name field as being blank, hence the first error.
 
-.. code-block:: terminal
+.. code-block:: console
 
      Validator error[0]:
        Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
@@ -465,7 +465,7 @@ and to include the units in the model.
     **3.f** Call the validator to check your model for errors.  You should see an
     output similar to that shown below.
 
-.. code-block:: terminal
+.. code-block:: console
 
      The validator has found 2 errors!
        Validator error[0]:
@@ -546,7 +546,7 @@ functionality to be able to work.  These are:
     generator to check it.  You should see an output similar to that shown
     below.
 
-.. code-block:: terminal
+.. code-block:: console
 
      The generator has found 6 errors!
       Generator error[0]:

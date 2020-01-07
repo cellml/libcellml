@@ -34,7 +34,8 @@ you will use the API to create the model and its components.  In general:
 
 Background
 ----------
-**TODO** put link to theory section here
+The biological and theoretical background to this tutorial can be read on the
+:ref:`Sodium Channel Theory page<sodium_theory>`.
 
 C++ instructions
 ----------------
@@ -48,8 +49,6 @@ Resources:
     - :download:`../utilities/tutorial_utilities.h` and
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
-
-
 
 Python instructions
 -------------------

@@ -20,7 +20,7 @@
 #include <map>
 #include <sstream>
 
-#include "../utilities/tutorial_utilities.h"
+// #include "../utilities/tutorial_utilities.h"
 #include "modelToSolve.h"
 
 std::map<std::string, std::string> processArguments(int argc, char **argv);

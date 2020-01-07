@@ -22,14 +22,14 @@ Navigate into the :code:`tutorial3` folder and check that you can run the
 skeleton code against the libCellML library successfully.  Running the
 template:
 
-.. code-block:: terminal
+.. code-block:: console
 
     cd terminal3
     python tutorial3.py
 
 ... should give the output:
 
-.. code-block:: terminal
+.. code-block:: console
 
      -----------------------------------------------
         TUTORIAL 3: CREATE A MODEL USING THE API
@@ -234,7 +234,7 @@ functions available to manipulate maths are:
 
 You should see an output similar to that shown below:
 
-.. code-block:: terminal
+.. code-block:: console
 
      The validator has found 18 errors!
        Validator error[0]:
@@ -273,7 +273,7 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
     variables.  Note that both these errors refer to the same thing: when the unit
     is missing the variable sees its name field as being blank, hence the first error.
 
-.. code-block:: terminal
+.. code-block:: console
 
      Validator error[0]:
        Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
@@ -456,7 +456,7 @@ and to include the units in the model.
     **3.f** Call the validator to check your model for errors.  You should see an
     output similar to that shown below.
 
-.. code-block:: terminal
+.. code-block:: console
 
      The validator has found 2 errors!
        Validator error[0]:
@@ -536,7 +536,7 @@ functionality to be able to work.  These are:
     generator to check it.  You should see an output similar to that shown
     below.
 
-.. code-block:: terminal
+.. code-block:: console
 
      The generator has found 6 errors!
       Generator error[0]:

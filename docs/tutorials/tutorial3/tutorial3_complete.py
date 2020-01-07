@@ -46,51 +46,51 @@ if __name__ == "__main__":
     math_footer = '</math>'
 
     equation1 = \
-        "<apply><eq/>"\
-        "   <ci>c</ci>"\
-        "   <apply><plus/>"\
-        "       <ci>a</ci>"\
-        "       <cn>2.0</cn>"\
-        "   </apply>"\
-        "</apply>"
+        "  <apply><eq/>"\
+        "    <ci>c</ci>"\
+        "    <apply><plus/>"\
+        "      <ci>a</ci>"\
+        "      <cn>2.0</cn>"\
+        "    </apply>"\
+        "  </apply>"
 
     equation2 = \
-        "<apply><eq/>"\
-        "   <apply><diff/>"\
-        "   <bvar><ci>time</ci></bvar>"\
-        "   <ci>y_s</ci>"\
-        "   </apply>"\
-        "   <apply><plus/>"\
-        "       <apply><times/>"\
-        "           <ci>a</ci>"\
-        "           <ci>y_s</ci>"\
+        "  <apply><eq/>"\
+        "    <apply><diff/>"\
+        "      <bvar><ci>time</ci></bvar>"\
+        "      <ci>y_s</ci>"\
+        "    </apply>"\
+        "    <apply><plus/>"\
+        "      <apply><times/>"\
+        "        <ci>a</ci>"\
+        "        <ci>y_s</ci>"\
         "      </apply>"\
         "      <apply><times/>"\
-        "          <ci>b</ci>"\
-        "          <ci>y_s</ci>"\
-        "          <ci>y_f</ci>"\
+        "        <ci>b</ci>"\
+        "        <ci>y_s</ci>"\
+        "        <ci>y_f</ci>"\
         "      </apply>"\
-        "   </apply>"\
-        "</apply>"
+        "    </apply>"\
+        "  </apply>"
 
     equation3 =\
-        "<apply><eq/>"\
-        "   <apply><diff/>"\
-        "   <bvar><ci>time</ci></bvar>"\
-        "   <ci>y_f</ci>"\
-        "   </apply>"\
-        "   <apply><plus/>"\
-        "       <apply><times/>"\
-        "           <ci>c</ci>"\
-        "           <ci>y_f</ci>"\
+        "  <apply><eq/>"\
+        "    <apply><diff/>"\
+        "      <bvar><ci>time</ci></bvar>"\
+        "      <ci>y_f</ci>"\
+        "    </apply>"\
+        "    <apply><plus/>"\
+        "      <apply><times/>"\
+        "        <ci>c</ci>"\
+        "        <ci>y_f</ci>"\
         "      </apply>"\
         "      <apply><times/>"\
-        "          <ci>d</ci>"\
-        "          <ci>y_s</ci>"\
-        "          <ci>y_f</ci>"\
+        "        <ci>d</ci>"\
+        "        <ci>y_s</ci>"\
+        "        <ci>y_f</ci>"\
         "      </apply>"\
-        "   </apply>"\
-        "</apply>"
+        "    </apply>"\
+        "  </apply>"
 
     #   1.f   Include the MathML strings in the component
     component.setMath(math_header)
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # which the base is multiplied, as well as a multiplier of 86.4, etc
 
     month = Units("month")
-    month.addUnit(day, 1, 30) # Setting a month to be 30 days
+    month.addUnit("day", 1, 30)  # Setting a month to be 30 days
 
     # The "per_month" unit is simply the inverse of the "month"
     per_month = Units()
@@ -205,13 +205,13 @@ if __name__ == "__main__":
     component.removeMath()
     component.setMath(math_header)
     equation1 = \
-        "<apply><eq/>"\
-        "   <ci>c</ci>"\
-        "   <apply><plus/>"\
-        "       <ci>a</ci>"\
-        "       <cn cellml:units=\"per_month\">2.0</cn>"\
-        "   </apply>"\
-        "</apply>"
+        "  <apply><eq/>"\
+        "    <ci>c</ci>"\
+        "    <apply><plus/>"\
+        "      <ci>a</ci>"\
+        "      <cn cellml:units=\"per_month\">2.0</cn>"\
+        "    </apply>"\
+        "  </apply>"
     component.appendMath(equation1)
     component.appendMath(equation2)
     component.appendMath(equation3)
@@ -251,7 +251,7 @@ if __name__ == "__main__":
     write_file.close()
 
     interface_code = generator.interfaceCode()
-    write_file = open("tutorial3_PredatorPrey_generated.h","w")
+    write_file = open("tutorial3_PredatorPrey_generated.h", "w")
     write_file.write(interface_code)
     write_file.close()
 

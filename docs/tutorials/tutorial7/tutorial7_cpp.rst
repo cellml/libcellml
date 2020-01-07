@@ -16,8 +16,8 @@ Resources:
     - :download:`../utilities/tutorial_utilities.h` and
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 5 you can download the file created there:
-      :download:`../resources/tutorial7_SodiumChannelModel.cellml`
+    - If you did not complete Tutorial 5 you can download the file created
+      there from :download:`../resources/tutorial7_SodiumChannelModel.cellml`
 
 .. contents:: Contents
     :local:

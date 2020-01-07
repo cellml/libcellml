@@ -42,31 +42,47 @@ Because this is for generated code in C we will use the files:
 
 .. container:: dothis
 
-    **1.a** Enter the path to the generated header/interface :code:`*.h` file in the
-    :code:`#include` section at the top of your :code:`tutorial4.cpp` file.
+    **1.a** Enter the path to the generated header/interface :code:`*.h`
+    file in the :code:`#include` section at the top of your
+    :code:`tutorial4.cpp` file.
 
 
 .. container:: dothis
 
-    **1.b** Add the name and path of the implementation :code:`.cpp` file into the
-    CMakeLists.txt file so that it's built with your project.  Note that if
-    you're using the generated file with a :code:`*.c` extension you will need to
-    change the file extension to :code:`*.cpp` for it to build correctly with the
-    supplied template.
+    **1.b** If you're using the generated file with a :code:`*.c`
+    extension you will need to change the file extension to :code:`*.cpp` for
+    it to build correctly with the supplied template.  Do this now.
 
 .. container:: dothis
 
-    **1.c** Open your generated :code:`.cpp` file and change the name of the
+    **1.c** Add the name and path of the implementation :code:`.cpp` file into the
+    CMakeLists.txt file so that it's built with your project.
+
+.. container:: dothis
+
+    **1.d** Open your generated :code:`.cpp` file and change the name of the
     header it includes using the :code:`#include` statement to be the name of
     your generated header :code:`*.h` file.
     By default this is :code:`#include "model.h"`.
 
 .. container:: dothis
 
-    **1.c** The version which the generated code was created with is stored in
+    **1.e** The version which the generated code was created with is stored in
     a variable called :code:`LIBCELLML_VERSION`.  Print this to the terminal
     and check that it matches the version of libCellML library which you're
     using, just like in :ref:`Tutorial 0<tutorial0>`.
+
+.. container:: dothis
+
+    **1.f** Call :code:`cmake` to generate the makefile, :code:`make` to
+    build the executable, and run the code so far to check that the versions
+    match.
+
+.. code-block:: console
+
+    cmake -DINSTALL_PREFIX=../../install .
+    make -j
+    ./tutorial4
 
 2: Investigate the information items in the generated files
 ===========================================================

@@ -14,26 +14,6 @@
  *      the model (Tutorial 2)
  */
 
-/**
- *  TUTORIAL 3: MODEL CREATION THROUGH THE API
- *
- *  By the time you have worked through Tutorial 3 you will be able to:
- *    - create a new model and its child entities from scratch using the API
- *    - define custom combinations of built-in units
- *    - define your own custom units independent from the built-in units
- *
- *  This tutorial assumes that you are comfortable with:
- *    - accessing and adjusting names of items inside a model hierarchy (T2)
- *    - creating a validator and using it to check a model for errors (T2)
- *    - accessing the errors produced by a validator and using them to correct
- *      the model (T2)
- *    - serialising and printing a model to a CellML file (T1)
- */
-
-/**
- *  TUTORIAL 3: MODEL CREATION AND GENERATION THROUGH THE API
- *
- */
 
 #include <fstream>
 #include <iostream>

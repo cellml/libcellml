@@ -39,7 +39,7 @@ started in each of the :code:`tutorial*.py` files.
 
 This should give the output:
 
-.. code-block:: terminal
+.. code-block:: console
 
      -----------------------------------------------
        TUTORIAL 2: ERROR CHECKING AND VALIDATION
@@ -150,7 +150,7 @@ code at any stage.  If you haven't been doing so already, then do it now, and
 take a look at what you've printed.  This section works through each of the
 errors found and shows you how to fix them.
 
-.. code-block:: terminal
+.. code-block:: console
 
      Validator error[0]:
         Description: CellML identifiers must not begin with a European numeric character [0-9].
@@ -186,7 +186,7 @@ the variable name:
 
 On to the next error.
 
-.. code-block:: terminal
+.. code-block:: console
 
      Validator error[2]:
         Description: Variable 'b' has an invalid units reference 'i_am_not_a_unit'
@@ -221,7 +221,7 @@ it to be :code:`"dimensionless"` instead.
 
 -----
 
-.. code-block:: terminal
+.. code-block:: console
 
      Validator error[3]:
         Description: Variable 'c' has an invalid initial value
@@ -251,7 +251,7 @@ must be a valid variable name in the same component, or a real number.
 
 -----
 
-.. code-block:: terminal
+.. code-block:: console
 
      Validator error[4]:
         Description: CellML identifiers must contain one or more basic Latin
@@ -274,7 +274,7 @@ allowed.  Simply assigning units to the variable will fix both errors.
 
 -----
 
-.. code-block:: terminal
+.. code-block:: console
 
     Description: MathML ci element has the child text 'a' which does not
         correspond with any variable names present in component
@@ -300,7 +300,7 @@ Let's have a look at our corrected model by calling that same utility function
 which we used earlier to print it to the screen.  You should see something like
 this:
 
-.. code-block:: terminal
+.. code-block:: console
 
         The model name is: 'tutorial_2_model'
         The model id is: 'tutorial 2 id has spaces'

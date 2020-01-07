@@ -3,7 +3,7 @@
 
     This tutorial is an opportunity to practise creating models from
     scratch using the libCellML API.  The model you create here will
-    be used later on in Tutorial ??.
+    be used later on in Tutorial 8.
 
     Tutorial 7 assumes that you are already comfortable with:
         - the concept of component hierarchy and encapsulation (Tutorial 5)
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     model = Model()
     model.setName("Tutorial7_SodiumChannelModel")
 
-    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
+    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n'
     math_footer = '</math>'
 
     print("-----------------------------------------------")
@@ -38,29 +38,29 @@ if __name__ == "__main__":
     #  1.b Add the MathML representing the governing equations
     if True:
         equation1 = \
-            '<apply><eq/>\
-                <ci>Na_conductance</ci>\
-                <apply><times/>\
-                    <ci>g_Na</ci>\
-                    <ci>h</ci>\
-                    <apply><power/>\
-                        <ci>m</ci>\
-                        <cn cellml:units=\"dimensionless\">3</cn>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>Na_conductance</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>g_Na</ci>\n'\
+            '      <ci>h</ci>\n'\
+            '      <apply><power/>\n'\
+            '        <ci>m</ci>\n'\
+            '        <cn cellml:units="dimensionless">3</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         equation2 = \
-            '<apply><eq/>\
-                <ci>i_Na</ci>\
-                <apply><times/>\
-                    <ci>Na_conductance</ci>\
-                    <apply><minus/>\
-                        <ci>V</ci>\
-                        <ci>E_Na</ci>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>i_Na</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>Na_conductance</ci>\n'\
+            '      <apply><minus/>\n'\
+            '        <ci>V</ci>\n'\
+            '        <ci>E_Na</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         sodium_channel.setMath(math_header)
         sodium_channel.appendMath(equation1)
@@ -82,7 +82,6 @@ if __name__ == "__main__":
         h = Variable()
         h.setName("h")
         h.setUnits("dimensionless")
-        h.setInitialValue(1.0)
         sodium_channel.addVariable(h)
 
         m = Variable()
@@ -93,7 +92,6 @@ if __name__ == "__main__":
         g_Na = Variable()
         g_Na.setName("g_Na")
         g_Na.setUnits("mS_per_cm2")
-        g_Na.setInitialValue(120)
         sodium_channel.addVariable(g_Na)
 
         E_Na = Variable()
@@ -152,79 +150,79 @@ if __name__ == "__main__":
     mGate.setName("mGate")
     sodium_channel.addComponent(mGate)
 
-    #  2.b Add the MathML strings which govern the behavior of this gate
+    #  2.b Add the MathML strings which govern the behaviour of this gate
     if True:
         equation1 = \
-            '<apply><eq/>\
-                <ci>alpha_m</ci>\
-                <apply><divide/>\
-                    <apply><times/>\
-                        <apply><minus/>\
-                            <cn cellml:units=\"per_mV_ms\">0.1</cn>\
-                        </apply>\
-                        <apply><plus/>\
-                            <ci>V</ci>\
-                            <cn cellml:units=\"mV\">50</cn>\
-                        </apply>\
-                    </apply>\
-                    <apply><minus/>\
-                        <apply><exp/>\
-                            <apply><divide/>\
-                                <apply><minus/>\
-                                    <apply><plus/>\
-                                        <ci>V</ci>\
-                                        <cn cellml:units=\"mV\">50</cn>\
-                                    </apply>\
-                                </apply>\
-                                <cn cellml:units=\"mV\">10</cn>\
-                            </apply>\
-                        </apply>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>alpha_m</ci>\n'\
+            '    <apply><divide/>\n'\
+            '      <apply><times/>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="per_mV_ms">0.1</cn>\n'\
+            '        </apply>\n'\
+            '        <apply><plus/>\n'\
+            '          <ci>V</ci>\n'\
+            '          <cn cellml:units="mV">50</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><minus/>\n'\
+            '        <apply><exp/>\n'\
+            '          <apply><divide/>\n'\
+            '            <apply><minus/>\n'\
+            '              <apply><plus/>\n'\
+            '                <ci>V</ci>\n'\
+            '                <cn cellml:units="mV">50</cn>\n'\
+            '              </apply>\n'\
+            '            </apply>\n'\
+            '            <cn cellml:units="mV">10</cn>\n'\
+            '          </apply>\n'\
+            '        </apply>\n'\
+            '        <cn cellml:units="dimensionless">1</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         equation2 = \
-            '<apply><eq/>\
-                <ci>beta_m</ci>\
-                <apply><times/>\
-                    <cn cellml:units=\"per_ms\">4</cn>\
-                    <apply><exp/>\
-                        <apply><divide/>\
-                            <apply><minus/>\
-                                <apply><plus/>\
-                                    <ci>V</ci>\
-                                    <cn cellml:units=\"mV\">75</cn>\
-                                </apply>\
-                            </apply>\
-                            <cn cellml:units=\"mV\">18</cn>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>beta_m</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <cn cellml:units="per_ms">4</cn>\n'\
+            '      <apply><exp/>\n'\
+            '        <apply><divide/>\n'\
+            '          <apply><minus/>\n'\
+            '            <apply><plus/>\n'\
+            '              <ci>V</ci>\n'\
+            '              <cn cellml:units="mV">75</cn>\n'\
+            '            </apply>\n'\
+            '          </apply>\n'\
+            '          <cn cellml:units="mV">18</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         equation3 = \
-            '<apply><eq/>\
-                <apply><diff/>\
-                    <bvar>\
-                        <ci>t</ci>\
-                    </bvar>\
-                    <ci>m</ci>\
-                </apply>\
-                <apply><minus/>\
-                    <apply><times/>\
-                        <ci>alpha_m</ci>\
-                        <apply><minus/>\
-                            <cn cellml:units=\"dimensionless\">1</cn>\
-                            <ci>m</ci>\
-                        </apply>\
-                    </apply>\
-                    <apply><times/>\
-                        <ci>m</ci>\
-                        <ci>beta_m</ci>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <apply><diff/>\n'\
+            '      <bvar>\n'\
+            '        <ci>t</ci>\n'\
+            '      </bvar>\n'\
+            '      <ci>m</ci>\n'\
+            '    </apply>\n'\
+            '    <apply><minus/>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>alpha_m</ci>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="dimensionless">1</cn>\n'\
+            '          <ci>m</ci>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>m</ci>\n'\
+            '        <ci>beta_m</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         mGate.setMath(math_header)
         mGate.appendMath(equation1)
@@ -285,68 +283,68 @@ if __name__ == "__main__":
     #  3.b Adding the MathML strings
     if True:
         equation1 = \
-            '<apply><eq/>\
-                <ci>alpha_h</ci>\
-                <apply><times/>\
-                    <cn cellml:units=\"per_ms\">0.07</cn>\
-                    <apply><exp/>\
-                        <apply><divide/>\
-                            <apply><minus/>\
-                                <apply><plus/>\
-                                    <ci>V</ci>\
-                                    <cn cellml:units=\"mV\">75</cn>\
-                                </apply>\
-                            </apply>\
-                            <cn cellml:units=\"mV\">20</cn>\
-                        </apply>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>alpha_h</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <cn cellml:units="per_ms">0.07</cn>\n'\
+            '      <apply><exp/>\n'\
+            '        <apply><divide/>\n'\
+            '          <apply><minus/>\n'\
+            '            <apply><plus/>\n'\
+            '              <ci>V</ci>\n'\
+            '              <cn cellml:units="mV">75</cn>\n'\
+            '            </apply>\n'\
+            '          </apply>\n'\
+            '          <cn cellml:units="mV">20</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         equation2 = \
-            '<apply><eq/>\
-                <ci>beta_h</ci>\
-                <apply><divide/>\
-                    <cn cellml:units=\"per_ms\">1</cn>\
-                    <apply><plus/>\
-                        <apply><exp/>\
-                            <apply><divide/>\
-                                <apply><minus/>\
-                                    <apply><plus/>\
-                                        <ci>V</ci>\
-                                        <cn cellml:units=\"mV\">45</cn>\
-                                    </apply>\
-                                </apply>\
-                                <cn cellml:units=\"mV\">10</cn>\
-                            </apply>\
-                        </apply>\
-                        <cn cellml:units=\"dimensionless\">1</cn>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>beta_h</ci>\n'\
+            '    <apply><divide/>\n'\
+            '      <cn cellml:units="per_ms">1</cn>\n'\
+            '      <apply><plus/>\n'\
+            '        <apply><exp/>\n'\
+            '          <apply><divide/>\n'\
+            '            <apply><minus/>\n'\
+            '              <apply><plus/>\n'\
+            '                <ci>V</ci>\n'\
+            '                <cn cellml:units="mV">45</cn>\n'\
+            '              </apply>\n'\
+            '            </apply>\n'\
+            '            <cn cellml:units="mV">10</cn>\n'\
+            '          </apply>\n'\
+            '        </apply>\n'\
+            '        <cn cellml:units="dimensionless">1</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         equation3 = \
-            '<apply><eq/>\
-                <apply><diff/>\
-                    <bvar>\
-                        <ci>t</ci>\
-                    </bvar>\
-                    <ci>h</ci>\
-                </apply>\
-                <apply><minus/>\
-                    <apply><times/>\
-                        <ci>alpha_h</ci>\
-                        <apply><minus/>\
-                            <cn cellml:units=\"dimensionless\">1</cn>\
-                            <ci>h</ci>\
-                        </apply>\
-                    </apply>\
-                    <apply><times/>\
-                        <ci>h</ci>\
-                        <ci>beta_h</ci>\
-                    </apply>\
-                </apply>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <apply><diff/>\n'\
+            '       <bvar>\n'\
+            '         <ci>t</ci>\n'\
+            '       </bvar>\n'\
+            '       <ci>h</ci>\n'\
+            '    </apply>\n'\
+            '    <apply><minus/>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>alpha_h</ci>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="dimensionless">1</cn>\n'\
+            '          <ci>h</ci>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>h</ci>\n'\
+            '        <ci>beta_h</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
+            '  </apply>\n'
 
         hGate.setMath(math_header)
         hGate.appendMath(equation1)
@@ -457,22 +455,22 @@ if __name__ == "__main__":
     #  6.a Create the MathML controlling the driving function
     if True:
         voltage_clamp_maths = \
-            '<apply><eq/>\
-                <ci>V</ci>\
-                <piecewise>\
-                    <piece>\
-                        <cn cellml:units="mV">-85</cn>\
-                        <apply><lt/><ci>t</ci><cn cellml:units="ms">5</cn></apply>\
-                    </piece>\
-                        <piece>\
-                        <cn cellml:units="mV">-85</cn>\
-                        <apply><gt/><ci>t</ci><cn cellml:units="ms">15</cn></apply>\
-                    </piece>\
-                    <otherwise>\
-                        <cn cellml:units="mV">-20</cn>\
-                    </otherwise>\
-                </piecewise>\
-            </apply>'
+            '  <apply><eq/>\n'\
+            '    <ci>V</ci>\n'\
+            '    <piecewise>\n'\
+            '      <piece>\n'\
+            '        <cn cellml:units="mV">-85</cn>\n'\
+            '        <apply><lt/><ci>t</ci><cn cellml:units="ms">5</cn></apply>\n'\
+            '      </piece>\n'\
+            '      <piece>\n'\
+            '        <cn cellml:units="mV">-85</cn>\n'\
+            '        <apply><gt/><ci>t</ci><cn cellml:units="ms">15</cn></apply>\n'\
+            '      </piece>\n'\
+            '      <otherwise>\n'\
+            '        <cn cellml:units="mV">-20</cn>\n'\
+            '      </otherwise>\n'\
+            '    </piecewise>\n'\
+            '  </apply>\n'
 
         environment.setMath(math_header)
         environment.appendMath(voltage_clamp_maths)

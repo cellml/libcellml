@@ -273,22 +273,22 @@ int main()
     //  7.a Create a MathML string to represent the stimulus current i_stim, which
     //      is set to 100 microA/cm^2 between t=1ms < t < t=1.2ms.
     std::string stimulusEquation =
-        "<apply><eq/>\n"
+        "  <apply><eq/>\n"
         "    <ci>i_stim</ci>\n"
         "    <piecewise>\n"
-        "        <piece>\n"
-        "            <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
-        "            <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">1</cn></apply>\n"
-        "        </piece>\n"
-        "            <piece>\n"
-        "            <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
-        "            <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">1.2</cn></apply>\n"
-        "        </piece>\n"
-        "        <otherwise>\n"
-        "            <cn cellml:units=\"microA_per_cm2\">100</cn>\n"
-        "        </otherwise>\n"
+        "       <piece>\n"
+        "         <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
+        "         <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">1</cn></apply>\n"
+        "       </piece>\n"
+        "       <piece>\n"
+        "         <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
+        "         <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">1.2</cn></apply>\n"
+        "       </piece>\n"
+        "       <otherwise>\n"
+        "         <cn cellml:units=\"microA_per_cm2\">100</cn>\n"
+        "       </otherwise>\n"
         "    </piecewise>\n"
-        "</apply>\n";
+        "  </apply>\n";
 
     validator->validateModel(model);
     printErrorsToTerminal(validator);
@@ -303,8 +303,11 @@ int main()
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
-    //  8.b Initialise the values required.
-    environment->variables("V")->setInitialValue(-85);
+    //  8.b Initialise the values required and recheck the model
+    environment->variable("V")->setInitialValue(-85);
+
+    generator->processModel(model);
+    printErrorsToTerminal(generator);
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "   STEP 9: Output the final model" << std::endl;

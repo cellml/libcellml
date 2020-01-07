@@ -1,5 +1,5 @@
 /**
- *  TUTORIAL 4: Mathematical behaviour and units
+ *  TUTORIAL 5: Mathematical behaviour and units
  *
  *  This tutorial assumes that you can already:
  *      - read and deserialise a CellML model from a file (Tutorial 1)
@@ -24,7 +24,7 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  1.a   Create the model instance
-    auto model = libcellml::Model::create("Tutorial4_FirstOrderModel");
+    auto model = libcellml::Model::create("Tutorial5_FirstOrderModel");
 
     //  1.b   Create a component and add it into the model
     auto component = libcellml::Component::create("IonChannel");
@@ -41,57 +41,47 @@ int main()
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  2.a   Define the mathematics.
-    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
 
     // dy/dt = alpha_y*(1-y) - beta_y*y
     std::string equation1 =
-        "<apply>"
-            "<eq/>"
-            "<apply>"
-                "<diff/>"
-                "<bvar>"
-                    "<ci>t</ci>"
-                "</bvar>"
-                "<ci>y</ci>"
-            "</apply>"
-            "<apply>"
-                "<minus/>"
-                "<apply>"
-                    "<times/>"
-                    "<ci>alpha_y</ci>"
-                    "<apply>"
-                        "<minus/>"
-                        "<cn cellml:units=\"dimensionless\">1</cn>"
-                        "<ci>y</ci>"
-                    "</apply>"
-                "</apply>"
-                "<apply>"
-                    "<times/>"
-                    "<ci>beta_y</ci>"
-                    "<ci>y</ci>"
-                "</apply>"
-            "</apply>"
-        "</apply>";
+        "  <apply><eq/>\n"
+        "    <apply><diff/>\n"
+        "      <bvar>\n"
+        "        <ci>t</ci>\n"
+        "      </bvar>\n"
+        "      <ci>y</ci>\n"
+        "    </apply>\n"
+        "    <apply><minus/>\n"
+        "      <apply><times/>\n"
+        "        <ci>alpha_y</ci>\n"
+        "        <apply><minus/>\n"
+        "          <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "          <ci>y</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "      <apply><times/>\n"
+        "        <ci>beta_y</ci>\n"
+        "        <ci>y</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n";
     // i_y = g_y*power(y,gamma)*(V-E_y)
     std::string equation2 =
-        "<apply>"
-            "<eq/>"
-            "<ci>i_K</ci>"
-            "<apply>"
-                "<times/>"
-                "<ci>g_y</ci>"
-                "<apply>"
-                    "<minus/>"
-                    "<ci>V</ci>"
-                    "<ci>E_y</ci>"
-                "</apply>"
-                "<apply>"
-                    "<power/>"
-                    "<ci>y</ci>"
-                    "<ci>gamma</ci>"
-                "</apply>"
-            "</apply>"
-        "</apply>";
+        "  <apply><eq/>\n"
+        "    <ci>i_K</ci>\n"
+        "    <apply><times/>\n"
+        "      <ci>g_y</ci>\n"
+        "      <apply><minus/>\n"
+        "        <ci>V</ci>\n"
+        "        <ci>E_y</ci>\n"
+        "      </apply>\n"
+        "      <apply><power/>\n"
+        "        <ci>y</ci>\n"
+        "        <ci>gamma</ci>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n";
     std::string mathFooter = "</math>";
 
     //  2.b   Add the maths to the component.  Note that there is only one maths

@@ -201,7 +201,7 @@ are:
     will be similar to those below, relating to not yet defined variables and
     units:
 
-.. code-block:: terminal
+.. code-block:: console
 
      Description: MathML ci element has the child text 'alpha_n' which does not
         correspond with any variable names present in component
@@ -253,7 +253,7 @@ every variable to have some defined.  For the proportion of open gates
     **3.c** Submit your model to the validator.  Expected errors at this stage
     will be similar to those below.
 
-.. code-block:: terminal
+.. code-block:: console
 
      - Description: Variable 'time' has an invalid units reference 'millisecond'
        that does not correspond with a standard unit or units in the variable's
@@ -367,95 +367,72 @@ At this stage you should have four new files created:
   only)
 - the generated files for the C profile, the header and source files.
 
-These last two files can be used in conjuction with a simple solver to model
-the behaviour of this ion channel.
+These last three files can be used in conjuction with a simple solver to model
+the behaviour of this ion channel.  Because this tutorial is in Python we
+give instructions for the Python solver.  For the C++ solver please see
+:ref:`the C++ Tutorial 5 instructions<tutorial5_cpp>` or
+:ref:`the general solver instructions<solver>`.
 
 .. container:: dothis
 
     **6.a** Navigate to the :code:`tutorials/solver` directory.
 
-.. code-block:: terminal
+.. code-block:: console
 
-  cd ../tutorials/solver
-
-Because the code you've generated needs to be built at the same time as the
-solver code is built, each different model requires rebuilding a new solver
-executable which includes the generated code.
+    cd ../solver
 
 .. container:: dothis
 
-  **6.b**
-  From inside the :code:`tutorials/solver` directory, use the CMake command
-  line to point to your generated files.  **NB** It's assumed that both of the
-  header and source files have the same base filename (eg: baseFileName.c
-  and baseFileName.h).  The general CMake command is below.
+    **6.b**  Run the :code:`simpleSolver.py` script:.  To do this you'll need to enter:
 
-.. code-block:: terminal
+        - :code:`-m` the path to the generated file to run, relative to the solver
+          directory
+        - :code:`-dt` the step size for the integration variable to take, and ...
+        - :code:`-n` the total number of steps to take.
 
-  cmake -DINPUT=../tutorial5/baseFileName .
+.. code-block:: console
 
-.. container:: nb
+    python3 simplesolver.py -m path_and_filename_to_run -n number_of_steps -dt step_size
 
-  Note that the fullstop in the cmake command sets both the source and binary
-  directories to the solver directory.  This is because even though your
-  generated files are elsewhere, the solver code and CMakeLists.txt file are
-  in *this* directory, and the executable will end up here too.
+Running your generated model for 50 steps with a step size of 0.1ms should give
+the output shown below.
 
-If all has gone well you should see the output similar to:
+.. code-block:: console
 
-.. code-block:: terminal
+    python3 simplesolver.py -m ../tutorial5/tutorial5_IonChannelModel_generated.py -n 50 -dt 0.1
 
-    -- The C compiler identification is AppleClang 10.0.1.10010046
-    -- The CXX compiler identification is AppleClang 10.0.1.10010046
-    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc
-    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc -- works
-    -- Detecting C compiler ABI info
-    -- Detecting C compiler ABI info - done
-    -- Detecting C compile features
-    -- Detecting C compile features - done
-    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++
-    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ -- works
-    -- Detecting CXX compiler ABI info
-    -- Detecting CXX compiler ABI info - done
-    -- Detecting CXX compile features
-    -- Detecting CXX compile features - done
+    ====================================================================
+    SIMPLE SOLVER: ../tutorial5/tutorial5_IonChannelModel_generated
+    --------------------------------------------------------------------
 
-    1) First use 'make -j' to build the file for running
-    2) Then solve by running: ./solve_baseFileName with the arguments:
-      -n  step_total
-      -dt step_size
+    VARIABLE OF INTEGRATION (units, stepsize)
+    --------------------------------------------------------------------
+        t (millisecond, 0.1)
+        50 steps
 
-    -- Configuring done
-    -- Generating done
-    -- Build files have been written to: /path/to/your/stuff/tutorials/solver
 
-.. container:: dothis
+    STATE VARIABLES (units, initial value)
+    --------------------------------------------------------------------
+        y (dimensionless, 0.0)
 
-  **6.c** Following the instructions in the output, next you need to build the
-  executable by entering:
 
-  .. code-block:: terminal
+    VARIABLES (units, initial value)
+    --------------------------------------------------------------------
+        E_y (millivolt, -85.0)
+        V (millivolt, 0.0)
+        alpha_y (per_millisecond, 1.0)
+        beta_y (per_millisecond, 2.0)
+        g_y (milliS_per_cm2, 36.0)
+        gamma (dimensionless, 4.0)
+        i_K (microA_per_cm2, 0.0)
 
-    make -j
 
-.. container:: dothis
+    SOLUTION written to ../tutorial5/tutorial5_IonChannelModel_generated_solution.txt
+    ====================================================================
 
-  **6.d** Finally you're ready to solve your model.  The executable will have
-  been given the prefix :code:`solve_` and then your :code:`baseFileName`, and
-  can be run using the command line flags :code:`-n` to indicate the number of
-  steps to run, and :code:`-dt` to indicate the step size, for example:
-
-  .. code-block:: terminal
-
-    ./solve_baseFileName -n 50 -dt 0.1
-
-The parameters read from the file, along with your command line arguments are
-printed to the terminal for checking, and the results of the simulation
-written to a tab-delimited file with the extension :code:`_solution.txt` after
-your base file name.
-
-Running your generated model for 50 steps with a step size of 0.1ms results
-in the solution shown below in :numref:`tutorial5_image`.
+Note that the solution is written to the same directory as the generated file,
+not the :code:`solver` directory (as for the C++ solver).  Plotting the
+solution gives :numref:`tutorial5_image`.
 
 .. figure:: /tutorials/images/tutorial5_image.png
    :name: tutorial5_image

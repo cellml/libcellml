@@ -30,14 +30,14 @@ started in each of the :code:`tutorial*.py` files.
     :code:`tutorial1` directory and run the skeleton code file,
     :code:`tutorial1.py`.
 
-.. code-block:: terminal
+.. code-block:: console
 
     cd tutorial1
     python tutorial1.py
 
 This should give the output:
 
-.. code-block:: terminal
+.. code-block:: console
 
     -----------------------------------------------------
         TUTORIAL 1: READING AND WRITING CellML2 FILES
