@@ -1,4 +1,4 @@
-..  _tutorial0_cpp:
+..  _tutorial0_py:
 
 ==============================================
 Tutorial 0: Installation and testing in Python
