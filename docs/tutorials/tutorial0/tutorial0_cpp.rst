@@ -209,10 +209,10 @@ You should see an output similar to this:
 
 .. code-block:: console
 
-    Scanning dependencies of target tutorial1
-    [ 50%] Building CXX object CMakeFiles/tutorial1.dir/tutorial1.cpp.o
-    [100%] Linking CXX executable tutorial1
-    [100%] Built target tutorial1
+    Scanning dependencies of target tutorial0
+    [ 50%] Building CXX object CMakeFiles/tutorial1.dir/tutorial0.cpp.o
+    [100%] Linking CXX executable tutorial0
+    [100%] Built target tutorial0
 
 .. container:: dothis
 
