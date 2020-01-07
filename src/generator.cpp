@@ -1303,7 +1303,11 @@ bool isDirectComparisonOperator(const GeneratorEquationAstPtr &ast)
            || (type == libcellml::GeneratorEquationAst::Type::LT)
            || (type == libcellml::GeneratorEquationAst::Type::GT)
            || (type == libcellml::GeneratorEquationAst::Type::MIN)
-           || (type == libcellml::GeneratorEquationAst::Type::MAX);
+           || (type == libcellml::GeneratorEquationAst::Type::MAX)
+           || (type == libcellml::GeneratorEquationAst::Type::ABS)
+           || (type == libcellml::GeneratorEquationAst::Type::CEILING)
+           || (type == libcellml::GeneratorEquationAst::Type::FLOOR)
+           || (type == libcellml::GeneratorEquationAst::Type::REM);
 }
 
 bool isMultiplicativeOperator(const GeneratorEquationAstPtr &ast)
@@ -1324,7 +1328,8 @@ bool isLogarithmicOperator(const GeneratorEquationAstPtr &ast)
 {
     const GeneratorEquationAst::Type type = ast->mType;
     return (type == libcellml::GeneratorEquationAst::Type::LN)
-           || (type == libcellml::GeneratorEquationAst::Type::LOG);
+           || (type == libcellml::GeneratorEquationAst::Type::LOG)
+           || (type == libcellml::GeneratorEquationAst::Type::EXP);
 }
 
 bool isTrigonometricOperator(const GeneratorEquationAstPtr &ast)
@@ -1543,6 +1548,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 {
     if (ast != nullptr) {
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+            
             // Have a check for if the markup is CI or CN. If it's CN, then return the mapping (just a number, no units). Otherwise, create a mapping.
             if (ast->mType == libcellml::GeneratorEquationAst::Type::CN) {
                 return unitMap;
@@ -1553,7 +1559,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             if (uName == "dimensionless") {
                 return unitMap;
             }
-            updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+            updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units.
             return unitMap;
         }
 
@@ -1930,6 +1936,11 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
+        }
+    }
+
+    if (mGenerator->errorCount() == 0) {
+        for (const auto &equation : mEquations) {
             processEquationUnits(equation->mAst);
         }
     }
