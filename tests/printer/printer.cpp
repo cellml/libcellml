@@ -226,3 +226,12 @@ TEST(Printer, printModelWithImports)
     const std::string a_model = printer->printModel(model);
     EXPECT_EQ(e_model, a_model);
 }
+
+TEST(Printer, printModelWithTabs)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("printer/tabulated_model.cellml"));
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+
+    EXPECT_EQ(fileContents("printer/spaced_model.cellml"), printer->printModel(model));
+}
