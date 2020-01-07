@@ -57,6 +57,17 @@ public:
     void parseMathML(const std::string &input);
 
     /**
+     * @brief Convert this @c XmlDoc content into a pretty-print @c std::string.
+     *
+     * Converts the content in this @c XmlDoc into a pretty-print
+     * @c std::string.
+     *
+     * @return The pretty-print @c std::string representation of the content for
+     * this @c XmlDoc.
+     */
+    std::string prettyPrint() const;
+
+    /**
      * @brief Get the root XML element of this @c XmlDoc.
      *
      * Get the root XML element for this @c XmlDoc as a returned @c XMLNodePtr.
