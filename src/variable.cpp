@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "utilities.h"
-
-#include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include <algorithm>
@@ -24,6 +21,11 @@ limitations under the License.
 #include <map>
 #include <sstream>
 #include <vector>
+
+#include "libcellml/model.h"
+#include "libcellml/units.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -411,8 +413,14 @@ std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &eq
 
 void Variable::setUnits(const std::string &name)
 {
-    libcellml::UnitsPtr u = libcellml::Units::create();
-    u->setName(name);
+    UnitsPtr u;
+    auto model = owningModel(shared_from_this());
+    if (model != nullptr && model->hasUnits(name)) {
+        u = model->units(name);
+    } else {
+        u = Units::create();
+        u->setName(name);
+    }
     mPimpl->mUnits = u;
 }
 
@@ -541,7 +549,7 @@ VariablePtr Variable::clone() const
     auto v = create();
 
     if (mPimpl->mUnits != nullptr) {
-        v->setUnits(mPimpl->mUnits->name());
+        v->setUnits(mPimpl->mUnits->clone());
     }
     v->setInitialValue(initialValue());
     v->setInterfaceType(interfaceType());

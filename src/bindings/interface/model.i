@@ -61,6 +61,18 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::clone
 "Create a copy of this model.";
 
+%feature("docstring") libcellml::Model::linkUnits
+"Link units defined in the model to units used by variables.";
+
+%feature("docstring") libcellml::Model::hasUnlinkedUnits
+"Determine if any units used by variables are not linked to model units.";
+
+%feature("docstring") libcellml::Model::hasImports
+"Determine if any Component or Units is an import.";
+
+%feature("docstring") libcellml::Model::flatten
+"Instantiate all imported Components and Units to make this model self-contained.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
