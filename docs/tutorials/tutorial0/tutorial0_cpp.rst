@@ -207,7 +207,7 @@ If this isn't what you see then please see the Troubleshooting section **TODO**
 
 You should see an output similar to this:
 
-.. container:: console
+.. code-block:: console
 
     Scanning dependencies of target tutorial1
     [ 50%] Building CXX object CMakeFiles/tutorial1.dir/tutorial1.cpp.o
