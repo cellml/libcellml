@@ -4,7 +4,7 @@ set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set(LIBCELLML_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_VERSION "${LIBCELLML_PACKAGE_VERSION}")
 
-GET_SYSTEM_NAME(LIBCELLML_SYSTEM)
+get_system_name(LIBCELLML_SYSTEM)
 string(TOLOWER ${LIBCELLML_SYSTEM} LIBCELLML_SYSTEM_LOWERCASE)
 
 set(LIBCELLML_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
@@ -31,8 +31,8 @@ if(WIN32)
     endif()
     set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows/libcellml.ico")
     set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows/libcellml.ico")
-    set(CPACK_NSIS_INSTALLER_ICON_CODE    "!define MUI_HEADERIMAGE_BITMAP       \\\"${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows\\\\libcellml_banner_hori.bmp\\\"
-                                           !define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows\\\\libcellml_banner_vert.bmp\\\"
+    set(CPACK_NSIS_INSTALLER_ICON_CODE    "!define MUI_HEADERIMAGE_BITMAP         \\\"${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows\\\\libcellml_banner_hori.bmp\\\"
+                                           !define MUI_WELCOMEFINISHPAGE_BITMAP   \\\"${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows\\\\libcellml_banner_vert.bmp\\\"
                                            !define MUI_UNWELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_CURRENT_SOURCE_DIR}/distrib/windows\\\\libcellml_banner_vert.bmp\\\"")
     set(CPACK_NSIS_MODIFY_PATH "ON")
   endif()
@@ -43,7 +43,7 @@ elseif(APPLE)
   set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/distrib/macos/welcome.txt")
 
   set(LIBCELLML_ARCHITECTURE "universal")
-  set(CPACK_GENERATOR  "TGZ" "productbuild")
+  set(CPACK_GENERATOR "TGZ" "productbuild")
 elseif(UNIX)
   # Preserve the CMAKE_INSTALL_PREFIX for the project and work with absolute install
   set(CPACK_SET_DESTDIR ON)
@@ -53,7 +53,7 @@ elseif(UNIX)
   debian_based(_DEB_SYSTEM)
   redhat_based(_RPM_SYSTEM)
   if(_DEB_SYSTEM)
-    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "libCellML Developers") #required
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "libCellML developers") #required
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "libxml2")
     list(APPEND CPACK_GENERATOR "DEB")
   endif()
