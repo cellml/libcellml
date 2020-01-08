@@ -166,6 +166,9 @@ bool updateUnitMultiplier(double &multiplier,
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
             if (isStandardUnitName(ref)) {
+                if (!isStandardPrefixName(pre)) {
+                    return false;
+                }
                 multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 updated = true;
             } else {
