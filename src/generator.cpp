@@ -1623,13 +1623,23 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 {
     if (ast != nullptr) {
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            // Have a check for if the markup is CI or CN. If it's CN, then return the empty mapping (just a number, no units). Otherwise, create a mapping.
-            if (ast->mType == GeneratorEquationAst::Type::CN) {
+            // Have a check for if the markup is CI or CN. If it's CN (and has no units!), then return the empty mapping (just a number, no units). Otherwise, create a mapping.
+            if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits == nullptr) {
                 return unitMap;
             }
 
-            ModelPtr model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
-            std::string uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "dimensionless";
+            ModelPtr model;
+            std::string uName; // Declarations
+
+            if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
+                model = owningModel(ast->mUnits);
+                uName = ast->mUnits->name();
+                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units. Multipliers can be checked in another function.
+                return unitMap;
+            }
+            
+            model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
+            uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "dimensionless";
             if (uName == "dimensionless") {
                 return unitMap;
             }
@@ -1776,7 +1786,6 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 for (auto &unit : leftMap) {
                     unit.second *= -1.0; // Bottom variable will be "per" the unit; although sometimes it's defined as being "per_s" already (need to address)
                 }
-
                 return leftMap;
             }
         }
