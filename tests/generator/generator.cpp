@@ -1310,3 +1310,21 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode());
 }
+
+TEST(Generator, setInterfaceFilenameAndDefault)
+{
+    auto model = libcellml::Model::create("myModelName");
+    auto generator = libcellml::Generator::create();
+    auto profileC = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::C);
+
+    generator->setProfile(profileC);
+    generator->processModel(model);
+
+    std::string interfaceCode = generator->interfaceCode();
+    EXPECT_TRUE(interfaceCode.find("#include \"myModelName.h\"") != std::string::npos);
+
+    //profileC->setInterfaceFileName("customHeaderFile.h"); // ?? or perhaps generator->setInterfaceFileName()??
+
+    EXPECT_TRUE(interfaceCode.find("#include \"customHeaderFile.h\"") != std::string::npos);
+    EXPECT_FALSE(interfaceCode.find("#include \"myModelName.h\"") != std::string::npos);
+}
