@@ -66,12 +66,12 @@ if __name__ == "__main__":
 
     equation2 = \
         '  <apply><eq/>\n'\
-        '    <ci>i_K</ci>\n'\
+        '    <ci>i_y</ci>\n'\
         '    <apply><times/>\n'\
-        '      <ci>g_K</ci>\n'\
+        '      <ci>g_y</ci>\n'\
         '      <apply><minus/>\n'\
         '        <ci>V</ci>\n'\
-        '        <ci>E_K</ci>\n'\
+        '        <ci>E_y</ci>\n'\
         '      </apply>\n'\
         '      <apply><power/>\n'\
         '        <ci>n</ci>\n'\
@@ -128,20 +128,20 @@ if __name__ == "__main__":
     n.setUnits("dimensionless")
     n.setInitialValue(0.0)
 
-    E_K = Variable()
-    E_K.setName("E_K")
-    E_K.setUnits("millivolt")
-    E_K.setInitialValue(-85.0)
+    E_y = Variable()
+    E_y.setName("E_y")
+    E_y.setUnits("millivolt")
+    E_y.setInitialValue(-85.0)
 
-    i_K = Variable()
-    i_K.setName("i_K")
-    i_K.setUnits("microA_per_cm2")
+    i_y = Variable()
+    i_y.setName("i_y")
+    i_y.setUnits("microA_per_cm2")
     # Note that no initial value is needed for this variable as its value is defined by equation2
 
-    g_K = Variable()
-    g_K.setName("g_K")
-    g_K.setUnits("milliS_per_cm2")
-    g_K.setInitialValue(36.0)
+    g_y = Variable()
+    g_y.setName("g_y")
+    g_y.setUnits("milliS_per_cm2")
+    g_y.setInitialValue(36.0)
 
     gamma = Variable()
     gamma.setName("gamma")
@@ -152,10 +152,10 @@ if __name__ == "__main__":
     #      added by their pointer (cf. their name)
     component.addVariable(t)
     component.addVariable(V)
-    component.addVariable(E_K)
+    component.addVariable(E_y)
     component.addVariable(gamma)
-    component.addVariable(i_K)
-    component.addVariable(g_K)
+    component.addVariable(i_y)
+    component.addVariable(g_y)
     component.addVariable(alpha_n)
     component.addVariable(beta_n)
     component.addVariable(n)

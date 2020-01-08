@@ -69,7 +69,7 @@ int main()
     // i_y = g_y*power(y,gamma)*(V-E_y)
     std::string equation2 =
         "  <apply><eq/>\n"
-        "    <ci>i_K</ci>\n"
+        "    <ci>y</ci>\n"
         "    <apply><times/>\n"
         "      <ci>g_y</ci>\n"
         "      <apply><minus/>\n"
@@ -131,8 +131,8 @@ int main()
     E_y->setUnits("millivolt");
     E_y->setInitialValue(-85.0);
 
-    libcellml::VariablePtr i_K = libcellml::Variable::create("i_K");
-    i_K->setUnits("microA_per_cm2");
+    libcellml::VariablePtr i_y = libcellml::Variable::create("i_y");
+    i_y->setUnits("microA_per_cm2");
     // Note that no initial value is needed for this variable as its value
     // is defined by equation2
 
@@ -152,7 +152,7 @@ int main()
     component->addVariable(V);
     component->addVariable(E_y);
     component->addVariable(gamma);
-    component->addVariable(i_K);
+    component->addVariable(i_y);
     component->addVariable(g_y);
     component->addVariable(alpha_y);
     component->addVariable(beta_y);

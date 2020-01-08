@@ -19,8 +19,8 @@ Resources:
     - :download:`../utilities/tutorial_utilities.h` and
       :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 5 you can download the file created there:
-      :download:`../resources/tutorial5_IonChannelModel.cellml`
+    - If you did not complete Tutorial 5 you can download the file created
+      there from: :download:`../resources/tutorial5_IonChannelModel.cellml`
 
 .. contents:: Contents
     :local:
@@ -91,16 +91,17 @@ created in Tutorial 5.  There are four possible options:
 Option 3 seems to be the DRYest, and indeed this is how we will do it later on
 when the :code:`ImportSource` functionality is introduced.  For now though,
 we'll just go with Option 2 since there's only one component inside the
-Tutorial 5 model anyway.
+Tutorial 5 model anyway, and this tutorial is all about parenthood and
+ownership of variables.
 
 .. container:: dothis
 
     **1.a** Create a :code:`Parser` instance and use it to deserialise the
     model from the file created in Tutorial 5 into a new model instance.
-    This process was described in `Tutorial 2<tutorial2_cpp>`. You
+    This process was described in :ref:`Tutorial 2<tutorial2_cpp>`. You
     may like to copy that file into the working directory for this project for
     ease of access.  If you didn't do Tutorial 5 you can copy this file from
-    the resource folder instead.
+    the :code:`resources/` folder instead.
 
 .. container:: dothis
 
@@ -140,8 +141,8 @@ gate.
     **2.b** Create two new variables with the units below, and add to the
     component.
 
-- V (millivolt)
-- t (millisecond)
+        - V (millivolt)
+        - t (millisecond)
 
 .. container:: dothis
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.2)
-set(PROJECT_NAME tutorial7_complete)
+set(PROJECT_NAME tutorial7)
 
 project(${PROJECT_NAME} VERSION 0.1.0)
 set(INSTALL_PREFIX "" CACHE PATH "Please enter the path to the libCellML install directory using the syntax -DINSTALL_PREFIX=your_path")

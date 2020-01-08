@@ -170,11 +170,11 @@ void insertIntoMathMLString(std::string &maths, std::string &addMe)
     // math string, or just adds it to the end.  Returns the altered math
     // string through the argument list.
 
-    std::string tag = "</math>\n";
+    std::string tag = "</math>";
+    maths.erase(maths.find_last_not_of(" \t\n\r\f\v") + 1);
     std::string before = maths.substr(0, maths.length() - tag.length() - 1);
     std::string after = maths.substr(maths.length() - tag.length());
-    maths.erase(maths.find_last_not_of(" \t\n\r\f\v") + 1);
-
+   
     // test the final characters of the existing math string
     if (after == tag) {
         maths = before + addMe + tag;
@@ -182,6 +182,16 @@ void insertIntoMathMLString(std::string &maths, std::string &addMe)
         maths = maths + addMe;
     }
 }
+
+// std::string getEquationFromMathML(std::string &maths, std::string &lhs)
+// {
+//     std::string equals = "<apply><eq/>";
+//     // Remove header and footer, if present
+
+//     // Split the string at equals tags
+
+//     // Retrieve and return entire equation starting with the lhs variable name  
+// }
 
 std::string getModelTypeFromEnum(libcellml::Generator::ModelType myType)
 {

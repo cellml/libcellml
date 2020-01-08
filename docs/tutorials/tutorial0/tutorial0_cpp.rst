@@ -207,12 +207,12 @@ If this isn't what you see then please see the Troubleshooting section **TODO**
 
 You should see an output similar to this:
 
-.. code-block:: console
+.. container:: console
 
-    Scanning dependencies of target tutorial0
-    [ 50%] Building CXX object CMakeFiles/tutorial0.dir/tutorial0.cpp.o
-    [100%] Linking CXX executable tutorial0
-    [100%] Built target tutorial0
+    Scanning dependencies of target tutorial1
+    [ 50%] Building CXX object CMakeFiles/tutorial1.dir/tutorial1.cpp.o
+    [100%] Linking CXX executable tutorial1
+    [100%] Built target tutorial1
 
 .. container:: dothis
 
