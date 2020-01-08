@@ -1539,21 +1539,9 @@ VariablePtr getVariable(const GeneratorEquationAstPtr &ast)
         return getVariable(ast->mRight);
     }
     return nullptr;
-
-    /*
-    GeneratorEquationAstPtr curr = ast;
-    while (curr->mVariable == nullptr) {
-        if (curr->mLeft != nullptr) {
-            curr = curr->mLeft;
-        } else {
-            curr = curr->mRight;
-        }
-    }
-    return curr->mVariable;
-    */
 }
 
-// Gets the power for a given node.
+// Gets the power for a given node. (this needs to be redone so we will always be guaranteed to find the power for an operation)
 double getPower(const GeneratorEquationAstPtr &ast)
 {
     if (ast->mRight->mValue.empty()) {
@@ -1656,7 +1644,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             // Plus, Minus, any unit comparisons where units have to be exactly the same.
             if (isDirectComparisonOperator(ast)) {
                 std::string hints = "";
-                if (mapsAreEquivalent(leftMap, rightMap, hints)) {
+                if (mapsAreEquivalent(leftMap, rightMap, hints) || rightMap.empty()) {
                     return leftMap;
                 } else {
                     VariablePtr variable = getVariable(ast);
