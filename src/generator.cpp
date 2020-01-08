@@ -263,6 +263,7 @@ struct GeneratorEquationAst
 
     std::string mValue;
     VariablePtr mVariable = nullptr;
+    UnitsPtr mUnits = nullptr;
 
     GeneratorEquationAstWeakPtr mParent;
 
@@ -312,6 +313,7 @@ GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
     , mParent(parent)
     , mLeft(ast->mLeft)
     , mRight(ast->mRight)
+    , mUnits(ast->mUnits)
 {
 }
 
@@ -1036,6 +1038,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         if (variable != nullptr) {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
+            ast->mUnits = variable->units();
 
             // Have our equation track the (ODE) variable (by ODE variable, we
             // mean a variable that is used in a "diff" element).
@@ -1061,6 +1064,9 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             mGenerator->addError(err);
         }
     } else if (node->isMathmlElement("cn")) {
+        //std::string unitsName = node->firstChild()->convertToString();
+        //UnitsPtr variable = component->units(variableName);
+
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
@@ -1068,6 +1074,23 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         } else {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
         }
+
+        // Checking if the <cn> element has a unit associated with it. If it does, then return the unit name as a string.
+        std::string nodeString = node->convertToString();
+        std::size_t findUnitPos = nodeString.find("cellml:units");
+        if (findUnitPos != std::string::npos) {
+            std::string unitName;
+            findUnitPos += 14; // Getting to the start of the unit name string, which begins after "cellml:units=\"
+            while (nodeString[findUnitPos] != '"') {
+                unitName.push_back(nodeString[findUnitPos]);
+                ++findUnitPos;
+            }
+            ModelPtr model = owningModel(component);
+            ast->mUnits = model->units(unitName);
+        }
+
+        //std::string unitsName = node->firstChild()->convertToString();
+        //if (node->properties)
 
         // Qualifier elements.
 
@@ -1544,7 +1567,7 @@ double getPower(const GeneratorEquationAstPtr &ast)
     return std::stod(ast->mRight->mValue); // Return number if we don't have an empty value
 }
 
-static const std::map<GeneratorEquationAst::Type, const std::string> AstTypeToString = {
+static const std::map<GeneratorEquationAst::Type, std::string> AstTypeToString = {
     {GeneratorEquationAst::Type::ASSIGNMENT, " = "},
     {GeneratorEquationAst::Type::EQ, " == "},
     {GeneratorEquationAst::Type::NEQ, " != "},
@@ -1600,10 +1623,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 {
     if (ast != nullptr) {
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            std::string e = std::to_string(ast->mType);
-
-            // Have a check for if the markup is CI or CN. If it's CN, then return the mapping (just a number, no units). Otherwise, create a mapping.
-            if (e == libcellml::GeneratorEquationAst::Type::CN) {
+            // Have a check for if the markup is CI or CN. If it's CN, then return the empty mapping (just a number, no units). Otherwise, create a mapping.
+            if (ast->mType == GeneratorEquationAst::Type::CN) {
                 return unitMap;
             }
 
@@ -1612,7 +1633,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             if (uName == "dimensionless") {
                 return unitMap;
             }
-            updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units.
+            updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units. Multipliers can be checked in another function.
             return unitMap;
         }
 
@@ -1620,7 +1641,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
             // Evaluate left, right subtrees first
             UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
-            UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, -1);
+            UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, 1);
 
             // Plus, Minus, any unit comparisons where units have to be exactly the same.
             if (isDirectComparisonOperator(ast)) {
@@ -1631,11 +1652,10 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string varName = (variable != nullptr) ? variable->name() : "no_name";
                     std::string compName = (component != nullptr) ? component->name() : "no_name";
                     std::string modelName = (model != nullptr) ? model->name() : "no_name";
 
-                    std::string err = "The units in the expression '" + varName
+                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' are not equivalent. The unit mismatch is " + hints;
@@ -1647,24 +1667,20 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             // Multiply, Divide: add mappings, no interest in unit compatibility.
             if (isMultiplicativeOperator(ast)) {
                 UnitsMap newMapping;
-                if (ast->mType == libcellml::GeneratorEquationAst::Type::TIMES) {
+                if (ast->mType == GeneratorEquationAst::Type::TIMES) {
                     newMapping = addMappings(leftMap, rightMap, 1);
                 } else {
                     newMapping = addMappings(leftMap, rightMap, -1);
                 }
-
-                multiplier *= direction; // Account for the side of the subtree we are currently on
                 return newMapping;
             }
 
             // Checks for exponential operators, multiplies unit mappings with power
             if (isExponentOperator(ast)) {
                 double power = getPower(ast); // Getting the power to be applied
-
                 if (isDimensionless(rightMap)) {
                     return multiplyMappings(leftMap, ast, power);
                 } else {
-                    /*
                     std::string hints = ""; // Otherwise we return what the units are in the expression.
                     for (const auto unit : rightMap) {
                         if (unit.second != 0.0) {
@@ -1687,12 +1703,11 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     std::string compName = (component != nullptr) ? component->name() : "no_name";
                     std::string modelName = (model != nullptr) ? model->name() : "no_name";
 
-                    std::string err = "The units in the expression '" + varName
+                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
-                                      + "' are not equivalent. The unit mismatch is " + hints;
+                                      + "' are not dimensionless. The units in the expression are " + hints;
                     errors.push_back(err);
-                    */
                     return leftMap;
                 }
             }
@@ -1701,32 +1716,29 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             if (isLogarithmicOperator(ast)) {
                 std::string hints = "";
                 if (mapsAreEquivalent(rightMap, leftMap, hints)) {
-                    //TODO: Figure out way of returning the multiplier from the logarithm operation - probably add it as another argument to the function
                     return leftMap;
                 } else {
-                    /*
-                    // We have a massive problem. There is an error which we have to account for.
-                    VariablePtr variable = ast->mVariable;
-                    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                    ModelPtr model = owningModel(component);
+                    VariablePtr variable = getVariable(ast);
+                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : "no_name";
+                    std::string modelName = (model != nullptr) ? model->name() : "no_name";
 
-                    std::string err = "The units in the expression '" + variable->name()
+                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + component->name()
                                       + "' of model '" + model->name()
-                                      + "' are not dimensionless. The unit mismatch between logarithm and base is: " + hints;
+                                      + "' are not dimensionless. The units in the expression are: " + hints;
                     errors.push_back(err);
                     return leftMap;
-                    */
                 }
             }
 
             // All trig arguments should be dimensionless
             if (isTrigonometricOperator(ast)) {
                 if (isDimensionless(leftMap)) {
-                    //TODO: Figure out way of returning the multiplier from the trig operation - probably add it as another argument to the function
-                    return leftMap;
+                    leftMap.clear();
+                    return leftMap; // Return a dimensionless mapping to denote a pass case.
                 } else {
-                    /*
                     std::string hints = "";
                     for (const auto unit : leftMap) {
                         if (unit.second != 0.0) {
@@ -1746,12 +1758,12 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
                     ModelPtr model = owningModel(component);
 
-                    std::string err = "The exponent in the expression '" + variable->name()
+                    std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + component->name()
                                       + "' of model '" + model->name()
-                                      + "' is not dimensionless. The units in the function are" + hints;
+                                      + "' is not dimensionless. The units in the argument are: " + hints;
                     errors.push_back(err);
-                    */
+                    leftMap.clear(); // Clear our mapping to reduce the potential for errors further up the tree.
                     return leftMap;
                 }
             }
@@ -1761,6 +1773,10 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             }
 
             if (isBottomVariableOperator(ast)) {
+                for (auto &unit : leftMap) {
+                    unit.second *= -1.0; // Bottom variable will be "per" the unit; although sometimes it's defined as being "per_s" already (need to address)
+                }
+
                 return leftMap;
             }
         }
