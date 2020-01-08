@@ -191,6 +191,10 @@ TEST(Generator, isolatedFirstOrderModel)
     model->addUnits(microA_per_cm2);
     model->addUnits(mS_per_cm2);
 
+    // Link the units used by variables in the model to
+    // units added to the model.
+    model->linkUnits();
+
     //  4.c   Validate the final arrangement. No errors are expected at this stage.
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
