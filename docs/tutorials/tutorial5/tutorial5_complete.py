@@ -47,19 +47,19 @@ if __name__ == "__main__":
         '      <bvar>\n'\
         '        <ci>t</ci>\n'\
         '      </bvar>\n'\
-        '      <ci>n</ci>\n'\
+        '      <ci>y</ci>\n'\
         '    </apply>\n'\
         '    <apply><minus/>\n'\
         '      <apply><times/>\n'\
-        '        <ci>alpha_n</ci>\n'\
+        '        <ci>alpha_y</ci>\n'\
         '        <apply><minus/>\n'\
         '          <cn cellml:units="dimensionless">1</cn>\n'\
-        '          <ci>n</ci>\n'\
+        '          <ci>y</ci>\n'\
         '        </apply>\n'\
         '      </apply>\n'\
         '      <apply><times/>\n'\
-        '        <ci>beta_n</ci>\n'\
-        '        <ci>n</ci>\n'\
+        '        <ci>beta_y</ci>\n'\
+        '        <ci>y</ci>\n'\
         '      </apply>\n'\
         '    </apply>\n'\
         '  </apply>\n'
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         '        <ci>E_y</ci>\n'\
         '      </apply>\n'\
         '      <apply><power/>\n'\
-        '        <ci>n</ci>\n'\
+        '        <ci>y</ci>\n'\
         '        <ci>gamma</ci>\n'\
         '      </apply>\n'\
         '    </apply>\n'\
@@ -113,20 +113,20 @@ if __name__ == "__main__":
     V.setUnits("millivolt")
     V.setInitialValue(0.0)
 
-    alpha_n = Variable()
-    alpha_n.setName("alpha_n")
-    alpha_n.setUnits("per_millisecond")
-    alpha_n.setInitialValue(1.0)
+    alpha_y = Variable()
+    alpha_y.setName("alpha_y")
+    alpha_y.setUnits("per_millisecond")
+    alpha_y.setInitialValue(1.0)
 
-    beta_n = Variable()
-    beta_n.setName("beta_n")
-    beta_n.setUnits("per_millisecond")
-    beta_n.setInitialValue(2.0)
+    beta_y = Variable()
+    beta_y.setName("beta_y")
+    beta_y.setUnits("per_millisecond")
+    beta_y.setInitialValue(2.0)
 
-    n = Variable()
-    n.setName("n")
-    n.setUnits("dimensionless")
-    n.setInitialValue(0.0)
+    y = Variable()
+    y.setName("y")
+    y.setUnits("dimensionless")
+    y.setInitialValue(0.0)
 
     E_y = Variable()
     E_y.setName("E_y")
@@ -156,9 +156,9 @@ if __name__ == "__main__":
     component.addVariable(gamma)
     component.addVariable(i_y)
     component.addVariable(g_y)
-    component.addVariable(alpha_n)
-    component.addVariable(beta_n)
-    component.addVariable(n)
+    component.addVariable(alpha_y)
+    component.addVariable(beta_y)
+    component.addVariable(y)
 
     #  3.d Call the validator and print the messages to the terminal.
     #      Expected errors refer to units referred to by these variables, but

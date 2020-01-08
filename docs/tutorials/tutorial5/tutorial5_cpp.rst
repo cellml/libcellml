@@ -116,11 +116,11 @@ its purpose is to represent a collection of gates in series in order to model
 the channel behaviour.  Let's start with the simple ODE below:
 
 .. math::
-    \frac{dn}{dt} = \alpha_n (1-n) - \beta_n n
+    \frac{dn}{dt} = \alpha_y (1-y) - \beta_y y
 
-where :math:`n` is the fraction which is open (so :math:`(1-n)` must
-be the fraction which is closed), :math:`\alpha_n` is the opening
-rate, :math:`\beta_n` is the closing rate, and :math:`t` is time.
+where :math:`y` is the fraction which is open (so :math:`(1-y)` must
+be the fraction which is closed), :math:`\alpha_y` is the opening
+rate, :math:`\beta_y` is the closing rate, and :math:`t` is time.
 
 Now to add this equation into the component we created in Step 1.
 Once the maths is created, the process of adding it is very simple, and follows
@@ -140,10 +140,10 @@ Left hand side: :math:`\frac{dn}{dt}`
                 <bvar>
                     <ci>time</ci>
                 </bvar>
-                <ci>n</ci>
+                <ci>y</ci>
             </apply>
 
-Right hand side: :math:`\alpha_n (1-n) ...`
+Right hand side: :math:`\alpha_y (1-y) ...`
 
 .. code-block:: xml
 
@@ -151,15 +151,15 @@ Right hand side: :math:`\alpha_n (1-n) ...`
                 <minus/>
                 <apply>
                     <times/>
-                    <ci>alpha_n</ci>
+                    <ci>alpha_y</ci>
                     <apply>
                         <minus/>
                         <cn cellml:units="dimensionless">1</cn>
-                        <ci>n</ci>
+                        <ci>y</ci>
                     </apply>
                 </apply>
 
-:math:`... - \beta_n n`  **NB** The negative comes from the first :code:`minus`
+:math:`... - \beta_y y`  **NB** The negative comes from the first :code:`minus`
 operation in the block above, indicating that the block below subtracted
 from the one above.
 
@@ -167,8 +167,8 @@ from the one above.
 
                 <apply>
                     <times/>
-                    <ci>beta_n</ci>
-                    <ci>n</ci>
+                    <ci>beta_y</ci>
+                    <ci>y</ci>
                 </apply>
             </apply>
 
@@ -198,13 +198,13 @@ include a namespace definition, as well as the initial :code:`<apply>` and
     **2.a** Create the MathML string(s) representing the following equations:
 
 .. math::
-    \frac{dn}{dt} = \alpha_n (1-n) - \beta_n n
+    \frac{dn}{dt} = \alpha_y (1-y) - \beta_y y
 
-    i_K = g_K . n^{\gamma} . (V-E_K)
+    i_K = g_K . y^{\gamma} . (V-E_K)
 
 ... where :math:`\alpha_K` and :math:`\beta_K` are the rate constants for the
 opening and closing of the gate, :math:`g_K` is the open channel conductance,
-:math:`n` is the fraction of open gates, and :math:`\gamma` is the number of
+:math:`y` is the fraction of open gates, and :math:`\gamma` is the number of
 gates which exist in series in the channel, :math:`V` is the transmembrane
 voltage, and :math:`i_K` is the current flow through the channel.
 
@@ -235,7 +235,7 @@ are:
 
 .. code-block:: console
 
-     Description: MathML ci element has the child text 'alpha_n' which does not
+     Description: MathML ci element has the child text 'alpha_y' which does not
         correspond with any variable names present in component
         'HodgkinHuxleySingleIonChannel' and is not a variable defined within a bvar
         element.
@@ -269,8 +269,8 @@ as you did in :ref:`Tutorial 3<tutorial3_cpp>`.  The units you'll need here are:
 
 - time, :math:`t`, has units of :code:`millisecond`
 - voltage, :math:`V`, has units of :code:`millivolt`
-- opening rate, :math:`\alpha_n` has units :code:`per_millisecond`
-- closing rate, :math:`\beta_n` has units :code:`per_millisecond`
+- opening rate, :math:`\alpha_y` has units :code:`per_millisecond`
+- closing rate, :math:`\beta_y` has units :code:`per_millisecond`
 
 .. container:: dothis
 
@@ -279,7 +279,7 @@ as you did in :ref:`Tutorial 3<tutorial3_cpp>`.  The units you'll need here are:
 
 Even though the final variable in our equations has no units, CellML2 requires
 every variable to have some defined.  For the proportion of open gates
-:math:`n` use the units name :code:`dimensionless`.
+:math:`y` use the units name :code:`dimensionless`.
 
 .. container:: dothis
 
@@ -355,12 +355,12 @@ inside the :code:`Generator`.
     following initial conditions:
 
     - :math:`V(t=0)=0`
-    - :math:`n(t=0)=0`
+    - :math:`y(t=0)=0`
     - :math:`E_K(t=0)=-85`
     - :math:`g_K(t=0)=36`
     - :math:`\gamma(t=0)=4`
-    - :math:`\alpha_n(t=0)=1`
-    - :math:`\beta_n(t=0)=2`
+    - :math:`\alpha_y(t=0)=1`
+    - :math:`\beta_y(t=0)=2`
 
 .. container:: dothis
 
