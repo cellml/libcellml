@@ -22,6 +22,10 @@ limitations under the License.
 
 #include <string>
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -30,6 +34,10 @@ namespace libcellml {
  * Class for each variable in libCellML.
  */
 class LIBCELLML_EXPORT Variable: public NamedEntity
+#ifndef SWIG
+    ,
+                                 public std::enable_shared_from_this<Variable>
+#endif
 {
 public:
     ~Variable() override; /**< Destructor */
@@ -85,8 +93,10 @@ public:
      * for @p variable2.
      * @param variable2 The variable to copy to the equivalent variable set
      * for @p variable1.
+     *
+     * @return True if the equivalence was added, false otherwise.
      */
-    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+    static bool addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @overload
@@ -96,7 +106,7 @@ public:
      * Add a copy of @p variable1 to the set of equivalent variables for
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.  Also set the
-     * mapping id of the equivalence and also optionally the connection id fo the
+     * mapping id of the equivalence and also optionally the connection id for the
      * equivalence.
      *
      * @param variable1 The variable to copy to the equivalent variable set
@@ -105,8 +115,10 @@ public:
      * for @p variable1.
      * @param mappingId The @c std::string mapping id.
      * @param connectionId The @c std::string connection id (optional).
+     *
+     * @return True if the equivalence was added, false otherwise.
      */
-    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
+    static bool addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
 
     /**
      * @brief Set the equivalent mapping id for this equivalence.
@@ -192,7 +204,7 @@ public:
     static void removeEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
-     * @brief Remove each argument variable to the other's equivalent variable set.
+     * @brief Remove each argument variable from the other's equivalent variable set.
      *
      * Removes a copy of @p variable1 from the set of equivalent variables for
      * @p variable2, if present. Also removes a copy of @p variable2 from the
@@ -201,9 +213,9 @@ public:
      * @sa addEquivalence, equivalentVariable
      *
      * @param variable1 The variable to remove from the equivalent variable set
-     * for @p variable2.
+     * of @p variable2.
      * @param variable2 The variable to remove from the equivalent variable set
-     * for @p variable1.
+     * of @p variable1.
      *
      * @return True if the equivalence was removed, false otherwise.
      */
@@ -212,7 +224,7 @@ public:
     /**
      * @brief Remove all equivalent variables for this variable.
      *
-     * Clears all equivalent variables that have been added to the set for this variable.
+     * Clears all equivalences that have been added to the equivalence set for this variable.
      */
     void removeAllEquivalences();
 
@@ -242,30 +254,21 @@ public:
      *
      * Tests to see if the argument variable exists in the set of this variable's equivalent
      * variables. Returns @c true if the argument variable is in this variable's equivalent
-     * variables and @c false otherwise.
+     * variables and @c false otherwise.  By default the test will *not* traverse the equivalent
+     * network to determine if the two variables are equivalent.
+     *
+     * If the optional parameter @p considerIndirectEquivalences is @c true then the test *will*
+     * consider the entire equivalence network that this variable is a part of.
      *
      * @param equivalentVariable The variable to check for in this variable's equivalent variables.
+     * @param considerIndirectEquivalences Optional parameter to expand the test to the entire
+     * equivalent network of this variable.
      *
-     * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
-     * and @c false otherwise.
-     *
-     * @deprecated This method is currently needed by our Printer and Validator classes, but this is
-     * not a method that a libCellML user should ever need. It will therefore be removed at some point.
+     * @return @c true if the @p equivalentVariable is in this variable's equivalent variables set or
+     * if @p considerIndirectEquivalences is @c true then @c true if the @p equivalentVariable is in
+     * this variable's equivalence network.  In all other cases @c false is returned.
      */
-    bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
-
-    /**
-     * @brief Test whether the argument variable is equivalent to this variable.
-     *
-     * Tests to see if the argument variable is equivalent to this variable. Returns @c true if
-     * the argument variable is equivalent to this variable and @c false otherwise.
-     *
-     * @param equivalentVariable The variable to check for equivalence.
-     *
-     * @return @c true if the @p equivalentVariable is equivalent to this variable and
-     * @c false otherwise.
-     */
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable, bool considerIndirectEquivalences = false) const;
 
     /**
      * @brief Set the units by @p name for this variable.
@@ -274,6 +277,7 @@ public:
      * to unset the units.
      *
      * @sa units
+     * @sa removeUnits
      *
      * @param name The name of the units to set.
      */
@@ -288,6 +292,7 @@ public:
      * argument @p units.
      *
      * @sa units
+     * @sa removeUnits
      *
      * @param units The @c UnitsPtr to set.
      */
@@ -300,6 +305,7 @@ public:
      * an empty @c std::string is returned.
      *
      * @sa setUnits
+     * @sa removeUnits
      *
      * @return The @c UnitsPtr of the units for this variable.
      */

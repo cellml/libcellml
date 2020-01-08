@@ -142,52 +142,56 @@ std::string printMath(const std::string &math, const std::string &indent)
     std::string repr;
     std::istringstream lines(math);
     std::string line;
-    while (std::getline(lines, line, '\n')) {
+    while (std::getline(lines, line)) {
         repr += indent + line + "\n";
     }
     return repr;
 }
 
-void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &variableMap)
+void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap &componentMap, VariableMap &variableMap)
 {
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        ComponentPtr component = model->component(i);
-        for (size_t j = 0; j < component->variableCount(); ++j) {
-            VariablePtr variable = component->variable(j);
-            if (variable->equivalentVariableCount() > 0) {
-                for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                    VariablePtr equivalentVariable = variable->equivalentVariable(k);
-                    if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
-                        VariablePair variablePair = std::make_pair(variable, equivalentVariable);
-                        VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
-                        bool pairFound = false;
-                        for (const auto &iter : variableMap) {
-                            if ((iter == variablePair) || (iter == reciprocalVariablePair)) {
-                                pairFound = true;
-                                break;
-                            }
-                        }
-                        if (!pairFound) {
-                            // Get parent components.
-                            ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                            ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-                            // Do not serialise a variable's parent component in a connection if that variable no longer
-                            // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
-                            if (component2 != nullptr) {
-                                if (!component2->hasVariable(equivalentVariable)) {
-                                    component2 = nullptr;
-                                }
-                            }
-                            // Add new unique variable equivalence pair to the VariableMap.
-                            variableMap.push_back(variablePair);
-                            // Also create a component map pair corresponding with the variable map pair.
-                            ComponentPair componentPair = std::make_pair(component1, component2);
-                            componentMap.push_back(componentPair);
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        VariablePtr variable = component->variable(i);
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            VariablePtr equivalentVariable = variable->equivalentVariable(j);
+            if (equivalentVariable->hasEquivalentVariable(variable)) {
+                VariablePair variablePair = std::make_pair(variable, equivalentVariable);
+                VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
+                bool pairFound = false;
+                for (const auto &iter : variableMap) {
+                    if ((iter == variablePair) || (iter == reciprocalVariablePair)) {
+                        pairFound = true;
+                        break;
+                    }
+                }
+                if (!pairFound) {
+                    // Get parent components.
+                    ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                    ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                    // Do not serialise a variable's parent component in a connection if that variable no longer
+                    // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
+                    if (component2 != nullptr) {
+                        if (!component2->hasVariable(equivalentVariable)) {
+                            component2 = nullptr;
                         }
                     }
+                    // Add new unique variable equivalence pair to the VariableMap.
+                    variableMap.push_back(variablePair);
+                    // Also create a component map pair corresponding with the variable map pair.
+                    ComponentPair componentPair = std::make_pair(component1, component2);
+                    componentMap.push_back(componentPair);
                 }
             }
         }
+    }
+}
+
+void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componentMap, VariableMap &variableMap)
+{
+    for (size_t i = 0; i < componentEntity->componentCount(); ++i) {
+        ComponentPtr component = componentEntity->component(i);
+        buildMapsForComponentsVariables(component, componentMap, variableMap);
+        buildMaps(component, componentMap, variableMap);
     }
 }
 
@@ -430,6 +434,10 @@ PrinterPtr Printer::create() noexcept
 
 std::string Printer::printModel(const ModelPtr &model) const
 {
+    if (model == nullptr) {
+        return "";
+    }
+
     // ImportMap
     using ImportPair = std::pair<std::string, ComponentPtr>;
     using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
