@@ -514,7 +514,7 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
             if (found == units2Map.end()) {
                 return false;
             }
-            if ((found->second < units.second) || (found->second > units.second)) {
+            if (!areEqual(found->second, units.second)) {
                 return false;
             }
         }
