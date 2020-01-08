@@ -40,7 +40,7 @@ elseif(APPLE)
   # Preserve the CMAKE_INSTALL_PREFIX for the project and work with absolute install
   set(CPACK_SET_DESTDIR ON)
 
-  set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/distrib/osx/welcome.txt")
+  set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/distrib/macos/welcome.txt")
 
   set(LIBCELLML_ARCHITECTURE "universal")
   set(CPACK_GENERATOR  "TGZ" "productbuild")
