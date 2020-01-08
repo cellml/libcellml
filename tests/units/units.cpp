@@ -1701,7 +1701,6 @@ TEST(Units, compareEquivalentUnitsWhichAreNested)
     model->addUnits(u5);
 
     EXPECT_TRUE(libcellml::Units::equivalent(u4, u5));
-    EXPECT_TRUE(libcellml::Units::equivalent(u5, u4));
 }
 
 TEST(Units, isBaseUnitsImported)
