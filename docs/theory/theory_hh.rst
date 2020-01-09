@@ -52,6 +52,10 @@ substituting for :math:`i_{a}` we get:
 
 
 
+MY TEST IS HERE: \textDelta\textbeta
+
+
+
 There are two sources of membrane current, :math:`i_{m}`.
 First, from the capacitance associated with the membrane, :math:`C_{m}`
 (:math:`\approx 1\mu F/cm^2`) of the membrane,
