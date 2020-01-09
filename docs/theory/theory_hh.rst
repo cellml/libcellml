@@ -41,26 +41,24 @@ where :math:`\frac{\partial V}{\partial x}` is the voltage gradient along the
 cable (in V.m :superscript:`-1`), and :math:`r_{a}` is the resistance (in
 :math:`\Omega`.m :sup:`-1`).
 
-If the cable leaks current :math:`i_{m}` (A.m :sup:`-1`) per unit length
-of cable, then conservation of current gives
-:math:`\frac{\partial i_{a}}{\partial x} = i_{m}` and,
-substituting for :math:`i_{a}` we get:
+If the cable leaks a current of :math:`i_{m}` (A.m :sup:`-1`) per unit length
+of cable, then conservation of current gives:
+
+.. math::
+
+  \frac{\partial i_{a}}{\partial x} = i_{m}
+
+and, substituting for :math:`i_{a}` we get:
 
 .. math::
 
   \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m}
 
-
-
-MY TEST IS HERE: \textDelta\textbeta
-
-
-
-There are two sources of membrane current, :math:`i_{m}`.
-First, from the capacitance associated with the membrane, :math:`C_{m}`
-(:math:`\approx 1\mu F/cm^2`) of the membrane,
-:math:`C_{m}\frac{\partial V}{\partial t}`, and one associated with
-holes or channels in the membrane, :math:`i_{\text{leak}}`. Inserting
+There are two sources of membrane leakage current, :math:`i_{m}`.
+First, the capacitance associated with the membrane, :math:`C_{m}`
+(:math:`\approx 1\mu F/cm^2`) give a current of
+:math:`C_{m}\frac{\partial V}{\partial t}`, and secondly the
+holes or channels in the membrane give :math:`i_{\text{leak}}`. Inserting
 these into the RHS gives
 
 .. math::
@@ -101,7 +99,7 @@ and other ions is also included.
 .. figure:: images/current_voltage_trajectory.png
    :name: ocr_tut_cur_volt_traj
    :alt: Current-voltage trajectory
-   :align: right
+   :align: center
    :figwidth: 8.5cm
 
    Current-voltage trajectory during an action potential.
