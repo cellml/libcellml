@@ -32,7 +32,7 @@ TEST(ComponentImport, basics)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"a-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"a-model.xml\">\n"
         "    <component component_ref=\"bob\" name=\"\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -64,7 +64,7 @@ TEST(ComponentImport, singleImportA)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -96,7 +96,7 @@ TEST(ComponentImport, singleImportB)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -121,7 +121,7 @@ TEST(ComponentImport, nonExistentURLAndParse)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"http://someplace.world/cellml/model.xml\">\n"
         "    <component component_ref=\"na_channel\" name=\"noble_na_channel\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -160,21 +160,21 @@ TEST(ComponentImport, multipleImportAndParse)
     const std::string e1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
         "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
         "  </import>\n"
         "</model>\n";
     const std::string e2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
         "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
         "  </import>\n"
@@ -216,7 +216,7 @@ TEST(ComponentImport, hierarchicalImportAndParse)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
         "  </import>\n"
         "  <component name=\"dave\"/>\n"
@@ -271,7 +271,7 @@ TEST(ComponentImport, complexImportAndParse)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
         "  </import>\n"
         "  <component name=\"dave\"/>\n"
