@@ -2278,3 +2278,35 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
+
+TEST(Validator, unfoundUnitsInParsedModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
+                     "  <units name=\"millisecond\">"
+                     "    <unit prefix=\"milli\" units=\"second\"/>"
+                     "  </units>"
+                     "  <component name=\"IonChannel\">"
+                     "    <variable name=\"myVar\" units=\"millisecond\"/>"
+                     "  </component>"
+                     "</model>";
+
+    auto model = parser->parseModel(in);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    // Add a component to represent the voltage dependency of the n-gate
+    auto nGate = libcellml::Component::create("nGate");
+    model->addComponent(nGate);
+
+    auto t = libcellml::Variable::create("t");
+    t->setUnits("millisecond");
+    nGate->addVariable(t);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}

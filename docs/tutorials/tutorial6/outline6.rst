@@ -27,9 +27,13 @@ open or closed state and the transition between them is controlled by voltage:
 hence, a "voltage-controlled ion gate".  In this tutorial we will explore how
 a channel such as that made in Tutorial 5 can include another level of
 control: the rate constants (:math:`\alpha_n` and :math:`\beta_n`) used earlier
-are now functions of voltage themselves.  **TODO check this is to be recommended?** We will also show how an
-*environment* component can be used to ensure that all components are modelled
-synchronously.
+are now functions of voltage themselves.  This is the situation in a
+potassium channel, the theory of which is described in
+:ref:`A model of a potassium channel<theory_potassiumchannel>`.
+
+**TODO check this is to be recommended?** We will also show how an
+*environment* component can be used to ensure that the independent variables
+in the model are shared consistently between components.
 
 C++ instructions
 ----------------
