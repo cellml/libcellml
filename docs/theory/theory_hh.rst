@@ -29,17 +29,28 @@ cable. It is derived as follows:
    Current flow in a leaky cable.
 
 If the voltage is raised at the left hand end of the cable (shown by the
-deep red in :numref:`ocr_tut_cur_flow_leaky`), a current :math:`i_{a}` (A) will flow that
-depends on the voltage gradient, given by
-:math:`\frac{\partial V}{\partial x}` (:math:`V.m^{-1}`) and the resistance
-:math:`r_{a}` (:math:`\Omega.m^{-1}`), Ohm’s law gives
-:math:`- \frac{\partial V}{\partial x} = r_{a}i_{a}` . But if the cable
-leaks current :math:`i_{m}` (:math:`A.m^{-1}`) per unit length of cable,
-conservation of current gives
-:math:`\frac{\partial i_{a}}{\partial x} = i_{m}` and therefore,
-substituting for :math:`i_{a}` ,
-:math:`\frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m}`
-. There are two sources of membrane current :math:`i_{m}` , one
+deep red in :numref:`ocr_tut_cur_flow_leaky`), a current :math:`i_{a}` (in A) will flow.
+The current depends on the voltage gradient according to Ohm's Law, such that:
+
+.. math::
+
+  - \frac{\partial V}{\partial x} = r_{a}i_{a}
+
+where :math:`\frac{\partial V}{\partial x}` is the voltage gradient along the
+cable (in V.m :superscript:`-1`), and :math:`r_{a}` is the resistance (in
+:math:`\Omega`.m :sup:`-1`).
+
+If the cable leaks current :math:`i_{m}` (A.m :sup:`-1`) per unit length
+of cable, then conservation of current gives
+:math:`\frac{\partial i_{a}}{\partial x} = i_{m}` and,
+substituting for :math:`i_{a}` we get:
+
+.. math::
+
+  \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m}
+
+
+There are two sources of membrane current :math:`i_{m}` , one
 associated with the capacitance :math:`C_{m}`
 (:math:`\approx 1\mu F/\text{cm}^{2}`) of the membrane,
 :math:`C_{m}\frac{\partial V}{\partial t}`, and one associated with
