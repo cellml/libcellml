@@ -29,8 +29,9 @@ cable. It is derived as follows:
    Current flow in a leaky cable.
 
 If the voltage is raised at the left hand end of the cable (shown by the
-deep red in :numref:`ocr_tut_cur_flow_leaky`), a current :math:`i_{a}` (in A) will flow.
-The current depends on the voltage gradient according to Ohm's Law, such that:
+deep red in :numref:`ocr_tut_cur_flow_leaky`), a current :math:`i_{a}` (in A)
+will flow.  This current depends on the voltage gradient according to Ohm's
+Law, such that:
 
 .. math::
 
@@ -50,9 +51,10 @@ substituting for :math:`i_{a}` we get:
   \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m}
 
 
-There are two sources of membrane current :math:`i_{m}` , one
-associated with the capacitance :math:`C_{m}`
-(:math:`\approx 1\mu F/\text{cm}^{2}`) of the membrane,
+
+There are two sources of membrane current, :math:`i_{m}`.
+First, from the capacitance associated with the membrane, :math:`C_{m}`
+(:math:`\approx 1\mu F/cm^2`) of the membrane,
 :math:`C_{m}\frac{\partial V}{\partial t}`, and one associated with
 holes or channels in the membrane, :math:`i_{\text{leak}}`. Inserting
 these into the RHS gives

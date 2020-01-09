@@ -46,6 +46,8 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
 
+
+
 # The master toctree document.
 master_doc = 'index'
 
@@ -234,7 +236,8 @@ latex_elements = {
     # 'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
-    # 'preamble': '',
+    'preamble': 'usepackage{textgreek}',
+
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
