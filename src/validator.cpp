@@ -589,7 +589,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     } else if (!isStandardUnitName(unitsName)) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
         ModelPtr model = owningModel(component);
-        if ((model != nullptr) && !model->hasUnits(variable->units())) {
+        if ((model != nullptr) && !model->hasUnits(variable->units()->name())) {
             ErrorPtr err = Error::create();
             err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
             err->setVariable(variable);
