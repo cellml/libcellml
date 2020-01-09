@@ -127,9 +127,9 @@ Variables are contained within components in order to make the models
 modular, and to enable the sharing and reuse of their different entities.
 But along with this containment functionality comes the need for the
 enclosed variables to communicate with one another across these artificial
-barriers.  This is done by creating *equivalent variable maps*, wherein a variable
-in one component is mapped through an *interface* to a corresponding variable in
-another.
+barriers.  This is done by creating *equivalent variable maps*, wherein a
+variable in one component is mapped through an *interface* to a corresponding
+variable in another.
 
 More information about how components can be nested to
 create a hierarchical *encapsulation structure* is shown in more detail in
@@ -150,14 +150,16 @@ Simulation and results
 The behaviour of the potassium channel can be simulated using the
 :ref:`simple solver<solver>` provided to run the code generated
 in :ref:`Tutorial 6<tutorial6>`.  A step change in membrane voltage between 0mV
-and -85mV and back gives the behaviour shown in ?? to ?? below.  These were
-created using a timestep of 0.01ms to an ending time of 40ms.
+and -85mV and back gives the behaviour shown in :numref:`potassium_voltage` to
+:numref:`potassium_current` below.  These were created using a timestep of
+0.01ms to an ending time of 40ms using the
+:ref:`simple ODE solver<theory_ode_solutions>`.
 
 At 0mV, the steady state value of the :math:`n`-gate is
 :math:`n_{\infty} = \frac{\alpha_{n}}{\alpha_{n} + \beta_{n}} =` 0.324
 and, at -85mV, :math:`n_{\infty} = \ `\ 0.945.
 
-The voltage traces are shown in :numref:`_potassium_voltage`.
+The voltage traces are shown in :numref:`potassium_voltage`.
 The :math:`n`-gate response in :numref:`potassium_ngate`
 shows it opening beyond its initial partially open value
 of :math:`n =`\ 0.324 at 0mV, to plateau at an almost fully open
@@ -181,7 +183,6 @@ outward (positive) current flow through the partially open channel.  Current
 can only flowswhen there is a non-zero conductance and a non-zero voltage
 gradient. This is called the ‘tail current’.
 
-.. _potassium_voltage:
 .. figure:: images/tutorial6_voltage.png
     :name: potassium_voltage
     :alt: Membrane voltage clamp function
@@ -189,8 +190,6 @@ gradient. This is called the ‘tail current’.
 
     Membrane voltage clamp step from 0mv to -85mV and back.
 
-
-.. _potassium_ngate:
 .. figure:: images/tutorial6_ngate.png
     :name: potassium_ngate
     :alt: N-gate response
@@ -198,8 +197,6 @@ gradient. This is called the ‘tail current’.
 
     First-order response of the n-gate to the voltage change.
 
-
-.. _potassium_conductance:
 .. figure:: images/tutorial6_K_conductance.png
     :name: potassium_conductance
     :alt: Condunctance dynamics of potassium channel
@@ -207,8 +204,6 @@ gradient. This is called the ‘tail current’.
 
     Potassium channel conductance dynamics
 
-
-.. _potassium_current:
 .. figure:: images/tutorial6_current.png
     :name: potassium_current
     :alt: Potassium channel current

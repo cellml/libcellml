@@ -23,12 +23,12 @@ orders (like acceleration) or more than one variable of influence or interest
 
 For example:
 
-- a simple first order system, :math:`\frac{dy}{dt}=f(y,t)` representing the effects
-  of speed-dependent drag forces on the motion of an object,
+- a simple first order system, :math:`\frac{dy}{dt}=f(y,t)` representing the
+  effects of speed-dependent drag forces on the motion of an object,
 - a higher-order system, :math:`\frac{d^2y}{dt^2} = f(\frac {dy}{dt}, y, t)`
   representing a spring-mass-damper system like that in shock absorbers,
-- a multi-variable system, :math:`\frac{dy_1}{dt} = f(y_1, y_2, t)` representing
-  population dynamics between predator and prey species over time.
+- a multi-variable system, :math:`\frac{dy_1}{dt} = f(y_1, y_2, t)`
+  representing population dynamics between predator and prey species over time.
 
 For each variable we need to know:
 
@@ -139,11 +139,12 @@ the :code:`Component` as:
   - *variables* do not require integration, but come in three types:
 
     - :code:`CONSTANT` variables do not need any kind of calculation
-    - :code:`COMPUTED_CONSTANT` variables need calculation but not integration, and
+    - :code:`COMPUTED_CONSTANT` variables need calculation but not integration,
+      and
     - :code:`ALGEBRAIC` variables need ...?? **TODO**
 
-  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>`
-    tags in the MathML.  These must not be initialised.
+  - *VOI* variables are the base "variables of integration", specified by the
+    :code:`<bvar>` tags in the MathML.  These must not be initialised.
   - *states* are those variables which do need integration by a solver.
 
 We can see this results of this classification process in the generated code
@@ -275,6 +276,7 @@ is done by calling the :code:`computeRates` (in C) or :code:`compute_rates`
 
 
 .. _solving_the_model:
+
 Solving the model
 =================
 A simple numerical integration method like :euler_method:`Euler's method <>`
