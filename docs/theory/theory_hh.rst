@@ -29,50 +29,50 @@ cable. It is derived as follows:
    Current flow in a leaky cable.
 
 If the voltage is raised at the left hand end of the cable (shown by the
-deep red in :numref:`ocr_tut_cur_flow_leaky`), a current :math:`i_{a}` (in A)
-will flow.  This current depends on the voltage gradient according to Ohm's
-Law, such that:
+deep red in :numref:`ocr_tut_cur_flow_leaky`), an axial current :math:`i_a`
+(in :math:`A`) will flow.  This current depends on the voltage gradient
+according to Ohm's Law, such that:
 
 .. math::
 
-  - \frac{\partial V}{\partial x} = r_{a}i_{a}
+  - \frac{\partial V}{\partial x} = r_a i_a
 
 where :math:`\frac{\partial V}{\partial x}` is the voltage gradient along the
-cable (in V.m :superscript:`-1`), and :math:`r_{a}` is the resistance (in
-:math:`\Omega`.m :sup:`-1`).
+cable (in :math:`V.m^{-1}`), and :math:`r_a` is the resistance (in
+:math:`\Omega.m^{-1}`).
 
-If the cable leaks a current of :math:`i_{m}` (A.m :sup:`-1`) per unit length
-of cable, then conservation of current gives:
+If the cable membrane leaks a current of :math:`i_m` (A.m :sup:`-1`) per unit
+length, then conservation of current gives:
 
 .. math::
 
-  \frac{\partial i_{a}}{\partial x} = i_{m}
+  \frac{\partial i_a}{\partial x} = i_m
 
-and, substituting for :math:`i_{a}` we get:
+and, substituting for :math:`i_a` we get:
 
 .. math::
 
   \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m}
 
-There are two sources of membrane leakage current, :math:`i_{m}`.
-First, the capacitance associated with the membrane, :math:`C_{m}`
-(:math:`\approx 1\mu F/cm^2`) give a current of
+There are two sources of membrane leakage current, :math:`i_m`.
+First, the capacitance associated with the membrane, :math:`C_m`
+(approximately 1 :math:`\mu F/cm^2`) results in a current of
 :math:`C_{m}\frac{\partial V}{\partial t}`, and secondly the
-holes or channels in the membrane give :math:`i_{\text{leak}}`. Inserting
-these into the RHS gives
+holes or channels in the membrane give :math:`i_{leak}`. Inserting
+these into the RHS gives:
 
 .. math::
 
-   \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m} = C_{m}\frac{\partial V}{\partial t} + i_{\text{leak}}
+   \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m} = C_{m}\frac{\partial V}{\partial t} + i_{leak}
 
-Rearranging gives the *cable equation* (for constant :math:`r_{a}`):
+Rearranging gives the *cable equation* (for constant :math:`r_a`):
 
 .. math::
 
-   C_{m}\frac{\partial V}{\partial t} = - \frac{1}{r_{a}}\frac{\partial^{2}V}{\partial x^{2}} - i_{\text{leak}}
+   C_{m}\frac{\partial V}{\partial t} = - \frac{1}{r_a}\frac{\partial^2 V}{\partial x^2} - i_{leak}
 
 where all terms represent *current density* (current per membrane area)
-and have units of :math:`\mu A/\text{cm}^{2}`.
+and have units of :math:`\mu A/cm^2`.
 
 -----------------
 Action potentials
