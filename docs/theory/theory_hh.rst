@@ -26,7 +26,9 @@ cable. It is derived as follows:
    :align: right
    :figwidth: 6.5cm
 
-   Current flow in a leaky cable.
+   Current flow in a leaky cable.  **TODO** I don't understand the vertical arrow??
+
+
 
 If the voltage is raised at the left hand end of the cable (shown by the
 deep red in :numref:`ocr_tut_cur_flow_leaky`), an axial current :math:`i_a`
@@ -38,10 +40,10 @@ according to Ohm's Law, such that:
   - \frac{\partial V}{\partial x} = r_a i_a
 
 where :math:`\frac{\partial V}{\partial x}` is the voltage gradient along the
-cable (in :math:`V.m^{-1}`), and :math:`r_a` is the resistance (in
-:math:`\Omega.m^{-1}`).
+cable (in :math:`V/m`), and :math:`r_a` is the resistance (in
+:math:`\Omega/m`).
 
-If the cable membrane leaks a current of :math:`i_m` (A.m :sup:`-1`) per unit
+If the cable membrane leaks a current of :math:`i_m` (:math:`A/m`) per unit
 length, then conservation of current gives:
 
 .. math::
@@ -52,20 +54,20 @@ and, substituting for :math:`i_a` we get:
 
 .. math::
 
-  \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m}
+  \frac{\partial}{\partial x}\left( - \frac{1}{r_a}\frac{\partial V}{\partial x} \right) = i_m
 
 There are two sources of membrane leakage current, :math:`i_m`.
 First, the capacitance associated with the membrane, :math:`C_m`
 (approximately 1 :math:`\mu F/cm^2`) results in a current of
-:math:`C_{m}\frac{\partial V}{\partial t}`, and secondly the
-holes or channels in the membrane give :math:`i_{leak}`. Inserting
-these into the RHS gives:
+:math:`C_m\frac{\partial V}{\partial t}`, and secondly the
+holes or channels in the membrane give :math:`i_{leak}`. Incorporating these
+into the equation above gives:
 
 .. math::
 
-   \frac{\partial}{\partial x}\left( - \frac{1}{r_{a}}\frac{\partial V}{\partial x} \right) = i_{m} = C_{m}\frac{\partial V}{\partial t} + i_{leak}
+   \frac{\partial}{\partial x}\left( - \frac{1}{r_a}\frac{\partial V}{\partial x} \right) = i_m = C_m\frac{\partial V}{\partial t} + i_{leak}
 
-Rearranging gives the *cable equation* (for constant :math:`r_a`):
+Rearranging gives the **cable equation** (for constant :math:`r_a`):
 
 .. math::
 
@@ -84,23 +86,24 @@ Action potentials
    :align: right
    :figwidth: 6.5cm
 
-   Current flow in a neuron.
+   Current flow in a neuron.  **TODO** I don't
+   understand the vertical arrow??
 
-The cable equation can be used to model the propagation of an action
-potential along a neuron or any other excitable cell. The ‘leak’ current
+The cable equation above can be used to model the propagation of an action
+potential along a neuron or any other excitable cell. The leak current
 is associated primarily with the inward movement of sodium ions through
-the membrane ‘sodium channel’, giving the **inward** membrane current
-:math:`i_{\text{Na}}`, and the outward movement of potassium ions
-through a membrane ‘potassium channel’, giving the **outward** current
-:math:`i_{K}` (see :numref:`ocr_tut_cur_flow_neuron`). A further small leak current
-:math:`i_{L} = g_{L}\left( V - E_{L} \right)` associated with chloride
-and other ions is also included.
+the membrane's sodium channel, giving the *inward* membrane current
+:math:`i_{Na}`, and the outward movement of potassium ions
+through a membrane potassium channel, giving the *outward* current
+:math:`i_{K}` (see :numref:`ocr_tut_cur_flow_neuron`). A further small leak
+current :math:`i_L = g_L\left( V - E_L \right)` associated with chloride
+and other ions is also included.  **TODO** Need to define E_L and g_L ??
+How is i_L related to i_leak above??
 
 .. figure:: images/current_voltage_trajectory.png
    :name: ocr_tut_cur_volt_traj
    :alt: Current-voltage trajectory
    :align: center
-   :figwidth: 8.5cm
 
    Current-voltage trajectory during an action potential.
 
@@ -111,22 +114,20 @@ decline of the Na channel conductance and the increasing K channel
 conductance as the voltage drops rapidly repolarises the membrane to its
 resting potential of -85mV (see :numref:`ocr_tut_cur_volt_traj`).
 
-We can neglect\ [#]_ the term
-(:math:`- \frac{1}{r_{a}}\frac{\partial^{2}V}{\partial x^{2}}`) (the
-rate of change of axial current along the cable) for the present models
-since we assume the whole cell is clamped with an axially uniform
-potential. We can therefore obtain the membrane potential :math:`V` by
-integrating the first order ODE
+
+If we assume that the whole cell is clamped with an axially-uniform potential
+then we can neglect\ [#]_ the rate of change of axial current along the cable
+(:math:`- \frac{1}{r_{a}}\frac{\partial^{2}V}{\partial x^{2}}`). We can
+then obtain the membrane potential :math:`V` by integrating the first order ODE:
 
 .. math::
 
-   \frac{\text{dV}}{\text{dt}} = - \left( i_{\text{Na}} + \ i_{K} + i_{L} \right)/C_{m}.
+   \frac{dV}{dt} = \frac{- \left( i_{Na} + \ i_K + i_L \right)}{C_m}
 
 .. figure:: images/hodgkin_1952.png
    :name: ocr_tut_hh_1952
    :alt: CellML schematic HH model
    :align: center
-   :figwidth: 18cm
 
    A schematic cell diagram describing the current flows
    across the cell bilipid membrane that are captured in the Hodgkin-Huxley
