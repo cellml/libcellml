@@ -10,10 +10,10 @@ mathematical systems modelling.
 .. toctree::
    :maxdepth: 2
 
-   theory_hh
    theory_iongates
    theory_potassiumchannel
    theory_sodiumchannel
+   theory_hh
 
 .. toctree::
     :maxdepth: 2
