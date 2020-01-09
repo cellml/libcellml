@@ -48,7 +48,7 @@ TEST(ModelFlattening, modelWithUnresolvedImports)
     const std::string modelImportingUnits =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"importer_of_units\">\n"
-        "  <import xlink:href=\"unitsdefinitions.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"unitsdefinitions.xml\">\n"
         "    <units units_ref=\"ms\" name=\"my_ms\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -79,7 +79,7 @@ TEST(ModelFlattening, importedUnits)
     const std::string modelImportingUnits =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model name=\"importer_of_units\" xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"unitsdefinitions.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"unitsdefinitions.xml\">\n"
         "    <units units_ref=\"ms\" name=\"my_ms\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -130,7 +130,8 @@ TEST(ModelFlattening, importedComponent)
         "      <apply id=\"actual_sin\">\n"
         "        <eq/>\n"
         "        <ci>sin</ci>\n"
-        "        <apply><sin/>\n"
+        "        <apply>\n"
+        "          <sin/>\n"
         "          <ci>x</ci>\n"
         "        </apply>\n"
         "      </apply>\n"
@@ -163,7 +164,8 @@ TEST(ModelFlattening, importedComponent)
         "      <apply id=\"actual_sin\">\n"
         "        <eq/>\n"
         "        <ci>sin</ci>\n"
-        "        <apply><sin/>\n"
+        "        <apply>\n"
+        "          <sin/>\n"
         "          <ci>x</ci>\n"
         "        </apply>\n"
         "      </apply>\n"
