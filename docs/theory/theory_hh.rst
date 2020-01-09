@@ -95,7 +95,7 @@ is associated primarily with the inward movement of sodium ions through
 the membrane's sodium channel, giving the *inward* membrane current
 :math:`i_{Na}`, and the outward movement of potassium ions
 through a membrane potassium channel, giving the *outward* current
-:math:`i_{K}` (see :numref:`ocr_tut_cur_flow_neuron`). A further small leak
+:math:`i_K` (see :numref:`ocr_tut_cur_flow_neuron`). A further small leak
 current :math:`i_L = g_L\left( V - E_L \right)` associated with chloride
 and other ions is also included.  **TODO** Need to define E_L and g_L ??
 How is i_L related to i_leak above??
@@ -108,7 +108,8 @@ How is i_L related to i_leak above??
    Current-voltage trajectory during an action potential.
 
 When the membrane potential :math:`V` rises due to axial current flow,
-the Na channels open and the K channels close, such that the membrane
+the sodium (:math:`Na^+`) channels open and the potassium (:math:`K^+`)
+channels close, such that the membrane
 potential moves towards the Nernst potential for sodium. The subsequent
 decline of the Na channel conductance and the increasing K channel
 conductance as the voltage drops rapidly repolarises the membrane to its
@@ -116,8 +117,9 @@ resting potential of -85mV (see :numref:`ocr_tut_cur_volt_traj`).
 
 
 If we assume that the whole cell is clamped with an axially-uniform potential
-then we can neglect\ [#]_ the rate of change of axial current along the cable
-(:math:`- \frac{1}{r_{a}}\frac{\partial^{2}V}{\partial x^{2}}`). We can
+then we can neglect\ [#]_ the term in the equation above representing the
+rate of change of axial current along the cable
+(:math:`- \frac{1}{r_a}\frac{\partial^{2}V}{\partial x^2}`). We can
 then obtain the membrane potential :math:`V` by integrating the first order ODE:
 
 .. math::
@@ -135,6 +137,10 @@ then obtain the membrane potential :math:`V` by integrating the first order ODE:
    potassium (K\ :sup:`+`) channel, and a leakage (L) channel (for chloride
    and other ions) through which the currents I\ :sub:`Na`, I\ :sub:`K` and
    I\ :sub:`L` flow, respectively.
+
+
+TODO - rewrite from here onwards ...
+
 
 We use this example to demonstrate the importing feature of CellML.
 CellML *imports* are used to bring a previously defined CellML model of
