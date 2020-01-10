@@ -63,7 +63,7 @@ TEST(Variable, hasNoEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
-    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
 
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -73,21 +73,23 @@ TEST(Variable, hasNoEquivalentVariable)
     c->addVariable(v2);
 
     m->addComponent(c);
-    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
 
     c->removeVariable(v2);
-    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2, true));
 
     v2.reset();
-    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2, true));
 }
 
-TEST(Variable, hasEquivalentVariable)
+TEST(Variable, hasIndirectEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
+    libcellml::Variable::addEquivalence(v2, v3);
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 }
 
 TEST(Connection, componentlessVariableInvalidConnection)
@@ -1048,11 +1050,11 @@ TEST(Connection, importedComponentConnectionAndParse)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
         "  <component name=\"component_bob\">\n"
-        "    <variable name=\"variable_bob\" units=\"seconds\"/>\n"
+        "    <variable name=\"variable_bob\" units=\"second\"/>\n"
         "  </component>\n"
         "  <connection component_1=\"component_in_this_model\" component_2=\"component_bob\">\n"
         "    <map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>\n"
@@ -1072,7 +1074,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     componentBob->setName("component_bob");
     variableImported->setName("variable_import");
     variableBob->setName("variable_bob");
-    variableBob->setUnits("seconds");
+    variableBob->setUnits("second");
 
     m->addComponent(componentImported);
     m->addComponent(componentBob);

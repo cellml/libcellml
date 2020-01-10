@@ -22,6 +22,17 @@ limitations under the License.
 
 #include "test_utils.h"
 
+TEST(Printer, printNullptrModel)
+{
+    const std::string e;
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+
+    const std::string a = p->printModel(nullptr);
+
+    EXPECT_EQ(e, a);
+}
+
 TEST(Printer, printEmptyModel)
 {
     const std::string e =
@@ -167,13 +178,13 @@ TEST(Printer, printModelWithImports)
     const std::string e_model =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"sin_approximations_import\" id=\"sin_approximations_import\">\n"
-        "  <import xlink:href=\"sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"sin.xml\">\n"
         "    <component component_ref=\"sin\" name=\"actual_sin\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"deriv_approx_sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"deriv_approx_sin.xml\">\n"
         "    <component component_ref=\"sin\" name=\"deriv_approx_sin\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"parabolic_approx_sin.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"parabolic_approx_sin.xml\">\n"
         "    <component component_ref=\"sin\" name=\"parabolic_approx_sin\"/>\n"
         "  </import>\n"
         "  <component name=\"main\" id=\"main\">\n"
@@ -214,4 +225,13 @@ TEST(Printer, printModelWithImports)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a_model = printer->printModel(model);
     EXPECT_EQ(e_model, a_model);
+}
+
+TEST(Printer, printModelWithTabs)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("printer/tabulated_model.cellml"));
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+
+    EXPECT_EQ(fileContents("printer/spaced_model.cellml"), printer->printModel(model));
 }

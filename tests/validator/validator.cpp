@@ -592,7 +592,13 @@ TEST(Validator, invalidMathMLVariables)
 TEST(Validator, invalidSimpleMathmlCellMLUnits)
 {
     const std::string math =
-        "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply><bvar><ci cellml:units=\"dimensionless\">B</ci></bvar></apply></math>";
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\""
+        "    <bvar>\n"
+        "      <ci cellml:units=\"dimensionless\">B</ci>\n"
+        "    </bvar>\n"
+        "  </apply>\n"
+        "</math>";
     const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
@@ -600,6 +606,7 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
         "Component does not have a valid name attribute.",
         "MathML ci element has the child text 'B' which does not correspond with any variable names present in component ''.",
         "W3C MathML DTD error: No declaration for attribute units of element ci.",
+        "W3C MathML DTD error: Element apply content does not follow the DTD, expecting (csymbol | ci | cn | apply | reln | lambda | condition | declare | sep | semantics | annotation | annotation-xml | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | interval | list | matrix | matrixrow | set | vector | piecewise | lowlimit | uplimit | bvar | degree | logbase | momentabout | domainofapplication | inverse | ident | domain | codomain | image | abs | conjugate | exp | factorial | arg | real | imaginary | floor | ceiling | not | ln | sin | cos | tan | sec | csc | cot | sinh | cosh | tanh | sech | csch | coth | arcsin | arccos | arctan | arccosh | arccot | arccoth | arccsc | arccsch | arcsec | arcsech | arcsinh | arctanh | determinant | transpose | card | quotient | divide | power | rem | implies | vectorproduct | scalarproduct | outerproduct | setdiff | fn | compose | plus | times | max | min | gcd | lcm | and | or | xor | union | intersect | cartesianproduct | mean | sdev | variance | median | mode | selector | root | minus | log | int | diff | partialdiff | divergence | grad | curl | laplacian | sum | product | limit | moment | exists | forall | neq | factorof | in | notin | notsubset | notprsubset | tendsto | eq | leq | lt | geq | gt | equivalent | approx | subset | prsubset | mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction)*, got (CDATA bvar ).",
     };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -794,13 +801,43 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-TEST(Validator, validateInvalidConnections)
+TEST(Validator, validateInvalidConnectionsVariableWithoutParentComponent)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
-        "Variable 'variable2' has an equivalent variable 'variable1_2' which does not reciprocally have 'variable2' set as an equivalent variable.",
+        "Variable 'variable2' is an equivalent variable to 'variable1' but 'variable2' has no parent component.",
     };
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
 
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    comp2->removeVariable(v2);
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    v->validateModel(m);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, validateInvalidConnectionsDanglingReciprocalEquivalence)
+{
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr comp1 = libcellml::Component::create();
@@ -847,13 +884,12 @@ TEST(Validator, validateInvalidConnections)
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::addEquivalence(v2, v3);
     libcellml::Variable::addEquivalence(v1_1, v3);
-    // Make v4 a variable without a parent component.
-    comp4->removeVariable(v4);
-    // Remove all connections on v1_2, leaving dangling reciprocal connections.
+
+    // Remove all connections on v1_2, leaving no dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
     v->validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ(size_t(0), v->errorCount());
 }
 
 TEST(Validator, integerStrings)
@@ -1672,7 +1708,8 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3."};
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();

@@ -144,8 +144,8 @@ TEST(GeneratorProfile, defaultConstantValues)
     EXPECT_EQ("0.0", generatorProfile->falseString());
     EXPECT_EQ(convertToString(exp(1.0)), generatorProfile->eString());
     EXPECT_EQ(convertToString(M_PI), generatorProfile->piString());
-    EXPECT_EQ("1.0/0.0", generatorProfile->infString());
-    EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
+    EXPECT_EQ("INFINITY", generatorProfile->infString());
+    EXPECT_EQ("NAN", generatorProfile->nanString());
 }
 
 TEST(GeneratorProfile, defaultArithmeticFunctionValues)

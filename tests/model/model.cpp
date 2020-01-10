@@ -393,7 +393,7 @@ TEST(Model, replaceComponent)
     const std::string e_post =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"child4\"/>\n"
+        "  <component name=\"child5\"/>\n"
         "  <component name=\"child3\"/>\n"
         "</model>\n";
 
@@ -402,10 +402,12 @@ TEST(Model, replaceComponent)
     libcellml::ComponentPtr c2 = libcellml::Component::create();
     libcellml::ComponentPtr c3 = libcellml::Component::create();
     libcellml::ComponentPtr c4 = libcellml::Component::create();
+    libcellml::ComponentPtr c5 = libcellml::Component::create();
     c1->setName("child1");
     c2->setName("child2");
     c3->setName("child3");
     c4->setName("child4");
+    c5->setName("child5");
     m->addComponent(c1);
     m->addComponent(c2);
 
@@ -418,6 +420,7 @@ TEST(Model, replaceComponent)
 
     // Replace existing component.
     EXPECT_TRUE(m->replaceComponent(1, c3));
+    EXPECT_EQ(m, c3->parent());
 
     a = printer->printModel(m);
     EXPECT_EQ(e_after, a);
@@ -425,8 +428,13 @@ TEST(Model, replaceComponent)
     // Nothing happens when trying to replace a component that doesn't match
     // the given name.
     EXPECT_FALSE(m->replaceComponent("child5", c4));
+    EXPECT_EQ(nullptr, c4->parent());
 
     EXPECT_TRUE(m->replaceComponent("child1", c4));
+    EXPECT_EQ(m, c4->parent());
+
+    EXPECT_TRUE(m->replaceComponent(c4, c5));
+    EXPECT_EQ(m, c5->parent());
 
     a = printer->printModel(m);
     EXPECT_EQ(e_post, a);
@@ -474,10 +482,10 @@ TEST(Model, setAndCheckIdsAllEntities)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
         "  </import>\n"
         "  <units name=\"u2name\" id=\"u2id\"/>\n"
