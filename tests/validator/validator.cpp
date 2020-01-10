@@ -2298,7 +2298,7 @@ TEST(Validator, unfoundUnitsInParsedModel)
     auto model = parser->parseModel(in);
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount()); // <<< this is fine!
+    EXPECT_EQ(size_t(0), validator->errorCount());
 
     // Add a component to represent the voltage dependency of the n-gate
     auto nGate = libcellml::Component::create("nGate");
@@ -2309,5 +2309,5 @@ TEST(Validator, unfoundUnitsInParsedModel)
     t2->setUnits("millisecond");
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount()); // <<< test fails!
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
