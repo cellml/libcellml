@@ -99,14 +99,13 @@ TEST(Parser, makeError)
 
 TEST(Parser, emptyModelString)
 {
-    const std::string ex;
+    const std::string e;
     const std::vector<std::string> expectedErrors = {
-        "LibXml2 error: Document is empty.",
-        "Could not get a valid XML root node from the provided input.",
+        "Model is empty.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(e);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
@@ -1108,7 +1107,7 @@ TEST(Parser, importedComponent2Connection)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
         "  <component name=\"component_bob\">\n"
@@ -1293,7 +1292,7 @@ TEST(Parser, invalidImportsAndGetError)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" sauce=\"hollandaise\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" sauce=\"hollandaise\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "    <invalid_nonsense/>\n"
@@ -1308,10 +1307,10 @@ TEST(Parser, invalidImportsAndGetError)
     const std::string output =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -1447,7 +1446,7 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\">\n"
         "  episode7\n"
-        "  <import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"sith.xml\">\n"
         "    kylo\n"
         "  </import>\n"
         "  <units name=\"robot\">\n"
@@ -1508,10 +1507,10 @@ TEST(Parser, parseIds)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>\n"
         "  </import>\n"
         "  <units name=\"units2\" id=\"u2id\"/>\n"
@@ -1541,16 +1540,17 @@ TEST(Parser, parseIdsOnEverythingButMath)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"mid\">\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>\n"
         "  </import>\n"
-        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>\n"
         "  </import>\n"
         "  <units name=\"units2\" id=\"u2id\">\n"
         "    <unit units=\"second\" id=\"unit1id\"/>\n"
         "  </units>\n"
         "  <units name=\"units3\" id=\"u3id\"/>\n"
+        "  <units name=\"blob\"/>\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
         "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
         "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
@@ -1990,6 +1990,7 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <units name=\"blob\"/>\n"
         "  <component name=\"component\">\n"
         "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
         "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"

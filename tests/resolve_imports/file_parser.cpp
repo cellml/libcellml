@@ -92,3 +92,29 @@ TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
     model->resolveImports(resourcePath());
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
+
+TEST(ResolveImports, componentNotInResolvingModel)
+{
+    const std::string modelImportingComponent =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" name=\"sin_approximations_import\" id=\"sin_approximations_import\">\n"
+        "  <import xlink:href=\"level0.xml\">\n"
+        "    <component name=\"real_component\" component_ref=\"this_name_not_a_component_in_level0_model\"/>\n"
+        "  </import>\n"
+        "  <component name=\"main\" id=\"main\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"main\">\n"
+        "      <component_ref component=\"real_component\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(modelImportingComponent);
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+}

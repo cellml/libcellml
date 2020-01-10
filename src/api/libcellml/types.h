@@ -42,6 +42,7 @@ using ValidatorPtr = std::shared_ptr<Validator>; /**< Type definition for shared
 class Component; /**< Forward declaration of Component class. */
 using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
+using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
 class Entity; /**< Forward declaration of Entity class. */
 using EntityPtr = std::shared_ptr<Entity>; /**< Type definition for shared entity pointer. */

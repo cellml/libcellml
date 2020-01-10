@@ -345,6 +345,173 @@ TEST(Units, replaceUnits)
     EXPECT_TRUE(m->replaceUnits(u2, u1));
 }
 
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToVariableButNotModel)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    v1->setUnits(u1);
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToBothModelAndVariable)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    v1->setUnits(u1);
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+    m->addUnits(u1);
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelBeforeNameUsedForVariableUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    // Adding units to model before adding to a variable
+    // means the units are linked.
+    m->addUnits(u1);
+    v1->setUnits("a_unit");
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelAfterNameUsedForVariableUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    // Adding units to model after adding to a variable
+    // means the units are not linked.
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenNonBaseUnitsAddedToModelAfterNameUsedForVariableUnits)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u1->addUnit("second");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    // Adding units to model after adding to a variable
+    // means the units are not linked.
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsLayeredComponentsWithVariables)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u1->addUnit("second");
+
+    v2->setUnits(u1);
+    v3->setUnits(u1);
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    c3->addVariable(v4);
+
+    c2->addComponent(c3);
+    c1->addComponent(c2);
+    m->addComponent(c1);
+
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+    v4->setUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsSiblingComponentsWithVariables)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u1->addUnit("second");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+    c3->addVariable(v4);
+
+    c1->addComponent(c2);
+    c1->addComponent(c3);
+    m->addComponent(c1);
+
+    v4->setUnits("a_unit");
+
+    m->addUnits(u1);
+    v1->setUnits("a_unit");
+    v2->setUnits(u1);
+    v3->setUnits(u1);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
@@ -612,11 +779,12 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     u->setName("myUnits");
     u->addUnit("second", "18446744073709551616");
-
     v->setUnits(u);
     c->addVariable(v);
     m->addComponent(c);
     m->addUnits(u);
+
+    EXPECT_FALSE(m->hasUnlinkedUnits());
 
     validator->validateModel(m);
 
@@ -1470,4 +1638,240 @@ TEST(Units, compareEquivalentSameSizeButDifferentExponent)
 
     EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
     EXPECT_FALSE(libcellml::Units::equivalent(u2, u1));
+}
+
+TEST(Units, compareEquivalentUnitsWhichAreDimensionless)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians, etc.
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("testunit5");
+    u1->addUnit("metre", -2.0);
+    u1->addUnit("metre", 2.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("testunit6");
+    u2->addUnit("dimensionless");
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("testunit7");
+    u3->addUnit("steradian");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+    EXPECT_TRUE(libcellml::Units::equivalent(u2, u3));
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u3));
+}
+
+TEST(Units, compareEquivalentUnitsWhichAreNested)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    // millimetres
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", "milli"); // standard, prefix.
+
+    // mm^3
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("u1", 3.0); // standard, exponent.
+
+    // mm^6
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("u3");
+    u3->addUnit("u2", 2.0); // standard, exponent.
+
+    // m^6
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    u4->setName("u4");
+    u4->addUnit("u3", 15, 1.0); // standard, prefix, exponent.
+
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    u5->setName("u5");
+    u5->addUnit("metre", 6.0); // standard, exponent.
+
+    model->setName("model");
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u4, u5));
+}
+
+TEST(Units, isBaseUnitsImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u");
+
+    model->addUnits(u1);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("some_u");
+
+    libcellml::ImportSourcePtr importSource = libcellml::ImportSource::create();
+    importSource->setUrl("I_am_a_url");
+    importSource->setModel(model);
+
+    u2->setImportSource(importSource);
+    u2->setImportReference("u");
+
+    EXPECT_TRUE(u2->isImport());
+    EXPECT_TRUE(u2->isBaseUnit());
+}
+
+TEST(Units, isNotBaseUnitsImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u2->setName("some_u");
+
+    model->addUnits(u1);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+    import->setModel(model);
+
+    u2->setImportSource(import);
+    u2->setImportReference("u1");
+
+    EXPECT_TRUE(u2->isImport());
+    EXPECT_FALSE(u2->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitsNoImport)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("some_u"); // Base unit
+
+    EXPECT_FALSE(u->isImport());
+    EXPECT_TRUE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitsImportModelUnresolved)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+
+    u1->setName("u1");
+    u2->setName("some_u");
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u2->setImportSource(import);
+    u2->setImportReference("u1");
+
+    EXPECT_TRUE(u2->isImport());
+    EXPECT_EQ(u2->importSource()->model(), nullptr);
+    EXPECT_FALSE(u2->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitImportReferenceUnresolved)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u");
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("some_other_u");
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    model->addUnits(u1);
+
+    u2->setImportSource(import);
+    import->setModel(model);
+
+    EXPECT_TRUE(u2->isImport());
+    EXPECT_TRUE(u2->importReference().empty());
+    EXPECT_FALSE(u2->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitImportedTwice)
+{
+    libcellml::ModelPtr m_i1 = libcellml::Model::create();
+    m_i1->setName("m_i1");
+    libcellml::ModelPtr m_i2 = libcellml::Model::create();
+    m_i2->setName("m_i2");
+
+    libcellml::UnitsPtr u_i1 = libcellml::Units::create();
+    libcellml::UnitsPtr u_i2 = libcellml::Units::create();
+    libcellml::UnitsPtr u_i0 = libcellml::Units::create();
+
+    u_i0->setName("some_other_u");
+    u_i1->setName("u_i1");
+    u_i2->setName("u_i2");
+
+    m_i1->addUnits(u_i1);
+    m_i2->addUnits(u_i2);
+
+    libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
+    i2->setUrl("I_am_a_url");
+    i2->setModel(m_i2);
+    u_i1->setImportSource(i2);
+    u_i1->setImportReference("u_i2");
+
+    libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
+    i1->setUrl("I_am_another_url");
+    i1->setModel(m_i1);
+    u_i0->setImportSource(i1);
+    u_i0->setImportReference("u_i1");
+
+    EXPECT_TRUE(u_i0->isImport());
+    EXPECT_TRUE(u_i1->isImport());
+    EXPECT_FALSE(u_i2->isImport());
+    EXPECT_TRUE(u_i0->isBaseUnit());
+}
+
+TEST(Units, isNotBaseUnitImportedTwice)
+{
+    libcellml::ModelPtr m_i1 = libcellml::Model::create();
+    m_i1->setName("m_i1");
+    libcellml::ModelPtr m_i2 = libcellml::Model::create();
+    m_i2->setName("m_i2");
+
+    libcellml::UnitsPtr u_i1 = libcellml::Units::create();
+    libcellml::UnitsPtr u_i2 = libcellml::Units::create();
+    libcellml::UnitsPtr u_i0 = libcellml::Units::create();
+
+    u_i2->setName("u_i2");
+    u_i2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 1.0, 1.0);
+    u_i1->setName("u_i1");
+    u_i0->setName("some_other_u");
+
+    m_i1->addUnits(u_i1);
+    m_i2->addUnits(u_i2);
+
+    libcellml::ImportSourcePtr i2 = libcellml::ImportSource::create();
+    i2->setUrl("I_am_a_url");
+    i2->setModel(m_i2);
+    u_i1->setImportSource(i2);
+    u_i1->setImportReference("u_i2");
+
+    libcellml::ImportSourcePtr i1 = libcellml::ImportSource::create();
+    i1->setUrl("I_am_another_url");
+    i1->setModel(m_i1);
+    u_i0->setImportSource(i1);
+    u_i0->setImportReference("u_i1");
+
+    EXPECT_TRUE(u_i0->isImport());
+    EXPECT_TRUE(u_i1->isImport());
+    EXPECT_FALSE(u_i2->isImport());
+    EXPECT_FALSE(u_i0->isBaseUnit());
 }

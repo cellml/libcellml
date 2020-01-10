@@ -353,8 +353,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mFalseString = "0.0";
         mEString = convertToString(exp(1.0));
         mPiString = convertToString(M_PI);
-        mInfString = "1.0/0.0";
-        mNanString = "sqrt(-1.0)";
+        mInfString = "INFINITY";
+        mNanString = "NAN";
 
         // Arithmetic functions.
 

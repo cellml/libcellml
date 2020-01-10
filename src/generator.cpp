@@ -743,7 +743,7 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
 
     for (const auto &internalVariable : mInternalVariables) {
         if ((variable == internalVariable->mVariable)
-            || variable->hasEquivalentVariable(internalVariable->mVariable)) {
+            || variable->hasEquivalentVariable(internalVariable->mVariable, true)) {
             return internalVariable;
         }
     }
@@ -1252,7 +1252,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                 mVoi = variable;
             }
         } else if ((variable != mVoi)
-                   && !variable->hasEquivalentVariable(mVoi)) {
+                   && !variable->hasEquivalentVariable(mVoi, true)) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
             ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
@@ -2400,7 +2400,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "2dca85c1fb39bc623ff23fce64e75d26bab6e384";
+        res = profileContentsSha1 != "88b463c76b0bd6bc2c88292b7d5f2a22ec16ab74";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
