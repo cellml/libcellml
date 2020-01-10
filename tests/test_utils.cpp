@@ -54,6 +54,7 @@ void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool 
         if (rule) {
             std::cout << ", " << static_cast<int>(l->error(i)->rule());
         }
+        std::cout << std::endl;
     }
 }
 

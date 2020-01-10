@@ -461,14 +461,19 @@
     <connection component_1="membrane" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
+    <connection component_1="leakage_current" component_2="environment">
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
     <connection component_1="sodium_channel" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
     <connection component_1="potassium_channel" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection component_1="leakage_current" component_2="environment">
-        <map_variables variable_1="time" variable_2="time"/>
+    <connection component_1="membrane" component_2="leakage_current">
+        <map_variables variable_1="V" variable_2="V"/>
+        <map_variables variable_1="E_R" variable_2="E_R"/>
+        <map_variables variable_1="i_L" variable_2="i_L"/>
     </connection>
     <connection component_1="membrane" component_2="sodium_channel">
         <map_variables variable_1="V" variable_2="V"/>
@@ -479,11 +484,6 @@
         <map_variables variable_1="V" variable_2="V"/>
         <map_variables variable_1="E_R" variable_2="E_R"/>
         <map_variables variable_1="i_K" variable_2="i_K"/>
-    </connection>
-    <connection component_1="membrane" component_2="leakage_current">
-        <map_variables variable_1="V" variable_2="V"/>
-        <map_variables variable_1="E_R" variable_2="E_R"/>
-        <map_variables variable_1="i_L" variable_2="i_L"/>
     </connection>
     <connection component_1="sodium_channel" component_2="sodium_channel_m_gate">
         <map_variables variable_1="m" variable_2="m"/>
