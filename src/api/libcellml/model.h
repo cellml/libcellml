@@ -252,6 +252,50 @@ public:
     size_t unitsCount() const;
 
     /**
+     * @brief Link the units used in this model.
+     *
+     * Traverses the model looking for @c Units attached to
+     * @c Variables that are not standard units and which are not
+     * linked to @c Units added to the model.
+     *
+     * Unlinked variable units can occur when a @c Variable's units are
+     * set by name.  If a @c Units cannot be found in the model that matches
+     * the name given to the variables setUnits() method then the units for
+     * that variable will be unlinked.  This method will link variable units
+     * specified by name to units in the model (if they are found). Any variable
+     * units that cannot be linked to units in the model are left untouched.
+     *
+     * Any @c Variables found that are not linked to model @c Units will be
+     * linked. If a Variable has units that are not attached to the model
+     * then the units will be added to the model as well.
+     */
+    void linkUnits();
+
+    /**
+     * @brief Test to determine if any variable units are not linked to model units.
+     *
+     * Traverses the model to determine if any @c Units attached to variables
+     * are not @c Units attached to the model.
+     *
+     * @return True if any @c Units attached to variables are not linked to
+     * units in the model, false otherwise.
+     */
+    bool hasUnlinkedUnits();
+
+    /**
+     * @brief Test to determine if there are any import entities.
+     *
+     * Checks the model to determine if there are any @c Units or
+     * @c Components which are imports.  Returns @c true if the
+     * model has at least one @c Units or @c Component which is an
+     * imported @c Units or @c Component.
+     *
+     * @return True if the @c Model has a @c Units or @c Component
+     * that is an import, false otherwise.
+     */
+    bool hasImports() const;
+
+    /**
      * @brief Resolve all imports in this model.
      *
      * Resolve all @c Component and @c Units imports by loading the models
@@ -269,7 +313,7 @@ public:
      *
      * @return True if the @c Model has unresolved imports and false otherwise.
      */
-    bool hasUnresolvedImports();
+    bool hasUnresolvedImports() const;
 
     /**
      * @brief Create a clone of this model.
@@ -281,6 +325,19 @@ public:
      * @return a new @c ModelPtr to the cloned model.
      */
     ModelPtr clone() const;
+
+    /**
+     * @brief Flatten this model.
+     *
+     * Instantiates all imports and removes them from this model.
+     * The result is a self-contained model requiring no external
+     * resources and having no imports.
+     *
+     * The effects of this method cannot be undone.
+     *
+     * @sa clone
+     */
+    void flatten();
 
 private:
     Model(); /**< Constructor */

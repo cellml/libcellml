@@ -166,6 +166,9 @@ bool updateUnitMultiplier(double &multiplier,
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
             if (isStandardUnitName(ref)) {
+                if (!isStandardPrefixName(pre)) {
+                    return false;
+                }
                 multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 updated = true;
             } else {
@@ -212,6 +215,18 @@ UnitsPtr Units::create(const std::string &name) noexcept
 
 bool Units::isBaseUnit() const
 {
+    if (isImport()) {
+        ImportSourcePtr importedSource = importSource();
+        if (importedSource != nullptr) {
+            ModelPtr model = importedSource->model();
+            if (model != nullptr && model->hasUnits(importReference())) {
+                auto unit = model->units(importReference());
+                return unit->isBaseUnit(); // Call isBaseUnit recursively until unit is no longer an import
+            }
+        }
+        return false;
+    }
+
     return unitCount() == 0;
 }
 
@@ -416,7 +431,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     if (units->isBaseUnit()) {
         auto found = unitsMap.find(units->name());
         if (found == unitsMap.end()) {
-            unitsMap.emplace(units->name(), 1.0);
+            unitsMap.emplace(units->name(), exp);
         } else {
             found->second += exp;
         }
@@ -426,16 +441,16 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             std::string pre;
             std::string id;
             double expMult;
-            units->unitAttributes(i, ref, pre, exp, expMult, id);
+            double uExp;
+            units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
-                auto unit = standardUnitsList.find(ref);
-                for (const auto &u : unit->second) {
-                    if (unitsMap.find(u.first) == unitsMap.end()) {
-                        unitsMap.emplace(u.first, u.second * exp);
-                    } else {
-                        auto ut = unitsMap.find(u.first);
-                        ut->second += u.second * exp;
+                auto unitsListIter = standardUnitsList.find(ref);
+                for (const auto &baseUnitsComponent : unitsListIter->second) {
+                    auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
+                    if (unitsMapIter == unitsMap.end()) {
+                        unitsMap[baseUnitsComponent.first] = 0.0;
                     }
+                    unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * uExp * exp;
                 }
             } else {
                 auto model = owningModel(units);
@@ -445,7 +460,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                         unitsMap.clear();
                         break;
                     }
-                    updateUnitsMap(refUnits, unitsMap, exp);
+                    updateUnitsMap(refUnits, unitsMap, uExp * exp);
                 }
             }
         }
@@ -456,6 +471,25 @@ UnitsMap createUnitsMap(const UnitsPtr &units)
 {
     UnitsMap unitsMap;
     updateUnitsMap(units, unitsMap);
+
+    // Checking for exponents of zero in the map, which can be removed.
+    bool requireDimensionless = false;
+    auto it = unitsMap.begin();
+    while (it != unitsMap.end()) {
+        if (it->second == 0.0) {
+            it = unitsMap.erase(it);
+            requireDimensionless = true;
+        } else if (it->first == "dimensionless") {
+            it->second = 0.0;
+            ++it;
+        } else {
+            ++it;
+        }
+    }
+    if (requireDimensionless) {
+        unitsMap.emplace(std::make_pair("dimensionless", 0.0));
+    }
+
     return unitsMap;
 }
 
@@ -480,7 +514,7 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
             if (found == units2Map.end()) {
                 return false;
             }
-            if ((found->second < units.second) || (found->second > units.second)) {
+            if (!areEqual(found->second, units.second)) {
                 return false;
             }
         }
