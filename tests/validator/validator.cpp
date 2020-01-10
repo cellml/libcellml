@@ -2305,8 +2305,8 @@ TEST(Validator, unfoundUnitsInParsedModel)
     model->addComponent(nGate);
 
     auto t2 = libcellml::Variable::create("t2");
-    t2->setUnits("millisecond");
     nGate->addVariable(t2);
+    t2->setUnits("millisecond");
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount()); // <<< test fails!
