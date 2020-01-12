@@ -313,7 +313,6 @@ GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
     , mParent(parent)
     , mLeft(ast->mLeft)
     , mRight(ast->mRight)
-    , mUnits(ast->mUnits)
 {
 }
 
@@ -1064,8 +1063,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             mGenerator->addError(err);
         }
     } else if (node->isMathmlElement("cn")) {
-        //std::string unitsName = node->firstChild()->convertToString();
-        //UnitsPtr variable = component->units(variableName);
 
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
@@ -1088,9 +1085,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ModelPtr model = owningModel(component);
             ast->mUnits = model->units(unitName);
         }
-
-        //std::string unitsName = node->firstChild()->convertToString();
-        //if (node->properties)
 
         // Qualifier elements.
 
@@ -1326,11 +1320,7 @@ bool isDirectComparisonOperator(const GeneratorEquationAstPtr &ast)
            || (type == libcellml::GeneratorEquationAst::Type::LT)
            || (type == libcellml::GeneratorEquationAst::Type::GT)
            || (type == libcellml::GeneratorEquationAst::Type::MIN)
-           || (type == libcellml::GeneratorEquationAst::Type::MAX)
-           || (type == libcellml::GeneratorEquationAst::Type::ABS)
-           || (type == libcellml::GeneratorEquationAst::Type::CEILING)
-           || (type == libcellml::GeneratorEquationAst::Type::FLOOR)
-           || (type == libcellml::GeneratorEquationAst::Type::REM);
+           || (type == libcellml::GeneratorEquationAst::Type::MAX);
 }
 
 bool isMultiplicativeOperator(const GeneratorEquationAstPtr &ast)
