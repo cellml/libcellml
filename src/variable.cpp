@@ -55,7 +55,7 @@ struct Variable::VariableImpl
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
-    UnitsPtr mUnits = nullptr; /**< The units defined for this Variable.*/
+    UnitsPtr mUnits = nullptr; /**< The Units defined for this Variable.*/
 
     /**
      * @brief Clean expired equivalent variables.
@@ -419,7 +419,7 @@ void Variable::setUnits(const std::string &name)
         u = model->units(name);
     } else {
         u = Units::create();
-        u->setName(name);
+        u->setName(name); // KRM These units are created but they're parentless and can duplicate built-in ones
     }
     mPimpl->mUnits = u;
 }

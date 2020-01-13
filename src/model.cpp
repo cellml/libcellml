@@ -48,6 +48,7 @@ struct Model::ModelImpl
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
+    std::vector<UnitsPtr>::iterator findExactUnits(const UnitsPtr &units);
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -57,6 +58,13 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 }
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
+{
+    return findUnits(units->name()); // KRM now search only by name
+    // return std::find_if(mUnits.begin(), mUnits.end(),
+    //                      [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
+}
+
+std::vector<UnitsPtr>::iterator Model::ModelImpl::findExactUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
@@ -150,12 +158,20 @@ void Model::removeAllUnits()
 
 bool Model::hasUnits(const std::string &name) const
 {
+    // KRM only tests by name
     return mPimpl->findUnits(name) != mPimpl->mUnits.end();
 }
 
 bool Model::hasUnits(const UnitsPtr &units) const
 {
-    return mPimpl->findUnits(units) != mPimpl->mUnits.end();
+    // KRM Only tests for name
+    return mPimpl->findUnits(units->name()) != mPimpl->mUnits.end();
+}
+
+bool Model::hasExactUnits(const UnitsPtr &units) const
+{
+    // KRM Includes test for dimensional consistency as well as name
+    return mPimpl->findExactUnits(units) != mPimpl->mUnits.end();
 }
 
 UnitsPtr Model::units(size_t index) const
@@ -732,9 +748,10 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
 
         // Copy over units used in imported component to this model.
         for (const auto &u : requiredUnits) {
-            if (!model->hasUnits(u)) {
+            if (!model->hasExactUnits(u)) { // KRM changed from hasUnits
                 size_t count = 0;
-                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
+                //  KRM changed from hasUnits
+                while (!model->hasExactUnits(u) && model->hasUnits(u->name())) {
                     auto name = u->name();
                     name += "_" + convertToString(++count);
                     u->setName(name);
