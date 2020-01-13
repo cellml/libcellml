@@ -119,7 +119,7 @@ resting potential of -85mV (see :numref:`ocr_tut_cur_volt_traj`).
 If we assume that the whole cell is clamped with an axially-uniform potential
 then we can neglect\ [#]_ the term in the equation above representing the
 rate of change of axial current along the cable
-(:math:`- \frac{1}{r_a}\frac{\partial^{2}V}{\partial x^2}`). We can
+(:math:`- \frac{1}{r_a}\frac{\partial^{2}V}{\partial x^2}`). We
 then obtain the membrane potential :math:`V` by integrating the first order ODE:
 
 .. math::
@@ -138,32 +138,15 @@ then obtain the membrane potential :math:`V` by integrating the first order ODE:
    and other ions) through which the currents I\ :sub:`Na`, I\ :sub:`K` and
    I\ :sub:`L` flow, respectively.
 
-
-TODO - rewrite from here onwards ...
-
-
-We use this example to demonstrate the importing feature of CellML.
-CellML *imports* are used to bring a previously defined CellML model of
-a component into the new model (in this case the Na and K channel
-components defined in the previous two sections, together with a leakage
-ion channel model specified below). Note that importing a component
-brings the children components with it along with their connections and
-units, but it does not bring the siblings of that component with it.
-
-To establish a CellML model of the HH equations we first lay out the
-model components with their public and private interfaces (:numref:`ocr_tut_over_str_hh`).
-
-.. figure:: images/overall_structure_hh.png
-   :name: ocr_tut_over_str_hh
-   :alt: Overall sturcture of HH CellML model
-   :align: center
-   :figwidth: 18cm
-
-   Overall structure of the HH CellML model showing the
-   encapsulation hierarchy (:purple:`purple`), the CellML model imports
-   (:blue:`blue`) and the other key parts (:red:`units`, :green:`components`, and :orange:`mappings`) of the top level CellML model.
+TODO How are the i_L and I_L in the figure related?  Consistent labelling needed?
 
 
+:ref:`Tutorial 8<tutorial8>` outlines how smaller models can be used to construct
+a more complicated model.  In this instance, the models described earlier
+representing a :ref:`potassium channel<theory_potassiumchannel>` and a
+:ref:`sodium channel<theory_sodiumchannel>`, as well as one to represent
+the leakage concept introduced above can be combined to make the full
+Hodgkin-Huxley model.
 
 
 
