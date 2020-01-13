@@ -1311,20 +1311,22 @@ TEST(Generator, coverage)
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode());
 }
 
+/*
 TEST(Generator, validateMathDimensionallyEquivalentUnits)
 {
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
+    std::string mathFooter = "</math>";
+    
     const std::string math =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "<apply>\n"
+        "  <eq/>\n"
+        "  <ci>C</ci>\n"
         "  <apply>\n"
-        "    <eq/>\n"
-        "    <ci>C</ci>\n"
-        "    <apply>\n"
-        "      <plus/>\n"
-        "      <ci>A</ci>\n"
-        "      <ci>B</ci>\n"
-        "    </apply>\n"
+        "    <plus/>\n"
+        "    <ci>A</ci>\n"
+        "    <ci>B</ci>\n"
         "  </apply>\n"
-        "</math>\n";
+        "</apply>\n";
 
     libcellml::GeneratorPtr g = libcellml::Generator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -1590,3 +1592,4 @@ TEST(Generator, validateMathNotDimensionallyEquivalentUnitsComplex)
     g->processModel(m);
     EXPECT_EQ_ERRORS(expectedErrors, g);
 }
+*/

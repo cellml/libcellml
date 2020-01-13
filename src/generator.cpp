@@ -1063,7 +1063,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             mGenerator->addError(err);
         }
     } else if (node->isMathmlElement("cn")) {
-
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
@@ -1534,6 +1533,38 @@ VariablePtr getVariable(const GeneratorEquationAstPtr &ast)
 // Gets the power for a given node. (this needs to be redone so we will always be guaranteed to find the power for an operation)
 double getPower(const GeneratorEquationAstPtr &ast)
 {
+    if (ast == nullptr) {
+        return 0;  // Return 0 for case where there is a null node
+    }
+
+    if (ast->mValue.empty()) {
+        // If we have a variable then we return 0 and just make sure both mappings are dimensionless
+        if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+            return 0;
+        }
+
+        // For times
+        if (ast->mType == GeneratorEquationAst::Type::TIMES) {
+            return getPower(ast->mLeft) * getPower(ast->mRight);
+        }
+
+        // For divide
+        if (ast->mType == GeneratorEquationAst::Type::DIVIDE) {
+            return getPower(ast->mLeft) / getPower(ast->mRight);
+        }
+
+        // For times
+        if (ast->mType == GeneratorEquationAst::Type::PLUS) {
+            return getPower(ast->mLeft) + getPower(ast->mRight);
+        }
+
+        // For divide
+        if (ast->mType == GeneratorEquationAst::Type::MINUS) {
+            return getPower(ast->mLeft) - getPower(ast->mRight);
+        }
+    }
+
+    /*
     if (ast->mRight->mValue.empty()) {
         if (ast->mRight->mType == GeneratorEquationAst::Type::TIMES) {
             return std::stod(ast->mRight->mLeft->mValue) * std::stod(ast->mRight->mRight->mValue);
@@ -1542,7 +1573,8 @@ double getPower(const GeneratorEquationAstPtr &ast)
             return std::stod(ast->mRight->mLeft->mValue) / std::stod(ast->mRight->mRight->mValue);
         }
     }
-    return std::stod(ast->mRight->mValue); // Return number if we don't have an empty value
+    */
+    return std::stod(ast->mValue); // Return number if we don't have an empty value
 }
 
 static const std::map<GeneratorEquationAst::Type, std::string> AstTypeToString = {
@@ -1615,7 +1647,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units. Multipliers can be checked in another function.
                 return unitMap;
             }
-            
+
             model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
             uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "dimensionless";
             if (uName == "dimensionless") {
@@ -1665,8 +1697,17 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
             // Checks for exponential operators, multiplies unit mappings with power
             if (isExponentOperator(ast)) {
-                double power = getPower(ast); // Getting the power to be applied
-                if (isDimensionless(rightMap)) {
+                double power = getPower(ast->mRight); // Getting the power to be applied
+
+                // In here have a check for what type of power we are checking for
+                bool correctUnits = false;
+                if (power == 0) {
+                    correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap);
+                } else {
+                    correctUnits = isDimensionless(rightMap);
+                }
+
+                if (correctUnits) {
                     return multiplyMappings(leftMap, ast, power);
                 } else {
                     std::string hints = ""; // Otherwise we return what the units are in the expression.
