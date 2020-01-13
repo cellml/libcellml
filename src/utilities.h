@@ -44,7 +44,7 @@ const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"ampere", {{"ampere", 1.0}}},
     {"becquerel", {{"second", -1.0}}},
     {"candela", {{"candela", 1.0}}},
-    {"coulomb", {{"ampere", -1.0}, {"second", 1.0}}},
+    {"coulomb", {{"ampere", 1.0}, {"second", 1.0}}},
     {"dimensionless", {{"dimensionless", 1.0}}},
     {"farad", {{"ampere", 2.0}, {"kilogram", -1.0}, {"metre", -2.0}, {"second", 4.0}}},
     {"gram", {{"kilogram", 1.0}}},
