@@ -1580,12 +1580,12 @@ double getPower(const GeneratorEquationAstPtr &ast)
             return getPower(ast->mLeft) / getPower(ast->mRight);
         }
 
-        // For times
+        // For plus
         if (ast->mType == GeneratorEquationAst::Type::PLUS) {
             return getPower(ast->mLeft) + getPower(ast->mRight);
         }
 
-        // For divide
+        // For minus
         if (ast->mType == GeneratorEquationAst::Type::MINUS) {
             return getPower(ast->mLeft) - getPower(ast->mRight);
         }
@@ -1601,6 +1601,10 @@ double getPower(const GeneratorEquationAstPtr &ast)
         }
     }
     */
+    if (ast->mValue.empty()) {
+        return 0;
+    }
+
     return std::stod(ast->mValue); // Return number if we don't have an empty value
 }
 
