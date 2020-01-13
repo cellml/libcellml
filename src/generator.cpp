@@ -1081,8 +1081,19 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 unitName.push_back(nodeString[findUnitPos]);
                 ++findUnitPos;
             }
-            ModelPtr model = owningModel(component);
-            ast->mUnits = model->units(unitName);
+
+            // We are not allowed to redefine standard units, so if we have a standard unit name we construct the unit.
+            if (isStandardUnitName(unitName) && unitName != "dimensionless") {
+                UnitsPtr u = libcellml::Units::create();
+                u->setName(unitName);
+                ast->mUnits = u; // Add the unit to the AST node
+            } else {
+                ModelPtr model = owningModel(component);
+                ast->mUnits = model->units(unitName);
+            }
+
+            //ModelPtr model = owningModel(component);
+            //ast->mUnits = model->units(unitName);
         }
 
         // Qualifier elements.
@@ -1474,7 +1485,19 @@ void updateBaseUnitCount(const ModelPtr &model,
                          double uExp, double logMult,
                          int direction)
 {
-    if (model->hasUnits(uName)) {
+
+    if (isStandardUnitName(uName)) {
+        if (unitMap.find(uName) == unitMap.end()) {
+            unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
+        }
+
+        for (const auto &iter : standardUnitsList.at(uName)) {
+            unitMap.at(iter.first) += direction * (iter.second * uExp);
+        }
+
+        multiplier += direction * logMult;
+    
+    } else if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
             std::string ref;
@@ -1502,7 +1525,9 @@ void updateBaseUnitCount(const ModelPtr &model,
             unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
             multiplier += direction * logMult;
         }
-    } else if (isStandardUnitName(uName)) {
+    }
+    
+    /*else if (isStandardUnitName(uName)) {
         if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
         }
@@ -1512,7 +1537,7 @@ void updateBaseUnitCount(const ModelPtr &model,
         }
 
         multiplier += direction * logMult;
-    }
+    } */
 }
 
 // Grabs a variable associated with the model, so we can return an error message
@@ -1534,7 +1559,7 @@ VariablePtr getVariable(const GeneratorEquationAstPtr &ast)
 double getPower(const GeneratorEquationAstPtr &ast)
 {
     if (ast == nullptr) {
-        return 0;  // Return 0 for case where there is a null node
+        return 0; // Return 0 for case where there is a null node
     }
 
     if (ast->mValue.empty()) {
