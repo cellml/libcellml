@@ -12,9 +12,13 @@ Andrew Huxley in 1952 :cite:`10` that won them (together with John Eccles) the
 concerning the ionic mechanisms involved in excitation and inhibition in
 the peripheral and central portions of the nerve cell membrane"*.
 
---------------
-Cable equation
---------------
+
+.. contents::
+    :local:
+
+
+Theory: the cable equation
+--------------------------
 
 The *cable equation* was developed in 1890\ [#]_ to predict the
 degradation of an electrical signal passing along the transatlantic
@@ -76,9 +80,9 @@ Rearranging gives the **cable equation** (for constant :math:`r_a`):
 where all terms represent *current density* (current per membrane area)
 and have units of :math:`\mu A/cm^2`.
 
------------------
-Action potentials
------------------
+
+Theory: Action potentials
+-------------------------
 
 .. figure:: images/current_flow_neuron.png
    :name: ocr_tut_cur_flow_neuron
@@ -87,7 +91,7 @@ Action potentials
    :figwidth: 6.5cm
 
    Current flow in a neuron.  **TODO** I don't
-   understand the vertical arrow??
+   understand the vertical arrow for V?? direction of voltage? Is one side in/out the cell?
 
 The cable equation above can be used to model the propagation of an action
 potential along a neuron or any other excitable cell. The leak current
@@ -133,7 +137,7 @@ and so obtain the membrane potential :math:`V` by integrating the first order OD
 
 .. figure:: images/hodgkin_1952.png
    :name: ocr_tut_hh_1952
-   :alt: CellML schematic HH model
+   :alt: CellML schematic cell membrane model
    :align: center
 
    A schematic cell diagram describing the current flows
@@ -145,13 +149,40 @@ and so obtain the membrane potential :math:`V` by integrating the first order OD
 
 TODO How are the i_L and I_L in the figure related?  Consistent labelling needed?
 
+Interpretation as a CellML model
+--------------------------------
+**TODO** would be great to include imports here ... eventually ...
 
+We discussed the idea and implementation of *encapsulation* in the
+:ref:`previous section on the sodium channel<theory_sodiumchannel>`, and here
+it is no different.  We would like to create a model with the encapsulation
+structure shown in :numref:`hh_encapsulation`.
+
+.. figure:: images/hh_encapsulation.png
+   :name: hh_encapsulation
+   :alt: CellML schematic HH model
+   :align: center
+
+   The relationship between the ion channels for sodium, potassium and the
+   leakage current, and the membrane and environment components.
+
+
+Simulation and results
+----------------------
 :ref:`Tutorial 8<tutorial8>` outlines how smaller models can be used to construct
 a more complicated model.  In this instance, the models described earlier
 representing a :ref:`potassium channel<theory_potassiumchannel>` and a
 :ref:`sodium channel<theory_sodiumchannel>`, as well as one to represent
 the leakage concept introduced above can be combined to make the full
 Hodgkin-Huxley model.
+
+
+
+
+
+
+
+
 
 
 

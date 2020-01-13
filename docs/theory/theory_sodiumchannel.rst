@@ -61,13 +61,13 @@ introduce some further CellML concepts that help deal with the
 complexity inherent in biological modelling.  First we'll look at the use of
 *encapsulation groups* and *public* and *private* interfaces to control the
 visibility of information in modular CellML components.  To understand
-encapsulation, it is useful to use terms like ‘parent’, ‘child’ and ‘sibling’,
+encapsulation, it is useful to use terms like *parent*, *child* and *sibling*,
 to describe the relationships between components.  This is illustrated in
 :numref:`encapsulation_parent_structure` below:
 
-.. _encapsulation_parent_structure:
+
 .. figure:: images/encapsulation_parent_structure.png
-    :name: en_par_str
+    :name: encapsulation_parent_structure
     :alt: Encapsulation structure of nested components in a parent-child-sibling structure
     :align: center
 
