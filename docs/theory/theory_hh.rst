@@ -118,9 +118,14 @@ resting potential of -85mV (see :numref:`ocr_tut_cur_volt_traj`).
 
 If we assume that the whole cell is clamped with an axially-uniform potential
 then we can neglect\ [#]_ the term in the equation above representing the
-rate of change of axial current along the cable
-(:math:`- \frac{1}{r_a}\frac{\partial^{2}V}{\partial x^2}`). We
-then obtain the membrane potential :math:`V` by integrating the first order ODE:
+rate of change of axial current along the cable:
+
+.. math::
+
+   - \frac{1}{r_a}\frac{\partial^{2}V}{\partial x^2} \approx 0
+
+
+and so obtain the membrane potential :math:`V` by integrating the first order ODE:
 
 .. math::
 
