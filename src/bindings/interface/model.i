@@ -22,6 +22,9 @@ Only the first matching Units is returned.";
 %feature("docstring") libcellml::Model::hasUnits
 "Tests to see if this model has the given units, specified by name.";
 
+%feature("docstring") libcellml::Model::hasExactUnits
+"Tests to see if this model has the given units and unit definition.";
+
 %feature("docstring") libcellml::Model::removeUnits
 "Removes the Units specified by index, name or Units object.
 

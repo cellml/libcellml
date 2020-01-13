@@ -141,7 +141,8 @@ bool Model::removeUnits(const std::string &name)
 bool Model::removeUnits(const UnitsPtr &units)
 {
     bool status = false;
-    auto result = mPimpl->findUnits(units);
+    // auto result = mPimpl->findUnits(units); // KRM think this should be the original ... but python tests need it this way??
+    auto result = mPimpl->findExactUnits(units);
     if (result != mPimpl->mUnits.end()) {
         units->removeParent();
         mPimpl->mUnits.erase(result);
@@ -158,7 +159,7 @@ void Model::removeAllUnits()
 
 bool Model::hasUnits(const std::string &name) const
 {
-    // KRM only tests by name
+    // KRM Only tests by name
     return mPimpl->findUnits(name) != mPimpl->mUnits.end();
 }
 
@@ -230,7 +231,8 @@ bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
 
 bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 {
-    return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
+    //return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
+    return replaceUnits(size_t(mPimpl->findExactUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
 }
 
 size_t Model::unitsCount() const
