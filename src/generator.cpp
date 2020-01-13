@@ -1487,14 +1487,16 @@ void updateBaseUnitCount(const ModelPtr &model,
 {
 
     if (isStandardUnitName(uName)) {
-        if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
-        }
+        //if (unitMap.find(uName) == unitMap.end()) {
+        //    unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
+        //}
 
         for (const auto &iter : standardUnitsList.at(uName)) {
+            if (unitMap.find(iter.first) == unitMap.end()) {
+                unitMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
+            }
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
-
         multiplier += direction * logMult;
     
     } else if (model->hasUnits(uName)) {
