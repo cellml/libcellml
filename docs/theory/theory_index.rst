@@ -4,8 +4,10 @@
 Modelling theory and background
 ===========================================
 
-**TODO** write modelling introduction here, to include biological and
-mathematical systems modelling.
+This section of the documentation is intended to provide the background - both
+biological and mathematical - to the Hodgkin-Huxley model.  This model and its
+derivatives are used in the :ref:`Tutorials<tutorials_index>` to demonstrate
+the most common operations of libCellML.
 
 .. toctree::
    :maxdepth: 2
