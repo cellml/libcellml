@@ -409,7 +409,8 @@ std::string cleanMath(const std::string &math)
     //       <apply id="actual_sin">
     //         <eq/>
     //         <ci>sin</ci>
-    //         <apply><sin/>
+    //         <apply>
+    //           <sin/>
     //           <ci>x</ci>
     //         </apply>
     //       </apply>
@@ -424,7 +425,8 @@ std::string cleanMath(const std::string &math)
     //       <apply id="actual_sin">
     //         <eq/>
     //         <ci>sin</ci>
-    //         <apply><sin/>
+    //         <apply>
+    //           <sin/>
     //           <ci>x</ci>
     //         </apply>
     //       </apply>
@@ -436,7 +438,8 @@ std::string cleanMath(const std::string &math)
     //   <apply id="actual_sin">
     //     <eq/>
     //     <ci>sin</ci>
-    //     <apply><sin/>
+    //     <apply>
+    //       <sin/>
     //       <ci>x</ci>
     //     </apply>
     //   </apply>
