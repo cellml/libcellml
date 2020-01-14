@@ -1838,6 +1838,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 }
                 return leftMap;
             }
+            return leftMap;
         }
     }
     return unitMap;
