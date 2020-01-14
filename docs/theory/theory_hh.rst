@@ -151,8 +151,6 @@ TODO How are the i_L and I_L in the figure related?  Consistent labelling needed
 
 Interpretation as a CellML model
 --------------------------------
-**TODO** would be great to include imports here ... eventually ...
-
 We discussed the idea and implementation of *encapsulation* in the
 :ref:`previous section on the sodium channel<theory_sodiumchannel>`, and here
 it is no different.  We would like to create a model with the encapsulation
@@ -166,11 +164,22 @@ structure shown in :numref:`hh_encapsulation`.
    The relationship between the ion channels for sodium, potassium and the
    leakage current, and the membrane and environment components.
 
+As with other aspects of libCellML, there are several options for the model
+construction process. Since we already have potassium and sodium channel
+models avaiable, it would make sense to be able to reuse these here.  This
+functionality requires *imports* and is not yet avaiable **TODO** in libCellML.
+
+
+
+
+
+
 
 Simulation and results
 ----------------------
 :ref:`Tutorial 8<tutorial8>` outlines how smaller models can be used to construct
-a more complicated model.  In this instance, the models described earlier
+a more complicated model as described above.  In this instance, the models
+described earlier
 representing a :ref:`potassium channel<theory_potassiumchannel>` and a
 :ref:`sodium channel<theory_sodiumchannel>`, as well as one to represent
 the leakage concept introduced above can be combined to make the full
