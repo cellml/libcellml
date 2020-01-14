@@ -1091,9 +1091,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 ModelPtr model = owningModel(component);
                 ast->mUnits = model->units(unitName);
             }
-
-            //ModelPtr model = owningModel(component);
-            //ast->mUnits = model->units(unitName);
         }
 
         // Qualifier elements.
@@ -1487,10 +1484,6 @@ void updateBaseUnitCount(const ModelPtr &model,
 {
 
     if (isStandardUnitName(uName)) {
-        //if (unitMap.find(uName) == unitMap.end()) {
-        //    unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
-        //}
-
         for (const auto &iter : standardUnitsList.at(uName)) {
             if (unitMap.find(iter.first) == unitMap.end()) {
                 unitMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
@@ -1528,18 +1521,6 @@ void updateBaseUnitCount(const ModelPtr &model,
             multiplier += direction * logMult;
         }
     }
-    
-    /*else if (isStandardUnitName(uName)) {
-        if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(std::pair<std::string, double>(uName, 0.0));
-        }
-
-        for (const auto &iter : standardUnitsList.at(uName)) {
-            unitMap.at(iter.first) += direction * (iter.second * uExp);
-        }
-
-        multiplier += direction * logMult;
-    } */
 }
 
 // Grabs a variable associated with the model, so we can return an error message
@@ -1563,49 +1544,32 @@ double getPower(const GeneratorEquationAstPtr &ast)
     if (ast == nullptr) {
         return 0; // Return 0 for case where there is a null node
     }
-
     if (ast->mValue.empty()) {
         // If we have a variable then we return 0 and just make sure both mappings are dimensionless
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
             return 0;
         }
 
-        // For times
         if (ast->mType == GeneratorEquationAst::Type::TIMES) {
             return getPower(ast->mLeft) * getPower(ast->mRight);
         }
-
-        // For divide
         if (ast->mType == GeneratorEquationAst::Type::DIVIDE) {
             return getPower(ast->mLeft) / getPower(ast->mRight);
         }
-
-        // For plus
         if (ast->mType == GeneratorEquationAst::Type::PLUS) {
             return getPower(ast->mLeft) + getPower(ast->mRight);
         }
-
-        // For minus
         if (ast->mType == GeneratorEquationAst::Type::MINUS) {
             return getPower(ast->mLeft) - getPower(ast->mRight);
         }
     }
 
-    /*
-    if (ast->mRight->mValue.empty()) {
-        if (ast->mRight->mType == GeneratorEquationAst::Type::TIMES) {
-            return std::stod(ast->mRight->mLeft->mValue) * std::stod(ast->mRight->mRight->mValue);
-        }
-        if (ast->mRight->mType == GeneratorEquationAst::Type::DIVIDE) {
-            return std::stod(ast->mRight->mLeft->mValue) / std::stod(ast->mRight->mRight->mValue);
-        }
-    }
-    */
+    // In the special case where the terminating node is a variables, eliminates cases wher we might make an invalid std::stod call
     if (ast->mValue.empty()) {
         return 0;
     }
 
-    return std::stod(ast->mValue); // Return number if we don't have an empty value
+    return std::stod(ast->mValue); 
 }
 
 static const std::map<GeneratorEquationAst::Type, std::string> AstTypeToString = {
@@ -1671,7 +1635,6 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
             ModelPtr model;
             std::string uName; // Declarations
-
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
                 model = owningModel(ast->mUnits);
                 uName = ast->mUnits->name();
