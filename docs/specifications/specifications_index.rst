@@ -5,8 +5,8 @@
 =========================================
 
 .. toctree::
-   :maxdepth: 1
-   :titlesonly:
+    :maxdepth: 2
+    :titlesonly:
 
     interpretation/4_model
     interpretation/5_import

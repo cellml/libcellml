@@ -166,8 +166,16 @@ structure shown in :numref:`hh_encapsulation`.
 
 As with other aspects of libCellML, there are several options for the model
 construction process. Since we already have potassium and sodium channel
-models avaiable, it would make sense to be able to reuse these here.  This
-functionality requires *imports* and is not yet avaiable **TODO** in libCellML.
+models available, it would make sense to be able to reuse these here.  This
+functionality requires *imports*; their use is demonstrated in
+:ref:`Tutorial 8<tutorial8>`.
+
+Importing allows all or part of a model to be used in-situ, without
+needing to manually parse its CellML file and instantiate it as an
+additional model (as has been the procedure in :ref:`Tutorial 6<tutorial6>`
+and :ref:`Tutorial 7<tutorial7>`).  There are some points to note.
+
+  - I
 
 
 
