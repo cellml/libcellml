@@ -2326,6 +2326,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mProfile->commentString()
                        + mProfile->originCommentString();
 
+    profileContents += mProfile->interfaceFileNameString();
+
     profileContents += mProfile->interfaceHeaderString()
                        + mProfile->implementationHeaderString();
 
@@ -2414,7 +2416,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "88b463c76b0bd6bc2c88292b7d5f2a22ec16ab74";
+        res = profileContentsSha1 != "e387c94ec0debf68566379f214c250a28907e90c";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
@@ -2474,7 +2476,8 @@ void Generator::GeneratorImpl::addImplementationHeaderCode(std::string &code)
             code += "\n";
         }
 
-        code += mProfile->implementationHeaderString();
+        code += replace(mProfile->implementationHeaderString(),
+                        "<INTERFACE_FILE_NAME>", mProfile->interfaceFileNameString());
     }
 }
 
