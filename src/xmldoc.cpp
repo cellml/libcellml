@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstring>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -101,6 +102,17 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
     xmlCleanupGlobals();
+}
+
+std::string XmlDoc::prettyPrint() const
+{
+    xmlChar *buffer;
+    int size = 0;
+    xmlDocDumpFormatMemoryEnc(mPimpl->mXmlDocPtr, &buffer, &size, "UTF-8", 1);
+    std::stringstream res;
+    res << buffer;
+    xmlFree(buffer);
+    return res.str();
 }
 
 XmlNodePtr XmlDoc::rootNode() const
