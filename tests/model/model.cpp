@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 TEST(Model, setGetId)
 {
     const std::string id = "modelID";
@@ -551,4 +553,52 @@ TEST(Model, setAndCheckIdsAllEntities)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(m);
     EXPECT_EQ(a, e);
+}
+
+TEST(Model, missingUnitsFromImportOfCnTerms)
+{
+    std::string a =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "   <units name=\"myUnitsThatReallyExist\">\n"
+        "       <unit exponent=\"-1\" units=\"second\"/>\n"
+        "   </units>\n"
+        "   <component name=\"myComponent\">\n"
+        "       <variable name=\"a\" units=\"second\"/>\n"
+        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "           <apply><eq/>\n"
+        "               <ci>a</ci>\n"
+        "               <cn cellml:units=\"myUnitsThatReallyExist\">1</cn>\n"
+        "           </apply>\n"
+        "       </math>\n"
+        "   </component>\n"
+        "</model>";
+    auto parser = libcellml::Parser::create();
+    auto modelFromString = parser->parseModel(a);
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(modelFromString);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    // Import the membrane component from a file
+    auto model = libcellml::Model::create("model_from_imports");
+    auto c = libcellml::Component::create("c");
+
+    auto imp = libcellml::ImportSource::create();
+    imp->setUrl("units_in_cn.cellml");
+
+    c->setImportReference("myComponent");
+    c->setImportSource(imp);
+    model->addComponent(c);
+
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten();
+
+    validator->validateModel(model);
+    for(size_t i = 0; i < validator->errorCount(); ++i){
+        std::cout << validator->error(i)->description()<<std::endl;
+    }
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
