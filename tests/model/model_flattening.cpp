@@ -624,3 +624,50 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
     EXPECT_EQ("", generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode());
 }
+
+// KRM
+TEST(ModelFlattening, segfaultWhenImportingEncapsulation)
+{
+    //  Test to demonstrate segfault in model->flatten() when imports are to go in
+    //  different levels of encapsulation.
+
+    //  0.a Create a new model instance representing the combined model and name it.
+    auto model = libcellml::Model::create("Tutorial8");
+
+    // Import the membrane component from a file
+    auto membrane = libcellml::Component::create("membrane");
+    model->addComponent(membrane);
+
+    auto membraneImporter = libcellml::ImportSource::create();
+    membraneImporter->setUrl("tutorial8_MembraneModel.cellml");
+
+    membrane->setImportSource(membraneImporter);
+    membrane->setImportReference("membrane_for_importing");
+
+    // Import the sodium channel from a file, and set as encapsulated child of the membrane
+    auto sodiumChannel = libcellml::Component::create("sodium_channel");
+    membrane->addComponent(sodiumChannel); // <<< this causes segfault later
+    // model->addComponent(sodiumChannel); // <<< this is fine ...
+
+    auto sodiumImporter = libcellml::ImportSource::create();
+    sodiumImporter->setUrl("tutorial7_SodiumChannelModel.cellml");
+
+    sodiumChannel->setImportSource(sodiumImporter);
+    sodiumChannel->setImportReference("sodiumChannel");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten(); // <<<< segfaults
+
+    // The segfault happens inside flattenComponent because importModel is nullptr.
+
+    // void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
+    // {
+    //     if (component->isImport()) {
+    //         auto model = owningModel(component);
+    //         auto importSource = component->importSource();
+    //         auto importModel = importSource->model(); // <<< this is null
+    //         auto importedComponent = importModel->component(component->importReference());
+
+}
