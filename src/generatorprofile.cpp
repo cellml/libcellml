@@ -171,6 +171,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCommentString;
     std::string mOriginCommentString;
 
+    std::string mInterfaceFileNameString;
+
     std::string mInterfaceHeaderString;
     std::string mImplementationHeaderString;
 
@@ -442,10 +444,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCommentString = "/* <CODE> */\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
 
+        mInterfaceFileNameString = "model.h";
+
         mInterfaceHeaderString = "#pragma once\n"
                                  "\n"
                                  "#include <stddef.h>\n";
-        mImplementationHeaderString = "#include \"model.h\"\n"
+        mImplementationHeaderString = "#include \"<INTERFACE_FILE_NAME>\"\n"
                                       "\n"
                                       "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
@@ -749,6 +753,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mCommentString = "# <CODE>\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
+
+        mInterfaceFileNameString = "";
 
         mInterfaceHeaderString = "";
         mImplementationHeaderString = "from enum import Enum\n"
@@ -1880,6 +1886,16 @@ std::string GeneratorProfile::originCommentString() const
 void GeneratorProfile::setOriginCommentString(const std::string &originCommentString)
 {
     mPimpl->mOriginCommentString = originCommentString;
+}
+
+std::string GeneratorProfile::interfaceFileNameString() const
+{
+    return mPimpl->mInterfaceFileNameString;
+}
+
+void GeneratorProfile::setInterfaceFileNameString(const std::string &interfaceFileNameString)
+{
+    mPimpl->mInterfaceFileNameString = interfaceFileNameString;
 }
 
 std::string GeneratorProfile::interfaceHeaderString() const
