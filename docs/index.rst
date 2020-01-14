@@ -55,7 +55,7 @@ CellML2 format specification
     :maxdepth: 2
     :titlesonly:
 
-    specifications/specification_index
+    specifications/specifications_index
 
 Documentation for developers
 ----------------------------
