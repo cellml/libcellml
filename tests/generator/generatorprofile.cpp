@@ -257,11 +257,13 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
     EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
 
+    EXPECT_EQ("model.h", generatorProfile->interfaceFileNameString());
+
     EXPECT_EQ("#pragma once\n"
               "\n"
               "#include <stddef.h>\n",
               generatorProfile->interfaceHeaderString());
-    EXPECT_EQ("#include \"model.h\"\n"
+    EXPECT_EQ("#include \"<INTERFACE_FILE_NAME>\"\n"
               "\n"
               "#include <math.h>\n"
               "#include <stdlib.h>\n",
@@ -696,6 +698,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setCommentString(value);
     generatorProfile->setOriginCommentString(value);
 
+    generatorProfile->setInterfaceFileNameString(value);
+
     generatorProfile->setInterfaceHeaderString(value);
     generatorProfile->setImplementationHeaderString(value);
 
@@ -779,6 +783,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->commentString());
     EXPECT_EQ(value, generatorProfile->originCommentString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceFileNameString());
 
     EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
     EXPECT_EQ(value, generatorProfile->implementationHeaderString());
