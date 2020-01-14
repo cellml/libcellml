@@ -17,8 +17,10 @@ limitations under the License.
 #include "libcellml/generator.h"
 
 #include <algorithm>
+#include <cmath>
 #include <limits>
 #include <list>
+#include <float.h>
 #include <regex>
 #include <sstream>
 #include <stack>
@@ -1397,7 +1399,7 @@ bool isBottomVariableOperator(const GeneratorEquationAstPtr &ast)
 using UnitsMap = std::map<std::string, double>;
 
 // Function which adds the unit mappings together if we have a times or divide operator in the AST.
-UnitsMap addMappings(UnitsMap firstMap, UnitsMap secondMap, int operation)
+UnitsMap addMappings(UnitsMap firstMap, const UnitsMap &secondMap, int operation)
 {
     for (const auto &unit : secondMap) {
         auto it = firstMap.find(unit.first);
@@ -1412,7 +1414,7 @@ UnitsMap addMappings(UnitsMap firstMap, UnitsMap secondMap, int operation)
 
 // Function which multiplies mappings if we have a power or root operator in the AST.
 // Note: This is cuurently an incorrect implementation of this method.
-UnitsMap multiplyMappings(UnitsMap map, GeneratorEquationAstPtr ast, double power)
+UnitsMap multiplyMappings(UnitsMap map, const GeneratorEquationAstPtr &ast, double power)
 {
     if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER) {
         for (auto &unit : map) {
@@ -1427,7 +1429,7 @@ UnitsMap multiplyMappings(UnitsMap map, GeneratorEquationAstPtr ast, double powe
 }
 
 // Helper function to check map equivalences
-bool mapsAreEquivalent(UnitsMap firstMap, UnitsMap secondMap, std::string &hints)
+bool mapsAreEquivalent(const UnitsMap &firstMap, const UnitsMap &secondMap, std::string &hints)
 {
     UnitsMap mapping;
     for (const auto &baseUnits : baseUnitsList) {
@@ -1465,7 +1467,7 @@ bool mapsAreEquivalent(UnitsMap firstMap, UnitsMap secondMap, std::string &hints
 }
 
 // Helper function to check dimensionlessness
-bool isDimensionless(UnitsMap map)
+bool isDimensionless(const UnitsMap &map)
 {
     for (const auto &u : map) {
         if (u.second != 0.0) {
@@ -1659,23 +1661,23 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
             // Plus, Minus, any unit comparisons where units have to be exactly the same.
             if (isDirectComparisonOperator(ast)) {
-                std::string hints = "";
+                std::string hints;
                 if (mapsAreEquivalent(leftMap, rightMap, hints) || rightMap.empty()) {
                     return leftMap;
-                } else {
-                    VariablePtr variable = getVariable(ast);
-                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
-                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : "no_name";
-                    std::string modelName = (model != nullptr) ? model->name() : "no_name";
+                } 
+                VariablePtr variable = getVariable(ast);
+                ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                std::string compName = (component != nullptr) ? component->name() : "no_name";
+                std::string modelName = (model != nullptr) ? model->name() : "no_name";
 
-                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
-                                      + "' in component '" + compName
-                                      + "' of model '" + modelName
-                                      + "' are not equivalent. The unit mismatch is " + hints;
-                    errors.push_back(err);
-                    return leftMap;
-                }
+                std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
+                                  + "' in component '" + compName
+                                  + "' of model '" + modelName
+                                  + "' are not equivalent. The unit mismatch is " + hints;
+                errors.push_back(err);
+                return leftMap;
+                
             }
 
             // Multiply, Divide: add mappings, no interest in unit compatibility.
@@ -1695,7 +1697,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
                 // In here have a check for what type of power we are checking for
                 bool correctUnits = false;
-                if (power == 0) {
+                if (power == 0.0) {
                     correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap);
                 } else {
                     correctUnits = isDimensionless(rightMap);
@@ -1705,7 +1707,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     return multiplyMappings(leftMap, ast, power);
                 } else {
                     std::string hints = ""; // Otherwise we return what the units are in the expression.
-                    for (const auto unit : rightMap) {
+                    for (const auto &unit : rightMap) {
                         if (unit.second != 0.0) {
                             std::string num = std::to_string(unit.second);
                             num.erase(num.find_last_not_of('0') + 1, num.length());
@@ -1762,8 +1764,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     leftMap.clear();
                     return leftMap; // Return a dimensionless mapping to denote a pass case.
                 } else {
-                    std::string hints = "";
-                    for (const auto unit : leftMap) {
+                    std::string hints;
+                    for (const auto &unit : leftMap) {
                         if (unit.second != 0.0) {
                             std::string num = std::to_string(unit.second);
                             num.erase(num.find_last_not_of('0') + 1, num.length());
@@ -1816,9 +1818,9 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
     unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
 
     if (!errors.empty()) {
-        for (int i = 0; i < errors.size(); ++i) {
+        for (const auto &error : errors) {
             ErrorPtr err = Error::create();
-            err->setDescription(errors[i]);
+            err->setDescription(error);
             err->setKind(Error::Kind::UNITS);
             mGenerator->addError(err);
         }
