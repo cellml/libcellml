@@ -462,3 +462,24 @@ TEST(Issue, createResetWarning)
     EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
+
+TEST(Issue, isError)
+{
+    auto e = libcellml::Issue::create();
+    e->setLevel(libcellml::Issue::Level::ERROR);
+    EXPECT_TRUE(e->isLevel(libcellml::Issue::Level::ERROR));
+}
+
+TEST(Issue, isWarning)
+{
+    auto e = libcellml::Issue::create();
+    e->setLevel(libcellml::Issue::Level::WARNING);
+    EXPECT_TRUE(e->isLevel(libcellml::Issue::Level::WARNING));
+}
+
+TEST(Issue, isHint)
+{
+    auto e = libcellml::Issue::create();
+    e->setLevel(libcellml::Issue::Level::HINT);
+    EXPECT_TRUE(e->isLevel(libcellml::Issue::Level::HINT));
+}
