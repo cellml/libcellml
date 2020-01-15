@@ -44,6 +44,7 @@ Logger::~Logger()
     delete mPimpl;
 }
 
+// KRM I've left these here as is so that all the existing tests and behaviour stays the same.
 void Logger::removeAllErrors()
 {
     mPimpl->mErrors.clear();
@@ -68,7 +69,7 @@ IssuePtr Logger::error(size_t index) const
     return err;
 }
 
-
+// KRM Changes start from here
 
 // IssuePtr Logger::error(size_t index) const
 // {
@@ -78,6 +79,5 @@ IssuePtr Logger::error(size_t index) const
 //     }
 //     return err;
 // }
-
 
 } // namespace libcellml
