@@ -30,11 +30,11 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertIsInstance(x, libcellml.logger.Logger)
 
         # Test access to inherited methods
-        self.assertIsNone(x.issue(0))
-        self.assertIsNone(x.issue(-1))
-        self.assertEqual(x.issueCount(), 0)
-        x.addIssue(libcellml.Issue())
-        self.assertEqual(x.issueCount(), 1)
+        self.assertIsNone(x.error(0))
+        self.assertIsNone(x.error(-1))
+        self.assertEqual(x.errorCount(), 0)
+        x.addError(libcellml.Issue())
+        self.assertEqual(x.errorCount(), 1)
 
     def test_process_model(self):
         from libcellml import Generator
@@ -45,7 +45,7 @@ class GeneratorTestCase(unittest.TestCase):
 
         g.processModel(m)
 
-        self.assertEqual(0, g.issueCount())
+        self.assertEqual(0, g.errorCount())
         self.assertEqual(Generator.ModelType.UNKNOWN, g.modelType())
 
     def test_algebraic_eqn_computed_var_on_rhs(self):

@@ -198,7 +198,7 @@ TEST(Generator, isolatedFirstOrderModel)
     //  4.c   Validate the final arrangement. No issues are expected at this stage.
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->issueCount());
+    EXPECT_EQ(size_t(0), validator->errorCount());
 
     //  5.a   Create a Generator instance. By default the options set in the
     //        generator constructor are:
@@ -209,5 +209,5 @@ TEST(Generator, isolatedFirstOrderModel)
     generator->processModel(model);
 
     //  5.b   Check whether the generator has encountered any issues.
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), generator->errorCount());
 }

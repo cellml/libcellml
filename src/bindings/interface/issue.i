@@ -26,6 +26,16 @@ return Cause::UNDEFINED.";
 %feature("docstring") libcellml::Issue::setCause
 "Sets the ``cause`` of this issue.";
 
+%feature("docstring") libcellml::Issue::level
+"Get the ``level`` of this issue. If no level has been set for this issue, will
+return Level::ERROR.";
+
+%feature("docstring") libcellml::Issue::isLevel
+"Tests if this issue matches the given ``level``.";
+
+%feature("docstring") libcellml::Issue::setLevel
+"Sets the ``level`` of this issue.";
+
 %feature("docstring") libcellml::Issue::rule
 "Get the :class:`SpecificationRule` of this issue.";
 

@@ -7,24 +7,24 @@
 %feature("docstring") libcellml::Logger
 "Base class for all serialisable libCellML classes.";
 
-%feature("docstring") libcellml::Logger::addIssue
+%feature("docstring") libcellml::Logger::addError
 "Adds an issue to this logger.";
 
 %feature("docstring") libcellml::Logger::removeAllErrors
 "Clears all errors from this logger.";
 
-%feature("docstring") libcellml::Logger::issue
-"Returns the issue at the specified `index`.";
+%feature("docstring") libcellml::Logger::error
+"Returns the issue of level 'error' at the specified `index`.";
 
-%feature("docstring") libcellml::Logger::issueCount
+%feature("docstring") libcellml::Logger::errorCount
 "Returns the number of errors currently stored in the logger.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
-        IssuePtr issue(long index) {
+        IssuePtr error(long index) {
             if (index < 0) return nullptr;
-            return $self->issue(size_t(index));
+            return $self->error(size_t(index));
         }
     }
 #endif

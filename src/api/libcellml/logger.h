@@ -51,7 +51,7 @@ public:
      *
      * @param issue The @c IssuePtr to add.
      */
-    void addIssue(const IssuePtr &issue);
+    void addError(const IssuePtr &issue);
 
     /**
      * @brief Get the number of issues.
@@ -60,7 +60,7 @@ public:
      *
      * @return The number of issues.
      */
-    size_t issueCount() const;
+    size_t errorCount() const;
 
     /**
      * @brief Get issue at the specified @p index.
@@ -73,7 +73,7 @@ public:
      *
      * @return A reference to the issue at the given index on success, @c nullptr otherwise.
      */
-    IssuePtr issue(size_t index) const;
+    IssuePtr error(size_t index) const;
 
 protected:
     Logger(); /**< Constructor */
