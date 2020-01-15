@@ -220,6 +220,7 @@ if(LIBCELLML_LLVM_COVERAGE)
 endif()
 
 install(TARGETS cellml EXPORT libcellml-targets
+  COMPONENT runtime
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -228,11 +229,13 @@ install(TARGETS cellml EXPORT libcellml-targets
 install(FILES
   ${API_HEADER_FILES}
   DESTINATION include/libcellml
+  COMPONENT development
 )
 
 install(FILES
   ${MODULE_HEADER_FILES}
   DESTINATION include/libcellml/module
+  COMPONENT development
 )
 
 include(CMakePackageConfigHelpers)
@@ -268,6 +271,7 @@ endif()
 install(EXPORT libcellml-targets
   FILE libcellml-targets.cmake
   DESTINATION ${ConfigPackageLocation}
+  COMPONENT development
 )
 
 install(
@@ -275,7 +279,7 @@ install(
     ${LIBCELLML_CONFIG_CMAKE_FILE}
     ${LIBCELLML_CONFIG_VERSION_FILE}
   DESTINATION ${ConfigPackageLocation}
-  COMPONENT Devel
+  COMPONENT development
 )
 
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}")
