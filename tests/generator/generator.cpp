@@ -1191,7 +1191,9 @@ TEST(Generator, coverage)
     profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
 
-    profile->setImplementationHeaderString("");
+    profile->setInterfaceFileNameString("customheaderfile.h");
+
+    profile->setImplementationHeaderString("#include \"<INTERFACE_FILE_NAME>\"\n");
 
     profile->setImplementationVersionString("");
 
