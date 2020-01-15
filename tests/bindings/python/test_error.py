@@ -42,7 +42,7 @@ class ErrorTestCase(unittest.TestCase):
         e7 = Issue(v)
         del(e7)
 
-    def test_kind_enum(self):
+    def test_cause_enum(self):
         from libcellml import Issue
 
         self.assertIsInstance(Issue.Cause.COMPONENT, int)
@@ -152,14 +152,14 @@ class ErrorTestCase(unittest.TestCase):
         self.assertEqual(e.description(), d)
         del(d, e)
 
-    def test_set_kind(self):
+    def test_set_cause(self):
         from libcellml import Issue
 
-        # void setCause(Cause kind)
+        # void setCause(Cause cause)
         e = Issue()
         e.setCause(Issue.Cause.CONNECTION)
 
-    def test_kind(self):
+    def test_cause(self):
         from libcellml import Issue
 
         # Cause cause()
@@ -168,10 +168,10 @@ class ErrorTestCase(unittest.TestCase):
         e.setCause(Issue.Cause.MATHML)
         self.assertEqual(e.cause(), Issue.Cause.MATHML)
 
-    def test_is_kind(self):
+    def test_is_cause(self):
         from libcellml import Issue
 
-        # bool isCause(const Cause &kind)
+        # bool isCause(const Cause &cause)
         e = Issue()
         self.assertTrue(e.isCause(Issue.Cause.UNDEFINED))
         self.assertFalse(e.isCause(Issue.Cause.MODEL))

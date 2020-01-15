@@ -138,9 +138,9 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-void Issue::setCause(Issue::Cause kind)
+void Issue::setCause(Issue::Cause cause)
 {
-    mPimpl->mCause = kind;
+    mPimpl->mCause = cause;
 }
 
 Issue::Cause Issue::cause() const
@@ -148,10 +148,10 @@ Issue::Cause Issue::cause() const
     return mPimpl->mCause;
 }
 
-bool Issue::isCause(Cause kind) const
+bool Issue::isCause(Cause cause) const
 {
     bool response = false;
-    if (mPimpl->mCause == kind) {
+    if (mPimpl->mCause == cause) {
         response = true;
     }
     return response;

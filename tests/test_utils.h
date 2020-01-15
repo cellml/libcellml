@@ -77,7 +77,7 @@ std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "
 
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 
-void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool kinds = false, bool rule = false);
+void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
 
 void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &issues,
                                    const libcellml::LoggerPtr &logger);
@@ -85,7 +85,7 @@ void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::s
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualErrorsCauses(const std::vector<std::string> &issues,
-                                        const std::vector<libcellml::Issue::Cause> &kinds,
+                                        const std::vector<libcellml::Issue::Cause> &causes,
                                         const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
@@ -101,6 +101,6 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
     SCOPED_TRACE("Issue occured here."); \
     expectEqualErrorsSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ERRORS_KINDS(issues, kinds, logger) \
+#define EXPECT_EQ_ERRORS_KINDS(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualErrorsCauses(issues, kinds, logger)
+    expectEqualErrorsCauses(issues, causes, logger)
