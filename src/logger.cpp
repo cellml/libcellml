@@ -31,7 +31,7 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    std::vector<ErrorPtr> mErrors;
+    std::vector<IssuePtr> mErrors;
 };
 
 Logger::Logger()
@@ -49,19 +49,19 @@ void Logger::removeAllErrors()
     mPimpl->mErrors.clear();
 }
 
-void Logger::addError(const ErrorPtr &error)
+void Logger::addIssue(const IssuePtr &issue)
 {
-    mPimpl->mErrors.push_back(error);
+    mPimpl->mErrors.push_back(issue);
 }
 
-size_t Logger::errorCount() const
+size_t Logger::issueCount() const
 {
     return mPimpl->mErrors.size();
 }
 
-ErrorPtr Logger::error(size_t index) const
+IssuePtr Logger::issue(size_t index) const
 {
-    ErrorPtr err = nullptr;
+    IssuePtr err = nullptr;
     if (index < mPimpl->mErrors.size()) {
         err = mPimpl->mErrors.at(index);
     }

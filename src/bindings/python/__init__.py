@@ -8,7 +8,7 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 from libcellml.component import Component
-from libcellml.error import Error
+from libcellml.issue import Issue
 from libcellml.generator import Generator
 from libcellml.generator import GeneratorVariable
 from libcellml.generatorprofile import GeneratorProfile
@@ -41,7 +41,7 @@ def convert(base, enum, variables, new_base=None):
             converting = True
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
-convert(Error, 'Kind', [
+convert(Issue, 'Kind', [
     'COMPONENT',
     'CONNECTION',
     'ENCAPSULATION',

@@ -42,51 +42,51 @@ std::string fileContents(const std::string &fileName)
 
 void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool rule)
 {
-    for (size_t i = 0; i < l->errorCount(); ++i) {
-        std::cout << "Error " << std::setw(3) << i + 1 << ": ";
-        std::cout << l->error(i)->description();
+    for (size_t i = 0; i < l->issueCount(); ++i) {
+        std::cout << "Issue " << std::setw(3) << i + 1 << ": ";
+        std::cout << l->issue(i)->description();
         if (headings) {
-            std::cout << ", " << l->error(i)->specificationHeading();
+            std::cout << ", " << l->issue(i)->specificationHeading();
         }
         if (kinds) {
-            std::cout << ", " << static_cast<int>(l->error(i)->kind());
+            std::cout << ", " << static_cast<int>(l->issue(i)->kind());
         }
         if (rule) {
-            std::cout << ", " << static_cast<int>(l->error(i)->rule());
+            std::cout << ", " << static_cast<int>(l->issue(i)->rule());
         }
         std::cout << std::endl;
     }
 }
 
-void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::LoggerPtr &logger)
+void expectEqualErrors(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(errors.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < errors.size(); ++i) {
-        EXPECT_EQ(errors.at(i), logger->error(i)->description());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
     }
 }
 
-void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
+void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issues,
                                             const std::vector<std::string> &specificationHeadings,
                                             const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(errors.size(), logger->errorCount());
-    EXPECT_EQ(specificationHeadings.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < errors.size(); ++i) {
-        EXPECT_EQ(errors.at(i), logger->error(i)->description());
-        EXPECT_EQ(specificationHeadings.at(i), logger->error(i)->specificationHeading());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(specificationHeadings.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(specificationHeadings.at(i), logger->issue(i)->specificationHeading());
     }
 }
 
-void expectEqualErrorsKinds(const std::vector<std::string> &errors,
-                            const std::vector<libcellml::Error::Kind> &kinds,
+void expectEqualErrorsKinds(const std::vector<std::string> &issues,
+                            const std::vector<libcellml::Issue::Kind> &kinds,
                             const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(errors.size(), logger->errorCount());
-    EXPECT_EQ(kinds.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < errors.size(); ++i) {
-        EXPECT_EQ(errors.at(i), logger->error(i)->description());
-        EXPECT_EQ(kinds.at(i), logger->error(i)->kind());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(kinds.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(kinds.at(i), logger->issue(i)->kind());
     }
 }
 

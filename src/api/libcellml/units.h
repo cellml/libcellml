@@ -24,7 +24,7 @@ limitations under the License.
 #include <vector>
 
 // MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in
-// some compilation errors for our StandardUnit enum class below. However, that
+// some compilation issues for our StandardUnit enum class below. However, that
 // macro gets defined for backward compatibility, so we can safely undefine it.
 // (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
 // information.)
@@ -404,7 +404,7 @@ public:
      * @brief Test to determine whether two @c Units are equivalent or not.
      *
      * Two @c Units are considered to be equivalent if they share the same units,
-     * independently of their dimension (e.g. volt and volt are equivalent as are 
+     * independently of their dimension (e.g. volt and volt are equivalent as are
      * volt and millivolt).
      *
      * @param1 units1 The first units to compare.
@@ -418,7 +418,7 @@ public:
      * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
      *
      * Two @c Units are considered to be dimensionally equivalent if they share the
-     * exact same units (e.g. volt and volt are dimensionally equivalent but 
+     * exact same units (e.g. volt and volt are dimensionally equivalent but
      * volt and millivolt are not).
      *
      * @param1 units1 The first units to compare.
