@@ -1682,8 +1682,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : " ";
-                    std::string modelName = (model != nullptr) ? model->name() : " ";
+                    std::string compName = (component != nullptr) ? component->name() : "";
+                    std::string modelName = (model != nullptr) ? model->name() : "";
 
                     std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
@@ -1723,8 +1723,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 VariablePtr variable = getVariable(ast);
                 ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                 ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                std::string compName = (component != nullptr) ? component->name() : " ";
-                std::string modelName = (model != nullptr) ? model->name() : " ";
+                std::string compName = (component != nullptr) ? component->name() : "";
+                std::string modelName = (model != nullptr) ? model->name() : "";
 
                 std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                   + "' in component '" + compName
@@ -1737,32 +1737,30 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             if (isLogarithmicOperator(ast)) {
                 std::string hints;
                 if (!mapsAreEquivalent(rightMap, leftMap, hints)) {
-                    
                     //return leftMap;
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : " ";
-                    std::string modelName = (model != nullptr) ? model->name() : " ";
+                    std::string compName = (component != nullptr) ? component->name() : "";
+                    std::string modelName = (model != nullptr) ? model->name() : "";
 
                     std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' are not dimensionless. The units in the expression are: " + hints;
                     errors.push_back(err);
-                } 
+                }
             }
 
             // All trig arguments should be dimensionless
             if (isTrigonometricOperator(ast)) {
                 if (!isDimensionless(leftMap)) {
-
                     std::string hints = getHints(leftMap);
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : " ";
-                    std::string modelName = (model != nullptr) ? model->name() : " ";
+                    std::string compName = (component != nullptr) ? component->name() : "";
+                    std::string modelName = (model != nullptr) ? model->name() : "";
 
                     std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
@@ -1770,7 +1768,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                                       + "' is not dimensionless. The units in the argument are: " + hints;
                     errors.push_back(err);
                     leftMap.clear(); // Clear our mapping to reduce the potential for errors further up the tree.
-                } 
+                }
             }
 
             if (isDerivativeOperator(ast)) {
