@@ -1337,10 +1337,10 @@ TEST(Parser, invalidImportsAndGetError)
     EXPECT_EQ(import, importFromError);
 }
 
-TEST(Parser, invalidModelWithAllKindsOfErrors)
+TEST(Parser, invalidModelWithAllCausesOfErrors)
 {
     // Check for all kinds of issues.
-    std::vector<bool> foundKind(9, false);
+    std::vector<bool> foundCause(9, false);
 
     // Trigger CellML entity issues
     const std::string input =
@@ -1376,33 +1376,33 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     EXPECT_EQ_ERRORS(expectedErrors, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->kind()) {
-        case libcellml::Issue::Kind::COMPONENT:
-            foundKind.at(0) = true;
+        switch (parser->issue(i)->cause()) {
+        case libcellml::Issue::Cause::COMPONENT:
+            foundCause.at(0) = true;
             break;
-        case (libcellml::Issue::Kind::CONNECTION):
-            foundKind.at(1) = true;
+        case (libcellml::Issue::Cause::CONNECTION):
+            foundCause.at(1) = true;
             break;
-        case (libcellml::Issue::Kind::ENCAPSULATION):
-            foundKind.at(2) = true;
+        case (libcellml::Issue::Cause::ENCAPSULATION):
+            foundCause.at(2) = true;
             break;
-        case (libcellml::Issue::Kind::IMPORT):
-            foundKind.at(3) = true;
+        case (libcellml::Issue::Cause::IMPORT):
+            foundCause.at(3) = true;
             break;
-        case (libcellml::Issue::Kind::MODEL):
-            foundKind.at(4) = true;
+        case (libcellml::Issue::Cause::MODEL):
+            foundCause.at(4) = true;
             break;
-        case (libcellml::Issue::Kind::UNITS):
-            foundKind.at(5) = true;
+        case (libcellml::Issue::Cause::UNITS):
+            foundCause.at(5) = true;
             break;
-        case (libcellml::Issue::Kind::VARIABLE):
-            foundKind.at(6) = true;
+        case (libcellml::Issue::Cause::VARIABLE):
+            foundCause.at(6) = true;
             break;
-        case libcellml::Issue::Kind::MATHML:
-        case libcellml::Issue::Kind::RESET:
-        case libcellml::Issue::Kind::UNDEFINED:
-        case libcellml::Issue::Kind::XML:
-        case libcellml::Issue::Kind::GENERATOR:
+        case libcellml::Issue::Cause::MATHML:
+        case libcellml::Issue::Cause::RESET:
+        case libcellml::Issue::Cause::UNDEFINED:
+        case libcellml::Issue::Cause::XML:
+        case libcellml::Issue::Cause::GENERATOR:
             break;
         }
     }
@@ -1413,8 +1413,8 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     libcellml::IssuePtr undefinedError = libcellml::Issue::create();
     parser2->addIssue(undefinedError);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->isKind(libcellml::Issue::Kind::UNDEFINED)) {
-        foundKind.at(7) = true;
+    if (parser2->issue(0)->isCause(libcellml::Issue::Cause::UNDEFINED)) {
+        foundCause.at(7) = true;
     }
 
     // Trigger an XML error
@@ -1427,17 +1427,17 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     parser3->parseModel(input3);
     EXPECT_EQ_ERRORS(expectedErrors3, parser3);
     for (size_t i = 0; i < parser3->issueCount(); ++i) {
-        if (parser3->issue(i)->isKind(libcellml::Issue::Kind::XML)) {
-            foundKind.at(8) = true;
+        if (parser3->issue(i)->isCause(libcellml::Issue::Cause::XML)) {
+            foundCause.at(8) = true;
         }
     }
 
     // Check that we've found all the possible issue types
-    bool foundAllKinds = false;
-    if (std::all_of(foundKind.begin(), foundKind.end(), [](bool i) { return i; })) {
-        foundAllKinds = true;
+    bool foundAllCauses = false;
+    if (std::all_of(foundCause.begin(), foundCause.end(), [](bool i) { return i; })) {
+        foundAllCauses = true;
     }
-    EXPECT_TRUE(foundAllKinds);
+    EXPECT_TRUE(foundAllCauses);
 }
 
 TEST(Parser, invalidModelWithTextInAllElements)

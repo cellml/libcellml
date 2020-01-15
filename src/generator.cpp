@@ -1054,7 +1054,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                 + "' in component '" + component->name()
                                 + "' of model '" + modelName
                                 + "' is referenced in an equation, but it is not defined anywhere.");
-            err->setKind(Issue::Kind::GENERATOR);
+            err->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(err);
         }
@@ -1173,7 +1173,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                                 + "' in component '" + trackedVariableComponent->name()
                                 + "' of model '" + trackedVariableModel->name()
                                 + "' are equivalent and cannot therefore both be initialised.");
-            err->setKind(Issue::Kind::GENERATOR);
+            err->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(err);
         }
@@ -1220,7 +1220,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                     + "' in component '" + component->name()
                                     + "' of model '" + modelName
                                     + "' cannot be both a variable of integration and initialised.");
-                err->setKind(Issue::Kind::GENERATOR);
+                err->setCause(Issue::Cause::GENERATOR);
 
                 mGenerator->addIssue(err);
             } else {
@@ -1241,7 +1241,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' in component '" + component->name()
                                 + "' of model '" + model->name()
                                 + "' cannot both be a variable of integration.");
-            err->setKind(Issue::Kind::GENERATOR);
+            err->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(err);
         }
@@ -1263,7 +1263,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' in component '" + component->name()
                                 + "' of model '" + model->name()
                                 + "' must be of the first order.");
-            err->setKind(Issue::Kind::GENERATOR);
+            err->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(err);
         }
@@ -1443,7 +1443,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 err->setDescription("Variable '" + realVariable->name()
                                     + "' in component '" + realComponent->name()
                                     + "' of model '" + realModel->name() + "' " + errorType + ".");
-                err->setKind(Issue::Kind::GENERATOR);
+                err->setCause(Issue::Cause::GENERATOR);
 
                 mGenerator->addIssue(err);
             }

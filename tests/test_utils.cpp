@@ -49,7 +49,7 @@ void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool 
             std::cout << ", " << l->issue(i)->specificationHeading();
         }
         if (kinds) {
-            std::cout << ", " << static_cast<int>(l->issue(i)->kind());
+            std::cout << ", " << static_cast<int>(l->issue(i)->cause());
         }
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->rule());
@@ -78,15 +78,15 @@ void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualErrorsKinds(const std::vector<std::string> &issues,
-                            const std::vector<libcellml::Issue::Kind> &kinds,
+void expectEqualErrorsCauses(const std::vector<std::string> &issues,
+                            const std::vector<libcellml::Issue::Cause> &kinds,
                             const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(kinds.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
-        EXPECT_EQ(kinds.at(i), logger->issue(i)->kind());
+        EXPECT_EQ(kinds.at(i), logger->issue(i)->cause());
     }
 }
 

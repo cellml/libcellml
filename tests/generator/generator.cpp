@@ -71,15 +71,15 @@ TEST(Generator, initializedVariableOfIntegration)
     const std::vector<std::string> expectedErrors = {
         "Variable 'time' in component 'my_component' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised.",
     };
-    const std::vector<libcellml::Issue::Kind> expectedKinds = {
-        libcellml::Issue::Kind::GENERATOR,
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::GENERATOR,
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedKinds, generator);
+    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedCauses, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -104,15 +104,15 @@ TEST(Generator, twoVariablesOfIntegration)
     const std::vector<std::string> expectedErrors = {
         "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration.",
     };
-    const std::vector<libcellml::Issue::Kind> expectedKinds = {
-        libcellml::Issue::Kind::GENERATOR,
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::GENERATOR,
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedKinds, generator);
+    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedCauses, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -139,17 +139,17 @@ TEST(Generator, nonFirstOrderOdes)
         "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order.",
     };
-    const std::vector<libcellml::Issue::Kind> expectedKinds = {
-        libcellml::Issue::Kind::GENERATOR,
-        libcellml::Issue::Kind::GENERATOR,
-        libcellml::Issue::Kind::GENERATOR,
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::GENERATOR,
+        libcellml::Issue::Cause::GENERATOR,
+        libcellml::Issue::Cause::GENERATOR,
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedKinds, generator);
+    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedCauses, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 

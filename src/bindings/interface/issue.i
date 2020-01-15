@@ -18,12 +18,12 @@
 
 %feature("docstring") libcellml::Issue::kind
 "Get the ``kind`` of this issue. If no kind has been set for this issue, will
-return Kind::UNDEFINED.";
+return Cause::UNDEFINED.";
 
-%feature("docstring") libcellml::Issue::isKind
+%feature("docstring") libcellml::Issue::isCause
 "Tests if this issue matches the given ``kind``.";
 
-%feature("docstring") libcellml::Issue::setKind
+%feature("docstring") libcellml::Issue::setCause
 "Sets the ``kind`` of this issue.";
 
 %feature("docstring") libcellml::Issue::rule
