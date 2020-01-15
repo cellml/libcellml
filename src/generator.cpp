@@ -1682,8 +1682,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : nullptr;
-                    std::string modelName = (model != nullptr) ? model->name() : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : " ";
+                    std::string modelName = (model != nullptr) ? model->name() : " ";
 
                     std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
@@ -1723,8 +1723,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                 VariablePtr variable = getVariable(ast);
                 ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                 ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                std::string compName = (component != nullptr) ? component->name() : nullptr;
-                std::string modelName = (model != nullptr) ? model->name() : nullptr;
+                std::string compName = (component != nullptr) ? component->name() : " ";
+                std::string modelName = (model != nullptr) ? model->name() : " ";
 
                 std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                   + "' in component '" + compName
@@ -1742,8 +1742,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : nullptr;
-                    std::string modelName = (model != nullptr) ? model->name() : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : " ";
+                    std::string modelName = (model != nullptr) ? model->name() : " ";
 
                     std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
@@ -1761,8 +1761,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : nullptr;
-                    std::string modelName = (model != nullptr) ? model->name() : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : " ";
+                    std::string modelName = (model != nullptr) ? model->name() : " ";
 
                     std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
