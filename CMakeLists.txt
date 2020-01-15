@@ -191,3 +191,6 @@ if(CLANG_FORMAT_EXE)
     COMMENT "Source code has been reformatted by ClangFormat."
   )
 endif()
+
+# Add packaging
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging)
