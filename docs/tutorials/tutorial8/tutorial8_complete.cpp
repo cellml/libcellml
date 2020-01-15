@@ -1,14 +1,6 @@
 /**
- *      TUTORIAL 6: CODE GENERATION
+ *      TUTORIAL 8: IMPORTS and FLATTENING
  *
- *  This tutorial explores the ability of libCellML to generate files representing
- *  the model which can be solved in Python or C.  By the time you have worked
- *  through Tutorial 6 you will be able to:
- *      - use the Generator functionality to create models in Python or C format
- *      - use the simple solver provided to run the created models.
- *
- *  Tutorial 6 assumes that you are already comfortable with:
- *      - file manipulation and summarising using the utility functions
  *
  */
 
@@ -23,303 +15,167 @@ int main()
     //  0.a Create a new model instance representing the combined model and name it.
     auto model = libcellml::Model::create("Tutorial8_HHModel");
     auto validator = libcellml::Validator::create();
-    auto parser = libcellml::Parser::create();
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 1: Read the membrane component" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 1: Import the membrane component          " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    //  1.a Read the model provided for you in the "Tutorial8_MembraneModel.cellml"
-    //      file in the resources folder.
-    std::string inFileName = "../resources/tutorial8_MembraneModel.cellml";
-    std::ifstream inFile(inFileName);
-    std::stringstream inFileContents;
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
+    //  In order to use the import functionality we need to know three things:
+    //      - the import destination (the component/unit to which the imported item will be assigned)
+    //      - the file we're importing it from (the url to the model containing the item to be imported)
+    //      - which item within the file should be imported (the name of the component/units inside the import model file)
+    //  We'll address these now.
 
-    // 1.b  Create a temporary model for the membrane
-    auto membraneModel = parser->parseModel(inFileContents.str());
-    membraneModel->setName("membraneModel");
-
-    //  1.b Extract the membrane component from the parsed model and add it
-    //      to the combined model.  Note that the membrane component's parent
-    //      must be cleared before adding it to the model.
-    auto membrane = membraneModel->component("membrane");
-    membrane->removeParent();
+    //  1.a As previously, create a component to represent the membrane in the HH model,
+    //      and add it to the model.  This deals with the first point above: the import destination
+    auto membrane = libcellml::Component::create("membrane_component");
     model->addComponent(membrane);
 
-    //  1.c Validate the combined model.  We expect to see errors from:
-    //      - missing units, as we have only added the component so far
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    //  1.b Next we need to create an ImportSource item and use its setUrl() function to specify the
+    //      name (without the path) of the file contianing the model to be imported.
+    auto membraneImporter = libcellml::ImportSource::create();
+    membraneImporter->setUrl("tutorial8_MembraneModel.cellml");
 
-    //  1.d Import the units from the membraneModel into the combined model
-    for (size_t u = 0; u < membraneModel->unitsCount(); ++u) {
-        model->addUnits(membraneModel->units(u));
+    //  1.c Thirdly we need to link our import source to the import destination using the
+    //      Component::setImportSource() function on the membrane component, and to use the
+    //      Component::setImportReference() function to specify the name of the component inside
+    //      the import model to retrieve.
+    membrane->setImportSource(membraneImporter);
+    membrane->setImportReference("membrane_for_importing");
+
+    //  1.d At this stage, our model has only one component in it, and even though we've specified the
+    //      imports completely, we still need to resolve the imports and flatten the model before the
+    //      imported items will be instantiated here.
+    //      Use the Model::hasUnresolvedImports() function to show that the imports have not been resolved yet.
+
+    // if (model->hasUnresolvedImports()) {
+    //     std::cout << "Imports are UNRESOLVED" << std::endl;
+    // } else {
+    //     std::cout << "Imports are found" << std::endl;
+    // }
+
+    //  1.e Print the model to the terminal to show that it contains only one empty component at this stage.
+    printModelToTerminal(model);
+
+    //  1.f Use the Model::resolveImports() function of the model to (erm) resolve the imports.  This takes an
+    //      argument of a string representing the full absolute path to the directory in which the import
+    //      file specified in 1.b is stored, and must end with a slash.
+
+    // model->resolveImports("/Users/kmoy001/libcellml/tutorials_working/tutorials/tutorial8/");
+
+    //  1.g Call the Model::hasUnreolvedImports() function again and verify that they are now resolved.
+
+    // if (model->hasUnresolvedImports()) {
+    //     std::cout << "Imports are UNRESOLVED" << std::endl;
+    // } else {
+    //     std::cout << "Imports are found" << std::endl;
+    // }
+
+    //  1.h Call the Model::flatten() function.  This will recursively search through all of the imported items
+    //      in the model, and create local instances of them here.
+    //      Note that:
+    //          - if you call the flatten() function without first resolving the imports, nothing will change.
+    //          - flattening a model fundamentally changes it ... and cannot be undone.
+
+    // model->flatten();
+
+    //  1.i Print the flattened model to the terminal and verify that it now contains:
+    //      - 4 units
+    //      - 1 component with
+    //          - 8 variables
+    //          - a mathml block
+    //  from the imported file.
+
+    // printModelToTerminal(model);
+
+    //  1.j Remove the calls to Model::resolveImports() and Model::flatten() because we'll do this in one
+    //      go at the end.
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 2: Import the sodium channel component    " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  2.a Create a component representing the sodium channel.  This will be encapsulated inside the membrane
+    //      component, so add it there instead of adding it to the model.
+    auto sodiumChannel = libcellml::Component::create("sodium_channel");
+    model->addComponent(sodiumChannel); // TODO this should be the membrane component
+
+    //  2.b Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
+    //      Note that you will need to make sure it exists in the same path as the earlier files.
+    //      If you did not complete Tutorial 7 you can use the tutorial7_SodiumChannelModel.cellml
+    //      file in the resources folder.
+    auto sodiumImporter = libcellml::ImportSource::create();
+    sodiumImporter->setUrl("tutorial7_SodiumChannelModel.cellml");
+
+    //  2.c Link the sodium channel component to the importer and set the reference to import.
+    //      In the file provided this is named "sodiumChannel".  You will need to change this to
+    //      whatever you named the component in Tutorial 7.
+    sodiumChannel->setImportSource(sodiumImporter);
+    sodiumChannel->setImportReference("sodiumChannel");
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 3: Import the potassium channel component  " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  3.a Repeat all the tasks in Step 2, this time for the potassium channel model you created in
+    //      Tutorial 6.  If you did not complete Tutorial 6 you can use the tutorial6_PotassiumChannelModel.cellml
+    //      from the resources folder, importing the component called "potassiumChannel"
+    auto potassiumChannel = libcellml::Component::create("potassium_channel");
+    model->addComponent(potassiumChannel); // TODO this should be the membrane component
+
+    auto potassiumImporter = libcellml::ImportSource::create();
+    potassiumImporter->setUrl("tutorial6_PotassiumChannelModel.cellml");
+
+    potassiumChannel->setImportSource(potassiumImporter);
+    potassiumChannel->setImportReference("potassiumChannel");
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 4: Import the leakage component           " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  4.a Repeat all the tasks in Step 2, this time for the leakageCurrent component in
+    //      the model supplied inside resources/tutorial8_LeakageModel.cellml.
+    auto leakage = libcellml::Component::create("leakage");
+    model->addComponent(leakage); // TODO this should be the membrane component
+
+    auto leakageImporter = libcellml::ImportSource::create();
+    leakageImporter->setUrl("tutorial8_LeakageCurrentModel.cellml");
+
+    leakage->setImportSource(leakageImporter);
+    leakage->setImportReference("leakageCurrent");
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 5: Resolve imports and flatten the model  " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    if (model->hasUnresolvedImports()) {
+        std::cout << "Imports are UNRESOLVED" << std::endl;
+    } else {
+        std::cout << "Imports are found" << std::endl;
     }
+    model->resolveImports("/Users/kmoy001/libcellml/tutorials_working/tutorials/tutorial8/");
+    if (model->hasUnresolvedImports()) {
+        std::cout << "Imports are UNRESOLVED" << std::endl;
+    } else {
+        std::cout << "Imports are found" << std::endl;
+    }
+    model->flatten();
 
-    //  1.e No errors expected this time :)
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    printEncapsulationStructureToTerminal(model);
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "      STEP 2: Read the sodium channel" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  2.a Read the model created in Tutorial 7 representing the sodium channel.
-    //      Note that if you didn't do that tutorial you can simply copy the CellML file
-    //      from Tutorial7_SodiumChannelModel.cellml in the resources folder.
-    inFileName = "../resources/tutorial7_SodiumChannelModel.cellml";
-    inFile.close();
-    inFile.open(inFileName);
-    std::stringstream().swap(inFileContents);
-    inFileContents << inFile.rdbuf();
-
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
-
-    auto sodiumChannelModel = parser->parseModel(inFileContents.str());
-    sodiumChannelModel->setName("sodiumChannelModel");
-
-    //  2.b Extract the sodiumChannel component from the parsed model and add it
-    //      to the one created at the beginning, and check the structure of the
-    //      encapsulation using the utility function printEncapsulationStructureToTerminal(model)
-    auto sodiumChannel = sodiumChannelModel->component("sodiumChannel");
+    // Changing the parents so that we have the right encapsulation structure
     sodiumChannel->removeParent();
-    membrane->addComponent(sodiumChannel);
-    printEncapsulationStructureToTerminal(model);
-
-    //  2.c Validate the combined model.  We expect to see errors from:
-    //      - missing units, as we have only added the component so far,
-    //      - illegal connections between equivalent varaibles, as now the environment
-    //        component and the sodiumChannel component are no longer siblings.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    //  2.d Add all of the units from the sodium channel model which are not already
-    //        present into the combined model.
-    for (size_t u = 0; u < sodiumChannelModel->unitsCount(); ++u) {
-        std::string unitName = sodiumChannelModel->units(u)->name();
-        if (!model->hasUnits(unitName)) {
-            std::cout << "Adding units called " << unitName << std::endl;
-            model->addUnits(sodiumChannelModel->units(u));
-        }
-    }
-
-    //  2.e Disconnect the sodiumChannel from its old environment component
-    libcellml::Variable::removeEquivalence(
-        sodiumChannel->variable("t"),
-        sodiumChannelModel->component("environment")->variable("t"));
-    libcellml::Variable::removeEquivalence(
-        sodiumChannel->variable("V"),
-        sodiumChannelModel->component("environment")->variable("V"));
-
-    //  2.f Validate that there are no more errors in the combined model
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "       STEP 3: Read the potassium channel" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    inFileName = "../resources/tutorial5_PotassiumChannelModel.cellml";
-    inFile.close();
-    inFile.open(inFileName);
-    std::stringstream().swap(inFileContents);
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
-
-    //  3.a Deserialising the file and reading into the potassiumChannelModel
-    auto potassiumChannelModel = parser->parseModel(inFileContents.str());
-    potassiumChannelModel->setName("potassiumChannelModel");
-
-    //  3.b Extract the potassiumChannel component from the parsed model and add it
-    //      to the combined model, and check the contents
-    auto potassiumChannel = potassiumChannelModel->component("potassiumChannel");
     potassiumChannel->removeParent();
+    leakage->removeParent();
+
+    membrane->addComponent(sodiumChannel);
     membrane->addComponent(potassiumChannel);
-
-    //  3.c Validate the combined model.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    //  If you have used the files provided in the Resources folder, you can expect
-    //  to see errors at this point relating to missing units.
-    //  This is because even though both components require the same set of units,
-    //  each of them has used different names for them.  At this stage you have a
-    //  choice: either import all the units under their original names from the
-    //  potassium channel as well, or rename the units throughout the potassiumChannel
-    //  variables and maths.  Here we'll go with the former to illustrate the
-    //  process, and to create a more compact model description.
-
-    //  3.d Rename the units referred to by the variables in the potassiumChannel and nGate components
-    potassiumChannel->variable("t")->setUnits("ms");
-    potassiumChannel->variable("V")->setUnits("mV");
-    potassiumChannel->variable("E_K")->setUnits("mV");
-    potassiumChannel->variable("g_K")->setUnits("mS_per_cm2");
-    potassiumChannel->variable("alpha_n")->setUnits("per_ms");
-    potassiumChannel->variable("beta_n")->setUnits("per_ms");
-
-    potassiumChannel->component("nGate")->variable("t")->setUnits("ms");
-    potassiumChannel->component("nGate")->variable("V")->setUnits("mV");
-    potassiumChannel->component("nGate")->variable("alpha_n")->setUnits("per_ms");
-    potassiumChannel->component("nGate")->variable("beta_n")->setUnits("per_ms");
-
-    //  3.e Replacing units in the MathML string in the nGate component.
-    //      Note: There are no constants in the potassiumChannel maths, so we don't need to
-    //      search and replace the maths there.  In the general case, you'd need to do the
-    //      same in that component too.
-    std::string nGateMaths = potassiumChannel->component("nGate")->math();
-    switchUnitsInMaths(nGateMaths, "millivolt", "mV");
-    switchUnitsInMaths(nGateMaths, "millisecond", "ms");
-    switchUnitsInMaths(nGateMaths, "per_millisecond", "per_ms");
-    switchUnitsInMaths(nGateMaths, "per_millivolt_millisecond", "per_mV_ms");
-    switchUnitsInMaths(nGateMaths, "milliS_per_cm2", "mS_per_cm2");
-    potassiumChannel->component("nGate")->setMath(nGateMaths);
-
-    //  3.f Validating the model again.  This time we expect errors related to a mismatch in errors
-    //      between equivalent variables ... which is a misleading error message because in the
-    //      source model - PotassiumChannelModel, they *were* equivalent!  We haven't imported
-    //      the environment component into our combined model yet, and that is the origin of this
-    //      error.  We can solve the problem by creating the local environment component, and adding
-    //      the equivalence to that instead.
-    libcellml::Variable::removeEquivalence(
-        potassiumChannel->variable("t"),
-        potassiumChannelModel->component("environment")->variable("t"));
-    libcellml::Variable::removeEquivalence(
-        potassiumChannel->variable("V"),
-        potassiumChannelModel->component("environment")->variable("V"));
-
-    //  3.g Calling the validator again.  We do not expect errors here.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 4: Read the leakage component" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    inFileName = "../resources/tutorial8_LeakageCurrentModel.cellml";
-    inFile.close();
-    inFile.open(inFileName);
-    std::stringstream().swap(inFileContents);
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
-
-    //  4.a Deserialising the file and reading into the leakageCurrentModel
-    auto leakageCurrentModel = parser->parseModel(inFileContents.str());
-    leakageCurrentModel->setName("leakageCurrentModel");
-
-    //  4.b Extract the leakageCurrent component from the parsed model and add it
-    //      to the combined model, and check the contents
-    auto leakageCurrent = leakageCurrentModel->component("leakageCurrent");
-    leakageCurrent->removeParent();
-    membrane->addComponent(leakageCurrent);
-
-    //  4.c Validate the combined model.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 5: Create the environment component" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    printEncapsulationStructureToTerminal(model);
-
-    //  5.a Creating the environment component and adding it to the model
-    auto environment = libcellml::Component::create("environment");
-    model->addComponent(environment);
-
-    //  5.b Add variables to the environment component.
-    {
-        auto V = libcellml::Variable::create("V");
-        V->setUnits("mV");
-        environment->addVariable(V);
-
-        auto t = libcellml::Variable::create("t");
-        t->setUnits("ms");
-        environment->addVariable(t);
-    } // end of the environment scope for variables
-
-    //  5.c Add the new component to the model and validate
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 6: Connect the equivalent variables" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  6.a Connecting the membrane to its sibling environment, and the channels to their
-    //      parent membrane component.
-    libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(environment->variable("t"), membrane->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), leakageCurrent->variable("V"));
-    libcellml::Variable::addEquivalence(environment->variable("V"), membrane->variable("V"));
-
-    //  6.b Setting the interface types for those which haven't been inherited already
-    environment->variable("t")->setInterfaceType("public");
-    membrane->variable("t")->setInterfaceType("public_and_private");
-    environment->variable("V")->setInterfaceType("public");
-    membrane->variable("V")->setInterfaceType("public_and_private");
+    membrane->addComponent(leakage);
 
     validator->validateModel(model);
+
     printErrorsToTerminal(validator);
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 7: Add the driving function" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
 
-    //  7.a Create a MathML string to represent the stimulus current i_stim, which
-    //      is set to 100 microA/cm^2 between t=1ms < t < t=1.2ms.
-    std::string stimulusEquation =
-        "  <apply><eq/>\n"
-        "    <ci>i_stim</ci>\n"
-        "    <piecewise>\n"
-        "       <piece>\n"
-        "         <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
-        "         <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">1</cn></apply>\n"
-        "       </piece>\n"
-        "       <piece>\n"
-        "         <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
-        "         <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">1.2</cn></apply>\n"
-        "       </piece>\n"
-        "       <otherwise>\n"
-        "         <cn cellml:units=\"microA_per_cm2\">100</cn>\n"
-        "       </otherwise>\n"
-        "    </piecewise>\n"
-        "  </apply>\n";
-
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 8: Generate the model and initialise" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  8.a Create a Generator and submit the model for processing.  Expect errors
-    //      related to missing initial conditions.
-    auto generator = libcellml::Generator::create();
-    generator->processModel(model);
-    printErrorsToTerminal(generator);
-
-    //  8.b Initialise the values required and recheck the model
-    environment->variable("V")->setInitialValue(-85);
-
-    generator->processModel(model);
-    printErrorsToTerminal(generator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 9: Output the final model" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    auto printer = libcellml::Printer::create();
-    std::string serialisedModelString = printer->printModel(model);
-    std::string outFileName = "tutorial8_HodgkinHuxleyModel.cellml";
-    std::ofstream outFile(outFileName);
-    outFile << serialisedModelString;
-    outFile.close();
-
-    std::cout << "The created '" << model->name()
-              << "' model has been printed to: " << outFileName << std::endl;
+    
 }
