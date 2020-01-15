@@ -18,6 +18,31 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(Variable, addEquivalenceNullptrFirstParameter)
+{
+    libcellml::VariablePtr v1 = nullptr;
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::Variable::addEquivalence(v1, v2);
+    EXPECT_EQ(size_t(0), v2->equivalentVariableCount());
+    EXPECT_FALSE(v2->hasEquivalentVariable(v1));
+}
+
+TEST(Variable, addEquivalenceNullptrSecondParameter)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = nullptr;
+    libcellml::Variable::addEquivalence(v1, v2);
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+}
+
+TEST(Variable, addEquivalenceNullptrBothParameters)
+{
+    libcellml::VariablePtr v1 = nullptr;
+    libcellml::VariablePtr v2 = nullptr;
+    libcellml::Variable::addEquivalence(v1, v2);
+}
+
 TEST(Variable, addAndGetEquivalentVariable)
 {
     libcellml::VariablePtr v1 = libcellml::Variable::create();

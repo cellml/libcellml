@@ -16,11 +16,12 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/types.h"
-
 #include <map>
 #include <string>
 #include <vector>
+
+#include "libcellml/types.h"
+#include "libcellml/variable.h"
 
 namespace libcellml {
 
@@ -194,6 +195,21 @@ const std::vector<std::string> supportedMathMLElements = {
     "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc",
     "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
     "notanumber", "infinity", "true", "false"};
+
+/**
+ * @brief Map to convert an interface type into its string form.
+ *
+ * An internal map used to convert a Variable InterfaceType enum class member into its string form.
+ */
+static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
+    {Variable::InterfaceType::NONE, "none"},
+    {Variable::InterfaceType::PRIVATE, "private"},
+    {Variable::InterfaceType::PUBLIC, "public"},
+    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
+
+using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::InterfaceType>;
+
+using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
 /**
  * @brief Convert the @p candidate @c std::string to a @c double.
@@ -416,5 +432,13 @@ bool isStandardPrefixName(const std::string &name);
  * number of variables in the component if the variable was not found.
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+
+bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
+
+bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
+
+Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
+
+void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 } // namespace libcellml
