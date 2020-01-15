@@ -17,10 +17,10 @@ limitations under the License.
 #include "libcellml/generator.h"
 
 #include <algorithm>
+#include <cfloat>
 #include <cmath>
 #include <limits>
 #include <list>
-#include <float.h>
 #include <regex>
 #include <sstream>
 #include <stack>
@@ -1413,7 +1413,6 @@ UnitsMap addMappings(UnitsMap firstMap, const UnitsMap &secondMap, int operation
 }
 
 // Function which multiplies mappings if we have a power or root operator in the AST.
-// Note: This is cuurently an incorrect implementation of this method.
 UnitsMap multiplyMappings(UnitsMap map, const GeneratorEquationAstPtr &ast, double power)
 {
     if (ast->mType == libcellml::GeneratorEquationAst::Type::POWER) {
@@ -1462,7 +1461,6 @@ bool mapsAreEquivalent(const UnitsMap &firstMap, const UnitsMap &secondMap, std:
         hints.pop_back();
         hints.back() = '.';
     }
-
     return equivalent;
 }
 
@@ -1484,7 +1482,6 @@ void updateBaseUnitCount(const ModelPtr &model,
                          double uExp, double logMult,
                          int direction)
 {
-
     if (isStandardUnitName(uName)) {
         for (const auto &iter : standardUnitsList.at(uName)) {
             if (unitMap.find(iter.first) == unitMap.end()) {
@@ -1493,7 +1490,7 @@ void updateBaseUnitCount(const ModelPtr &model,
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
         multiplier += direction * logMult;
-    
+
     } else if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
@@ -1566,12 +1563,12 @@ double getPower(const GeneratorEquationAstPtr &ast)
         }
     }
 
-    // In the special case where the terminating node is a variables, eliminates cases wher we might make an invalid std::stod call
+    // In the special case where the terminating node is a variable, eliminates the possibility of making an invalid std::stod call
     if (ast->mValue.empty()) {
         return 0;
     }
 
-    return std::stod(ast->mValue); 
+    return std::stod(ast->mValue);
 }
 
 static const std::map<GeneratorEquationAst::Type, std::string> AstTypeToString = {
@@ -1626,30 +1623,48 @@ static const std::map<GeneratorEquationAst::Type, std::string> AstTypeToString =
     {GeneratorEquationAst::Type::COT, " cot "},
     {GeneratorEquationAst::Type::COTH, " coth "}};
 
+// Get the units in the mapping if we have an incorrect test case.
+std::string getHints(const UnitsMap &map)
+{
+    std::string hints;
+    for (const auto &unit : map) {
+        if (unit.second != 0.0) {
+            std::string num = std::to_string(unit.second);
+            num.erase(num.find_last_not_of('0') + 1, num.length());
+            if (num.back() == '.') {
+                num.pop_back();
+            }
+            hints += unit.first + "^" + num + ", ";
+        }
+    }
+    if (hints.length() > 2) {
+        hints.pop_back();
+        hints.back() = '.';
+    }
+    return hints;
+}
+
 UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
 {
     if (ast != nullptr) {
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            // Have a check for if the markup is CI or CN. If it's CN (and has no units!), then return the empty mapping (just a number, no units). Otherwise, create a mapping.
-            if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits == nullptr) {
-                return unitMap;
-            }
-
             ModelPtr model;
-            std::string uName; // Declarations
+            std::string uName;
+
+            // If we have a unit associated with the value of a number we add it to the units mapping.
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
                 model = owningModel(ast->mUnits);
                 uName = ast->mUnits->name();
-                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units. Multipliers can be checked in another function.
-                return unitMap;
+                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
             }
 
-            model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
-            uName = (ast->mVariable != nullptr) ? ast->mVariable->units()->name() : "dimensionless";
-            if (uName == "dimensionless") {
-                return unitMap;
+            if (ast->mType == GeneratorEquationAst::Type::CI) {
+                model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
+                uName = (ast->mUnits != nullptr) ? ast->mUnits->name() : "dimensionless";
+                if (!(uName == "dimensionless")) {
+                    updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+                }
             }
-            updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction); // Remove the multiplier from this one, in this function we will only check units. Multipliers can be checked in another function.
             return unitMap;
         }
 
@@ -1662,22 +1677,20 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             // Plus, Minus, any unit comparisons where units have to be exactly the same.
             if (isDirectComparisonOperator(ast)) {
                 std::string hints;
-                if (mapsAreEquivalent(leftMap, rightMap, hints) || rightMap.empty()) {
-                    return leftMap;
-                } 
-                VariablePtr variable = getVariable(ast);
-                ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
-                ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                std::string compName = (component != nullptr) ? component->name() : "no_name";
-                std::string modelName = (model != nullptr) ? model->name() : "no_name";
+                if (!(mapsAreEquivalent(leftMap, rightMap, hints) || rightMap.empty())) {
+                    //return leftMap;
+                    VariablePtr variable = getVariable(ast);
+                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : nullptr;
+                    std::string modelName = (model != nullptr) ? model->name() : nullptr;
 
-                std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
-                                  + "' in component '" + compName
-                                  + "' of model '" + modelName
-                                  + "' are not equivalent. The unit mismatch is " + hints;
-                errors.push_back(err);
-                return leftMap;
-                
+                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
+                                      + "' in component '" + compName
+                                      + "' of model '" + modelName
+                                      + "' are not equivalent. The unit mismatch is " + hints;
+                    errors.push_back(err);
+                }
             }
 
             // Multiply, Divide: add mappings, no interest in unit compatibility.
@@ -1693,104 +1706,71 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
             // Checks for exponential operators, multiplies unit mappings with power
             if (isExponentOperator(ast)) {
-                double power = getPower(ast->mRight); // Getting the power to be applied
-
-                // In here have a check for what type of power we are checking for
+                double power = getPower(ast->mRight);
                 bool correctUnits = false;
                 if (power == 0.0) {
-                    correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap);
+                    correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap); // If we have a variable as our power both the power and the quantity it is being applied to must be dimensionless
                 } else {
-                    correctUnits = isDimensionless(rightMap);
+                    correctUnits = isDimensionless(rightMap); // Otherwise we just check the power for dimensionlessness
                 }
 
                 if (correctUnits) {
                     return multiplyMappings(leftMap, ast, power);
-                } else {
-                    std::string hints = ""; // Otherwise we return what the units are in the expression.
-                    for (const auto &unit : rightMap) {
-                        if (unit.second != 0.0) {
-                            std::string num = std::to_string(unit.second);
-                            num.erase(num.find_last_not_of('0') + 1, num.length());
-                            if (num.back() == '.') {
-                                num.pop_back();
-                            }
-                            hints += unit.first + "^" + num + ", ";
-                        }
-                    }
-                    if (hints.length() > 2) {
-                        hints.pop_back();
-                        hints.back() = '.';
-                    }
-                    VariablePtr variable = getVariable(ast->mRight);
-                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
-                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string varName = (variable != nullptr) ? variable->name() : "no_name";
-                    std::string compName = (component != nullptr) ? component->name() : "no_name";
-                    std::string modelName = (model != nullptr) ? model->name() : "no_name";
-
-                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
-                                      + "' in component '" + compName
-                                      + "' of model '" + modelName
-                                      + "' are not dimensionless. The units in the expression are " + hints;
-                    errors.push_back(err);
-                    return leftMap;
                 }
+
+                // Otherwise, for a non-dimensionless case, we return what the units are in the expression.
+                std::string hints = getHints(rightMap);
+                VariablePtr variable = getVariable(ast);
+                ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                std::string compName = (component != nullptr) ? component->name() : nullptr;
+                std::string modelName = (model != nullptr) ? model->name() : nullptr;
+
+                std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
+                                  + "' in component '" + compName
+                                  + "' of model '" + modelName
+                                  + "' are not dimensionless. The units in the expression are " + hints;
+                errors.push_back(err);
             }
 
             // Check logarithms to ensure we have the same base and units inside the logarithmic expression, or both are dimensionless.
             if (isLogarithmicOperator(ast)) {
-                std::string hints = "";
-                if (mapsAreEquivalent(rightMap, leftMap, hints)) {
-                    return leftMap;
-                } else {
+                std::string hints;
+                if (!mapsAreEquivalent(rightMap, leftMap, hints)) {
+                    
+                    //return leftMap;
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                    std::string compName = (component != nullptr) ? component->name() : "no_name";
-                    std::string modelName = (model != nullptr) ? model->name() : "no_name";
+                    std::string compName = (component != nullptr) ? component->name() : nullptr;
+                    std::string modelName = (model != nullptr) ? model->name() : nullptr;
 
                     std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
-                                      + "' in component '" + component->name()
-                                      + "' of model '" + model->name()
+                                      + "' in component '" + compName
+                                      + "' of model '" + modelName
                                       + "' are not dimensionless. The units in the expression are: " + hints;
                     errors.push_back(err);
-                    return leftMap;
-                }
+                } 
             }
 
             // All trig arguments should be dimensionless
             if (isTrigonometricOperator(ast)) {
-                if (isDimensionless(leftMap)) {
-                    leftMap.clear();
-                    return leftMap; // Return a dimensionless mapping to denote a pass case.
-                } else {
-                    std::string hints;
-                    for (const auto &unit : leftMap) {
-                        if (unit.second != 0.0) {
-                            std::string num = std::to_string(unit.second);
-                            num.erase(num.find_last_not_of('0') + 1, num.length());
-                            if (num.back() == '.') {
-                                num.pop_back();
-                            }
-                            hints += unit.first + "^" + num + ", ";
-                        }
-                    }
-                    if (hints.length() > 2) {
-                        hints.pop_back();
-                        hints.back() = '.';
-                    }
-                    VariablePtr variable = ast->mVariable;
-                    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                    ModelPtr model = owningModel(component);
+                if (!isDimensionless(leftMap)) {
+
+                    std::string hints = getHints(leftMap);
+                    VariablePtr variable = getVariable(ast);
+                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : nullptr;
+                    std::string modelName = (model != nullptr) ? model->name() : nullptr;
 
                     std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
-                                      + "' in component '" + component->name()
-                                      + "' of model '" + model->name()
+                                      + "' in component '" + compName
+                                      + "' of model '" + modelName
                                       + "' is not dimensionless. The units in the argument are: " + hints;
                     errors.push_back(err);
                     leftMap.clear(); // Clear our mapping to reduce the potential for errors further up the tree.
-                    return leftMap;
-                }
+                } 
             }
 
             if (isDerivativeOperator(ast)) {
@@ -1799,9 +1779,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
 
             if (isBottomVariableOperator(ast)) {
                 for (auto &unit : leftMap) {
-                    unit.second *= -1.0; // Bottom variable will be "per" the unit; although sometimes it's defined as being "per_s" already (need to address)
+                    unit.second *= -1.0; // Bottom variable will be "per" the unit on the top
                 }
-                return leftMap;
             }
             return leftMap;
         }
