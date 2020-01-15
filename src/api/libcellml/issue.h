@@ -171,6 +171,37 @@ public:
     bool isCause(Cause cause) const;
 
     /**
+     * @brief Set the level of this issue.
+     *
+     * Set the @p level of this issue from the options available in
+     * @c Issue::Level.
+     *
+     * @param level The @c Issue::Level to set.
+     */
+    void setLevel(Level level);
+
+    /**
+     * @brief Get the level of this issue.
+     *
+     * Get the @c level of this issue. If no level has been set for
+     * this issue, will return Level::FATAL.
+     *
+     * @return The @c Issue::Level set for this issue.
+     */
+    Level level() const;
+
+    /**
+     * @brief Check whether the level of this issue matches the argument level.
+     *
+     * Return @c true if the @p level matches the the @c Issue::Level for this
+     * issue and @c false otherwise.
+     *
+     * @return @c true if the @p level matches the the @c Issue::Level for this
+     * issue and @c false otherwise.
+     */
+    bool isLevel(Level level) const;
+
+    /**
      * @brief Set the @c enum SpecificationRule of this issue.
      *
      * Set the @p rule of this issue from the options available in

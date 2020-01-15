@@ -157,6 +157,25 @@ bool Issue::isCause(Cause cause) const
     return response;
 }
 
+void Issue::setLevel(Issue::Level level)
+{
+    mPimpl->mLevel = level;
+}
+
+Issue::Level Issue::level() const
+{
+    return mPimpl->mLevel;
+}
+
+bool Issue::isLevel(Level level) const
+{
+    bool response = false;
+    if (mPimpl->mLevel == level) {
+        response = true;
+    }
+    return response;
+}
+
 void Issue::setRule(SpecificationRule rule)
 {
     mPimpl->mRule = rule;
