@@ -110,6 +110,18 @@ public:
     };
 
     /**
+     * @brief The issue Level enum class.
+     *
+     * Enum to describe the level of severity that a given issue has.
+     */
+    enum class Level
+    {
+        FATAL,
+        WARNING,
+        INFORMATION,
+    };
+
+    /**
      * @brief Set the description for this issue.
      *
      * Set the @c std::string @p description for why this issue was raised.
