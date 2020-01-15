@@ -402,3 +402,63 @@ TEST(Issue, specificationRule)
     testSpecificationRule(e);
     EXPECT_EQ(size_t(51), count);
 }
+
+TEST(Issue, createModelWarning)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::IssuePtr e = libcellml::Issue::create(m);
+
+    e->setLevel(libcellml::Issue::Level::WARNING);
+
+    EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}
+
+TEST(Issue, createComponemntWarning)
+{
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::IssuePtr e = libcellml::Issue::create(c);
+    e->setLevel(libcellml::Issue::Level::WARNING);
+    EXPECT_EQ(libcellml::Issue::Cause::COMPONENT, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}
+
+TEST(Issue, createVariableWarning)
+{
+    libcellml::VariablePtr v = libcellml::Variable::create();
+    libcellml::IssuePtr e = libcellml::Issue::create(v);
+    e->setLevel(libcellml::Issue::Level::WARNING);
+
+    EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}
+
+TEST(Issue, createUnitsWarning)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    libcellml::IssuePtr e = libcellml::Issue::create(u);
+    e->setLevel(libcellml::Issue::Level::WARNING);
+
+    EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}
+
+TEST(Issue, createImportSourceWarning)
+{
+    libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
+    libcellml::IssuePtr e = libcellml::Issue::create(i);
+    e->setLevel(libcellml::Issue::Level::WARNING);
+
+    EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}
+
+TEST(Issue, createResetWarning)
+{
+    libcellml::ResetPtr r = libcellml::Reset::create();
+    libcellml::IssuePtr e = libcellml::Issue::create(r);
+    e->setLevel(libcellml::Issue::Level::WARNING);
+
+    EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}

@@ -30,7 +30,7 @@ TEST(Parser, parseSineModelFromFile)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(fileContents("sine_approximations.xml"));
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, parseSineImportsModelFromFile)
@@ -38,7 +38,7 @@ TEST(Parser, parseSineImportsModelFromFile)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(fileContents("sine_approximations_import.xml"));
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, parseInvalidModelFromFile)
@@ -59,7 +59,7 @@ TEST(Parser, parseOrdModelFromFile)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("Ohara_Rudy_2011.cellml"));
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     // Test some random values.
     std::string a = model->component("intracellular_ions")->variable("BSLmax")->initialValue();
@@ -81,7 +81,7 @@ TEST(Parser, parseComplexEncapsulationModelFromFile)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(fileContents("complex_encapsulation.xml"));
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
@@ -121,7 +121,7 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("a_plus_b.cellml"));
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     std::string a = model->component("c1")->math();
     EXPECT_EQ(e1, a);
@@ -150,7 +150,7 @@ TEST(Parser, simpleGeneratorModel)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ(size_t(0), p->errorCount());
 
     std::string a = model->component("my_component")->math();
     EXPECT_EQ(e, a);

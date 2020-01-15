@@ -1056,7 +1056,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                 + "' is referenced in an equation, but it is not defined anywhere.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addIssue(err);
+            mGenerator->addError(err);
         }
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
@@ -1175,7 +1175,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                                 + "' are equivalent and cannot therefore both be initialised.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addIssue(err);
+            mGenerator->addError(err);
         }
     }
 
@@ -1222,7 +1222,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                     + "' cannot be both a variable of integration and initialised.");
                 err->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addIssue(err);
+                mGenerator->addError(err);
             } else {
                 mVoi = variable;
             }
@@ -1243,7 +1243,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' cannot both be a variable of integration.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addIssue(err);
+            mGenerator->addError(err);
         }
     }
 
@@ -1265,7 +1265,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' must be of the first order.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addIssue(err);
+            mGenerator->addError(err);
         }
     }
 
@@ -1366,7 +1366,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Process our different equations' AST to determine the type of our
     // variables.
 
-    if (mGenerator->issueCount() == 0) {
+    if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
         }
@@ -1376,7 +1376,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // then loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
 
-    if (mGenerator->issueCount() == 0) {
+    if (mGenerator->errorCount() == 0) {
         mInternalVariables.sort(compareVariablesByName);
 
         size_t variableIndex = MAX_SIZE_T;
@@ -1408,7 +1408,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     // Make sure that our variables are valid.
 
-    if (mGenerator->issueCount() == 0) {
+    if (mGenerator->errorCount() == 0) {
         for (const auto &internalVariable : mInternalVariables) {
             std::string errorType;
 
@@ -1445,7 +1445,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                                     + "' of model '" + realModel->name() + "' " + errorType + ".");
                 err->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addIssue(err);
+                mGenerator->addError(err);
             }
         }
     }
@@ -3426,12 +3426,12 @@ void Generator::processModel(const ModelPtr &model)
 
     validator->validateModel(model);
 
-    if (validator->issueCount() > 0) {
+    if (validator->errorCount() > 0) {
         // The model is not valid, so retrieve the validation issues and make
         // them our own.
 
-        for (size_t i = 0; i < validator->issueCount(); ++i) {
-            addIssue(validator->issue(i));
+        for (size_t i = 0; i < validator->errorCount(); ++i) {
+            addError(validator->error(i));
         }
 
         return;

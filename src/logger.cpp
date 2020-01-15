@@ -49,17 +49,17 @@ void Logger::removeAllErrors()
     mPimpl->mErrors.clear();
 }
 
-void Logger::addIssue(const IssuePtr &issue)
+void Logger::addError(const IssuePtr &issue)
 {
     mPimpl->mErrors.push_back(issue);
 }
 
-size_t Logger::issueCount() const
+size_t Logger::errorCount() const
 {
     return mPimpl->mErrors.size();
 }
 
-IssuePtr Logger::issue(size_t index) const
+IssuePtr Logger::error(size_t index) const
 {
     IssuePtr err = nullptr;
     if (index < mPimpl->mErrors.size()) {
@@ -67,5 +67,17 @@ IssuePtr Logger::issue(size_t index) const
     }
     return err;
 }
+
+
+
+// IssuePtr Logger::error(size_t index) const
+// {
+//     IssuePtr err = nullptr;
+//     if (index < mPimpl->mIssues.size()) {
+//         err = mPimpl->mErrors.at(index);
+//     }
+//     return err;
+// }
+
 
 } // namespace libcellml
