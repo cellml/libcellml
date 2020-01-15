@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial6_PotassiumChannelModel">
+  <units name="millisecond">
+    <unit prefix="milli" units="second"/>
+  </units>
+  <units name="millivolt">
+    <unit prefix="milli" units="volt"/>
+  </units>
+  <units name="per_millisecond">
+    <unit exponent="-1" units="millisecond"/>
+  </units>
+  <units name="per_millivolt_millisecond">
+    <unit units="per_millisecond"/>
+    <unit exponent="-1" units="millivolt"/>
+  </units>
+  <units name="millimol">
+    <unit prefix="milli" units="mole"/>
+  </units>
+  <units name="microA_per_cm2">
+    <unit prefix="micro" units="ampere"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+  <units name="milliS_per_cm2">
+    <unit prefix="milli" units="siemens"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+  <component name="potassiumChannel">
+    <variable name="E_K" units="millivolt"/>
+    <variable name="i_K" units="microA_per_cm2"/>
+    <variable name="g_K" units="milliS_per_cm2" initial_value="36"/>
+    <variable name="V" units="millivolt" interface="public_and_private"/>
+    <variable name="t" units="millisecond" interface="public_and_private"/>
+    <variable name="n" units="dimensionless" interface="private"/>
+    <variable name="Ko" units="millimol" initial_value="3"/>
+    <variable name="Ki" units="millimol" initial_value="90"/>
+    <variable name="RTF" units="millivolt" initial_value="25"/>
+    <variable name="K_conductance" units="milliS_per_cm2"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply><eq/>
+        <ci>E_K</ci>
+        <apply><times/>
+          <ci>RTF</ci>
+          <apply><ln/>
+            <apply><divide/>
+              <ci>Ko</ci>
+              <ci>Ki</ci>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+      <apply><eq/>
+        <ci>K_conductance</ci>
+        <apply><times/>
+          <ci>g_K</ci>
+          <apply><power/>
+            <ci>n</ci>
+            <cn cellml:units="dimensionless">4</cn>
+          </apply>
+        </apply>
+      </apply>
+      <apply><eq/>
+        <ci>i_K</ci>
+        <apply><times/>
+          <ci>K_conductance</ci>
+          <apply><minus/>
+            <ci>V</ci>
+            <ci>E_K</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="nGate">
+    <variable name="t" units="millisecond" interface="public"/>
+    <variable name="V" units="millivolt" interface="public"/>
+    <variable name="alpha_n" units="per_millisecond"/>
+    <variable name="beta_n" units="per_millisecond"/>
+    <variable name="n" units="dimensionless" initial_value="0.325" interface="public"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply><eq/>
+        <apply><diff/>
+          <bvar><ci>t</ci></bvar>
+          <ci>n</ci>
+        </apply>
+        <apply><minus/>
+          <apply><times/>
+            <ci>alpha_n</ci>
+            <apply><minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>n</ci>
+            </apply>
+          </apply>
+          <apply><times/>
+            <ci>beta_n</ci>
+            <ci>n</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply><eq/>
+        <ci>alpha_n</ci>
+        <apply><divide/>
+          <apply><times/>
+            <cn cellml:units="per_millivolt_millisecond">0.01</cn>
+            <apply><plus/>
+              <ci>V</ci>
+              <cn cellml:units="millivolt">10</cn>
+            </apply>
+          </apply>
+          <apply><minus/>
+            <apply><exp/>
+              <apply><divide/>
+                <apply><plus/>
+                  <ci>V</ci>
+                  <cn cellml:units="millivolt">10</cn>
+                </apply>
+                <cn cellml:units="millivolt">10</cn>
+              </apply>
+            </apply>
+            <cn cellml:units="dimensionless">1</cn>
+          </apply>
+        </apply>
+      </apply>
+      <apply><eq/>
+        <ci>beta_n</ci>
+        <apply><times/>
+          <cn cellml:units="per_millisecond">0.125</cn>
+          <apply><exp/>
+            <apply><divide/>
+              <ci>V</ci>
+              <cn cellml:units="millivolt">80</cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+  <component name="environment">
+    <variable name="V" units="millivolt" interface="public"/>
+    <variable name="t" units="millisecond" interface="public"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply><eq/>
+        <ci>V</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="millivolt">0</cn>
+            <apply><lt/><ci>t</ci><cn cellml:units="millisecond">5</cn></apply>
+          </piece>
+          <piece>
+            <cn cellml:units="millivolt">0</cn>
+            <apply><gt/><ci>t</ci><cn cellml:units="millisecond">15</cn></apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="millivolt">-85</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+    </math>
+  </component>
+  <connection component_1="potassiumChannel" component_2="environment">
+    <map_variables variable_1="V" variable_2="V"/>
+    <map_variables variable_1="t" variable_2="t"/>
+  </connection>
+  <connection component_1="potassiumChannel" component_2="nGate">
+    <map_variables variable_1="V" variable_2="V"/>
+    <map_variables variable_1="t" variable_2="t"/>
+    <map_variables variable_1="n" variable_2="n"/>
+  </connection>
+  <encapsulation>
+    <component_ref component="potassiumChannel">
+      <component_ref component="nGate"/>
+    </component_ref>
+  </encapsulation>
+</model>
