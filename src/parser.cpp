@@ -230,7 +230,7 @@ ParserPtr Parser::create() noexcept
 
 ModelPtr Parser::parseModel(const std::string &input)
 {
-    removeAllErrors();
+    removeAllIssues();
     ModelPtr model = Model::create();
     if (input.empty()) {
         IssuePtr err = Issue::create();

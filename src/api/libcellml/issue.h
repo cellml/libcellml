@@ -116,9 +116,9 @@ public:
      */
     enum class Level
     {
-        FATAL,
+        ERROR,
         WARNING,
-        INFORMATION,
+        HINT,
     };
 
     /**
@@ -184,7 +184,7 @@ public:
      * @brief Get the level of this issue.
      *
      * Get the @c level of this issue. If no level has been set for
-     * this issue, will return Level::FATAL.
+     * this issue, will return Level::ERROR.
      *
      * @return The @c Issue::Level set for this issue.
      */

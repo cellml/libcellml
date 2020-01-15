@@ -31,7 +31,7 @@ struct Issue::IssueImpl
 {
     std::string mDescription; /**< The string description for why this entity issue raised. */
     Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
-    Issue::Level mLevel = Issue::Level::FATAL; /**< The Issue::Level enum value for this issue. */
+    Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this issue. */
     ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the issue occurred in. */

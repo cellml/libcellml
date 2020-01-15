@@ -31,7 +31,10 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    std::vector<IssuePtr> mErrors;
+    std::vector<size_t> mErrors;
+    std::vector<size_t> mWarnings;
+    std::vector<size_t> mHints;
+    std::vector<IssuePtr> mIssues;
 };
 
 Logger::Logger()
@@ -44,15 +47,10 @@ Logger::~Logger()
     delete mPimpl;
 }
 
-// KRM I've left these here as is so that all the existing tests and behaviour stays the same.
-void Logger::removeAllErrors()
-{
-    mPimpl->mErrors.clear();
-}
-
 void Logger::addError(const IssuePtr &issue)
 {
-    mPimpl->mErrors.push_back(issue);
+    mPimpl->mIssues.push_back(issue);
+    mPimpl->mErrors.push_back(mPimpl->mIssues.size() - 1);
 }
 
 size_t Logger::errorCount() const
@@ -63,21 +61,93 @@ size_t Logger::errorCount() const
 IssuePtr Logger::error(size_t index) const
 {
     IssuePtr err = nullptr;
-    if (index < mPimpl->mErrors.size()) {
-        err = mPimpl->mErrors.at(index);
+    if ((index < mPimpl->mErrors.size()) && (mPimpl->mErrors.at(index) < mPimpl->mIssues.size())) {
+        err = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
+    }
+    return err;
+}
+
+void Logger::addWarning(const IssuePtr &issue)
+{
+    mPimpl->mIssues.push_back(issue);
+    mPimpl->mWarnings.push_back(mPimpl->mIssues.size() - 1);
+}
+
+size_t Logger::warningCount() const
+{
+    return mPimpl->mWarnings.size();
+}
+
+IssuePtr Logger::warning(size_t index) const
+{
+    IssuePtr err = nullptr;
+    if ((index < mPimpl->mWarnings.size()) && (mPimpl->mWarnings.at(index) < mPimpl->mIssues.size())) {
+        err = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
+    }
+    return err;
+}
+
+void Logger::addHint(const IssuePtr &issue)
+{
+    mPimpl->mIssues.push_back(issue);
+    mPimpl->mHints.push_back(mPimpl->mIssues.size() - 1);
+}
+
+size_t Logger::hintCount() const
+{
+    return mPimpl->mWarnings.size();
+}
+
+IssuePtr Logger::hint(size_t index) const
+{
+    IssuePtr err = nullptr;
+    if ((index < mPimpl->mHints.size()) && (mPimpl->mHints.at(index) < mPimpl->mIssues.size())) {
+        err = mPimpl->mIssues.at(mPimpl->mHints.at(index));
     }
     return err;
 }
 
 // KRM Changes start from here
 
-// IssuePtr Logger::error(size_t index) const
-// {
-//     IssuePtr err = nullptr;
-//     if (index < mPimpl->mIssues.size()) {
-//         err = mPimpl->mErrors.at(index);
-//     }
-//     return err;
-// }
+void Logger::removeAllIssues()
+{
+    mPimpl->mIssues.clear();
+    mPimpl->mErrors.clear();
+    mPimpl->mWarnings.clear();
+    mPimpl->mHints.clear();
+}
+
+void Logger::addIssue(const IssuePtr &issue)
+{
+    // When an issue is added
+    mPimpl->mIssues.push_back(issue);
+    size_t index = mPimpl->mIssues.size() - 1;
+    // Update the appropriate array based on its level
+    switch (issue->level()) {
+    case libcellml::Issue::Level::ERROR:
+        mPimpl->mErrors.push_back(index);
+        break;
+    case libcellml::Issue::Level::WARNING:
+        mPimpl->mWarnings.push_back(index);
+        break;
+    case libcellml::Issue::Level::HINT:
+        mPimpl->mHints.push_back(index);
+        break;
+    }
+}
+
+size_t Logger::issueCount() const
+{
+    return mPimpl->mIssues.size();
+}
+
+IssuePtr Logger::issue(size_t index) const
+{
+    IssuePtr err = nullptr;
+    if (index < mPimpl->mIssues.size()) {
+        err = mPimpl->mIssues.at(index);
+    }
+    return err;
+}
 
 } // namespace libcellml
