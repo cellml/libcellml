@@ -79,8 +79,8 @@ void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issu
 }
 
 void expectEqualErrorsCauses(const std::vector<std::string> &issues,
-                            const std::vector<libcellml::Issue::Cause> &causes,
-                            const libcellml::LoggerPtr &logger)
+                             const std::vector<libcellml::Issue::Cause> &causes,
+                             const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(causes.size(), logger->issueCount());
