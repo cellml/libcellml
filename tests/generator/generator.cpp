@@ -1313,7 +1313,6 @@ TEST(Generator, coverage)
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode());
 }
 
-/*
 TEST(Generator, validateUnitsInMathMLStrings)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
@@ -1325,6 +1324,5 @@ TEST(Generator, validateUnitsInMathMLStrings)
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(5), generator->errorCount());
 }
-*/
