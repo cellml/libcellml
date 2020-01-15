@@ -16,15 +16,15 @@
 %feature("docstring") libcellml::Issue::setDescription
 "Sets a string description for why this issue was raised.";
 
-%feature("docstring") libcellml::Issue::kind
-"Get the ``kind`` of this issue. If no kind has been set for this issue, will
+%feature("docstring") libcellml::Issue::cause
+"Get the ``cause`` of this issue. If no cause has been set for this issue, will
 return Cause::UNDEFINED.";
 
 %feature("docstring") libcellml::Issue::isCause
-"Tests if this issue matches the given ``kind``.";
+"Tests if this issue matches the given ``cause``.";
 
 %feature("docstring") libcellml::Issue::setCause
-"Sets the ``kind`` of this issue.";
+"Sets the ``cause`` of this issue.";
 
 %feature("docstring") libcellml::Issue::rule
 "Get the :class:`SpecificationRule` of this issue.";
