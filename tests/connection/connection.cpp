@@ -1129,7 +1129,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     EXPECT_EQ(size_t(1), parser->errorCount());
 
     EXPECT_EQ(expectError, parser->error(0)->description());
-    parser->removeAllErrors();
+    parser->removeAllIssues();
     EXPECT_EQ(size_t(0), parser->errorCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();

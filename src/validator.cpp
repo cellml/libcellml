@@ -279,7 +279,7 @@ ValidatorPtr Validator::create() noexcept
 void Validator::validateModel(const ModelPtr &model)
 {
     // Clear any pre-existing issues in ths validator instance.
-    removeAllErrors();
+    removeAllIssues();
     // Check for a valid name attribute.
     if (!mPimpl->isCellmlIdentifier(model->name())) {
         IssuePtr err = Issue::create();

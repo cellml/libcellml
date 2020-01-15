@@ -42,7 +42,7 @@ public:
      *
      * Clear the issues from the logger.
      */
-    void removeAllErrors();
+    void removeAllIssues();
 
     /**
      * @brief Add an issue to the logger.
@@ -51,19 +51,19 @@ public:
      *
      * @param issue The @c IssuePtr to add.
      */
-    void addError(const IssuePtr &issue);
+    void addIssue(const IssuePtr &issue);
 
     /**
-     * @brief Get the number of issues.
+     * @brief Get the number of issues
      *
-     * Return the number of issues currently stored in the logger.
+     * Return the number of issues of any level currently stored in the logger.
      *
      * @return The number of issues.
      */
-    size_t errorCount() const;
+    size_t issueCount() const;
 
     /**
-     * @brief Get issue at the specified @p index.
+     * @brief Get issue of any level at the specified @p index.
      *
      * Returns an issue at the @p index.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
@@ -73,7 +73,100 @@ public:
      *
      * @return A reference to the issue at the given index on success, @c nullptr otherwise.
      */
+    IssuePtr issue(size_t index) const;
+
+    /**
+     * @brief Add an issue of level error to the logger.
+     *
+     * Adds the argument @p issue to this logger.
+     *
+     * @param issue The @c IssuePtr to add.
+     */
+    void addError(const IssuePtr &issue);
+
+    /**
+     * @brief Get the number of issues with level of ERROR.
+     *
+     * Return the number of errors currently stored in the logger.
+     *
+     * @return The number of errors.
+     */
+    size_t errorCount() const;
+
+    /**
+     * @brief Get issue of level ERROR at the specified @p index.
+     *
+     * Returns an error at the @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#errors).
+     *
+     * @param index The index of the error to return.
+     *
+     * @return A reference to the error at the given index on success, @c nullptr otherwise.
+     */
     IssuePtr error(size_t index) const;
+
+    /**
+     * @brief Add an issue of level WARNING to the logger.
+     *
+     * Adds the argument @p issue to this logger.
+     *
+     * @param issue The @c IssuePtr to add.
+     */
+    void addWarning(const IssuePtr &issue);
+
+    /**
+     * @brief Get the number of issues with level of WARNING.
+     *
+     * Return the number of warnings currently stored in the logger.
+     *
+     * @return The number of warnings.
+     */
+    size_t warningCount() const;
+
+    /**
+     * @brief Get issue of level WARNING at the specified @p index.
+     *
+     * Returns an warning at the @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#warnings).
+     *
+     * @param index The index of the warning to return.
+     *
+     * @return A reference to the warning at the given index on success, @c nullptr otherwise.
+     */
+    IssuePtr warning(size_t index) const;
+
+    /**
+     * @brief Add an issue of level HINT to the logger.
+     *
+     * Adds the argument @p issue to this logger.
+     *
+     * @param issue The @c IssuePtr to add.
+     */
+    void addHint(const IssuePtr &issue);
+
+    /**
+     * @brief Get the number of issues with level of HINT.
+     *
+     * Return the number of hints currently stored in the logger.
+     *
+     * @return The number of hints.
+     */
+    size_t hintCount() const;
+
+    /**
+     * @brief Get issue of level HINT at the specified @p index.
+     *
+     * Returns an error at the @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#hints).
+     *
+     * @param index The index of the hint to return.
+     *
+     * @return A reference to the hint at the given index on success, @c nullptr otherwise.
+     */
+    IssuePtr hint(size_t index) const;
 
 protected:
     Logger(); /**< Constructor */
