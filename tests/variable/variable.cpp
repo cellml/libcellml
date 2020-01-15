@@ -1431,7 +1431,6 @@ TEST(Variable, hasEquivalentVariableWithNullptr)
     m->addComponent(c1);
 
     EXPECT_FALSE(v1->hasEquivalentVariable(nullptr));
-
 }
 
 TEST(Variable, variableEquivalenceInterface)
