@@ -95,7 +95,7 @@ void Logger::addHint(const IssuePtr &issue)
 
 size_t Logger::hintCount() const
 {
-    return mPimpl->mWarnings.size();
+    return mPimpl->mHints.size();
 }
 
 IssuePtr Logger::hint(size_t index) const
