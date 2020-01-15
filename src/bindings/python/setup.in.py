@@ -34,7 +34,7 @@ class BinaryDistribution(Distribution):
 setup(
     name='@PYPI_PACKAGE_NAME@',
     version='@libCellML_VERSION@@LIBCELLML_DEVELOPER_VERSION@',
-    author='libCellML Developers',
+    author='libCellML developers',
     author_email='libcellml@googlegroups.com',
     packages=['libcellml'],
     package_data={'libcellml': [@SETUP_PY_PACKAGE_FILES_STR@]},
