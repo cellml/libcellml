@@ -1979,6 +1979,25 @@ public:
     void setOriginCommentString(const std::string &originCommentString);
 
     /**
+     * @brief Get the @c std::string for the interface file name.
+     *
+     * Return the @c std::string for the interface file name.
+     *
+     * @return The @c std::string for the interface file name.
+     */
+    std::string interfaceFileNameString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface file name.
+     *
+     * Set this @c std::string for the interface file name.
+     *
+     * @param interfaceFileNameString The @c std::string to use the interface
+     * file name.
+     */
+    void setInterfaceFileNameString(const std::string &interfaceFileNameString);
+
+    /**
      * @brief Get the @c std::string for the interface of a header.
      *
      * Return the @c std::string for the interface of a header.
