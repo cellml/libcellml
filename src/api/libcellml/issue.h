@@ -89,11 +89,11 @@ public:
     static IssuePtr create(const VariablePtr &variable) noexcept;
 
     /**
-     * @brief The issue Kind enum class.
+     * @brief The issue Cause enum class.
      *
      * Enum to describe the kind of issue a given issue is.
      */
-    enum class Kind
+    enum class Cause
     {
         COMPONENT,
         CONNECTION,
@@ -143,32 +143,32 @@ public:
      * @brief Set the kind of this issue.
      *
      * Set the @p kind of this issue from the options available in
-     * @c Issue::Kind.
+     * @c Issue::Cause.
      *
-     * @param kind The @c Issue::Kind to set.
+     * @param kind The @c Issue::Cause to set.
      */
-    void setKind(Kind kind);
+    void setCause(Cause kind);
 
     /**
      * @brief Get the kind of this issue.
      *
      * Get the @c kind of this issue. If no kind has been set for
-     * this issue, will return Kind::UNDEFINED.
+     * this issue, will return Cause::UNDEFINED.
      *
-     * @return The @c Issue::Kind set for this issue.
+     * @return The @c Issue::Cause set for this issue.
      */
-    Kind kind() const;
+    Cause cause() const;
 
     /**
      * @brief Check whether the kind of this issue matches the argument kind.
      *
-     * Return @c true if the @p kind matches the the @c Issue::Kind for this
+     * Return @c true if the @p kind matches the the @c Issue::Cause for this
      * issue and @c false otherwise.
      *
-     * @return @c true if the @p kind matches the the @c Issue::Kind for this
+     * @return @c true if the @p kind matches the the @c Issue::Cause for this
      * issue and @c false otherwise.
      */
-    bool isKind(Kind kind) const;
+    bool isCause(Cause kind) const;
 
     /**
      * @brief Set the @c enum SpecificationRule of this issue.

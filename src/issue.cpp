@@ -30,7 +30,7 @@ namespace libcellml {
 struct Issue::IssueImpl
 {
     std::string mDescription; /**< The string description for why this entity issue raised. */
-    Issue::Kind mKind = Issue::Kind::UNDEFINED; /**< The Issue::Kind enum value for this issue. */
+    Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
     Issue::Level mLevel = Issue::Level::FATAL; /**< The Issue::Level enum value for this issue. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this issue. */
     ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
@@ -55,42 +55,42 @@ Issue::Issue(const ModelPtr &model)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mModel = model;
-    mPimpl->mKind = Issue::Kind::MODEL;
+    mPimpl->mCause = Issue::Cause::MODEL;
 }
 
 Issue::Issue(const ComponentPtr &component)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mComponent = component;
-    mPimpl->mKind = Issue::Kind::COMPONENT;
+    mPimpl->mCause = Issue::Cause::COMPONENT;
 }
 
 Issue::Issue(const ImportSourcePtr &importSource)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mImportSource = importSource;
-    mPimpl->mKind = Issue::Kind::IMPORT;
+    mPimpl->mCause = Issue::Cause::IMPORT;
 }
 
 Issue::Issue(const UnitsPtr &units)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mUnits = units;
-    mPimpl->mKind = Issue::Kind::UNITS;
+    mPimpl->mCause = Issue::Cause::UNITS;
 }
 
 Issue::Issue(const VariablePtr &variable)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mVariable = variable;
-    mPimpl->mKind = Issue::Kind::VARIABLE;
+    mPimpl->mCause = Issue::Cause::VARIABLE;
 }
 
 Issue::Issue(const ResetPtr &reset)
     : mPimpl(new IssueImpl())
 {
     mPimpl->mReset = reset;
-    mPimpl->mKind = Issue::Kind::RESET;
+    mPimpl->mCause = Issue::Cause::RESET;
 }
 
 IssuePtr Issue::create() noexcept
@@ -138,20 +138,20 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-void Issue::setKind(Issue::Kind kind)
+void Issue::setCause(Issue::Cause kind)
 {
-    mPimpl->mKind = kind;
+    mPimpl->mCause = kind;
 }
 
-Issue::Kind Issue::kind() const
+Issue::Cause Issue::cause() const
 {
-    return mPimpl->mKind;
+    return mPimpl->mCause;
 }
 
-bool Issue::isKind(Kind kind) const
+bool Issue::isCause(Cause kind) const
 {
     bool response = false;
-    if (mPimpl->mKind == kind) {
+    if (mPimpl->mCause == kind) {
         response = true;
     }
     return response;
@@ -170,7 +170,7 @@ SpecificationRule Issue::rule() const
 void Issue::setComponent(const ComponentPtr &component)
 {
     mPimpl->mComponent = component;
-    mPimpl->mKind = Issue::Kind::COMPONENT;
+    mPimpl->mCause = Issue::Cause::COMPONENT;
 }
 
 ComponentPtr Issue::component() const
@@ -181,7 +181,7 @@ ComponentPtr Issue::component() const
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
     mPimpl->mImportSource = importSource;
-    mPimpl->mKind = Issue::Kind::IMPORT;
+    mPimpl->mCause = Issue::Cause::IMPORT;
 }
 
 ImportSourcePtr Issue::importSource() const
@@ -192,7 +192,7 @@ ImportSourcePtr Issue::importSource() const
 void Issue::setModel(const ModelPtr &model)
 {
     mPimpl->mModel = model;
-    mPimpl->mKind = Issue::Kind::MODEL;
+    mPimpl->mCause = Issue::Cause::MODEL;
 }
 
 ModelPtr Issue::model() const
@@ -203,7 +203,7 @@ ModelPtr Issue::model() const
 void Issue::setUnits(const UnitsPtr &units)
 {
     mPimpl->mUnits = units;
-    mPimpl->mKind = Issue::Kind::UNITS;
+    mPimpl->mCause = Issue::Cause::UNITS;
 }
 
 UnitsPtr Issue::units() const
@@ -214,7 +214,7 @@ UnitsPtr Issue::units() const
 void Issue::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
-    mPimpl->mKind = Issue::Kind::VARIABLE;
+    mPimpl->mCause = Issue::Cause::VARIABLE;
 }
 
 VariablePtr Issue::variable() const
@@ -225,7 +225,7 @@ VariablePtr Issue::variable() const
 void Issue::setReset(const ResetPtr &reset)
 {
     mPimpl->mReset = reset;
-    mPimpl->mKind = Issue::Kind::RESET;
+    mPimpl->mCause = Issue::Cause::RESET;
 }
 
 ResetPtr Issue::reset() const

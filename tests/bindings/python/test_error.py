@@ -45,22 +45,22 @@ class ErrorTestCase(unittest.TestCase):
     def test_kind_enum(self):
         from libcellml import Issue
 
-        self.assertIsInstance(Issue.Kind.COMPONENT, int)
-        self.assertIsInstance(Issue.Kind.CONNECTION, int)
-        self.assertIsInstance(Issue.Kind.ENCAPSULATION, int)
-        self.assertIsInstance(Issue.Kind.IMPORT, int)
-        self.assertIsInstance(Issue.Kind.MATHML, int)
-        self.assertIsInstance(Issue.Kind.MODEL, int)
-        self.assertIsInstance(Issue.Kind.UNDEFINED, int)
-        self.assertIsInstance(Issue.Kind.UNITS, int)
-        self.assertIsInstance(Issue.Kind.VARIABLE, int)
-        self.assertIsInstance(Issue.Kind.XML, int)
+        self.assertIsInstance(Issue.Cause.COMPONENT, int)
+        self.assertIsInstance(Issue.Cause.CONNECTION, int)
+        self.assertIsInstance(Issue.Cause.ENCAPSULATION, int)
+        self.assertIsInstance(Issue.Cause.IMPORT, int)
+        self.assertIsInstance(Issue.Cause.MATHML, int)
+        self.assertIsInstance(Issue.Cause.MODEL, int)
+        self.assertIsInstance(Issue.Cause.UNDEFINED, int)
+        self.assertIsInstance(Issue.Cause.UNITS, int)
+        self.assertIsInstance(Issue.Cause.VARIABLE, int)
+        self.assertIsInstance(Issue.Cause.XML, int)
 
         # Test conversion to enum
         e = Issue()
-        e.setKind(Issue.Kind.COMPONENT)
-        self.assertRaises(RuntimeError, e.setKind, Issue.Kind.COMPONENT - 1)
-        self.assertRaises(RuntimeError, e.setKind, Issue.Kind.XML + 1)
+        e.setCause(Issue.Cause.COMPONENT)
+        self.assertRaises(RuntimeError, e.setCause, Issue.Cause.COMPONENT - 1)
+        self.assertRaises(RuntimeError, e.setCause, Issue.Cause.XML + 1)
 
     def test_specification_rule_enum(self):
         from libcellml import Issue, SpecificationRule
@@ -155,26 +155,26 @@ class ErrorTestCase(unittest.TestCase):
     def test_set_kind(self):
         from libcellml import Issue
 
-        # void setKind(Kind kind)
+        # void setCause(Cause kind)
         e = Issue()
-        e.setKind(Issue.Kind.CONNECTION)
+        e.setCause(Issue.Cause.CONNECTION)
 
     def test_kind(self):
         from libcellml import Issue
 
-        # Kind kind()
+        # Cause cause()
         e = Issue()
-        self.assertEqual(e.kind(), Issue.Kind.UNDEFINED)
-        e.setKind(Issue.Kind.MATHML)
-        self.assertEqual(e.kind(), Issue.Kind.MATHML)
+        self.assertEqual(e.cause(), Issue.Cause.UNDEFINED)
+        e.setCause(Issue.Cause.MATHML)
+        self.assertEqual(e.cause(), Issue.Cause.MATHML)
 
     def test_is_kind(self):
         from libcellml import Issue
 
-        # bool isKind(const Kind &kind)
+        # bool isCause(const Cause &kind)
         e = Issue()
-        self.assertTrue(e.isKind(Issue.Kind.UNDEFINED))
-        self.assertFalse(e.isKind(Issue.Kind.MODEL))
+        self.assertTrue(e.isCause(Issue.Cause.UNDEFINED))
+        self.assertFalse(e.isCause(Issue.Cause.MODEL))
 
     def test_set_rule(self):
         from libcellml import Issue, SpecificationRule

@@ -41,7 +41,7 @@ def convert(base, enum, variables, new_base=None):
             converting = True
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
-convert(Issue, 'Kind', [
+convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',
     'ENCAPSULATION',

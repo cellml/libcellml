@@ -23,7 +23,7 @@ TEST(Issue, createModelError)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
 
-    EXPECT_EQ(libcellml::Issue::Kind::MODEL, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
 }
 
 TEST(Issue, createComponemntError)
@@ -31,7 +31,7 @@ TEST(Issue, createComponemntError)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
 
-    EXPECT_EQ(libcellml::Issue::Kind::COMPONENT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::COMPONENT, e->cause());
 }
 
 TEST(Issue, createVariableError)
@@ -39,7 +39,7 @@ TEST(Issue, createVariableError)
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
 
-    EXPECT_EQ(libcellml::Issue::Kind::VARIABLE, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
 }
 
 TEST(Issue, createUnitsError)
@@ -47,7 +47,7 @@ TEST(Issue, createUnitsError)
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
 
-    EXPECT_EQ(libcellml::Issue::Kind::UNITS, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
 }
 
 TEST(Issue, createImportSourceError)
@@ -55,7 +55,7 @@ TEST(Issue, createImportSourceError)
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
 
-    EXPECT_EQ(libcellml::Issue::Kind::IMPORT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
 }
 
 TEST(Issue, createResetError)
@@ -63,7 +63,7 @@ TEST(Issue, createResetError)
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);
 
-    EXPECT_EQ(libcellml::Issue::Kind::RESET, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
 }
 
 void testSpecificationRule(const libcellml::IssuePtr &e)
