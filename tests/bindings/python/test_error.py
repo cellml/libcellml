@@ -1,5 +1,5 @@
 #
-# Tests the Error class bindings
+# Tests the Issue class bindings
 #
 import unittest
 
@@ -8,62 +8,62 @@ class ErrorTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
         from libcellml import Component
-        from libcellml import Error
+        from libcellml import Issue
         from libcellml import ImportSource
         from libcellml import Model
         from libcellml import Reset
         from libcellml import Units
         from libcellml import Variable
 
-        e1 = Error()
+        e1 = Issue()
         del(e1)
 
         c = Component()
-        e2 = Error(c)
+        e2 = Issue(c)
         del(e2)
 
         i = ImportSource()
-        e3 = Error(i)
+        e3 = Issue(i)
         del(e3)
 
         m = Model()
-        e4 = Error(m)
+        e4 = Issue(m)
         del(e4)
 
         r = Reset()
-        e5 = Error(r)
+        e5 = Issue(r)
         del(e5)
 
         u = Units()
-        e6 = Error(u)
+        e6 = Issue(u)
         del(e6)
 
         v = Variable()
-        e7 = Error(v)
+        e7 = Issue(v)
         del(e7)
 
     def test_kind_enum(self):
-        from libcellml import Error
+        from libcellml import Issue
 
-        self.assertIsInstance(Error.Kind.COMPONENT, int)
-        self.assertIsInstance(Error.Kind.CONNECTION, int)
-        self.assertIsInstance(Error.Kind.ENCAPSULATION, int)
-        self.assertIsInstance(Error.Kind.IMPORT, int)
-        self.assertIsInstance(Error.Kind.MATHML, int)
-        self.assertIsInstance(Error.Kind.MODEL, int)
-        self.assertIsInstance(Error.Kind.UNDEFINED, int)
-        self.assertIsInstance(Error.Kind.UNITS, int)
-        self.assertIsInstance(Error.Kind.VARIABLE, int)
-        self.assertIsInstance(Error.Kind.XML, int)
+        self.assertIsInstance(Issue.Kind.COMPONENT, int)
+        self.assertIsInstance(Issue.Kind.CONNECTION, int)
+        self.assertIsInstance(Issue.Kind.ENCAPSULATION, int)
+        self.assertIsInstance(Issue.Kind.IMPORT, int)
+        self.assertIsInstance(Issue.Kind.MATHML, int)
+        self.assertIsInstance(Issue.Kind.MODEL, int)
+        self.assertIsInstance(Issue.Kind.UNDEFINED, int)
+        self.assertIsInstance(Issue.Kind.UNITS, int)
+        self.assertIsInstance(Issue.Kind.VARIABLE, int)
+        self.assertIsInstance(Issue.Kind.XML, int)
 
         # Test conversion to enum
-        e = Error()
-        e.setKind(Error.Kind.COMPONENT)
-        self.assertRaises(RuntimeError, e.setKind, Error.Kind.COMPONENT - 1)
-        self.assertRaises(RuntimeError, e.setKind, Error.Kind.XML + 1)
+        e = Issue()
+        e.setKind(Issue.Kind.COMPONENT)
+        self.assertRaises(RuntimeError, e.setKind, Issue.Kind.COMPONENT - 1)
+        self.assertRaises(RuntimeError, e.setKind, Issue.Kind.XML + 1)
 
     def test_specification_rule_enum(self):
-        from libcellml import Error, SpecificationRule
+        from libcellml import Issue, SpecificationRule
 
         self.assertIsInstance(SpecificationRule.UNDEFINED, int)
         self.assertIsInstance(SpecificationRule.DATA_REPR_IDENTIFIER_UNICODE, int)
@@ -124,7 +124,7 @@ class ErrorTestCase(unittest.TestCase):
         self.assertIsInstance(SpecificationRule.MAP_VARIABLES_UNIQUE, int)
 
         # Test conversion to enum
-        e = Error()
+        e = Issue()
         e.setRule(SpecificationRule.UNDEFINED)
         self.assertRaises(
             RuntimeError, e.setRule, SpecificationRule.UNDEFINED - 1)
@@ -134,81 +134,81 @@ class ErrorTestCase(unittest.TestCase):
         del(e)
 
     def test_set_description(self):
-        from libcellml import Error
+        from libcellml import Issue
 
         # void setDescription(const std::string &description)
-        e = Error()
+        e = Issue()
         e.setDescription('hello')
         e.setDescription('')
 
     def test_description(self):
-        from libcellml import Error
+        from libcellml import Issue
 
         # std::string description()
         d = 'hi'
-        e = Error()
+        e = Issue()
         self.assertEqual(e.description(), '')
         e.setDescription(d)
         self.assertEqual(e.description(), d)
         del(d, e)
 
     def test_set_kind(self):
-        from libcellml import Error
+        from libcellml import Issue
 
         # void setKind(Kind kind)
-        e = Error()
-        e.setKind(Error.Kind.CONNECTION)
+        e = Issue()
+        e.setKind(Issue.Kind.CONNECTION)
 
     def test_kind(self):
-        from libcellml import Error
+        from libcellml import Issue
 
         # Kind kind()
-        e = Error()
-        self.assertEqual(e.kind(), Error.Kind.UNDEFINED)
-        e.setKind(Error.Kind.MATHML)
-        self.assertEqual(e.kind(), Error.Kind.MATHML)
+        e = Issue()
+        self.assertEqual(e.kind(), Issue.Kind.UNDEFINED)
+        e.setKind(Issue.Kind.MATHML)
+        self.assertEqual(e.kind(), Issue.Kind.MATHML)
 
     def test_is_kind(self):
-        from libcellml import Error
+        from libcellml import Issue
 
         # bool isKind(const Kind &kind)
-        e = Error()
-        self.assertTrue(e.isKind(Error.Kind.UNDEFINED))
-        self.assertFalse(e.isKind(Error.Kind.MODEL))
+        e = Issue()
+        self.assertTrue(e.isKind(Issue.Kind.UNDEFINED))
+        self.assertFalse(e.isKind(Issue.Kind.MODEL))
 
     def test_set_rule(self):
-        from libcellml import Error, SpecificationRule
+        from libcellml import Issue, SpecificationRule
 
         # void setRule(SpecificationRule rule)
-        e = Error()
+        e = Issue()
         e.setRule(SpecificationRule.MAP_VARIABLES_VARIABLE2)
 
     def test_rule(self):
-        from libcellml import Error, SpecificationRule
+        from libcellml import Issue, SpecificationRule
 
         # SpecificationRule rule()
-        e = Error()
+        e = Issue()
         self.assertEqual(e.rule(), SpecificationRule.UNDEFINED)
 
     def test_specification_heading(self):
-        from libcellml import Error
+        from libcellml import Issue
 
         # std::string specificationHeading()
-        e = Error()
+        e = Issue()
         self.assertEqual('', e.specificationHeading())
 
     def test_set_component(self):
-        from libcellml import Error, Component
+        from libcellml import Issue, Component
 
         # void setComponent(const ComponentPtr &component)
-        e = Error()
+        e = Issue()
         e.setComponent(Component())
 
     def test_component(self):
-        from libcellml import Error, Component
+        from libcellml import Issue, Component
 
         # ComponentPtr component()
-        e = Error()
+        e = Issue()
         self.assertIsNone(e.component())
         name = 'cellml'
         c = Component()
@@ -218,17 +218,17 @@ class ErrorTestCase(unittest.TestCase):
         self.assertEqual(e.component().name(), name)
 
     def test_set_import_source(self):
-        from libcellml import Error, ImportSource
+        from libcellml import Issue, ImportSource
 
         # void setImportSource(const ImportSourcePtr &import)
-        e = Error()
+        e = Issue()
         e.setImportSource(ImportSource())
 
     def test_import_source(self):
-        from libcellml import Error, ImportSource
+        from libcellml import Issue, ImportSource
 
         # ImportSourcePtr importSource()
-        e = Error()
+        e = Issue()
         self.assertIsNone(e.component())
         name = 'uri'
         i = ImportSource()
@@ -238,17 +238,17 @@ class ErrorTestCase(unittest.TestCase):
         self.assertEqual(e.importSource().id(), name)
 
     def test_set_model(self):
-        from libcellml import Error, Model
+        from libcellml import Issue, Model
 
         # void setModel(const ModelPtr &model)
-        e = Error()
+        e = Issue()
         e.setModel(Model())
 
     def test_model(self):
-        from libcellml import Error, Model
+        from libcellml import Issue, Model
 
         # ModelPtr model()
-        e = Error()
+        e = Issue()
         self.assertIsNone(e.model())
         name = 'moodle'
         m = Model()
@@ -258,17 +258,17 @@ class ErrorTestCase(unittest.TestCase):
         self.assertEqual(e.model().name(), name)
 
     def test_set_units(self):
-        from libcellml import Error, Units
+        from libcellml import Issue, Units
 
         # void setUnits(const UnitsPtr &units)
-        e = Error()
+        e = Issue()
         e.setUnits(Units())
 
     def test_units(self):
-        from libcellml import Error, Units
+        from libcellml import Issue, Units
 
         # UnitsPtr units()
-        e = Error()
+        e = Issue()
         self.assertIsNone(e.units())
         name = 'furlong'
         u = Units()
@@ -278,17 +278,17 @@ class ErrorTestCase(unittest.TestCase):
         self.assertEqual(e.units().name(), name)
 
     def test_set_variable(self):
-        from libcellml import Error, Variable
+        from libcellml import Issue, Variable
 
         # void setVariable(const VariablePtr &variable)
-        e = Error()
+        e = Issue()
         e.setVariable(Variable())
 
     def test_variable(self):
-        from libcellml import Error, Variable
+        from libcellml import Issue, Variable
 
         # VariablePtr variable()
-        e = Error()
+        e = Issue()
         self.assertIsNone(e.variable())
         name = 'var'
         v = Variable()
@@ -298,17 +298,17 @@ class ErrorTestCase(unittest.TestCase):
         self.assertEqual(e.variable().name(), name)
 
     def test_set_reset(self):
-        from libcellml import Error, Reset
+        from libcellml import Issue, Reset
 
         # void setReset(const ResetPtr &reset);
-        e = Error()
+        e = Issue()
         e.setReset(Reset())
 
     def test_reset(self):
-        from libcellml import Error, Reset
+        from libcellml import Issue, Reset
 
         # ResetPtr reset() const;
-        e = Error()
+        e = Issue()
         self.assertIsNone(e.reset())
         name = 'res'
         r = Reset()

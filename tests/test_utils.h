@@ -79,13 +79,13 @@ std::string TEST_EXPORT fileContents(const std::string &fileName);
 
 void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool kinds = false, bool rule = false);
 
-void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &errors,
+void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &issues,
                                    const libcellml::LoggerPtr &logger);
-void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
+void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issues,
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
-void TEST_EXPORT expectEqualErrorsKinds(const std::vector<std::string> &errors,
-                                        const std::vector<libcellml::Error::Kind> &kinds,
+void TEST_EXPORT expectEqualErrorsKinds(const std::vector<std::string> &issues,
+                                        const std::vector<libcellml::Issue::Kind> &kinds,
                                         const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
@@ -93,14 +93,14 @@ libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name
 libcellml::VariablePtr TEST_EXPORT createVariableWithUnits(const std::string &name, const std::string &units);
 libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(const std::string &modelName = "", const std::string &c1Name = "", const std::string &c2Name = "", const std::string &v1Name = "", const std::string &v2Name = "");
 
-#define EXPECT_EQ_ERRORS(errors, logger) \
-    SCOPED_TRACE("Error occured here."); \
-    expectEqualErrors(errors, logger)
+#define EXPECT_EQ_ERRORS(issues, logger) \
+    SCOPED_TRACE("Issue occured here."); \
+    expectEqualErrors(issues, logger)
 
-#define EXPECT_EQ_ERRORS_SPECIFICATION_HEADINGS(errors, specificationHeadings, logger) \
-    SCOPED_TRACE("Error occured here."); \
-    expectEqualErrorsSpecificationHeadings(errors, specificationHeadings, logger)
+#define EXPECT_EQ_ERRORS_SPECIFICATION_HEADINGS(issues, specificationHeadings, logger) \
+    SCOPED_TRACE("Issue occured here."); \
+    expectEqualErrorsSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ERRORS_KINDS(errors, kinds, logger) \
-    SCOPED_TRACE("Error occured here."); \
-    expectEqualErrorsKinds(errors, kinds, logger)
+#define EXPECT_EQ_ERRORS_KINDS(issues, kinds, logger) \
+    SCOPED_TRACE("Issue occured here."); \
+    expectEqualErrorsKinds(issues, kinds, logger)

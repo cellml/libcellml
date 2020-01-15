@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/error.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/issue.h"
 #include "libcellml/types.h"
 
 #include <string>
@@ -38,42 +38,42 @@ public:
     Logger &operator=(Logger rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Clear the errors from the logger.
+     * @brief Clear the issues from the logger.
      *
-     * Clear the errors from the logger.
+     * Clear the issues from the logger.
      */
     void removeAllErrors();
 
     /**
-     * @brief Add an error to the logger.
+     * @brief Add an issue to the logger.
      *
-     * Adds the argument @p error to this logger.
+     * Adds the argument @p issue to this logger.
      *
-     * @param error The @c ErrorPtr to add.
+     * @param issue The @c IssuePtr to add.
      */
-    void addError(const ErrorPtr &error);
+    void addIssue(const IssuePtr &issue);
 
     /**
-     * @brief Get the number of errors.
+     * @brief Get the number of issues.
      *
-     * Return the number of errors currently stored in the logger.
+     * Return the number of issues currently stored in the logger.
      *
-     * @return The number of errors.
+     * @return The number of issues.
      */
-    size_t errorCount() const;
+    size_t issueCount() const;
 
     /**
-     * @brief Get error at the specified @p index.
+     * @brief Get issue at the specified @p index.
      *
-     * Returns an error at the @p index.  If the @p index
+     * Returns an issue at the @p index.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#errors).
+     * is [0, \#issues).
      *
-     * @param index The index of the error to return.
+     * @param index The index of the issue to return.
      *
-     * @return A reference to the error at the given index on success, @c nullptr otherwise.
+     * @return A reference to the issue at the given index on success, @c nullptr otherwise.
      */
-    ErrorPtr error(size_t index) const;
+    IssuePtr issue(size_t index) const;
 
 protected:
     Logger(); /**< Constructor */

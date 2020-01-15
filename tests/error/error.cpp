@@ -18,55 +18,55 @@ limitations under the License->
 
 #include <libcellml>
 
-TEST(Error, createModelError)
+TEST(Issue, createModelError)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ErrorPtr e = libcellml::Error::create(m);
+    libcellml::IssuePtr e = libcellml::Issue::create(m);
 
-    EXPECT_EQ(libcellml::Error::Kind::MODEL, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::MODEL, e->kind());
 }
 
-TEST(Error, createComponemntError)
+TEST(Issue, createComponemntError)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
-    libcellml::ErrorPtr e = libcellml::Error::create(c);
+    libcellml::IssuePtr e = libcellml::Issue::create(c);
 
-    EXPECT_EQ(libcellml::Error::Kind::COMPONENT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::COMPONENT, e->kind());
 }
 
-TEST(Error, createVariableError)
+TEST(Issue, createVariableError)
 {
     libcellml::VariablePtr v = libcellml::Variable::create();
-    libcellml::ErrorPtr e = libcellml::Error::create(v);
+    libcellml::IssuePtr e = libcellml::Issue::create(v);
 
-    EXPECT_EQ(libcellml::Error::Kind::VARIABLE, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::VARIABLE, e->kind());
 }
 
-TEST(Error, createUnitsError)
+TEST(Issue, createUnitsError)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
-    libcellml::ErrorPtr e = libcellml::Error::create(u);
+    libcellml::IssuePtr e = libcellml::Issue::create(u);
 
-    EXPECT_EQ(libcellml::Error::Kind::UNITS, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::UNITS, e->kind());
 }
 
-TEST(Error, createImportSourceError)
+TEST(Issue, createImportSourceError)
 {
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
-    libcellml::ErrorPtr e = libcellml::Error::create(i);
+    libcellml::IssuePtr e = libcellml::Issue::create(i);
 
-    EXPECT_EQ(libcellml::Error::Kind::IMPORT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::IMPORT, e->kind());
 }
 
-TEST(Error, createResetError)
+TEST(Issue, createResetError)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
-    libcellml::ErrorPtr e = libcellml::Error::create(r);
+    libcellml::IssuePtr e = libcellml::Issue::create(r);
 
-    EXPECT_EQ(libcellml::Error::Kind::RESET, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::RESET, e->kind());
 }
 
-void testSpecificationRule(const libcellml::ErrorPtr &e)
+void testSpecificationRule(const libcellml::IssuePtr &e)
 {
     switch (e->rule()) {
     case libcellml::SpecificationRule::COMPONENT_CHILD:
@@ -243,10 +243,10 @@ void testSpecificationRule(const libcellml::ErrorPtr &e)
     }
 }
 
-TEST(Error, specificationRule)
+TEST(Issue, specificationRule)
 {
     size_t count = 0;
-    libcellml::ErrorPtr e = libcellml::Error::create();
+    libcellml::IssuePtr e = libcellml::Issue::create();
     e->setRule(libcellml::SpecificationRule::UNDEFINED);
     ++count;
     testSpecificationRule(e);

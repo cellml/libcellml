@@ -31,7 +31,7 @@ TEST(Validator, namedModel)
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("awesomeName");
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unnamedModel)
@@ -254,7 +254,7 @@ TEST(Validator, importUnits)
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Invalid units import- missing refs
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
@@ -263,7 +263,7 @@ TEST(Validator, importUnits)
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
     v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->errorCount());
+    EXPECT_EQ(size_t(3), v->issueCount());
 
     // Invalid units import - duplicate refs
     libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
@@ -273,7 +273,7 @@ TEST(Validator, importUnits)
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
     v->validateModel(m);
-    EXPECT_EQ(size_t(4), v->errorCount());
+    EXPECT_EQ(size_t(4), v->issueCount());
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
@@ -310,7 +310,7 @@ TEST(Validator, importComponents)
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Another valid component import
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
@@ -320,7 +320,7 @@ TEST(Validator, importComponents)
     importedComponent2->setSourceComponent(imp2, "new_shiny_component_ref");
     m->addComponent(importedComponent2);
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Invalid component import - missing ref to source component
     libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
@@ -329,7 +329,7 @@ TEST(Validator, importComponents)
     importedComponent3->setSourceComponent(imp3, "");
     m->addComponent(importedComponent3);
     v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->errorCount());
+    EXPECT_EQ(size_t(3), v->issueCount());
 
     // Valid component import - two components imported from the same place is allowed
     libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
@@ -339,7 +339,7 @@ TEST(Validator, importComponents)
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
     v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->errorCount());
+    EXPECT_EQ(size_t(3), v->issueCount());
 
     // Invalid - name missing from component
     libcellml::ImportSourcePtr imp5 = libcellml::ImportSource::create();
@@ -348,7 +348,7 @@ TEST(Validator, importComponents)
     importedComponent5->setSourceComponent(imp5, "component_in_that_model");
     m->addComponent(importedComponent5);
     v->validateModel(m);
-    EXPECT_EQ(size_t(5), v->errorCount());
+    EXPECT_EQ(size_t(5), v->issueCount());
 
     // Valid - two components from the same source is allowed
     libcellml::ImportSourcePtr imp7 = libcellml::ImportSource::create();
@@ -358,7 +358,7 @@ TEST(Validator, importComponents)
     importedComponent7->setSourceComponent(imp7, "new_shiny_component_ref");
     m->addComponent(importedComponent7);
     v->validateModel(m);
-    EXPECT_EQ(size_t(5), v->errorCount());
+    EXPECT_EQ(size_t(5), v->issueCount());
 
     // Valid - duplicate component_ref from a different source
     libcellml::ImportSourcePtr imp8 = libcellml::ImportSource::create();
@@ -368,7 +368,7 @@ TEST(Validator, importComponents)
     importedComponent8->setSourceComponent(imp8, "component_in_that_model");
     m->addComponent(importedComponent8);
     v->validateModel(m);
-    EXPECT_EQ(size_t(5), v->errorCount());
+    EXPECT_EQ(size_t(5), v->issueCount());
 
     // Invalid: component_ref url is not valid html
     libcellml::ImportSourcePtr imp9 = libcellml::ImportSource::create();
@@ -423,7 +423,7 @@ TEST(Validator, validMath)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
 TEST(Validator, invalidMath)
@@ -478,8 +478,8 @@ TEST(Validator, invalidMathMLElements)
         "No declaration for element equals.",
         "No declaration for element addition.",
     };
-    // Note: the MathML DTD also gives errors that list every possible operator when an
-    //       invalid option is given. We'll just explicitly check the less verbose errors here.
+    // Note: the MathML DTD also gives issues that list every possible operator when an
+    //       invalid option is given. We'll just explicitly check the less verbose issues here.
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -509,7 +509,7 @@ TEST(Validator, invalidMathMLElements)
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v->error(i)->description());
+        EXPECT_EQ(expectedErrors.at(i), v->issue(i)->description());
     }
 }
 
@@ -766,7 +766,7 @@ TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
 TEST(Validator, parseAndValidateInvalidUnitErrors)
@@ -794,7 +794,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr m = p->parseModel(input);
-    EXPECT_EQ(size_t(0), p->errorCount());
+    EXPECT_EQ(size_t(0), p->issueCount());
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
@@ -889,7 +889,7 @@ TEST(Validator, validateInvalidConnectionsDanglingReciprocalEquivalence)
     v1_2->removeAllEquivalences();
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
 TEST(Validator, integerStrings)
@@ -1009,7 +1009,7 @@ TEST(Validator, resetValid)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, resetNoVariable)
@@ -1046,8 +1046,8 @@ TEST(Validator, resetNoVariable)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoTestVariable)
@@ -1084,8 +1084,8 @@ TEST(Validator, resetNoTestVariable)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoOrder)
@@ -1121,8 +1121,8 @@ TEST(Validator, resetNoOrder)
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoResetValue)
@@ -1158,8 +1158,8 @@ TEST(Validator, resetNoResetValue)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoTestValue)
@@ -1273,7 +1273,7 @@ TEST(Validator, resetEmptyMathML)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, resetNegativeOrder)
@@ -1308,7 +1308,7 @@ TEST(Validator, resetNegativeOrder)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, resetVariableOutsideComponent)
@@ -1392,7 +1392,7 @@ TEST(Validator, validMathCnElements)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
 TEST(Validator, validMathCnElementsMissingCellMLNamespace)
@@ -1480,7 +1480,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
     };
 
-    // This one is now an error.
+    // This one is now an issue.
     libcellml::Variable::addEquivalence(v1, v2);
     validator->validateModel(m);
 
@@ -1555,7 +1555,7 @@ TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
             base->addUnit(baseUnits.first, 0, baseUnits.second, 1.0);
         }
         validator->validateModel(m);
-        EXPECT_EQ(size_t(0), validator->errorCount());
+        EXPECT_EQ(size_t(0), validator->issueCount());
     }
 }
 
@@ -1598,7 +1598,7 @@ TEST(Validator, unitEquivalenceBasicDimensionlessUnits)
     libcellml::Variable::addEquivalence(v1, v2);
 
     validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceDimensionlessUnits)
@@ -1652,7 +1652,7 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     libcellml::Variable::addEquivalence(v2, v3);
 
     validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceMultiplierPrefix)
@@ -1702,7 +1702,7 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
     libcellml::Variable::addEquivalence(v2, v3);
 
     validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
@@ -1862,7 +1862,7 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
     libcellml::Variable::addEquivalence(v1, v2);
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitUserCreatedUnitsBananasAndApples)
@@ -2039,7 +2039,7 @@ TEST(Validator, unitSimpleCycle)
 
     // Network valid at this stage.
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1.
     u1->addUnit("child");
@@ -2101,7 +2101,7 @@ TEST(Validator, unitComplexCycle)
     u6->addUnit("mother");
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // As soon as a dependency of the grandfather on the brotherFromAnotherMother is added, then a
     // _directed_ loop (u1->u2->u4->u1) is created and the network is no longer valid:
@@ -2164,7 +2164,7 @@ TEST(Validator, multipleDefinitionsOfCellMLNamespace)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, validateModelWithoutAndWithMath)
@@ -2191,7 +2191,7 @@ TEST(Validator, validateModelWithoutAndWithMath)
     c3->addVariable(v);
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -2205,7 +2205,7 @@ TEST(Validator, validateModelWithoutAndWithMath)
     c3->setMath(math);
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceMultiplier)
@@ -2245,7 +2245,7 @@ TEST(Validator, unitEquivalenceMultiplier)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)

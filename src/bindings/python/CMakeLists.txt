@@ -21,13 +21,13 @@ endif()
 set(SWIG_INTERFACE_SRCS
     ../interface/component.i
     ../interface/componententity.i
-    ../interface/error.i
     ../interface/entity.i
     ../interface/enumerations.i
     ../interface/generator.i
     ../interface/generatorprofile.i
     ../interface/importsource.i
     ../interface/importedentity.i
+    ../interface/issue.i
     ../interface/logger.i
     ../interface/model.i
     ../interface/namedentity.i
