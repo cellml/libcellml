@@ -91,7 +91,7 @@ public:
     /**
      * @brief The issue Cause enum class.
      *
-     * Enum to describe the kind of issue a given issue is.
+     * Enum to describe the cause of issue a given issue is.
      */
     enum class Cause
     {
@@ -140,19 +140,19 @@ public:
     std::string description() const;
 
     /**
-     * @brief Set the kind of this issue.
+     * @brief Set the cause of this issue.
      *
-     * Set the @p kind of this issue from the options available in
+     * Set the @p cause of this issue from the options available in
      * @c Issue::Cause.
      *
-     * @param kind The @c Issue::Cause to set.
+     * @param cause The @c Issue::Cause to set.
      */
-    void setCause(Cause kind);
+    void setCause(Cause cause);
 
     /**
-     * @brief Get the kind of this issue.
+     * @brief Get the cause of this issue.
      *
-     * Get the @c kind of this issue. If no kind has been set for
+     * Get the @c cause of this issue. If no cause has been set for
      * this issue, will return Cause::UNDEFINED.
      *
      * @return The @c Issue::Cause set for this issue.
@@ -160,15 +160,15 @@ public:
     Cause cause() const;
 
     /**
-     * @brief Check whether the kind of this issue matches the argument kind.
+     * @brief Check whether the cause of this issue matches the argument cause.
      *
-     * Return @c true if the @p kind matches the the @c Issue::Cause for this
+     * Return @c true if the @p cause matches the the @c Issue::Cause for this
      * issue and @c false otherwise.
      *
-     * @return @c true if the @p kind matches the the @c Issue::Cause for this
+     * @return @c true if the @p cause matches the the @c Issue::Cause for this
      * issue and @c false otherwise.
      */
-    bool isCause(Cause kind) const;
+    bool isCause(Cause cause) const;
 
     /**
      * @brief Set the @c enum SpecificationRule of this issue.
