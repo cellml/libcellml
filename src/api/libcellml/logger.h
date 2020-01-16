@@ -90,6 +90,8 @@ public:
      */
     IssuePtr issue(size_t index, libcellml::Issue::Level level) const;
 
+    IssuePtr issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const;
+
     /**
      * @brief Get the number of issues with level of ERROR.
      *
