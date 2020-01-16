@@ -441,6 +441,8 @@ specification:
       empty string, or MAY be represented according to the rule for
       non-zero exponent.
 
+.. marker4
+
 4. The model element information item
 =====================================
 
@@ -477,6 +479,8 @@ item is referred to as the :code:`model` element.
 
 3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
    element.
+
+.. marker5
 
 5. The import element information item
 ======================================
