@@ -31,9 +31,53 @@
     <variable name="alpha_n" units="per_millisecond" initial_value="1"/>
     <variable name="beta_n" units="per_millisecond" initial_value="2"/>
     <variable name="n" units="dimensionless" initial_value="1" interface="private"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply>            <eq/>            <apply>                <diff/>                <bvar>                    <ci>t</ci>                </bvar>                <ci>n</ci>            </apply>            <apply>                <minus/>                <apply>                    <times/>                    <ci>alpha_n</ci>                    <apply>                        <minus/>                        <cn cellml:units="dimensionless">1</cn>                        <ci>n</ci>                    </apply>                </apply>                <apply>                    <times/>                    <ci>beta_n</ci>                    <ci>n</ci>                </apply>            </apply>        </apply>
-      <apply>            <eq/>            <ci>i_K</ci>            <apply>                <times/>                <ci>g_K</ci>                <apply>                    <minus/>                    <ci>V</ci>                    <ci>E_K</ci>                </apply>                <apply>                    <power/>                    <ci>n</ci>                    <ci>gamma</ci>                </apply>            </apply>        </apply>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>n</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_n</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>n</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_n</ci>
+            <ci>n</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>i_K</ci>
+        <apply>
+          <times/>
+          <ci>g_K</ci>
+          <apply>
+            <minus/>
+            <ci>V</ci>
+            <ci>E_K</ci>
+          </apply>
+          <apply>
+            <power/>
+            <ci>n</ci>
+            <ci>gamma</ci>
+          </apply>
+        </apply>
+      </apply>
     </math>
   </component>
   <component name="nGate">
@@ -42,12 +86,115 @@
     <variable name="alpha_n" units="per_millisecond"/>
     <variable name="beta_n" units="per_millisecond"/>
     <variable name="n" units="dimensionless" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#"><apply>                <eq/>                <ci>alpha_n</ci>                <apply>                    <divide/>                    <apply>                        <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="per_millivolt_millisecond">0.01</cn>                        <apply>                            <plus/>                            <ci>V</ci>                            <cn cellml:units="millivolt">10</cn>                        </apply>                    </apply>                    <apply>                        <minus/>                        <apply>                            <exp/>                            <apply>                                <divide/>                                <apply>                                    <plus/>                                    <ci>V</ci>                                    <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">10</cn>                                </apply>                                <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">10</cn>                            </apply>                        </apply>                        <cn cellml:units="dimensionless">1</cn>                    </apply>                </apply>            </apply><apply>                <eq/>                <ci>beta_n</ci>                <apply>                    <times/>                    <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="per_millisecond">0.125</cn>                    <apply>                        <exp/>                        <apply>                            <divide/>                            <ci>V</ci>                            <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">80</cn>                        </apply>                    </apply>                </apply>            </apply><apply>                <eq/>                <apply>                    <diff/>                    <bvar>                        <ci>t</ci>                    </bvar>                    <ci>n</ci>                </apply>                <apply>                    <minus/>                    <apply>                        <times/>                        <ci>alpha_n</ci>                        <apply>                            <minus/>                            <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="dimensionless">1</cn>                            <ci>n</ci>                        </apply>                    </apply>                    <apply>                        <times/>                        <ci>beta_n</ci>                        <ci>n</ci>                    </apply>                </apply>            </apply></math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <ci>alpha_n</ci>
+        <apply>
+          <divide/>
+          <apply>
+            <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="per_millivolt_millisecond">0.01</cn>
+            <apply>
+              <plus/>
+              <ci>V</ci>
+              <cn cellml:units="millivolt">10</cn>
+            </apply>
+          </apply>
+          <apply>
+            <minus/>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <plus/>
+                  <ci>V</ci>
+                  <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">10</cn>
+                </apply>
+                <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">10</cn>
+              </apply>
+            </apply>
+            <cn cellml:units="dimensionless">1</cn>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>beta_n</ci>
+        <apply>
+          <times/>
+          <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="per_millisecond">0.125</cn>
+          <apply>
+            <exp/>
+            <apply>
+              <divide/>
+              <ci>V</ci>
+              <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="millivolt">80</cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>n</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_n</ci>
+            <apply>
+              <minus/>
+              <cn xmlns:cellml="http://www.cellml.org/cellml/2.0#" cellml:units="dimensionless">1</cn>
+              <ci>n</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_n</ci>
+            <ci>n</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
   </component>
   <component name="environment">
     <variable name="V" units="millivolt" interface="public"/>
     <variable name="t" units="millisecond" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML"         xmlns:cellml="http://www.cellml.org/cellml/2.0#"><apply>            <eq/>            <ci>V</ci>            <piecewise>                <piece>                    <cn cellml:units="millivolt">0</cn>                    <apply><lt/><ci>t</ci><cn cellml:units="millisecond">5</cn></apply>                </piece>                    <piece>                    <cn cellml:units="millivolt">0</cn>                    <apply><gt/><ci>t</ci><cn cellml:units="millisecond">15</cn></apply>                </piece>                <otherwise>                    <cn cellml:units="millivolt">-85</cn>                </otherwise>            </piecewise>        </apply></math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <ci>V</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="millivolt">0</cn>
+            <apply>
+              <lt/>
+              <ci>t</ci>
+              <cn cellml:units="millisecond">5</cn>
+            </apply>
+          </piece>
+          <piece>
+            <cn cellml:units="millivolt">0</cn>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="millisecond">15</cn>
+            </apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="millivolt">-85</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+    </math>
   </component>
   <connection component_1="potassiumChannel" component_2="environment">
     <map_variables variable_1="t" variable_2="t"/>

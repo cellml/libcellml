@@ -27,6 +27,53 @@
     <variable name="alpha_n" units="per_millisecond" initial_value="1"/>
     <variable name="beta_n" units="per_millisecond" initial_value="2"/>
     <variable name="n" units="dimensionless" initial_value="0"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#"><apply><eq/><apply><diff/><bvar><ci>t</ci></bvar><ci>n</ci></apply><apply><minus/><apply><times/><ci>alpha_n</ci><apply><minus/><cn cellml:units="dimensionless">1</cn><ci>n</ci></apply></apply><apply><times/><ci>beta_n</ci><ci>n</ci></apply></apply></apply><apply><eq/><ci>i_K</ci><apply><times/><ci>g_K</ci><apply><minus/><ci>V</ci><ci>E_K</ci></apply><apply><power/><ci>n</ci><ci>gamma</ci></apply></apply></apply></math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>n</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_n</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>n</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_n</ci>
+            <ci>n</ci>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>i_K</ci>
+        <apply>
+          <times/>
+          <ci>g_K</ci>
+          <apply>
+            <minus/>
+            <ci>V</ci>
+            <ci>E_K</ci>
+          </apply>
+          <apply>
+            <power/>
+            <ci>n</ci>
+            <ci>gamma</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
   </component>
 </model>

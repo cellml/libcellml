@@ -37,10 +37,88 @@
     <variable name="i_stim" units="microA_per_cm2"/>
     <variable name="i_tot" units="microA_per_cm2"/>
     <variable name="Cm" units="microF_per_cm2" initial_value="1"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply><eq/>                <ci>i_stim</ci>                <piecewise>                    <piece>                        <cn cellml:units="microA_per_cm2">0</cn>                        <apply><lt/><ci>t</ci><cn cellml:units="ms">1</cn></apply>                    </piece>                        <piece>                        <cn cellml:units="microA_per_cm2">0</cn>                        <apply><gt/><ci>t</ci><cn cellml:units="ms">1.2</cn></apply>                    </piece>                    <otherwise>                        <cn cellml:units="microA_per_cm2">100</cn>                    </otherwise>                </piecewise>            </apply>
-      <apply><eq/>                <ci>i_tot</ci>                <apply><plus/>                    <ci>i_stim</ci>                    <ci>i_K</ci>                    <ci>i_Na</ci>                    <ci>i_L</ci>                </apply>            </apply>
-      <apply><eq/>                <apply><diff/>                    <bvar>                        <ci>t</ci>                    </bvar>                    <ci>V</ci>                </apply>                <apply><divide/>                    <apply><minus/><ci>i_tot</ci></apply>                    <ci>Cm</ci>                </apply>            </apply><apply><eq/>                <ci>i_stim</ci>                <piecewise>                    <piece>                        <cn cellml:units="microA_per_cm2">0</cn>                        <apply><lt/><ci>t</ci><cn cellml:units="ms">1</cn></apply>                    </piece>                        <piece>                        <cn cellml:units="microA_per_cm2">0</cn>                        <apply><gt/><ci>t</ci><cn cellml:units="ms">1.2</cn></apply>                    </piece>                    <otherwise>                        <cn cellml:units="microA_per_cm2">100</cn>                    </otherwise>                </piecewise>            </apply></math>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <ci>i_stim</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="microA_per_cm2">0</cn>
+            <apply>
+              <lt/>
+              <ci>t</ci>
+              <cn cellml:units="ms">1</cn>
+            </apply>
+          </piece>
+          <piece>
+            <cn cellml:units="microA_per_cm2">0</cn>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="ms">1.2</cn>
+            </apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="microA_per_cm2">100</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>i_tot</ci>
+        <apply>
+          <plus/>
+          <ci>i_stim</ci>
+          <ci>i_K</ci>
+          <ci>i_Na</ci>
+          <ci>i_L</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>V</ci>
+        </apply>
+        <apply>
+          <divide/>
+          <apply>
+            <minus/>
+            <ci>i_tot</ci>
+          </apply>
+          <ci>Cm</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>i_stim</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="microA_per_cm2">0</cn>
+            <apply>
+              <lt/>
+              <ci>t</ci>
+              <cn cellml:units="ms">1</cn>
+            </apply>
+          </piece>
+          <piece>
+            <cn cellml:units="microA_per_cm2">0</cn>
+            <apply>
+              <gt/>
+              <ci>t</ci>
+              <cn cellml:units="ms">1.2</cn>
+            </apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="microA_per_cm2">100</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+    </math>
   </component>
   <component name="sodiumChannel">
     <variable name="V" units="mV" interface="public_and_private"/>
@@ -54,7 +132,8 @@
     <variable name="Nai" units="mM" initial_value="30"/>
     <variable name="RTF" units="mV" initial_value="25"/>
     <variable name="Na_conductance" units="mS_per_cm2"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>E_Na</ci>
@@ -108,7 +187,8 @@
     <variable name="alpha_m" units="per_ms"/>
     <variable name="beta_m" units="per_ms"/>
     <variable name="m" units="dimensionless" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>alpha_m</ci>
@@ -149,7 +229,8 @@
     <variable name="alpha_h" units="per_ms"/>
     <variable name="beta_h" units="per_ms"/>
     <variable name="h" units="dimensionless" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>alpha_h</ci>
@@ -225,7 +306,8 @@
     <variable name="alpha_n" units="per_ms" initial_value="1"/>
     <variable name="beta_n" units="per_ms" initial_value="2"/>
     <variable name="n" units="dimensionless" initial_value="1" interface="private"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <apply>
@@ -279,7 +361,8 @@
     <variable name="alpha_n" units="per_ms"/>
     <variable name="beta_n" units="per_ms"/>
     <variable name="n" units="dimensionless" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>alpha_n</ci>
@@ -361,7 +444,8 @@
     <variable name="E_L" units="mV" initial_value="-54.4"/>
     <variable name="i_L" units="microA_per_cm2"/>
     <variable name="g_L" units="mS_per_cm2" initial_value="0.3"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>i_L</ci>
