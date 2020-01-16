@@ -1,7 +1,5 @@
 .. _inform9:
 
-
-
 .. container:: infospec
 
   To continue the example from :ref:`the previous section<spec8>`, we now need

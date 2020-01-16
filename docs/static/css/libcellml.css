@@ -35,12 +35,16 @@ div.figure a.image-reference {
 }
 
 .infospec {
-    border: 1px solid #dddddd;
-    background:#eeeeee;
+    border-top: 1px solid #b9c6dd;
+    background:#e1eaf0;
     color: #444444;
     padding: 10px;
-    border-radius:3px;
-    margin:15px;
+
+    margin-top:15px;
+    margin-bottom:15px;
+    margin-left:0;
+    margin-right:0;
+
     line-height: 24px;
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
 }
