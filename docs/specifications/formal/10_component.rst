@@ -1,5 +1,5 @@
-.. _model_interpretation:
+.. _component_interpretation:
 
 ================================================
-CellML model items
+CellML component items
 ================================================
