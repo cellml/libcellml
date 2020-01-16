@@ -47,12 +47,6 @@ Logger::~Logger()
     delete mPimpl;
 }
 
-void Logger::addError(const IssuePtr &issue)
-{
-    mPimpl->mIssues.push_back(issue);
-    mPimpl->mErrors.push_back(mPimpl->mIssues.size() - 1);
-}
-
 size_t Logger::errorCount() const
 {
     return mPimpl->mErrors.size();
@@ -65,12 +59,6 @@ IssuePtr Logger::error(size_t index) const
         err = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
     }
     return err;
-}
-
-void Logger::addWarning(const IssuePtr &issue)
-{
-    mPimpl->mIssues.push_back(issue);
-    mPimpl->mWarnings.push_back(mPimpl->mIssues.size() - 1);
 }
 
 size_t Logger::warningCount() const
@@ -87,12 +75,6 @@ IssuePtr Logger::warning(size_t index) const
     return err;
 }
 
-void Logger::addHint(const IssuePtr &issue)
-{
-    mPimpl->mIssues.push_back(issue);
-    mPimpl->mHints.push_back(mPimpl->mIssues.size() - 1);
-}
-
 size_t Logger::hintCount() const
 {
     return mPimpl->mHints.size();
@@ -106,8 +88,6 @@ IssuePtr Logger::hint(size_t index) const
     }
     return err;
 }
-
-// KRM Changes start from here
 
 void Logger::removeAllIssues()
 {

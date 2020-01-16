@@ -1411,7 +1411,7 @@ TEST(Parser, invalidModelWithAllCausesOfErrors)
     libcellml::ParserPtr parser2 = libcellml::Parser::create();
     // Add an undefined error
     libcellml::IssuePtr undefinedError = libcellml::Issue::create();
-    parser2->addError(undefinedError);
+    parser2->addIssue(undefinedError);
     EXPECT_EQ(size_t(1), parser2->errorCount());
     if (parser2->error(0)->isCause(libcellml::Issue::Cause::UNDEFINED)) {
         foundCause.at(7) = true;
