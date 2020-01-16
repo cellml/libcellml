@@ -35,7 +35,7 @@ div.figure a.image-reference {
 }
 
 .infospec {
-    border-top: 1px solid #b9c6dd;
+    /* border-top: 1px solid #b9c6dd; */
     background:#e1eaf0;
     color: #444444;
     padding: 10px;

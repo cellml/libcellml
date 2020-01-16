@@ -49,3 +49,9 @@
       <unit units="metre" prefix="centi">  # ... to give the equivalent power of 3
       <unit units="second" exponent="-1">
     </units>
+
+
+  Issues related to :code:`unit` items
+  ------------------------------------
+
+  **TODO** fill in here from validator errors when finalised.
