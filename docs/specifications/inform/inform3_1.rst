@@ -1,18 +1,22 @@
 .. _inform31:
 
-.. container:: dothis
 
-  Names and identifiers need to be a single word, and without any special
-  characters other than an underscore.  For example, these are allowed:
+.. toggle-header::
+    :header: Explain 3.1
 
-    - :code:`myName`
-    - :code:`my_name`
-    - :code:`myName1`
+    .. container:: dothis
 
-  ... but these are not permitted:
+      Names and identifiers need to be a single word, and without any special
+      characters other than an underscore.  For example, these are allowed:
 
-    - :code:`my Name` has a space
-    - :code:`myName!` contains a special character
-    - :code:`1myName` starts with a numerical character
+        - :code:`myName`
+        - :code:`my_name`
+        - :code:`myName1`
 
-  Note that CellML identifiers are case-sensitive, and empty strings are not allowed.
+      ... but these are not permitted:
+
+        - :code:`my Name` has a space
+        - :code:`myName!` contains a special character
+        - :code:`1myName` starts with a numerical character
+
+      Note that CellML identifiers are case-sensitive, and empty strings are not allowed.
