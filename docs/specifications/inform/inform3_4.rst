@@ -1,1 +1,5 @@
-.. _inform3_4:
+.. _inform31:
+
+.. container:: inform
+
+  Notes about the thing go here
