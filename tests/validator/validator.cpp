@@ -1979,8 +1979,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
-    const std::vector<std::string> expectedErrors = {};
-
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
     auto c1 = m->component(0);
@@ -1997,11 +1995,13 @@ TEST(Validator, unitMultiplierFactorDifference)
 
     v2->setUnits("big_barrel");
 
-    libcellml::Variable::addEquivalence(v1, v2); // litre ~= metre^3 .
+    libcellml::Variable::addEquivalence(v1, v2); // litre ~= metre^3.
 
+    m->linkUnits();
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    printErrors(validator);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
 TEST(Validator, unitSimpleCycle)
@@ -2275,44 +2275,10 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     c2->addVariable(createVariableWithUnits("v", "non_existent_shallow"));
     c3->addVariable(createVariableWithUnits("v", "non_existent_deep"));
 
+    EXPECT_TRUE(model->hasUnlinkedUnits());
+
+    model->linkUnits();
     v->validateModel(model);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
-}
-
-TEST(Validator, unfoundUnitsInParsedModel)
-{
-    auto parser = libcellml::Parser::create();
-    auto validator = libcellml::Validator::create();
-
-    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
-                     "  <units name=\"millisecond\">"
-                     "    <unit prefix=\"milli\" units=\"second\"/>"
-                     "  </units>"
-                     "  <component name=\"IonChannel\">"
-                     "    <variable name=\"t\" units=\"millisecond\"/>"
-                     "  </component>"
-                     "</model>";
-
-    auto model = parser->parseModel(in);
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    // Add a component to represent the voltage dependency of the n-gate
-    auto nGate = libcellml::Component::create("nGate");
-    model->addComponent(nGate);
-
-    auto t2 = libcellml::Variable::create("t2");
-    t2->setUnits("millisecond");
-    // Keeping *this* way around to show behaviour
-    nGate->addVariable(t2);
-
-    validator->validateModel(model);
-    for (size_t i = 0; i < validator->errorCount(); ++i) {
-        std::cout << validator->error(i)->description() << std::endl;
-    }
-
-    EXPECT_EQ(size_t(0), validator->errorCount());
 }

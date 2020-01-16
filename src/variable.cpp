@@ -413,15 +413,7 @@ std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &eq
 
 void Variable::setUnits(const std::string &name)
 {
-    UnitsPtr u;
-    auto model = owningModel(shared_from_this());
-    if (model != nullptr && model->hasUnits(name)) {
-        u = model->units(name);
-    } else {
-        u = Units::create();
-        u->setName(name); // KRM These units are created but they're parentless and can duplicate built-in ones
-    }
-    mPimpl->mUnits = u;
+    mPimpl->mUnits = Units::create(name);
 }
 
 void Variable::setUnits(const UnitsPtr &units)

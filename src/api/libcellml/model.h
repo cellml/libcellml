@@ -149,20 +149,6 @@ public:
     bool hasUnits(const UnitsPtr &units) const;
 
     /**
-     * @overload
-     *
-     * @brief Tests to see if the units' name and definition exists within this model.
-     *
-     * Tests to see if the given @c units is contained within this model.
-     * Returns @c true if the units is in the model and @c false otherwise.
-     *
-     * @param units The units to test for existence in this model.
-     *
-     * @return @c true if the units is in the model and @c false otherwise.
-     */
-    bool hasExactUnits(const UnitsPtr &units) const;
-
-    /**
      * @brief Get a units at the given @p index.
      *
      * Returns a reference to a units at the given @p index.  If the @p index

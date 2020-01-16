@@ -48,7 +48,6 @@ struct Model::ModelImpl
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-    std::vector<UnitsPtr>::iterator findExactUnits(const UnitsPtr &units);
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -58,13 +57,6 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 }
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
-{
-    return findUnits(units->name()); // KRM now search only by name
-    // return std::find_if(mUnits.begin(), mUnits.end(),
-    //                      [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
-}
-
-std::vector<UnitsPtr>::iterator Model::ModelImpl::findExactUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
@@ -141,8 +133,7 @@ bool Model::removeUnits(const std::string &name)
 bool Model::removeUnits(const UnitsPtr &units)
 {
     bool status = false;
-    // auto result = mPimpl->findUnits(units); // KRM think this should be the original ... but python tests need it this way??
-    auto result = mPimpl->findExactUnits(units);
+    auto result = mPimpl->findUnits(units);
     if (result != mPimpl->mUnits.end()) {
         units->removeParent();
         mPimpl->mUnits.erase(result);
@@ -159,20 +150,12 @@ void Model::removeAllUnits()
 
 bool Model::hasUnits(const std::string &name) const
 {
-    // KRM Only tests by name
     return mPimpl->findUnits(name) != mPimpl->mUnits.end();
 }
 
 bool Model::hasUnits(const UnitsPtr &units) const
 {
-    // KRM Only tests for name
-    return mPimpl->findUnits(units->name()) != mPimpl->mUnits.end();
-}
-
-bool Model::hasExactUnits(const UnitsPtr &units) const
-{
-    // KRM Includes test for dimensional consistency as well as name
-    return mPimpl->findExactUnits(units) != mPimpl->mUnits.end();
+    return mPimpl->findUnits(units) != mPimpl->mUnits.end();
 }
 
 UnitsPtr Model::units(size_t index) const
@@ -231,8 +214,7 @@ bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
 
 bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 {
-    //return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
-    return replaceUnits(size_t(mPimpl->findExactUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
+    return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
 }
 
 size_t Model::unitsCount() const
@@ -249,12 +231,9 @@ void linkComponentVariableUnits(const ComponentPtr &component)
             auto model = owningModel(u);
             if (model == nullptr && !isStandardUnitName(u->name())) {
                 model = owningModel(component);
-                auto modelUnits = model->units(u->name());
-                if (modelUnits == nullptr) {
-                    model->addUnits(u);
-                    modelUnits = u;
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
                 }
-                v->setUnits(modelUnits);
             }
         }
     }
@@ -709,14 +688,14 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         auto importedComponentCopy = importedComponent->clone();
         importedComponentCopy->setName(component->name());
 
-        // Temporarily add component to new model to find units used.
-        auto tempModel = Model::create();
-        tempModel->addComponent(importedComponentCopy);
-        tempModel->linkUnits();
+        // Get list of required units from component's variables.
         std::vector<UnitsPtr> requiredUnits;
-        for (size_t i = 0; i < tempModel->unitsCount(); ++i) {
-            auto u = tempModel->units(i);
-            requiredUnits.push_back(u);
+        for (size_t i = 0; i < importedComponentCopy->variableCount(); ++i) {
+            auto v = importedComponentCopy->variable(i);
+            auto u = v->units();
+            if (u != nullptr && !isStandardUnitName(u->name())) {
+                requiredUnits.push_back(u);
+            }
         }
 
         // Make a map of component name to component pointer.
@@ -750,10 +729,9 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
 
         // Copy over units used in imported component to this model.
         for (const auto &u : requiredUnits) {
-            if (!model->hasExactUnits(u)) { // KRM changed from hasUnits
+            if (!model->hasUnits(u)) {
                 size_t count = 0;
-                //  KRM changed from hasUnits
-                while (!model->hasExactUnits(u) && model->hasUnits(u->name())) {
+                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
                     auto name = u->name();
                     name += "_" + convertToString(++count);
                     u->setName(name);
