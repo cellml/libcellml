@@ -34,8 +34,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.extlinks',
     'sphinx.ext.autosectionlabel',
-    'sphinxcontrib.contentui',  # for the toggle-class headers
-    # 'sphinxcontrib.bibtex', # Removing and doesn't build
+    # 'sphinxcontrib.contentui',    # For the toggle-class headers, not installed
+    # 'sphinxcontrib.bibtex',       # Removing as not installed
 ]
 
 # Add any paths that contain templates here, relative to this directory.
