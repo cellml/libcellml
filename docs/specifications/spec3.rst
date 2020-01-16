@@ -5,9 +5,9 @@
   :end-before: marker3_2
 
 .. toggle-header::
-  :header: Hello there.
+  :header: Hello there
 
-  stuff in the header
+    stuff in the header
 
 .. include:: inform/inform3_1.rst
 

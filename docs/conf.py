@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.extlinks',
     'sphinx.ext.autosectionlabel',
+    'sphinxcontrib.contentui',  # for the toggle-class headers
     # 'sphinxcontrib.bibtex', # Removing and doesn't build
 ]
 
