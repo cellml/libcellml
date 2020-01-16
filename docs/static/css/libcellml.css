@@ -1,4 +1,4 @@
-@import url("../theme.css");
+/* @import url("../theme.css"); */
 
 .code.literal {
     color:darkslategray;
@@ -34,7 +34,7 @@ div.figure a.image-reference {
     color: rgb(30, 46, 0);
 }
 
-.inform {
+.infospec {
     background:rgb(227, 240, 249);
     padding: 3px 3px 3px 8px;
     margin-top:20px;
