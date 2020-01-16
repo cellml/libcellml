@@ -1,4 +1,4 @@
-.. _inform31:
+.. _inform3_1:
 
 
 .. .. toggle-header::

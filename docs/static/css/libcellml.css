@@ -35,8 +35,11 @@ div.figure a.image-reference {
 }
 
 .infospec {
-    background:rgb(227, 240, 249);
-    padding: 3px 3px 3px 8px;
+    border: 1px solid #dddddd;
+    background:#eeeeee;
+    color: #333333;
+    padding: 10px 5px 5px 10px;
+    border-radius:3px;
     margin-top:20px;
     margin-bottom:20px;
     line-height: 24px;
