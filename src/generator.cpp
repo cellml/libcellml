@@ -1515,10 +1515,14 @@ void updateBaseUnitCount(const ModelPtr &model,
                     multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 }
             }
-        } else if (unitMap.find(uName) == unitMap.end()) {
+        } 
+        
+        // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
+        /*
+        else if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
             multiplier += direction * logMult;
-        }
+        }*/
     }
 }
 
