@@ -256,18 +256,19 @@ public:
      *
      * Traverses the model looking for @c Units attached to
      * @c Variables that are not standard units and which are not
-     * linked to @c Units added to the model.
+     * linked to @c Units added to the model.  This method will link
+     * variable units specified by name to units in the model
+     * (if they are found). Any variable units that cannot be linked
+     * to units in the model are left untouched.
      *
      * Unlinked variable units can occur when a @c Variable's units are
-     * set by name.  If a @c Units cannot be found in the model that matches
-     * the name given to the variables setUnits() method then the units for
-     * that variable will be unlinked.  This method will link variable units
-     * specified by name to units in the model (if they are found). Any variable
-     * units that cannot be linked to units in the model are left untouched.
+     * set by name.  If the model that the variable belongs to has
+     * units defined with the same name then that variables units will
+     * not be linked to the model units.  This method will link the two units
+     * (the one from the variable and the one from the model).
      *
-     * Any @c Variables found that are not linked to model @c Units will be
-     * linked. If a Variable has units that are not attached to the model
-     * then the units will be added to the model as well.
+     * If a @c Variable has units that are not found in the model
+     * then the units will remain unlinked.
      */
     void linkUnits();
 
