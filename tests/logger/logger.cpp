@@ -18,7 +18,52 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Validator, addIssueGetIssueByLevel)
+TEST(Logger, addError)
+{
+    auto err = libcellml::Issue::create();
+    err->setLevel(libcellml::Issue::Level::ERROR);
+    auto logger = libcellml::Validator::create();
+
+    logger->addIssue(err);
+    EXPECT_EQ(size_t(1), logger->issueCount());
+    EXPECT_EQ(size_t(1), logger->errorCount());
+    EXPECT_EQ(size_t(0), logger->warningCount());
+    EXPECT_EQ(size_t(0), logger->hintCount());
+    EXPECT_EQ(logger->error(0), err);
+    EXPECT_EQ(logger->issue(0), err);
+}
+
+TEST(Logger, addWarning)
+{
+    auto err = libcellml::Issue::create();
+    err->setLevel(libcellml::Issue::Level::WARNING);
+    auto logger = libcellml::Validator::create();
+
+    logger->addIssue(err);
+    EXPECT_EQ(size_t(1), logger->issueCount());
+    EXPECT_EQ(size_t(0), logger->errorCount());
+    EXPECT_EQ(size_t(1), logger->warningCount());
+    EXPECT_EQ(size_t(0), logger->hintCount());
+    EXPECT_EQ(logger->warning(0), err);
+    EXPECT_EQ(logger->issue(0), err);
+}
+
+TEST(Logger, addHint)
+{
+    auto err = libcellml::Issue::create();
+    err->setLevel(libcellml::Issue::Level::HINT);
+    auto logger = libcellml::Validator::create();
+
+    logger->addIssue(err);
+    EXPECT_EQ(size_t(1), logger->issueCount());
+    EXPECT_EQ(size_t(0), logger->errorCount());
+    EXPECT_EQ(size_t(0), logger->warningCount());
+    EXPECT_EQ(size_t(1), logger->hintCount());
+    EXPECT_EQ(logger->hint(0), err);
+    EXPECT_EQ(logger->issue(0), err);
+}
+
+TEST(Validator, getIssueByLevelFunction)
 {
     auto error1 = libcellml::Issue::create();
     error1->setLevel(libcellml::Issue::Level::ERROR);
@@ -69,47 +114,53 @@ TEST(Validator, addIssueGetIssueByLevel)
     EXPECT_EQ(hint2, validator->hint(1));
 }
 
-TEST(Logger, addError)
+TEST(Validator, getIssueByLevelArgument)
 {
-    auto err = libcellml::Issue::create();
-    err->setLevel(libcellml::Issue::Level::ERROR);
-    auto logger = libcellml::Validator::create();
+    auto error1 = libcellml::Issue::create();
+    error1->setLevel(libcellml::Issue::Level::ERROR);
 
-    logger->addIssue(err);
-    EXPECT_EQ(size_t(1), logger->issueCount());
-    EXPECT_EQ(size_t(1), logger->errorCount());
-    EXPECT_EQ(size_t(0), logger->warningCount());
-    EXPECT_EQ(size_t(0), logger->hintCount());
-    EXPECT_EQ(logger->error(0), err);
-    EXPECT_EQ(logger->issue(0), err);
-}
+    auto warning1 = libcellml::Issue::create();
+    warning1->setLevel(libcellml::Issue::Level::WARNING);
 
-TEST(Logger, addWarning)
-{
-    auto err = libcellml::Issue::create();
-    err->setLevel(libcellml::Issue::Level::WARNING);
-    auto logger = libcellml::Validator::create();
+    auto hint1 = libcellml::Issue::create();
+    hint1->setLevel(libcellml::Issue::Level::HINT);
 
-    logger->addIssue(err);
-    EXPECT_EQ(size_t(1), logger->issueCount());
-    EXPECT_EQ(size_t(0), logger->errorCount());
-    EXPECT_EQ(size_t(1), logger->warningCount());
-    EXPECT_EQ(size_t(0), logger->hintCount());
-    EXPECT_EQ(logger->warning(0), err);
-    EXPECT_EQ(logger->issue(0), err);
-}
+    auto error2 = libcellml::Issue::create();
+    error2->setLevel(libcellml::Issue::Level::ERROR);
 
-TEST(Logger, addHint)
-{
-    auto err = libcellml::Issue::create();
-    err->setLevel(libcellml::Issue::Level::HINT);
-    auto logger = libcellml::Validator::create();
+    auto warning2 = libcellml::Issue::create();
+    warning2->setLevel(libcellml::Issue::Level::WARNING);
 
-    logger->addIssue(err);
-    EXPECT_EQ(size_t(1), logger->issueCount());
-    EXPECT_EQ(size_t(0), logger->errorCount());
-    EXPECT_EQ(size_t(0), logger->warningCount());
-    EXPECT_EQ(size_t(1), logger->hintCount());
-    EXPECT_EQ(logger->hint(0), err);
-    EXPECT_EQ(logger->issue(0), err);
+    auto hint2 = libcellml::Issue::create();
+    hint2->setLevel(libcellml::Issue::Level::HINT);
+
+    auto validator = libcellml::Validator::create();
+    validator->addIssue(error1);
+    validator->addIssue(warning1);
+    validator->addIssue(hint1);
+    validator->addIssue(hint2);
+    validator->addIssue(warning2);
+    validator->addIssue(error2);
+
+    // Expect to be able to call issue(0-5) and have the appropriate one returned
+    // in the order they were added, irrespective of their level.
+    EXPECT_EQ(size_t(6), validator->issueCount());
+    EXPECT_EQ(error1, validator->issue(0));
+    EXPECT_EQ(warning1, validator->issue(1));
+    EXPECT_EQ(hint1, validator->issue(2));
+    EXPECT_EQ(hint2, validator->issue(3));
+    EXPECT_EQ(warning2, validator->issue(4));
+    EXPECT_EQ(error2, validator->issue(5));
+
+    // Expect to call error(0-1) and get the ERROR level issues only
+    EXPECT_EQ(error1, validator->issue(0, libcellml::Issue::Level::ERROR));
+    EXPECT_EQ(error2, validator->issue(1, libcellml::Issue::Level::ERROR));
+
+    // Expect to call warning(0-1) and get the WARNING level issues only
+    EXPECT_EQ(warning1, validator->issue(0, libcellml::Issue::Level::WARNING));
+    EXPECT_EQ(warning2, validator->issue(1, libcellml::Issue::Level::WARNING));
+
+    // Expect to call hint(0-1) and get the HINT level issues only
+    EXPECT_EQ(hint1, validator->issue(0, libcellml::Issue::Level::HINT));
+    EXPECT_EQ(hint2, validator->issue(1, libcellml::Issue::Level::HINT));
 }
