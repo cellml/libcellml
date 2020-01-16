@@ -1,3 +1,11 @@
 .. _4_model:
 
-..include:: "formal_specification.rst"
+=============
+My beginning
+=============
+
+.. include:: formal_specification.rst
+
+=============
+My ENDING
+=============
