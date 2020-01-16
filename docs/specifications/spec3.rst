@@ -4,6 +4,11 @@
   :start-after: marker3
   :end-before: marker3_2
 
+.. toggle-header::
+  :header: Hello there.
+
+  stuff in the header
+
 .. include:: inform/inform3_1.rst
 
 .. include:: formal_specification.rst

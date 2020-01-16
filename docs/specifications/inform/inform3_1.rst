@@ -1,9 +1,5 @@
 .. _inform3_1:
 
-
-.. .. toggle-header::
-..     :header: Explain 3.1
-
 .. container:: infospec
 
   Names and identifiers need to be a single word, and without any special
