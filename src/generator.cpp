@@ -1708,36 +1708,20 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             if (isExponentOperator(ast)) {
                 double power = getPower(ast->mRight);
                 bool correctUnits = false;
-                if (power == 0.0) {
+                if (power == 0.0 && ast->mRight != nullptr) {
                     correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap); // If we have a variable as our power both the power and the quantity it is being applied to must be dimensionless
                 } else {
                     correctUnits = isDimensionless(rightMap); // Otherwise we just check the power for dimensionlessness
                 }
 
-                if (correctUnits) {
-                    return multiplyMappings(leftMap, ast, power);
+                // If we have a sqaure root operation
+                if (power == 0.0 && ast->mRight == nullptr) {
+                    power = 2.0;
                 }
 
                 // Otherwise, for a non-dimensionless case, we return what the units are in the expression.
-                std::string hints = getHints(rightMap);
-                VariablePtr variable = getVariable(ast);
-                ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
-                ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
-                std::string compName = (component != nullptr) ? component->name() : "";
-                std::string modelName = (model != nullptr) ? model->name() : "";
-
-                std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
-                                  + "' in component '" + compName
-                                  + "' of model '" + modelName
-                                  + "' are not dimensionless. The units in the expression are " + hints;
-                errors.push_back(err);
-            }
-
-            // Check logarithms to ensure we have the same base and units inside the logarithmic expression, or both are dimensionless.
-            if (isLogarithmicOperator(ast)) {
-                std::string hints;
-                if (!mapsAreEquivalent(rightMap, leftMap, hints)) {
-                    //return leftMap;
+                if (!correctUnits) {
+                    std::string hints = getHints(rightMap);
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
@@ -1747,9 +1731,30 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
                     std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
-                                      + "' are not dimensionless. The units in the expression are: " + hints;
+                                      + "' are not dimensionless. The units in the expression are " + hints;
                     errors.push_back(err);
                 }
+                return multiplyMappings(leftMap, ast, power); // Reduce potential for errors as we continue to traverse up the tree
+            }
+
+            // Check logarithms to ensure we have the same base and units inside the logarithmic expression, or both are dimensionless.
+            if (isLogarithmicOperator(ast)) {
+                std::string hints;
+                if (!mapsAreEquivalent(rightMap, leftMap, hints)) {
+                    VariablePtr variable = getVariable(ast);
+                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : "";
+                    std::string modelName = (model != nullptr) ? model->name() : "";
+
+                    std::string err = "The units in the argument of '" + AstTypeToString.find(ast->mType)->second
+                                      + "' in component '" + compName
+                                      + "' of model '" + modelName
+                                      + "' are not consistent with the base. The mismatch is: " + hints;
+                    errors.push_back(err);
+                }
+                rightMap.clear();
+                return rightMap;
             }
 
             // All trig arguments should be dimensionless
