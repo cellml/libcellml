@@ -208,4 +208,29 @@ TEST(Logger, getIssueByLevelsArguments)
     EXPECT_EQ(hint2, validator->issue(2, errorAndHint));
     EXPECT_EQ(warning1, validator->issue(0, warningAndHint));
     EXPECT_EQ(warning2, validator->issue(4, allOfThem));
+    EXPECT_EQ(nullptr, validator->issue(100, errorOnly));
+}
+
+TEST(Logger, outOfRangeIndex)
+{
+    auto error1 = libcellml::Issue::create();
+    auto warning1 = libcellml::Issue::create();
+    auto hint1 = libcellml::Issue::create();
+
+    error1->setLevel(libcellml::Issue::Level::ERROR);
+    warning1->setLevel(libcellml::Issue::Level::WARNING);
+    hint1->setLevel(libcellml::Issue::Level::HINT);
+
+    auto validator = libcellml::Validator::create();
+    validator->addIssue(error1);
+    validator->addIssue(warning1);
+    validator->addIssue(hint1);
+
+    std::vector<libcellml::Issue::Level> errorAndWarning = {libcellml::Issue::Level::ERROR, libcellml::Issue::Level::WARNING};
+
+    EXPECT_EQ(nullptr, validator->issue(10));
+    EXPECT_EQ(nullptr, validator->error(10));
+    EXPECT_EQ(nullptr, validator->warning(10));
+    EXPECT_EQ(nullptr, validator->hint(10));
+    EXPECT_EQ(nullptr, validator->issue(10, errorAndWarning));
 }

@@ -133,7 +133,6 @@ IssuePtr Logger::issue(size_t index) const
 
 IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const
 {
-    // Update the appropriate array based on its level
     switch (level) {
     case libcellml::Issue::Level::ERROR:
         return error(index);
@@ -142,7 +141,6 @@ IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const
     case libcellml::Issue::Level::HINT:
         return hint(index);
     }
-    return nullptr;
 }
 
 IssuePtr Logger::issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const
