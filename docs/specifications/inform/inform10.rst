@@ -50,12 +50,11 @@
   :code:`c`.  These must be the same as the :code:`name` attributes of the
   child :code:`variable` items in this component.
 
+
   .. code-block:: xml
 
     <component name="mass_into_energy">
-      <math>
       ...
-      </math>
       <variable name="E" ... >  # Please refer to Section 11 for more about variables
       <variable name="m" ... >
       <variable name="c" ... >
