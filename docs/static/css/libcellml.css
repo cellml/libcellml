@@ -34,6 +34,19 @@ div.figure a.image-reference {
     color: rgb(30, 46, 0);
 }
 
+.inform {
+    background:rgb(227, 240, 249);
+    padding: 3px 3px 3px 8px;
+    margin-top:20px;
+    margin-bottom:20px;
+    line-height: 24px;
+    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+}
+
+.inform > .guilabel {
+    color: rgb(30, 46, 0);
+}
+
 .nb {
     border-left: 5px solid sandybrown;
     background-color: rgb(255, 253, 247);

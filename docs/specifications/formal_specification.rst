@@ -386,11 +386,15 @@ specification:
       another identifier if and only if both identifiers have identical
       sequences of characters.
 
+.. marker3_2
+
 2. A non-negative integer string:
 
    1. SHALL be a base 10 representation of a non-negative integer.
 
    2. SHALL consist entirely of Basic Latin numerals.
+
+.. marker3_3
 
 3. An integer string:
 
@@ -404,6 +408,8 @@ specification:
 
    3. SHALL, when the integer being represented is non-negative, consist
       of the non-negative integer string representation of the integer.
+
+.. marker3_4
 
 4. A basic real number string:
 
@@ -420,6 +426,8 @@ specification:
 
    4. SHALL, other than the sign indicator and the decimal point
       separator, consist only of Basic Latin numerals.
+
+.. marker3_5
 
 5. A real number string:
 
