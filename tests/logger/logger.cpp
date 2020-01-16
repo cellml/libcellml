@@ -63,7 +63,7 @@ TEST(Logger, addHint)
     EXPECT_EQ(logger->issue(0), err);
 }
 
-TEST(Validator, getIssueByLevelFunction)
+TEST(Logger, getIssueByLevelFunction)
 {
     auto error1 = libcellml::Issue::create();
     error1->setLevel(libcellml::Issue::Level::ERROR);
@@ -114,7 +114,7 @@ TEST(Validator, getIssueByLevelFunction)
     EXPECT_EQ(hint2, validator->hint(1));
 }
 
-TEST(Validator, getIssueByLevelArgument)
+TEST(Logger, getIssueByLevelArgument)
 {
     auto error1 = libcellml::Issue::create();
     error1->setLevel(libcellml::Issue::Level::ERROR);
@@ -163,4 +163,49 @@ TEST(Validator, getIssueByLevelArgument)
     // Expect to call hint(0-1) and get the HINT level issues only
     EXPECT_EQ(hint1, validator->issue(0, libcellml::Issue::Level::HINT));
     EXPECT_EQ(hint2, validator->issue(1, libcellml::Issue::Level::HINT));
+}
+
+TEST(Logger, getIssueByLevelsArguments)
+{
+    auto error1 = libcellml::Issue::create();
+    error1->setLevel(libcellml::Issue::Level::ERROR);
+
+    auto warning1 = libcellml::Issue::create();
+    warning1->setLevel(libcellml::Issue::Level::WARNING);
+
+    auto hint1 = libcellml::Issue::create();
+    hint1->setLevel(libcellml::Issue::Level::HINT);
+
+    auto error2 = libcellml::Issue::create();
+    error2->setLevel(libcellml::Issue::Level::ERROR);
+
+    auto warning2 = libcellml::Issue::create();
+    warning2->setLevel(libcellml::Issue::Level::WARNING);
+
+    auto hint2 = libcellml::Issue::create();
+    hint2->setLevel(libcellml::Issue::Level::HINT);
+
+    auto validator = libcellml::Validator::create();
+    validator->addIssue(error1);
+    validator->addIssue(warning1);
+    validator->addIssue(hint1);
+    validator->addIssue(hint2);
+    validator->addIssue(warning2);
+    validator->addIssue(error2);
+
+    std::vector<libcellml::Issue::Level> errorOnly = {libcellml::Issue::Level::ERROR};
+    std::vector<libcellml::Issue::Level> warningOnly = {libcellml::Issue::Level::WARNING};
+    std::vector<libcellml::Issue::Level> hintOnly = {libcellml::Issue::Level::HINT};
+    std::vector<libcellml::Issue::Level> errorAndWarning = {libcellml::Issue::Level::ERROR, libcellml::Issue::Level::WARNING};
+    std::vector<libcellml::Issue::Level> errorAndHint = {libcellml::Issue::Level::ERROR, libcellml::Issue::Level::HINT};
+    std::vector<libcellml::Issue::Level> warningAndHint = {libcellml::Issue::Level::HINT, libcellml::Issue::Level::WARNING};
+    std::vector<libcellml::Issue::Level> allOfThem = {libcellml::Issue::Level::ERROR, libcellml::Issue::Level::WARNING, libcellml::Issue::Level::HINT};
+
+    EXPECT_EQ(error2, validator->issue(1, errorOnly));
+    EXPECT_EQ(warning2, validator->issue(1, warningOnly));
+    EXPECT_EQ(hint1, validator->issue(0, hintOnly));
+    EXPECT_EQ(error2, validator->issue(3, errorAndWarning));
+    EXPECT_EQ(hint2, validator->issue(2, errorAndHint));
+    EXPECT_EQ(warning1, validator->issue(0, warningAndHint));
+    EXPECT_EQ(warning2, validator->issue(4, allOfThem));
 }
