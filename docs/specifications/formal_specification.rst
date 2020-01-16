@@ -172,8 +172,12 @@ models <#interpretation-of-cellml-models>`__
 `20. References <#references>`__
 
 `
- <about:blank>`__\ 1. Definitions
-=================================
+ <about:blank>`__\
+
+.. marker1
+
+1. Definitions
+===============
 
 The keywords “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”,
 “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this
@@ -255,6 +259,8 @@ Whitespace character
    `U+000D <http://www.fileformat.info/info/unicode/char/000D/index.htm>`__
    or
    `U+000A <http://www.fileformat.info/info/unicode/char/000A/index.htm>`__.
+
+.. marker2
 
 2. General matters
 ==================
@@ -356,6 +362,8 @@ which consist entirely of whitespace characters.
 3. The order in which specific information items appear, as children of
    an element information item defined in this specification, SHALL NOT
    affect the semantic interpretation of the CellML model.
+
+.. marker3
 
 3. Data representation formats in CellML
 ========================================
@@ -518,6 +526,8 @@ in the CellML namespace with a local name equal to :code:`import`.
    CellML infoset MUST NOT be semantically equivalent to the importing
    CellML infoset (see Semantically equivalent CellML infosets).
 
+.. marker6
+
 6. The import units element information item
 ============================================
 
@@ -544,6 +554,8 @@ appears as a child of an :code:`import` element.
    :code:`units` or :code:`import units` element in the imported CellML infoset.
    The value of the :code:`units_ref` attribute MUST NOT match the value of
    the :code:`units_ref` attribute on any sibling :code:`import units` element.
+
+.. marker7
 
 7. The import component element information item
 ================================================
@@ -572,6 +584,8 @@ information item in the CellML namespace with a local name equal to
    imported CellML infoset. See also the `Component reference <\l>`__
    section.
 
+.. marker8
+
 8. The units element information item
 =====================================
 
@@ -599,6 +613,8 @@ element as its parent.
 
 4. A :code:`units` element MAY contain one or more :code:`unit` element
    children.
+
+.. marker9
 
 9. The unit element information item
 ====================================
@@ -644,6 +660,8 @@ element as its parent.
    3. The :code:`exponent` attribute. If present, the value of the attribute
       MUST be a real number string.
 
+.. marker10
+
 10. The component element information item
 ==========================================
 
@@ -671,6 +689,8 @@ which appears as a child of a :code:`model` element.
    2. A :code:`reset` element; or
 
    3. A :code:`math` element
+
+.. marker11
 
 11. The variable element information item
 =========================================
@@ -709,7 +729,9 @@ which appears as a child of a :code:`component` element.
       MUST meet the requirements described by the `Interpretation of
       initial values <#interpretation-of-initial-values>`__ section.
 
- 12. The reset element information item
+.. marker12
+
+12. The reset element information item
 ======================================
 
 A :code:`reset` element information item (referred to in this specification
@@ -757,13 +779,11 @@ child of a :code:`component` element.
 2. A reset element MUST contain two specific information item children,
    each of which MUST be a MathML state\ :code:`ue` element …
 
-3. The :code:`reset_value` element … ment.
+3. The :code:`reset_value`
 
-   a. The test_val
 
-.. _section-1:
 
-.. _section-2:
+.. marker14
 
 14. The math element information item
 =====================================
@@ -805,7 +825,7 @@ Table: Supported MathML Elements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +----------------------------------+----------------------------------+
-| :code:`Element Category`             | :code:`Element List`                 |
+| **Element Category**             | **Element List**                 |
 +----------------------------------+----------------------------------+
 | Simple Operands                  | <ci>, <cn>, <sep>                |
 +----------------------------------+----------------------------------+
@@ -842,6 +862,8 @@ Table: Supported MathML Elements
 |                                  | <true>, <false>                  |
 +----------------------------------+----------------------------------+
 
+.. marker15
+
 15. The encapsulation element information item
 ==============================================
 
@@ -857,6 +879,8 @@ item in the CellML namespace with a local name equal to
 
 1. Every :code:`encapsulation` element MUST contain one or more
    :code:`component_ref` elements.
+
+.. marker16
 
 16. The component_ref element information item
 ==============================================
@@ -884,6 +908,8 @@ element.
 3. A :code:`component_ref` element which is an immediate child of an
    :code:`encapsulation` element MUST each contain at least one
    :code:`component_ref` element child.
+
+.. marker17
 
 17. The connection element information item
 ===========================================
@@ -920,6 +946,8 @@ and which appears as a child of a :code:`model` element.
 4. Every :code:`connection` element MUST contain one or more
    :code:`map_variables` elements.
 
+.. marker18
+
 18. The map_variables element information item
 ==============================================
 
@@ -953,6 +981,8 @@ element.
 3. A :code:`connection` element MUST NOT contain more than one
    :code:`map_variables` element with a given :code:`variable_1` attribute value
    and :code:`variable_2` attribute value pair.
+
+.. marker19
 
 19. Interpretation of CellML models
 ===================================
@@ -1116,7 +1146,7 @@ Table: Built-in units
 
 ..
 
-   |Capture.JPG|
+
 
    where: *u\ x* denotes the units of the :code:`units` element; *p\ i*,
    *e\ i*, *m\ i*, and *u\ i* refer to the prefix, exponent and
