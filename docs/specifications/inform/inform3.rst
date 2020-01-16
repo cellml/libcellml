@@ -1,5 +1,5 @@
 .. _inform3:
 
+.. container:: dothis
 
-
-Notes on 3 go here
+  Notes about the thing go here
