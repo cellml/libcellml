@@ -20,9 +20,34 @@
   :math:`s^{-1}`.  Note that sibling :code:`unit` items within a parent :code:`units`
   item are simply multplied together to form the final representation:
 
-    .. code-block:: xml
+  .. code-block:: xml
 
     <units name="cm3_per_second">
       <unit units="metre" prefix="centi" exponent="3">
+      <unit units="second" exponent="-1">
+    </units>
+
+  Note that this is exactly equivalent to the alterantives below:
+
+  .. code-block:: xml
+
+    <units name="cm3_per_second">
+      <unit units="metre" prefix="-2" exponent="3">  # prefix can be specified as a power of 10
+      <unit units="second" exponent="-1">
+    </units>
+
+    # or
+
+    <units name="cm3_per_second">
+      <unit units="metre" exponent="3" multiplier="0.01">  # multiplier specified instead
+      <unit units="second" exponent="-1">
+    </units>
+
+    # or
+
+    <units name="cm3_per_second">
+      <unit units="metre" prefix="centi">  # default exponent of 1 ...
+      <unit units="metre" prefix="centi">  # ... is repeated ...
+      <unit units="metre" prefix="centi">  # ... to give the equivalent power of 3
       <unit units="second" exponent="-1">
     </units>
