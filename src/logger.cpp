@@ -133,14 +133,19 @@ IssuePtr Logger::issue(size_t index) const
 
 IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const
 {
+    IssuePtr e = nullptr;
     switch (level) {
     case libcellml::Issue::Level::ERROR:
-        return error(index);
+        e = error(index);
+        break;
     case libcellml::Issue::Level::WARNING:
-        return warning(index);
+        e = warning(index);
+        break;
     case libcellml::Issue::Level::HINT:
-        return hint(index);
+        e = hint(index);
+        break;
     }
+    return e;
 }
 
 IssuePtr Logger::issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const
