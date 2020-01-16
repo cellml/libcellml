@@ -37,11 +37,10 @@ div.figure a.image-reference {
 .infospec {
     border: 1px solid #dddddd;
     background:#eeeeee;
-    color: #333333;
-    padding: 10px 5px 5px 10px;
+    color: #444444;
+    padding: 10px;
     border-radius:3px;
-    margin-top:20px;
-    margin-bottom:20px;
+    margin:15px;
     line-height: 24px;
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
 }
