@@ -1056,7 +1056,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                 + "' is referenced in an equation, but it is not defined anywhere.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(err);
         }
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
@@ -1175,7 +1175,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                                 + "' are equivalent and cannot therefore both be initialised.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(err);
         }
     }
 
@@ -1222,7 +1222,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                     + "' cannot be both a variable of integration and initialised.");
                 err->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addError(err);
+                mGenerator->addIssue(err);
             } else {
                 mVoi = variable;
             }
@@ -1243,7 +1243,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' cannot both be a variable of integration.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(err);
         }
     }
 
@@ -1265,7 +1265,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' must be of the first order.");
             err->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(err);
         }
     }
 
@@ -1445,7 +1445,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                                     + "' of model '" + realModel->name() + "' " + errorType + ".");
                 err->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addError(err);
+                mGenerator->addIssue(err);
             }
         }
     }
@@ -3431,7 +3431,7 @@ void Generator::processModel(const ModelPtr &model)
         // them our own.
 
         for (size_t i = 0; i < validator->errorCount(); ++i) {
-            addError(validator->error(i));
+            addIssue(validator->error(i));
         }
 
         return;

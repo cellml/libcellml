@@ -19,26 +19,17 @@
 %feature("docstring") libcellml::Logger::issueCount
 "Returns the number of issues currently stored in the logger.";
 
-%feature("docstring") libcellml::Logger::addError
-"Adds an issue with level of 'error' to this logger.";
-
 %feature("docstring") libcellml::Logger::error
 "Returns the issue of level 'error' at the specified 'index'.";
 
 %feature("docstring") libcellml::Logger::errorCount
 "Returns the number of issues of level 'error' currently stored in the logger.";
 
-%feature("docstring") libcellml::Logger::addWarning
-"Adds an issue with level of 'warning' to this logger.";
-
 %feature("docstring") libcellml::Logger::warning
 "Returns the issue of level 'warning' at the specified 'index'.";
 
 %feature("docstring") libcellml::Logger::warningCount
 "Returns the number of issues of level 'warning' currently stored in the logger.";
-
-%feature("docstring") libcellml::Logger::addHint
-"Adds an issue with level of 'hint' to this logger.";
 
 %feature("docstring") libcellml::Logger::hint
 "Returns the issue of level 'hint' at the specified 'index'.";

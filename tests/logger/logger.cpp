@@ -75,7 +75,7 @@ TEST(Logger, addError)
     err->setLevel(libcellml::Issue::Level::ERROR);
     auto logger = libcellml::Validator::create();
 
-    logger->addError(err);
+    logger->addIssue(err);
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(1), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());
@@ -90,7 +90,7 @@ TEST(Logger, addWarning)
     err->setLevel(libcellml::Issue::Level::WARNING);
     auto logger = libcellml::Validator::create();
 
-    logger->addWarning(err);
+    logger->addIssue(err);
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(1), logger->warningCount());
@@ -105,7 +105,7 @@ TEST(Logger, addHint)
     err->setLevel(libcellml::Issue::Level::HINT);
     auto logger = libcellml::Validator::create();
 
-    logger->addHint(err);
+    logger->addIssue(err);
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());

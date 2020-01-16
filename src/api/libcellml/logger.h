@@ -76,15 +76,6 @@ public:
     IssuePtr issue(size_t index) const;
 
     /**
-     * @brief Add an issue of level error to the logger.
-     *
-     * Adds the argument @p issue to this logger.
-     *
-     * @param issue The @c IssuePtr to add.
-     */
-    void addError(const IssuePtr &issue);
-
-    /**
      * @brief Get the number of issues with level of ERROR.
      *
      * Return the number of errors currently stored in the logger.
@@ -107,15 +98,6 @@ public:
     IssuePtr error(size_t index) const;
 
     /**
-     * @brief Add an issue of level WARNING to the logger.
-     *
-     * Adds the argument @p issue to this logger.
-     *
-     * @param issue The @c IssuePtr to add.
-     */
-    void addWarning(const IssuePtr &issue);
-
-    /**
      * @brief Get the number of issues with level of WARNING.
      *
      * Return the number of warnings currently stored in the logger.
@@ -136,15 +118,6 @@ public:
      * @return A reference to the warning at the given index on success, @c nullptr otherwise.
      */
     IssuePtr warning(size_t index) const;
-
-    /**
-     * @brief Add an issue of level HINT to the logger.
-     *
-     * Adds the argument @p issue to this logger.
-     *
-     * @param issue The @c IssuePtr to add.
-     */
-    void addHint(const IssuePtr &issue);
 
     /**
      * @brief Get the number of issues with level of HINT.
