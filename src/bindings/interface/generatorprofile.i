@@ -621,6 +621,12 @@ should contain the <PROFILE_INFORMATION> and <LIBCELLML_VERSION> tags,
 which will be replaced with a statement about the profile and the version of
 libCellML used respectively.";
 
+%feature("docstring") libcellml::GeneratorProfile::interfaceFileNameString
+"Return the string for the interface file name.";
+
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceFileNameString
+"Set the string for the interface file name.";
+
 %feature("docstring") libcellml::GeneratorProfile::interfaceHeaderString
 "Return the string for the interface of a header.";
 
