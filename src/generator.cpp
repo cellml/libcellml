@@ -1531,9 +1531,6 @@ VariablePtr getVariable(const GeneratorEquationAstPtr &ast)
     if (ast->mLeft != nullptr) {
         return getVariable(ast->mLeft);
     }
-    if (ast->mRight != nullptr) {
-        return getVariable(ast->mRight);
-    }
     return nullptr;
 }
 
