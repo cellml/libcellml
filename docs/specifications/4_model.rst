@@ -1,4 +1,4 @@
 .. _4_model:
 
-..include:: formal/4_model
-..include:: inform/4_model
+..include:: 4_model_formal
+..include:: 4_model_inform
