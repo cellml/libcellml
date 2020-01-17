@@ -1792,6 +1792,56 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     return unitMap;
 }
 
+void processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double &multiplier, int direction)
+{
+    if (ast != nullptr) {
+        
+        // Evaluate multiplier if we are at a variable
+        if (ast->mLeft == nullptr && ast->mRight == nullptr) {
+            
+        }
+
+        // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
+        if (ast->mLeft != nullptr || ast->mRight != nullptr) {
+            
+            // Evaluate left, right subtrees first
+            processEquationMultiplierAst(ast->mLeft, errors, multiplier, 1);
+            processEquationMultiplierAst(ast->mRight, errors, multiplier, 1);
+
+            // The only time we check multiplier mismatch is in a comparision operation.
+            if (isDirectComparisonOperator(ast)) {
+
+            }
+
+            if (isMultiplicativeOperator(ast)) {
+
+            }
+
+            if (isExponentOperator(ast)) {
+
+            }
+
+            if (isLogarithmicOperator(ast)) {
+
+            }
+
+            if (isTrigonometricOperator(ast)) {
+
+            }
+
+            if (isDerivativeOperator(ast)) {
+
+            }
+
+            if (isBottomVariableOperator(ast)) {
+
+            }
+            
+        }
+    }
+    multiplier = 1.0;
+}
+
 // Shim function to create a contiguous void declaration in the private implementation
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
 {
@@ -1799,6 +1849,11 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
     std::vector<std::string> errors;
     double multiplier = 0.0;
     unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
+
+    // We only check for multiplier issues if we don't have any issues with units.
+    if (!errors.empty()) {
+        processEquationMultiplierAst(ast, errors, multiplier, 0);
+    }
 
     if (!errors.empty()) {
         for (const auto &error : errors) {
