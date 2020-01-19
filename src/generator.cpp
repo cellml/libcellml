@@ -1792,6 +1792,37 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     return unitMap;
 }
 
+/*
+double calculateTrigMultiplier(double &arg, GeneratorEquationAstPtr &ast)
+{
+    const GeneratorEquationAst::Type type = ast->mType;
+    if (type == libcellml::GeneratorEquationAst::Type::ASIN) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::ASINH) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::SIN) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::SINH) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACOS) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::ACOSH) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::COS) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::COSH) {
+    } else if (type == libcellml::GeneratorEquationAst::Type::ATAN) {
+    }
+    || (type == libcellml::GeneratorEquationAst::Type::ATANH)
+    || (type == libcellml::GeneratorEquationAst::Type::TAN)
+    || (type == libcellml::GeneratorEquationAst::Type::TANH)
+    || (type == libcellml::GeneratorEquationAst::Type::ASEC)
+    || (type == libcellml::GeneratorEquationAst::Type::ASECH)
+    || (type == libcellml::GeneratorEquationAst::Type::SECH)
+    || (type == libcellml::GeneratorEquationAst::Type::SEC)
+    || (type == libcellml::GeneratorEquationAst::Type::ACSC)
+    || (type == libcellml::GeneratorEquationAst::Type::ACSCH)
+    || (type == libcellml::GeneratorEquationAst::Type::CSC)
+    || (type == libcellml::GeneratorEquationAst::Type::CSCH)
+    || (type == libcellml::GeneratorEquationAst::Type::ACOT)
+    || (type == libcellml::GeneratorEquationAst::Type::ACOTH)
+    || (type == libcellml::GeneratorEquationAst::Type::COT)
+    || (type == libcellml::GeneratorEquationAst::Type::COTH);
+}*/
+
 double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double &multiplier, int direction)
 {
     if (ast != nullptr) {
@@ -1827,7 +1858,6 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
                 if (leftMult != rightMult) {
-                    
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
@@ -1837,7 +1867,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                     std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
-                                      + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult-rightMult);
+                                      + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult);
                     errors.push_back(err);
                     multiplier = leftMult;
                 }
@@ -1863,9 +1893,22 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
 
             if (isLogarithmicOperator(ast)) {
+                if (ast->mType == GeneratorEquationAst::Type::LN) {
+                    leftMult = std::log(leftMult);
+                } else if (ast->mType == GeneratorEquationAst::Type::LOG) {
+                    if (rightMult == 2.0) {
+                        leftMult = std::log2(leftMult);
+                    } else {
+                        leftMult = std::log10(leftMult);
+                    }
+                } else {
+                    leftMult = std::exp(leftMult);
+                }
             }
 
+            // Case not needed, but return multiplier as one since it is dimensionless
             if (isTrigonometricOperator(ast)) {
+                leftMult = 1.0;
             }
 
             if (isDerivativeOperator(ast)) {
@@ -1880,7 +1923,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
         return multiplier;
     }
     return 1.0;
-} 
+}
 
 // Shim function to create a contiguous void declaration in the private implementation
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
