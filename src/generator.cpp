@@ -1853,6 +1853,13 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
 
             if (isExponentOperator(ast)) {
+                if (ast->mType == GeneratorEquationAst::Type::POWER) {
+                    leftMult = std::pow(leftMult, rightMult);
+                } else if (ast->mType == GeneratorEquationAst::Type::ROOT && ast->mRight != nullptr) {
+                    leftMult = std::pow(leftMult, 1.0 / rightMult);
+                } else {
+                    leftMult = std::pow(leftMult, 0.5); // We take the square root if the root is unspecified
+                }
             }
 
             if (isLogarithmicOperator(ast)) {
