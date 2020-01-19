@@ -1845,6 +1845,11 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
 
             // Otherwise for all the other cases we change the multiplier
             if (isMultiplicativeOperator(ast)) {
+                if (ast->mType == GeneratorEquationAst::Type::TIMES) {
+                    leftMult *= rightMult;
+                } else {
+                    leftMult /= rightMult;
+                }
             }
 
             if (isExponentOperator(ast)) {
