@@ -1861,7 +1861,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
 
             if (isBottomVariableOperator(ast)) {
-                //leftMult = 1.0 / leftMult;
+                leftMult = 1.0 / leftMult;
             }
             return leftMult;
         }
