@@ -1792,54 +1792,81 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     return unitMap;
 }
 
-void processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double &multiplier, int direction)
+double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double &multiplier, int direction)
 {
     if (ast != nullptr) {
-        
         // Evaluate multiplier if we are at a variable
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            
+            ModelPtr model;
+            std::string uName;
+            UnitsMap unitMap;
+
+            // If we have a unit associated with the value of a number we add it to the units mapping.
+            if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
+                model = owningModel(ast->mUnits);
+                uName = ast->mUnits->name();
+                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+            }
+
+            if (ast->mType == GeneratorEquationAst::Type::CI) {
+                model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
+                uName = (ast->mUnits != nullptr) ? ast->mUnits->name() : "dimensionless";
+                if (!(uName == "dimensionless")) {
+                    updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+                }
+            }
+            return multiplier;
         }
 
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
-            
             // Evaluate left, right subtrees first
-            processEquationMultiplierAst(ast->mLeft, errors, multiplier, 1);
-            processEquationMultiplierAst(ast->mRight, errors, multiplier, 1);
+            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, multiplier, 1);
+            double rightMult = processEquationMultiplierAst(ast->mRight, errors, multiplier, 1);
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
+                if (leftMult != rightMult) {
+                    
+                    VariablePtr variable = getVariable(ast);
+                    ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
+                    ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
+                    std::string compName = (component != nullptr) ? component->name() : "";
+                    std::string modelName = (model != nullptr) ? model->name() : "";
 
+                    std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
+                                      + "' in component '" + compName
+                                      + "' of model '" + modelName
+                                      + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult-rightMult);
+                    errors.push_back(err);
+                    multiplier = leftMult;
+                }
             }
 
+            // Otherwise for all the other cases we change the multiplier
             if (isMultiplicativeOperator(ast)) {
-
             }
 
             if (isExponentOperator(ast)) {
-
             }
 
             if (isLogarithmicOperator(ast)) {
-
             }
 
             if (isTrigonometricOperator(ast)) {
-
             }
 
             if (isDerivativeOperator(ast)) {
-
+                //leftMult = leftm
             }
 
             if (isBottomVariableOperator(ast)) {
-
+                //leftMult = 1.0 / leftMult;
             }
-            
         }
+        return multiplier
     }
-    multiplier = 1.0;
+    return 1.0;
 }
 
 // Shim function to create a contiguous void declaration in the private implementation
@@ -1852,7 +1879,7 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
 
     // We only check for multiplier issues if we don't have any issues with units.
     if (!errors.empty()) {
-        processEquationMultiplierAst(ast, errors, multiplier, 0);
+        multiplier = processEquationMultiplierAst(ast, errors, multiplier, 0);
     }
 
     if (!errors.empty()) {
