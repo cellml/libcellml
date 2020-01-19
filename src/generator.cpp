@@ -1857,17 +1857,18 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
 
             if (isDerivativeOperator(ast)) {
-                //leftMult = leftm
+                leftMult = leftMult * rightMult;
             }
 
             if (isBottomVariableOperator(ast)) {
                 //leftMult = 1.0 / leftMult;
             }
+            return leftMult;
         }
-        return multiplier
+        return multiplier;
     }
     return 1.0;
-}
+} 
 
 // Shim function to create a contiguous void declaration in the private implementation
 void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPtr &ast)
