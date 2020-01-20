@@ -1823,7 +1823,7 @@ double calculateTrigMultiplier(double &arg, GeneratorEquationAstPtr &ast)
     || (type == libcellml::GeneratorEquationAst::Type::COTH);
 }*/
 
-double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double multiplier, int direction)
+double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double multiplier)
 {
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
@@ -1831,19 +1831,20 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             ModelPtr model;
             std::string uName;
             UnitsMap unitMap;
+            multiplier = 1.0;
 
             // If we have a unit associated with the value of a number we add it to the units mapping.
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
                 model = owningModel(ast->mUnits);
                 uName = ast->mUnits->name();
-                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, 1);
             }
 
             if (ast->mType == GeneratorEquationAst::Type::CI) {
                 model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
                 uName = (ast->mUnits != nullptr) ? ast->mUnits->name() : "dimensionless";
                 if (!(uName == "dimensionless")) {
-                    updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+                    updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, 1);
                 }
             }
             return multiplier;
@@ -1852,12 +1853,13 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
             // Evaluate left, right subtrees first
-            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, 1.0, 1);
-            double rightMult = processEquationMultiplierAst(ast->mRight, errors, 1.0, 1);
+            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, 0.0);
+            double rightMult = processEquationMultiplierAst(ast->mRight, errors, 0.0);
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
-                if (leftMult != rightMult) {
+                
+                if (leftMult != rightMult && ast->mLeft != nullptr && ast->mRight != nullptr) {
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
@@ -1869,7 +1871,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                                       + "' of model '" + modelName
                                       + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult);
                     errors.push_back(err);
-                    multiplier = leftMult;
+                    //multiplier = leftMult;
                 }
             }
 
@@ -1936,7 +1938,7 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
 
     // We only check for multiplier issues if we don't have any issues with units.
     if (errors.empty()) {
-        multiplier = processEquationMultiplierAst(ast, errors, multiplier, 0);
+        multiplier = processEquationMultiplierAst(ast, errors, multiplier);
     }
 
     if (!errors.empty()) {
