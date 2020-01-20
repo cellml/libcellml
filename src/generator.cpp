@@ -1823,7 +1823,7 @@ double calculateTrigMultiplier(double &arg, GeneratorEquationAstPtr &ast)
     || (type == libcellml::GeneratorEquationAst::Type::COTH);
 }*/
 
-double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double &multiplier, int direction)
+double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double multiplier, int direction)
 {
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
@@ -1852,8 +1852,8 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
             // Evaluate left, right subtrees first
-            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, multiplier, 1);
-            double rightMult = processEquationMultiplierAst(ast->mRight, errors, multiplier, 1);
+            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, 1.0, 1);
+            double rightMult = processEquationMultiplierAst(ast->mRight, errors, 1.0, 1);
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
@@ -1904,6 +1904,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 } else {
                     leftMult = std::exp(leftMult);
                 }
+                leftMult = 1.0;
             }
 
             // Case not needed, but return multiplier as one since it is dimensionless
@@ -1920,7 +1921,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
             return leftMult;
         }
-        return multiplier;
+        return 1.0;
     }
     return 1.0;
 }
@@ -1934,7 +1935,7 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
     unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
 
     // We only check for multiplier issues if we don't have any issues with units.
-    if (!errors.empty()) {
+    if (errors.empty()) {
         multiplier = processEquationMultiplierAst(ast, errors, multiplier, 0);
     }
 
