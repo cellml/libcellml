@@ -55,7 +55,7 @@ Guidelines and specifications
    :maxdepth: 3
    :titlesonly:
 
-   reference/reference_index
+   reference/index_reference
 
 Documentation for developers
 ----------------------------
