@@ -32,12 +32,12 @@ Formal specification of the CellML format
 
     spec*
 
-.. Additional references for libCellML
-.. -----------------------------------
+Additional references for libCellML
+-----------------------------------
 
-.. .. toctree::
-..     :maxdepth: 2
-..     :titlesonly:
-..     :glob:
+.. toctree::
+    :maxdepth: 2
+    :titlesonly:
+    :glob:
 
-..     ref*
+    ref*
