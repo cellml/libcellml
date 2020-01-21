@@ -2314,6 +2314,9 @@ TEST(Validator, unfoundUnitsInParsedModel)
     nGate->addVariable(t2);
     t2->setUnits("millisecond");
 
+    model->linkUnits(); // This is the fix.  Need to document everywhere that if you've referenced
+                        // units by their name you must call this before validation.
+
     validator->validateModel(model);
     printErrors(validator);
     EXPECT_EQ(size_t(0), validator->errorCount()); // <<< test fails!
