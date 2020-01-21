@@ -129,7 +129,7 @@ convert(enumerations, 'Prefix', [
     ], new_base = Units)
 import libcellml
 import libcellml.specificationrule
-convert(specificationrule, 'SpecificationRule', [
+convert(specificationrule, 'ReferenceRule', [
     'UNDEFINED',
     'DATA_REPR_IDENTIFIER_UNICODE',
     'DATA_REPR_IDENTIFIER_LATIN_ALPHANUM',

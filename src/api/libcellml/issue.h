@@ -202,29 +202,29 @@ public:
     bool isLevel(Level level) const;
 
     /**
-     * @brief Set the @c enum SpecificationRule of this issue.
+     * @brief Set the @c enum ReferenceRule of this issue.
      *
      * Set the @p rule of this issue from the options available in
-     * the @c SpecificationRule @c enum.
+     * the @c ReferenceRule @c enum.
      *
-     * @param rule The @c SpecificationRule to set.
+     * @param rule The @c ReferenceRule to set.
      */
-    void setRule(SpecificationRule rule);
+    void setRule(ReferenceRule rule);
 
     /**
-     * @brief Get the @c enum SpecificationRule of this issue.
+     * @brief Get the @c enum ReferenceRule of this issue.
      *
-     * Get the @c enum @c SpecificationRule value @p rule of this issue. If
-     * no rule has been set for this issue, will return SpecificationRule::UNDEFINED.
+     * Get the @c enum @c ReferenceRule value @p rule of this issue. If
+     * no rule has been set for this issue, will return ReferenceRule::UNDEFINED.
      *
-     * @return The @c SpecificationRule for this issue.
+     * @return The @c ReferenceRule for this issue.
      */
-    SpecificationRule rule() const;
+    ReferenceRule rule() const;
 
     /**
-     * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this issue.
+     * @brief Get the @c std::string heading associated with the @c enum ReferenceRule for this issue.
      *
-     * Get the @c std::string CellML 2.0 Specification heading associated with the @c enum SpecificationRule
+     * Get the @c std::string CellML 2.0 Specification heading associated with the @c enum ReferenceRule
      * for this issue. If no rule has been set for this issue, will return an empty string.
      *
      * @return The @c std::string referencing the CellML 2.0 Specification heading relevant to this issue.

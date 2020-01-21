@@ -19,12 +19,12 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The SpecificationRule enum class.
+ * @brief The ReferenceRule enum class.
  *
  * Enum describing the specification rules that are used
  * for validation.
  */
-enum class SpecificationRule
+enum class ReferenceRule
 {
     UNDEFINED,
     DATA_REPR_IDENTIFIER_UNICODE,

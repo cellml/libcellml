@@ -282,7 +282,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             err->setDescription("Model element is of invalid type '" + node->name() + "'. A valid CellML root node should be of type 'model'.");
         }
         err->setModel(model);
-        err->setRule(SpecificationRule::MODEL_ELEMENT);
+        err->setRule(ReferenceRule::MODEL_ELEMENT);
         mParser->addIssue(err);
         return;
     }
@@ -347,7 +347,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 err->setDescription("Encapsulation in model '" + model->name() + "' does not contain any child elements.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::ENCAPSULATION);
-                err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
+                err->setRule(ReferenceRule::ENCAPSULATION_COMPONENT_REF);
                 mParser->addIssue(err);
             }
         } else if (childNode->isCellmlElement("connection")) {
@@ -359,7 +359,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 IssuePtr err = Issue::create();
                 err->setDescription("Model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
-                err->setRule(SpecificationRule::MODEL_CHILD);
+                err->setRule(ReferenceRule::MODEL_CHILD);
                 mParser->addIssue(err);
             }
         } else if (childNode->isComment()) {
@@ -368,7 +368,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             IssuePtr err = Issue::create();
             err->setDescription("Model '" + model->name() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setModel(model);
-            err->setRule(SpecificationRule::MODEL_CHILD);
+            err->setRule(ReferenceRule::MODEL_CHILD);
             mParser->addIssue(err);
         }
         childNode = childNode->next();
@@ -381,7 +381,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             err->setDescription("Model '" + model->name() + "' has more than one encapsulation element.");
             err->setModel(model);
             err->setCause(Issue::Cause::ENCAPSULATION);
-            err->setRule(SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
+            err->setRule(ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
             mParser->addIssue(err);
         }
     }
@@ -528,7 +528,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                 IssuePtr err = Issue::create();
                 err->setDescription("Component '" + component->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setComponent(component);
-                err->setRule(SpecificationRule::COMPONENT_CHILD);
+                err->setRule(ReferenceRule::COMPONENT_CHILD);
                 mParser->addIssue(err);
             }
         } else if (childNode->isComment()) {
@@ -537,7 +537,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             IssuePtr err = Issue::create();
             err->setDescription("Component '" + component->name() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setComponent(component);
-            err->setRule(SpecificationRule::COMPONENT_CHILD);
+            err->setRule(ReferenceRule::COMPONENT_CHILD);
             mParser->addIssue(err);
         }
         childNode = childNode->next();
@@ -571,7 +571,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                 IssuePtr err = Issue::create();
                 err->setDescription("Units '" + units->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setUnits(units);
-                err->setRule(SpecificationRule::UNITS_CHILD);
+                err->setRule(ReferenceRule::UNITS_CHILD);
                 mParser->addIssue(err);
             }
         } else if (childNode->isComment()) {
@@ -580,7 +580,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             IssuePtr err = Issue::create();
             err->setDescription("Units '" + units->name() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setUnits(units);
-            err->setRule(SpecificationRule::UNITS_CHILD);
+            err->setRule(ReferenceRule::UNITS_CHILD);
             mParser->addIssue(err);
         }
         childNode = childNode->next();
@@ -631,7 +631,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 IssuePtr err = Issue::create();
                 err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
-                err->setRule(SpecificationRule::UNIT_EXPONENT);
+                err->setRule(ReferenceRule::UNIT_EXPONENT);
                 mParser->addIssue(err);
             }
         } else if (attribute->isType("multiplier")) {
@@ -642,7 +642,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 IssuePtr err = Issue::create();
                 err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
-                err->setRule(SpecificationRule::UNIT_MULTIPLIER);
+                err->setRule(ReferenceRule::UNIT_MULTIPLIER);
                 mParser->addIssue(err);
             }
         } else if (attribute->isType("id")) {
@@ -651,7 +651,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             IssuePtr err = Issue::create();
             err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an invalid attribute '" + attribute->name() + "'.");
             err->setUnits(units);
-            err->setRule(SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE);
+            err->setRule(ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE);
             mParser->addIssue(err);
         }
         attribute = attribute->next();
@@ -750,7 +750,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->name() + "' does not have a valid component_1 in a connection element.");
         err->setModel(model);
         err->setCause(Issue::Cause::CONNECTION);
-        err->setRule(SpecificationRule::CONNECTION_COMPONENT1);
+        err->setRule(ReferenceRule::CONNECTION_COMPONENT1);
         mParser->addIssue(err);
         component1Missing = true;
     }
@@ -759,7 +759,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->name() + "' does not have a valid component_2 in a connection element.");
         err->setModel(model);
         err->setCause(Issue::Cause::CONNECTION);
-        err->setRule(SpecificationRule::CONNECTION_COMPONENT2);
+        err->setRule(ReferenceRule::CONNECTION_COMPONENT2);
         mParser->addIssue(err);
         component2Missing = true;
     }
@@ -773,7 +773,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->name() + "' must contain one or more 'map_variables' elements.");
         err->setModel(model);
         err->setCause(Issue::Cause::CONNECTION);
-        err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
+        err->setRule(ReferenceRule::CONNECTION_MAP_VARIABLES);
         mParser->addIssue(err);
         return;
     }
@@ -831,7 +831,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->name() + "' does not have a valid variable_1 in a map_variables element.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::CONNECTION);
-                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
+                err->setRule(ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addIssue(err);
                 variable1Missing = true;
             }
@@ -840,7 +840,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->name() + "' does not have a valid variable_2 in a map_variables element.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::CONNECTION);
-                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
+                err->setRule(ReferenceRule::MAP_VARIABLES_VARIABLE2);
                 mParser->addIssue(err);
                 variable2Missing = true;
             }
@@ -884,7 +884,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             err->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
             err->setModel(model);
             err->setCause(Issue::Cause::CONNECTION);
-            err->setRule(SpecificationRule::CONNECTION_COMPONENT1);
+            err->setRule(ReferenceRule::CONNECTION_COMPONENT1);
             mParser->addIssue(err);
         }
     }
@@ -896,7 +896,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             err->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
             err->setModel(model);
             err->setCause(Issue::Cause::CONNECTION);
-            err->setRule(SpecificationRule::CONNECTION_COMPONENT2);
+            err->setRule(ReferenceRule::CONNECTION_COMPONENT2);
             mParser->addIssue(err);
         }
     }
@@ -920,7 +920,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                         err->setDescription("Variable '" + iterPair.first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
                         err->setComponent(component1);
                         err->setCause(Issue::Cause::CONNECTION);
-                        err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
+                        err->setRule(ReferenceRule::MAP_VARIABLES_VARIABLE1);
                         mParser->addIssue(err);
                     }
                 }
@@ -929,7 +929,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.first + "' as variable_1 but the corresponding component_1 is invalid.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::CONNECTION);
-                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
+                err->setRule(ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addIssue(err);
             }
             if (component2) {
@@ -946,7 +946,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                         err->setDescription("Variable '" + iterPair.second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
                         err->setComponent(component1);
                         err->setCause(Issue::Cause::CONNECTION);
-                        err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
+                        err->setRule(ReferenceRule::MAP_VARIABLES_VARIABLE2);
                         mParser->addIssue(err);
                     }
                 }
@@ -955,7 +955,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.second + "' as variable_2 but the corresponding component_2 is invalid.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::CONNECTION);
-                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
+                err->setRule(ReferenceRule::MAP_VARIABLES_VARIABLE2);
                 mParser->addIssue(err);
             }
             // Set the variable equivalence relationship for this variable pair.
@@ -968,7 +968,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->name() + "' does not have a map_variables element.");
         err->setModel(model);
         err->setCause(Issue::Cause::CONNECTION);
-        err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
+        err->setRule(ReferenceRule::CONNECTION_MAP_VARIABLES);
         mParser->addIssue(err);
     }
 }
@@ -991,7 +991,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
                 err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::ENCAPSULATION);
-                err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+                err->setRule(ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                 mParser->addIssue(err);
             }
         } else if (attribute->isType("id")) {
@@ -1001,7 +1001,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid component_ref attribute '" + attribute->name() + "'.");
             err->setModel(model);
             err->setCause(Issue::Cause::ENCAPSULATION);
-            err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+            err->setRule(ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
             mParser->addIssue(err);
         }
         attribute = attribute->next();
@@ -1011,7 +1011,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
         err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
         err->setModel(model);
         err->setCause(Issue::Cause::ENCAPSULATION);
-        err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+        err->setRule(ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
         mParser->addIssue(err);
     } else if (parentComponent) {
         parentComponent->setEncapsulationId(encapsulationId);
@@ -1074,7 +1074,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setCause(Issue::Cause::ENCAPSULATION);
-                err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
+                err->setRule(ReferenceRule::COMPONENT_REF_CHILD);
                 mParser->addIssue(err);
             } else {
                 // Continue to next node if this is whitespace (don't try to parse children of whitespace).
@@ -1088,7 +1088,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");
             err->setModel(model);
             err->setCause(Issue::Cause::ENCAPSULATION);
-            err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
+            err->setRule(ReferenceRule::ENCAPSULATION_COMPONENT_REF);
             mParser->addIssue(err);
         }
 
@@ -1187,7 +1187,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 IssuePtr err = Issue::create();
                 err->setDescription("Import from '" + node->attribute("href") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setImportSource(importSource);
-                err->setRule(SpecificationRule::IMPORT_CHILD);
+                err->setRule(ReferenceRule::IMPORT_CHILD);
                 mParser->addIssue(err);
             }
         } else if (childNode->isComment()) {
@@ -1196,7 +1196,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             IssuePtr err = Issue::create();
             err->setDescription("Import from '" + node->attribute("href") + "' has an invalid child element '" + childNode->name() + "'.");
             err->setImportSource(importSource);
-            err->setRule(SpecificationRule::IMPORT_CHILD);
+            err->setRule(ReferenceRule::IMPORT_CHILD);
             mParser->addIssue(err);
         }
         childNode = childNode->next();
@@ -1229,7 +1229,7 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
             IssuePtr err = Issue::create();
             err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the " + childType + " block of '" + childAttribute->name() + "'.");
             err->setReset(reset);
-            err->setRule(SpecificationRule::RESET_TEST_VALUE);
+            err->setRule(ReferenceRule::RESET_TEST_VALUE);
             mParser->addIssue(err);
         }
         childAttribute = childAttribute->next();
@@ -1253,7 +1253,7 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
                 IssuePtr err = Issue::create();
                 err->setDescription("The " + childType + " in the reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' should have a MathML block as a child.");
                 err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_TEST_VALUE);
+                err->setRule(ReferenceRule::RESET_TEST_VALUE);
                 mParser->addIssue(err);
             }
         }
@@ -1279,7 +1279,7 @@ void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::st
         err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
                             + variableName + "' and test_variable '" + testVariableName + "' has " + convertToString(count) + " " + childType + " blocks.");
         err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        err->setRule(ReferenceRule::RESET_TEST_VALUE);
         mParser->addIssue(err);
     }
     if (count == 0) {
@@ -1287,7 +1287,7 @@ void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::st
         err->setDescription("Reset in component '" + component->name() + "' referencing variable '"
                             + variableName + "' and test_variable '" + testVariableName + "' does not have a " + childType + " block defined.");
         err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        err->setRule(ReferenceRule::RESET_TEST_VALUE);
         mParser->addIssue(err);
     }
 }
@@ -1313,7 +1313,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 IssuePtr err = Issue::create();
                 err->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
                 err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+                err->setRule(ReferenceRule::RESET_VARIABLE_REFERENCE);
                 mParser->addIssue(err);
             } else {
                 reset->setVariable(referencedVariable);
@@ -1326,7 +1326,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 IssuePtr err = Issue::create();
                 err->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
                 err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
+                err->setRule(ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
                 mParser->addIssue(err);
             } else {
                 reset->setTestVariable(testVariable);
@@ -1343,7 +1343,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 IssuePtr err = Issue::create();
                 err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has a non-integer order value '" + attribute->value() + "'.");
                 err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_ORDER);
+                err->setRule(ReferenceRule::RESET_ORDER);
                 mParser->addIssue(err);
             }
         } else if (attribute->isType("id")) {
@@ -1363,7 +1363,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         IssuePtr err = Issue::create();
         err->setDescription("Reset in component '" + component->name() + "' does not have its order set.");
         err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_ORDER);
+        err->setRule(ReferenceRule::RESET_ORDER);
         mParser->addIssue(err);
     }
 
@@ -1385,7 +1385,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 IssuePtr err = Issue::create();
                 err->setDescription("Reset has an invalid non-whitespace child text element '" + textNode + "'. Either a test_value block or a reset_value block is expected.");
                 err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_CHILD);
+                err->setRule(ReferenceRule::RESET_CHILD);
                 mParser->addIssue(err);
             }
         } else if (childNode->isComment()) {
