@@ -7,5 +7,6 @@ Formal specification and interpretation guidelines
 .. toctree::
     :maxdepth: 2
     :titlesonly:
+    :glob:
 
     spec*
