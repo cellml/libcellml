@@ -222,6 +222,28 @@ public:
     ReferenceRule rule() const;
 
     /**
+     * @brief Set the @c url of this issue.
+     *
+     * Manually set the @c url to which the user should refer for more information on the
+     * specification rule which has been broken or guidelines that haven't been followed.
+     * If this has not been set manually by use of this function, the default root url
+     * will be used (specified in baseIssueUrl) in conjunction with the referenceHeading
+     * string.
+     *
+     * @param rule The @c url to set manually.
+     */
+    void setUrl(std::string &url) const;
+
+    /**
+     * @brief Get the @c url of this issue.
+     *
+     * Get the @c url to which the user should refer for more information on this issue.
+     *
+     * @return The @c url for this issue.
+     */
+    std::string url() const;
+
+    /**
      * @brief Get the @c std::string heading associated with the @c enum ReferenceRule for this issue.
      *
      * Get the @c std::string CellML 2.0 Specification heading associated with the @c enum ReferenceRule

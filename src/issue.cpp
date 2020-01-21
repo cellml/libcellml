@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 #include "libcellml/types.h"
+#include "utilities.h"
 
 #include <map>
 #include <string>
@@ -33,7 +34,7 @@ struct Issue::IssueImpl
     Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     ReferenceRule mRule = ReferenceRule::UNDEFINED; /**< The ReferenceRule enum value for this issue. */
-    std::string mRuleURL; /**< The web address at which the rule and its guidelines are available. By default
+    std::string mReferenceUrl; /**< The web address at which the rule and its guidelines are available. By default
                                it should be the baseIssueUrl plus the reference rule's header number. */
     ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the issue occurred in. */
@@ -186,6 +187,20 @@ void Issue::setRule(ReferenceRule rule)
 ReferenceRule Issue::rule() const
 {
     return mPimpl->mRule;
+}
+
+void Issue::setUrl(std::string &url) const
+{
+    mPimpl->mReferenceUrl = url;
+}
+
+std::string Issue::url() const
+{
+    if (mPimpl->mReferenceUrl.empty()) {
+        // Then construct from the default address formula: baseIssueUrl + rule number.
+        return baseIssueUrl + referenceHeading();
+    }
+    return mPimpl->mReferenceUrl;
 }
 
 void Issue::setComponent(const ComponentPtr &component)
