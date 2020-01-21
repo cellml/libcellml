@@ -29,10 +29,12 @@ namespace libcellml {
  */
 struct Issue::IssueImpl
 {
-    std::string mDescription; /**< The string description for why this entity issue raised. */
+    std::string mDescription; /**< The string description for why this issue was raised. */
     Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     ReferenceRule mRule = ReferenceRule::UNDEFINED; /**< The ReferenceRule enum value for this issue. */
+    std::string mRuleURL; /**< The web address at which the rule and its guidelines are available. By default
+                               it should be the baseIssueUrl plus the reference rule's header number. */
     ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the issue occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the issue occurred in. */
@@ -316,7 +318,7 @@ static const std::map<ReferenceRule, const std::string> ruleToHeading = {
     {ReferenceRule::MAP_VARIABLES_VARIABLE2, "18.1.2"},
     {ReferenceRule::MAP_VARIABLES_UNIQUE, "18.1.3"}};
 
-std::string Issue::specificationHeading() const
+std::string Issue::referenceHeading() const
 {
     std::string heading = "X.Y.Z";
     auto search = ruleToHeading.find(rule());

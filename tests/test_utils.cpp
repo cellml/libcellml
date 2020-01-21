@@ -46,7 +46,7 @@ void printErrors(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         std::cout << "Issue " << std::setw(3) << i + 1 << ": ";
         std::cout << l->error(i)->description();
         if (headings) {
-            std::cout << ", " << l->error(i)->specificationHeading();
+            std::cout << ", " << l->error(i)->referenceHeading();
         }
         if (causes) {
             std::cout << ", " << static_cast<int>(l->error(i)->cause());
@@ -74,7 +74,7 @@ void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issu
     EXPECT_EQ(specificationHeadings.size(), logger->errorCount());
     for (size_t i = 0; i < logger->errorCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->error(i)->description());
-        EXPECT_EQ(specificationHeadings.at(i), logger->error(i)->specificationHeading());
+        EXPECT_EQ(specificationHeadings.at(i), logger->error(i)->referenceHeading());
     }
 }
 

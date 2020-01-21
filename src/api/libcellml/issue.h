@@ -17,7 +17,7 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/exportdefinitions.h"
-#include "libcellml/specificationrules.h"
+#include "libcellml/referencerules.h"
 #include "libcellml/types.h"
 
 #include <string>
@@ -229,7 +229,7 @@ public:
      *
      * @return The @c std::string referencing the CellML 2.0 Specification heading relevant to this issue.
      */
-    std::string specificationHeading() const;
+    std::string referenceHeading() const;
 
     /**
      * @brief Set the component for this component issue.

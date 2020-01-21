@@ -42,7 +42,7 @@ return Level::ERROR.";
 %feature("docstring") libcellml::Issue::setRule
 "Sets the :class:`ReferenceRule` for this issue.";
 
-%feature("docstring") libcellml::Issue::specificationHeading
+%feature("docstring") libcellml::Issue::referenceHeading
 "Returns the CellML 2.0 Specification heading associated with the
 :class:`ReferenceRule` for this issue (empty string if not set).";
 
@@ -115,6 +115,6 @@ return Level::ERROR.";
 }
 
 %include "libcellml/exportdefinitions.h"
-%include "libcellml/specificationrules.h"
+%include "libcellml/referencerules.h"
 %include "libcellml/types.h"
 %include "libcellml/issue.h"
