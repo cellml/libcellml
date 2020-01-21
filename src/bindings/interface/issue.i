@@ -37,14 +37,14 @@ return Level::ERROR.";
 "Sets the ``level`` of this issue.";
 
 %feature("docstring") libcellml::Issue::rule
-"Get the :class:`SpecificationRule` of this issue.";
+"Get the :class:`ReferenceRule` of this issue.";
 
 %feature("docstring") libcellml::Issue::setRule
-"Sets the :class:`SpecificationRule` for this issue.";
+"Sets the :class:`ReferenceRule` for this issue.";
 
 %feature("docstring") libcellml::Issue::specificationHeading
 "Returns the CellML 2.0 Specification heading associated with the
-:class:`SpecificationRule` for this issue (empty string if not set).";
+:class:`ReferenceRule` for this issue (empty string if not set).";
 
 %feature("docstring") libcellml::Issue::component
 "Returns the :class:`Component` that this issue is relevant to (or ``None``).";
