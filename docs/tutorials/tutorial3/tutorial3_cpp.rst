@@ -548,6 +548,9 @@ functionality to be able to work.  These are:
     **4.a**  Create a :code:`Generator` instance and follow the example above
     to process your model.
 
+
+.. container:: dothis
+
     **4.b** Call the utility function :code:`printErrorsToTerminal` for your
     generator to check it.  You should see an output similar to that shown
     below.
