@@ -493,7 +493,7 @@ TEST(Issue, getDefaultUrl)
 
     // TODO How to get this from the utilties.h file??
     std::string url = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=" + ref;
-    EXPECT_EQ("https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=4.2.1", url);
+    EXPECT_EQ(e->url(), url);
 }
 
 TEST(Issue, setAndGetCustomUrl)
