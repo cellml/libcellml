@@ -1,4 +1,4 @@
-.. _spec9:
+.. _spec09:
 
 .. include:: formal_specification.rst
   :start-after: marker9
