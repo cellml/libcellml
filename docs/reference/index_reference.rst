@@ -1,7 +1,7 @@
 .. _index_reference:
 
 ==========================================
-References, specifications, and guidelines
+Guidelines and format specifications
 ==========================================
 
 The first section here includes the normative specification documentation for
