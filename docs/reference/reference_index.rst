@@ -14,8 +14,8 @@ Formal specification of the CellML format
 
     spec*
 
-Guidelines and references for libCellML use
--------------------------------------------
+Additional references for libCellML
+-----------------------------------
 
 .. toctree::
     :maxdepth: 2
