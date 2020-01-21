@@ -52,10 +52,9 @@ Guidelines and specifications
 ----------------------------
 
 .. toctree::
-    :maxdepth: 2
-    :titlesonly:
+    :glob:
 
-    reference/reference_index
+    reference/*
 
 
 Documentation for developers
