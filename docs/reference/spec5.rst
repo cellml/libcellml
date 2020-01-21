@@ -1,6 +1,6 @@
 .. _spec5:
 
-.. include:: formal/formal_specification.rst
+.. include:: formal_specification.rst
   :start-after: marker5
   :end-before: marker6
 

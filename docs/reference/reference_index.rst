@@ -1,4 +1,4 @@
-.. _specifications_index:
+.. _reference_index:
 
 ==================================================
 References, specifications, and guidelines
