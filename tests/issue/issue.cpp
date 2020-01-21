@@ -15,6 +15,7 @@ limitations under the License->
 */
 
 #include "gtest/gtest.h"
+#include "libcellml/referencerules.h"
 
 #include <libcellml>
 
@@ -26,7 +27,7 @@ TEST(Issue, createModelError)
     EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
 }
 
-TEST(Issue, createComponemntError)
+TEST(Issue, createComponentError)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
@@ -66,7 +67,7 @@ TEST(Issue, createResetError)
     EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
 }
 
-void testSpecificationRule(const libcellml::IssuePtr &e)
+void testReferenceRule(const libcellml::IssuePtr &e)
 {
     switch (e->rule()) {
     case libcellml::ReferenceRule::COMPONENT_CHILD:
@@ -249,157 +250,157 @@ TEST(Issue, specificationRule)
     libcellml::IssuePtr e = libcellml::Issue::create();
     e->setRule(libcellml::ReferenceRule::UNDEFINED);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::COMPONENT_CHILD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::COMPONENT_NAME);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::COMPONENT_REF_CHILD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::COMPONENT_REF_ENCAPSULATION);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::CONNECTION_COMPONENT1);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::CONNECTION_COMPONENT2);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::CONNECTION_UNIQUE_TRANSITIVE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::CONNECTION_MAP_VARIABLES);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_NNEG_INT_BASE10);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::DATA_REPR_NNEG_INT_EURO_NUM);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::ENCAPSULATION_COMPONENT_REF);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_CHILD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_CIRCULAR);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_COMPONENT_NAME);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_COMPONENT_REF);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_HREF);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_UNITS_NAME);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::IMPORT_UNITS_REF);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MAP_VARIABLES_UNIQUE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MAP_VARIABLES_VARIABLE1);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MAP_VARIABLES_VARIABLE2);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MODEL_CHILD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MODEL_ELEMENT);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::MODEL_NAME);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::RESET_CHILD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::RESET_VARIABLE_REFERENCE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::RESET_ORDER);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNITS_CHILD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNITS_NAME);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNITS_NAME_UNIQUE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNITS_STANDARD);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_CIRCULAR_REF);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_DIGRAPH);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_EXPONENT);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_MULTIPLIER);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_PREFIX);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::UNIT_UNITS_REF);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::VARIABLE_INITIAL_VALUE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::VARIABLE_INTERFACE);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::VARIABLE_NAME);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     e->setRule(libcellml::ReferenceRule::VARIABLE_UNITS);
     ++count;
-    testSpecificationRule(e);
+    testReferenceRule(e);
     EXPECT_EQ(size_t(51), count);
 }
 
@@ -482,4 +483,23 @@ TEST(Issue, isHint)
     auto e = libcellml::Issue::create();
     e->setLevel(libcellml::Issue::Level::HINT);
     EXPECT_TRUE(e->isLevel(libcellml::Issue::Level::HINT));
+}
+
+TEST(Issue, getDefaultUrl)
+{
+    auto e = libcellml::Issue::create();
+    e->setRule(libcellml::ReferenceRule::MODEL_NAME);
+    auto ref = e->referenceHeading();
+
+    // TODO How to get this from the utilties.h file??
+    std::string url = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=" + ref;
+    EXPECT_EQ("https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=4.2.1", url);
+}
+
+TEST(Issue, setAndGetCustomUrl)
+{
+    auto e = libcellml::Issue::create();
+    std::string url = "https://my_custom_url.com";
+    e->setUrl(url);
+    EXPECT_EQ(url, e->url());
 }
