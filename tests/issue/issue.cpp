@@ -491,7 +491,7 @@ TEST(Issue, getDefaultUrl)
     e->setRule(libcellml::ReferenceRule::MODEL_NAME);
     auto ref = e->referenceHeading();
 
-    // TODO How to get this from the utilties.h file??
+    // TODO How to get this from the utilties.h file??  Won't be this address in the long run.
     std::string url = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=" + ref;
     EXPECT_EQ(e->url(), url);
 }
