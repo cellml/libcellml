@@ -451,6 +451,14 @@ and to include the units in the model.
     :code:`my_variable.setUnits(myUnits)`.  Add the units to the model using
     :code:`my_model.addUnits(myUnits)`.
 
+.. container:: nb
+
+    **Gotcha**  When you specify the :code:`Units` for a :code:`Variable` using
+    its name then you may need to call the :code:`Model::linkUnits()` function
+    before validating the model.  If you see errors related to missing units
+    which do in fact exist, then a call to the :code:`Model::linkUnits()`
+    function is needed.
+
 .. container:: dothis
 
     **3.f** Call the validator to check your model for errors.  You should see an

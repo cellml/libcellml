@@ -452,18 +452,19 @@ and to include the units in the model.
       the function is :code:`addUnits` (plural), and it takes as argument the
       *reference* of the combined units (eg: :code:`ms`)
 
-.. container:: nb
-
-    **Gotcha**  When you specify the :code:`Units` for a :code:`Variable` using
-    its name then you must call the :code:`Model::linkUnits()` function
-    **before** validating the model.  If you don't, you're likely to see errors
-    reporting missing units, when those units do exist.
-
 .. container:: dothis
 
     **3.e** Add the units to their variables using
     :code:`myVariable->setUnits(myUnits)`.  Add the units to the model using
     :code:`myModel->addUnits(myUnits)`.
+
+.. container:: nb
+
+    **Gotcha**  When you specify the :code:`Units` for a :code:`Variable` using
+    its name then you may need to call the :code:`Model::linkUnits()` function
+    before validating the model.  If you see errors related to missing units
+    which do in fact exist, then a call to the :code:`Model::linkUnits()`
+    function is needed.
 
 .. container:: dothis
 
