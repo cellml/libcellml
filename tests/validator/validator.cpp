@@ -2310,7 +2310,6 @@ TEST(Validator, unfoundUnitsInParsedModel)
     auto t2 = libcellml::Variable::create("t2");
 
     // Adding the variable *before* its units will break the validation.
-    // This is acceptable user behaviour so the bug needs to be fixed in libcellml.
     nGate->addVariable(t2);
     t2->setUnits("millisecond");
 
