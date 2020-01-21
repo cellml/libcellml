@@ -2283,7 +2283,7 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-TEST(Validator, unfoundUnitsInParsedModel)
+TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
 {
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
@@ -2299,24 +2299,22 @@ TEST(Validator, unfoundUnitsInParsedModel)
                      "</model>";
 
     auto model = parser->parseModel(in);
-
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 
-    // Add a component to represent the voltage dependency of the n-gate
     auto nGate = libcellml::Component::create("nGate");
     model->addComponent(nGate);
 
+    // Adding the variable *before* its units are added results in unfound units in the validator
     auto t2 = libcellml::Variable::create("t2");
-
-    // Adding the variable *before* its units will break the validation.
     nGate->addVariable(t2);
     t2->setUnits("millisecond");
 
-    model->linkUnits(); // This is the fix.  Need to document everywhere that if you've referenced
-                        // units by their name you must call this before validation.
-
     validator->validateModel(model);
-    printErrors(validator);
-    EXPECT_EQ(size_t(0), validator->errorCount()); // <<< test fails!
+    EXPECT_EQ(size_t(1), validator->errorCount());
+
+    // Linking the units to the model fixes the problem
+    model->linkUnits();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
