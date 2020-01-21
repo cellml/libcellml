@@ -343,17 +343,15 @@ For convenience libCellML gives a variety of options for defining such scaling
 factors:
 
 -  either through the use of named prefixes which are listed on the
-   :ref:`Prefix page<prefixes>`,
-   eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`
-
+   :ref:`Prefix page<prefixes>`, eg: :code:`millisecond` is :code:`second`
+   with :code:`prefix="milli"`;
 -  by defining an integer or integer string as a prefix which represents the
-    :math:`log_{10}` of the scaling factor,
-      eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3`
-   gives a scaling factor of :math:`10^{-3}=0.001`
-      NB: using an integer string like :code:`prefix="-3"` gives the same
-   result
+   :math:`log_{10}` of the scaling factor, eg: :code:`millisecond` is
+   :code:`second` with :code:`prefix=-3` gives a scaling factor of
+   :math:`10^{-3}=0.001`. NB: using an integer string like :code:`prefix="-3"`
+   gives the same result;
 -  by defining the scaling factor directly, as a multiplier,
-      eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`
+   eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`.
 
 The overloaded argument option list is shown below:
 
@@ -453,6 +451,13 @@ and to include the units in the model.
     - When you add the final created combination into the :code:`Model` item,
       the function is :code:`addUnits` (plural), and it takes as argument the
       *reference* of the combined units (eg: :code:`ms`)
+
+.. container:: nb
+
+    **Gotcha**  When you specify the :code:`Units` for a :code:`Variable` using
+    its name then you must call the :code:`Model::linkUnits()` function
+    **before** validating the model.  If you don't, you're likely to see errors
+    reporting missing units, when those units do exist.
 
 .. container:: dothis
 
