@@ -48,23 +48,24 @@ Tutorials for users
    tutorials/tutorials_index
    theory/theory_index
 
-CellML2 format specification
+Guidelines and specifications
 ----------------------------
 
 .. toctree::
     :maxdepth: 2
     :titlesonly:
 
-    specifications/specifications_index
+    reference/reference_index
+
 
 Documentation for developers
 ----------------------------
 
 .. toctree::
-   :maxdepth: 2
-   :titlesonly:
+    :maxdepth: 2
+    :titlesonly:
 
-   developer_docs/index_development
+    developer_docs/index_development
 
 Indices and tables
 ----------------------------
