@@ -1,8 +1,11 @@
 .. _specifications_index:
 
 ==================================================
-Formal specification and interpretation guidelines
+References, specifications, and guidelines
 ==================================================
+
+Formal specification of the CellML format
+-----------------------------------------
 
 .. toctree::
     :maxdepth: 2
@@ -10,3 +13,13 @@ Formal specification and interpretation guidelines
     :glob:
 
     spec*
+
+Guidelines and references for libCellML use
+-------------------------------------------
+
+.. toctree::
+    :maxdepth: 2
+    :titlesonly:
+    :glob:
+
+    ref*
