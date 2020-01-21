@@ -49,7 +49,7 @@ Tutorials for users
    theory/theory_index
 
 Guidelines and specifications
-----------------------------
+-----------------------------
 
 .. toctree::
    :maxdepth: 2
@@ -67,7 +67,7 @@ Documentation for developers
     developer_docs/index_development
 
 Indices and tables
-----------------------------
+------------------
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
