@@ -70,175 +70,175 @@ void testSpecificationRule(const libcellml::IssuePtr &e)
 {
     switch (e->rule()) {
     case libcellml::ReferenceRule::COMPONENT_CHILD:
-        EXPECT_EQ("10.1.2", e->specificationHeading());
+        EXPECT_EQ("10.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::COMPONENT_NAME:
-        EXPECT_EQ("10.1.1", e->specificationHeading());
+        EXPECT_EQ("10.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::COMPONENT_REF_CHILD:
-        EXPECT_EQ("16.1.2", e->specificationHeading());
+        EXPECT_EQ("16.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE:
-        EXPECT_EQ("16.1.1", e->specificationHeading());
+        EXPECT_EQ("16.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::COMPONENT_REF_ENCAPSULATION:
-        EXPECT_EQ("16.1.3", e->specificationHeading());
+        EXPECT_EQ("16.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::CONNECTION_COMPONENT1:
-        EXPECT_EQ("17.1.1", e->specificationHeading());
+        EXPECT_EQ("17.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::CONNECTION_COMPONENT2:
-        EXPECT_EQ("17.1.2", e->specificationHeading());
+        EXPECT_EQ("17.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::CONNECTION_UNIQUE_TRANSITIVE:
-        EXPECT_EQ("17.1.3", e->specificationHeading());
+        EXPECT_EQ("17.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::CONNECTION_MAP_VARIABLES:
-        EXPECT_EQ("17.1.4", e->specificationHeading());
+        EXPECT_EQ("17.1.4", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM:
-        EXPECT_EQ("3.1.3", e->specificationHeading());
+        EXPECT_EQ("3.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM:
-        EXPECT_EQ("3.1.4", e->specificationHeading());
+        EXPECT_EQ("3.1.4", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL:
-        EXPECT_EQ("3.1.5", e->specificationHeading());
+        EXPECT_EQ("3.1.5", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM:
-        EXPECT_EQ("3.1.2", e->specificationHeading());
+        EXPECT_EQ("3.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE:
-        EXPECT_EQ("3.1.1", e->specificationHeading());
+        EXPECT_EQ("3.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_NNEG_INT_BASE10:
-        EXPECT_EQ("3.2.1", e->specificationHeading());
+        EXPECT_EQ("3.2.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::DATA_REPR_NNEG_INT_EURO_NUM:
-        EXPECT_EQ("3.2.2", e->specificationHeading());
+        EXPECT_EQ("3.2.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::ENCAPSULATION_COMPONENT_REF:
-        EXPECT_EQ("15.1.1", e->specificationHeading());
+        EXPECT_EQ("15.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_CHILD:
-        EXPECT_EQ("5.1.2", e->specificationHeading());
+        EXPECT_EQ("5.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_CIRCULAR:
-        EXPECT_EQ("5.1.3", e->specificationHeading());
+        EXPECT_EQ("5.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_COMPONENT_NAME:
-        EXPECT_EQ("7.1.1", e->specificationHeading());
+        EXPECT_EQ("7.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_COMPONENT_REF:
-        EXPECT_EQ("7.1.2", e->specificationHeading());
+        EXPECT_EQ("7.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_HREF:
-        EXPECT_EQ("5.1.1", e->specificationHeading());
+        EXPECT_EQ("5.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_UNITS_NAME:
-        EXPECT_EQ("6.1.1", e->specificationHeading());
+        EXPECT_EQ("6.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::IMPORT_UNITS_REF:
-        EXPECT_EQ("6.1.2", e->specificationHeading());
+        EXPECT_EQ("6.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MAP_VARIABLES_UNIQUE:
-        EXPECT_EQ("18.1.3", e->specificationHeading());
+        EXPECT_EQ("18.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MAP_VARIABLES_VARIABLE1:
-        EXPECT_EQ("18.1.1", e->specificationHeading());
+        EXPECT_EQ("18.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MAP_VARIABLES_VARIABLE2:
-        EXPECT_EQ("18.1.2", e->specificationHeading());
+        EXPECT_EQ("18.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MATH_CHILD:
-        EXPECT_EQ("14.1.2", e->specificationHeading());
+        EXPECT_EQ("14.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MATH_CI_VARIABLE_REFERENCE:
-        EXPECT_EQ("14.1.3", e->specificationHeading());
+        EXPECT_EQ("14.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MATH_CN_UNITS_ATTRIBUTE:
-        EXPECT_EQ("14.1.4", e->specificationHeading());
+        EXPECT_EQ("14.1.4", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MATH_MATHML:
-        EXPECT_EQ("14.1.1", e->specificationHeading());
+        EXPECT_EQ("14.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MODEL_CHILD:
-        EXPECT_EQ("4.2.2", e->specificationHeading());
+        EXPECT_EQ("4.2.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MODEL_ELEMENT:
-        EXPECT_EQ("4.1", e->specificationHeading());
+        EXPECT_EQ("4.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION:
-        EXPECT_EQ("4.2.3", e->specificationHeading());
+        EXPECT_EQ("4.2.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::MODEL_NAME:
-        EXPECT_EQ("4.2.1", e->specificationHeading());
+        EXPECT_EQ("4.2.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::RESET_CHILD:
-        EXPECT_EQ("12.1.2", e->specificationHeading());
+        EXPECT_EQ("12.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::RESET_VARIABLE_REFERENCE:
-        EXPECT_EQ("12.1.1.1", e->specificationHeading());
+        EXPECT_EQ("12.1.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE:
-        EXPECT_EQ("12.1.1.1", e->specificationHeading());
+        EXPECT_EQ("12.1.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::RESET_ORDER:
-        EXPECT_EQ("12.1.1.2", e->specificationHeading());
+        EXPECT_EQ("12.1.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::RESET_TEST_VALUE:
-        EXPECT_EQ("12.1.2", e->specificationHeading());
+        EXPECT_EQ("12.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::RESET_RESET_VALUE:
-        EXPECT_EQ("12.1.2", e->specificationHeading());
+        EXPECT_EQ("12.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNITS_CHILD:
-        EXPECT_EQ("8.1.4", e->specificationHeading());
+        EXPECT_EQ("8.1.4", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNITS_NAME:
-        EXPECT_EQ("8.1.1", e->specificationHeading());
+        EXPECT_EQ("8.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNITS_NAME_UNIQUE:
-        EXPECT_EQ("8.1.2", e->specificationHeading());
+        EXPECT_EQ("8.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNITS_STANDARD:
-        EXPECT_EQ("8.1.3", e->specificationHeading());
+        EXPECT_EQ("8.1.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE:
-        EXPECT_EQ("9.1.2", e->specificationHeading());
+        EXPECT_EQ("9.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_CIRCULAR_REF:
-        EXPECT_EQ("9.1.1.2", e->specificationHeading());
+        EXPECT_EQ("9.1.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_DIGRAPH:
-        EXPECT_EQ("9.1.1.1", e->specificationHeading());
+        EXPECT_EQ("9.1.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_EXPONENT:
-        EXPECT_EQ("9.1.2.3", e->specificationHeading());
+        EXPECT_EQ("9.1.2.3", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_MULTIPLIER:
-        EXPECT_EQ("9.1.2.2", e->specificationHeading());
+        EXPECT_EQ("9.1.2.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_PREFIX:
-        EXPECT_EQ("9.1.2.1", e->specificationHeading());
+        EXPECT_EQ("9.1.2.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNIT_UNITS_REF:
-        EXPECT_EQ("9.1.1", e->specificationHeading());
+        EXPECT_EQ("9.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::VARIABLE_INITIAL_VALUE:
-        EXPECT_EQ("11.1.2.2", e->specificationHeading());
+        EXPECT_EQ("11.1.2.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::VARIABLE_INTERFACE:
-        EXPECT_EQ("11.1.2.1", e->specificationHeading());
+        EXPECT_EQ("11.1.2.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::VARIABLE_NAME:
-        EXPECT_EQ("11.1.1.1", e->specificationHeading());
+        EXPECT_EQ("11.1.1.1", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::VARIABLE_UNITS:
-        EXPECT_EQ("11.1.1.2", e->specificationHeading());
+        EXPECT_EQ("11.1.1.2", e->referenceHeading());
         break;
     case libcellml::ReferenceRule::UNDEFINED:
-        EXPECT_EQ("", e->specificationHeading());
+        EXPECT_EQ("", e->referenceHeading());
         break;
     }
 }

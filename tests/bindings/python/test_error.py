@@ -193,9 +193,9 @@ class ErrorTestCase(unittest.TestCase):
     def test_specification_heading(self):
         from libcellml import Issue
 
-        # std::string specificationHeading()
+        # std::string referenceHeading()
         e = Issue()
-        self.assertEqual('', e.specificationHeading())
+        self.assertEqual('', e.referenceHeading())
 
     def test_set_component(self):
         from libcellml import Issue, Component
