@@ -365,18 +365,18 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
         std::cout << component->name() << std::endl;
 
         if (component->isImport()) {
-            resolveImport(component, baseFile, history, cycleFound);
+            resolveImport(component, baseFile, history);
         } else {
             resolveComponentImports(component, baseFile, history);
         }
     }
 }
 
-void Model::resolveImports(const std::string &baseFile, std::vector<std::string> &history, bool &cycleFound)
+void Model::resolveImports(const std::string &baseFile, std::vector<std::string> &history)
 {
     for (size_t n = 0; n < unitsCount(); ++n) {
         libcellml::UnitsPtr units = Model::units(n);
-        resolveImport(units, baseFile, history, cycleFound);
+        resolveImport(units, baseFile, history);
     }
 
     // history.push_back(u->name());
