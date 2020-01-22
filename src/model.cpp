@@ -24,6 +24,8 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
+#include <iostream> // KRM
+
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
@@ -314,11 +316,29 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
-void resolveImport(const ImportedEntityPtr &importedEntity,
-                   const std::string &baseFile)
+bool resolveImport(const ImportedEntityPtr &importedEntity,
+                   const std::string &baseFile,
+                   std::vector<std::string> &history,
+                   bool &cycleFound)
 {
+
     if (importedEntity->isImport()) {
         ImportSourcePtr importSource = importedEntity->importSource();
+
+        // history.push_back(importedEntity->importReference());
+
+        for (auto &h : history) {
+            std::cout << h << ", ";
+        }
+        std::cout << std::endl;
+
+        if (std::find(history.begin(), history.end(), importedEntity->importReference()) != history.end()) {
+            // Element in vector.
+            std::cout << "Found it!" << std::endl;
+            cycleFound = true;
+            return;
+        }
+
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->url(), baseFile);
             std::ifstream file(url);
@@ -328,32 +348,52 @@ void resolveImport(const ImportedEntityPtr &importedEntity,
                 ParserPtr parser = Parser::create();
                 ModelPtr model = parser->parseModel(buffer.str());
                 importSource->setModel(model);
-                model->resolveImports(url);
+                model->resolveImports(url, history);
             }
         }
     }
 }
 
 void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
-                             const std::string &baseFile)
+                             const std::string &baseFile,
+                             std::vector<std::string> &history)
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->component(n);
+        history.push_back(component->name());
+
+        std::cout << component->name() << std::endl;
+
         if (component->isImport()) {
-            resolveImport(component, baseFile);
+            resolveImport(component, baseFile, history, cycleFound);
         } else {
-            resolveComponentImports(component, baseFile);
+            resolveComponentImports(component, baseFile, history);
         }
     }
 }
 
-void Model::resolveImports(const std::string &baseFile)
+void Model::resolveImports(const std::string &baseFile, std::vector<std::string> &history, bool &cycleFound)
 {
     for (size_t n = 0; n < unitsCount(); ++n) {
         libcellml::UnitsPtr units = Model::units(n);
-        resolveImport(units, baseFile);
+        resolveImport(units, baseFile, history, cycleFound);
     }
-    resolveComponentImports(shared_from_this(), baseFile);
+
+    // history.push_back(u->name());
+    resolveComponentImports(shared_from_this(), baseFile, history);
+}
+
+void Model::resolveImports(const std::string &baseFile)
+{
+    bool cycleFound = false;
+    std::vector<std::string> history = {};
+    for (size_t n = 0; n < unitsCount(); ++n) {
+        libcellml::UnitsPtr units = Model::units(n);
+        resolveImport(units, baseFile, history, cycleFound);
+    }
+
+    // history.push_back(u->name());
+    resolveComponentImports(shared_from_this(), baseFile, history);
 }
 
 bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
