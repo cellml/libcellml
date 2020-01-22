@@ -25,8 +25,6 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
-#if 0
-
 TEST(Validator, namedModel)
 {
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2459,20 +2457,4 @@ TEST(Validator, warningDimensionalExponentsCnInMathml)
 
     EXPECT_EQ(size_t(0), validator->errorCount());
     EXPECT_EQ(size_t(1), validator->warningCount());
-}
-#endif
-
-TEST(Validator, warningCircularImportReferences)
-{
-    auto parser = libcellml::Parser::create();
-    auto validator = libcellml::Validator::create();
-    auto model1 = parser->parseModel(fileContents("circularimports/circularImport_1.cellml"));
-
-    model1->resolveImports(resourcePath("circularimports/"));
-    model1->flatten();
-
-    validator->validateModel(model1);
-    printIssues(validator);
-
-    EXPECT_EQ(size_t(1), validator->issueCount());
 }
