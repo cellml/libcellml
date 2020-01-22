@@ -55,11 +55,11 @@ size_t Logger::errorCount() const
 
 IssuePtr Logger::error(size_t index) const
 {
-    IssuePtr err = nullptr;
+    IssuePtr issue = nullptr;
     if ((index < mPimpl->mErrors.size()) && (mPimpl->mErrors.at(index) < mPimpl->mIssues.size())) {
-        err = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
+        issue = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
     }
-    return err;
+    return issue;
 }
 
 size_t Logger::warningCount() const
@@ -69,11 +69,11 @@ size_t Logger::warningCount() const
 
 IssuePtr Logger::warning(size_t index) const
 {
-    IssuePtr err = nullptr;
+    IssuePtr issue = nullptr;
     if ((index < mPimpl->mWarnings.size()) && (mPimpl->mWarnings.at(index) < mPimpl->mIssues.size())) {
-        err = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
+        issue = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
     }
-    return err;
+    return issue;
 }
 
 size_t Logger::hintCount() const
@@ -83,11 +83,11 @@ size_t Logger::hintCount() const
 
 IssuePtr Logger::hint(size_t index) const
 {
-    IssuePtr err = nullptr;
+    IssuePtr issue = nullptr;
     if ((index < mPimpl->mHints.size()) && (mPimpl->mHints.at(index) < mPimpl->mIssues.size())) {
-        err = mPimpl->mIssues.at(mPimpl->mHints.at(index));
+        issue = mPimpl->mIssues.at(mPimpl->mHints.at(index));
     }
-    return err;
+    return issue;
 }
 
 void Logger::removeAllIssues()
@@ -106,29 +106,6 @@ void Logger::addIssue(const IssuePtr &issue)
     // Update the appropriate array based on its level
 
     libcellml::Issue::Level level = issue->level();
-    // if (issue->isLevel(libcellml::Issue::Level::ERROR)) {
-    //     mPimpl->mErrors.push_back(index);
-    // }
-
-    // if (issue->isLevel(libcellml::Issue::Level::WARNING)) {
-    //     mPimpl->mWarnings.push_back(index);
-    // }
-
-    // if (issue->isLevel(libcellml::Issue::Level::HINT)) {
-    //     mPimpl->mHints.push_back(index);
-    // }
-    // auto level = issue->level();
-
-    // if (level == libcellml::Issue::Level::ERROR){
-    //     mPimpl->mErrors.push_back(index);
-    // }
-    // else if (level == libcellml::Issue::Level::WARNING){
-    //     mPimpl->mWarnings.push_back(index);
-    // }
-    // else if (level == libcellml::Issue::Level::HINT){
-    //     mPimpl->mHints.push_back(index);
-    // }
-
     switch (level) {
     case libcellml::Issue::Level::ERROR:
         mPimpl->mErrors.push_back(index);
@@ -149,11 +126,11 @@ size_t Logger::issueCount() const
 
 IssuePtr Logger::issue(size_t index) const
 {
-    IssuePtr err = nullptr;
+    IssuePtr issue = nullptr;
     if (index < mPimpl->mIssues.size()) {
-        err = mPimpl->mIssues.at(index);
+        issue = mPimpl->mIssues.at(index);
     }
-    return err;
+    return issue;
 }
 
 IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const

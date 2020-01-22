@@ -8,7 +8,7 @@
 %import "types.i"
 
 %feature("docstring") libcellml::Issue
-"Base class for errors used with logger derived classes."
+"Base class for issues used with logger derived classes."
 
 %feature("docstring") libcellml::Issue::description
 "Get a string description for why this issue was raised.";
@@ -27,8 +27,8 @@ return Cause::UNDEFINED.";
 "Sets the ``cause`` of this issue.";
 
 %feature("docstring") libcellml::Issue::level
-"Get the ``level`` of this issue. If no level has been set for this issue, will
-return Level::ERROR.";
+"Get the ``level`` of this issue. If no level has been set for this issue,
+Level::ERROR will be returned.";
 
 %feature("docstring") libcellml::Issue::isLevel
 "Tests if this issue matches the given ``level``.";

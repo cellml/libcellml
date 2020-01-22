@@ -270,7 +270,7 @@ ResetPtr Issue::reset() const
 }
 
 /**
- * @brief Map SpecificationRules to their section titles.
+ * @brief Map ReferenceRules to their section titles.
  *
  * An internal map used to convert a ReferenceRule into its heading string.
  */

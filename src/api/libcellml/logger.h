@@ -21,7 +21,6 @@ limitations under the License.
 #include "libcellml/types.h"
 
 #include <string>
-#include <vector>
 
 namespace libcellml {
 
@@ -55,7 +54,7 @@ public:
     void addIssue(const IssuePtr &issue);
 
     /**
-     * @brief Get the number of issues
+     * @brief Get the number of issues.
      *
      * Return the number of issues of any level currently stored in the logger.
      *
@@ -79,7 +78,7 @@ public:
     /**
      * @brief Get issue of specified @p level at the specified @p index.
      *
-     * Returns an issue at the @p index.  If the @p index
+     * Returns an issue at the @p index of specified @p level.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
      * is [0, \#issues_of_level).
      *
@@ -91,6 +90,19 @@ public:
      */
     IssuePtr issue(size_t index, libcellml::Issue::Level level) const;
 
+    /**
+     * @brief Get issue of one of the specified @p levels at the specified @p index.
+     *
+     * Returns an issue at the @p index of one of the specified @p levels.  If the @p index
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, \#issues_of_levels).
+     *
+     * @param index The index of the issue to return.
+     * @param levels The levels of issue to return.
+     *
+     * @return A reference to the issue from the list of issues at one of the given levels,
+     * at the given index on success, @c nullptr otherwise.
+     */
     IssuePtr issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const;
 
     /**
@@ -127,7 +139,7 @@ public:
     /**
      * @brief Get issue of level WARNING at the specified @p index.
      *
-     * Returns an warning at the @p index.  If the @p index
+     * Returns a warning at the @p index.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
      * is [0, \#warnings).
      *
@@ -149,7 +161,7 @@ public:
     /**
      * @brief Get issue of level HINT at the specified @p index.
      *
-     * Returns an error at the @p index.  If the @p index
+     * Returns a hint at the @p index.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
      * is [0, \#hints).
      *

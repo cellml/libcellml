@@ -14,35 +14,35 @@
 "Adds an issue to this logger.";
 
 %feature("docstring") libcellml::Logger::issue
-"Returns the issue of any level at the specified 'index'.";
+"Returns the issue of any level at the specified ``index``.";
 
 %feature("docstring") libcellml::Logger::issueCount
 "Returns the number of issues currently stored in the logger.";
 
 %feature("docstring") libcellml::Logger::error
-"Returns the issue of level 'error' at the specified 'index'.";
+"Returns the issue of level ERROR at the specified ``index``.";
 
 %feature("docstring") libcellml::Logger::errorCount
-"Returns the number of issues of level 'error' currently stored in the logger.";
+"Returns the number of issues of level ERROR currently stored in the logger.";
 
 %feature("docstring") libcellml::Logger::warning
-"Returns the issue of level 'warning' at the specified 'index'.";
+"Returns the issue of level WARNING at the specified ``index``.";
 
 %feature("docstring") libcellml::Logger::warningCount
-"Returns the number of issues of level 'warning' currently stored in the logger.";
+"Returns the number of issues of level WARNING currently stored in the logger.";
 
 %feature("docstring") libcellml::Logger::hint
-"Returns the issue of level 'hint' at the specified 'index'.";
+"Returns the issue of level HINT at the specified ``index``.";
 
 %feature("docstring") libcellml::Logger::hintCount
-"Returns the number of issues of level 'hint' currently stored in the logger.";
+"Returns the number of issues of level HINT currently stored in the logger.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
-        IssuePtr error(long index) {
+        IssuePtr issue(long index) {
             if (index < 0) return nullptr;
-            return $self->error(size_t(index));
+            return $self->issue(size_t(index));
         }
     }
 #endif

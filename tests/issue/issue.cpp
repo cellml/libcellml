@@ -19,7 +19,7 @@ limitations under the License->
 
 #include <libcellml>
 
-TEST(Issue, createModelError)
+TEST(Issue, createModelIssue)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
@@ -27,7 +27,7 @@ TEST(Issue, createModelError)
     EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
 }
 
-TEST(Issue, createComponentError)
+TEST(Issue, createComponentIssue)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
@@ -35,7 +35,7 @@ TEST(Issue, createComponentError)
     EXPECT_EQ(libcellml::Issue::Cause::COMPONENT, e->cause());
 }
 
-TEST(Issue, createVariableError)
+TEST(Issue, createVariableIssue)
 {
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
@@ -43,7 +43,7 @@ TEST(Issue, createVariableError)
     EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
 }
 
-TEST(Issue, createUnitsError)
+TEST(Issue, createUnitsIssue)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
@@ -51,7 +51,7 @@ TEST(Issue, createUnitsError)
     EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
 }
 
-TEST(Issue, createImportSourceError)
+TEST(Issue, createImportSourceIssue)
 {
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
@@ -59,7 +59,7 @@ TEST(Issue, createImportSourceError)
     EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
 }
 
-TEST(Issue, createResetError)
+TEST(Issue, createResetIssue)
 {
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);

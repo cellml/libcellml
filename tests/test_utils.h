@@ -79,14 +79,12 @@ std::string TEST_EXPORT fileContents(const std::string &fileName);
 
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
 
-void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &issues,
-                                   const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues,
                                    const libcellml::LoggerPtr &logger);
-void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issues,
+void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
-void TEST_EXPORT expectEqualErrorsCauses(const std::vector<std::string> &issues,
+void TEST_EXPORT expectEqualIssuesCauses(const std::vector<std::string> &issues,
                                          const std::vector<libcellml::Issue::Cause> &causes,
                                          const libcellml::LoggerPtr &logger);
 
@@ -99,14 +97,10 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssues(issues, logger)
 
-#define EXPECT_EQ_ERRORS(issues, logger) \
+#define EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(issues, specificationHeadings, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualErrors(issues, logger)
+    expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ERRORS_SPECIFICATION_HEADINGS(issues, specificationHeadings, logger) \
+#define EXPECT_EQ_ISSUES_KINDS(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualErrorsSpecificationHeadings(issues, specificationHeadings, logger)
-
-#define EXPECT_EQ_ERRORS_KINDS(issues, causes, logger) \
-    SCOPED_TRACE("Issue occured here."); \
-    expectEqualErrorsCauses(issues, causes, logger)
+    expectEqualIssuesCauses(issues, causes, logger)
