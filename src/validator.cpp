@@ -985,18 +985,17 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 err->setModel(model);
                                 err->setCause(Issue::Cause::UNITS);
                                 mValidator->addIssue(err);
+                            } else if (multiplier != 0.0) {
+                                // Warning when the multipliers are not the same.
+                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                                IssuePtr err = Issue::create();
+                                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                                err->setModel(model);
+                                err->setLevel(libcellml::Issue::Level::WARNING);
+                                err->setCause(Issue::Cause::UNITS);
+                                mValidator->addIssue(err);
                             }
-                            // } else if (multiplier != 0.0) {
-                            //     // KRM Warning when the multipliers are not the same.
-                            //     auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                            //     auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                            //     IssuePtr err = Issue::create();
-                            //     err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-                            //     err->setModel(model);
-                            //     err->setLevel(libcellml::Issue::Level::WARNING);
-                            //     err->setCause(Issue::Cause::UNITS);
-                            //     mValidator->addIssue(err);
-                            // }
 
                             if (equivalentVariable->hasEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
