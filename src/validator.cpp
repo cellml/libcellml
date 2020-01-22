@@ -258,6 +258,11 @@ struct Validator::ValidatorImpl
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
                             std::vector<std::string> &history,
                             std::vector<std::vector<std::string>> &errorList);
+
+    void checkNoImportsAreCyclic(const ModelPtr &model);
+    void checkImportsForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                               std::vector<std::string> &history,
+                               std::vector<std::vector<std::string>> &errorList);
 };
 
 Validator::Validator()
@@ -1248,6 +1253,87 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
                 // Making a copy of the history vector to this point.
                 std::vector<std::string> child_history(history);
                 checkUnitForCycles(model, child, child_history, errorList);
+                std::vector<std::string>().swap(child_history);
+            }
+        }
+    }
+}
+
+void Validator::ValidatorImpl::checkNoImportsAreCyclic(const ModelPtr &model)
+{
+    std::vector<std::string> history;
+    std::vector<std::vector<std::string>> errorList;
+
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        // Test each units' dependencies for presence of self in tree.
+        UnitsPtr u = model->units(i);
+        history.push_back(u->name());
+        checkImportsForCycles(model, u, history, errorList);
+        // Have to delete this each time to prevent reinitialisation with previous base variables.
+        std::vector<std::string>().swap(history);
+    }
+
+    if (!errorList.empty()) {
+        std::vector<std::map<std::string, bool>> reportedErrorList;
+        for (auto &issues : errorList) {
+            std::map<std::string, bool> hash;
+
+            for (auto &e : issues) {
+                hash.insert(std::pair<std::string, bool>(e, true));
+            }
+
+            // Only return as issue if this combo has not been reported already.
+            if (std::find(reportedErrorList.begin(), reportedErrorList.end(), hash) == reportedErrorList.end()) {
+                IssuePtr err = Issue::create();
+                std::string des = "'";
+                for (size_t j = 0; j < issues.size() - 1; ++j) {
+                    des += issues[j] + "' -> '";
+                }
+                des += issues[issues.size() - 1] + "'";
+                err->setDescription("Cyclic units exist: " + des);
+                err->setModel(model);
+                err->setCause(Issue::Cause::UNITS);
+                mValidator->addIssue(err);
+                reportedErrorList.push_back(hash);
+            }
+            std::map<std::string, bool>().swap(hash);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::checkImportsForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                                                    std::vector<std::string> &history,
+                                                    std::vector<std::vector<std::string>> &errorList)
+{
+    if (parent->isBaseUnit()) {
+        return;
+    }
+
+    // Recursive function to check for self-referencing in unit definitions.
+    std::string id;
+    std::string ref;
+    std::string prefix;
+    double exp;
+    double mult;
+
+    // Take history, and copy it for each new branch.
+    for (size_t i = 0; i < parent->unitCount(); ++i) {
+        parent->unitAttributes(i, ref, prefix, exp, mult, id);
+        if (std::find(history.begin(), history.end(), ref) != history.end()) {
+            history.push_back(ref);
+            // Print to error output *only* when the first and last units are the same
+            // otherwise we get lasso shapes reported.
+            if (history.front() == history.back()) {
+                errorList.push_back(history);
+            }
+        } else {
+            // Step into dependencies if they are not built-in units.
+            if (model->hasUnits(ref)) {
+                UnitsPtr child = model->units(ref);
+                history.push_back(ref);
+                // Making a copy of the history vector to this point.
+                std::vector<std::string> child_history(history);
+                checkImportsForCycles(model, child, child_history, errorList);
                 std::vector<std::string>().swap(child_history);
             }
         }
