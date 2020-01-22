@@ -2344,6 +2344,12 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
+/**
+ *
+ *                  ISSUE WARNINGS TESTING FROM HERE DOWN
+ *
+ * ==========================================================================*/
+
 TEST(Validator, warningMismatchedMultipliersInUnits)
 {
     // If two units are linked through variable equivalence mapping and their
