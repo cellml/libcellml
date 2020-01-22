@@ -40,19 +40,19 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void printErrors(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
+void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
 {
-    for (size_t i = 0; i < l->errorCount(); ++i) {
+    for (size_t i = 0; i < l->issueCount(); ++i) {
         std::cout << "Issue " << std::setw(3) << i + 1 << ": ";
-        std::cout << l->error(i)->description();
+        std::cout << l->issue(i)->description();
         if (headings) {
-            std::cout << ", " << l->error(i)->referenceHeading();
+            std::cout << ", " << l->issue(i)->referenceHeading();
         }
         if (causes) {
-            std::cout << ", " << static_cast<int>(l->error(i)->cause());
+            std::cout << ", " << static_cast<int>(l->issue(i)->cause());
         }
         if (rule) {
-            std::cout << ", " << static_cast<int>(l->error(i)->rule());
+            std::cout << ", " << static_cast<int>(l->issue(i)->rule());
         }
         std::cout << std::endl;
     }
@@ -63,6 +63,14 @@ void expectEqualErrors(const std::vector<std::string> &issues, const libcellml::
     EXPECT_EQ(issues.size(), logger->errorCount());
     for (size_t i = 0; i < logger->errorCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->error(i)->description());
+    }
+}
+
+void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
+{
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
     }
 }
 

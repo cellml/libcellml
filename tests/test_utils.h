@@ -77,9 +77,11 @@ std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "
 
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 
-void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
+void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
 
 void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &issues,
+                                   const libcellml::LoggerPtr &logger);
+void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues,
                                    const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issues,
                                                         const std::vector<std::string> &specificationHeadings,
@@ -92,6 +94,10 @@ libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");
 libcellml::VariablePtr TEST_EXPORT createVariableWithUnits(const std::string &name, const std::string &units);
 libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(const std::string &modelName = "", const std::string &c1Name = "", const std::string &c2Name = "", const std::string &v1Name = "", const std::string &v2Name = "");
+
+#define EXPECT_EQ_ISSUES(issues, logger) \
+    SCOPED_TRACE("Issue occured here."); \
+    expectEqualIssues(issues, logger)
 
 #define EXPECT_EQ_ERRORS(issues, logger) \
     SCOPED_TRACE("Issue occured here."); \

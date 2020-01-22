@@ -1169,7 +1169,7 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
         for (const auto &iter : standardUnitsList.at(uName)) {
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
-        multiplier += direction * logMult;
+        multiplier += direction * (logMult + standardMultiplierList.at(uName)); // KRM added standardMultiplierList
     }
 }
 
