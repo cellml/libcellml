@@ -2350,7 +2350,7 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
  *
  * ==========================================================================*/
 
-TEST(Validator, mismatchedMultipliersInUnits)
+TEST(Validator, warningMismatchedMultipliersInUnits)
 {
     // If two units are linked through variable equivalence mapping and their
     // scaling factor is not the same, it should raise a warning-level issue
@@ -2389,4 +2389,78 @@ TEST(Validator, mismatchedMultipliersInUnits)
     EXPECT_EQ(size_t(1), validator->issueCount());
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, warningDimensionalExponentsCiInMathml)
+{
+    auto validator = libcellml::Validator::create();
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+
+    auto rhs = libcellml::Variable::create("rhs");
+    rhs->setUnits("dimensionless");
+    component->addVariable(rhs);
+
+    auto base = libcellml::Variable::create("base");
+    base->setUnits("dimensionless");
+    component->addVariable(base);
+
+    auto exponent = libcellml::Variable::create("exponent");
+    exponent->setUnits("metre");
+    component->addVariable(exponent);
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>";
+    std::string maths =
+        "  <apply><eq/>\n"
+        "    <ci>rhs</ci>\n"
+        "    <apply><power/>\n"
+        "      <ci>base</ci>\n"
+        "      <ci>exponent</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n";
+    component->setMath(mathHeader);
+    component->appendMath(maths);
+    component->appendMath(mathFooter);
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(1), validator->warningCount());
+}
+
+TEST(Validator, warningDimensionalExponentsCnInMathml)
+{
+    auto validator = libcellml::Validator::create();
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    model->addComponent(component);
+
+    auto rhs = libcellml::Variable::create("rhs");
+    rhs->setUnits("dimensionless");
+    component->addVariable(rhs);
+
+    auto base = libcellml::Variable::create("base");
+    base->setUnits("dimensionless");
+    component->addVariable(base);
+
+    std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
+    std::string mathFooter = "</math>";
+    std::string maths =
+        "  <apply><eq/>\n"
+        "    <ci>rhs</ci>\n"
+        "    <apply><power/>\n"
+        "      <ci>base</ci>\n"
+        "      <cn cellml:units=\"metre\">2</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n";
+    component->setMath(mathHeader);
+    component->appendMath(maths);
+    component->appendMath(mathFooter);
+
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(1), validator->warningCount());
 }
