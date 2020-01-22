@@ -104,7 +104,32 @@ void Logger::addIssue(const IssuePtr &issue)
     mPimpl->mIssues.push_back(issue);
     size_t index = mPimpl->mIssues.size() - 1;
     // Update the appropriate array based on its level
-    switch (issue->level()) {
+
+    libcellml::Issue::Level level = issue->level();
+    // if (issue->isLevel(libcellml::Issue::Level::ERROR)) {
+    //     mPimpl->mErrors.push_back(index);
+    // }
+
+    // if (issue->isLevel(libcellml::Issue::Level::WARNING)) {
+    //     mPimpl->mWarnings.push_back(index);
+    // }
+
+    // if (issue->isLevel(libcellml::Issue::Level::HINT)) {
+    //     mPimpl->mHints.push_back(index);
+    // }
+    // auto level = issue->level();
+
+    // if (level == libcellml::Issue::Level::ERROR){
+    //     mPimpl->mErrors.push_back(index);
+    // }
+    // else if (level == libcellml::Issue::Level::WARNING){
+    //     mPimpl->mWarnings.push_back(index);
+    // }
+    // else if (level == libcellml::Issue::Level::HINT){
+    //     mPimpl->mHints.push_back(index);
+    // }
+
+    switch (level) {
     case libcellml::Issue::Level::ERROR:
         mPimpl->mErrors.push_back(index);
         break;
