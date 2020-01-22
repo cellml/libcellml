@@ -356,8 +356,7 @@ bool resolveImport(const ImportedEntityPtr &importedEntity,
 
 void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
                              const std::string &baseFile,
-                             std::vector<std::string> &history,
-                             )
+                             std::vector<std::string> &history)
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->component(n);
