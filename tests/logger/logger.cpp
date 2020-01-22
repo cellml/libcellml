@@ -20,47 +20,47 @@ limitations under the License.
 
 TEST(Logger, addError)
 {
-    auto err = libcellml::Issue::create();
-    err->setLevel(libcellml::Issue::Level::ERROR);
+    auto issue = libcellml::Issue::create();
+    issue->setLevel(libcellml::Issue::Level::ERROR);
     auto logger = libcellml::Validator::create();
 
-    logger->addIssue(err);
+    logger->addIssue(issue);
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(1), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());
     EXPECT_EQ(size_t(0), logger->hintCount());
-    EXPECT_EQ(logger->error(0), err);
-    EXPECT_EQ(logger->issue(0), err);
+    EXPECT_EQ(logger->error(0), issue);
+    EXPECT_EQ(logger->issue(0), issue);
 }
 
 TEST(Logger, addWarning)
 {
-    auto err = libcellml::Issue::create();
-    err->setLevel(libcellml::Issue::Level::WARNING);
+    auto issue = libcellml::Issue::create();
+    issue->setLevel(libcellml::Issue::Level::WARNING);
     auto logger = libcellml::Validator::create();
 
-    logger->addIssue(err);
+    logger->addIssue(issue);
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(1), logger->warningCount());
     EXPECT_EQ(size_t(0), logger->hintCount());
-    EXPECT_EQ(logger->warning(0), err);
-    EXPECT_EQ(logger->issue(0), err);
+    EXPECT_EQ(logger->warning(0), issue);
+    EXPECT_EQ(logger->issue(0), issue);
 }
 
 TEST(Logger, addHint)
 {
-    auto err = libcellml::Issue::create();
-    err->setLevel(libcellml::Issue::Level::HINT);
+    auto issue = libcellml::Issue::create();
+    issue->setLevel(libcellml::Issue::Level::HINT);
     auto logger = libcellml::Validator::create();
 
-    logger->addIssue(err);
+    logger->addIssue(issue);
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());
     EXPECT_EQ(size_t(1), logger->hintCount());
-    EXPECT_EQ(logger->hint(0), err);
-    EXPECT_EQ(logger->issue(0), err);
+    EXPECT_EQ(logger->hint(0), issue);
+    EXPECT_EQ(logger->issue(0), issue);
 }
 
 TEST(Logger, getIssueByLevelFunction)

@@ -4,7 +4,7 @@
 import unittest
 
 
-class ErrorTestCase(unittest.TestCase):
+class IssueTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
         from libcellml import Component

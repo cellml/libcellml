@@ -58,14 +58,6 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-void expectEqualErrors(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
-{
-    EXPECT_EQ(issues.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < issues.size(); ++i) {
-        EXPECT_EQ(issues.at(i), logger->error(i)->description());
-    }
-}
-
 void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
@@ -74,27 +66,27 @@ void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::
     }
 }
 
-void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &issues,
+void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
                                             const std::vector<std::string> &specificationHeadings,
                                             const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(issues.size(), logger->errorCount());
-    EXPECT_EQ(specificationHeadings.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < issues.size(); ++i) {
-        EXPECT_EQ(issues.at(i), logger->error(i)->description());
-        EXPECT_EQ(specificationHeadings.at(i), logger->error(i)->referenceHeading());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(specificationHeadings.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(specificationHeadings.at(i), logger->issue(i)->referenceHeading());
     }
 }
 
-void expectEqualErrorsCauses(const std::vector<std::string> &issues,
+void expectEqualIssuesCauses(const std::vector<std::string> &issues,
                              const std::vector<libcellml::Issue::Cause> &causes,
                              const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(issues.size(), logger->errorCount());
-    EXPECT_EQ(causes.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < issues.size(); ++i) {
-        EXPECT_EQ(issues.at(i), logger->error(i)->description());
-        EXPECT_EQ(causes.at(i), logger->error(i)->cause());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(causes.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(causes.at(i), logger->issue(i)->cause());
     }
 }
 
