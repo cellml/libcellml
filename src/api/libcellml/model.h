@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/logger.h"
 
 #include <string>
 
@@ -32,7 +33,7 @@ namespace libcellml {
  *
  * The Model class is for representing a CellML Model.
  */
-class LIBCELLML_EXPORT Model: public ComponentEntity
+class LIBCELLML_EXPORT Model: public ComponentEntity, public Logger
 #ifndef SWIG
     ,
                               public std::enable_shared_from_this<Model>
@@ -315,7 +316,7 @@ public:
      *
      * @param baseFile The @c std::string location on local disk of the source @c Model.
      */
-    void resolveImports(const std::string &baseFile, std::vector<std::string> &history);
+    bool resolveImports(const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history, std::vector<IssuePtr> &issues);
 
     /**
      * @brief Test if this model has unresolved imports.

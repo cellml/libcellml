@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "gtest/gtest.h"
+#include "test_utils.h"
 
 #include <libcellml>
 

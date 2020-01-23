@@ -69,6 +69,49 @@ TEST(ResolveImports, resolveUnitsImportFromFile)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
+TEST(ResolveImports, noWarningForkedImport)
+{
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("circularimports/forkedImport.cellml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("circularimports/"));
+    printIssues(model);
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(ResolveImports, noWarningDiamondImport)
+{
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("circularimports/diamond.cellml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("circularimports/"));
+    printIssues(model);
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(ResolveImports, warningCircularImportReferences)
+{
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components. The dependency loop is:\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml',\n"
+                                 "    component 'c2' imports 'c3' from 'circularImport_3.cellml',\n"
+                                 "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("circularimports/circularImport_1.cellml"));
+
+    model->resolveImports(resourcePath("circularimports/"));
+    printIssues(model);
+    EXPECT_EQ(size_t(1), model->issueCount());
+    EXPECT_EQ(size_t(1), model->warningCount());
+    EXPECT_EQ(warningMessage, model->warning(0)->description());
+}
+
 TEST(ResolveImports, resolveImportsFromFileLevel0)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();

@@ -1302,8 +1302,8 @@ void Validator::ValidatorImpl::checkNoImportsAreCyclic(const ModelPtr &model)
 }
 
 void Validator::ValidatorImpl::checkImportsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                    std::vector<std::string> &history,
-                                                    std::vector<std::vector<std::string>> &errorList)
+                                                     std::vector<std::string> &history,
+                                                     std::vector<std::vector<std::string>> &errorList)
 {
     if (parent->isBaseUnit()) {
         return;

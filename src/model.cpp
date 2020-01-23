@@ -24,8 +24,6 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
-#include <iostream> // KRM
-
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
@@ -317,95 +315,114 @@ std::string resolvePath(const std::string &filename, const std::string &base)
 }
 
 bool resolveImport(const ImportedEntityPtr &importedEntity,
+                   const std::string &destination,
                    const std::string &baseFile,
-                   std::vector<std::string> &history)
+                   std::vector<std::tuple<std::string, std::string, std::string>> &history,
+                   std::vector<IssuePtr> &issues)
 {
     if (importedEntity->isImport()) {
         ImportSourcePtr importSource = importedEntity->importSource();
-
-        // history.push_back(importedEntity->importReference());
-
-        for (auto &h : history) {
-            std::cout << h << ", ";
-        }
-        std::cout << std::endl;
-
-        if (std::find(history.begin(), history.end(), importedEntity->importReference()) != history.end()) {
-            // Element in vector.
-            std::cout << "Found it!" << std::endl;
+        auto h = std::make_tuple(destination, importedEntity->importReference(), importSource->url());
+        if (std::find(history.begin(), history.end(), h) != history.end()) {
+            history.emplace_back(h);
             return false;
         }
+        history.emplace_back(h);
 
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->url(), baseFile);
             std::ifstream file(url);
+
             if (file.good()) {
                 std::stringstream buffer;
                 buffer << file.rdbuf();
                 ParserPtr parser = Parser::create();
                 ModelPtr model = parser->parseModel(buffer.str());
+                // KRM Remove all components from the model *except* the one we want to import.  This is to
+                // prevent the call to resolve imports in the new model from trying to resolve *all* the components
+                // in the new model when it doesn't need to ... it will still import all the units though ..
+                for (size_t c = 0; c < model->componentCount(); ++c) {
+                    auto component = model->component(c);
+                    if (component->name() != importedEntity->importReference()) {
+                        component->removeParent();
+                    }
+                }
                 importSource->setModel(model);
-                model->resolveImports(url, history);
+                return model->resolveImports(url, history, issues);
             }
         }
     }
     return true;
 }
 
-void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
+bool resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
                              const std::string &baseFile,
-                             std::vector<std::string> &history)
+                             std::vector<std::tuple<std::string, std::string, std::string>> &history,
+                             std::vector<IssuePtr> &issues)
 {
+    bool noErrors = true;
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        history.push_back(component->name());
-
-        std::cout << component->name() << std::endl;
-
         if (component->isImport()) {
-            if (!resolveImport(component, baseFile, history)) {
-                auto err = libcellml::Issue::create();
-                std::string msg = "Cyclic dependencies were found when attempting to resolve components. The dependency loop is:\n    ";
-                for (auto &h : history) {
-                    msg += h + " -> ";
+            if (!resolveImport(component, component->name(), baseFile, history, issues)) {
+                if (!history.empty()) {
+                    std::string msg = "Cyclic dependencies were found when attempting to resolve components. The dependency loop is:\n";
+                    std::string spacer = "    ";
+                    for (auto &h : history) {
+                        msg += spacer + "component '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
+                        spacer = "',\n    ";
+                    }
+                    msg += "'.";
+                    auto issue = Issue::create();
+                    issue->setDescription(msg);
+                    issue->setLevel(libcellml::Issue::Level::WARNING);
+                    issues.push_back(issue);
+                    std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
                 }
-                msg += "\n";
-                err->setDescription(msg);
-                err->setLevel(libcellml::Issue::Level::WARNING);
-                err->setModel(owningModel(component));
-                return;
+                noErrors = false;
             }
         } else {
-            resolveComponentImports(component, baseFile, history);
+            if (!resolveComponentImports(component, baseFile, history, issues)) {
+                noErrors = false;
+            }
         }
     }
+    return noErrors;
 }
 
-void Model::resolveImports(const std::string &baseFile, std::vector<std::string> &history)
+bool Model::resolveImports(const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history, std::vector<libcellml::IssuePtr> &issues)
 {
     for (size_t n = 0; n < unitsCount(); ++n) {
         libcellml::UnitsPtr units = Model::units(n);
 
-        if (!resolveImport(units, baseFile, history)) {
-            auto err = libcellml::Issue::create();
+        if ((!resolveImport(units, units->name(), baseFile, history, issues)) && (!history.empty())) {
             std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + this->name() + ". The dependency loop is:\n    ";
+            std::string spacer = "    ";
             for (auto &h : history) {
-                msg += h + " -> ";
+                msg += spacer + "(" + std::get<0>(h) + ", " + std::get<1>(h) + ", " + std::get<2>(h) + ")\n";
+                spacer = " -> ";
             }
-            msg += "\n";
-            err->setDescription(msg);
-            err->setLevel(libcellml::Issue::Level::WARNING);
-            err->setModel(shared_from_this());
-            return;
+            auto issue = Issue::create();
+            issue->setDescription(msg);
+            issue->setLevel(libcellml::Issue::Level::WARNING);
+            issue->setModel(shared_from_this());
+            issues.push_back(issue);
+            std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
+            return false;
         }
     }
-    resolveComponentImports(shared_from_this(), baseFile, history);
+    return resolveComponentImports(shared_from_this(), baseFile, history, issues);
 }
 
 void Model::resolveImports(const std::string &baseFile)
 {
-    std::vector<std::string> history = {};
-    resolveImports(baseFile, history);
+    std::vector<libcellml::IssuePtr> issues = {};
+    std::vector<std::tuple<std::string, std::string, std::string>> history = {};
+    if (!resolveImports(baseFile, history, issues)) {
+        for (auto &issue : issues) {
+            addIssue(issue);
+        }
+    }
 }
 
 bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
