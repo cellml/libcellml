@@ -318,10 +318,8 @@ std::string resolvePath(const std::string &filename, const std::string &base)
 
 bool resolveImport(const ImportedEntityPtr &importedEntity,
                    const std::string &baseFile,
-                   std::vector<std::string> &history,
-                   bool &cycleFound)
+                   std::vector<std::string> &history)
 {
-
     if (importedEntity->isImport()) {
         ImportSourcePtr importSource = importedEntity->importSource();
 
@@ -335,8 +333,7 @@ bool resolveImport(const ImportedEntityPtr &importedEntity,
         if (std::find(history.begin(), history.end(), importedEntity->importReference()) != history.end()) {
             // Element in vector.
             std::cout << "Found it!" << std::endl;
-            cycleFound = true;
-            return;
+            return false;
         }
 
         if (!importSource->hasModel()) {
@@ -352,6 +349,7 @@ bool resolveImport(const ImportedEntityPtr &importedEntity,
             }
         }
     }
+    return true;
 }
 
 void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
@@ -365,7 +363,18 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
         std::cout << component->name() << std::endl;
 
         if (component->isImport()) {
-            resolveImport(component, baseFile, history);
+            if (!resolveImport(component, baseFile, history)) {
+                auto err = libcellml::Issue::create();
+                std::string msg = "Cyclic dependencies were found when attempting to resolve components. The dependency loop is:\n    ";
+                for (auto &h : history) {
+                    msg += h + " -> ";
+                }
+                msg += "\n";
+                err->setDescription(msg);
+                err->setLevel(libcellml::Issue::Level::WARNING);
+                err->setModel(owningModel(component));
+                return;
+            }
         } else {
             resolveComponentImports(component, baseFile, history);
         }
@@ -376,24 +385,27 @@ void Model::resolveImports(const std::string &baseFile, std::vector<std::string>
 {
     for (size_t n = 0; n < unitsCount(); ++n) {
         libcellml::UnitsPtr units = Model::units(n);
-        resolveImport(units, baseFile, history);
-    }
 
-    // history.push_back(u->name());
+        if (!resolveImport(units, baseFile, history)) {
+            auto err = libcellml::Issue::create();
+            std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + this->name() + ". The dependency loop is:\n    ";
+            for (auto &h : history) {
+                msg += h + " -> ";
+            }
+            msg += "\n";
+            err->setDescription(msg);
+            err->setLevel(libcellml::Issue::Level::WARNING);
+            err->setModel(shared_from_this());
+            return;
+        }
+    }
     resolveComponentImports(shared_from_this(), baseFile, history);
 }
 
 void Model::resolveImports(const std::string &baseFile)
 {
-    bool cycleFound = false;
     std::vector<std::string> history = {};
-    for (size_t n = 0; n < unitsCount(); ++n) {
-        libcellml::UnitsPtr units = Model::units(n);
-        resolveImport(units, baseFile, history, cycleFound);
-    }
-
-    // history.push_back(u->name());
-    resolveComponentImports(shared_from_this(), baseFile, history);
+    resolveImports(baseFile, history);
 }
 
 bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
