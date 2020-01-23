@@ -2344,7 +2344,13 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
-TEST(Validator, warningMismatchedMultipliersInUnits)
+/**
+ *
+ *                  ISSUE WARNINGS TESTING FROM HERE DOWN
+ *
+ * ==========================================================================*/
+
+TEST(Validator, mismatchedMultipliersInUnits)
 {
     // If two units are linked through variable equivalence mapping and their
     // scaling factor is not the same, it should raise a warning-level issue

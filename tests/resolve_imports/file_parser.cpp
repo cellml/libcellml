@@ -161,19 +161,3 @@ TEST(ResolveImports, componentNotInResolvingModel)
     model->resolveImports(resourcePath());
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
-
-// *** KRM Adding tests for warning-type issues here
-
-// TEST(ResolveImports, warningCircularImportReferences)
-// {
-//     auto parser = libcellml::Parser::create();
-//     auto validator = libcellml::Validator::create();
-//     auto model1 = parser->parseModel(fileContents("circularimports/circularImport_1.cellml"));
-
-//     model1->resolveImports(resourcePath("circularimports/"));
-
-//     validator->validateModel(model1);
-//     printIssues(validator);
-
-//     EXPECT_EQ(size_t(1), validator->issueCount());
-// }
