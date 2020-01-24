@@ -21,6 +21,7 @@ limitations under the License.
 #include <map>
 #include <sstream>
 #include <stack>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -32,6 +33,7 @@ limitations under the License.
 
 #include "internaltypes.h"
 #include "utilities.h"
+#include "xmldoc.h"
 
 namespace libcellml {
 
@@ -240,6 +242,58 @@ void linkComponentVariableUnits(const ComponentPtr &component)
             }
         }
     }
+}
+
+void findCnUnits(const XmlNodePtr &node, std::unordered_set<std::string> &cnUnits)
+{
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode) {
+        if (childNode->isMathmlElement("cn")) {
+            std::string u = childNode->attribute("units");
+            if (!isStandardUnitName(u)) {
+                cnUnits.insert(u);
+            }
+        }
+        findCnUnits(childNode, cnUnits);
+        childNode = childNode->next();
+    }
+}
+
+void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnits)
+{
+    // Inspect the mathml in this component for any specified constant <cn> units,
+    // and make sure that they're in the model.
+    if (component == nullptr) {
+        return;
+    }
+    std::string math = component->math();
+    if (math.empty()) {
+        return;
+    }
+    XmlDocPtr doc = std::make_shared<XmlDoc>();
+    doc->parse(math);
+    XmlNodePtr root = doc->rootNode();
+    if ((root == nullptr) || (!root->isMathmlElement("math"))) {
+        return;
+    }
+    findCnUnits(root, cnUnits);
+}
+
+void doFindCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnits)
+{
+    findComponentCnUnits(component, cnUnits);
+    for (size_t c = 0; c < component->componentCount(); c++) {
+        doFindCnUnits(component->component(c), cnUnits);
+    }
+}
+
+std::unordered_set<std::string> Model::cnUnits()
+{
+    std::unordered_set<std::string> cnUnits = {};
+    for (size_t c = 0; c < componentCount(); c++) {
+        doFindCnUnits(component(c), cnUnits);
+    }
+    return cnUnits;
 }
 
 void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
@@ -691,14 +745,27 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             importedComponentCopy->addComponent(component->component(i));
         }
 
-        // Temporarily add component to new model to find units used.
+        // Temporarily add component to new model to find units used by the variables
         auto tempModel = Model::create();
         tempModel->addComponent(importedComponentCopy);
         tempModel->linkUnits();
+
         std::vector<UnitsPtr> requiredUnits;
         for (size_t i = 0; i < tempModel->unitsCount(); ++i) {
             auto u = tempModel->units(i);
             requiredUnits.push_back(u);
+        }
+
+        // Get the names of the units used by the <cn> elements in all the components' mathml and add them
+        // to the required units
+        auto cnList = tempModel->cnUnits();
+        for (auto &name : cnList) {
+            if (!tempModel->hasUnits(name)) {
+                auto u = importModel->units(name);
+                if (u != nullptr) {
+                    requiredUnits.push_back(u);
+                } // KRM else warning
+            }
         }
 
         // Make a map of component name to component pointer.
