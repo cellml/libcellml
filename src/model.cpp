@@ -273,9 +273,6 @@ void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std:
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     doc->parse(math);
     XmlNodePtr root = doc->rootNode();
-    if ((root == nullptr) || (!root->isMathmlElement("math"))) {
-        return;
-    }
     findCnUnits(root, cnUnits);
 }
 
