@@ -118,3 +118,49 @@ TEST(ResolveImports, componentNotInResolvingModel)
     model->resolveImports(resourcePath());
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
+
+TEST(ResolveImports, circularImportReferencesUnits)
+{
+    /*
+    ---------------- circularUnits_1.cellml -----------------------
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <model xmlns="http://www.cellml.org/cellml/2.0#"
+    	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+    	xmlns:xlink="http://www.w3.org/1999/xlink" name="circularImport1">
+    	<import xlink:href="circularUnits_2.cellml">
+    		<units name="i_am_cyclic" units_ref="u2" />
+    	</import>
+    </model>
+
+    ---------------- circularUnits_2.cellml -----------------------
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <model xmlns="http://www.cellml.org/cellml/2.0#"
+    	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+    	xmlns:xlink="http://www.w3.org/1999/xlink" name="circularImport2">
+    	<import xlink:href="circularUnits_3.cellml">
+    		<units name="u2" units_ref="u3" />
+    	</import>
+    </model>
+
+    ---------------- circularUnits_3.cellml -----------------------
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <model xmlns="http://www.cellml.org/cellml/2.0#"
+    	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+    	xmlns:xlink="http://www.w3.org/1999/xlink" name="circularImport3">
+    	<import xlink:href="circularUnits_1.cellml">
+    		<units name="u3" units_ref="i_am_cyclic" />
+    	</import>
+    </model>
+    */
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/circularUnits_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("resolveimports/")); // goes bananas until it reaches the recursion depth ...
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten(); // segfaults
+}
