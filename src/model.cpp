@@ -338,15 +338,6 @@ bool resolveImport(const ImportedEntityPtr &importedEntity,
                 buffer << file.rdbuf();
                 ParserPtr parser = Parser::create();
                 ModelPtr model = parser->parseModel(buffer.str());
-                // KRM Remove all components from the model *except* the one we want to import.  This is to
-                // prevent the call to resolve imports in the new model from trying to resolve *all* the components
-                // in the new model when it doesn't need to ... it will still import all the units though ..
-                for (size_t c = 0; c < model->componentCount(); ++c) {
-                    auto component = model->component(c);
-                    if (component->name() != importedEntity->importReference()) {
-                        component->removeParent();
-                    }
-                }
                 importSource->setModel(model);
                 return model->resolveImports(url, history, issues);
             }
@@ -366,7 +357,12 @@ bool resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
         if (component->isImport()) {
             if (!resolveImport(component, component->name(), baseFile, history, issues)) {
                 if (!history.empty()) {
-                    std::string msg = "Cyclic dependencies were found when attempting to resolve components. The dependency loop is:\n";
+                    std::string msg = "Cyclic dependencies were found when attempting to resolve components";
+                    auto parentModel = owningModel(component);
+                    if (parentModel != nullptr) {
+                        msg += " in model '" + parentModel->name() + "'";
+                    }
+                    msg += ". The dependency loop is:\n";
                     std::string spacer = "    ";
                     for (auto &h : history) {
                         msg += spacer + "component '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
@@ -396,12 +392,13 @@ bool Model::resolveImports(const std::string &baseFile, std::vector<std::tuple<s
         libcellml::UnitsPtr units = Model::units(n);
 
         if ((!resolveImport(units, units->name(), baseFile, history, issues)) && (!history.empty())) {
-            std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + this->name() + ". The dependency loop is:\n    ";
+            std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + this->name() + "'. The dependency loop is:\n";
             std::string spacer = "    ";
             for (auto &h : history) {
-                msg += spacer + "(" + std::get<0>(h) + ", " + std::get<1>(h) + ", " + std::get<2>(h) + ")\n";
-                spacer = " -> ";
+                msg += spacer + "units '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
+                spacer = "',\n    ";
             }
+            msg += "'.";
             auto issue = Issue::create();
             issue->setDescription(msg);
             issue->setLevel(libcellml::Issue::Level::WARNING);
@@ -418,7 +415,8 @@ void Model::resolveImports(const std::string &baseFile)
 {
     std::vector<libcellml::IssuePtr> issues = {};
     std::vector<std::tuple<std::string, std::string, std::string>> history = {};
-    if (!resolveImports(baseFile, history, issues)) {
+    resolveImports(baseFile, history, issues);
+    if (!issues.empty()) {
         for (auto &issue : issues) {
             addIssue(issue);
         }
