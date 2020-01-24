@@ -20,6 +20,7 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 
 #include <string>
+#include <unordered_set>
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
@@ -270,6 +271,8 @@ public:
      * then the units will be added to the model as well.
      */
     void linkUnits();
+
+    std::unordered_set<std::string> cnUnits(); //KRM
 
     /**
      * @brief Test to determine if any variable units are not linked to model units.

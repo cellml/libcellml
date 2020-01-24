@@ -590,15 +590,11 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     c->setImportSource(imp);
     model->addComponent(c);
 
-
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
     model->flatten();
 
     validator->validateModel(model);
-    for(size_t i = 0; i < validator->errorCount(); ++i){
-        std::cout << validator->error(i)->description()<<std::endl;
-    }
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
