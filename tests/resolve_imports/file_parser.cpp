@@ -122,12 +122,12 @@ TEST(ResolveImports, componentNotInResolvingModel)
 TEST(ResolveImports, noWarningForkedImport)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(fileContents("circularimports/forkedImport.cellml"));
+    libcellml::ModelPtr model = p->parseModel(fileContents("resolveimports/forkedImport.cellml"));
 
     EXPECT_EQ(size_t(0), p->errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("circularimports/"));
+    model->resolveImports(resourcePath("resolveimports/"));
     printIssues(model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
@@ -135,12 +135,12 @@ TEST(ResolveImports, noWarningForkedImport)
 TEST(ResolveImports, noWarningDiamondImport)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(fileContents("circularimports/diamond.cellml"));
+    libcellml::ModelPtr model = p->parseModel(fileContents("resolveimports/diamond.cellml"));
 
     EXPECT_EQ(size_t(0), p->errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("circularimports/"));
+    model->resolveImports(resourcePath("resolveimports/"));
     printIssues(model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
@@ -153,9 +153,9 @@ TEST(ResolveImports, warningCircularImportReferencesComponent)
                                  "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
                                  "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("circularimports/circularImport_1.cellml"));
+    auto model = parser->parseModel(fileContents("resolveimports/circularImport_1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    model->resolveImports(resourcePath("circularimports/"));
+    model->resolveImports(resourcePath("resolveimports/"));
 
     EXPECT_EQ(size_t(1), model->issueCount());
     EXPECT_EQ(size_t(1), model->warningCount());
@@ -170,9 +170,33 @@ TEST(ResolveImports, warningCircularImportReferencesUnits)
                                  "    units 'u3' imports 'i_am_cyclic' from 'circularUnits_1.cellml',\n"
                                  "    units 'i_am_cyclic' imports 'u2' from 'circularUnits_2.cellml'.";
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("circularimports/circularUnits_1.cellml"));
+    auto model = parser->parseModel(fileContents("resolveimports/circularUnits_1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    model->resolveImports(resourcePath("circularimports/"));
+    model->resolveImports(resourcePath("resolveimports/"));
+    EXPECT_EQ(size_t(1), model->issueCount());
+    EXPECT_EQ(size_t(1), model->warningCount());
+    EXPECT_EQ(warningMessage, model->warning(0)->description());
+}
+
+TEST(ResolveImports, warningUnrequiredCircularDependencyComponent)
+{
+    // This test in intended to show what happens when one model attempts to import a concrete component from a
+    // second model, where the second model has unrelated circular dependencies:
+    //   - model1 imports component1 from model2
+    //   - model2 defines component1
+    //   - model2 also defines a circular dependency unrelated to component1
+
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
+                                 "    component 'c' imports 'i_am_ok_but_my_sibling_is_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml',\n"
+                                 "    component 'c2' imports 'c3' from 'circularImport_3.cellml',\n"
+                                 "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/master1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    model->resolveImports(resourcePath("resolveimports/"));
     EXPECT_EQ(size_t(1), model->issueCount());
     EXPECT_EQ(size_t(1), model->warningCount());
     EXPECT_EQ(warningMessage, model->warning(0)->description());
