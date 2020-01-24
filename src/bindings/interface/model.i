@@ -73,6 +73,9 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::flatten
 "Instantiate all imported Components and Units to make this model self-contained.";
 
+%feature("docstring") libcellml::Model::cnUnits
+"Returns an unordered set of Units names which are used within the MathML in the model."
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
