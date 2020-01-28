@@ -68,4 +68,11 @@ private:
     ImporterImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
+void resolveImport(const ImportedEntityPtr &importedEntity, const std::string &baseFile);
+void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity, const std::string &baseFile);
+bool isUnresolvedImport(const ImportedEntityPtr &importedEntity);
+bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity);
+bool doHasUnresolvedComponentImports(const ComponentPtr &component);
+bool hasComponentImports(const ComponentEntityConstPtr &componentEntity);
+
 } // namespace libcellml
