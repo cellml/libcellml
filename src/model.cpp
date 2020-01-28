@@ -295,54 +295,6 @@ bool Model::hasUnlinkedUnits()
     return unlinkedUnits;
 }
 
-#if 0
-bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
-{
-    bool unresolvedImport = false;
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importedSource = importedEntity->importSource();
-        unresolvedImport = !importedSource->hasModel();
-    }
-    return unresolvedImport;
-}
-
-bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity);
-
-bool doHasUnresolvedComponentImports(const ComponentPtr &component)
-{
-    bool unresolvedImports = false;
-    if (component->isImport()) {
-        unresolvedImports = isUnresolvedImport(component);
-        if (!unresolvedImports) {
-            // Check that the imported component can import all it needs from its model.
-            ImportSourcePtr importedSource = component->importSource();
-            if (importedSource->hasModel()) {
-                ModelPtr importedModel = importedSource->model();
-                ComponentPtr importedComponent = importedModel->component(component->importReference());
-                if (importedComponent == nullptr) {
-                    unresolvedImports = true;
-                } else {
-                    unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
-                }
-            }
-        }
-    } else {
-        unresolvedImports = hasUnresolvedComponentImports(component);
-    }
-    return unresolvedImports;
-}
-
-bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponentEntity)
-{
-    bool unresolvedImports = false;
-    for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        unresolvedImports = doHasUnresolvedComponentImports(component);
-    }
-    return unresolvedImports;
-}
-#endif
-
 bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
@@ -355,21 +307,6 @@ bool Model::hasUnresolvedImports() const
     }
     return unresolvedImports;
 }
-
-#if 0
-bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
-{
-    bool importsPresent = false;
-    for (size_t n = 0; n < componentEntity->componentCount() && !importsPresent; ++n) {
-        libcellml::ComponentPtr childComponent = componentEntity->component(n);
-        importsPresent = childComponent->isImport();
-        if (!importsPresent) {
-            importsPresent = hasComponentImports(childComponent);
-        }
-    }
-    return importsPresent;
-}
-#endif
 
 bool Model::hasImports() const
 {
