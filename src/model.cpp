@@ -25,6 +25,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
 #include "libcellml/units.h"
@@ -292,67 +293,6 @@ bool Model::hasUnlinkedUnits()
         unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c);
     }
     return unlinkedUnits;
-}
-
-/**
- * @brief Resolve the path of the given filename using the given base.
- *
- * Resolves the full path to the given @p filename using the @p base.
- *
- * This function is only intended to work with local files.  It may not
- * work with bases that use the 'file://' prefix.
- *
- * @param filename The @c std::string relative path from the base path.
- * @param base The @c std::string location on local disk for determining the full path from.
- *
- * @return The full path from the @p base location to the @p filename
- */
-std::string resolvePath(const std::string &filename, const std::string &base)
-{
-    // We can be naive here as we know what we are dealing with
-    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
-    return path;
-}
-
-void resolveImport(const ImportedEntityPtr &importedEntity,
-                   const std::string &baseFile)
-{
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importSource = importedEntity->importSource();
-        if (!importSource->hasModel()) {
-            std::string url = resolvePath(importSource->url(), baseFile);
-            std::ifstream file(url);
-            if (file.good()) {
-                std::stringstream buffer;
-                buffer << file.rdbuf();
-                ParserPtr parser = Parser::create();
-                ModelPtr model = parser->parseModel(buffer.str());
-                importSource->setModel(model);
-                model->resolveImports(url);
-            }
-        }
-    }
-}
-
-void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
-                             const std::string &baseFile)
-{
-    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        if (component->isImport()) {
-            resolveImport(component, baseFile);
-        }
-        resolveComponentImports(component, baseFile);
-    }
-}
-
-void Model::resolveImports(const std::string &baseFile)
-{
-    for (size_t n = 0; n < unitsCount(); ++n) {
-        libcellml::UnitsPtr units = Model::units(n);
-        resolveImport(units, baseFile);
-    }
-    resolveComponentImports(shared_from_this(), baseFile);
 }
 
 bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)

@@ -244,10 +244,12 @@ TEST(ModelFlattening, importedComponentWithEquivalentVariables)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+
     auto model = parser->parseModel(fileContents("modelflattening/equivalentimportedvariable.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     // Want to make sure that we haven't damaged the import model after flattening.
@@ -322,10 +324,11 @@ TEST(ModelFlattening, importedComponentWithInternalEquivalentVariables)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/internalequivalentvariables.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     // Want to make sure that we haven't damaged the import model after flattening.
@@ -400,10 +403,11 @@ TEST(ModelFlattening, importedComponentWithEquivalentVariablesReferencingVariabl
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/outsidecomponentequivalentvariables.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -428,10 +432,11 @@ TEST(ModelFlattening, importedComponentUsingUnitsDefinedInImportedModel)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/unitsdefinedinimportedmodel.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -475,10 +480,11 @@ TEST(ModelFlattening, importedComponentUsingImportedComponent)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/importedcomponentusingimportedcomponent.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
     EXPECT_TRUE(model->hasImports());
 
@@ -508,10 +514,11 @@ TEST(ModelFlattening, repeatedImportOfSameUnitsViaDifferentComponents)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/repeatedimportofsameunitsviadifferentcomponents.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -542,10 +549,11 @@ TEST(ModelFlattening, importedUnitsWithNameClashes)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/importedunitswithnameclashes.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -577,10 +585,11 @@ TEST(ModelFlattening, importedComponentWithNameClashes)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/importedcomponentswithnameclashes.xml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -595,10 +604,12 @@ TEST(ModelFlattening, importedComponentWithNameClashes)
 TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
 {
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("modelflattening/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/hodgkin_huxley_squid_axon_model_1952/"));
+
+    importer->resolveImports(resourcePath("modelflattening/hodgkin_huxley_squid_axon_model_1952/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -972,7 +983,9 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
     sodiumChannel->setImportReference("sodiumChannel");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    auto importer = libcellml::Importer::create();
+
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
     model->flatten();
 

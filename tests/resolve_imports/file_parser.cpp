@@ -38,58 +38,63 @@ TEST(ResolveImports, resolveSineModelFromFile)
 TEST(ResolveImports, resolveSineImportsModelFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations_import.xml"));
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(resourcePath(), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveComplexImportsModelFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("complex_imports.xml"));
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(resourcePath(), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveUnitsImportFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("import_units_model.cellml"));
 
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(resourcePath(), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveImportsFromFileLevel0)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("level0.xml"));
 
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(resourcePath(), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("level0-broken-imports.xml"));
 
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(resourcePath(), model);
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
@@ -110,11 +115,12 @@ TEST(ResolveImports, componentNotInResolvingModel)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
     libcellml::ModelPtr model = p->parseModel(modelImportingComponent);
 
     EXPECT_EQ(size_t(0), p->issueCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(resourcePath(), model);
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
