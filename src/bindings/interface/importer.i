@@ -15,6 +15,9 @@
 %feature("docstring") libcellml::Importer::resolveImports
 "Resolves imported entities in a class:`Model` relative to a specified location";
 
+%feature("docstring") libcellml::Importer::flatten
+"Instantiate all imported Components and Units to make the given Model self-contained.";
+
 %{
 #include "libcellml/importer.h"
 %}

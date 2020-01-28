@@ -63,9 +63,6 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::hasImports
 "Determine if any Component or Units is an import.";
 
-%feature("docstring") libcellml::Model::flatten
-"Instantiate all imported Components and Units to make this model self-contained.";
-
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
