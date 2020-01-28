@@ -1489,7 +1489,17 @@ void updateBaseUnitCount(const ModelPtr &model,
             }
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
-        multiplier += direction * logMult;
+        /*
+        std::string ref;
+        std::string pre;
+        std::string id;
+        double exp;
+        double mult;
+        double expMult;
+        */
+
+        multiplier += direction * (logMult + (standardMultiplierList.at(uName)));
+        //multiplier += direction * logMult;
 
     } else if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
@@ -1885,12 +1895,13 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
 
             if (isExponentOperator(ast)) {
-                if (ast->mType == GeneratorEquationAst::Type::POWER) {
-                    leftMult = std::pow(leftMult, rightMult);
+                double power = getPower(ast->mRight);
+                if (ast->mType == GeneratorEquationAst::Type::POWER && power != 0.0) {
+                    leftMult *= power;
                 } else if (ast->mType == GeneratorEquationAst::Type::ROOT && ast->mRight != nullptr) {
-                    leftMult = std::pow(leftMult, 1.0 / rightMult);
+                    leftMult /= power;
                 } else {
-                    leftMult = std::pow(leftMult, 0.5); // We take the square root if the root is unspecified
+                    leftMult *= 0.5; // We take the square root if the root is unspecified
                 }
             }
 
