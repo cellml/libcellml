@@ -21,6 +21,8 @@ limitations under the License.
 #include "libcellml/types.h"
 
 #include <string>
+#include <tuple>
+#include <vector>
 
 namespace libcellml {
 
@@ -59,7 +61,7 @@ public:
      * @param baseFile The @c std::string location on local disk of the source @c Model.
      * @param model The @c Model to resolve.
      */
-    static void resolveImports(const std::string &baseFile, const ModelPtr &model);
+    void resolveImports(const std::string &baseFile, ModelPtr &model);
 
     /**
      * @brief Flatten this model.

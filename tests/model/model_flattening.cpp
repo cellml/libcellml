@@ -668,6 +668,10 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
         "  <units name=\"per_ms\">\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
         "  </units>\n"
+        "  <units name=\"per_mV_ms\">\n" // KRM added this in as was not being imported or tested for
+        "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
+        "    <unit exponent=\"-1\" prefix=\"milli\" units=\"volt\"/>\n"
+        "  </units>\n"
         "  <component name=\"membrane\">\n"
         "    <variable name=\"V\" units=\"mV\" interface=\"public_and_private\"/>\n"
         "    <variable name=\"t\" units=\"ms\" interface=\"public_and_private\"/>\n"
@@ -962,6 +966,13 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto e_model = parser->parseModel(e);
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(e_model);
+    printIssues(validator);
+    EXPECT_EQ(size_t(0), validator->issueCount());
 
     auto model = libcellml::Model::create("a_model");
 
