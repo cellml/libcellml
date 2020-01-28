@@ -295,7 +295,6 @@ bool Model::hasUnlinkedUnits()
     return unlinkedUnits;
 }
 
-#if 0
 bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
 {
     bool unresolvedImport = false;
@@ -341,7 +340,6 @@ bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponen
     }
     return unresolvedImports;
 }
-#endif
 
 bool Model::hasUnresolvedImports() const
 {
@@ -356,7 +354,6 @@ bool Model::hasUnresolvedImports() const
     return unresolvedImports;
 }
 
-#if 0
 bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
 {
     bool importsPresent = false;
@@ -369,7 +366,6 @@ bool hasComponentImports(const ComponentEntityConstPtr &componentEntity)
     }
     return importsPresent;
 }
-#endif
 
 bool Model::hasImports() const
 {
