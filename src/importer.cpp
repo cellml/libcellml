@@ -83,39 +83,6 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
-void resolveImport(const ImportedEntityPtr &importedEntity,
-                   const std::string &baseFile)
-{
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importSource = importedEntity->importSource();
-        if (!importSource->hasModel()) {
-            std::string url = resolvePath(importSource->url(), baseFile);
-            std::ifstream file(url);
-            if (file.good()) {
-                std::stringstream buffer;
-                buffer << file.rdbuf();
-                ParserPtr parser = Parser::create();
-                ModelPtr model = parser->parseModel(buffer.str());
-                ImporterPtr importer = Importer::create();
-                importSource->setModel(model);
-                importer->resolveImports(url, model);
-            }
-        }
-    }
-}
-
-void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
-                             const std::string &baseFile)
-{
-    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        if (component->isImport()) {
-            resolveImport(component, baseFile);
-        }
-        resolveComponentImports(component, baseFile);
-    }
-}
-
 bool resolveImport(const ImportedEntityPtr &importedEntity,
                    const std::string &destination,
                    const std::string &baseFile,
@@ -130,7 +97,7 @@ bool resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
 bool doResolveImports(ModelPtr &model, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history, std::vector<libcellml::IssuePtr> &issues)
 {
     for (size_t n = 0; n < model->unitsCount(); ++n) {
-        libcellml::UnitsPtr units = model->units(n);
+        auto units = model->units(n);
 
         if ((!resolveImport(units, units->name(), baseFile, history, issues)) && (!history.empty())) {
             std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + model->name() + "'. The dependency loop is:\n";
@@ -215,10 +182,9 @@ bool resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
                 }
                 noErrors = false;
             }
-        } else {
-            if (!resolveComponentImports(component, baseFile, history, issues)) {
-                noErrors = false;
-            }
+        }
+        if (!resolveComponentImports(component, baseFile, history, issues)) {
+            noErrors = false;
         }
     }
     return noErrors;
