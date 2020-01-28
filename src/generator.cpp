@@ -1831,7 +1831,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             ModelPtr model;
             std::string uName;
             UnitsMap unitMap;
-            multiplier = 1.0;
+            multiplier = 0.0;
 
             // If we have a unit associated with the value of a number we add it to the units mapping.
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
@@ -1878,9 +1878,9 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             // Otherwise for all the other cases we change the multiplier
             if (isMultiplicativeOperator(ast)) {
                 if (ast->mType == GeneratorEquationAst::Type::TIMES) {
-                    leftMult *= rightMult;
+                    leftMult += rightMult;
                 } else {
-                    leftMult /= rightMult;
+                    leftMult -= rightMult;
                 }
             }
 
@@ -1894,6 +1894,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 }
             }
 
+            /*
             if (isLogarithmicOperator(ast)) {
                 if (ast->mType == GeneratorEquationAst::Type::LN) {
                     leftMult = std::log(leftMult);
@@ -1908,24 +1909,27 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 }
                 leftMult = 1.0;
             }
+            */
 
+            /*
             // Case not needed, but return multiplier as one since it is dimensionless
             if (isTrigonometricOperator(ast)) {
                 leftMult = 1.0;
             }
+            */
 
             if (isDerivativeOperator(ast)) {
-                leftMult = leftMult * rightMult;
+                leftMult = leftMult + rightMult;
             }
 
             if (isBottomVariableOperator(ast)) {
-                leftMult = 1.0 / leftMult;
+                leftMult = 0.0 - leftMult;
             }
             return leftMult;
         }
-        return 1.0;
+        return 0.0;
     }
-    return 1.0;
+    return 0.0;
 }
 
 // Shim function to create a contiguous void declaration in the private implementation
@@ -1937,7 +1941,9 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
     unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
 
     // We only check for multiplier issues if we don't have any issues with units.
+    
     if (errors.empty()) {
+        multiplier = 0.0;
         multiplier = processEquationMultiplierAst(ast, errors, multiplier);
     }
 
