@@ -1855,6 +1855,8 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 uName = (ast->mUnits != nullptr) ? ast->mUnits->name() : "dimensionless";
                 if (!(uName == "dimensionless")) {
                     updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, 1);
+                } else {
+                    multiplier = 0.0;
                 }
             }
             return multiplier;
@@ -1868,7 +1870,6 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
-                
                 if (leftMult != rightMult && ast->mLeft != nullptr && ast->mRight != nullptr) {
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
@@ -1879,10 +1880,12 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                     std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
-                                      + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult);
+                                      + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
+                                      + ". A variable in the expression is" + variable->name();
                     errors.push_back(err);
                     //multiplier = leftMult;
                 }
+                return leftMult;
             }
 
             // Otherwise for all the other cases we change the multiplier
@@ -1896,18 +1899,24 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
 
             if (isExponentOperator(ast)) {
                 double power = getPower(ast->mRight);
+                leftMult = 0.0;
                 if (ast->mType == GeneratorEquationAst::Type::POWER && power != 0.0) {
                     leftMult *= power;
-                } else if (ast->mType == GeneratorEquationAst::Type::ROOT && ast->mRight != nullptr) {
-                    leftMult /= power;
+                } else if (ast->mType == GeneratorEquationAst::Type::ROOT) {
+                    if (ast->mRight != nullptr && power != 0.0 && leftMult != 0.0) {
+                        leftMult /= power;
+                    } else {
+                        leftMult *= 0.5;
+                    }
                 } else {
-                    leftMult *= 0.5; // We take the square root if the root is unspecified
+                    leftMult = 0.0;
                 }
             }
 
-            /*
+            
             if (isLogarithmicOperator(ast)) {
-                if (ast->mType == GeneratorEquationAst::Type::LN) {
+                leftMult = 0.0;
+                /*if (ast->mType == GeneratorEquationAst::Type::LN) {
                     leftMult = std::log(leftMult);
                 } else if (ast->mType == GeneratorEquationAst::Type::LOG) {
                     if (rightMult == 2.0) {
@@ -1919,15 +1928,16 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                     leftMult = std::exp(leftMult);
                 }
                 leftMult = 1.0;
+                */
             }
-            */
+            
 
-            /*
+            
             // Case not needed, but return multiplier as one since it is dimensionless
             if (isTrigonometricOperator(ast)) {
-                leftMult = 1.0;
+                leftMult = 0.0;
             }
-            */
+    
 
             if (isDerivativeOperator(ast)) {
                 leftMult = leftMult + rightMult;
@@ -1952,7 +1962,7 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
     unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
 
     // We only check for multiplier issues if we don't have any issues with units.
-    
+
     if (errors.empty()) {
         multiplier = 0.0;
         multiplier = processEquationMultiplierAst(ast, errors, multiplier);
