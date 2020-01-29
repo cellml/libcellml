@@ -159,6 +159,13 @@ else()
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
+# Prevent superfluous warnings from ranlib about libcellml.a having no symbols
+# on macOS.
+if(APPLE)
+  set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
+  set(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+endif()
+
 # Use target compile features to propogate features to consuming projects.
 target_compile_features(cellml PUBLIC cxx_std_11)
 
