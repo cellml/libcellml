@@ -95,7 +95,7 @@
                     </apply>
                 </apply>
             </apply>
-            <!-- Multiplier mismatch-->
+            <!-- No mismatch in either case.-->
             <!-- Logarithms -->
             <apply>
                 <eq/>
@@ -194,7 +194,18 @@
                     <ci>i_A</ci>
                 </apply>
             </apply>
+            <apply>
+                <eq/>
+                <ci>r</ci>
+                <apply>
+                    <root/>
+                    <degree>
+                        <cn cellml:units="dimensionless">3</cn>
+                    </degree>
+                    <ci>i_A</ci>
+                </apply>
+            </apply>
         </math>
-        <!-- Multiplier mismatch-->
+        <!-- Multiplier mismatch for last two-->
     </component>
 </model>

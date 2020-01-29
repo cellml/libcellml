@@ -1324,7 +1324,7 @@ TEST(Generator, validateUnitsInMathMLStrings)
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(5), generator->errorCount());
+    EXPECT_EQ(size_t(4), generator->errorCount());
 }
 
 TEST(Generator, validateMultiplierInMathMLStrings)
@@ -1338,5 +1338,5 @@ TEST(Generator, validateMultiplierInMathMLStrings)
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(3), generator->errorCount());
+    EXPECT_EQ(size_t(5), generator->errorCount());
 }
