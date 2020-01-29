@@ -552,3 +552,104 @@ TEST(Model, setAndCheckIdsAllEntities)
     const std::string a = printer->printModel(m);
     EXPECT_EQ(a, e);
 }
+
+TEST(Model, removeComponentsAPIModel)
+{
+    // Create two identical models - one through the API, one through the parser
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    model->addComponent(c1);
+    model->addComponent(c2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    auto printer = libcellml::Printer::create();
+    auto parser = libcellml::Parser::create();
+    auto printedModelString = printer->printModel(model);
+    auto printedModel = parser->parseModel(printedModelString);
+
+    std::cout << "-------------------BEFORE--------------------" << std::endl;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        std::cout << "Component " << c << " " << model->component(c) << " " << model->component(c)->name() << std::endl;
+        for (size_t v = 0; v < model->component(c)->variableCount(); ++v) {
+            std::cout << "  Variable " << v << " " << model->component(c)->variable(v)->name()
+                      << " has " << model->component(c)->variable(v)->equivalentVariableCount() << " equiv variables:" << std::endl;
+            for (size_t e = 0; e < model->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - address " << e << " " << model->component(c)->variable(v)->equivalentVariable(e) << std::endl;
+            }
+            for (size_t e = 0; e < model->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - name " << e << " " << model->component(c)->variable(v)->equivalentVariable(e)->name() << std::endl;
+            }
+            for (size_t e = 0; e < model->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - parent " << e << " " << model->component(c)->variable(v)->equivalentVariable(e)->parent() << std::endl;
+            }
+        }
+    }
+
+    model->removeComponent("c1");
+
+    std::cout << "-------------------AFTER--------------------" << std::endl;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        std::cout << "Component " << c << " " << model->component(c) << " " << model->component(c)->name() << std::endl;
+        for (size_t v = 0; v < model->component(c)->variableCount(); ++v) {
+            std::cout << "  Variable " << v << " " << model->component(c)->variable(v)->name()
+                      << " has " << model->component(c)->variable(v)->equivalentVariableCount() << " equiv variables:" << std::endl;
+            for (size_t e = 0; e < model->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - address " << e << " " << model->component(c)->variable(v)->equivalentVariable(e) << std::endl;
+            }
+            for (size_t e = 0; e < model->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - name " << e << " " << model->component(c)->variable(v)->equivalentVariable(e)->name() << std::endl;
+            }
+            for (size_t e = 0; e < model->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - parent " << e << " " << model->component(c)->variable(v)->equivalentVariable(e)->parent() << std::endl;
+            }
+        }
+    }
+
+    // Remove the same component from the parsed model:
+    std::cout << "-------------------BEFORE--------------------" << std::endl;
+    for (size_t c = 0; c < printedModel->componentCount(); ++c) {
+        std::cout << "Component " << c << " " << printedModel->component(c) << " " << printedModel->component(c)->name() << std::endl;
+        for (size_t v = 0; v < printedModel->component(c)->variableCount(); ++v) {
+            std::cout << "  Variable " << v << " " << printedModel->component(c)->variable(v)->name()
+                      << " has " << printedModel->component(c)->variable(v)->equivalentVariableCount() << " equiv variables:" << std::endl;
+            for (size_t e = 0; e < printedModel->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - address " << e << " " << printedModel->component(c)->variable(v)->equivalentVariable(e) << std::endl;
+            }
+            for (size_t e = 0; e < printedModel->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - name " << e << " " << printedModel->component(c)->variable(v)->equivalentVariable(e)->name() << std::endl;
+            }
+            for (size_t e = 0; e < printedModel->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - parent " << e << " " << printedModel->component(c)->variable(v)->equivalentVariable(e)->parent() << std::endl;
+            }
+        }
+    }
+
+    printedModel->removeComponent("c1");
+
+    std::cout << "-------------------AFTER--------------------" << std::endl;
+    for (size_t c = 0; c < printedModel->componentCount(); ++c) {
+        std::cout << "Component " << c << " " << printedModel->component(c) << " " << printedModel->component(c)->name() << std::endl;
+        for (size_t v = 0; v < printedModel->component(c)->variableCount(); ++v) {
+            std::cout << "  Variable " << v << " " << printedModel->component(c)->variable(v)->name()
+                      << " has " << printedModel->component(c)->variable(v)->equivalentVariableCount() << " equiv variables:" << std::endl;
+            for (size_t e = 0; e < printedModel->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - address " << e << " " << printedModel->component(c)->variable(v)->equivalentVariable(e) << std::endl;
+            }
+            for (size_t e = 0; e < printedModel->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - name " << e << " " << printedModel->component(c)->variable(v)->equivalentVariable(e)->name() << std::endl;
+            }
+            for (size_t e = 0; e < printedModel->component(c)->variable(v)->equivalentVariableCount(); e++) {
+                std::cout << "      - parent " << e << " " << printedModel->component(c)->variable(v)->equivalentVariable(e)->parent() << std::endl;
+            }
+        }
+    }
+}
