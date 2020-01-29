@@ -1931,13 +1931,9 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
 {
     UnitsMap unitMap;
     std::vector<std::string> errors;
+    double multiplier = 0.0;
     unitMap = processEquationUnitsAst(ast, errors);
-
-    // We only check for multiplier issues if we don't have any issues with units.
-    if (errors.empty()) {
-        double multiplier = 0.0;
-        multiplier = processEquationMultiplierAst(ast, errors);
-    }
+    multiplier = processEquationMultiplierAst(ast, errors);
 
     if (!errors.empty()) {
         for (const auto &error : errors) {
