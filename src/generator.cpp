@@ -1329,7 +1329,12 @@ bool isDirectComparisonOperator(const GeneratorEquationAstPtr &ast)
            || (type == libcellml::GeneratorEquationAst::Type::LT)
            || (type == libcellml::GeneratorEquationAst::Type::GT)
            || (type == libcellml::GeneratorEquationAst::Type::MIN)
-           || (type == libcellml::GeneratorEquationAst::Type::MAX);
+           || (type == libcellml::GeneratorEquationAst::Type::MAX)
+           || (type == libcellml::GeneratorEquationAst::Type::AND)
+           || (type == libcellml::GeneratorEquationAst::Type::OR)
+           || (type == libcellml::GeneratorEquationAst::Type::NOT)
+           || (type == libcellml::GeneratorEquationAst::Type::XOR)
+           || (type == libcellml::GeneratorEquationAst::Type::PIECEWISE);
 }
 
 bool isMultiplicativeOperator(const GeneratorEquationAstPtr &ast)
@@ -1522,7 +1527,7 @@ void updateBaseUnitCount(const ModelPtr &model,
                         }
                         unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
-                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
+                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp * uExp);
                 }
             }
         }
@@ -1564,7 +1569,7 @@ double getPower(const GeneratorEquationAstPtr &ast)
             return getPower(ast->mLeft) * getPower(ast->mRight);
         }
         if (ast->mType == GeneratorEquationAst::Type::DIVIDE) {
-            return (getPower(ast->mLeft) != 0.0) ? getPower(ast->mLeft) / getPower(ast->mRight) : 0.0;
+            return (getPower(ast->mRight) != 0.0) ? getPower(ast->mLeft) / getPower(ast->mRight) : 0.0;
         }
         if (ast->mType == GeneratorEquationAst::Type::PLUS) {
             return getPower(ast->mLeft) + getPower(ast->mRight);
@@ -1834,7 +1839,7 @@ double calculateTrigMultiplier(double &arg, GeneratorEquationAstPtr &ast)
 }*/
 
 double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double multiplier)
-{
+{ 
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
@@ -1885,19 +1890,19 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                     errors.push_back(err);
                     //multiplier = leftMult;
                 }
-                return leftMult;
+                //return leftMult;
             }
 
             // Otherwise for all the other cases we change the multiplier
             if (isMultiplicativeOperator(ast)) {
                 if (ast->mType == GeneratorEquationAst::Type::TIMES) {
                     leftMult += rightMult;
-                } else if (leftMult != 0.0 || rightMult != 0.0) {
+                } /*else if (leftMult != 0.0 || rightMult != 0.0) {
                     leftMult = 0.0;
-                } else {
+                } */else {
                     leftMult -= rightMult;
                 }
-                return leftMult;
+                //return leftMult;
             }
 
             if (isExponentOperator(ast)) {
@@ -1915,7 +1920,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 } else {
                     leftMult = 0.0;
                 }
-                return leftMult;
+                //return leftMult;
             }
 
             
@@ -1934,7 +1939,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 }
                 leftMult = 1.0;
                 */
-                return leftMult;
+                //return leftMult;
             }
             
 
@@ -1942,20 +1947,20 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             // Case not needed, but return multiplier as one since it is dimensionless
             if (isTrigonometricOperator(ast)) {
                 leftMult = 0.0;
-                return leftMult;
+                //return leftMult;
             }
     
 
             if (isDerivativeOperator(ast)) {
                 leftMult = leftMult + rightMult;
-                return leftMult;
+                //return leftMult;
             }
 
             if (isBottomVariableOperator(ast)) {
                 leftMult = 0.0 - leftMult;
-                return leftMult;
+                //return leftMult;
             }
-            return 0.0;
+            return leftMult;
         }
         return 0.0;
     }
