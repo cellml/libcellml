@@ -1482,30 +1482,16 @@ bool isDimensionless(const UnitsMap &map)
 
 void updateBaseUnitCount(const ModelPtr &model,
                          std::map<std::string, double> &unitMap,
-                         double &multiplier,
                          const std::string &uName,
-                         double uExp, double logMult,
-                         int direction)
+                         double uExp, double logMult)
 {
     if (isStandardUnitName(uName)) {
         for (const auto &iter : standardUnitsList.at(uName)) {
             if (unitMap.find(iter.first) == unitMap.end()) {
                 unitMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
             }
-            unitMap.at(iter.first) += direction * (iter.second * uExp);
+            unitMap.at(iter.first) += (iter.second * uExp);
         }
-        /*
-        std::string ref;
-        std::string pre;
-        std::string id;
-        double exp;
-        double mult;
-        double expMult;
-        */
-
-        multiplier += direction * (logMult + (standardMultiplierList.at(uName)));
-        //multiplier += direction * logMult;
-
     } else if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
@@ -1519,25 +1505,61 @@ void updateBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, ref, pre, exp, expMult, id);
                 mult = std::log10(expMult);
                 if (!isStandardUnitName(ref)) {
-                    updateBaseUnitCount(model, unitMap, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                    updateBaseUnitCount(model, unitMap, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp);
                 } else {
                     for (const auto &iter : standardUnitsList.at(ref)) {
                         if (unitMap.find(iter.first) == unitMap.end()) {
                             unitMap.emplace(std::pair<std::string, double>(iter.first, 0.0));
                         }
-                        unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
+                        unitMap.at(iter.first) += (iter.second * exp * uExp);
                     }
-                    multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp * uExp);
                 }
             }
         }
 
-        // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
         /*
+        // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
         else if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+        }
+        */
+    }
+}
+
+void updateBaseMultiplier(const ModelPtr &model,
+                          double &multiplier,
+                          const std::string &uName,
+                          double uExp, double logMult)
+{
+    if (isStandardUnitName(uName)) {
+        multiplier += (logMult + (standardMultiplierList.at(uName)));
+    } else if (model->hasUnits(uName)) {
+        UnitsPtr u = model->units(uName);
+        if (!u->isBaseUnit()) {
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double exp;
+            double mult;
+            double expMult;
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->unitAttributes(i, ref, pre, exp, expMult, id);
+                mult = std::log10(expMult);
+                if (!isStandardUnitName(ref)) {
+                    updateBaseMultiplier(model, multiplier, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp);
+                } else {
+                    multiplier += (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp * uExp);
+                }
+            }
+        }
+
+        /*
+        // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
+        else {
+            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
             multiplier += direction * logMult;
-        }*/
+        }
+        */
     }
 }
 
@@ -1660,8 +1682,10 @@ std::string getHints(const UnitsMap &map)
     return hints;
 }
 
-UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap unitMap, std::vector<std::string> &errors, double &multiplier, int direction)
+UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors)
 {
+    UnitsMap unitMap;
+
     if (ast != nullptr) {
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
             ModelPtr model;
@@ -1671,14 +1695,14 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
                 model = owningModel(ast->mUnits);
                 uName = ast->mUnits->name();
-                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+                updateBaseUnitCount(model, unitMap, uName, 1, 0);
             }
 
             if (ast->mType == GeneratorEquationAst::Type::CI) {
                 model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
                 uName = (ast->mUnits != nullptr) ? ast->mUnits->name() : "dimensionless";
                 if (!(uName == "dimensionless")) {
-                    updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, direction);
+                    updateBaseUnitCount(model, unitMap, uName, 1, 0);
                 }
             }
             return unitMap;
@@ -1687,8 +1711,8 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
             // Evaluate left, right subtrees first
-            UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, unitMap, errors, multiplier, 1);
-            UnitsMap rightMap = processEquationUnitsAst(ast->mRight, unitMap, errors, multiplier, 1);
+            UnitsMap leftMap = processEquationUnitsAst(ast->mLeft, errors);
+            UnitsMap rightMap = processEquationUnitsAst(ast->mRight, errors);
 
             // Plus, Minus, any unit comparisons where units have to be exactly the same.
             if (isDirectComparisonOperator(ast)) {
@@ -1807,59 +1831,28 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, UnitsMap un
     return unitMap;
 }
 
-/*
-double calculateTrigMultiplier(double &arg, GeneratorEquationAstPtr &ast)
+double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors)
 {
-    const GeneratorEquationAst::Type type = ast->mType;
-    if (type == libcellml::GeneratorEquationAst::Type::ASIN) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::ASINH) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::SIN) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::SINH) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::ACOS) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::ACOSH) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::COS) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::COSH) {
-    } else if (type == libcellml::GeneratorEquationAst::Type::ATAN) {
-    }
-    || (type == libcellml::GeneratorEquationAst::Type::ATANH)
-    || (type == libcellml::GeneratorEquationAst::Type::TAN)
-    || (type == libcellml::GeneratorEquationAst::Type::TANH)
-    || (type == libcellml::GeneratorEquationAst::Type::ASEC)
-    || (type == libcellml::GeneratorEquationAst::Type::ASECH)
-    || (type == libcellml::GeneratorEquationAst::Type::SECH)
-    || (type == libcellml::GeneratorEquationAst::Type::SEC)
-    || (type == libcellml::GeneratorEquationAst::Type::ACSC)
-    || (type == libcellml::GeneratorEquationAst::Type::ACSCH)
-    || (type == libcellml::GeneratorEquationAst::Type::CSC)
-    || (type == libcellml::GeneratorEquationAst::Type::CSCH)
-    || (type == libcellml::GeneratorEquationAst::Type::ACOT)
-    || (type == libcellml::GeneratorEquationAst::Type::ACOTH)
-    || (type == libcellml::GeneratorEquationAst::Type::COT)
-    || (type == libcellml::GeneratorEquationAst::Type::COTH);
-}*/
-
-double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double multiplier)
-{ 
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
             ModelPtr model;
             std::string uName;
             UnitsMap unitMap;
-            multiplier = 0.0;
+            double multiplier = 0.0;
 
             // If we have a unit associated with the value of a number we add it to the units mapping.
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
                 model = owningModel(ast->mUnits);
                 uName = ast->mUnits->name();
-                updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, 1);
+                updateBaseMultiplier(model, multiplier, uName, 1, 0);
             }
 
             if (ast->mType == GeneratorEquationAst::Type::CI) {
                 model = (ast->mVariable != nullptr) ? owningModel(ast->mVariable) : nullptr;
                 uName = (ast->mUnits != nullptr) ? ast->mUnits->name() : "dimensionless";
                 if (!(uName == "dimensionless")) {
-                    updateBaseUnitCount(model, unitMap, multiplier, uName, 1, 0, 1);
+                    updateBaseMultiplier(model, multiplier, uName, 1, 0);
                 } else {
                     multiplier = 0.0;
                 }
@@ -1870,8 +1863,8 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
             // Evaluate left, right subtrees first
-            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, 0.0);
-            double rightMult = processEquationMultiplierAst(ast->mRight, errors, 0.0);
+            double leftMult = processEquationMultiplierAst(ast->mLeft, errors);
+            double rightMult = processEquationMultiplierAst(ast->mRight, errors);
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
@@ -1888,27 +1881,20 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                                       + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
                                       + ". A variable in the expression is " + variable->name();
                     errors.push_back(err);
-                    //multiplier = leftMult;
                 }
-                //return leftMult;
             }
 
             // Otherwise for all the other cases we change the multiplier
             if (isMultiplicativeOperator(ast)) {
                 if (ast->mType == GeneratorEquationAst::Type::TIMES) {
                     leftMult += rightMult;
-                } /*else if (leftMult != 0.0 || rightMult != 0.0) {
-                    leftMult = 0.0;
-                } */else {
+                } else {
                     leftMult -= rightMult;
                 }
-                //return leftMult;
             }
 
             if (isExponentOperator(ast)) {
                 double power = getPower(ast->mRight);
-                //leftMult = 0.0;
-
                 if (ast->mType == GeneratorEquationAst::Type::POWER && power != 0.0) {
                     leftMult *= power;
                 } else if (ast->mType == GeneratorEquationAst::Type::ROOT) {
@@ -1920,45 +1906,18 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 } else {
                     leftMult = 0.0;
                 }
-                //return leftMult;
             }
 
-            
-            if (isLogarithmicOperator(ast)) {
+            if (isLogarithmicOperator(ast) || isTrigonometricOperator(ast)) {
                 leftMult = 0.0;
-                /*if (ast->mType == GeneratorEquationAst::Type::LN) {
-                    leftMult = std::log(leftMult);
-                } else if (ast->mType == GeneratorEquationAst::Type::LOG) {
-                    if (rightMult == 2.0) {
-                        leftMult = std::log2(leftMult);
-                    } else {
-                        leftMult = std::log10(leftMult);
-                    }
-                } else {
-                    leftMult = std::exp(leftMult);
-                }
-                leftMult = 1.0;
-                */
-                //return leftMult;
             }
-            
-
-            
-            // Case not needed, but return multiplier as one since it is dimensionless
-            if (isTrigonometricOperator(ast)) {
-                leftMult = 0.0;
-                //return leftMult;
-            }
-    
 
             if (isDerivativeOperator(ast)) {
                 leftMult = leftMult + rightMult;
-                //return leftMult;
             }
 
             if (isBottomVariableOperator(ast)) {
                 leftMult = 0.0 - leftMult;
-                //return leftMult;
             }
             return leftMult;
         }
@@ -1972,14 +1931,12 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
 {
     UnitsMap unitMap;
     std::vector<std::string> errors;
-    double multiplier = 0.0;
-    unitMap = processEquationUnitsAst(ast, unitMap, errors, multiplier, 0);
+    double multiplier;
+    unitMap = processEquationUnitsAst(ast, errors);
 
     // We only check for multiplier issues if we don't have any issues with units.
-
     if (errors.empty()) {
-        multiplier = 0.0;
-        multiplier = processEquationMultiplierAst(ast, errors, multiplier);
+        multiplier = processEquationMultiplierAst(ast, errors);
     }
 
     if (!errors.empty()) {
