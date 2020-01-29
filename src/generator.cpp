@@ -1868,7 +1868,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
-                if ((leftMult > rightMult || leftMult < rightMult) && ast->mLeft != nullptr && ast->mRight != nullptr) {
+                if (!areEqual(leftMult, rightMult) && ast->mLeft != nullptr && ast->mRight != nullptr) {
                     VariablePtr variable = getVariable(ast);
                     ComponentPtr component = (variable != nullptr) ? std::dynamic_pointer_cast<Component>(variable->parent()) : nullptr;
                     ModelPtr model = (component != nullptr) ? owningModel(component) : nullptr;
@@ -1935,7 +1935,7 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
 
     // We only check for multiplier issues if we don't have any issues with units.
     if (errors.empty()) {
-        double multiplier;
+        double multiplier = 0.0;
         multiplier = processEquationMultiplierAst(ast, errors);
     }
 
