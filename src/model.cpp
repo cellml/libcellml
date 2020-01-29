@@ -341,9 +341,8 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
         libcellml::ComponentPtr component = parentComponentEntity->component(n);
         if (component->isImport()) {
             resolveImport(component, baseFile);
-        } else {
-            resolveComponentImports(component, baseFile);
         }
+        resolveComponentImports(component, baseFile);
     }
 }
 
@@ -361,9 +360,7 @@ bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
         ImportSourcePtr importedSource = importedEntity->importSource();
-        if (!importedSource->hasModel()) {
-            unresolvedImport = true;
-        }
+        unresolvedImport = !importedSource->hasModel();
     }
     return unresolvedImport;
 }
@@ -473,7 +470,7 @@ IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
     while (grandParent != nullptr) {
         indexStack.push_back(getComponentIndexInComponentEntity(grandParent, parent));
         parent = grandParent;
-        grandParent = std::dynamic_pointer_cast<ComponentEntity>(grandParent->parent());
+        grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
     }
 
     std::reverse(std::begin(indexStack), std::end(indexStack));
@@ -690,6 +687,9 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Take a copy of the imported component which will be used to replace the import defined in this model.
         auto importedComponentCopy = importedComponent->clone();
         importedComponentCopy->setName(component->name());
+        for (size_t i = 0; i < component->componentCount(); ++i) {
+            importedComponentCopy->addComponent(component->component(i));
+        }
 
         // Temporarily add component to new model to find units used.
         auto tempModel = Model::create();
@@ -748,10 +748,10 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
 void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t componentIndex)
 {
     flattenComponent(parent, component, componentIndex);
-
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        auto c = component->component(index);
-        flattenComponentTree(component, c, index);
+    auto flattenedComponent = parent->component(componentIndex);
+    for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
+        auto c = flattenedComponent->component(index);
+        flattenComponentTree(flattenedComponent, c, index);
     }
 }
 
