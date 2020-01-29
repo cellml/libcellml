@@ -1552,19 +1552,19 @@ VariablePtr getVariable(const GeneratorEquationAstPtr &ast)
 double getPower(const GeneratorEquationAstPtr &ast)
 {
     if (ast == nullptr) {
-        return 0; // Return 0 for case where there is a null node
+        return 0.0; // Return 0 for case where there is a null node
     }
     if (ast->mValue.empty()) {
         // If we have a variable then we return 0 and just make sure both mappings are dimensionless
         if (ast->mLeft == nullptr && ast->mRight == nullptr) {
-            return 0;
+            return 0.0;
         }
 
         if (ast->mType == GeneratorEquationAst::Type::TIMES) {
             return getPower(ast->mLeft) * getPower(ast->mRight);
         }
         if (ast->mType == GeneratorEquationAst::Type::DIVIDE) {
-            return getPower(ast->mLeft) / getPower(ast->mRight);
+            return (getPower(ast->mLeft) != 0.0) ? getPower(ast->mLeft) / getPower(ast->mRight) : 0.0;
         }
         if (ast->mType == GeneratorEquationAst::Type::PLUS) {
             return getPower(ast->mLeft) + getPower(ast->mRight);
@@ -1576,7 +1576,7 @@ double getPower(const GeneratorEquationAstPtr &ast)
 
     // In the special case where the terminating node is a variable, eliminates the possibility of making an invalid std::stod call
     if (ast->mValue.empty()) {
-        return 0;
+        return 0.0;
     }
 
     return std::stod(ast->mValue);
@@ -1881,7 +1881,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
-                                      + ". A variable in the expression is" + variable->name();
+                                      + ". A variable in the expression is " + variable->name();
                     errors.push_back(err);
                     //multiplier = leftMult;
                 }
@@ -1892,14 +1892,18 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             if (isMultiplicativeOperator(ast)) {
                 if (ast->mType == GeneratorEquationAst::Type::TIMES) {
                     leftMult += rightMult;
+                } else if (leftMult != 0.0 || rightMult != 0.0) {
+                    leftMult = 0.0;
                 } else {
                     leftMult -= rightMult;
                 }
+                return leftMult;
             }
 
             if (isExponentOperator(ast)) {
                 double power = getPower(ast->mRight);
-                leftMult = 0.0;
+                //leftMult = 0.0;
+
                 if (ast->mType == GeneratorEquationAst::Type::POWER && power != 0.0) {
                     leftMult *= power;
                 } else if (ast->mType == GeneratorEquationAst::Type::ROOT) {
@@ -1911,6 +1915,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 } else {
                     leftMult = 0.0;
                 }
+                return leftMult;
             }
 
             
@@ -1929,6 +1934,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 }
                 leftMult = 1.0;
                 */
+                return leftMult;
             }
             
 
@@ -1936,17 +1942,20 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             // Case not needed, but return multiplier as one since it is dimensionless
             if (isTrigonometricOperator(ast)) {
                 leftMult = 0.0;
+                return leftMult;
             }
     
 
             if (isDerivativeOperator(ast)) {
                 leftMult = leftMult + rightMult;
+                return leftMult;
             }
 
             if (isBottomVariableOperator(ast)) {
                 leftMult = 0.0 - leftMult;
+                return leftMult;
             }
-            return leftMult;
+            return 0.0;
         }
         return 0.0;
     }
