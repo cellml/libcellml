@@ -176,8 +176,18 @@
                     <ci>i</ci>
                 </apply>
             </apply>
+            <!-- Allowed as both e and i are dimensionless although i is not a fixed value.-->
+            <apply>
+                <eq/>
+                <ci>j</ci>
+                <apply>
+                    <power/>
+                    <ci>h</ci>
+                    <cn cellml:units="second">2</cn>
+                </apply>
+            </apply>
         </math>
-        <!-- Allowed as both e and i are dimensionless although i is not a fixed value.-->
+        <!-- Not allowed - 2 is not dimensionless-->
     </component>
     <component name="non_standard_units">
         <variable interface="public" name="A_p" units="apple"/>
