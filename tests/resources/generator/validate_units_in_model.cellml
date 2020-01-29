@@ -8,6 +8,14 @@
         <unit units="metre"/>
         <unit exponent="-1" units="second"/>
     </units>
+    <units name="apple"/>
+    <units name="milliapple">
+        <unit prefix="milli" units="apple"/>
+    </units>
+    <units name="apple_and_milliapple">
+        <unit units="milliapple"/>
+        <unit units="apple"/>
+    </units>
     <!-- Simple checks for direct comparision operator behaviour (plus, minus. equals, less than, etc).-->
     <component name="direct_comparision_operators">
         <variable interface="public" name="a" units="volt_per_farad"/>
@@ -155,11 +163,11 @@
                     <apply>
                         <power/>
                         <ci>f</ci>
-                        <cn cellml:units="second">2</cn>
+                        <cn cellml:units="dimensionless">2</cn>
                     </apply>
                 </apply>
             </apply>
-            <!-- Not allowed-->
+            <!-- Allowed-->
             <apply>
                 <eq/>
                 <ci>j</ci>
@@ -170,5 +178,45 @@
             </apply>
         </math>
         <!-- Allowed as both e and i are dimensionless although i is not a fixed value.-->
+    </component>
+    <component name="non_standard_units">
+        <variable interface="public" name="A_p" units="apple"/>
+        <variable interface="public" name="A_m" units="milliapple"/>
+        <variable interface="public" name="A_out" units="milliapple"/>
+        <variable interface="public" name="time" units="second"/>
+        <variable interface="public" name="A_into" units="apple_and_milliapple"/>
+        <variable interface="public" name="A_o" units="apple_and_milliapple"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>A_out</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>A_p</ci>
+                        <ci>A_m</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>A_p</ci>
+                        <ci>time</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- Should be allowed both for multipliers and units checking.-->
+            <apply>
+                <eq/>
+                <ci>A_o</ci>
+                <ci>A_into</ci>
+            </apply>
+        </math>
+        <!-- Cvoerage for nested base units which are not standard-->
     </component>
 </model>

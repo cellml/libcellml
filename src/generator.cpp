@@ -1517,12 +1517,13 @@ void updateBaseUnitCount(const ModelPtr &model,
             }
         }
 
-        /*
         // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
         else if (unitMap.find(uName) == unitMap.end()) {
-            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+            unitMap.emplace(std::pair<std::string, double>(uName, 1.0 * uExp));
+        } else {
+            const auto &iter = unitMap.find(uName);
+            unitMap.at(iter->first) += (iter->second * uExp);
         }
-        */
     }
 }
 
@@ -1553,13 +1554,10 @@ void updateBaseMultiplier(const ModelPtr &model,
             }
         }
 
-        /*
         // Leaving this as a comment for the moment: This would only be necessary if we had a base unit which was *not* in the standard units list - uncertain if this will ever occur within a formal model.
         else {
-            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
-            multiplier += direction * logMult;
+            multiplier += 1.0 * logMult;
         }
-        */
     }
 }
 
@@ -1598,6 +1596,9 @@ double getPower(const GeneratorEquationAstPtr &ast)
         }
         if (ast->mType == GeneratorEquationAst::Type::MINUS) {
             return getPower(ast->mLeft) - getPower(ast->mRight);
+        }
+        if (ast->mType == GeneratorEquationAst::Type::DEGREE) {
+            return getPower(ast->mLeft);
         }
     }
 
@@ -1746,15 +1747,29 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
 
             // Checks for exponential operators, multiplies unit mappings with power
             if (isExponentOperator(ast)) {
-                double power = getPower(ast->mRight);
+                double power = 0.0;
+                if (ast->mType == GeneratorEquationAst::Type::POWER) {
+                    power = getPower(ast->mRight);
+                } else {
+                    if (ast->mLeft->mType == GeneratorEquationAst::Type::DEGREE) {
+                        power = getPower(ast->mLeft);
+                    } else {
+                        power = getPower(ast->mRight);
+                    }
+                }
+
+                //double power = getPower(ast->mRight);
                 bool correctUnits = false;
-                if (power == 0.0 && ast->mRight != nullptr) {
+                if (power == 0.0 && ast->mRight != nullptr && ast->mType == GeneratorEquationAst::Type::POWER) {
                     correctUnits = isDimensionless(leftMap) && isDimensionless(rightMap); // If we have a variable as our power both the power and the quantity it is being applied to must be dimensionless
+                } else if (ast->mLeft->mType == GeneratorEquationAst::Type::DEGREE) {
+                    correctUnits = isDimensionless(leftMap);
+                    leftMap = rightMap;
                 } else {
                     correctUnits = isDimensionless(rightMap); // Otherwise we just check the power for dimensionlessness
                 }
 
-                // If we have a sqaure root operation
+                // If we have a square root operation
                 if (power == 0.0 && ast->mRight == nullptr) {
                     power = 2.0;
                 }
@@ -1893,11 +1908,11 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
 
             if (isExponentOperator(ast)) {
-                double power = getPower(ast->mRight);
+                double power = (ast->mRight != nullptr) ? getPower(ast->mRight) : getPower(ast->mLeft);
                 if (ast->mType == GeneratorEquationAst::Type::POWER && power != 0.0) {
                     leftMult *= power;
                 } else if (ast->mType == GeneratorEquationAst::Type::ROOT) {
-                    if (ast->mRight != nullptr && power != 0.0 && leftMult != 0.0) {
+                    if ((ast->mRight != nullptr || ast->mLeft != nullptr) && power != 0.0) {
                         leftMult /= power;
                     } else {
                         leftMult *= 0.5;
@@ -1920,7 +1935,6 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             }
             return leftMult;
         }
-        return 0.0;
     }
     return multiplier;
 }
