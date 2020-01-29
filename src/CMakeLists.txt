@@ -47,7 +47,6 @@ configure_file(
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
@@ -107,7 +106,6 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
@@ -122,6 +120,11 @@ set(HEADER_FILES
   ${LIBCELLML_VERSIONCONFIG_H}
   ${MATHML_CONFIG_H}
 )
+
+if (LIBCELLML_ENABLE_DEBUG_FUNCTIONS)
+  list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp)
+  list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/debug.h)
+endif()
 
 # Only does anything if configuration target is Visual Studio.
 group_source_to_dir_structure(
