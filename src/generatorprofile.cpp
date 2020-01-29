@@ -215,8 +215,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
-    std::string mReturnCreatedArrayString;
-
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
 
@@ -510,18 +508,16 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n";
-
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
-                                                       "<CODE>"
+                                                       "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
                                                        "}\n";
 
         mInterfaceCreateVariablesArrayMethodString = "double * createVariablesArray();\n";
         mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
                                                           "{\n"
-                                                          "<CODE>"
+                                                          "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
                                                           "}\n";
 
         mInterfaceDeleteArrayMethodString = "void deleteArray(double *array);\n";
@@ -809,17 +805,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mReturnCreatedArrayString = "return [nan]*<ARRAY_SIZE>\n";
-
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
                                                        "def create_states_array():\n"
-                                                       "<CODE>";
+                                                       "    return [nan]*STATE_COUNT\n";
 
         mInterfaceCreateVariablesArrayMethodString = "";
         mImplementationCreateVariablesArrayMethodString = "\n"
                                                           "def create_variables_array():\n"
-                                                          "<CODE>";
+                                                          "    return [nan]*VARIABLE_COUNT\n";
 
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
@@ -2176,16 +2170,6 @@ std::string GeneratorProfile::variablesArrayString() const
 void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
 {
     mPimpl->mVariablesArrayString = variablesArrayString;
-}
-
-std::string GeneratorProfile::returnCreatedArrayString() const
-{
-    return mPimpl->mReturnCreatedArrayString;
-}
-
-void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCreatedArrayString)
-{
-    mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
