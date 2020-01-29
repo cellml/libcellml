@@ -1831,7 +1831,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
     return unitMap;
 }
 
-double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors)
+double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vector<std::string> &errors, double multiplier)
 {
     if (ast != nullptr) {
         // Evaluate multiplier if we are at a variable
@@ -1839,7 +1839,6 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
             ModelPtr model;
             std::string uName;
             UnitsMap unitMap;
-            double multiplier = 0.0;
 
             // If we have a unit associated with the value of a number we add it to the units mapping.
             if (ast->mType == GeneratorEquationAst::Type::CN && ast->mUnits != nullptr) {
@@ -1863,8 +1862,8 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
         // We know if we have reached an internal vertex that we have a mathematical operation as it's type.
         if (ast->mLeft != nullptr || ast->mRight != nullptr) {
             // Evaluate left, right subtrees first
-            double leftMult = processEquationMultiplierAst(ast->mLeft, errors);
-            double rightMult = processEquationMultiplierAst(ast->mRight, errors);
+            double leftMult = processEquationMultiplierAst(ast->mLeft, errors, multiplier);
+            double rightMult = processEquationMultiplierAst(ast->mRight, errors, multiplier);
 
             // The only time we check multiplier mismatch is in a comparision operation.
             if (isDirectComparisonOperator(ast)) {
@@ -1923,7 +1922,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
         }
         return 0.0;
     }
-    return 0.0;
+    return multiplier;
 }
 
 // Shim function to create a contiguous void declaration in the private implementation
@@ -1933,7 +1932,7 @@ void Generator::GeneratorImpl::processEquationUnits(const GeneratorEquationAstPt
     std::vector<std::string> errors;
     double multiplier = 0.0;
     unitMap = processEquationUnitsAst(ast, errors);
-    multiplier = processEquationMultiplierAst(ast, errors);
+    multiplier = processEquationMultiplierAst(ast, errors, multiplier);
 
     if (!errors.empty()) {
         for (const auto &error : errors) {
