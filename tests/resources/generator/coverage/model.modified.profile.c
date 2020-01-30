@@ -289,12 +289,12 @@ double acoth(double x)
 
 double * createStatesVector()
 {
-    return (double *) malloc(1*sizeof(double));
+    return (double *) malloc(STATE_COUNT*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(186*sizeof(double));
+    return (double *) malloc(VARIABLE_COUNT*sizeof(double));
 }
 
 void deleteArray(double *array)
