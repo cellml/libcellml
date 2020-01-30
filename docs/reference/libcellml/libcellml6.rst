@@ -1,5 +1,5 @@
-
 .. _libcellml6:
+
 
 .. container:: libcellml_usage
 
@@ -22,18 +22,20 @@
     // dimensionallyEquivalent(kilometre, thousand_metres) is true,
     // dimensionallyEquivalent(kilometre, metre) is false (scaling factor difference),
     // dimensionallyEquivalent(kilometre, apple) is false (base unit difference).
+
     static bool dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
     // This function will return "true" when the two Units base units match.  That is,
     // equivalent(kilometre, thousand_metres) is true,
     // equivalent(kilometre, metre) is true (scaling factor difference is ignored),
     // equivalent(kilometre, apple) is false (base unit difference).
-    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
+    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
     // This function simply returns the scaling factor between two Units
     // such that: units2 = units1*scalingFactor. where the base
     // units match.  Where they don't, it returns 0.
     // scalingFactor(metre, kilometre) returns 1000.0
     // scalingFactor(kilometre, apple) returns 0
+
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
