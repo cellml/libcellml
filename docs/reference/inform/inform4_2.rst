@@ -20,7 +20,9 @@
         <units name="myUnits"> ... </units>
         <units name="myOtherUnits"> ... </units>
         <units name="aDuplicatedUnitName"> ... </units>
-        <units name="aDuplicatedUnitName"/> <!-- INVALID This units item is not valid because it has the same name as an existing units item -->
+
+        <!-- INVALID This units item is not valid because it has the same name as an existing units item -->
+        <units name="aDuplicatedUnitName"> ... </units>
 
         <!-- A model can contain any number of import items -->
         <import />
@@ -31,9 +33,10 @@
         <connection />
 
         <encapsulation>...</encapsulation>
+        <!-- INVALID: A model must contain only ONE encapsulation item -->
+        <encapsulation>...</encapsulation>
 
-        <encapsulation>...</encapsulation>  <!-- INVALID: A model must contain only ONE encapsulation item -->
-
-        <apples> ... </apples> <!-- INVALID: The only child elements of the model are those stated.-- >
+        <!-- INVALID: The only child elements of the model are those stated. -->
+        <apples> ... </apples>
 
       </model>
