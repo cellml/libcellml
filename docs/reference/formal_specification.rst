@@ -479,6 +479,8 @@ item is referred to as the :code:`model` element.
    attribute. The value of the :code:`name` attribute MUST be a valid CellML
    identifier.
 
+.. marker4_1
+
 2. A :code:`model` element MAY contain one or more additional specific
    information item children, each of which MUST be of one of the
    following types:
@@ -492,6 +494,8 @@ item is referred to as the :code:`model` element.
    4. An :code:`import` element; or
 
    5. A :code:`units` element;
+
+.. marker4_2
 
 3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
    element.
