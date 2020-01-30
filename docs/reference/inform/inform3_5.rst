@@ -1,5 +1,5 @@
-.. _inform31:
+.. _inform3_5:
 
-.. container:: inform
+.. container:: infospec
 
   Notes about the thing go here

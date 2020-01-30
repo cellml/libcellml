@@ -1,5 +1,5 @@
-.. _inform7:
+.. _inform7_1:
 
+.. container:: infospec
 
-
-Notes on 7 go here
+  The ability to import components is what makes CellML usage

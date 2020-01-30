@@ -1,7 +1,7 @@
 .. _libcellml6:
 
 
-.. container:: libcellml_usage
+.. container:: infolib
 
   Using libCellML there are a couple of things to watch out for.  It
   will allow you import a :code:`Units` item which has a :code:`name`
