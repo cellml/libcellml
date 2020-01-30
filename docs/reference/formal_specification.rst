@@ -555,6 +555,8 @@ appears as a child of an :code:`import` element.
    to the :code:`name` attribute of any other :code:`units` or :code:`import units`
    element in the CellML infoset.
 
+.. marker6_1
+
 2. Every :code:`import units` element MUST contain an unprefixed
    :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
    MUST be a valid CellML identifier. The value of the :code:`units_ref`
