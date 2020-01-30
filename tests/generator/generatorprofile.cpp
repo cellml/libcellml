@@ -330,14 +330,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n",
-              generatorProfile->returnCreatedArrayString());
-
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ("double * createStatesArray()\n"
               "{\n"
-              "<CODE>"
+              "    return (double *) malloc(STATE_COUNT*sizeof(double));\n"
               "}\n",
               generatorProfile->implementationCreateStatesArrayMethodString());
 
@@ -345,7 +342,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               generatorProfile->interfaceCreateVariablesArrayMethodString());
     EXPECT_EQ("double * createVariablesArray()\n"
               "{\n"
-              "<CODE>"
+              "    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n"
               "}\n",
               generatorProfile->implementationCreateVariablesArrayMethodString());
 
@@ -742,8 +739,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
-    generatorProfile->setReturnCreatedArrayString(value);
-
     generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
     generatorProfile->setImplementationCreateStatesArrayMethodString(value);
 
@@ -827,8 +822,6 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->statesArrayString());
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
-
-    EXPECT_EQ(value, generatorProfile->returnCreatedArrayString());
 
     EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());

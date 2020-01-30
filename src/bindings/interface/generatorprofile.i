@@ -836,9 +836,6 @@ with the name of the component, name and units of a variable.";
 %feature("docstring") libcellml::GeneratorProfile::setVariablesArrayString
 "Set the string for the name of the variables array.";
 
-%feature("docstring") libcellml::GeneratorProfile::returnCreatedArrayString
-"Return the string for returning a created array.";
-
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString
 "Set the string for returning a created array. To be useful, the
 string should contain the <ARRAY_SIZE> tag, which will be replaced with
