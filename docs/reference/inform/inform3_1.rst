@@ -1,18 +1,24 @@
 .. _inform3_1:
 
-.. container:: infospec
+.. container:: toggle
 
-  Names and identifiers need to be a single word, and without any special
-  characters other than an underscore.  For example, these are allowed:
+    .. container:: header
 
-    - :code:`myName`
-    - :code:`my_name`
-    - :code:`myName1`
+        Show/hide more information
 
-  ... but these are not permitted:
+    .. container:: infospec
 
-    - :code:`my Name` has a space
-    - :code:`myName!` contains a special character
-    - :code:`1myName` starts with a numerical character
+      Names and identifiers need to be a single word, and without any special
+      characters other than an underscore.  For example, these are allowed:
 
-  Note that CellML identifiers are case-sensitive, and empty strings are not allowed.
+        - :code:`myName`
+        - :code:`my_name`
+        - :code:`myName1`
+
+      ... but these are not permitted:
+
+        - :code:`my Name` has a space
+        - :code:`myName!` contains a special character
+        - :code:`1myName` starts with a numerical character
+
+      Note that CellML identifiers are case-sensitive, and empty strings are not allowed.

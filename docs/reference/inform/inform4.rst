@@ -1,19 +1,21 @@
 .. _inform4:
 
 
-The :code:`model` is the highest level in the CellML file, not including the
-opening :code:`xml` tags.  And, just like the Highlander, there can be only one.
+.. container:: toggle
 
-Please see the annotated example model below.  **TODO**
+  .. container:: header
 
-.. code-block:: xml
+    Show/hide more information
 
-    <model name="myModelName">                           # a valid name must be present
-        <component name="myComponentName"></component>   # a unique and valid name must be present
-    </model>
+  .. container:: infospec
 
+    The :code:`model` is the highest level in the CellML file, not including the
+    opening :code:`xml` tags.  And, just like the Highlander, there can be only one.
 
-Possible errors related to the :code:`model` item
--------------------------------------------------
+    Please see the annotated example model below.  **TODO**
 
-**TODO** put list of errors/issues/hints from the validator/generator here.
+    .. code-block:: xml
+
+        <model name="myModelName">                           <!-- a valid name must be present -->
+            <component name="myComponentName"></component>   <!-- a unique and valid name must be present -->
+        </model>
