@@ -34,6 +34,19 @@ div.figure a.image-reference {
     color: rgb(30, 46, 0);
 }
 
+.toggle .header {
+    display: block;
+    clear: both;
+}
+
+.toggle .header:after {
+    content: " ▶";
+}
+
+.toggle .header.open:after {
+    content: " ▼";
+}
+
 .infospec {
     /* border-top: 1px solid #b9c6dd; */
     background:#e1eaf0;
