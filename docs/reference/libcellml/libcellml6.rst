@@ -1,6 +1,8 @@
 
 .. _libcellml6:
 
+.. container:: libcellml_usage
+
   Using libCellML there are a couple of things to watch out for.  It
   will allow you import a :code:`Units` item which has a :code:`name`
   attribute that already exists in the importing model (as in this
