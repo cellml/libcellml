@@ -18,4 +18,4 @@
 
 .. include:: inform/inform4_3.rst
 
-.. include::libcellml/libcellml4.rst
+.. include:: libcellml/libcellml4.rst
