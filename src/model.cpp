@@ -656,6 +656,25 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     return nameMap;
 }
 
+std::vector<UnitsPtr> unitsUsed(const ComponentPtr &component)
+{
+    std::vector<UnitsPtr> usedUnits;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto v = component->variable(i);
+        auto u = v->units();
+        if (u != nullptr && !isStandardUnitName(u->name())) {
+            usedUnits.push_back(u);
+        }
+    }
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        auto childUsedUnits = unitsUsed(childComponent);
+        usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
+    }
+
+    return usedUnits;
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -689,14 +708,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         }
 
         // Get list of required units from component's variables.
-        std::vector<UnitsPtr> requiredUnits;
-        for (size_t i = 0; i < importedComponentCopy->variableCount(); ++i) {
-            auto v = importedComponentCopy->variable(i);
-            auto u = v->units();
-            if (u != nullptr && !isStandardUnitName(u->name())) {
-                requiredUnits.push_back(u);
-            }
-        }
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(importedComponentCopy);
 
         // Make a map of component name to component pointer.
         ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
