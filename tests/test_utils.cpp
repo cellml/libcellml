@@ -138,3 +138,20 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
 
     return model;
 }
+
+void printModel(const libcellml::ModelPtr &model)
+{
+    for (size_t cIndex = 0; cIndex < model->componentCount(); ++cIndex) {
+        auto component = model->component(cIndex);
+        std::cout << "Component " << cIndex << " " << component << " " << component->name() << std::endl;
+        for (size_t vIndex = 0; vIndex < component->variableCount(); ++vIndex) {
+            auto variable = component->variable(vIndex);
+            std::cout << "  Variable " << vIndex << " " << variable << " " << variable->name()
+                      << " has " << variable->equivalentVariableCount() << " equivalent variables:" << std::endl;
+            for (size_t eIndex = 0; eIndex < variable->equivalentVariableCount(); ++eIndex) {
+                auto equivVariable = variable->equivalentVariable(eIndex);
+                std::cout << "      - Equivalent variable: " << eIndex << " " << equivVariable << " " << equivVariable->name() << " [parent " << equivVariable->parent() << "]" << std::endl;
+            }
+        }
+    }
+}
