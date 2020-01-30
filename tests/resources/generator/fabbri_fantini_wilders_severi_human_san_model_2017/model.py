@@ -297,11 +297,11 @@ def and_func(x, y):
 
 
 def create_states_array():
-    return [nan]*33
+    return [nan]*STATE_COUNT
 
 
 def create_variables_array():
-    return [nan]*217
+    return [nan]*VARIABLE_COUNT
 
 
 def initialize_states_and_constants(states, variables):
