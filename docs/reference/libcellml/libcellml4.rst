@@ -3,14 +3,13 @@
 
 .. container:: toggle
 
-    .. container:: header
+  .. container:: header
 
-        Show/hide more information
+      See libCellML implementation
 
+  .. container:: infolib
 
-.. container:: infolib
+      Possible errors related to the :code:`model` item
+      -------------------------------------------------
 
-    Possible errors related to the :code:`model` item
-    -------------------------------------------------
-
-    **TODO** put list of errors/issues/hints from the validator/generator here.
+      **TODO** put list of errors/issues/hints from the validator/generator here.

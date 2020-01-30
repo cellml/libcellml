@@ -4,7 +4,7 @@
 
   .. container:: header
 
-    Show/hide more information
+    See more
 
   .. container:: infospec
 

@@ -3,9 +3,9 @@
 
 .. container:: toggle
 
-    .. container:: header
+  .. container:: header
 
-        Show/hide libCellML information
+      See libCellML implementation
 
   .. container:: infolib
 

@@ -5,3 +5,12 @@
   :end-before: marker5
 
 .. include:: inform/inform4.rst
+
+
+.. container:: toggle
+
+  .. container:: header
+
+      See libCellML implementation
+
+      .. include::libcellml/libcellml4.rst
