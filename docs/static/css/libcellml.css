@@ -39,6 +39,8 @@ div.figure a.image-reference {
     clear: both;
     color: #444444;
     text-align: right;
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
 .toggle .header:after {
