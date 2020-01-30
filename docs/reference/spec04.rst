@@ -14,6 +14,8 @@
 
 .. include:: formal_specification.rst
   :start-after: marker4_2
-  :end-before: marker4_3
+  :end-before: marker5
+
+.. include:: inform/inform4_3.rst
 
 .. include::libcellml/libcellml4.rst
