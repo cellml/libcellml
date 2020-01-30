@@ -37,6 +37,8 @@ div.figure a.image-reference {
 .toggle .header {
     display: block;
     clear: both;
+    color: #444444;
+    text-align: right;
 }
 
 .toggle .header:after {
