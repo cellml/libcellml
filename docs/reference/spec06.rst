@@ -10,4 +10,6 @@
   :start-after: marker6_1
   :end-before: marker7
 
+.. include:: inform/inform6_2.rst
+
 .. include:: libcellml/libcellml6.rst
