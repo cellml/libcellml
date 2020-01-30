@@ -1,5 +1,12 @@
 .. _inform1:
 
 
+.. container:: toggle
 
-Notes on 1 go here
+    .. container:: header
+
+        **Show/Hide Code**
+
+    .. code-block:: xml
+
+      Hello world
