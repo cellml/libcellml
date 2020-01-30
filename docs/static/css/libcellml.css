@@ -49,6 +49,21 @@ div.figure a.image-reference {
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
 }
 
+.libcellml_usage {
+    /* border-top: 1px solid #b9c6dd; */
+    background:#e7f0e1;
+    color: #444444;
+    padding: 10px;
+
+    margin-top:15px;
+    margin-bottom:15px;
+    margin-left:0;
+    margin-right:0;
+
+    line-height: 24px;
+    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+}
+
 .nb {
     border-left: 5px solid sandybrown;
     background:rgb(255, 243, 206);
