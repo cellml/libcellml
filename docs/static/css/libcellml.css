@@ -36,16 +36,15 @@ div.figure a.image-reference {
 
 .toggle .header {
     display: block;
-    text-align: right;
     clear: both;
 }
 
-.toggle .header:before {
-    content: "▶ ";
+.toggle .header:after {
+    content: " ▶";
 }
 
-.toggle .header.open:before {
-    content: "▼ ";
+.toggle .header.open:after {
+    content: " ▼";
 }
 
 .infospec {
