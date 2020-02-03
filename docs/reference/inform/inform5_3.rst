@@ -23,10 +23,10 @@
 
       <model name="olsen_twins">
         <import xlink:href="twin_sister.cellml">
-        	<component name="mary_kate" component_ref="sister"/>
+          <component name="mary_kate" component_ref="sister"/>
         </import>
         <import xlink:href="twin_sister.cellml">
-        	<component name="ashley" component_ref="sister"/>
+          <component name="ashley" component_ref="sister"/>
         </import>
       <model>
 
@@ -37,7 +37,7 @@
       <!-- in a file called "multiplicity.cellml" -->
       <model name="multiplicity">
         <import xlink:href="multiplicity.cellml">
-        	<component name="doug" component_ref="doug"/>
+         <component name="doug" component_ref="doug"/>
         </import>
       <model>
 
@@ -49,20 +49,20 @@
       <!-- in a file called "multiplicity.cellml" -->
       <model name="multiplicity">
         <import xlink:href="clone.cellml">
-        	<component name="doug" component_ref="clone"/>
+          <component name="doug" component_ref="clone"/>
         </import>
       <model>
 
       <!-- in a file called "clone.cellml" -->
       <model name="first_clone">
         <import xlink:href="clone_of_clone.cellml">
-        	<component name="clone" component_ref="another_clone"/>
+          <component name="clone" component_ref="another_clone"/>
         </import>
       </model>
 
       <!-- in a file called "clone_of_clone.cellml" -->
       <model name="repeating_cloning">
         <import xlink:href="multiplicity.cellml">
-        	<component name="another_clone" component_ref="doug"/>
+          <component name="another_clone" component_ref="doug"/>
         </import>
       </model>
