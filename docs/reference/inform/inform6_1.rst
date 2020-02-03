@@ -62,3 +62,6 @@
             ...
           </component>
         </model>
+
+      Note that libCellML uses some workarounds to avoid this kind of conflict.  Please
+      see the :ref:`libCellML section below<libcellml_import_units>` for details.
