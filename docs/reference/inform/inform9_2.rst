@@ -10,26 +10,15 @@
 
     There are two items related to units in CellML, and their naming can be
     confusing!  The plural - :code:`units` represents the actual final units
-    (eg: :math:`cm^3/s`) to be used in the model.  This is a collection of
+    to be used in the model.  This is a collection of
     smaller :code:`unit` items which transform the base dimensionality
-    (eg: :math:`m, s`) into the form required by the final units
-    (:math:`cm^3`, :math:`s^{-1}`).  This is done using
+    into the form required by the final units by way of prefixes,
+    multipliers, and exponents.
 
-    The :code:`units` item and its requirements are described in
-    :ref:`The units element information item<spec_units>`. For now we will
-    just set a valid name for the units item:
-
-    .. code-block:: xml
-
-      <units name="cm3_per_second">
-        ...
-      </units>
-
-    Now that we've named it, we also need to define what it actually means.
     In the example, we'll need to use two of the *built-in* base units,
-    :code:`metre` and :code:`second`, and manipulate them accordingly.  This
-    is done by including child :code:`unit` items.  First, we need to change
-    the base units of :code:`metre` into :math:`cm^3`:
+    :code:`metre` and :code:`second`, and manipulate them to form
+    :math:`cm^3/s`.  This is done by including child :code:`unit` items.
+    First, we need to change the base units of :code:`metre` into :math:`cm^3`:
 
     .. code-block:: xml
 
@@ -45,11 +34,11 @@
     .. code-block:: xml
 
       <units name="cm3_per_second">
-        <unit units="metre" prefix="centi" exponent="3">
-        <unit units="second" exponent="-1">
+        <unit units="metre" prefix="centi" exponent="3">  # default multiplier of 1
+        <unit units="second" exponent="-1"> # default prefix of 0, default multiplier of 1
       </units>
 
-    Note that this is exactly equivalent to the alterantives below:
+    This is exactly equivalent to the alterantives below:
 
     .. code-block:: xml
 
@@ -68,8 +57,10 @@
       # or
 
       <units name="cm3_per_second">
-        <unit units="metre" prefix="centi">  # default exponent of 1 ...
-        <unit units="metre" prefix="centi">  # ... is repeated ...
-        <unit units="metre" prefix="centi">  # ... to give the equivalent power of 3
+        <unit units="metre" prefix="centi">     # default exponent of 1 ...
+        <unit units="metre" prefix="-1">        # ... is repeated ...
+        <unit units="metre" multiplier="0.01">  # ... to give the equivalent power of 3
         <unit units="second" exponent="-1">
       </units>
+
+    For more information on :code:`Units` items please refer to the
