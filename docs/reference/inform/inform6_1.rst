@@ -27,7 +27,7 @@
           example below this is the :code:`twoLitrePot` value passed to the
           :code:`units_ref` attribute.
 
-      You can read the import statement below as: "retrieve the :code:`Units`
+      Thus we can read the import statement below as: "retrieve the :code:`Units`
       named :code:`twoLitrePot` from the file :code:`paint_pot_sizes.cellml`, and store it
       here in this model under the name :code:`potOfPaint` ".
 
