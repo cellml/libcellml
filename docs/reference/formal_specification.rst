@@ -665,6 +665,8 @@ element as its parent.
       :code:`units` element inclusion digraph contains one or more cycles
       (in other words, units definitions must not be cyclical).
 
+.. marker9_1
+
 2. A :code:`unit` element MAY contain any of the following unprefixed
    attribute information items:
 
