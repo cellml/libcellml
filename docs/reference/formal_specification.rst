@@ -690,6 +690,8 @@ specification as a :code:`component` element) is an element information item
 in the CellML namespace with a local name equal to :code:`component`, and
 which appears as a child of a :code:`model` element.
 
+.. marker10_1
+
 .. _specific-information-items-7:
 
 10.1. Specific information items
@@ -700,6 +702,8 @@ which appears as a child of a :code:`model` element.
    identifier. The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute on any other :code:`component` element or
    :code:`import component` element in the CellML infoset.
+
+.. marker10_2
 
 2. A :code:`component` element MAY contain one or more specific information
    item children, each of which MUST be of one of the following types:
