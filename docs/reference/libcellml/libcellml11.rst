@@ -1,5 +1,5 @@
-.. _libcellml10:
-.. _libcellml_component:
+.. _libcellml11:
+.. _libcellml_variable:
 
 .. container:: toggle
 
@@ -9,10 +9,8 @@
 
   .. container:: infolib
 
-
-
     .. container:: heading3
 
-      Messages related to :code:`Component` items
+      Messages related to :code:`Variable` items
 
     **TODO** put errors here.
