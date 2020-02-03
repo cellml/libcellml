@@ -14,7 +14,7 @@
     there can be only one :code:`encapsulation` item in any model.
 
     For more information about encapsulation, please refer to
-    :ref:`The encapsulation element information item<encapsulation>`.
+    :ref:`The encapsulation element information item<spec_encapsulation>`.
 
     For more information and examples involving and explaining encapsulation,
     please refer to the

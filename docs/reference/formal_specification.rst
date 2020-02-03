@@ -527,12 +527,16 @@ in the CellML namespace with a local name equal to :code:`import`.
    “imported CellML infoset” SHALL refer to the CellML infoset obtained
    by parsing the document referenced by the :code:`href` attribute.
 
+.. _marker5_1
+
 2. Every :code:`import` element MAY contain one or more specific information
    item children, each of which MUST be of one of the following types:
 
    1. An :code:`import units` element; or
 
    2. An :code:`import component` element.
+
+.. _marker5_2
 
 3. Any CellML infoset imported, directly or indirectly, by the imported
    CellML infoset MUST NOT be semantically equivalent to the importing

@@ -1,6 +1,5 @@
 .. _libcellml4:
 
-
 .. container:: toggle
 
   .. container:: header

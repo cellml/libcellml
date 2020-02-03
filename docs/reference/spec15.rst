@@ -1,6 +1,6 @@
 .. _spec15:
 
-.. _encapsulation:
+.. _spec_encapsulation:
 
 .. include:: formal_specification.rst
   :start-after: marker15
