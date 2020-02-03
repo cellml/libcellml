@@ -1,32 +1,32 @@
 .. _inform8:
 
-.. container:: infospec
+.. container:: toggle
 
-    There are two items related to units in CellML, and their naming can be
-    confusing, so we'll start with an example first.  Imagine that you need
-    to create units that represent a volume flowrate, so :math:`cm^3/s`
-    perhaps.
+  .. container:: header
 
-    The :code:`units` item - as with everything else - needs a unique name
-    within its scope, and because :code:`units` can only exist as a child of
-    a :code:`model`, they must therefore be unique.
+    See more
+
+  .. container:: infospec
+
+    The best way to understand how :code:`units` work is to read the
+    next section which defines their child :code:`unit` items.
+
+    The following examples show examples of what is not permitted in
+    defining :code:`units` items.
 
     .. code-block:: xml
 
-        <units name="cm3_per_second">
-        ...
-        </units>
+        <!-- the units name attribute is not a valid CellML identifier -->
+        <units name="I'm not valid!"> ... </units>
 
-    Now that we've named it, we also need to define it.  In the example, we'll
-    need to use two of the *built-in* base units - :code:`metre` and
-    :code:`second`, and manipulate them accordingly.  This is done by including
-    child :code:`unit` items (these are explained in detail in
-    :ref:`the next section<spec9>`).
+        <!-- duplicted local units names are not allowed -->
+        <units name="duplicatedName"> ... </units>
+        <units name="duplicatedName"> ... </units>
 
+        <!-- duplicated name of an imported units item is not allowed -->
+        <import xlink:href="handyUnitsForImport.cellml">
+            <import_units units_ref="myCustomUnits" name="duplicatedName">
+        </import>
 
-.. container:: infospec
-
-    Issues related to :code:`units` items
-    -------------------------------------
-
-    **TODO** Put list of common errors reported to do with units here.
+        <!-- duplicating the name of built-in units is not allowed -->
+        <units name="metre"> ... </units>
