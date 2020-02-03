@@ -1,4 +1,5 @@
 .. _spec7:
+.. _spec_import_component:
 
 .. include:: formal_specification.rst
   :start-after: marker7
