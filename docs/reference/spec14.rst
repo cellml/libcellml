@@ -1,4 +1,5 @@
 .. _spec14:
+.. _spec_math:
 
 .. include:: formal_specification.rst
   :start-after: marker14
