@@ -69,16 +69,18 @@
         <import xlink:href="series_approx_of_pi.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
           <component component_ref="GregoryLeibnizApproximator" name="pi calculator!"/>
         </import>
+
       </model>
 
     3) **The component_ref attribute**. This must be a valid CellML identifier
     (see :ref:`Data representation formats in CellML<spec_data_representation>`).
     It also has to actually exist as a :code:`component` in the given
-    :code:`href` location! Neither of the imports below are not permitted:
+    :code:`href` location! Neither of the imports below are permitted:
 
     .. code-block:: xml
 
       <model name="circle">
+
         <!-- This component_ref name does not exist at in the file specified -->
         <import xlink:href="series_approx_of_pi.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
           <component component_ref="I_dont_exist" name="pi_calculator"/>
@@ -88,4 +90,5 @@
         <import xlink:href="series_approx_of_pi.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
           <component component_ref="I have spaces so am not a valid ID" name="pi_calculator"/>
         </import>
+
       </model>
