@@ -9,3 +9,8 @@
       See libCellML implementation
 
   .. container:: infolib
+
+    .. container:: heading3
+      Messages related to importing components
+
+    **TODO** put errors here.
