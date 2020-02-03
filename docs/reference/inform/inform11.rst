@@ -5,7 +5,7 @@
   In addition to the standard :code:`name` attribute, each :code:`variable`
   must also define a :code:`units` attribute too.
 
-  Reusing the example from :ref:`Section 10: The component item<spec_component>` we
+  Reusing the example from :ref:`The component item<spec_component>` we
   can give the three variables their fuller definitions:
 
   .. code-block:: xml
@@ -32,4 +32,5 @@
   more detail in :ref:`The encapsulation item<spec_encapsulation>`.
 
   For examples and further explanation of components and their encapsulation,
-  please refer to :ref:`
+  please refer to
+  :ref:`section 3 of the Sodium Channel theory<theory_sodiumchannel_interpretation>`.
