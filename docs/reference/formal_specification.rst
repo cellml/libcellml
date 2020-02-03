@@ -807,6 +807,8 @@ child of a :code:`component` element.
 
 .. marker13
 
+... where did chapter 13 go???
+
 .. marker14
 
 14. The math element information item
