@@ -1,4 +1,4 @@
-.. _inform7_1:
+.. _inform7:
 
 .. container:: infospec
 
