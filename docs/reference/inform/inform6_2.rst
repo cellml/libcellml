@@ -7,13 +7,11 @@
 
         Read more
 
-
-
    .. container:: infospec
 
      You can read the import statement in lines 5-7 above as: "retrieve the :code:`Units`
      called :code:`twoLitrePot` from the file :code:`paint_pot_sizes.cellml`, and store it
-     here in this model under the name :code:`potOfPaint`.
+     here in this model under the name :code:`potOfPaint` ".
 
      .. code-block:: xml
 

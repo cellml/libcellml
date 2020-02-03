@@ -43,3 +43,5 @@
       // scalingFactor(metre, kilometre) returns 1000.0
       // scalingFactor(kilometre, apple) returns 0
       static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
+
+      **TODO** check with issue https://github.com/cellml/libcellml/issues/539 re naming of functions

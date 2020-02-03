@@ -1,7 +1,5 @@
 .. _inform6_1:
 
-
-
 .. container:: toggle
 
     .. container:: header
@@ -29,19 +27,18 @@
           example below this is the :code:`twoLitrePot` value passed to the
           :code:`units_ref` attribute.
 
+      You can read the import statement below as: "retrieve the :code:`Units`
+      named :code:`twoLitrePot` from the file :code:`paint_pot_sizes.cellml`, and store it
+      here in this model under the name :code:`potOfPaint` ".
+
       .. code-block:: xml
 
-        <model name="paintingTheHouse">
-          <units name="customPotOfPaint">
-            <unit units="metre" exponent="3" multiplier="0.01">
-          </units>
-          <import xlink:href="paint_pot_sizes.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <units units_ref="twoLitrePot" name="potOfPaint"/>
-          </import>
-          <component name="paintCalculator">
-            ...
-          </component>
-        </model>
+        <import xlink:href="paint_pot_sizes.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
+           <units units_ref="twoLitrePot" name="potOfPaint"/>
+        </import>
+
+      Note that if you've already defined the namespace inside the :code:`<model>` tags then you
+      would not need to repeat it here.
 
       Imported items have the same restrictions as concrete items regarding the
       uniqueness of their names.  In the example below, the name
