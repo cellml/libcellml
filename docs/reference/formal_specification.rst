@@ -594,6 +594,8 @@ information item in the CellML namespace with a local name equal to
    be identical to the :code:`name` attribute of any other :code:`component` or
    :code:`import component` element information item in the CellML infoset.
 
+.. marker7_1
+
 2. Every :code:`import component` element MUST contain an unprefixed
    :code:`component_ref` attribute. The value of the :code:`component_ref`
    attribute MUST be a valid CellML identifier. The value of the

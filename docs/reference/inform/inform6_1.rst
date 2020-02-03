@@ -10,9 +10,8 @@
 
       Importing :code:`Units` means
       that you're assured of consistency between your models, and allows
-      for a more modular reuse of the components which use them.
-
-      There are three ingredients required in importing an item:
+      for a more modular reuse of the components which use them.  There are
+      three ingredients required in importing an item:
 
         - a destination item in the importing model (this is the :code:`units`
           item called :code:`smallPotOfPaint` in the example below)

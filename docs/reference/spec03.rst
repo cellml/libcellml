@@ -1,5 +1,7 @@
 .. _spec3:
 
+.. _spec_data_representation:
+
 .. include:: formal_specification.rst
   :start-after: marker3
   :end-before: marker3_2
