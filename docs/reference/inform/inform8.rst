@@ -25,7 +25,7 @@
 
         <!-- duplicated name of an imported units item is not allowed -->
         <import xlink:href="handyUnitsForImport.cellml">
-            <import_units units_ref="myCustomUnits" name="duplicatedName">
+            <units units_ref="myCustomUnits" name="duplicatedName">
         </import>
 
         <!-- duplicating the name of built-in units is not allowed -->
