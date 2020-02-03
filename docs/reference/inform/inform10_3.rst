@@ -9,6 +9,7 @@
   .. container:: infospec
 
     .. container:: header3
+
       The mathematics of a component
 
     Perhaps the most important part of a :code:`component` item is the
@@ -42,6 +43,7 @@
     information on the :code:`math` items.
 
     .. container:: header3
+
       The variables of a component
 
     The MathML block above refers to three variables, named :code:`E`,
@@ -62,6 +64,7 @@
     information on the :code:`variable` items.
 
     .. container:: header3
+
       The reset items of a component
 
     **TODO** when resets are finalised
