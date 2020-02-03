@@ -1,5 +1,4 @@
 .. _spec15:
-
 .. _spec_encapsulation:
 
 .. include:: formal_specification.rst
