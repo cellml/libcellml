@@ -13,8 +13,9 @@
     tutorials explaining the use of :code:`import` items, please refer to
     **TODO**.
 
-    ===================================================
-    Possible errors related to the :code:`import` item
-    ===================================================
+    .. container:: h1
+
+      Possible errors related to the :code:`import` item
+
 
     **TODO**
