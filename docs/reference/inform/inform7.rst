@@ -1,6 +1,6 @@
 .. _inform7:
 
-.. container:: infospec
+.. container:: toggle
 
   .. container:: header
 

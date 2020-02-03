@@ -4,4 +4,6 @@
   :start-after: marker7
   :end-before: marker8
 
+.. include:: inform/inform7.rst
+
 .. include:: libcellml/libcellml7.rst

@@ -1,6 +1,6 @@
 .. _libcellml7:
 
-.. _libcellml_import_units:
+.. _libcellml_import_component:
 
 .. container:: toggle
 
