@@ -10,22 +10,23 @@
 
     .. container:: infospec
 
-      Two kinds of items may be imported from other CellML models: the
-      :code:`Units` and :code:`Component` types.  Importing units means
+      Importing :code:`Units` means
       that you're assured of consistency between your models, and allows
       for a more modular reuse of the components which use them.
 
       There are three ingredients required in importing an item:
 
         - a destination item in the importing model (this is the :code:`units`
-        item called :code:`smallPotOfPaint` in the example below)
+          item called :code:`smallPotOfPaint` in the example below)
+
         - a file to import from, specified using the :code:`xlink:href`
           attribute of the parent :code:`import` block.  This is discussed in
           more detail in
           :ref:`The import element information item<spec_import>`.  In the
           example below this is the :code:`paint_pot_sizes.cellml` file.
-        - the specific item name to retrieve from the file. In the example
-          below this is the :ref:`twoLitrePot` value passed to the
+
+        - the specific item name to retrieve from the imported file. In the
+          example below this is the :code:`twoLitrePot` value passed to the
           :code:`units_ref` attribute.
 
       .. code-block:: xml
@@ -54,7 +55,8 @@
           <units name="potOfPaint">
             <unit units="metre" exponent="3" multiplier="0.002">
           </units>
-          <!-- The destination name conflicts with the locally defined name above -->
+
+          <!-- This destination name conflicts with the locally defined name above -->
           <import xlink:href="paint_pot_sizes.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
             <units units_ref="twoLitrePot" name="potOfPaint"/>
           </import>
