@@ -54,6 +54,8 @@ experimentally [#]_ to be:
    \alpha_{h} = 0.07\exp\left( {\frac{- \left( V + 75 \right)}{20}}\right) \\[5pt]
    \beta_{h} = \frac{1} {\exp {\left(- 0.1 \left( V + 45 \right)\right)} + 1}
 
+.. _theory_sodiumchannel_interpretation:
+
 Interpretation as a CellML model
 --------------------------------
 Before we construct a model of the sodium channel, we first
