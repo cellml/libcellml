@@ -13,8 +13,8 @@
     tutorials explaining the use of :code:`import` items, please refer to
     **TODO**.
 
-
+    ===================================================
     Possible errors related to the :code:`import` item
-    --------------------------------------------------
+    ===================================================
 
     **TODO**
