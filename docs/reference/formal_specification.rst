@@ -1304,6 +1304,8 @@ yocto    −24
    SHALL be treated as if it was just the variable name present in the
    :code:`component` element referenced by the component reference.
 
+.. _spec_initial_values:
+
 19.6. Interpretation of initial values
 --------------------------------------
 
