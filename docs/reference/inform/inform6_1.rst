@@ -64,4 +64,4 @@
         </model>
 
       Note that libCellML uses some workarounds to avoid this kind of conflict.  Please
-      see the :ref:`libCellML section below<libcellml_import_units>` for details.
+      click the :ref:`See libCellML implementation +<libcellml_import_units>` toggle for details.
