@@ -40,7 +40,7 @@
       </component>
 
     Please refer to :ref:`The math information item<spec_math>` for
-    information on the :code:`math` items.
+    information on the :code:`math` items and MathML format.
 
     .. container:: heading3
 

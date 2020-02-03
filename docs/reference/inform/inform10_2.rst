@@ -11,8 +11,7 @@
     :code:`Component` items, as with every other part of CellML, must use
     names which are unique to their scope, and obey the format definitions
     outlined in
-    :ref:`Data representation formats<spec_data_representation>`.  The
-    following examples show examples.
+    :ref:`Data representation formats<spec_data_representation>`.  For example:
 
     .. code-block:: xml
 
