@@ -13,9 +13,8 @@
     tutorials explaining the use of :code:`import` items, please refer to
     **TODO**.
 
-    .. container:: h1
+    .. container:: heading3
 
       Possible errors related to the :code:`import` item
 
-
-    **TODO**
+    Put error list and links here. **TODO**

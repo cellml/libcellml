@@ -91,6 +91,20 @@ div.figure a.image-reference {
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
 }
 
+.heading2 {
+    color: #444444;
+    font-family: "Roboto Slab","ff-tisa-web-pro","Georgia",Arial,sans-serif;
+    font-size:150%;
+    font-weight: 700;
+}
+
+.heading3 {
+    color: #444444;
+    font-family: "Roboto Slab","ff-tisa-web-pro","Georgia",Arial,sans-serif;
+    font-size:120%;
+    font-weight: 500;
+}
+
 .terminal {
     border: none;
     color: white;
