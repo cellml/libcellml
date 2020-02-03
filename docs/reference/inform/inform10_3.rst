@@ -8,7 +8,7 @@
 
   .. container:: infospec
 
-    .. container:: header3
+    .. container:: heading3
 
       The mathematics of a component
 
@@ -42,7 +42,7 @@
     Please refer to :ref:`The math information item<spec_math>` for
     information on the :code:`math` items.
 
-    .. container:: header3
+    .. container:: heading3
 
       The variables of a component
 
@@ -63,7 +63,7 @@
     Please refer to :ref:`The variable information item<spec_variable>` for
     information on the :code:`variable` items.
 
-    .. container:: header3
+    .. container:: heading3
 
       The reset items of a component
 
