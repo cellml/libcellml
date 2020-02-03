@@ -16,4 +16,4 @@
     in any model.
 
     For more information about encapsulation, please refer to
-    :ref:`The encapsulation element information item<spec15>`.
+    :ref:`The encapsulation element information item<encapsulation>`.
