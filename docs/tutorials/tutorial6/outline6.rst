@@ -31,9 +31,11 @@ are now functions of voltage themselves.  This is the situation in a
 potassium channel, the theory of which is described in
 :ref:`A model of a potassium channel<theory_potassiumchannel>`.
 
-**TODO check this is to be recommended?** We will also show how an
-*environment* component can be used to ensure that the independent variables
-in the model are shared consistently between components.
+We will also show how an *environment* or *boundary conditions* component
+can be used to ensure that the independent variables in the model are shared
+consistently between components.  Storing the initial and independent variables
+in an external component also makes it easier to change them without needing
+to edit the model proper.
 
 C++ instructions
 ----------------

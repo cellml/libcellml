@@ -19,8 +19,8 @@ ones.  If you need to jump in at some intermediate stage
 you will find all the files created by the earlier tutorials in the
 :code:`resources` folder.
 
-Overview:
----------
+Overview
+--------
 
 The basic steps for model creation and output are the same as those in
 :ref:`Tutorial 3<tutorial3>`, but here you'll begin to create a model which

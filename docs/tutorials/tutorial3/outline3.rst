@@ -11,7 +11,7 @@ By the time you have worked through Tutorial 3 you will be able to:
 - define custom combinations of built-in units
 - define your own custom units independent from the built-in units
 - use the :code:`Generator` functionality to transform the model into other
-  languages. TODO remove this??
+  languages.
 
 This tutorial assumes that you are comfortable with:
 

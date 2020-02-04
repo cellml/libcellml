@@ -190,7 +190,10 @@ When both sides are defined we need to equate them by :code:`<apply>` -ing the
 
     **1.d** Copy the string above representing equation 2 into your code.
 
+.. container:: dothis
+
     **1.e** Create a third string representing equation 3.
+
 
 Next you need to define the namespace in which the maths will be applied
 by enclosing it in the :code:`<math> ... </math>` tags with the two namespaces:

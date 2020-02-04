@@ -4,7 +4,7 @@
  *  This tutorial explores the ability of CellML to represent more than one
  *  modelled process at a time using components with connections between them.
  *  By the time you have worked through Tutorial 6 you will be able to:
- *      - import a Component or Units item from an existing CellML file **TODO not working **
+ *      - import a Component or Units item from an existing CellML file
  *      - assemble a multi-component model using the API
  *      - inter-connect the components using the equivalent variables
  *        functionality
@@ -31,8 +31,15 @@ int main()
     std::string mathFooter = "</math>";
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 1: Read the ion channel component" << std::endl;
+    std::cout << "  STEP 1: Import the ion channel component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
+
+
+
+
+
+
+
 
 #if 0
 
