@@ -1778,7 +1778,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
                     std::string compName = (component != nullptr) ? component->name() : "";
                     std::string modelName = (model != nullptr) ? model->name() : "";
 
-                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
+                    std::string err = "The units in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' are not equivalent. The unit mismatch is " + hints;
@@ -1835,7 +1835,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
                     std::string compName = (component != nullptr) ? component->name() : "";
                     std::string modelName = (model != nullptr) ? model->name() : "";
 
-                    std::string err = "The units in the expression '" + AstTypeToString.find(ast->mType)->second
+                    std::string err = "The units in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' are not dimensionless. The units in the expression are " + hints;
@@ -1854,7 +1854,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
                     std::string compName = (component != nullptr) ? component->name() : "";
                     std::string modelName = (model != nullptr) ? model->name() : "";
 
-                    std::string err = "The units in the argument of '" + AstTypeToString.find(ast->mType)->second
+                    std::string err = "The units in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' are not consistent with the base. The mismatch is: " + hints;
@@ -1874,7 +1874,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
                     std::string compName = (component != nullptr) ? component->name() : "";
                     std::string modelName = (model != nullptr) ? model->name() : "";
 
-                    std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
+                    std::string err = "The argument in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' is not dimensionless. The units in the argument are: " + hints;
@@ -1941,7 +1941,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                     std::string compName = (component != nullptr) ? component->name() : "";
                     std::string modelName = (model != nullptr) ? model->name() : "";
 
-                    std::string err = "The argument in the expression '" + getEquation(ast)
+                    std::string err = "The expression '" + getEquation(ast)
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
