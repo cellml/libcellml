@@ -1626,41 +1626,93 @@ static const std::map<GeneratorEquationAst::Type, std::string> AstTypeToString =
     {GeneratorEquationAst::Type::NOT, " ! "},
     {GeneratorEquationAst::Type::TIMES, " * "},
     {GeneratorEquationAst::Type::DIVIDE, " / "},
-    {GeneratorEquationAst::Type::POWER, " pow "},
-    {GeneratorEquationAst::Type::ROOT, " root "},
-    {GeneratorEquationAst::Type::ABS, " fabs "},
-    {GeneratorEquationAst::Type::EXP, " exp "},
-    {GeneratorEquationAst::Type::LN, " ln "},
-    {GeneratorEquationAst::Type::LOG, " log "},
-    {GeneratorEquationAst::Type::CEILING, " ceil "},
-    {GeneratorEquationAst::Type::FLOOR, " floor "},
-    {GeneratorEquationAst::Type::MIN, " min "},
-    {GeneratorEquationAst::Type::MAX, " max "},
-    {GeneratorEquationAst::Type::REM, " rem "},
-    {GeneratorEquationAst::Type::ASIN, " asin "},
-    {GeneratorEquationAst::Type::ASINH, " asinh "},
-    {GeneratorEquationAst::Type::SIN, " sin "},
-    {GeneratorEquationAst::Type::SINH, " sinh "},
-    {GeneratorEquationAst::Type::ACOS, " acos "},
-    {GeneratorEquationAst::Type::ACOSH, " acosh "},
-    {GeneratorEquationAst::Type::COS, " cos "},
-    {GeneratorEquationAst::Type::COSH, " cosh "},
-    {GeneratorEquationAst::Type::ATAN, " atan "},
-    {GeneratorEquationAst::Type::ATANH, " atanh "},
-    {GeneratorEquationAst::Type::TAN, " tan "},
-    {GeneratorEquationAst::Type::TANH, " tanh "},
-    {GeneratorEquationAst::Type::ASEC, " asec "},
-    {GeneratorEquationAst::Type::ASECH, " asech "},
-    {GeneratorEquationAst::Type::SECH, " sech "},
-    {GeneratorEquationAst::Type::SEC, " sec "},
-    {GeneratorEquationAst::Type::ACSC, " acsc "},
-    {GeneratorEquationAst::Type::ACSCH, " acsch "},
-    {GeneratorEquationAst::Type::CSC, " csc "},
-    {GeneratorEquationAst::Type::CSCH, " csch "},
-    {GeneratorEquationAst::Type::ACOT, " acot "},
-    {GeneratorEquationAst::Type::ACOTH, " acoth "},
-    {GeneratorEquationAst::Type::COT, " cot "},
-    {GeneratorEquationAst::Type::COTH, " coth "}};
+    {GeneratorEquationAst::Type::POWER, "pow"},
+    {GeneratorEquationAst::Type::ROOT, "root"},
+    {GeneratorEquationAst::Type::ABS, "fabs"},
+    {GeneratorEquationAst::Type::EXP, "exp"},
+    {GeneratorEquationAst::Type::LN, "ln"},
+    {GeneratorEquationAst::Type::LOG, "log"},
+    {GeneratorEquationAst::Type::CEILING, "ceil"},
+    {GeneratorEquationAst::Type::FLOOR, "floor"},
+    {GeneratorEquationAst::Type::MIN, "min"},
+    {GeneratorEquationAst::Type::MAX, "max"},
+    {GeneratorEquationAst::Type::REM, "rem"},
+    {GeneratorEquationAst::Type::ASIN, "asin"},
+    {GeneratorEquationAst::Type::ASINH, "asinh"},
+    {GeneratorEquationAst::Type::SIN, "sin"},
+    {GeneratorEquationAst::Type::SINH, "sinh"},
+    {GeneratorEquationAst::Type::ACOS, "acos"},
+    {GeneratorEquationAst::Type::ACOSH, "acosh"},
+    {GeneratorEquationAst::Type::COS, "cos"},
+    {GeneratorEquationAst::Type::COSH, "cosh"},
+    {GeneratorEquationAst::Type::ATAN, "atan"},
+    {GeneratorEquationAst::Type::ATANH, "atanh"},
+    {GeneratorEquationAst::Type::TAN, "tan"},
+    {GeneratorEquationAst::Type::TANH, "tanh"},
+    {GeneratorEquationAst::Type::ASEC, "asec"},
+    {GeneratorEquationAst::Type::ASECH, "asech"},
+    {GeneratorEquationAst::Type::SECH, "sech"},
+    {GeneratorEquationAst::Type::SEC, "sec"},
+    {GeneratorEquationAst::Type::ACSC, "acsc"},
+    {GeneratorEquationAst::Type::ACSCH, "acsch"},
+    {GeneratorEquationAst::Type::CSC, "csc"},
+    {GeneratorEquationAst::Type::CSCH, "csch"},
+    {GeneratorEquationAst::Type::ACOT, "acot"},
+    {GeneratorEquationAst::Type::ACOTH, "acoth"},
+    {GeneratorEquationAst::Type::COT, "cot"},
+    {GeneratorEquationAst::Type::COTH, "coth"}};
+
+std::string expression(std::string first, std::string second, const GeneratorEquationAstPtr &ast)
+{
+    // Statement capturing all expressions which require one operand only.
+    if (isTrigonometricOperator(ast) || isLogarithmicOperator(ast) || ast->mType == GeneratorEquationAst::Type::REM
+        || ast->mType == GeneratorEquationAst::Type::CEILING || ast->mType == GeneratorEquationAst::Type::FLOOR
+        || ast->mType == GeneratorEquationAst::Type::ABS || ast->mType == GeneratorEquationAst::Type::NOT) {
+        return AstTypeToString.find(ast->mType)->second + "(" + first + ")";
+    }
+
+    // The ordering of nodes beneath a power node in the tree means we consider it as it's own case
+    if (ast->mType == GeneratorEquationAst::Type::POWER) {
+        return AstTypeToString.find(ast->mType)->second + "(" + first + "," + second + ")";
+    }
+
+    // Likewise for root nodes, which are constructed in the reverse order
+    if (ast->mType == GeneratorEquationAst::Type::ROOT) {
+        if (second.empty()) {
+            second = "2";
+        }
+        return AstTypeToString.find(ast->mType)->second + "(" + first + "," + second + ")";
+    }
+
+    // If we have degree or logbase we just return the number
+    if (ast->mType == GeneratorEquationAst::Type::LOGBASE || ast->mType == GeneratorEquationAst::Type::DEGREE) {
+        return first;
+    }
+
+    // If we have an assignment operator we don't include the outer braces
+    if (ast->mType == GeneratorEquationAst::Type::ASSIGNMENT) {
+        return first + AstTypeToString.find(ast->mType)->second + second;
+    }
+
+    return "(" + first + AstTypeToString.find(ast->mType)->second + second + ")";
+}
+
+// Function to return the part of the equation in error as a string
+std::string getEquation(const GeneratorEquationAstPtr &ast)
+{
+    if (ast != nullptr) {
+        if (ast->mVariable != nullptr) {
+            return ast->mVariable->name();
+        }
+        if (!ast->mValue.empty()) {
+            return ast->mValue;
+        }
+        std::string first = getEquation(ast->mLeft);
+        std::string second = getEquation(ast->mRight);
+        return expression(first, second, ast);
+    }
+    return std::string();
+}
 
 // Get the units in the mapping if we have an incorrect test case.
 std::string getHints(const UnitsMap &map)
@@ -1889,7 +1941,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                     std::string compName = (component != nullptr) ? component->name() : "";
                     std::string modelName = (model != nullptr) ? model->name() : "";
 
-                    std::string err = "The argument in the expression '" + AstTypeToString.find(ast->mType)->second
+                    std::string err = "The argument in the expression '" + getEquation(ast)
                                       + "' in component '" + compName
                                       + "' of model '" + modelName
                                       + "' has a multiplier mismatch. The mismatch is: " + std::to_string(leftMult - rightMult)
