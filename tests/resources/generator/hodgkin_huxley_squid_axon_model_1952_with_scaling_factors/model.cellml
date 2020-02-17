@@ -3,8 +3,11 @@
     <units name="millisecond">
         <unit prefix="milli" units="second"/>
     </units>
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
     <units name="per_millisecond">
-        <unit exponent="-1" prefix="milli" units="second"/>
+        <unit prefix="milli" units="per_second"/>
     </units>
     <units name="millivolt">
         <unit prefix="milli" units="volt"/>
@@ -41,14 +44,14 @@
         <variable interface="public" name="time" units="millisecond"/>
     </component>
     <component name="membrane">
-        <variable initial_value="0" interface="public" name="V" units="volt"/>
-        <variable initial_value="0" interface="public" name="E_R" units="volt"/>
+        <variable initial_value="0" interface="public" name="V" units="millivolt"/>
+        <variable initial_value="0" interface="public" name="E_R" units="millivolt"/>
         <variable initial_value="1" name="Cm" units="microF_per_cm2"/>
         <variable interface="public" name="time" units="second"/>
-        <variable interface="public" name="i_Na" units="microA_per_cm2"/>
-        <variable interface="public" name="i_K" units="microA_per_cm2"/>
-        <variable interface="public" name="i_L" units="microA_per_cm2"/>
-        <variable name="i_Stim" units="microA_per_cm2"/>
+        <variable interface="public" name="i_Na" units="nanoA_per_cm2"/>
+        <variable interface="public" name="i_K" units="nanoA_per_cm2"/>
+        <variable interface="public" name="i_L" units="nanoA_per_cm2"/>
+        <variable name="i_Stim" units="nanoA_per_cm2"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -57,7 +60,7 @@
                     <piece>
                         <apply>
                             <minus/>
-                            <cn cellml:units="microA_per_cm2">20</cn>
+                            <cn cellml:units="nanoA_per_cm2">20000</cn>
                         </apply>
                         <apply>
                             <and/>
@@ -74,7 +77,7 @@
                         </apply>
                     </piece>
                     <otherwise>
-                        <cn cellml:units="microA_per_cm2">0</cn>
+                        <cn cellml:units="nanoA_per_cm2">0</cn>
                     </otherwise>
                 </piecewise>
             </apply>
@@ -149,10 +152,10 @@
     </component>
     <component name="sodium_channel_m_gate">
         <variable initial_value="0.05" interface="public" name="m" units="dimensionless"/>
-        <variable name="alpha_m" units="per_millisecond"/>
-        <variable name="beta_m" units="per_millisecond"/>
-        <variable interface="public" name="V" units="millivolt"/>
-        <variable interface="public" name="time" units="millisecond"/>
+        <variable name="alpha_m" units="per_second"/>
+        <variable name="beta_m" units="per_second"/>
+        <variable interface="public" name="V" units="volt"/>
+        <variable interface="public" name="time" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -161,11 +164,11 @@
                     <divide/>
                     <apply>
                         <times/>
-                        <cn cellml:units="per_millivolt_millisecond">0.1</cn>
+                        <cn cellml:units="per_millivolt_millisecond">100000</cn>
                         <apply>
                             <plus/>
                             <ci>V</ci>
-                            <cn cellml:units="millivolt">25</cn>
+                            <cn cellml:units="volt">0.025</cn>
                         </apply>
                     </apply>
                     <apply>
@@ -177,9 +180,9 @@
                                 <apply>
                                     <plus/>
                                     <ci>V</ci>
-                                    <cn cellml:units="millivolt">25</cn>
+                                    <cn cellml:units="volt">0.025</cn>
                                 </apply>
-                                <cn cellml:units="millivolt">10</cn>
+                                <cn cellml:units="volt">0.01</cn>
                             </apply>
                         </apply>
                         <cn cellml:units="dimensionless">1</cn>
@@ -191,13 +194,13 @@
                 <ci>beta_m</ci>
                 <apply>
                     <times/>
-                    <cn cellml:units="per_millisecond">4</cn>
+                    <cn cellml:units="per_second">4000</cn>
                     <apply>
                         <exp/>
                         <apply>
                             <divide/>
                             <ci>V</ci>
-                            <cn cellml:units="millivolt">18</cn>
+                            <cn cellml:units="volt">0.018</cn>
                         </apply>
                     </apply>
                 </apply>
