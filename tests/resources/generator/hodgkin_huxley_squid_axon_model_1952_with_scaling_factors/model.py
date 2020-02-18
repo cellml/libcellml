@@ -17,7 +17,7 @@ class VariableType(Enum):
     ALGEBRAIC = 3
 
 
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "membrane"}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "sodium_channel_h_gate"}
 
 STATE_INFO = [
     {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
@@ -30,19 +30,19 @@ VARIABLE_INFO = [
     {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
     {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
-    {"name": "g_K", "units": "milliS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT},
-    {"name": "g_Na", "units": "milliS_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
+    {"name": "g_K", "units": "microS_per_cm2", "component": "potassium_channel", "type": VariableType.CONSTANT},
+    {"name": "g_Na", "units": "S_per_cm2", "component": "sodium_channel", "type": VariableType.CONSTANT},
     {"name": "E_L", "units": "millivolt", "component": "leakage_current", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "E_Na", "units": "millivolt", "component": "sodium_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.COMPUTED_CONSTANT},
-    {"name": "i_Stim", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "i_L", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "i_Na", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "alpha_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "beta_m", "units": "per_millisecond", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "i_Stim", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
+    {"name": "i_L", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
+    {"name": "i_Na", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
+    {"name": "alpha_m", "units": "per_second", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
+    {"name": "beta_m", "units": "per_second", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "i_K", "units": "microA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
+    {"name": "i_K", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
 ]
