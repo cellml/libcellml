@@ -384,8 +384,8 @@ int main()
     }
 
     //  5.d Finally it's time to flatten the model.  This operation will create new local instances of all
-    //      of the imported items, and remove their dependency on imports. Use the Model::flatten() function
-    //      to do this.
+    //      of the imported items, thereby removing the model's dependency on imports. Use the Model::flatten()
+    //      function to do this.
     model->flatten();
 
     //  5.e After flattening it's important to note that any imported items (such as the components
