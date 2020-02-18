@@ -11,7 +11,7 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 4;
 const size_t VARIABLE_COUNT = 18;
 
-const VariableInfo VOI_INFO = {"time", "millisecond", "membrane"};
+const VariableInfo VOI_INFO = {"time", "millisecond", "sodium_channel_h_gate"};
 
 const VariableInfo STATE_INFO[] = {
     {"m", "dimensionless", "sodium_channel_m_gate"},
@@ -24,19 +24,19 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"E_R", "millivolt", "membrane", CONSTANT},
-    {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
+    {"g_K", "microS_per_cm2", "potassium_channel", CONSTANT},
+    {"g_Na", "S_per_cm2", "sodium_channel", CONSTANT},
     {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
     {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
     {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
-    {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"i_L", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"i_Na", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
-    {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
+    {"i_Stim", "nanoA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_L", "nanoA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_Na", "nanoA_per_cm2", "membrane", ALGEBRAIC},
+    {"alpha_m", "per_second", "sodium_channel_m_gate", ALGEBRAIC},
+    {"beta_m", "per_second", "sodium_channel_m_gate", ALGEBRAIC},
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"i_K", "microA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_K", "nanoA_per_cm2", "membrane", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
     {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
 };
