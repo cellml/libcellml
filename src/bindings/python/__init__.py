@@ -105,7 +105,7 @@ convert(Units, 'StandardUnit', [
     'WATT',
     'WEBER',
     ])
-convert(enumerations, 'Prefix', [
+convert(Units, 'Prefix', [
     'YOTTA',
     'ZETTA',
     'EXA',
