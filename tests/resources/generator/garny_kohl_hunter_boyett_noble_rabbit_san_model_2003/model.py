@@ -235,11 +235,11 @@ def neq_func(x, y):
 
 
 def create_states_array():
-    return [nan]*15
+    return [nan]*STATE_COUNT
 
 
 def create_variables_array():
-    return [nan]*185
+    return [nan]*VARIABLE_COUNT
 
 
 def initialize_states_and_constants(states, variables):
