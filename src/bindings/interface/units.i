@@ -2,7 +2,6 @@
 
 #define LIBCELLML_EXPORT
 
-%import "enumerations.i"
 %import "createconstructor.i"
 %import "importedentity.i"
 %import "types.i"
