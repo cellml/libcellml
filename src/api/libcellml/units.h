@@ -66,6 +66,36 @@ public:
     static UnitsPtr create(const std::string &name) noexcept;
 
     /**
+     * @brief The Prefix enum class.
+     *
+     * Enum describing the prefixes that are available for
+     * units.
+     */
+    enum class Prefix
+    {
+        YOTTA,
+        ZETTA,
+        EXA,
+        PETA,
+        TERA,
+        GIGA,
+        MEGA,
+        KILO,
+        HECTO,
+        DECA,
+        DECI,
+        CENTI,
+        MILLI,
+        MICRO,
+        NANO,
+        PICO,
+        FEMTO,
+        ATTO,
+        ZEPTO,
+        YOCTO
+    };
+
+    /**
      * @brief The Standard Unit enum class.
      *
      * Standard units that are suitable for variable declarations
@@ -404,7 +434,7 @@ public:
      * @brief Test to determine whether two @c Units are equivalent or not.
      *
      * Two @c Units are considered to be equivalent if they share the same units,
-     * independently of their dimension (e.g. volt and volt are equivalent as are 
+     * independently of their dimension (e.g. volt and volt are equivalent as are
      * volt and millivolt).
      *
      * @param1 units1 The first units to compare.
@@ -418,7 +448,7 @@ public:
      * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
      *
      * Two @c Units are considered to be dimensionally equivalent if they share the
-     * exact same units (e.g. volt and volt are dimensionally equivalent but 
+     * exact same units (e.g. volt and volt are dimensionally equivalent but
      * volt and millivolt are not).
      *
      * @param1 units1 The first units to compare.
