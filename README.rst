@@ -7,7 +7,7 @@ The prime libCellML repository is located at https://github.com/cellml/libcellml
 
 The documentation for the libCellML project is available at https://libcellml.readthedocs.io/.
 
-**NOTE**: ALTHOUGH libCellML IS ALREADY BEING USED SUCCESSIVELY, IT SHOULD BE CONSIDERED ALPHA UNTIL VERSION 1.0 IS RELEASED.
+**NOTE**: ALTHOUGH libCellML IS ALREADY BEING USED SUCCESSFULLY, IT SHOULD BE CONSIDERED ALPHA UNTIL VERSION 1.0 IS RELEASED.
 
 Scope
 -----
