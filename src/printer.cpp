@@ -24,7 +24,6 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
-#include "libcellml/enumerations.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
