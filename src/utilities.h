@@ -390,6 +390,8 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  */
 bool isStandardUnitName(const std::string &name);
 
+bool isStandardUnit(const UnitsPtr &units);
+
 /**
  * @brief Check if the provided @p name is a standard prefix.
  *
