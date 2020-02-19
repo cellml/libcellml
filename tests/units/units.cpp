@@ -106,7 +106,7 @@ TEST(Units, addUnitsVariations)
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
     u->addUnit(libcellml::Units::StandardUnit::KELVIN, -3, 2.0, 5.5);
 
     EXPECT_EQ(size_t(2), u->unitCount());
@@ -129,9 +129,9 @@ TEST(Units, compoundUnitsUsingDefines)
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
     u->addUnit(libcellml::Units::StandardUnit::KELVIN);
-    u->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
+    u->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Units::Prefix::MILLI, -1.0);
 
     m->addUnits(u);
 
@@ -534,9 +534,9 @@ TEST(Units, multiply)
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("compound_unit");
 
-    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
     u1->addUnit(libcellml::Units::StandardUnit::KELVIN);
-    u1->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Units::Prefix::MILLI, -1.0);
 
     m->addUnits(u1);
 
@@ -672,8 +672,8 @@ TEST(Units, multipleUnitUsingStandardRef)
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::CENTI);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
 
     EXPECT_EQ(size_t(4), u->unitCount());
 
