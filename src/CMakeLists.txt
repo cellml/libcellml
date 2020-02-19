@@ -75,7 +75,6 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
