@@ -35,27 +35,27 @@ namespace libcellml {
  *
  * An internal map used to convert a Prefix into its string form.
  */
-static const std::map<Prefix, const std::string> prefixToString = {
-    {Prefix::ATTO, "atto"},
-    {Prefix::CENTI, "centi"},
-    {Prefix::DECA, "deca"},
-    {Prefix::DECI, "deci"},
-    {Prefix::EXA, "exa"},
-    {Prefix::FEMTO, "femto"},
-    {Prefix::GIGA, "giga"},
-    {Prefix::HECTO, "hecto"},
-    {Prefix::KILO, "kilo"},
-    {Prefix::MEGA, "mega"},
-    {Prefix::MICRO, "micro"},
-    {Prefix::MILLI, "milli"},
-    {Prefix::NANO, "nano"},
-    {Prefix::PETA, "peta"},
-    {Prefix::PICO, "pico"},
-    {Prefix::TERA, "tera"},
-    {Prefix::YOCTO, "yocto"},
-    {Prefix::YOTTA, "yotta"},
-    {Prefix::ZEPTO, "zepto"},
-    {Prefix::ZETTA, "zetta"}};
+static const std::map<Units::Prefix, const std::string> prefixToString = {
+    {Units::Prefix::ATTO, "atto"},
+    {Units::Prefix::CENTI, "centi"},
+    {Units::Prefix::DECA, "deca"},
+    {Units::Prefix::DECI, "deci"},
+    {Units::Prefix::EXA, "exa"},
+    {Units::Prefix::FEMTO, "femto"},
+    {Units::Prefix::GIGA, "giga"},
+    {Units::Prefix::HECTO, "hecto"},
+    {Units::Prefix::KILO, "kilo"},
+    {Units::Prefix::MEGA, "mega"},
+    {Units::Prefix::MICRO, "micro"},
+    {Units::Prefix::MILLI, "milli"},
+    {Units::Prefix::NANO, "nano"},
+    {Units::Prefix::PETA, "peta"},
+    {Units::Prefix::PICO, "pico"},
+    {Units::Prefix::TERA, "tera"},
+    {Units::Prefix::YOCTO, "yocto"},
+    {Units::Prefix::YOTTA, "yotta"},
+    {Units::Prefix::ZEPTO, "zepto"},
+    {Units::Prefix::ZETTA, "zetta"}};
 
 /**
  * @brief Map StandardUnit to their string forms.

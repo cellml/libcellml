@@ -5,7 +5,6 @@
 %include <std_string.i>
 
 %import "createconstructor.i"
-%import "enumerations.i"
 %import "logger.i"
 %import "types.i"
 
