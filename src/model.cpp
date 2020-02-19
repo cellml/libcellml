@@ -244,24 +244,24 @@ void linkComponentVariableUnits(const ComponentPtr &component)
     }
 }
 
-void findCnUnits(const XmlNodePtr &node, std::unordered_set<std::string> &cnUnits)
+void findCnUnits(const XmlNodePtr &node, std::unordered_set<std::string> &cnUnitsSet)
 {
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         if (childNode->isMathmlElement("cn")) {
             std::string u = childNode->attribute("units");
             if (!isStandardUnitName(u)) {
-                cnUnits.insert(u);
+                cnUnitsSet.insert(u);
             }
         }
-        findCnUnits(childNode, cnUnits);
+        findCnUnits(childNode, cnUnitsSet);
         childNode = childNode->next();
     }
 }
 
-void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnits)
+void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnitsSet)
 {
-    // Inspect the mathml in this component for any specified constant <cn> units,
+    // Inspect the MathML in this component for any specified constant <cn> units,
     // and make sure that they're in the model.
     if (component == nullptr) {
         return;
@@ -273,24 +273,24 @@ void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std:
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     doc->parse(math);
     XmlNodePtr root = doc->rootNode();
-    findCnUnits(root, cnUnits);
+    findCnUnits(root, cnUnitsSet);
 }
 
-void doFindCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnits)
+void doFindCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnitsSet)
 {
-    findComponentCnUnits(component, cnUnits);
-    for (size_t c = 0; c < component->componentCount(); c++) {
-        doFindCnUnits(component->component(c), cnUnits);
+    findComponentCnUnits(component, cnUnitsSet);
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        doFindCnUnits(component->component(c), cnUnitsSet);
     }
 }
 
-std::unordered_set<std::string> Model::cnUnits()
+std::unordered_set<std::string> cnUnits(const ModelPtr &model)
 {
-    std::unordered_set<std::string> cnUnits = {};
-    for (size_t c = 0; c < componentCount(); c++) {
-        doFindCnUnits(component(c), cnUnits);
+    std::unordered_set<std::string> cnUnitsSet = {};
+    for (size_t c = 0; c < componentCount(); ++c) {
+        doFindCnUnits(component(c), cnUnitsSet);
     }
-    return cnUnits;
+    return cnUnitsSet;
 }
 
 void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
@@ -742,7 +742,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             importedComponentCopy->addComponent(component->component(i));
         }
 
-        // Temporarily add component to new model to find units used by the variables
+        // Temporarily add component to new model to find units used by the variables.
         auto tempModel = Model::create();
         tempModel->addComponent(importedComponentCopy);
         tempModel->linkUnits();
@@ -753,15 +753,15 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             requiredUnits.push_back(u);
         }
 
-        // Get the names of the units used by the <cn> elements in all the components' mathml and add them
-        // to the required units
-        auto cnList = tempModel->cnUnits();
+        // Get the names of the units used by the <cn> elements in all the components' MathML and add them
+        // to the required units.
+        auto cnList = cnUnits(model);
         for (auto &name : cnList) {
             if (!tempModel->hasUnits(name)) {
                 auto u = importModel->units(name);
                 if (u != nullptr) {
                     requiredUnits.push_back(u);
-                } // KRM else warning
+                } // TODO else warning
             }
         }
 

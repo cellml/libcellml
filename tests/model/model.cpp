@@ -579,7 +579,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     validator->validateModel(modelFromString);
     EXPECT_EQ(size_t(0), validator->errorCount());
 
-    // Import the membrane component from a file
+    // Import the membrane component from a file.
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
 

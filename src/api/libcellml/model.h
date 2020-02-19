@@ -273,13 +273,6 @@ public:
     void linkUnits();
 
     /**
-     * @brief Returns an unordered set of @c Units names which are used within the
-     * MathML in the model.
-     * @return unordered set of names of @c Units
-     */
-    std::unordered_set<std::string> cnUnits();
-
-    /**
      * @brief Test to determine if any variable units are not linked to model units.
      *
      * Traverses the model to determine if any @c Units attached to variables
