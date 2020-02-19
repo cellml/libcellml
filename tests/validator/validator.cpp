@@ -175,7 +175,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Variable does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'margie' does not have a valid units attribute.",
-        "Variable 'ransom' has a units reference 'dollars' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'ransom' in component 'fargo' has a units reference 'dollars' which is neither standard nor defined in the parent model.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2064,9 +2064,12 @@ TEST(Validator, unitStandardMultipliersGram)
 
     libcellml::Variable::addEquivalence(v1, v2);
 
-    validator->validateModel(m);
 
+    m->linkUnits();
+    validator->validateModel(m);
+n
     EXPECT_EQ(size_t(0), validator->issueCount());
+
 }
 
 TEST(Validator, unitSimpleCycle)
@@ -2343,6 +2346,9 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     c2->addVariable(createVariableWithUnits("v", "non_existent_shallow"));
     c3->addVariable(createVariableWithUnits("v", "non_existent_deep"));
 
+    EXPECT_TRUE(model->hasUnlinkedUnits());
+
+    model->linkUnits();
     v->validateModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
@@ -2387,4 +2393,40 @@ TEST(Validator, mismatchedMultipliersInUnits)
     EXPECT_EQ(size_t(0), validator->hintCount());
 
     EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
+{
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
+                     "  <units name=\"millisecond\">"
+                     "    <unit prefix=\"milli\" units=\"second\"/>"
+                     "  </units>"
+                     "  <component name=\"IonChannel\">"
+                     "    <variable name=\"t\" units=\"millisecond\"/>"
+                     "  </component>"
+                     "</model>";
+
+    auto model = parser->parseModel(in);
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    auto nGate = libcellml::Component::create("nGate");
+    model->addComponent(nGate);
+
+    // Adding the variable *before* its units are added results in unfound units in the validator
+    auto t2 = libcellml::Variable::create("t2");
+    nGate->addVariable(t2);
+    t2->setUnits("millisecond");
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+
+    // Linking the units to the model fixes the problem
+    model->linkUnits();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }

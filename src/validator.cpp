@@ -590,6 +590,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
+
             IssuePtr issue = Issue::create();
             issue->setDescription("Variable '" + variable->name() + "' has a units reference '" + unitsName + "' that does not correspond with a standard units and is not a units defined in the variable's model.");
             issue->setVariable(variable);
