@@ -405,7 +405,7 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        if (((units1->unitCount() != 0) || isStandardUnitName(units1->name())) && ((units2->unitCount() != 0) || isStandardUnitName(units2->name()))) {
+        if (((units1->unitCount() != 0) || isStandardUnit(units1)) && ((units2->unitCount() != 0) || isStandardUnit(units2))) {
             double multiplier = 0.0;
 
             updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
