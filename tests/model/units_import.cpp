@@ -186,7 +186,7 @@ TEST(UnitsImport, importModifyAndParse)
 
     libcellml::UnitsPtr importedUnitsPrefixed = libcellml::Units::create();
     importedUnitsPrefixed->setName("prefixed_import");
-    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::Prefix::YOTTA);
+    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::Units::Prefix::YOTTA);
 
     m->addUnits(importedUnitsPrefixed);
 
