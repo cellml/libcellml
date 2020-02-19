@@ -287,8 +287,8 @@ void doFindCnUnits(const ComponentPtr &component, std::unordered_set<std::string
 std::unordered_set<std::string> cnUnits(const ModelPtr &model)
 {
     std::unordered_set<std::string> cnUnitsSet = {};
-    for (size_t c = 0; c < componentCount(); ++c) {
-        doFindCnUnits(component(c), cnUnitsSet);
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        doFindCnUnits(mdoel->component(c), cnUnitsSet);
     }
     return cnUnitsSet;
 }
