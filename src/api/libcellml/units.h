@@ -66,6 +66,36 @@ public:
     static UnitsPtr create(const std::string &name) noexcept;
 
     /**
+     * @brief The Prefix enum class.
+     *
+     * Enum describing the prefixes that are available for
+     * units.
+     */
+    enum class Prefix
+    {
+        YOTTA,
+        ZETTA,
+        EXA,
+        PETA,
+        TERA,
+        GIGA,
+        MEGA,
+        KILO,
+        HECTO,
+        DECA,
+        DECI,
+        CENTI,
+        MILLI,
+        MICRO,
+        NANO,
+        PICO,
+        FEMTO,
+        ATTO,
+        ZEPTO,
+        YOCTO
+    };
+
+    /**
      * @brief The Standard Unit enum class.
      *
      * Standard units that are suitable for variable declarations
