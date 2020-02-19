@@ -200,6 +200,8 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
             repr += " id=\"" + units->id() + "\"";
         }
         repr += "/></import>";
+    } else if (isStandardUnit(units)) {
+        // Do nothing
     } else {
         bool endTag = false;
         repr += "<units";

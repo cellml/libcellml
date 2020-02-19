@@ -229,7 +229,7 @@ void linkComponentVariableUnits(const ComponentPtr &component)
         auto u = v->units();
         if (u != nullptr) {
             auto model = owningModel(u);
-            if (model == nullptr && !isStandardUnitName(u->name())) {
+            if (model == nullptr && !isStandardUnit(u)) {
                 model = owningModel(component);
                 auto modelUnits = model->units(u->name());
                 if (modelUnits == nullptr) {
@@ -267,7 +267,7 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
         auto u = v->units();
         if (u != nullptr) {
             auto model = owningModel(u);
-            unlinked = model == nullptr && !isStandardUnitName(u->name());
+            unlinked = model == nullptr && !isStandardUnit(u);
         }
     }
 
