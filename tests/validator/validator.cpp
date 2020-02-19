@@ -2064,12 +2064,9 @@ TEST(Validator, unitStandardMultipliersGram)
 
     libcellml::Variable::addEquivalence(v1, v2);
 
-
     m->linkUnits();
     validator->validateModel(m);
-n
     EXPECT_EQ(size_t(0), validator->issueCount());
-
 }
 
 TEST(Validator, unitSimpleCycle)
@@ -2322,8 +2319,8 @@ TEST(Validator, unitEquivalenceMultiplier)
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v' has a units reference 'non_existent_deep' that does not correspond with a standard units and is not a units defined in the variable's model.",
-        "Variable 'v' has a units reference 'non_existent_shallow' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' in component 'c3' has a units reference 'non_existent_deep' which is neither standard nor defined in the parent model.",
+        "Variable 'v' in component 'c2' has a units reference 'non_existent_shallow' which is neither standard nor defined in the parent model.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
