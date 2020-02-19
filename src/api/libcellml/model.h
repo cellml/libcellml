@@ -20,7 +20,6 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 
 #include <string>
-#include <unordered_set>
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
