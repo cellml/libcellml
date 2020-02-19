@@ -235,3 +235,20 @@ TEST(Printer, printModelWithTabs)
 
     EXPECT_EQ(fileContents("printer/spaced_model.cellml"), printer->printModel(model));
 }
+
+TEST(Printer, printModelWithStandardUnitsAdded)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_model\"/>\n";
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create("second");
+    libcellml::ModelPtr model = libcellml::Model::create("my_model");
+
+    model->addUnits(u1);
+
+    EXPECT_EQ(size_t(1), model->unitsCount());
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    EXPECT_EQ(e, printer->printModel(model));
+}
