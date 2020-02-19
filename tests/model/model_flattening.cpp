@@ -654,7 +654,7 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
         "  <units name=\"per_ms\">\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
         "  </units>\n"
-        "  <units name=\"per_mV_ms\">\n" // KRM added this in as was not being imported or tested for
+        "  <units name=\"per_mV_ms\">\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"volt\"/>\n"
         "  </units>\n"
