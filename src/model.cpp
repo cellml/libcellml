@@ -288,7 +288,7 @@ std::unordered_set<std::string> cnUnits(const ModelPtr &model)
 {
     std::unordered_set<std::string> cnUnitsSet = {};
     for (size_t c = 0; c < model->componentCount(); ++c) {
-        doFindCnUnits(mdoel->component(c), cnUnitsSet);
+        doFindCnUnits(model->component(c), cnUnitsSet);
     }
     return cnUnitsSet;
 }
@@ -755,7 +755,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
 
         // Get the names of the units used by the <cn> elements in all the components' MathML and add them
         // to the required units.
-        auto cnList = cnUnits(model);
+        auto cnList = cnUnits(tempModel);
         for (auto &name : cnList) {
             if (!tempModel->hasUnits(name)) {
                 auto u = importModel->units(name);
