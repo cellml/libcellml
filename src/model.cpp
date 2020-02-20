@@ -772,7 +772,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
                 auto u = importModel->units(name);
                 if (u != nullptr) {
                     requiredUnits.push_back(u);
-                } // TODO else warning
+                }
             }
         }
 
