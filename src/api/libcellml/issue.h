@@ -239,10 +239,10 @@ public:
     /**
      * @brief Get the @c std::string heading associated with the @c enum ReferenceRule for this issue.
      *
-     * Get the @c std::string CellML 2.0 Reference heading associated with the @c enum ReferenceRule
+     * Get the @c std::string libCellML Reference heading associated with the @c enum ReferenceRule
      * for this issue. If no rule has been set for this issue, will return an empty string.
      *
-     * @return The @c std::string referencing the CellML 2.0 Reference heading relevant to this issue.
+     * @return The @c std::string libCellML Reference heading relevant to this issue.
      */
     std::string referenceHeading() const;
 
