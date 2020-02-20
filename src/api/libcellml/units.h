@@ -24,7 +24,7 @@ limitations under the License.
 #include <vector>
 
 // MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in
-// some compilation issues for our StandardUnit enum class below. However, that
+// some compilation errors for our StandardUnit enum class below. However, that
 // macro gets defined for backward compatibility, so we can safely undefine it.
 // (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
 // information.)
