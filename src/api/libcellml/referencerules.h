@@ -27,7 +27,7 @@ namespace libcellml {
 enum class ReferenceRule
 {
     UNDEFINED,
-    // Validation errors
+    // Specification errors.
     DATA_REPR_IDENTIFIER_UNICODE,
     DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
     DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM,
@@ -84,7 +84,7 @@ enum class ReferenceRule
     MAP_VARIABLES_VARIABLE1,
     MAP_VARIABLES_VARIABLE2,
     MAP_VARIABLES_UNIQUE
-    // Code generation errors go here... TODO
+    // Code generation errors go here ... TODO
 };
 
 } // namespace libcellml
