@@ -597,5 +597,4 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
-    printErrors(validator);
 }
