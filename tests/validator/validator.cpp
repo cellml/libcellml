@@ -175,7 +175,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
         "Variable does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'margie' does not have a valid units attribute.",
-        "Variable 'ransom' has a units reference 'dollars' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'ransom' in component 'fargo' has a units reference 'dollars' which is neither standard nor defined in the parent model.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1979,8 +1979,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
-    const std::vector<std::string> expectedErrors = {};
-
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
     auto c1 = m->component(0);
@@ -1997,11 +1995,13 @@ TEST(Validator, unitMultiplierFactorDifference)
 
     v2->setUnits("big_barrel");
 
-    libcellml::Variable::addEquivalence(v1, v2); // litre ~= metre^3 .
+    libcellml::Variable::addEquivalence(v1, v2); // litre ~= metre^3.
 
+    m->linkUnits();
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    printErrors(validator);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
 TEST(Validator, unitSimpleCycle)
@@ -2251,8 +2251,8 @@ TEST(Validator, unitEquivalenceMultiplier)
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v' has a units reference 'non_existent_deep' that does not correspond with a standard units and is not a units defined in the variable's model.",
-        "Variable 'v' has a units reference 'non_existent_shallow' that does not correspond with a standard units and is not a units defined in the variable's model.",
+        "Variable 'v' in component 'c3' has a units reference 'non_existent_deep' which is neither standard nor defined in the parent model.",
+        "Variable 'v' in component 'c2' has a units reference 'non_existent_shallow' which is neither standard nor defined in the parent model.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2275,7 +2275,46 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     c2->addVariable(createVariableWithUnits("v", "non_existent_shallow"));
     c3->addVariable(createVariableWithUnits("v", "non_existent_deep"));
 
+    EXPECT_TRUE(model->hasUnlinkedUnits());
+
+    model->linkUnits();
     v->validateModel(model);
 
     EXPECT_EQ_ERRORS(expectedErrors, v);
+}
+
+TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
+{
+    auto parser = libcellml::Parser::create();
+    auto validator = libcellml::Validator::create();
+
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
+                     "  <units name=\"millisecond\">"
+                     "    <unit prefix=\"milli\" units=\"second\"/>"
+                     "  </units>"
+                     "  <component name=\"IonChannel\">"
+                     "    <variable name=\"t\" units=\"millisecond\"/>"
+                     "  </component>"
+                     "</model>";
+
+    auto model = parser->parseModel(in);
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    auto nGate = libcellml::Component::create("nGate");
+    model->addComponent(nGate);
+
+    // Adding the variable *before* its units are added results in unfound units in the validator
+    auto t2 = libcellml::Variable::create("t2");
+    nGate->addVariable(t2);
+    t2->setUnits("millisecond");
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(1), validator->errorCount());
+
+    // Linking the units to the model fixes the problem
+    model->linkUnits();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
