@@ -434,10 +434,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    if (units != nullptr && units->isBaseUnit() && isStandardUnitName(units->name())) {
-        return true;
-    }
-    return false;
+    return (units != nullptr) && units->isBaseUnit() && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
