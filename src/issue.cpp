@@ -34,8 +34,6 @@ struct Issue::IssueImpl
     Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     ReferenceRule mRule = ReferenceRule::UNDEFINED; /**< The ReferenceRule enum value for this issue. */
-    std::string mReferenceUrl; /**< The web address at which the rule and its guidelines are available. By default
-                               it should be the baseIssueUrl plus the reference rule's header number. */
     ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the issue occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the issue occurred in. */
@@ -191,11 +189,9 @@ ReferenceRule Issue::rule() const
 
 std::string Issue::url() const
 {
-    if (mPimpl->mReferenceUrl.empty()) {
-        // Then construct from the default address formula: baseIssueUrl + rule number.
-        return baseIssueUrl + referenceHeading();
-    }
-    return mPimpl->mReferenceUrl;
+    // Construct from the default address formula: baseIssueUrl + rule number.
+    // TODO check that this is appropriate for however we need to handle them.
+    return baseIssueUrl + referenceHeading();
 }
 
 void Issue::setComponent(const ComponentPtr &component)
