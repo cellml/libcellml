@@ -84,7 +84,7 @@ public:
      * is [0, \#issues_of_level).
      *
      * @param index The index of the issue to return.
-     * @param level The level of issue to return.
+     * @param level The level of issue to search.
      *
      * @return A reference to the issue from the list of issues at the given level,
      * at the given index on success, @c nullptr otherwise.
@@ -98,8 +98,8 @@ public:
      * is not valid a @c nullptr is returned, the valid range for the @p index
      * is [0, \#issues_of_levels).
      *
-     * @param index The index of the issue to return.
-     * @param levels The levels of issue to return.
+     * @param index The index of the issue to return from within the combined set of levels.
+     * @param levels The levels of issues to search.
      *
      * @return A reference to the issue from the list of issues at one of the given levels,
      * at the given index on success, @c nullptr otherwise.
