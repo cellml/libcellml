@@ -54,6 +54,12 @@ public:
      *   - libcellml::UnitsPtr
      *   - libcellml::VariablePtr
      *
+     * The default values for the enumerations are::
+     *
+     *   - libcellml::Issue::Cause::UNDEFINED;
+     *   - libcellml::Issue::Level::ERROR;
+     *   - libcellml::ReferenceRule::UNDEFINED;
+     *
      * @return A smart pointer to an @c Issue object.
      */
     static IssuePtr create() noexcept;
