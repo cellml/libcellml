@@ -233,12 +233,9 @@ void linkComponentVariableUnits(const ComponentPtr &component)
             auto model = owningModel(u);
             if (model == nullptr && !isStandardUnitName(u->name())) {
                 model = owningModel(component);
-                auto modelUnits = model->units(u->name());
-                if (modelUnits == nullptr) {
-                    model->addUnits(u);
-                    modelUnits = u;
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
                 }
-                v->setUnits(modelUnits);
             }
         }
     }
@@ -710,6 +707,25 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     return nameMap;
 }
 
+std::vector<UnitsPtr> unitsUsed(const ComponentPtr &component)
+{
+    std::vector<UnitsPtr> usedUnits;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto v = component->variable(i);
+        auto u = v->units();
+        if (u != nullptr && !isStandardUnitName(u->name())) {
+            usedUnits.push_back(u);
+        }
+    }
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        auto childUsedUnits = unitsUsed(childComponent);
+        usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
+    }
+
+    return usedUnits;
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -742,6 +758,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             importedComponentCopy->addComponent(component->component(i));
         }
 
+        // KRM
         // Temporarily add component to new model to find units used by the variables.
         auto tempModel = Model::create();
         tempModel->addComponent(importedComponentCopy);
@@ -752,6 +769,12 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             auto u = tempModel->units(i);
             requiredUnits.push_back(u);
         }
+
+        // DEV
+        // Get list of required units from component's variables.
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(importedComponentCopy);
+
+        // END CHANGES
 
         // Get the names of the units used by the <cn> elements in all the components' MathML and add them
         // to the required units.
