@@ -201,7 +201,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
         }
         repr += "/></import>";
     } else if (isStandardUnit(units)) {
-        // Do nothing
+        // Do nothing.
     } else {
         bool endTag = false;
         repr += "<units";
