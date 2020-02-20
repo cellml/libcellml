@@ -242,10 +242,10 @@ TEST(Printer, printModelWithStandardUnitsAdded)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_model\"/>\n";
 
-    libcellml::UnitsPtr u1 = libcellml::Units::create("second");
     libcellml::ModelPtr model = libcellml::Model::create("my_model");
+    libcellml::UnitsPtr u = libcellml::Units::create("second");
 
-    model->addUnits(u1);
+    model->addUnits(u);
 
     EXPECT_EQ(size_t(1), model->unitsCount());
 
