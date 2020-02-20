@@ -241,7 +241,7 @@ void linkComponentVariableUnits(const ComponentPtr &component)
     }
 }
 
-void findCnUnits(const XmlNodePtr &node, std::unordered_set<std::string> &cnUnitsSet)
+void findCnUnits(const XmlNodePtr &node, NameSet &cnUnitsSet)
 {
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
@@ -256,7 +256,7 @@ void findCnUnits(const XmlNodePtr &node, std::unordered_set<std::string> &cnUnit
     }
 }
 
-void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnitsSet)
+void findComponentCnUnits(const ComponentPtr &component, NameSet &cnUnitsSet)
 {
     // Inspect the MathML in this component for any specified constant <cn> units,
     // and make sure that they're in the model.
@@ -273,7 +273,7 @@ void findComponentCnUnits(const ComponentPtr &component, std::unordered_set<std:
     findCnUnits(root, cnUnitsSet);
 }
 
-void doFindCnUnits(const ComponentPtr &component, std::unordered_set<std::string> &cnUnitsSet)
+void doFindCnUnits(const ComponentPtr &component, NameSet &cnUnitsSet)
 {
     findComponentCnUnits(component, cnUnitsSet);
     for (size_t c = 0; c < component->componentCount(); ++c) {
@@ -281,9 +281,9 @@ void doFindCnUnits(const ComponentPtr &component, std::unordered_set<std::string
     }
 }
 
-std::unordered_set<std::string> cnUnits(const ModelPtr &model)
+NameSet cnUnits(const ModelPtr &model)
 {
-    std::unordered_set<std::string> cnUnitsSet = {};
+    NameSet cnUnitsSet = {};
     for (size_t c = 0; c < model->componentCount(); ++c) {
         doFindCnUnits(model->component(c), cnUnitsSet);
     }
