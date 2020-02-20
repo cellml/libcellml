@@ -442,7 +442,7 @@ public:
      *
      * @return @c true if the two @c Units are equivalent, @c false otherwise.
      */
-    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+    static bool baseEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
      * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
@@ -457,7 +457,7 @@ public:
      * @return @c true if the two @c Units are dimensionally equivalent, @c false
      * otherwise.
      */
-    static bool dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
      * @brief Create a clone of this units.
