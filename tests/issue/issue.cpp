@@ -244,7 +244,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     }
 }
 
-TEST(Issue, specificationRule)
+TEST(Issue, referenceRule)
 {
     size_t count = 0;
     libcellml::IssuePtr e = libcellml::Issue::create();
