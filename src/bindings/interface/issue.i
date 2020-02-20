@@ -45,9 +45,6 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::url
 "Get the url for more information about this issue.";
 
-%feature("docstring") libcellml::Issue::setUrl
-"Manually sets the url to which users are referred for this issue.";
-
 %feature("docstring") libcellml::Issue::referenceHeading
 "Returns the CellML 2.0 Specification heading associated with the
 :class:`ReferenceRule` for this issue (empty string if not set).";

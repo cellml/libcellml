@@ -495,11 +495,3 @@ TEST(Issue, getDefaultUrl)
     std::string url = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=" + ref;
     EXPECT_EQ(e->url(), url);
 }
-
-TEST(Issue, setAndGetCustomUrl)
-{
-    auto e = libcellml::Issue::create();
-    std::string url = "https://my_custom_url.com";
-    e->setUrl(url);
-    EXPECT_EQ(url, e->url());
-}

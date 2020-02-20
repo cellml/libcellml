@@ -189,11 +189,6 @@ ReferenceRule Issue::rule() const
     return mPimpl->mRule;
 }
 
-void Issue::setUrl(std::string &url) const
-{
-    mPimpl->mReferenceUrl = url;
-}
-
 std::string Issue::url() const
 {
     if (mPimpl->mReferenceUrl.empty()) {
