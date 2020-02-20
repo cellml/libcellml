@@ -758,26 +758,14 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             importedComponentCopy->addComponent(component->component(i));
         }
 
-        // KRM
-        // Temporarily add component to new model to find units used by the variables.
-        auto tempModel = Model::create();
-        tempModel->addComponent(importedComponentCopy);
-        tempModel->linkUnits();
-
-        std::vector<UnitsPtr> requiredUnits;
-        for (size_t i = 0; i < tempModel->unitsCount(); ++i) {
-            auto u = tempModel->units(i);
-            requiredUnits.push_back(u);
-        }
-
-        // DEV
         // Get list of required units from component's variables.
         std::vector<UnitsPtr> requiredUnits = unitsUsed(importedComponentCopy);
 
-        // END CHANGES
-
         // Get the names of the units used by the <cn> elements in all the components' MathML and add them
         // to the required units.
+        auto tempModel = Model::create();
+        tempModel->addComponent(importedComponentCopy);
+        tempModel->linkUnits();
         auto cnList = cnUnits(tempModel);
         for (auto &name : cnList) {
             if (!tempModel->hasUnits(name)) {
