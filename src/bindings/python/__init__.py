@@ -128,8 +128,8 @@ convert(Units, 'Prefix', [
     'YOCTO',
     ], new_base = Units)
 import libcellml
-import libcellml.specificationrule
-convert(specificationrule, 'ReferenceRule', [
+import libcellml.referencerule
+convert(referencerule, 'ReferenceRule', [
     'UNDEFINED',
     'DATA_REPR_IDENTIFIER_UNICODE',
     'DATA_REPR_IDENTIFIER_LATIN_ALPHANUM',
