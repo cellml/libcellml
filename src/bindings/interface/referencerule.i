@@ -1,4 +1,4 @@
-%module(package="libcellml") specificationrule
+%module(package="libcellml") referencerule
 
 #define LIBCELLML_EXPORT
 
