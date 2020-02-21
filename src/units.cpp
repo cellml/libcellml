@@ -401,7 +401,7 @@ size_t Units::unitCount() const
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    if (!Units::baseEquivalent(units1, units2)) {
+    if (!Units::compatible(units1, units2)) {
         return 0.0;
     }
 
@@ -551,7 +551,7 @@ bool Units::usesImportedUnits() const
     return false;
 }
 
-bool Units::baseEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
+bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
@@ -592,7 +592,7 @@ bool Units::baseEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    return Units::baseEquivalent(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
+    return Units::compatible(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
 }
 
 UnitsPtr Units::clone() const
