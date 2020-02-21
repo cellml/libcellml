@@ -450,7 +450,7 @@ public:
      *
      * @return @c true if the two @c Units are equivalent, @c false otherwise.
      */
-    static bool baseEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+    static bool compatible(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
      * @brief Test to determine whether two @c Units are dimensionally equivalent or not.

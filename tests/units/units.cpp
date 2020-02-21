@@ -1159,7 +1159,7 @@ TEST(Units, customUnitsScalingFactorSimple)
 
     m->linkUnits();
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
@@ -1183,7 +1183,7 @@ TEST(Units, customUnitsScalingFactorIncludingDimensionless)
 
     m->linkUnits();
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
@@ -1546,16 +1546,16 @@ TEST(Units, compareBaseIncomparableUnitsWithInputAsNullptr)
     u->setName("u");
     u->addUnit(libcellml::Units::StandardUnit::LUX, "milli");
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u, nullptr));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(nullptr, u));
+    EXPECT_FALSE(libcellml::Units::compatible(u, nullptr));
+    EXPECT_FALSE(libcellml::Units::compatible(nullptr, u));
 }
 
 TEST(Units, compareBaseIncomparableUnitsWithBothInputsAsNullptr)
 {
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(nullptr, nullptr));
+    EXPECT_FALSE(libcellml::Units::compatible(nullptr, nullptr));
 }
 
-TEST(Units, compareBaseEquivalentUnits)
+TEST(Units, compareCompatibleUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1565,10 +1565,10 @@ TEST(Units, compareBaseEquivalentUnits)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
 }
 
-TEST(Units, compareNonBaseEquivalentUnits)
+TEST(Units, compareNonCompatibleUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1578,7 +1578,7 @@ TEST(Units, compareNonBaseEquivalentUnits)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::LUX, 0, 1.0, 1.0);
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
 }
 
 TEST(Units, compareOneUnitWithNullptr)
@@ -1587,16 +1587,16 @@ TEST(Units, compareOneUnitWithNullptr)
     u->setName("u");
     u->addUnit(libcellml::Units::StandardUnit::LUX, "milli");
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u, nullptr));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(nullptr, u));
+    EXPECT_FALSE(libcellml::Units::compatible(u, nullptr));
+    EXPECT_FALSE(libcellml::Units::compatible(nullptr, u));
 }
 
 TEST(Units, compareBothInputsNullptr)
 {
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(nullptr, nullptr));
+    EXPECT_FALSE(libcellml::Units::compatible(nullptr, nullptr));
 }
 
-TEST(Units, compareUnitsBaseEquivalentComplex)
+TEST(Units, compareUnitsCompatibleComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
@@ -1620,11 +1620,11 @@ TEST(Units, compareUnitsBaseEquivalentComplex)
     model->addUnits(u1);
     model->addUnits(u2);
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, compareUnitsNotBaseEquivalentComplex)
+TEST(Units, compareUnitsNotCompatibleComplex)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
@@ -1647,8 +1647,8 @@ TEST(Units, compareUnitsNotBaseEquivalentComplex)
     model->addUnits(u1);
     model->addUnits(u2);
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
 TEST(Units, compareUnitsEquivalentSameBaseTwice)
@@ -1673,11 +1673,11 @@ TEST(Units, compareUnitsEquivalentSameBaseTwice)
     model->addUnits(u1);
     model->addUnits(u2);
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, compareStandardUnitsAsBaseEquivalent)
+TEST(Units, compareStandardUnitsAsCompatible)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("u");
@@ -1697,11 +1697,11 @@ TEST(Units, compareStandardUnitsAsBaseEquivalent)
     model->addUnits(u1);
     model->addUnits(u2);
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, isBaseEquivalentOneUnitImported)
+TEST(Units, isCompatibleOneUnitImported)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1717,11 +1717,11 @@ TEST(Units, isBaseEquivalentOneUnitImported)
     u1->setImportSource(import);
 
     EXPECT_TRUE(u1->isImport());
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, isBaseEquivalentBothUnitsImported)
+TEST(Units, isCompatibleBothUnitsImported)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1738,11 +1738,11 @@ TEST(Units, isBaseEquivalentBothUnitsImported)
     u2->setImportSource(import);
 
     EXPECT_TRUE(u1->isImport());
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, isBaseEquivalentBaseUnitImported)
+TEST(Units, isCompatibleBaseUnitImported)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("model");
@@ -1770,8 +1770,8 @@ TEST(Units, isBaseEquivalentBaseUnitImported)
     u->setImportSource(import);
 
     EXPECT_TRUE(u->isImport());
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
 TEST(Units, isEquivalentBaseUnitNotInModel)
@@ -1799,11 +1799,11 @@ TEST(Units, isEquivalentBaseUnitNotInModel)
     // Units "u" not in model.  Units "apples" doesn't exist.  Units are not linked.
     // Previously returned false because of mismatched number of child units.
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, compareBaseEquivalentSameSizeButDifferentUnits)
+TEST(Units, compareCompatibleSameSizeButDifferentUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1811,11 +1811,11 @@ TEST(Units, compareBaseEquivalentSameSizeButDifferentUnits)
     libcellml::UnitsPtr u2 = libcellml::Units::create();
     u2->setName("u2");
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, compareBaseEquivalentSameSizeButDifferentExponent)
+TEST(Units, compareCompatibleSameSizeButDifferentExponent)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("u1");
@@ -1825,11 +1825,11 @@ TEST(Units, compareBaseEquivalentSameSizeButDifferentExponent)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::AMPERE, 0, 2.0, 1.0);
 
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_FALSE(libcellml::Units::baseEquivalent(u2, u1));
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
-TEST(Units, compareBaseEquivalentUnitsWhichAreDimensionless)
+TEST(Units, compareCompatibleUnitsWhichAreDimensionless)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
 
@@ -1849,12 +1849,12 @@ TEST(Units, compareBaseEquivalentUnitsWhichAreDimensionless)
     model->addUnits(u2);
     model->addUnits(u3);
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u2));
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u2, u3));
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u1, u3));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
+    EXPECT_TRUE(libcellml::Units::compatible(u2, u3));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u3));
 }
 
-TEST(Units, compareBaseEquivalentUnitsWhichAreNested)
+TEST(Units, compareCompatibleUnitsWhichAreNested)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
 
@@ -1889,7 +1889,7 @@ TEST(Units, compareBaseEquivalentUnitsWhichAreNested)
     model->addUnits(u4);
     model->addUnits(u5);
 
-    EXPECT_TRUE(libcellml::Units::baseEquivalent(u4, u5));
+    EXPECT_TRUE(libcellml::Units::compatible(u4, u5));
 }
 
 TEST(Units, isBaseUnitsImported)

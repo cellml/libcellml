@@ -82,7 +82,7 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::equivalent
 "Tests if two Units are equivalent in base units as well as scaling factor.";
 
-%feature("docstring") libcellml::Units::baseEquivalent
+%feature("docstring") libcellml::Units::compatible
 "Tests if two Units have the same dimensional basis.";
 
 %feature("docstring") libcellml::Units::clone
