@@ -1774,6 +1774,40 @@ TEST(Units, isCompatibleBaseUnitImported)
     EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
 
+TEST(Units, isCompatibleBaseGrandchildUnitImported)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    model->setName("model");
+
+    libcellml::UnitsPtr u = libcellml::Units::create("u");
+
+    libcellml::UnitsPtr u3 = libcellml::Units::create();
+    u3->setName("u3");
+    u3->addUnit("u", 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
+    u2->addUnit("u3", 0, 1.0, 1.0);
+
+    model->addUnits(u);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
+    import->setUrl("I_am_a_url");
+
+    u->setImportSource(import);
+
+    EXPECT_TRUE(u->isImport());
+    EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
+}
+
 TEST(Units, isEquivalentBaseUnitNotInModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2073,4 +2107,55 @@ TEST(Units, scalingFactorAcrossStandardUnits)
 
     EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, scalingFactorChildUnitsNotFound)
+{
+    auto model = libcellml::Model::create("nurseryrhymes");
+    auto u1 = libcellml::Units::create("bo_peep");
+    u1->addUnit("sheep");
+
+    auto u2 = libcellml::Units::create("flock");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
+}
+
+TEST(Units, scalingFactorGrandchildUnitsNotFound)
+{
+    auto model = libcellml::Model::create("nurseryrhymes");
+    auto u0 = libcellml::Units::create("sheep");
+    u0->addUnit("wool");
+
+    auto u1 = libcellml::Units::create("bo_peep");
+    u1->addUnit("sheep");
+
+    auto u2 = libcellml::Units::create("flock");
+
+    model->addUnits(u0);
+    model->addUnits(u1);
+    model->addUnits(u2);
+    auto s = libcellml::Units::scalingFactor(u1, u2);
+
+    EXPECT_EQ(0.0, s);
+}
+
+TEST(Units, compatibleUnitsInDifferentModelsChildNotFound)
+{
+    auto m1 = libcellml::Model::create("nurseryrhymes");
+    auto m2 = libcellml::Model::create("farmwork");
+    auto u1 = libcellml::Units::create("bo_peep");
+    u1->addUnit("sheep");
+
+    auto u2 = libcellml::Units::create("flock");
+    auto u3 = libcellml::Units::create("sheep");
+    u2->addUnit("sheep");
+
+    m1->addUnits(u1);
+    m2->addUnits(u2);
+    m2->addUnits(u3);
+
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
 }
