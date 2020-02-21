@@ -2159,3 +2159,34 @@ TEST(Units, compatibleUnitsInDifferentModelsChildNotFound)
 
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
 }
+
+TEST(Units, compatibleGrandchildUnitsImported)
+{
+    auto model = libcellml::Model::create("nurseryrhymes");
+
+    auto imported_units = libcellml::Units::create("imported_units");
+    auto imp = libcellml::ImportSource::create();
+    imp->setUrl("i_am_a_url");
+    imported_units->setImportSource(imp);
+
+    auto u0 = libcellml::Units::create("u0");
+    u0->addUnit("imported_units");
+
+    auto u1 = libcellml::Units::create("u1");
+    u1->addUnit("u0");
+
+    auto u2 = libcellml::Units::create("u2");
+    u2->addUnit("u1");
+
+    auto u3 = libcellml::Units::create("u3");
+    u3->addUnit("imported_units");
+
+    model->addUnits(u0);
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(imported_units);
+
+    // Expect false only because the first units "imported_units" is imported... otherwise it would be true.
+    EXPECT_FALSE(libcellml::Units::compatible(u2, u3));
+}
