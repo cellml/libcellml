@@ -1798,7 +1798,6 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 {
     // This test is intended to demonstrate that the effect of different multiplicator sources (prefix, multiplier term)
     // does not affect the equivalence of the underlying base variables.
-    std::string expectedWarning = "Variable 'v1' has units of 'u4' and an equivalent variable 'v2' with non-matching units of 'u5'. The mismatch is: multiplication factor of 10^12.";
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -1863,11 +1862,10 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
-    EXPECT_EQ(size_t(1), validator->warningCount());
-    EXPECT_EQ(expectedWarning, validator->warning(0)->description());
+    EXPECT_EQ(size_t(0), validator->warningCount());
 }
 
 TEST(Validator, unitUserCreatedUnitsBananasAndApples)
@@ -1984,8 +1982,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
@@ -2009,12 +2005,10 @@ TEST(Validator, unitMultiplierFactorDifference)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(1), validator->warningCount());
+    EXPECT_EQ(size_t(0), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
-
-    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitStandardMultipliersLitre)
@@ -2310,9 +2304,9 @@ TEST(Validator, unitEquivalenceMultiplier)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(1), validator->warningCount());
+    EXPECT_EQ(size_t(0), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
 }
 
@@ -2353,11 +2347,6 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 
 TEST(Validator, mismatchedMultipliersInUnits)
 {
-    // If two units are linked through variable equivalence mapping and their
-    // scaling factor is not the same, it should raise a warning-level issue
-    std::vector<std::string> expectedIssues = {
-        "Variable 'v1' has units of 'megametre' and an equivalent variable 'v2' with non-matching units of 'millimetre'. The mismatch is: multiplication factor of 10^9."};
-
     auto model = libcellml::Model::create("Gulliver");
     auto c1 = libcellml::Component::create("Brobdingnag");
     auto c2 = libcellml::Component::create("Lilliput");
@@ -2384,12 +2373,11 @@ TEST(Validator, mismatchedMultipliersInUnits)
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(1), validator->warningCount());
+    EXPECT_EQ(size_t(0), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
 
-    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
