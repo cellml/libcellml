@@ -1982,7 +1982,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
-
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
     auto c1 = m->component(0);
@@ -2377,7 +2376,6 @@ TEST(Validator, mismatchedMultipliersInUnits)
     EXPECT_EQ(size_t(0), validator->errorCount());
     EXPECT_EQ(size_t(0), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
-
 }
 
 TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
