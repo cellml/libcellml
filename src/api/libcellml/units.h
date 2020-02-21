@@ -418,6 +418,14 @@ public:
     size_t unitCount() const;
 
     /**
+     * @brief Check whether there are any imported child @c Units.
+     *
+     * @return @c true when these @c Units rely on @c Units which are imported,
+     * or @c false otherwise.
+     */
+    bool usesImportedUnits() const;
+
+    /**
      * @brief Return the scaling factor difference between two @c Units.
      *
      * This can be interpreted as factor, where units2 = (factor)*units1.  This method

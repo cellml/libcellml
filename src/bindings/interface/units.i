@@ -65,6 +65,10 @@ Only the first matching unit is removed.
 "Returns the attributes of the unit specified by index, reference, or
 StandardUnit.";
 
+%feature("docstring") libcellml::Units::usesImportedUnits
+"Returns 'True' when this Units object depends on an imported child
+Units object, or 'False' otherwise.";
+
 %feature("docstring") libcellml::Units::unitCount
 "Returns the number of units contained by this units object.";
 
