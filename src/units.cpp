@@ -485,7 +485,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
     while (it != unitsMap.end()) {
         if (it->second == 0.0) {
             it = unitsMap.erase(it);
-        } else if ((it->first == "dimensionless") || (it->first == "radian") || (it->first == "steradian")) {
+        } else if (it->first == "dimensionless") {
             it = unitsMap.erase(it);
         } else {
             ++it;
@@ -493,35 +493,6 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
     }
     return unitsMap;
 }
-
-// UnitsMap createUnitsMap(const UnitsPtr &units)
-// {
-//     UnitsMap unitsMap;
-//     updateUnitsMap(units, unitsMap);
-
-//     // Checking for exponents of zero in the map, which can be removed.
-//     bool requireDimensionless = false;
-//     auto it = unitsMap.begin();
-//     while (it != unitsMap.end()) {
-//         if (it->second == 0.0) {
-//             it = unitsMap.erase(it);
-//             requireDimensionless = true;
-//         }
-//         else if (it->first == "dimensionless") {
-//             it->second = 0.0;
-//             ++it;
-//         }
-//         else {
-//             ++it;
-//         }
-//     }
-
-//     if (requireDimensionless) {
-//         unitsMap.emplace(std::make_pair("dimensionless", 0.0));
-//     }
-
-//     return unitsMap;
-// }
 
 bool Units::usesImportedUnits() const
 {
