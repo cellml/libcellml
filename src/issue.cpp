@@ -189,9 +189,9 @@ ReferenceRule Issue::rule() const
 
 std::string Issue::url() const
 {
-    // Construct from the default address formula: baseIssueUrl + rule number.
+    // Construct from the default address formula: BASE_ISSUE_URL + rule number.
     // TODO check that this is appropriate for however we need to handle them.
-    return baseIssueUrl + referenceHeading();
+    return BASE_ISSUE_URL + referenceHeading();
 }
 
 void Issue::setComponent(const ComponentPtr &component)
