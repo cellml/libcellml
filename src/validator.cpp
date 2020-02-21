@@ -985,16 +985,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 issue->setModel(model);
                                 issue->setCause(Issue::Cause::UNITS);
                                 mValidator->addIssue(issue);
-                            } else if (multiplier != 0.0) {
-                                // Warning when the multipliers are not the same.
-                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                                IssuePtr issue = Issue::create();
-                                issue->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-                                issue->setModel(model);
-                                issue->setLevel(libcellml::Issue::Level::WARNING);
-                                issue->setCause(Issue::Cause::UNITS);
-                                mValidator->addIssue(issue);
                             }
 
                             if (equivalentVariable->hasEquivalentVariable(variable)) {
