@@ -2064,3 +2064,13 @@ TEST(Units, isNotBaseUnitImportedTwice)
     EXPECT_FALSE(u_i2->isImport());
     EXPECT_FALSE(u_i0->isBaseUnit());
 }
+
+TEST(Units, scalingFactorAcrossStandardUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("second");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("millisecond");
+    u2->addUnit(libcellml::Units::StandardUnit::SECOND, libcellml::Units::Prefix::MILLI);
+
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
+}
