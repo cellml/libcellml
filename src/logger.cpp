@@ -150,21 +150,4 @@ IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const
     return e;
 }
 
-IssuePtr Logger::issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const
-{
-    size_t i = 0;
-    index++;
-    while (i < mPimpl->mIssues.size()) {
-        for (auto issue : mPimpl->mIssues) {
-            if (std::find(levels.begin(), levels.end(), issue->level()) != levels.end()) {
-                i++;
-            }
-            if (i == index) {
-                return issue;
-            }
-        }
-    }
-    return nullptr;
-}
-
 } // namespace libcellml
