@@ -409,15 +409,13 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        if ((units1->unitCount() != 0) && (units2->unitCount() != 0)) {
-            double multiplier = 0.0;
+        double multiplier = 0.0;
 
-            updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
-            updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
+        updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
+        updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
 
-            if (updateUnits1 && updateUnits2) {
-                return std::pow(10, multiplier);
-            }
+        if (updateUnits1 && updateUnits2) {
+            return std::pow(10, multiplier);
         }
 
         if (units1->name() == units2->name()) {
@@ -430,7 +428,7 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 
 using UnitsMap = std::map<std::string, double>;
 
-void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
+bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
         auto found = unitsMap.find(units->name());
@@ -461,40 +459,96 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
-                        unitsMap.clear();
-                        break;
+                        return false;
                     }
-                    updateUnitsMap(refUnits, unitsMap, uExp * exp);
+                    if (!updateUnitsMap(refUnits, unitsMap, uExp * exp)) {
+                        return false;
+                    }
                 }
             }
         }
     }
+    return true;
 }
 
-UnitsMap createUnitsMap(const UnitsPtr &units)
+UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
 {
     UnitsMap unitsMap;
-    updateUnitsMap(units, unitsMap);
+    isValid = true;
+    if (!updateUnitsMap(units, unitsMap)) {
+        isValid = false;
+        return unitsMap;
+    }
 
     // Checking for exponents of zero in the map, which can be removed.
-    bool requireDimensionless = false;
     auto it = unitsMap.begin();
     while (it != unitsMap.end()) {
         if (it->second == 0.0) {
             it = unitsMap.erase(it);
-            requireDimensionless = true;
-        } else if (it->first == "dimensionless") {
-            it->second = 0.0;
-            ++it;
+        } else if ((it->first == "dimensionless") || (it->first == "radian") || (it->first == "steradian")) {
+            it = unitsMap.erase(it);
         } else {
             ++it;
         }
     }
-    if (requireDimensionless) {
-        unitsMap.emplace(std::make_pair("dimensionless", 0.0));
-    }
-
     return unitsMap;
+}
+
+// UnitsMap createUnitsMap(const UnitsPtr &units)
+// {
+//     UnitsMap unitsMap;
+//     updateUnitsMap(units, unitsMap);
+
+//     // Checking for exponents of zero in the map, which can be removed.
+//     bool requireDimensionless = false;
+//     auto it = unitsMap.begin();
+//     while (it != unitsMap.end()) {
+//         if (it->second == 0.0) {
+//             it = unitsMap.erase(it);
+//             requireDimensionless = true;
+//         }
+//         else if (it->first == "dimensionless") {
+//             it->second = 0.0;
+//             ++it;
+//         }
+//         else {
+//             ++it;
+//         }
+//     }
+
+//     if (requireDimensionless) {
+//         unitsMap.emplace(std::make_pair("dimensionless", 0.0));
+//     }
+
+//     return unitsMap;
+// }
+
+bool Units::usesImportedUnits() const
+{
+    // Function to check child unit dependencies for imports.
+    std::string ref;
+    std::string prefix;
+    double exponent;
+    double multiplier;
+    std::string id;
+
+    if (hasParent()) {
+        auto model = std::dynamic_pointer_cast<Model>(parent());
+        for (size_t u = 0; u < unitCount(); ++u) {
+            unitAttributes(u, ref, prefix, exponent, multiplier, id);
+            auto child = model->units(ref);
+            if (child == nullptr) {
+                continue;
+            }
+            if (child->isImport()) {
+                return true;
+            }
+            if (child->usesImportedUnits()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool Units::baseEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
@@ -506,9 +560,18 @@ bool Units::baseEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
     if ((units1->isImport()) || (units2->isImport())) {
         return false;
     }
-
-    UnitsMap units1Map = createUnitsMap(units1);
-    UnitsMap units2Map = createUnitsMap(units2);
+    if ((units1->usesImportedUnits()) || (units2->usesImportedUnits())) {
+        return false;
+    }
+    bool isValid = true;
+    auto units1Map = createUnitsMap(units1, isValid);
+    if (!isValid) {
+        return false;
+    }
+    auto units2Map = createUnitsMap(units2, isValid);
+    if (!isValid) {
+        return false;
+    }
 
     if (units1Map.size() == units2Map.size()) {
         for (const auto &units : units1Map) {
