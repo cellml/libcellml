@@ -104,7 +104,7 @@ int main()
     std::cout << "  STEP 3: Define the variables and their units" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  3.a,b Declaring the variables, their names, units, and initial conditions
+    //  3.a,b Declare the variables, their names, units, and initial conditions.
     //        Note that the names given to variables must be the same as that used
     //        within the <ci> blocks in the MathML string we created in step 2.a.
 
@@ -146,7 +146,7 @@ int main()
     gamma->setUnits("dimensionless");
     gamma->setInitialValue(4.0);
 
-    //  3.c Adding the variables to the component.  Note that Variables are
+    //  3.c Add the variables to the component.  Note that Variables are
     //      added by their pointer (cf. their name)
     component->addVariable(t);
     component->addVariable(V);
@@ -168,7 +168,7 @@ int main()
     std::cout << "  STEP 4: Define the units and add to the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  4.a Defining the units of millisecond, millivolt, per_millisecond,
+    //  4.a Define the units of millisecond, millivolt, per_millisecond,
     //      microA_per_cm2, and milliS_per_cm2. Note that the dimensionless
     //      units are part of those built-in already, so do not need to be
     //      defined here.
