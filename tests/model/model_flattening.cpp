@@ -657,12 +657,6 @@ TEST(ModelFlattening, unitsUsedByVariableNotInDirectlyImportedComponent)
         "  </encapsulation>\n"
         "</model>\n";
 
-    auto parser = libcellml::Parser::create();
-    auto e_model = parser->parseModel(e);
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(e_model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
     auto model = libcellml::Model::create("a_model");
 
     // Import the component hierarchy from a file
