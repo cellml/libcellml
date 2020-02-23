@@ -561,33 +561,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     // it have the same end result.  Previously (see #519) any units
     // defined in the model but not used by a variable (ie: only used by <cn> tags)
     // were not imported.
-
-    const std::string a =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "   <units name=\"myUnitsThatReallyExist\">\n"
-        "       <unit exponent=\"-1\" units=\"second\"/>\n"
-        "   </units>\n"
-        "   <component name=\"myComponent\">\n"
-        "       <variable name=\"a\" units=\"second\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>a</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatReallyExist\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
-        "</model>";
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto modelFromString = parser->parseModel(a);
     auto validator = libcellml::Validator::create();
-    validator->validateModel(modelFromString);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    // Create the model manually and import the component from the identical model
-    // specified via a file.
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
 
@@ -603,7 +577,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     EXPECT_FALSE(model->hasUnresolvedImports());
     model->flatten();
 
-    // Confirm that the bug reported in #519 wherein units used soley by <cn> items
+    // Confirm that the bug reported in #519 wherein units used solely by <cn> items
     // in imported components were not being imported is now fixed.
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
