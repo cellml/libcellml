@@ -635,7 +635,12 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "  <units name=\"myUnitsThatIUse\"/>\n"
+        "  <units name=\"myUnitsThatIUse\">\n"
+        "    <unit units=\"metre\"/>\n"
+        "  </units>\n"
+        "  <units name=\"myUnitsThatIUse_1\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
         "  <component name=\"c\">\n"
         "    <variable name=\"a\" units=\"second\"/>\n"
         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -646,11 +651,14 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
         "      </apply>\n"
         "    </math>\n"
         "  </component>\n"
-        "</model>";
+        "</model>\n";
 
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "  <units name=\"myUnitsThatIUse\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
         "   <component name=\"myComponent\">\n"
         "       <variable name=\"a\" units=\"second\"/>\n"
         "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -668,14 +676,15 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     auto importedModel = parser->parseModel(in);
 
     auto validator = libcellml::Validator::create();
-    // The importedModel has one validation error because the units
-    // myUnitsThatIUse are not defined in the imported model.
+
+    // No problems with the imported model.
     validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->errorCount());
 
-
+    // The model myModel already has myUnitsThatIUse defined.
     auto model = libcellml::Model::create("myModel");
     auto u = libcellml::Units::create("myUnitsThatIUse");
+    u->addUnit("metre");
     model->addUnits(u);
 
     auto c = libcellml::Component::create("c");
@@ -749,8 +758,7 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
     EXPECT_FALSE(model->hasUnresolvedImports());
     model->flatten();
 
-    // But now by importing the component I have miraculously
-    // found the units myUnitsThatIUse!
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
+    printErrors(validator);
 }
