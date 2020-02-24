@@ -712,6 +712,94 @@ TEST(Model, importingComponentWithCnUnitNamesThatAreAlreadyDefinedInImportingMod
     EXPECT_EQ(e, printer->printModel(model));
 }
 
+
+TEST(Model, importingComponentWithIdenticallyDefinedUnitsAsImportingModel)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "  <units name=\"myUnitsThatIUse\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"myOtherUnits\">\n"
+        "    <unit units=\"metre\"/>\n"
+        "  </units>\n"
+        "  <component name=\"c\">\n"
+        "    <variable name=\"a\" units=\"second\"/>\n"
+        "    <variable name=\"b\" units=\"myOtherUnits\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>a</ci>\n"
+        "        <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "  <units name=\"myUnitsThatIUse\">\n"
+        "    <unit units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"myOtherUnits\">\n"
+        "    <unit units=\"metre\"/>\n"
+        "  </units>\n"
+        "   <component name=\"myComponent\">\n"
+        "       <variable name=\"a\" units=\"second\"/>\n"
+        "       <variable name=\"b\" units=\"myOtherUnits\"/>\n"
+        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "           <apply>"
+        "             <eq/>\n"
+        "             <ci>a</ci>\n"
+        "             <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
+        "           </apply>\n"
+        "       </math>\n"
+        "   </component>\n"
+        "</model>";
+
+    // Create the model by parsing the string above.
+    auto parser = libcellml::Parser::create();
+    auto importedModel = parser->parseModel(in);
+
+    auto validator = libcellml::Validator::create();
+
+    // No problems with the imported model.
+    validator->validateModel(importedModel);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    // The model myModel already has myUnitsThatIUse defined.
+    auto model = libcellml::Model::create("myModel");
+    auto u1 = libcellml::Units::create("myUnitsThatIUse");
+    u1->addUnit("second");
+    model->addUnits(u1);
+    auto u2 = libcellml::Units::create("myOtherUnits");
+    u2->addUnit("metre");
+    model->addUnits(u2);
+
+    auto c = libcellml::Component::create("c");
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("not_required_resolving_import_manually");
+    importSource->setModel(importedModel);
+
+    c->setImportReference("myComponent");
+    c->setImportSource(importSource);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten();
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    // I would expect that the name of the cn elements units would not need
+    // to change as the importing model already has units of that name and definition.
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(e, printer->printModel(model));
+}
+
 TEST(Model, importingComponentWithTwoMathMLDocuments)
 {
     const std::string in =
