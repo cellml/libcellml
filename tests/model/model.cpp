@@ -626,6 +626,7 @@ TEST(Model, missingUnitsFromImportOfCnTermsNotDefinedInImportedModel)
 
     // But now by importing the component I have miraculously
     // found the units myUnitsThatIUse!
+
     // KRM: This is not the behaviour I see? I get the expected error message about the missing units.
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
@@ -734,6 +735,11 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
         "   </component>\n"
         "</model>";
 
+    const std::vector<std::string> e1 = {"LibXml2 error: Extra content at the end of the document.",
+                                         "Could not get a valid XML root node from the math on component 'myComponent'."};
+    const std::vector<std::string> e2 = {"LibXml2 error: Extra content at the end of the document.",
+                                         "Could not get a valid XML root node from the math on component 'c'."};
+
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
     auto importedModel = parser->parseModel(in);
@@ -741,9 +747,13 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
     auto validator = libcellml::Validator::create();
     // The importedModel has one validation error because the units
     // myUnitsThatIUse are not defined in the imported model.
+
+    // KRM: The validator returns two errors because it cannot find the root mathml from the two strings.
+    //   - If we don't permit more than one mathml block, then it becomes a validation prob, not an import one.
+    //   - If we do, then I would have expected errors from both myUnitsThatAUses and myUnitsThatBUses? two errors, not one?
     validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    printErrors(validator);
+    EXPECT_EQ(size_t(2), validator->errorCount());
+    EXPECT_EQ_ERRORS(e1, validator);
 
     auto model = libcellml::Model::create("model");
     auto c = libcellml::Component::create("c");
@@ -760,6 +770,9 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
     model->flatten();
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-    printErrors(validator);
+
+    // KRM: I'd expect exactly the same errors here as in the parsed model validation, which is what I get, so
+    //  I'm confused about what this test is trying to show?
+    EXPECT_EQ(size_t(2), validator->errorCount());
+    EXPECT_EQ_ERRORS(e2, validator);
 }

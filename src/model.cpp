@@ -270,7 +270,10 @@ void findComponentCnUnits(const ComponentPtr &component, NameSet &cnUnitsSet)
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     doc->parse(math);
     XmlNodePtr root = doc->rootNode();
-    findCnUnits(root, cnUnitsSet);
+    if (root != nullptr) {
+        findCnUnits(root, cnUnitsSet);
+    }
+    // TODO else add error to the import logger when #531 is merged in
 }
 
 void doFindCnUnits(const ComponentPtr &component, NameSet &cnUnitsSet)
@@ -742,8 +745,6 @@ void switchUnitsInMathML(std::string &maths, std::string &in, std::string &out)
         maths.replace(n, in_with_quotes.size(), out_with_quotes);
         n += out_with_quotes.size();
     }
-
-    // std::cout << "Switched units '" << in << "' for units '" << out << "'" << std::endl;
 }
 
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
