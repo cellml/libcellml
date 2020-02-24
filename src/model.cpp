@@ -726,6 +726,26 @@ std::vector<UnitsPtr> unitsUsed(const ComponentPtr &component)
     return usedUnits;
 }
 
+void switchUnitsInMathML(std::string &maths, std::string &in, std::string &out)
+{
+    //  Note that this function will replace any and all occurrences of the "in"
+    //  string within the "maths" string with the "out" string.  It's worth noting that
+    //  in order to be sure that only full name matches for units are replaced, we exploit
+    //  the fact that the units names in the MathML string will be in quotation marks, and include
+    //  these quotation marks on either side of the in and out strings for safety.
+
+    std::string::size_type n = 0;
+    std::string in_with_quotes = "\"" + in + "\"";
+    std::string out_with_quotes = "\"" + out + "\"";
+
+    while ((n = maths.find(in_with_quotes, n)) != std::string::npos) {
+        maths.replace(n, in_with_quotes.size(), out_with_quotes);
+        n += out_with_quotes.size();
+    }
+
+    // std::cout << "Switched units '" << in << "' for units '" << out << "'" << std::endl;
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -767,11 +787,13 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         tempModel->addComponent(importedComponentCopy);
         tempModel->linkUnits();
         auto cnList = cnUnits(tempModel);
+        // Distinguish between ci and cn units because we need to alter the MathML if the cn unit name is changed later
+        std::vector<UnitsPtr> requiredCnUnits;
         for (auto &name : cnList) {
             if (!tempModel->hasUnits(name)) {
                 auto u = importModel->units(name);
                 if (u != nullptr) {
-                    requiredUnits.push_back(u);
+                    requiredCnUnits.push_back(u);
                 }
             }
         }
@@ -813,6 +835,21 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
                     auto name = u->name();
                     name += "_" + convertToString(++count);
                     u->setName(name);
+                }
+                model->addUnits(u);
+            }
+        }
+        for (const auto &u : requiredCnUnits) {
+            if (!model->hasUnits(u)) {
+                size_t count = 0;
+                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
+                    auto oldName = u->name();
+                    auto name = oldName + "_" + convertToString(++count);
+                    u->setName(name);
+                    // Have to replace the units within the MathML string here with their new name
+                    auto mathml = importedComponentCopy->math();
+                    switchUnitsInMathML(mathml, oldName, name);
+                    importedComponentCopy->setMath(mathml);
                 }
                 model->addUnits(u);
             }

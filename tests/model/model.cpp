@@ -598,6 +598,7 @@ TEST(Model, missingUnitsFromImportOfCnTermsNotDefinedInImportedModel)
         "       </math>\n"
         "   </component>\n"
         "</model>";
+    const std::vector<std::string> e = {"Math has a cn element with a cellml:units attribute 'myUnitsThatIUse' that is not a valid reference to units in the model 'model' or a standard unit."};
 
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
@@ -608,7 +609,6 @@ TEST(Model, missingUnitsFromImportOfCnTermsNotDefinedInImportedModel)
     // myUnitsThatIUse are not defined in the imported model.
     validator->validateModel(importedModel);
     EXPECT_EQ(size_t(1), validator->errorCount());
-
 
     auto model = libcellml::Model::create("model");
     auto c = libcellml::Component::create("c");
@@ -626,11 +626,13 @@ TEST(Model, missingUnitsFromImportOfCnTermsNotDefinedInImportedModel)
 
     // But now by importing the component I have miraculously
     // found the units myUnitsThatIUse!
+    // KRM: This is not the behaviour I see? I get the expected error message about the missing units.
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ_ERRORS(e, validator);
 }
 
-TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
+TEST(Model, importingComponentWithCnUnitNamesThatAreAlreadyDefinedInImportingModel)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -742,7 +744,6 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
     validator->validateModel(importedModel);
     EXPECT_EQ(size_t(1), validator->errorCount());
     printErrors(validator);
-
 
     auto model = libcellml::Model::create("model");
     auto c = libcellml::Component::create("c");
