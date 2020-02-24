@@ -434,7 +434,7 @@ TEST(Validator, validMathInMultipleMathMlBlocks)
         "    <eq/>\n"
         "    <ci>A</ci>\n"
         "    <apply>\n"
-        "      <cn cellml:units=\"dimensionless\">A</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">1</cn>\n"
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n"
@@ -443,7 +443,7 @@ TEST(Validator, validMathInMultipleMathMlBlocks)
         "    <eq/>\n"
         "    <ci>B</ci>\n"
         "    <apply>\n"
-        "      <cn cellml:units=\"dimensionless\">A</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">2</cn>\n"
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n";
