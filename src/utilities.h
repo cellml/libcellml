@@ -430,4 +430,58 @@ bool isStandardPrefixName(const std::string &name);
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
 
+/**
+ * @brief Trim whitespace from the front of a string (in place).
+ *
+ * Remove whitespace from the front of a string, modifying the passed string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+/**
+ * @brief Trim whitespace from the end of a string (in place).
+ *
+ * Remove whitespace from the end of a string, modifying the passed string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+/**
+ * @brief Trim whitespace from the beginning and end of a string(in place).
+ *
+ * Remove whitespace from the beginning and end of a string, modifying the passed
+ * string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void trim(std::string &s) {
+    ltrim(s);
+    rtrim(s);
+}
+
+/**
+ * @brief Trim whitespace from the beginning and end of a string.
+ *
+ * Remove whitespace from the beginning and end of a string
+ * returning the result.
+ *
+ * @param s The @c std::string to trim.
+ *
+ * @return The trimmed string.
+ */
+static inline std::string trim_copy(std::string s) {
+    trim(s);
+    return s;
+}
+
 } // namespace libcellml
