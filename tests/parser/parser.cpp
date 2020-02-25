@@ -269,7 +269,7 @@ TEST(Parser, parseNamedModelWithNamedComponent)
 
 TEST(Parser, parseModelWithUnitsAndNamedComponent)
 {
-    const std::string e =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
@@ -278,9 +278,17 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent)
         "  <units name=\"dimensionless\"/>\n"
         "  <component name=\"component_name\"/>\n"
         "</model>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <units name=\"fahrenheitish\">\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
+        "  </units>\n"
+        "  <component name=\"component_name\"/>\n"
+        "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(model);
@@ -289,7 +297,7 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent)
 
 TEST(Parser, unitsAttributeIssue)
 {
-    const std::string ex =
+    const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"pH\" invalid_attribute=\"yes\"/>\n"
@@ -299,8 +307,9 @@ TEST(Parser, unitsAttributeIssue)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
-    EXPECT_EQ_ISSUES(expectedIssues, p);
+    p->parseModel(e);
+    EXPECT_EQ_ERRORS(expectedErrors, p);
+
 }
 
 TEST(Parser, unitsElementIssues)
@@ -555,7 +564,6 @@ TEST(Parser, modelWithUnits)
         "  <units name=\"fahrenheitish\">\n"
         "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
-        "  <units name=\"dimensionless\"/>\n"
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
@@ -591,7 +599,6 @@ TEST(Parser, modelWithInvalidUnits)
         "    <unit exponent=\"inf\" units=\"kelvin\"/>\n"
         "    <unit units=\"\"/>\n"
         "  </units>\n"
-        "  <units name=\"dimensionless\"/>\n"
         "  <units>\n"
         "    <unit units=\"friends\"/>\n"
         "    <unit units=\"\"/>\n"
