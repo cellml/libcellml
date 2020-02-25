@@ -307,7 +307,7 @@ TEST(Parser, unitsAttributeIssue)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(e);
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 

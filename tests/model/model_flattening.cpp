@@ -607,17 +607,7 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
 {
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
-    auto model = parser->parseModel(fileContents("modelflattening/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
-    EXPECT_TRUE(model->hasUnresolvedImports());
-
-    importer->resolveImports(resourcePath("modelflattening/hodgkin_huxley_squid_axon_model_1952/"), model);
-    EXPECT_FALSE(model->hasUnresolvedImports());
-
-    importer->flatten(model);
-    /*
-        // KRM from develop???
-    
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"a_model\">\n"
@@ -635,7 +625,7 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
     // Import the membrane component from a file.
     auto membrane = libcellml::Component::create("membrane");
     model->addComponent(membrane);
-    */
+
 
     auto membraneImporter = libcellml::ImportSource::create();
     membraneImporter->setUrl("basic_membrane_model.cellml");
@@ -654,9 +644,9 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
     sodiumChannel->setImportReference("sodium_channel_for_importing");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
+    importer->flatten(model);
 
     auto printer = libcellml::Printer::create();
 
@@ -684,6 +674,7 @@ TEST(ModelFlattening, unitsUsedByVariableNotInDirectlyImportedComponent)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto e_model = parser->parseModel(e);
 
     // KRM Currently there's a bug in the model above but it's fixed in another PR.
@@ -702,9 +693,10 @@ TEST(ModelFlattening, unitsUsedByVariableNotInDirectlyImportedComponent)
     channel->setImportReference("sodium_channel");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    // model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
+    importer->flatten(model);
 
     auto printer = libcellml::Printer::create();
 
@@ -722,14 +714,12 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
     EXPECT_TRUE(model->hasUnresolvedImports());
     auto importer = libcellml::Importer::create();
 
-    importer->resolveImports(resourcePath("modelflattening/"), model);
+    importer->resolveImports(resourcePath("modelflattening/hodgkin_huxley_squid_axon_model_1952/"), model);
     EXPECT_EQ(size_t(0), importer->issueCount());
     printIssues(importer);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
     importer->flatten(model);
-    // KRM model->resolveImports(resourcePath("modelflattening/hodgkin_huxley_squid_axon_model_1952/"));
-
 
     auto printer = libcellml::Printer::create();
 
