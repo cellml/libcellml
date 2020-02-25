@@ -863,3 +863,65 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
     EXPECT_EQ(size_t(2), validator->errorCount());
     EXPECT_EQ_ERRORS(e2, validator);
 }
+
+TEST(Model, importUnitsDuplicated)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myImportedModel\">\n"
+        "  <units name=\"millisecond\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_millisecond\">\n"
+        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
+        "  </units>\n"
+        "  <component name=\"myComponent\">\n"
+        "    <variable name=\"t\" units=\"millisecond\"/>\n"
+        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
+        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
+        "  </component>\n"
+        "</model>";
+
+    const std::string expectedModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"millisecond\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_millisecond\">\n"
+        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
+        "  </units>\n"
+        "  <component name=\"c\">\n"
+        "    <variable name=\"t\" units=\"millisecond\"/>\n"
+        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
+        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    // Create the model by parsing the string above.
+    auto parser = libcellml::Parser::create();
+    auto importedModel = parser->parseModel(in);
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(importedModel);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    auto model = libcellml::Model::create("model");
+    auto c = libcellml::Component::create("c");
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("not_required_resolving_import_manually");
+    importSource->setModel(importedModel);
+
+    c->setImportReference("myComponent");
+    c->setImportSource(importSource);
+    model->addComponent(c);
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten();
+
+    validator->validateModel(model);
+    printErrors(validator);
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(expectedModelString, printer->printModel(model));
+}
