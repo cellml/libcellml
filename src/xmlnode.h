@@ -219,6 +219,8 @@ public:
      */
     std::string attribute(const char *attributeName) const;
 
+    void setAttribute(const char *attributeName, const char *attributeValue);
+
     /**
      * @brief Get the first attribute for this @c XmlNode
      *
