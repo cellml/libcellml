@@ -591,7 +591,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             IssuePtr issue = Issue::create();
-            issue->setDescription(""Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
+            issue->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
             issue->setVariable(variable);
             issue->setRule(ReferenceRule::VARIABLE_UNITS);
             mValidator->addIssue(issue);

@@ -2323,7 +2323,7 @@ TEST(Validator, unitEquivalenceMultiplier)
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
 
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'v' in component 'c3' has a units reference 'non_existent_deep' which is neither standard nor defined in the parent model.",
         "Variable 'v' in component 'c2' has a units reference 'non_existent_shallow' which is neither standard nor defined in the parent model.",
     };

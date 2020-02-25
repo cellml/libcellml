@@ -674,6 +674,7 @@ TEST(ModelFlattening, unitsUsedByVariableNotInDirectlyImportedComponent)
         "</model>\n";
 
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto e_model = parser->parseModel(e);
 
     // KRM Currently there's a bug in the model above but it's fixed in another PR.
@@ -692,9 +693,10 @@ TEST(ModelFlattening, unitsUsedByVariableNotInDirectlyImportedComponent)
     channel->setImportReference("sodium_channel");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath("modelflattening/"));
+    // model->resolveImports(resourcePath("modelflattening/"));
+    importer->resolveImports(resourcePath("modelflattening/"), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
+    importer->flatten(model);
 
     auto printer = libcellml::Printer::create();
 
