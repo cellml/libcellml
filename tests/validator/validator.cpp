@@ -1207,6 +1207,40 @@ TEST(Validator, resetNoResetValue)
     EXPECT_EQ(expectedError, validator->error(0)->description());
 }
 
+TEST(Validator, resetMultipleMathMlInResetValue)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Multiple MathML in reset_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(6);
+    r->setResetValue(NON_EMPTY_MATH + NON_EMPTY_MATH);
+    r->setTestValue(NON_EMPTY_MATH);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(m);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
 TEST(Validator, resetNoTestValue)
 {
     const std::vector<std::string> expectedErrors = {
@@ -1243,6 +1277,40 @@ TEST(Validator, resetNoTestValue)
     validator->validateModel(m);
 
     EXPECT_EQ_ERRORS(expectedErrors, validator);
+}
+
+TEST(Validator, resetMultipleMathMlInTestValue)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Multiple MathML blocks in test_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(6);
+    r->setResetValue(NON_EMPTY_MATH);
+    r->setTestValue(NON_EMPTY_MATH + NON_EMPTY_MATH);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(m);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
 TEST(Validator, resetWhitespaceAsMaths)
