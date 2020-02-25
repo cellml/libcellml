@@ -712,7 +712,6 @@ TEST(Model, importingComponentWithCnUnitNamesThatAreAlreadyDefinedInImportingMod
     EXPECT_EQ(e, printer->printModel(model));
 }
 
-
 TEST(Model, importingComponentWithIdenticallyDefinedUnitsAsImportingModel)
 {
     const std::string e =
