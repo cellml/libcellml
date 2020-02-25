@@ -204,6 +204,12 @@ bool XmlNode::hasAttribute(const char *attributeName) const
     return found;
 }
 
+xmlNsPtr getAttributeNamespace(const xmlNodePtr &node, const char *attributeName)
+{
+    xmlAttrPtr attribute = xmlHasProp(node, reinterpret_cast<const xmlChar *>(attributeName));
+    return attribute->ns;
+}
+
 std::string XmlNode::attribute(const char *attributeName) const
 {
     std::string attributeValueString;
@@ -213,6 +219,14 @@ std::string XmlNode::attribute(const char *attributeName) const
         xmlFree(attributeValue);
     }
     return attributeValueString;
+}
+
+void XmlNode::setAttribute(const char *attributeName, const char *attributeValue)
+{
+    if (hasAttribute(attributeName)) {
+        auto ns = getAttributeNamespace(mPimpl->mXmlNodePtr, attributeName);
+        xmlSetNsProp(mPimpl->mXmlNodePtr, ns, reinterpret_cast<const xmlChar *>(attributeName), reinterpret_cast<const xmlChar *>(attributeValue));
+    }
 }
 
 XmlAttributePtr XmlNode::firstAttribute() const
