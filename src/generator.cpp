@@ -1222,7 +1222,31 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
                 mGenerator->addError(err);
             } else {
-                mVoi = variable;
+                // We have found our variable of integration, but this may not
+                // be the one defined in our first component (i.e. the likely
+                // reference component), so go through our components and look
+                // for the first occurrence of our variable of integration.
+
+                ModelPtr model = owningModel(std::dynamic_pointer_cast<Component>(variable->parent()));
+
+                for (size_t i = 0; i < model->componentCount(); ++i) {
+                    ComponentPtr testComponent = model->component(i);
+
+                    for (size_t j = 0; j < testComponent->variableCount(); ++j) {
+                        VariablePtr testVariable = testComponent->variable(j);
+
+                        if ((variable == testVariable)
+                            || variable->hasEquivalentVariable(testVariable, true)) {
+                            mVoi = testVariable;
+
+                            break;
+                        }
+                    }
+
+                    if (mVoi != nullptr) {
+                        break;
+                    }
+                }
             }
         } else if ((variable != mVoi)
                    && !variable->hasEquivalentVariable(mVoi, true)) {
