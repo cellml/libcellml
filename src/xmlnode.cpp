@@ -169,6 +169,11 @@ bool XmlNode::isElement(const char *name, const char *ns) const
     return found;
 }
 
+bool XmlNode::isElement() const
+{
+    return mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE;
+}
+
 bool XmlNode::isCellmlElement(const char *name) const
 {
     return isElement(name, CELLML_2_0_NS);
