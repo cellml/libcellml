@@ -664,6 +664,21 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
 
 TEST(Model, importUnitsDuplicated)
 {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"millisecond\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_millisecond\">\n"
+        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
+        "  </units>\n"
+        "  <component name=\"c\">\n"
+        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
+        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myImportedModel\">\n"
@@ -678,21 +693,6 @@ TEST(Model, importUnitsDuplicated)
         "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
         "  </component>\n"
         "</model>";
-
-    const std::string expectedModelString =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
-        "  <units name=\"millisecond\">\n"
-        "    <unit prefix=\"milli\" units=\"second\"/>\n"
-        "  </units>\n"
-        "  <units name=\"per_millisecond\">\n"
-        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
-        "  </units>\n"
-        "  <component name=\"c\">\n"
-        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
-        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
-        "  </component>\n"
-        "</model>\n";
 
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
@@ -720,5 +720,5 @@ TEST(Model, importUnitsDuplicated)
     EXPECT_EQ(size_t(0), validator->errorCount());
 
     auto printer = libcellml::Printer::create();
-    EXPECT_EQ(expectedModelString, printer->printModel(model));
+    EXPECT_EQ(e, printer->printModel(model));
 }

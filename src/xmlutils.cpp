@@ -84,7 +84,7 @@ std::vector<XmlDocPtr> multiRootXml(const std::string &content)
     std::vector<XmlDocPtr> childDocs;
 
     // Wrap potentially multiple nodes in our own root node.
-    auto wrappedContent = "<root>" + trim_copy(content) + "</root>";
+    auto wrappedContent = "<root>" + trimCopy(content) + "</root>";
 
     // Parse this new string as a document and turn the child nodes
     // into their own document.
