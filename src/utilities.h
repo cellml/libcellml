@@ -446,12 +446,53 @@ bool isStandardPrefixName(const std::string &name);
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
 
+/**
+ * @brief Test to determine if @p entity1 is a child of @p entity2.
+ *
+ * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
+ * @p entity1 is a child of @p entity2 and @c false otherwise.
+ *
+ * @param entity1 The @c Entity to test if it is a child of @p entity2.
+ * @param entity2 The @c Entity that is potentially the parent of @p entity1.
+ *
+ * @return @c true if @p entity1 is a child of @p entity2 and @c false otherwise.
+ */
 bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
 
+/**
+ * @brief Test to determine if @p entity1 and @p entity2 are siblings.
+ *
+ * Test to determine if @p entity1 and @p entity2 are siblings.  Returns
+ * @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
+ *
+ * @param entity1 An @c Entity to test if it is a sibling to @p entity2.
+ * @param entity2 An @c Entity to test if it is a sibling to @p entity1.
+ *
+ * @return @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
+ */
 bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
 
+/**
+ * @brief Determine the interface type of the @p variable.
+ *
+ * Determines the interface type of the given @p variable.
+ *
+ * @param variable The variable to determine the interface type for.
+ *
+ * @return The @p variable's interface type.
+ */
 Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
 
+/**
+ * @brief Traverses the component tree looking for variables with equivalences.
+ *
+ * Searches through the component tree starting at @p component looking for variables
+ * with equivalences.  Variables found in the component tree with equivalences are added
+ * to the @p variables list.
+ *
+ * @param component The @c Component to search.
+ * @param variables The list of equivalent variables found.
+ */
 void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 } // namespace libcellml
