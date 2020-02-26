@@ -2293,8 +2293,8 @@ TEST(Validator, variableEquivalenceValidNetwork)
 TEST(Validator, variableEquivalenceUnreachable)
 {
     const std::vector<std::string> e {
-        "The equivalence between 'v1' on component 'c1'  and 'v3' on component 'c3' is not possible, the separation is too great.",
-        "The equivalence between 'v3' on component 'c3'  and 'v1' on component 'c1' is not possible, the separation is too great.",
+        "The equivalence between 'v1' on component 'c1'  and 'v3' on component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor have a parent/child relationship.",
+        "The equivalence between 'v3' on component 'c3'  and 'v1' on component 'c1' is invalid. Component 'c3' and 'c1' are neither siblings nor have a parent/child relationship.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2340,8 +2340,8 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 {
     const std::vector<std::string> e {
         "Variable 'v1' has an interaface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
-        "The equivalence between 'v2' on component 'c2'  and 'v4' on component 'c4' is not possible, the separation is too great.",
-        "The equivalence between 'v4' on component 'c4'  and 'v2' on component 'c2' is not possible, the separation is too great.",
+        "The equivalence between 'v2' on component 'c2'  and 'v4' on component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor have a parent/child relationship.",
+        "The equivalence between 'v4' on component 'c4'  and 'v2' on component 'c2' is invalid. Component 'c4' and 'c2' are neither siblings nor have a parent/child relationship.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
