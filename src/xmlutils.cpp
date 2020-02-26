@@ -16,6 +16,9 @@ limitations under the License.
 
 #include "xmlutils.h"
 
+#include "utilities.h"
+#include "xmldoc.h"
+
 namespace libcellml {
 
 /**
@@ -74,6 +77,38 @@ XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node)
     }
 
     return undefinedNamespaces;
+}
+
+std::vector<XmlDocPtr> multiRootXml(const std::string &content)
+{
+    std::vector<XmlDocPtr> childDocs;
+
+    // Wrap potentially multiple nodes in our own root node.
+    auto wrappedContent = "<root>" + trim_copy(content) + "</root>";
+
+    // Parse this new string as a document and turn the child nodes
+    // into their own document.
+    XmlDocPtr doc = std::make_shared<XmlDoc>();
+    doc->parse(wrappedContent);
+    XmlNodePtr rootNode = doc->rootNode();
+    if (rootNode != nullptr) {
+        XmlNodePtr child = rootNode->firstChild();
+        while (child != nullptr) {
+            if (child->isElement()) {
+                auto childContent = child->convertToString();
+                XmlDocPtr childDoc = std::make_shared<XmlDoc>();
+                childDoc->parse(childContent);
+                childDocs.push_back(childDoc);
+            }
+            child = child->next();
+        }
+    } else {
+        XmlDocPtr originalContentDoc = std::make_shared<XmlDoc>();
+        originalContentDoc->parse(content);
+        childDocs.push_back(originalContentDoc);
+    }
+
+    return childDocs;
 }
 
 } // namespace libcellml

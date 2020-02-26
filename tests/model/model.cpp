@@ -583,57 +583,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
-TEST(Model, missingUnitsFromImportOfCnTermsNotDefinedInImportedModel)
-{
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "   <component name=\"myComponent\">\n"
-        "       <variable name=\"a\" units=\"second\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>a</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
-        "</model>";
-    const std::vector<std::string> e = {"Math has a cn element with a cellml:units attribute 'myUnitsThatIUse' that is not a valid reference to units in the model 'model' or a standard unit."};
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
-    // The importedModel has one validation error because the units
-    // myUnitsThatIUse are not defined in the imported model.
-    validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-
-    auto model = libcellml::Model::create("model");
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    // But now by importing the component I have miraculously
-    // found the units myUnitsThatIUse!
-
-    // KRM: This is not the behaviour I see? I get the expected error message about the missing units.
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ_ERRORS(e, validator);
-}
-
-TEST(Model, importingComponentWithCnUnitNamesThatAreAlreadyDefinedInImportingModel)
+TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -712,158 +662,6 @@ TEST(Model, importingComponentWithCnUnitNamesThatAreAlreadyDefinedInImportingMod
     EXPECT_EQ(e, printer->printModel(model));
 }
 
-TEST(Model, importingComponentWithIdenticallyDefinedUnitsAsImportingModel)
-{
-    const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "  <units name=\"myUnitsThatIUse\">\n"
-        "    <unit units=\"second\"/>\n"
-        "  </units>\n"
-        "  <units name=\"myOtherUnits\">\n"
-        "    <unit units=\"metre\"/>\n"
-        "  </units>\n"
-        "  <component name=\"c\">\n"
-        "    <variable name=\"a\" units=\"second\"/>\n"
-        "    <variable name=\"b\" units=\"myOtherUnits\"/>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "      <apply>\n"
-        "        <eq/>\n"
-        "        <ci>a</ci>\n"
-        "        <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
-        "      </apply>\n"
-        "    </math>\n"
-        "  </component>\n"
-        "</model>\n";
-
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "  <units name=\"myUnitsThatIUse\">\n"
-        "    <unit units=\"second\"/>\n"
-        "  </units>\n"
-        "  <units name=\"myOtherUnits\">\n"
-        "    <unit units=\"metre\"/>\n"
-        "  </units>\n"
-        "   <component name=\"myComponent\">\n"
-        "       <variable name=\"a\" units=\"second\"/>\n"
-        "       <variable name=\"b\" units=\"myOtherUnits\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply>"
-        "             <eq/>\n"
-        "             <ci>a</ci>\n"
-        "             <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
-        "</model>";
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
-
-    // No problems with the imported model.
-    validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    // The model myModel already has myUnitsThatIUse defined.
-    auto model = libcellml::Model::create("myModel");
-    auto u1 = libcellml::Units::create("myUnitsThatIUse");
-    u1->addUnit("second");
-    model->addUnits(u1);
-    auto u2 = libcellml::Units::create("myOtherUnits");
-    u2->addUnit("metre");
-    model->addUnits(u2);
-
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-
-    // I would expect that the name of the cn elements units would not need
-    // to change as the importing model already has units of that name and definition.
-    auto printer = libcellml::Printer::create();
-    EXPECT_EQ(e, printer->printModel(model));
-}
-
-TEST(Model, importingComponentWithTwoMathMLDocuments)
-{
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "  <component name=\"myComponent\">\n"
-        "    <variable name=\"a\" units=\"second\"/>\n"
-        "    <variable name=\"b\" units=\"dimensionless\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>a</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatAUses\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>b</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatBUses\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
-        "</model>";
-
-    const std::vector<std::string> e1 = {"LibXml2 error: Extra content at the end of the document.",
-                                         "Could not get a valid XML root node from the math on component 'myComponent'."};
-    const std::vector<std::string> e2 = {"LibXml2 error: Extra content at the end of the document.",
-                                         "Could not get a valid XML root node from the math on component 'c'."};
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
-    // The importedModel has one validation error because the units
-    // myUnitsThatIUse are not defined in the imported model.
-
-    // KRM: The validator returns two errors because it cannot find the root mathml from the two strings.
-    //   - If we don't permit more than one mathml block, then it becomes a validation prob, not an import one.
-    //   - If we do, then I would have expected errors from both myUnitsThatAUses and myUnitsThatBUses? two errors, not one?
-    validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(2), validator->errorCount());
-    EXPECT_EQ_ERRORS(e1, validator);
-
-    auto model = libcellml::Model::create("model");
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    validator->validateModel(model);
-
-    // KRM: I'd expect exactly the same errors here as in the parsed model validation, which is what I get, so
-    //  I'm confused about what this test is trying to show?
-    EXPECT_EQ(size_t(2), validator->errorCount());
-    EXPECT_EQ_ERRORS(e2, validator);
-}
-
 TEST(Model, importUnitsDuplicated)
 {
     const std::string in =
@@ -876,7 +674,6 @@ TEST(Model, importUnitsDuplicated)
         "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
         "  </units>\n"
         "  <component name=\"myComponent\">\n"
-        "    <variable name=\"t\" units=\"millisecond\"/>\n"
         "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
         "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
         "  </component>\n"
@@ -892,7 +689,6 @@ TEST(Model, importUnitsDuplicated)
         "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
         "  </units>\n"
         "  <component name=\"c\">\n"
-        "    <variable name=\"t\" units=\"millisecond\"/>\n"
         "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
         "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
         "  </component>\n"
@@ -921,7 +717,8 @@ TEST(Model, importUnitsDuplicated)
     model->flatten();
 
     validator->validateModel(model);
-    printErrors(validator);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(expectedModelString, printer->printModel(model));
 }

@@ -17,17 +17,18 @@ limitations under the License.
 #pragma once
 
 #include <map>
-#include <unordered_set>
 #include <vector>
 
 #include "libcellml/types.h"
 
 namespace libcellml {
 
+using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
+
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
+
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
-using NameSet = std::unordered_set<std::string>; /** Type definition for a set of names. */
-using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
+using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 
 } // namespace libcellml

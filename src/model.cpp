@@ -21,7 +21,6 @@ limitations under the License.
 #include <map>
 #include <sstream>
 #include <stack>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -34,6 +33,7 @@ limitations under the License.
 #include "internaltypes.h"
 #include "utilities.h"
 #include "xmldoc.h"
+#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -241,56 +241,95 @@ void linkComponentVariableUnits(const ComponentPtr &component)
     }
 }
 
-void findCnUnits(const XmlNodePtr &node, NameSet &cnUnitsSet)
+NameList findCnUnitsNames(const XmlNodePtr &node)
 {
+    NameList names;
     XmlNodePtr childNode = node->firstChild();
     while (childNode != nullptr) {
         if (childNode->isMathmlElement("cn")) {
             std::string u = childNode->attribute("units");
-            if (!isStandardUnitName(u)) {
-                cnUnitsSet.insert(u);
+            if (!u.empty() && !isStandardUnitName(u)) {
+                names.push_back(u);
             }
         }
-        findCnUnits(childNode, cnUnitsSet);
+        auto childNames = findCnUnitsNames(childNode);
+        names.insert(names.end(), childNames.begin(), childNames.end());
+        childNode = childNode->next();
+    }
+
+    return names;
+}
+
+NameList findComponentCnUnitsNames(const ComponentPtr &component)
+{
+    NameList names;
+    // Inspect the MathML in this component for any specified constant <cn> units.
+    std::string mathContent = component->math();
+    if (mathContent.empty()) {
+        return names;
+    }
+    std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
+    for (const auto &doc : mathDocs) {
+        auto rootNode = doc->rootNode();
+        if (rootNode->isMathmlElement("math")) {
+            auto nodesNames = findCnUnitsNames(rootNode);
+            names.insert(names.end(), nodesNames.begin(), nodesNames.end());
+        }
+    }
+
+    return names;
+}
+
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap)
+{
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement("cn")) {
+            std::string unitsName = childNode->attribute("units");
+            auto foundNameIter = replaceMap.find(unitsName);
+            if (foundNameIter != replaceMap.end()) {
+                childNode->setAttribute("units", foundNameIter->second.c_str());
+            }
+        }
+        findAndReplaceCnUnitsNames(childNode, replaceMap);
         childNode = childNode->next();
     }
 }
 
-void findComponentCnUnits(const ComponentPtr &component, NameSet &cnUnitsSet)
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
 {
-    // Inspect the MathML in this component for any specified constant <cn> units,
-    // and make sure that they're in the model.
-    if (component == nullptr) {
+    std::string mathContent = component->math();
+    if (mathContent.empty()) {
         return;
     }
-    std::string math = component->math();
-    if (math.empty()) {
-        return;
+    bool contentModified = false;
+    std::string newMathContent;
+    std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
+    for (const auto &doc : mathDocs) {
+        auto rootNode = doc->rootNode();
+        if (rootNode->isMathmlElement("math")) {
+            auto originalMath = rootNode->convertToString();
+            findAndReplaceCnUnitsNames(rootNode, replaceMap);
+            auto newMath = rootNode->convertToString();
+            newMathContent += newMath;
+            if (newMath != originalMath) {
+                contentModified = true;
+            }
+        }
     }
-    XmlDocPtr doc = std::make_shared<XmlDoc>();
-    doc->parse(math);
-    XmlNodePtr root = doc->rootNode();
-    if (root != nullptr) {
-        findCnUnits(root, cnUnitsSet);
+
+    if (contentModified) {
+        component->setMath(newMathContent);
     }
-    // TODO else add error to the import logger when #531 is merged in
 }
 
-void doFindCnUnits(const ComponentPtr &component, NameSet &cnUnitsSet)
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
 {
-    findComponentCnUnits(component, cnUnitsSet);
-    for (size_t c = 0; c < component->componentCount(); ++c) {
-        doFindCnUnits(component->component(c), cnUnitsSet);
+    findAndReplaceComponentCnUnitsNames(component, replaceMap);
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto childComponent = component->component(index);
+        findAndReplaceComponentCnUnitsNames(childComponent, replaceMap);
     }
-}
-
-NameSet cnUnits(const ModelPtr &model)
-{
-    NameSet cnUnitsSet = {};
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        doFindCnUnits(model->component(c), cnUnitsSet);
-    }
-    return cnUnitsSet;
 }
 
 void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
@@ -710,41 +749,60 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     return nameMap;
 }
 
-std::vector<UnitsPtr> unitsUsed(const ComponentPtr &component)
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units)
+{
+    std::vector<UnitsPtr> requiredUnits;
+
+    std::string ref;
+    std::string pre;
+    std::string id;
+    double expMult;
+    double uExp;
+
+    for (size_t index = 0; index < units->unitCount(); ++index) {
+        units->unitAttributes(index, ref, pre, uExp, expMult, id);
+        if (!isStandardUnitName(ref)) {
+            auto u = model->units(ref);
+            if (u != nullptr) {
+                auto requiredUnitsUnits = referencedUnits(model, u);
+                requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
+                requiredUnits.push_back(u);
+            }
+        }
+    }
+
+    return requiredUnits;
+}
+
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
 {
     std::vector<UnitsPtr> usedUnits;
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
         if (u != nullptr && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
             usedUnits.push_back(u);
         }
     }
+    auto componentCnUnitsNames = findComponentCnUnitsNames(component);
+    for (const auto &unitsName : componentCnUnitsNames) {
+        auto u = model->units(unitsName);
+        if (u != nullptr && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+
     for (size_t i = 0; i < component->componentCount(); ++i) {
         auto childComponent = component->component(i);
-        auto childUsedUnits = unitsUsed(childComponent);
+        auto childUsedUnits = unitsUsed(model, childComponent);
         usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
     }
 
     return usedUnits;
-}
-
-void switchUnitsInMathML(std::string &maths, std::string &in, std::string &out)
-{
-    //  Note that this function will replace any and all occurrences of the "in"
-    //  string within the "maths" string with the "out" string.  It's worth noting that
-    //  in order to be sure that only full name matches for units are replaced, we exploit
-    //  the fact that the units names in the MathML string will be in quotation marks, and include
-    //  these quotation marks on either side of the in and out strings for safety.
-
-    std::string::size_type n = 0;
-    std::string in_with_quotes = "\"" + in + "\"";
-    std::string out_with_quotes = "\"" + out + "\"";
-
-    while ((n = maths.find(in_with_quotes, n)) != std::string::npos) {
-        maths.replace(n, in_with_quotes.size(), out_with_quotes);
-        n += out_with_quotes.size();
-    }
 }
 
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
@@ -780,23 +838,12 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         }
 
         // Get list of required units from component's variables.
-        std::vector<UnitsPtr> requiredUnits = unitsUsed(importedComponentCopy);
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(importModel, importedComponentCopy);
 
-        // Get the names of the units used by the <cn> elements in all the components' MathML and add them
-        // to the required units.
-        auto tempModel = Model::create();
-        tempModel->addComponent(importedComponentCopy);
-        tempModel->linkUnits();
-        auto cnList = cnUnits(tempModel);
-        // Distinguish between ci and cn units because we need to alter the MathML if the cn unit name is changed later
-        std::vector<UnitsPtr> requiredCnUnits;
-        for (auto &name : cnList) {
-            if (!tempModel->hasUnits(name)) {
-                auto u = importModel->units(name);
-                if (u != nullptr) {
-                    requiredCnUnits.push_back(u);
-                }
-            }
+        // Add all required units to a model so referenced units can be resolved.
+        auto requiredUnitsModel = Model::create();
+        for (const auto &units : requiredUnits) {
+            requiredUnitsModel->addUnits(units);
         }
 
         // Make a map of component name to component pointer.
@@ -829,8 +876,10 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         applyEquivalenceMapToModel(rebasedMap, model);
 
         // Copy over units used in imported component to this model.
+        std::map<std::string, std::string> unitsNamesToReplace;
         for (const auto &u : requiredUnits) {
             if (!model->hasUnits(u)) {
+                auto orignalName = u->name();
                 size_t count = 0;
                 while (!model->hasUnits(u) && model->hasUnits(u->name())) {
                     auto name = u->name();
@@ -838,23 +887,12 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
                     u->setName(name);
                 }
                 model->addUnits(u);
-            }
-        }
-        for (const auto &u : requiredCnUnits) {
-            if (!model->hasUnits(u)) {
-                size_t count = 0;
-                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
-                    auto oldName = u->name();
-                    auto name = oldName + "_" + convertToString(++count);
-                    u->setName(name);
-                    // Have to replace the units within the MathML string here with their new name
-                    auto mathml = importedComponentCopy->math();
-                    switchUnitsInMathML(mathml, oldName, name);
-                    importedComponentCopy->setMath(mathml);
+                if (orignalName != u->name()) {
+                    unitsNamesToReplace[orignalName] = u->name();
                 }
-                model->addUnits(u);
             }
         }
+        findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
     }
 }
 
@@ -892,6 +930,8 @@ void Model::flatten()
             flattenComponentTree(shared_from_this(), c, index);
         }
     }
+
+    linkUnits();
 }
 
 } // namespace libcellml
