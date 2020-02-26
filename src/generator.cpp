@@ -647,8 +647,6 @@ struct Generator::GeneratorImpl
     void addArithmeticFunctionsCode(std::string &code);
     void addTrigonometricFunctionsCode(std::string &code);
 
-    std::string generateCreateArrayCode(size_t arraySize);
-
     void addInterfaceCreateDeleteArrayMethodsCode(std::string &code);
     void addImplementationCreateStatesArrayMethodCode(std::string &code);
     void addImplementationCreateVariablesArrayMethodCode(std::string &code);
@@ -1130,7 +1128,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     std::string math = component->math();
 
     if (!math.empty()) {
-        xmlDoc->parseMathML(math);
+        xmlDoc->parseMathML(math, false);
 
         XmlNodePtr mathNode = xmlDoc->rootNode();
 
@@ -1826,8 +1824,6 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->ratesArrayString()
                        + mProfile->variablesArrayString();
 
-    profileContents += mProfile->returnCreatedArrayString();
-
     profileContents += mProfile->interfaceCreateStatesArrayMethodString()
                        + mProfile->implementationCreateStatesArrayMethodString();
 
@@ -1872,11 +1868,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "e387c94ec0debf68566379f214c250a28907e90c";
+        res = profileContentsSha1 != "e2aa9af2767ab84b217cf996c491c485ae876563";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "42d407f85ab07649516b55f7c626553034f892a9";
+        res = profileContentsSha1 != "1abb41ecb908526b51c2ac8c44bc9542942a9652";
 
         break;
     }
@@ -2415,12 +2411,6 @@ void Generator::GeneratorImpl::addTrigonometricFunctionsCode(std::string &code)
     }
 }
 
-std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
-{
-    return replace(mProfile->returnCreatedArrayString(),
-                   "<ARRAY_SIZE>", std::to_string(arraySize));
-}
-
 void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::string &code)
 {
     std::string interfaceCreateDeleteArraysCode;
@@ -2446,27 +2436,23 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::str
 
 void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(std::string &code)
 {
-    if (!mProfile->implementationCreateStatesArrayMethodString().empty()
-        && !mProfile->returnCreatedArrayString().empty()) {
+    if (!mProfile->implementationCreateStatesArrayMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += replace(mProfile->implementationCreateStatesArrayMethodString(),
-                        "<CODE>", mProfile->indentString() + generateCreateArrayCode(mStates.size()));
+        code += mProfile->implementationCreateStatesArrayMethodString();
     }
 }
 
 void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode(std::string &code)
 {
-    if (!mProfile->implementationCreateVariablesArrayMethodString().empty()
-        && !mProfile->returnCreatedArrayString().empty()) {
+    if (!mProfile->implementationCreateVariablesArrayMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += replace(mProfile->implementationCreateVariablesArrayMethodString(),
-                        "<CODE>", mProfile->indentString() + generateCreateArrayCode(mVariables.size()));
+        code += mProfile->implementationCreateVariablesArrayMethodString();
     }
 }
 

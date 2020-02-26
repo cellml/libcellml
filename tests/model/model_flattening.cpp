@@ -591,6 +591,95 @@ TEST(ModelFlattening, importedComponentWithNameClashes)
     EXPECT_EQ(e, a);
 }
 
+TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"a_model\">\n"
+        "  <component name=\"membrane\"/>\n"
+        "  <component name=\"sodium_channel_1\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"membrane\">\n"
+        "      <component_ref component=\"sodium_channel_1\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto model = libcellml::Model::create("a_model");
+
+    // Import the membrane component from a file.
+    auto membrane = libcellml::Component::create("membrane");
+    model->addComponent(membrane);
+
+    auto membraneImporter = libcellml::ImportSource::create();
+    membraneImporter->setUrl("basic_membrane_model.cellml");
+
+    membrane->setImportSource(membraneImporter);
+    membrane->setImportReference("membrane_for_importing");
+
+    // Import the sodium channel from a file, and set as encapsulated child of the membrane.
+    auto sodiumChannel = libcellml::Component::create("sodium_channel");
+    membrane->addComponent(sodiumChannel);
+
+    auto sodiumImporter = libcellml::ImportSource::create();
+    sodiumImporter->setUrl("basic_sodium_channel.cellml");
+
+    sodiumChannel->setImportSource(sodiumImporter);
+    sodiumChannel->setImportReference("sodium_channel_for_importing");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten();
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
+TEST(ModelFlattening, unitsUsedByVariableNotInDirectlyImportedComponent)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"a_model\">\n"
+        "  <units name=\"per_ms\">\n"
+        "    <unit exponent=\"-1\" prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <component name=\"imported_hierarchy\"/>\n"
+        "  <component name=\"mGate\">\n"
+        "    <variable name=\"alpha_m\" units=\"per_ms\"/>\n"
+        "  </component>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"imported_hierarchy\">\n"
+        "      <component_ref component=\"mGate\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    auto model = libcellml::Model::create("a_model");
+
+    // Import the component hierarchy from a file
+    auto channel = libcellml::Component::create("imported_hierarchy");
+    model->addComponent(channel);
+
+    auto channelImporter = libcellml::ImportSource::create();
+    channelImporter->setUrl("imported_hierarchy_model.cellml");
+
+    channel->setImportSource(channelImporter);
+    channel->setImportReference("sodium_channel");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath("modelflattening/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    model->flatten();
+
+    auto printer = libcellml::Printer::create();
+
+    auto a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}
+
 // The variable ordering changes when using the HH model defined with imports.
 TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
 {

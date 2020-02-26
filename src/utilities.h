@@ -397,7 +397,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @brief Check if the provided @p name is a standard unit.
  *
  * Checks if the provided @p name is one of the standard units in the
- * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
+ * @c Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
  * and @c false otherwise.
  *
  * @param name The @c std::string name to check against the list of standard units.
@@ -405,6 +405,19 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @return @c true if @name is a standard unit and @c false otherwise.
  */
 bool isStandardUnitName(const std::string &name);
+
+/**
+ * @brief Test if the provided @c Units is a standard unit.
+ *
+ * Tests to determine if the provided @p units is equivalent to
+ * a standard unit.  Returns @c true if the @p units is a standard unit
+ * and @c false otherwise.
+ *
+ * @param units The @c Units to test.
+ *
+ * @return @c true if @p units is a standard unit, @c false otherwise.
+ */
+bool isStandardUnit(const UnitsPtr &units);
 
 /**
  * @brief Check if the provided @p name is a standard prefix.

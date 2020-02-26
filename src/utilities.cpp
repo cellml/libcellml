@@ -28,6 +28,7 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/model.h"
 #include "libcellml/namedentity.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -429,6 +430,11 @@ ModelPtr owningModel(const EntityPtr &entity)
 bool isStandardUnitName(const std::string &name)
 {
     return standardUnitsList.count(name) != 0;
+}
+
+bool isStandardUnit(const UnitsPtr &units)
+{
+    return (units != nullptr) && units->isBaseUnit() && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
