@@ -229,14 +229,11 @@ void linkComponentVariableUnits(const ComponentPtr &component)
         auto u = v->units();
         if (u != nullptr) {
             auto model = owningModel(u);
-            if (model == nullptr && !isStandardUnitName(u->name())) {
+            if (model == nullptr && !isStandardUnit(u)) {
                 model = owningModel(component);
-                auto modelUnits = model->units(u->name());
-                if (modelUnits == nullptr) {
-                    model->addUnits(u);
-                    modelUnits = u;
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
                 }
-                v->setUnits(modelUnits);
             }
         }
     }
@@ -267,7 +264,7 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
         auto u = v->units();
         if (u != nullptr) {
             auto model = owningModel(u);
-            unlinked = model == nullptr && !isStandardUnitName(u->name());
+            unlinked = model == nullptr && !isStandardUnit(u);
         }
     }
 
@@ -341,9 +338,8 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
         libcellml::ComponentPtr component = parentComponentEntity->component(n);
         if (component->isImport()) {
             resolveImport(component, baseFile);
-        } else {
-            resolveComponentImports(component, baseFile);
         }
+        resolveComponentImports(component, baseFile);
     }
 }
 
@@ -361,9 +357,7 @@ bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
         ImportSourcePtr importedSource = importedEntity->importSource();
-        if (!importedSource->hasModel()) {
-            unresolvedImport = true;
-        }
+        unresolvedImport = !importedSource->hasModel();
     }
     return unresolvedImport;
 }
@@ -473,7 +467,7 @@ IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
     while (grandParent != nullptr) {
         indexStack.push_back(getComponentIndexInComponentEntity(grandParent, parent));
         parent = grandParent;
-        grandParent = std::dynamic_pointer_cast<ComponentEntity>(grandParent->parent());
+        grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
     }
 
     std::reverse(std::begin(indexStack), std::end(indexStack));
@@ -662,6 +656,25 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
     return nameMap;
 }
 
+std::vector<UnitsPtr> unitsUsed(const ComponentPtr &component)
+{
+    std::vector<UnitsPtr> usedUnits;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto v = component->variable(i);
+        auto u = v->units();
+        if (u != nullptr && !isStandardUnitName(u->name())) {
+            usedUnits.push_back(u);
+        }
+    }
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        auto childUsedUnits = unitsUsed(childComponent);
+        usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
+    }
+
+    return usedUnits;
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -690,16 +703,12 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Take a copy of the imported component which will be used to replace the import defined in this model.
         auto importedComponentCopy = importedComponent->clone();
         importedComponentCopy->setName(component->name());
-
-        // Temporarily add component to new model to find units used.
-        auto tempModel = Model::create();
-        tempModel->addComponent(importedComponentCopy);
-        tempModel->linkUnits();
-        std::vector<UnitsPtr> requiredUnits;
-        for (size_t i = 0; i < tempModel->unitsCount(); ++i) {
-            auto u = tempModel->units(i);
-            requiredUnits.push_back(u);
+        for (size_t i = 0; i < component->componentCount(); ++i) {
+            importedComponentCopy->addComponent(component->component(i));
         }
+
+        // Get list of required units from component's variables.
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(importedComponentCopy);
 
         // Make a map of component name to component pointer.
         ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
@@ -748,10 +757,10 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
 void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t componentIndex)
 {
     flattenComponent(parent, component, componentIndex);
-
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        auto c = component->component(index);
-        flattenComponentTree(component, c, index);
+    auto flattenedComponent = parent->component(componentIndex);
+    for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
+        auto c = flattenedComponent->component(index);
+        flattenComponentTree(flattenedComponent, c, index);
     }
 }
 
