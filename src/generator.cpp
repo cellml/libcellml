@@ -586,7 +586,7 @@ struct Generator::GeneratorImpl
                                            const GeneratorEquationPtr &equation2);
 
     bool sameOrEquivalentVariable(const VariablePtr &variable1,
-                                            const VariablePtr &variable2);
+                                  const VariablePtr &variable2);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
@@ -755,7 +755,7 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
 }
 
 bool Generator::GeneratorImpl::sameOrEquivalentVariable(const VariablePtr &variable1,
-                                                                  const VariablePtr &variable2)
+                                                        const VariablePtr &variable2)
 {
     // Return whether the given variables are the same or are equivalent (be it
     // directly or indirectly).
