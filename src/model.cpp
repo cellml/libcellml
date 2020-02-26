@@ -948,6 +948,8 @@ void Model::flatten()
             flattenComponentTree(shared_from_this(), c, index);
         }
     }
+
+    linkUnits();
 }
 
 } // namespace libcellml
