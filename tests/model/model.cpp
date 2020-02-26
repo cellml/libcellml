@@ -583,53 +583,6 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
-TEST(Model, missingUnitsFromImportOfCnTermsNotDefinedInImportedModel)
-{
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
-        "   <component name=\"myComponent\">\n"
-        "       <variable name=\"a\" units=\"second\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>a</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatIUse\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
-        "</model>";
-
-    // Create the model by parsing the string above.
-    auto parser = libcellml::Parser::create();
-    auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
-    // The importedModel has one validation error because the units
-    // myUnitsThatIUse are not defined in the imported model.
-    validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-
-
-    auto model = libcellml::Model::create("model");
-    auto c = libcellml::Component::create("c");
-
-    auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("not_required_resolving_import_manually");
-    importSource->setModel(importedModel);
-
-    c->setImportReference("myComponent");
-    c->setImportSource(importSource);
-    model->addComponent(c);
-
-    EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
-    // But now by importing the component I have miraculously
-    // found the units myUnitsThatIUse!
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-}
-
 TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
 {
     const std::string e =
@@ -709,40 +662,45 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     EXPECT_EQ(e, printer->printModel(model));
 }
 
-TEST(Model, importingComponentWithTwoMathMLDocuments)
+TEST(Model, importUnitsDuplicated)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myModel\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"myImportedModel\">\n"
+        "  <units name=\"millisecond\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_millisecond\">\n"
+        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
+        "  </units>\n"
         "  <component name=\"myComponent\">\n"
-        "    <variable name=\"a\" units=\"second\"/>\n"
-        "    <variable name=\"b\" units=\"dimensionless\"/>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>a</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatAUses\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "       <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "           <apply><eq/>\n"
-        "               <ci>b</ci>\n"
-        "               <cn cellml:units=\"myUnitsThatBUses\">1</cn>\n"
-        "           </apply>\n"
-        "       </math>\n"
-        "   </component>\n"
+        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
+        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
+        "  </component>\n"
         "</model>";
+
+    const std::string expectedModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"millisecond\">\n"
+        "    <unit prefix=\"milli\" units=\"second\"/>\n"
+        "  </units>\n"
+        "  <units name=\"per_millisecond\">\n"
+        "    <unit exponent=\"-1\" units=\"millisecond\"/>\n"
+        "  </units>\n"
+        "  <component name=\"c\">\n"
+        "    <variable name=\"alpha_n\" units=\"per_millisecond\" initial_value=\"1\"/>\n"
+        "    <variable name=\"beta_n\" units=\"per_millisecond\" initial_value=\"2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
     auto importedModel = parser->parseModel(in);
 
     auto validator = libcellml::Validator::create();
-    // The importedModel has one validation error because the units
-    // myUnitsThatIUse are not defined in the imported model.
     validator->validateModel(importedModel);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    printErrors(validator);
-
+    EXPECT_EQ(size_t(0), validator->errorCount());
 
     auto model = libcellml::Model::create("model");
     auto c = libcellml::Component::create("c");
@@ -759,6 +717,6 @@ TEST(Model, importingComponentWithTwoMathMLDocuments)
     model->flatten();
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-    printErrors(validator);
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(expectedModelString, printer->printModel(model));
 }

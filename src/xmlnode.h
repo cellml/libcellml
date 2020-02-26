@@ -131,6 +131,16 @@ public:
     bool isElement(const char *name, const char *ns) const;
 
     /**
+     * @brief Test if this @c XmlNode is an Xml element node.
+     *
+     * Test if this @c XmlNode is an Xml element node.
+     *
+     * @return @c true if this @c XmlNode is an Xml element node and @c false
+     * otherwise.
+     */
+    bool isElement() const;
+
+    /**
      * @brief Check if this @c XmlNode is an element node in the
      * CellML 2.0 namespace with the given local name.
      *
