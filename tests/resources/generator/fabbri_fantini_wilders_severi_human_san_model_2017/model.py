@@ -17,7 +17,7 @@ class VariableType(Enum):
     ALGEBRAIC = 3
 
 
-VOI_INFO = {"name": "time", "units": "second", "component": "Nai_concentration"}
+VOI_INFO = {"name": "time", "units": "second", "component": "environment"}
 
 STATE_INFO = [
     {"name": "R", "units": "dimensionless", "component": "Ca_SR_release"},

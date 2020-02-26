@@ -19,13 +19,13 @@ typedef enum {
 typedef struct {
     char name[2];
     char units[14];
-    char component[7];
+    char component[12];
 } VariableInfo;
 
 typedef struct {
     char name[2];
     char units[14];
-    char component[7];
+    char component[12];
     VariableType type;
 } VariableInfoWithType;
 

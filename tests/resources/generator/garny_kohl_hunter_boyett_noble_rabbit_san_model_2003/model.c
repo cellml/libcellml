@@ -11,7 +11,7 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 15;
 const size_t VARIABLE_COUNT = 185;
 
-const VariableInfo VOI_INFO = {"time", "second", "membrane"};
+const VariableInfo VOI_INFO = {"time", "second", "environment"};
 
 const VariableInfo STATE_INFO[] = {
     {"m", "dimensionless", "sodium_current_m_gate"},

@@ -11,7 +11,7 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 33;
 const size_t VARIABLE_COUNT = 217;
 
-const VariableInfo VOI_INFO = {"time", "second", "Nai_concentration"};
+const VariableInfo VOI_INFO = {"time", "second", "environment"};
 
 const VariableInfo STATE_INFO[] = {
     {"R", "dimensionless", "Ca_SR_release"},
