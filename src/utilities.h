@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <algorithm>
+#include <cctype>
 #include <map>
 #include <string>
 #include <vector>
