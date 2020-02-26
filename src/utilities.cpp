@@ -476,6 +476,19 @@ bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
 
 using PublicPrivateRequiredPair = std::pair<bool, bool>;
 
+/**
+ * @brief Determine whether a public and/or private interface is required for the givn @p variable.
+ *
+ * Determine whether a public and/or private interface is required for the givn @p variable.  Returns
+ * a pair of booleans where the first item in the pair indicates that a public interface is required,
+ * the second item in the pair indicates that a private interface is required, and if both are items
+ * in the pair are false then this indicates an error has occured and the interface type cannot be
+ * determined.
+ *
+ * @param variable The variable to detect the interface type required.
+ *
+ * @return A pair of booleans.
+ */
 PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const VariablePtr &variable)
 {
     PublicPrivateRequiredPair pair = std::make_pair(false, false);
@@ -486,20 +499,29 @@ PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const Variable
         if (componentOfVariable == nullptr || componentOfEquivalentVariable == nullptr) {
             return std::make_pair(false, false);
         }
-        if (isEntityChildOf(componentOfVariable, componentOfEquivalentVariable)) {
+        if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)) {
+            pair.first = true;
+        } else if (isEntityChildOf(componentOfVariable, componentOfEquivalentVariable)) {
             pair.first = true;
         } else if (isEntityChildOf(componentOfEquivalentVariable, componentOfVariable)) {
             pair.second = true;
-        } else if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)) {
-            pair.first = true;
         } else {
             return std::make_pair(false, false);
         }
     }
-
     return pair;
 }
 
+/**
+ * @brief Get the interface type for the given public private pair.
+ *
+ * Get the interface type for the @p pair.  The default return type is
+ * NONE.
+ *
+ * @param pair The pair to determine the interface type for.
+ *
+ * @return The interface type as specified in the @p pair.
+ */
 Variable::InterfaceType interfaceTypeFor(const PublicPrivateRequiredPair &pair)
 {
     Variable::InterfaceType interfaceType = Variable::InterfaceType::NONE;

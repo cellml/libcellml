@@ -801,7 +801,7 @@ bool Model::fixVariableInterfaces()
     bool modified = false;
     for (const auto &variable : variables) {
         Variable::InterfaceType interfaceType = determineInterfaceType(variable);
-        if (!variable->hasInterfaceType(interfaceType)) {
+        if (interfaceType != Variable::InterfaceType::NONE && !variable->hasInterfaceType(interfaceType)) {
             variable->setInterfaceType(interfaceType);
             modified = true;
         }

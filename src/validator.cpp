@@ -1022,9 +1022,9 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
         if (!interfaceTypeIsCompatible(interfaceType, interfaceTypeString)) {
             ErrorPtr err = Error::create();
             if (interfaceTypeString.empty()) {
-                err->setDescription("Variable '" + variable->name() + "' has no interaface type set. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
+                err->setDescription("Variable '" + variable->name() + "' has no interface type set. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
             } else {
-                err->setDescription("Variable '" + variable->name() + "' has an interaface type set to '" + interfaceTypeString + "' which is not the correct interface type for this variable. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
+                err->setDescription("Variable '" + variable->name() + "' has an interface type set to '" + interfaceTypeString + "' which is not the correct interface type for this variable. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
             }
             err->setVariable(variable);
             err->setKind(Error::Kind::CONNECTION);
