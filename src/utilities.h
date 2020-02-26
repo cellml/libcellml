@@ -475,7 +475,9 @@ bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
 /**
  * @brief Determine the interface type of the @p variable.
  *
- * Determines the interface type of the given @p variable.
+ * Determines the interface type of the given @p variable.  If the variable
+ * type is determined to be NONE this indicates an error (if the variable has
+ * at least one equivalent variable).
  *
  * @param variable The variable to determine the interface type for.
  *

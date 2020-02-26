@@ -350,7 +350,7 @@ public:
      * interface type.  If any variable interface is changed then the method returns
      * true.  If nothing is changed then false is returned.
      *
-     * If the interface type for a variable cannot be worked out it is left unchanged.
+     * If the interface type for a variable cannot be determined it is left unchanged.
      *
      * @return True if the @c Model has had a variable interface changed,
      * false otherwise.
