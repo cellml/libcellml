@@ -718,7 +718,6 @@ TEST(Model, importUnitsDuplicated)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
-    printErrors(validator);
 
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(expectedModelString, printer->printModel(model));
