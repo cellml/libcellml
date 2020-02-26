@@ -521,8 +521,6 @@ Variable::InterfaceType determineInterfaceType(const VariablePtr &variable)
     return interfaceTypeFor(publicAndOrPrivatePair);
 }
 
-using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
-
 void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables)
 {
     for (size_t index = 0; index < component->variableCount(); ++index) {
