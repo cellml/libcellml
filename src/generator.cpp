@@ -585,6 +585,9 @@ struct Generator::GeneratorImpl
     static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
                                            const GeneratorEquationPtr &equation2);
 
+    bool sameVariableOrOrEquivalentVariable(const VariablePtr &variable1,
+                                            const VariablePtr &variable2);
+
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component,
@@ -736,8 +739,7 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     // the given variable.
 
     for (const auto &internalVariable : mInternalVariables) {
-        if ((variable == internalVariable->mVariable)
-            || variable->hasEquivalentVariable(internalVariable->mVariable, true)) {
+        if (sameVariableOrOrEquivalentVariable(variable, internalVariable->mVariable)) {
             return internalVariable;
         }
     }
@@ -750,6 +752,15 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     mInternalVariables.push_back(internalVariable);
 
     return internalVariable;
+}
+
+bool Generator::GeneratorImpl::sameVariableOrOrEquivalentVariable(const VariablePtr &variable1,
+                                                                  const VariablePtr &variable2)
+{
+    // Return whether the given variables are the same or are equivalent (be it
+    // directly or indirectly).
+
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
@@ -1235,8 +1246,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                     for (size_t j = 0; j < testComponent->variableCount(); ++j) {
                         VariablePtr testVariable = testComponent->variable(j);
 
-                        if ((variable == testVariable)
-                            || variable->hasEquivalentVariable(testVariable, true)) {
+                        if (sameVariableOrOrEquivalentVariable(variable, testVariable)) {
                             mVoi = testVariable;
 
                             break;
@@ -1248,8 +1258,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                     }
                 }
             }
-        } else if ((variable != mVoi)
-                   && !variable->hasEquivalentVariable(mVoi, true)) {
+        } else if (!sameVariableOrOrEquivalentVariable(variable, mVoi)) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
             ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
