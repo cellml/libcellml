@@ -762,11 +762,11 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
     for (size_t index = 0; index < units->unitCount(); ++index) {
         units->unitAttributes(index, ref, pre, uExp, expMult, id);
         if (!isStandardUnitName(ref)) {
-            auto u = model->units(ref);
-            if (u != nullptr) {
-                auto requiredUnitsUnits = referencedUnits(model, u);
+            auto refUnits = model->units(ref);
+            if (refUnits != nullptr) {
+                auto requiredUnitsUnits = referencedUnits(model, refUnits);
                 requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
-                requiredUnits.push_back(u);
+                requiredUnits.push_back(refUnits);
             }
         }
     }

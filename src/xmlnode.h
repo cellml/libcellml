@@ -131,11 +131,11 @@ public:
     bool isElement(const char *name, const char *ns) const;
 
     /**
-     * @brief Test if this @c XmlNode is an Xml element node.
+     * @brief Test if this @c XmlNode is an XML element node.
      *
-     * Test if this @c XmlNode is an Xml element node.
+     * Test if this @c XmlNode is an XML element node.
      *
-     * @return @c true if this @c XmlNode is an Xml element node and @c false
+     * @return @c true if this @c XmlNode is an XML element node and @c false
      * otherwise.
      */
     bool isElement() const;
