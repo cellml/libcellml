@@ -1721,10 +1721,10 @@ TEST(Parser, parseResetsWithIssues)
         "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
         "      lost text here\n"
         "      <test_value>\n"
-        "        <some_invalid_tag/>\n" // test_value should only contain mathml
+        "        <some_invalid_tag/>\n" // test_value should only contain MathML
         "      </test_value>\n"
         "      <reset_value>\n"
-        "        <some_other_invalid_tag/>\n" // reset_value should only contain mathml
+        "        <some_other_invalid_tag/>\n" // reset_value should only contain MathML
         "      </reset_value>\n"
         "    </reset>\n"
 

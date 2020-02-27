@@ -27,9 +27,11 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+
 #include "namespaces.h"
 #include "utilities.h"
 #include "xmldoc.h"
+#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -738,8 +740,8 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
-    XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
+
     doc->parse(input);
     // Copy any XML parsing issues into the common validator issue handler.
     if (doc->xmlErrorCount() > 0) {
@@ -768,28 +770,28 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         return;
     }
 
-    XmlNodePtr nodeCopy = node;
-    std::vector<std::string> variableNames;
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        std::string variableName = component->variable(i)->name();
-        if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
-            variableNames.push_back(variableName);
+        XmlNodePtr nodeCopy = node;
+        std::vector<std::string> variableNames;
+        for (size_t i = 0; i < component->variableCount(); ++i) {
+            std::string variableName = component->variable(i)->name();
+            if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
+                variableNames.push_back(variableName);
+            }
         }
-    }
 
-    validateMathMLElements(nodeCopy, component);
+        validateMathMLElements(nodeCopy, component);
 
-    // Iterate through ci/cn elements and remove cellml units attributes.
-    XmlNodePtr mathNode = node;
-    validateAndCleanMathCiCnNodes(node, component, variableNames);
+        // Iterate through ci/cn elements and remove cellml units attributes.
+        XmlNodePtr mathNode = node;
+        validateAndCleanMathCiCnNodes(node, component, variableNames);
 
-    // Remove the cellml namespace definition.
-    if (mathNode->hasNamespaceDefinition(CELLML_2_0_NS)) {
-        mathNode->removeNamespaceDefinition(CELLML_2_0_NS);
-    }
+        // Remove the cellml namespace definition.
+        if (mathNode->hasNamespaceDefinition(CELLML_2_0_NS)) {
+            mathNode->removeNamespaceDefinition(CELLML_2_0_NS);
+        }
 
-    // Get the MathML string with cellml:units attributes and namespace already removed.
-    std::string cleanMathml = mathNode->convertToString();
+        // Get the MathML string with cellml:units attributes and namespace already removed.
+        std::string cleanMathml = mathNode->convertToString();
 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
@@ -802,6 +804,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             issue->setComponent(component);
             issue->setCause(Issue::Cause::MATHML);
             mValidator->addIssue(issue);
+
         }
     }
 }
