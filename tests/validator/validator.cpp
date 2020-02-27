@@ -2001,7 +2001,6 @@ TEST(Validator, unitMultiplierFactorDifference)
     m->linkUnits();
     validator->validateModel(m);
 
-    printErrors(validator);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
 

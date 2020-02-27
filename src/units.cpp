@@ -453,7 +453,11 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 }
             } else {
                 auto model = owningModel(units);
-                if (model != nullptr) {
+                if (model == nullptr) {
+                    // We cannot resolve the reference for this units so we add
+                    // what we do know.
+                    unitsMap[ref] = uExp * exp;
+                } else {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
                         return false;
