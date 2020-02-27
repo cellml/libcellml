@@ -131,6 +131,16 @@ public:
     bool isElement(const char *name, const char *ns) const;
 
     /**
+     * @brief Test if this @c XmlNode is an XML element node.
+     *
+     * Test if this @c XmlNode is an XML element node.
+     *
+     * @return @c true if this @c XmlNode is an XML element node and @c false
+     * otherwise.
+     */
+    bool isElement() const;
+
+    /**
      * @brief Check if this @c XmlNode is an element node in the
      * CellML 2.0 namespace with the given local name.
      *
@@ -218,6 +228,8 @@ public:
      * specified type.
      */
     std::string attribute(const char *attributeName) const;
+
+    void setAttribute(const char *attributeName, const char *attributeValue);
 
     /**
      * @brief Get the first attribute for this @c XmlNode
