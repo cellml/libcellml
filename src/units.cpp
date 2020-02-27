@@ -170,7 +170,6 @@ bool updateUnitMultiplier(double &multiplier,
                     return false;
                 }
                 multiplier += direction * (mult + (standardMultiplierList.at(ref) + logMult + standardPrefixList.at(pre)) * exp);
-                //multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
                 updated = true;
             } else {
                 auto model = owningModel(units);
@@ -565,7 +564,8 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    return Units::compatible(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
+    // Units must be compatible to return a non-zero scaling factor
+    return (Units::scalingFactor(units1, units2) == 1.0);
 }
 
 UnitsPtr Units::clone() const
