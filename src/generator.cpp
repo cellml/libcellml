@@ -1527,8 +1527,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
                 GeneratorVariablePtr variable = GeneratorVariable::create();
 
-                mVariables.push_back(variable);
-
                 if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
                     variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::CONSTANT);
                 } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
@@ -1537,6 +1535,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 } else {
                     variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::ALGEBRAIC);
                 }
+
+                mVariables.push_back(variable);
             }
         }
     }
