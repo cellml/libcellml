@@ -1465,6 +1465,43 @@ TEST(Units, compareEquivalentUnits)
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
 
+TEST(Units, compareEquivalentNonStandardWhichCannotBeResolvedUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("a");
+    u1->addUnit("millisecond", -1);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("b");
+    u2->addUnit("millisecond", -1);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+}
+
+TEST(Units, compareEquivalentNonStandardUnitsOneUnitsWithParentModel)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("millisecond");
+    u->addUnit("second", "milli");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("per_millisecond");
+    u1->addUnit("millisecond", -1);
+
+    m->addUnits(u);
+    m->addUnits(u1);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("per_millisecond");
+    u2->addUnit("millisecond", -1);
+
+    // Cannot resolve reference to millisecond in u2 so
+    // the two units are not considered equivalent.
+    EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
+}
+
 TEST(Units, compareNonEquivalenteUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
