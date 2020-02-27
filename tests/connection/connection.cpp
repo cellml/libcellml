@@ -222,7 +222,7 @@ TEST(Connection, validConnectionAndParse)
 
 TEST(Connection, parseValidAlternateFormConnection)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <connection component_1=\"component1\" component_2=\"component2\">\n"
@@ -238,7 +238,7 @@ TEST(Connection, parseValidAlternateFormConnection)
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(input);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
     EXPECT_EQ(size_t(2), model->componentCount());
