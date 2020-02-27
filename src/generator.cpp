@@ -2225,7 +2225,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
                                                           "<UNITS>", variable->variable()->units()->name()),
-                                                  "<COMPONENT>", entityName(variable->variable()->parent())),
+                                                  "<COMPONENT>", variable->component()->name()),
                                           "<TYPE>", variableType);
         }
 

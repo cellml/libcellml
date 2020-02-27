@@ -30,13 +30,13 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"E_Na", "millivolt", "sodium_channel", COMPUTED_CONSTANT},
     {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"i_L", "microA_per_cm2", "membrane", ALGEBRAIC},
-    {"i_Na", "microA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
+    {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
     {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
-    {"i_K", "microA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
     {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
 };
