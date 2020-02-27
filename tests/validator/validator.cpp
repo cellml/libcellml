@@ -2291,9 +2291,9 @@ TEST(Validator, variableEquivalenceValidNetwork)
 
 TEST(Validator, variableEquivalenceUnreachable)
 {
-    const std::vector<std::string> expectedErrors = {
-        "The equivalence between 'v1' on component 'c1'  and 'v3' on component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor have a parent/child relationship.",
-        "The equivalence between 'v3' on component 'c3'  and 'v1' on component 'c1' is invalid. Component 'c3' and 'c1' are neither siblings nor have a parent/child relationship.",
+    const std::vector<std::string> expectedErrors {
+        "The equivalence between 'v1' in component 'c1'  and 'v3' in component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor in a parent/child relationship.",
+        "The equivalence between 'v3' in component 'c3'  and 'v1' in component 'c1' is invalid. Component 'c3' and 'c1' are neither siblings nor in a parent/child relationship.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2339,8 +2339,8 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
-        "The equivalence between 'v2' on component 'c2'  and 'v4' on component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor have a parent/child relationship.",
-        "The equivalence between 'v4' on component 'c4'  and 'v2' on component 'c2' is invalid. Component 'c4' and 'c2' are neither siblings nor have a parent/child relationship.",
+        "The equivalence between 'v2' in component 'c2'  and 'v4' in component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor in a parent/child relationship.",
+        "The equivalence between 'v4' in component 'c4'  and 'v2' in component 'c2' is invalid. Component 'c4' and 'c2' are neither siblings nor in a parent/child relationship.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
