@@ -1535,36 +1535,33 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         mEquations.sort(compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
+            GeneratorVariable::Type type;
+
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
-                GeneratorVariablePtr state = GeneratorVariable::create();
+                type = GeneratorVariable::Type::STATE;
+            } else if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
+                type = GeneratorVariable::Type::CONSTANT;
+            } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                       || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
+                type = GeneratorVariable::Type::COMPUTED_CONSTANT;
+            } else if (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC) {
+                type = GeneratorVariable::Type::ALGEBRAIC;
+            } else {
+                // This is the variable of integration, so skip it.
 
-                state->mPimpl->populate(internalVariable->mVariable,
-                                        internalVariable->mComponent,
-                                        GeneratorVariable::Type::STATE);
+                continue;
+            }
 
-                mStates.push_back(state);
-            } else if ((internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)
-                       || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                       || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-                       || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
-                GeneratorVariablePtr variable = GeneratorVariable::create();
+            GeneratorVariablePtr stateOrVariable = GeneratorVariable::create();
 
-                if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
-                    variable->mPimpl->populate(internalVariable->mVariable,
-                                               internalVariable->mComponent,
-                                               GeneratorVariable::Type::CONSTANT);
-                } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                           || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-                    variable->mPimpl->populate(internalVariable->mVariable,
-                                               internalVariable->mComponent,
-                                               GeneratorVariable::Type::COMPUTED_CONSTANT);
-                } else {
-                    variable->mPimpl->populate(internalVariable->mVariable,
-                                               internalVariable->mComponent,
-                                               GeneratorVariable::Type::ALGEBRAIC);
-                }
+            stateOrVariable->mPimpl->populate(internalVariable->mVariable,
+                                              internalVariable->mComponent,
+                                              type);
 
-                mVariables.push_back(variable);
+            if (type == GeneratorVariable::Type::STATE) {
+                mStates.push_back(stateOrVariable);
+            } else {
+                mVariables.push_back(stateOrVariable);
             }
         }
     }
