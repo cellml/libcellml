@@ -121,6 +121,7 @@ struct GeneratorInternalVariable
     Type mType = Type::UNKNOWN;
 
     VariablePtr mVariable;
+    ComponentPtr mComponent;
 
     GeneratorEquationWeakPtr mEquation;
 
@@ -135,6 +136,7 @@ struct GeneratorInternalVariable
 using GeneratorInternalVariablePtr = std::shared_ptr<GeneratorInternalVariable>;
 
 GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable)
+    : mComponent(std::dynamic_pointer_cast<Component>(variable->parent()))
 {
     setVariable(variable);
 }
@@ -349,13 +351,14 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     std::list<GeneratorInternalVariablePtr> mOdeVariables;
 
     GeneratorInternalVariablePtr mVariable = nullptr;
+    ComponentPtr mComponent = nullptr;
 
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
 
     bool mIsStateRateBased = false;
 
-    explicit GeneratorEquation();
+    explicit GeneratorEquation(const ComponentPtr &component);
 
     void addVariable(const GeneratorInternalVariablePtr &variable);
     void addOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
@@ -369,8 +372,9 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
 
-GeneratorEquation::GeneratorEquation()
+GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
     : mAst(std::make_shared<GeneratorEquationAst>())
+    , mComponent(component)
 {
 }
 
@@ -486,8 +490,9 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
 
-    // If there is one (ODE) variable left then update its type (if it is
-    // currently unknown), determine its index and determine the type of our
+    // If there is one (ODE) variable left then update its component (to be sure
+    // that it's the same as the one in which the equation is), its type (if it
+    // is currently unknown), determine its index and determine the type of our
     // equation and set its order, if the (ODE) variable is a state, computed
     // constant or algebraic variable.
 
@@ -495,6 +500,8 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+
+        variable->mComponent = mComponent;
 
         if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
@@ -1126,7 +1133,7 @@ GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &nod
 {
     // Create and keep track of the equation associated with the given node.
 
-    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>();
+    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>(component);
 
     mEquations.push_back(equation);
 
@@ -1528,12 +1535,12 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         mEquations.sort(compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
-            ComponentPtr component = std::dynamic_pointer_cast<Component>(internalVariable->mVariable->parent());
-
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
                 GeneratorVariablePtr state = GeneratorVariable::create();
 
-                state->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::STATE);
+                state->mPimpl->populate(internalVariable->mVariable,
+                                        internalVariable->mComponent,
+                                        GeneratorVariable::Type::STATE);
 
                 mStates.push_back(state);
             } else if ((internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)
@@ -1543,12 +1550,18 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 GeneratorVariablePtr variable = GeneratorVariable::create();
 
                 if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
-                    variable->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::CONSTANT);
+                    variable->mPimpl->populate(internalVariable->mVariable,
+                                               internalVariable->mComponent,
+                                               GeneratorVariable::Type::CONSTANT);
                 } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                            || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-                    variable->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::COMPUTED_CONSTANT);
+                    variable->mPimpl->populate(internalVariable->mVariable,
+                                               internalVariable->mComponent,
+                                               GeneratorVariable::Type::COMPUTED_CONSTANT);
                 } else {
-                    variable->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::ALGEBRAIC);
+                    variable->mPimpl->populate(internalVariable->mVariable,
+                                               internalVariable->mComponent,
+                                               GeneratorVariable::Type::ALGEBRAIC);
                 }
 
                 mVariables.push_back(variable);
