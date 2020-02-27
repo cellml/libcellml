@@ -3,9 +3,11 @@
     <units name="per_second">
         <unit exponent="-1" units="second"/>
     </units>
+    <component name="dummy">
+    </component>
     <component name="my_component">
-        <variable name="t" units="second"/>
         <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="t" units="second"/>
         <variable name="eqnEq" units="dimensionless"/>
         <variable name="eqnEqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
