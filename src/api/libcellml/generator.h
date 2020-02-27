@@ -38,6 +38,8 @@ class LIBCELLML_EXPORT GeneratorVariable
 public:
     enum class Type
     {
+        VARIABLE_OF_INTEGRATION,
+        STATE,
         CONSTANT,
         COMPUTED_CONSTANT,
         ALGEBRAIC
@@ -68,6 +70,17 @@ public:
      * @return The @c Variable.
      */
     VariablePtr variable() const;
+
+    /**
+     * @brief Get the @c Component for this @c GeneratorVariable.
+     *
+     * Return the @c Component of this @c GeneratorVariable. It is the
+     * @c Component in which the @c Variable is actually computed. It may, or
+     * not, be the same @c Component as the parent component of the @c Variable.
+     *
+     * @return The @c Component.
+     */
+    ComponentPtr component() const;
 
     /**
      * @brief Get the @c Type for this @c GeneratorVariable.
@@ -185,7 +198,7 @@ public:
      *
      * @return The @c Type.
      */
-    VariablePtr voi() const;
+    GeneratorVariablePtr voi() const;
 
     /**
      * @brief Get the state at @p index.
@@ -195,7 +208,7 @@ public:
      *
      * @param index The index of the state to return.
      */
-    VariablePtr state(size_t index) const;
+    GeneratorVariablePtr state(size_t index) const;
 
     /**
      * @brief Get the variable at @p index.

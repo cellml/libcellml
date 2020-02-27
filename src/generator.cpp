@@ -52,15 +52,19 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 struct GeneratorVariable::GeneratorVariableImpl
 {
     VariablePtr mVariable;
+    ComponentPtr mComponent;
     GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
 
-    void populate(const VariablePtr &variable, GeneratorVariable::Type type);
+    void populate(const VariablePtr &variable, const ComponentPtr &component,
+                  GeneratorVariable::Type type);
 };
 
 void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &variable,
+                                                        const ComponentPtr &component,
                                                         GeneratorVariable::Type type)
 {
     mVariable = variable;
+    mComponent = component;
     mType = type;
 }
 
@@ -82,6 +86,11 @@ GeneratorVariablePtr GeneratorVariable::create() noexcept
 VariablePtr GeneratorVariable::variable() const
 {
     return mPimpl->mVariable;
+}
+
+ComponentPtr GeneratorVariable::component() const
+{
+    return mPimpl->mComponent;
 }
 
 GeneratorVariable::Type GeneratorVariable::type() const
@@ -537,8 +546,8 @@ struct Generator::GeneratorImpl
     std::list<GeneratorInternalVariablePtr> mInternalVariables;
     std::list<GeneratorEquationPtr> mEquations;
 
-    VariablePtr mVoi;
-    std::vector<VariablePtr> mStates;
+    GeneratorVariablePtr mVoi = nullptr;
+    std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
     GeneratorProfilePtr mProfile = libcellml::GeneratorProfile::create();
@@ -616,7 +625,7 @@ struct Generator::GeneratorImpl
 
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
-                                 const VariablePtr &variable);
+                                 const GeneratorVariablePtr &variable);
 
     bool modifiedProfile() const;
 
@@ -1247,7 +1256,9 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                         VariablePtr testVariable = testComponent->variable(j);
 
                         if (sameOrEquivalentVariable(variable, testVariable)) {
-                            mVoi = testVariable;
+                            mVoi = GeneratorVariable::create();
+
+                            mVoi->mPimpl->populate(testVariable, testComponent, GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
 
                             break;
                         }
@@ -1258,15 +1269,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                     }
                 }
             }
-        } else if (!sameOrEquivalentVariable(variable, mVoi)) {
-            ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
-            ModelPtr voiModel = owningModel(voiComponent);
+        } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
+            ModelPtr voiModel = owningModel(mVoi->component());
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
             ErrorPtr err = Error::create();
 
-            err->setDescription("Variable '" + mVoi->name()
-                                + "' in component '" + voiComponent->name()
+            err->setDescription("Variable '" + mVoi->variable()->name()
+                                + "' in component '" + mVoi->component()->name()
                                 + "' of model '" + voiModel->name()
                                 + "' and variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -1519,8 +1529,14 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         mEquations.sort(compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
+            ComponentPtr component = std::dynamic_pointer_cast<Component>(internalVariable->mVariable->parent());
+
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
-                mStates.push_back(internalVariable->mVariable);
+                GeneratorVariablePtr state = GeneratorVariable::create();
+
+                state->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::STATE);
+
+                mStates.push_back(state);
             } else if ((internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
@@ -1528,12 +1544,12 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 GeneratorVariablePtr variable = GeneratorVariable::create();
 
                 if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
-                    variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::CONSTANT);
+                    variable->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::CONSTANT);
                 } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                            || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-                    variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::COMPUTED_CONSTANT);
+                    variable->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::COMPUTED_CONSTANT);
                 } else {
-                    variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::ALGEBRAIC);
+                    variable->mPimpl->populate(internalVariable->mVariable, component, GeneratorVariable::Type::ALGEBRAIC);
                 }
 
                 mVariables.push_back(variable);
@@ -1637,11 +1653,11 @@ std::string Generator::GeneratorImpl::replace(std::string string,
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &nameSize,
                                                        size_t &unitsSize,
-                                                       const VariablePtr &variable)
+                                                       const GeneratorVariablePtr &variable)
 {
-    auto variableComponentSize = entityName(variable->parent()).length() + 1;
-    auto variableNameSize = variable->name().length() + 1;
-    auto variableUnitsSize = variable->units()->name().length() + 1;
+    auto variableComponentSize = variable->component()->name().length() + 1;
+    auto variableNameSize = variable->variable()->name().length() + 1;
+    auto variableUnitsSize = variable->variable()->units()->name().length() + 1;
     // Note: +1 to account for the end of string termination.
 
     componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
@@ -2054,9 +2070,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
         updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
     }
 
-    for (const auto &generatorVariable : mVariables) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize,
-                                generatorVariable->variable());
+    for (const auto &variable : mVariables) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
     }
 
     return replace(replace(replace(objectString,
@@ -2128,9 +2143,9 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
             code += "\n";
         }
 
-        std::string name = (mVoi != nullptr) ? mVoi->name() : "";
-        std::string units = (mVoi != nullptr) ? mVoi->units()->name() : "";
-        std::string component = (mVoi != nullptr) ? entityName(mVoi->parent()) : "";
+        std::string name = (mVoi != nullptr) ? mVoi->variable()->name() : "";
+        std::string units = (mVoi != nullptr) ? mVoi->variable()->units()->name() : "";
+        std::string component = (mVoi != nullptr) ? mVoi->component()->name() : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -2154,9 +2169,9 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             }
 
             infoElementsCode += mProfile->indentString()
-                                + generateVariableInfoEntryCode(state->name(),
-                                                                state->units()->name(),
-                                                                entityName(state->parent()));
+                                + generateVariableInfoEntryCode(state->variable()->name(),
+                                                                state->variable()->units()->name(),
+                                                                state->component()->name());
         }
 
         if (!infoElementsCode.empty()) {
@@ -2189,19 +2204,12 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
 
             std::string variableType;
 
-            switch (variable->type()) {
-            case GeneratorVariable::Type::CONSTANT:
+            if (variable->type() == GeneratorVariable::Type::CONSTANT) {
                 variableType = mProfile->constantVariableTypeString();
-
-                break;
-            case GeneratorVariable::Type::COMPUTED_CONSTANT:
+            } else if (variable->type() == GeneratorVariable::Type::COMPUTED_CONSTANT) {
                 variableType = mProfile->computedConstantVariableTypeString();
-
-                break;
-            case GeneratorVariable::Type::ALGEBRAIC:
+            } else if (variable->type() == GeneratorVariable::Type::ALGEBRAIC) {
                 variableType = mProfile->algebraicVariableTypeString();
-
-                break;
             }
 
             infoElementsCode += mProfile->indentString()
@@ -3484,7 +3492,7 @@ size_t Generator::variableCount() const
     return mPimpl->mVariables.size();
 }
 
-VariablePtr Generator::voi() const
+GeneratorVariablePtr Generator::voi() const
 {
     if (!mPimpl->hasValidModel()) {
         return {};
@@ -3493,7 +3501,7 @@ VariablePtr Generator::voi() const
     return mPimpl->mVoi;
 }
 
-VariablePtr Generator::state(size_t index) const
+GeneratorVariablePtr Generator::state(size_t index) const
 {
     if (!mPimpl->hasValidModel() || (index >= mPimpl->mStates.size())) {
         return {};
