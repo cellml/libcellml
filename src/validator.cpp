@@ -741,65 +741,34 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
     // Parse as XML first.
-// <<<<<<< i314_issue_class
     std::vector<XmlDocPtr> docs = multiRootXml(input);
     for (const auto &doc : docs) {
-    // Copy any XML parsing issues into the common validator issue handler.
-    if (doc->xmlErrorCount() > 0) {
-        for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+        // Copy any XML parsing issues into the common validator issue handler.
+        if (doc->xmlErrorCount() > 0) {
+            for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+                IssuePtr issue = Issue::create();
+                issue->setDescription("LibXml2 error: " + doc->xmlError(i));
+                issue->setCause(Issue::Cause::XML);
+                mValidator->addIssue(issue);
+            }
+        }
+        XmlNodePtr node = doc->rootNode();
+        if (node == nullptr) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("LibXml2 error: " + doc->xmlError(i));
+            issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
+            issue->setCause(Issue::Cause::XML);
+            issue->setComponent(component);
+            mValidator->addIssue(issue);
+            return;
+        }
+        if (!node->isMathmlElement("math")) {
+            IssuePtr issue = Issue::create();
+            issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
+            issue->setComponent(component);
             issue->setCause(Issue::Cause::XML);
             mValidator->addIssue(issue);
+            return;
         }
-    }
-    XmlNodePtr node = doc->rootNode();
-    if (node == nullptr) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
-        issue->setCause(Issue::Cause::XML);
-        issue->setComponent(component);
-        mValidator->addIssue(issue);
-        return;
-    }
-    if (!node->isMathmlElement("math")) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
-        issue->setComponent(component);
-        issue->setCause(Issue::Cause::XML);
-        mValidator->addIssue(issue);
-        return;
-    }
-// =======
-//     std::vector<XmlDocPtr> docs = multiRootXml(input);
-//     for (const auto &doc : docs) {
-//         // Copy any XML parsing errors into the common validator error handler.
-//         if (doc->xmlErrorCount() > 0) {
-//             for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
-//                 ErrorPtr err = Error::create();
-//                 err->setDescription("LibXml2 error: " + doc->xmlError(i));
-//                 err->setKind(Error::Kind::XML);
-//                 mValidator->addError(err);
-//             }
-//         }
-//         XmlNodePtr node = doc->rootNode();
-//         if (node == nullptr) {
-//             ErrorPtr err = Error::create();
-//             err->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
-//             err->setKind(Error::Kind::XML);
-//             err->setComponent(component);
-//             mValidator->addError(err);
-//             return;
-//         }
-//         if (!node->isMathmlElement("math")) {
-//             ErrorPtr err = Error::create();
-//             err->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
-//             err->setComponent(component);
-//             err->setKind(Error::Kind::XML);
-//             mValidator->addError(err);
-//             return;
-//         }
-// >>>>>>> develop
 
         XmlNodePtr nodeCopy = node;
         std::vector<std::string> variableNames;
@@ -833,7 +802,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
                 IssuePtr issue = Issue::create();
                 issue->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
                 issue->setComponent(component);
-                issue->setKind(Error::Kind::MATHML);
+                issue->setCause(Issue::Cause::MATHML);
                 mValidator->addIssue(issue);
             }
         }
