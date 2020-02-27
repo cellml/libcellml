@@ -2227,3 +2227,29 @@ TEST(Units, compatibleGrandchildUnitsImported)
     // Expect false only because the first units "imported_units" is imported... otherwise it would be true.
     EXPECT_FALSE(libcellml::Units::compatible(u2, u3));
 }
+
+TEST(Units, scalingFactorBetweenExponentialUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 3.0, 1000.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("metre", 0, 1.0, 1.0);
+    u2->addUnit("metre", 0, 1.0, 1.0);
+    u2->addUnit("metre", 0, 1.0, 1.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
+}
+
+TEST(Units, scalingFactorBetweenMultipliedUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 3.0, 1000.0);
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("u2");
+    u2->addUnit("metre", 0, 3.0, 1.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
+}
