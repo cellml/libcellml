@@ -16,7 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include "xmlnode.h"
+#include <vector>
+
+#include "xmldoc.h"
 
 namespace libcellml {
 
@@ -47,5 +49,16 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
  * @return @c XmlNamespaceMap of undefined namespaces.
  */
 XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node);
+
+/**
+ * @brief Turn XML content with potentially multiple root elements in a vector of documents.
+ *
+ * Parse the @p content and try to find XML documents returning a vector of any XML documents
+ * found.
+ *
+ * @param content The string to parse for XML roots.
+ * @return A vector of @c XmlDoc pointers.
+ */
+std::vector<XmlDocPtr> multiRootXml(const std::string &content);
 
 } // namespace libcellml

@@ -16,6 +16,8 @@ limitations under the License.
 
 #pragma once
 
+#include <algorithm>
+#include <cctype>
 #include <map>
 #include <string>
 #include <vector>
@@ -496,5 +498,64 @@ Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
  * @param variables The list of equivalent variables found.
  */
 void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
+
+/**
+ * @brief Trim whitespace from the front of a string (in place).
+ *
+ * Remove whitespace from the front of a string, modifying the passed string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void leftTrim(std::string &s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
+                return std::isspace(ch) == 0;
+            }));
+}
+
+/**
+ * @brief Trim whitespace from the end of a string (in place).
+ *
+ * Remove whitespace from the end of a string, modifying the passed string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void rightTrim(std::string &s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
+                return std::isspace(ch) == 0;
+            }).base(),
+            s.end());
+}
+
+/**
+ * @brief Trim whitespace from the beginning and end of a string(in place).
+ *
+ * Remove whitespace from the beginning and end of a string, modifying the passed
+ * string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void trim(std::string &s)
+{
+    leftTrim(s);
+    rightTrim(s);
+}
+
+/**
+ * @brief Trim whitespace from the beginning and end of a string.
+ *
+ * Remove whitespace from the beginning and end of a string
+ * returning the result.
+ *
+ * @param s The @c std::string to trim.
+ *
+ * @return The trimmed string.
+ */
+static inline std::string trimCopy(std::string s)
+{
+    trim(s);
+    return s;
+}
 
 } // namespace libcellml
