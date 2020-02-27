@@ -44,4 +44,12 @@ void printEquivalenceMap(const EquivalenceMap &map)
     }
 }
 
+void printStringStringMap(const StringStringMap &map)
+{
+    Debug() << "Print out of string -> string map";
+    for (std::map<std::string, std::string>::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
+        Debug() << iter->first << ": " << iter->second;
+    }
+}
+
 } // namespace libcellml
