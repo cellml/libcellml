@@ -26,7 +26,7 @@ limitations under the License.
 
 TEST(Parser, invalidXMLElements)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<fellowship>\n"
         "  <Dwarf bearded>Gimli</ShortGuy>\n"
@@ -42,11 +42,11 @@ TEST(Parser, invalidXMLElements)
         "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
         "LibXml2 error: Opening and ending tag mismatch: Elf line 6 and fellows.",
         "LibXml2 error: Premature end of data in tag fellowship line 2.",
-        "Could not get a valid XML root node from the provided input.",
+        "Could not get a valid XML root node from the provided in.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(input);
+    p->parseModel(in);
 
     EXPECT_EQ(expectedErrors.size() - 1, p->errorCount());
     for (size_t i = 0; i < p->errorCount(); ++i) {
@@ -90,11 +90,11 @@ TEST(Parser, parseNamedModel)
 
 TEST(Parser, makeError)
 {
-    const std::string ex;
+    const std::string e;
 
-    libcellml::ErrorPtr e = libcellml::Error::create();
+    libcellml::ErrorPtr err = libcellml::Error::create();
 
-    EXPECT_EQ(ex, e->description());
+    EXPECT_EQ(e, err->description());
 }
 
 TEST(Parser, emptyModelString)
@@ -111,20 +111,20 @@ TEST(Parser, emptyModelString)
 
 TEST(Parser, nonXmlString)
 {
-    const std::string ex = "Not an xml string.";
+    const std::string in = "Not an xml string.";
     const std::vector<std::string> expectedErrors = {
         "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input.",
+        "Could not get a valid XML root node from the provided in.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, invalidRootNode)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<yodel xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "</yodel>\n";
@@ -133,13 +133,13 @@ TEST(Parser, invalidRootNode)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, noModelNamespace)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model/>\n";
     const std::vector<std::string> expectedErrors = {
@@ -147,13 +147,13 @@ TEST(Parser, noModelNamespace)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, invalidModelNamespace)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>\n";
     const std::vector<std::string> expectedErrors = {
@@ -161,13 +161,13 @@ TEST(Parser, invalidModelNamespace)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, invalidModelAttribute)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" game=\"model_name\"/>\n";
     const std::vector<std::string> expectedErrors = {
@@ -175,13 +175,13 @@ TEST(Parser, invalidModelAttribute)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, invalidModelElement)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <uknits/>\n"
@@ -191,13 +191,13 @@ TEST(Parser, invalidModelElement)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, modelWithInvalidElement)
 {
-    const std::string input1 =
+    const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"bilbo\">\n"
         "  <hobbit/>\n"
@@ -205,7 +205,7 @@ TEST(Parser, modelWithInvalidElement)
     const std::vector<std::string> expectedErrors1 = {
         "Model 'bilbo' has an invalid child element 'hobbit'.",
     };
-    const std::string input2 =
+    const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <hobbit/>\n"
@@ -215,17 +215,17 @@ TEST(Parser, modelWithInvalidElement)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(input1);
+    p->parseModel(in1);
     EXPECT_EQ_ERRORS(expectedErrors1, p);
 
     p->removeAllErrors();
-    p->parseModel(input2);
+    p->parseModel(in2);
     EXPECT_EQ_ERRORS(expectedErrors2, p);
 }
 
 TEST(Parser, parseModelWithInvalidAttributeAndGetError)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\" nonsense=\"oops\"/>\n";
     const std::vector<std::string> expectedErrors = {
@@ -233,7 +233,7 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError)
     };
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(input);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, parser);
 
@@ -313,7 +313,7 @@ TEST(Parser, unitsAttributeError)
 
 TEST(Parser, unitsElementErrors)
 {
-    const std::string input1 =
+    const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units>\n"
@@ -323,7 +323,7 @@ TEST(Parser, unitsElementErrors)
     const std::vector<std::string> expectedErrors1 = {
         "Units '' has an invalid child element 'son'.",
     };
-    const std::string input2 =
+    const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"randy\">\n"
@@ -335,11 +335,11 @@ TEST(Parser, unitsElementErrors)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(input1);
+    p->parseModel(in1);
     EXPECT_EQ_ERRORS(expectedErrors1, p);
 
     p->removeAllErrors();
-    p->parseModel(input2);
+    p->parseModel(in2);
     EXPECT_EQ_ERRORS(expectedErrors2, p);
 }
 
@@ -375,7 +375,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
 TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
 {
     const std::string cName = "componentName";
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">\n"
         "  <component name=\"componentName\" nonsense=\"oops\"/>\n"
@@ -385,7 +385,7 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
     };
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(input);
+    libcellml::ModelPtr model = parser->parseModel(in);
     libcellml::ComponentPtr component = model->component(cName);
 
     EXPECT_EQ_ERRORS(expectedErrors, parser);
@@ -404,7 +404,7 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
 
 TEST(Parser, componentAttributeErrors)
 {
-    const std::string input1 =
+    const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component lame=\"randy\"/>\n"
@@ -412,7 +412,7 @@ TEST(Parser, componentAttributeErrors)
     const std::vector<std::string> expectedErrors1 = {
         "Component '' has an invalid attribute 'lame'.",
     };
-    const std::string input2 =
+    const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"randy\" son=\"stan\"/>\n"
@@ -420,7 +420,7 @@ TEST(Parser, componentAttributeErrors)
     const std::vector<std::string> expectedErrors2 = {
         "Component 'randy' has an invalid attribute 'son'.",
     };
-    const std::string input3 =
+    const std::string in3 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component son=\"stan\" name=\"randy\"/>\n"
@@ -430,21 +430,21 @@ TEST(Parser, componentAttributeErrors)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(input1);
+    p->parseModel(in1);
     EXPECT_EQ_ERRORS(expectedErrors1, p);
 
     p->removeAllErrors();
-    p->parseModel(input2);
+    p->parseModel(in2);
     EXPECT_EQ_ERRORS(expectedErrors2, p);
 
     p->removeAllErrors();
-    p->parseModel(input3);
+    p->parseModel(in3);
     EXPECT_EQ_ERRORS(expectedErrors3, p);
 }
 
 TEST(Parser, componentElementErrors)
 {
-    const std::string input1 =
+    const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component>\n"
@@ -452,7 +452,7 @@ TEST(Parser, componentElementErrors)
         "  </component>\n"
         "</model>\n";
     const std::string expectError1 = "Component '' has an invalid child element 'son'.";
-    const std::string input2 =
+    const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"randy\">\n"
@@ -462,12 +462,12 @@ TEST(Parser, componentElementErrors)
     const std::string expectError2 = "Component 'randy' has an invalid child element 'son'.";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(input1);
+    p->parseModel(in1);
     EXPECT_EQ(size_t(1), p->errorCount());
     EXPECT_EQ(expectError1, p->error(0)->description());
 
     p->removeAllErrors();
-    p->parseModel(input2);
+    p->parseModel(in2);
     EXPECT_EQ(size_t(1), p->errorCount());
     EXPECT_EQ(expectError2, p->error(0)->description());
 }
@@ -628,7 +628,7 @@ TEST(Parser, modelWithInvalidUnits)
 
 TEST(Parser, emptyEncapsulation)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <encapsulation/>\n"
@@ -639,13 +639,13 @@ TEST(Parser, emptyEncapsulation)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, validEncapsulation)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"bob\"/>\n"
@@ -659,14 +659,14 @@ TEST(Parser, validEncapsulation)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ(size_t(0), p->errorCount());
 }
 
 TEST(Parser, encapsulationWithCycleDefined)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"bob\"/>\n"
@@ -689,13 +689,13 @@ TEST(Parser, encapsulationWithCycleDefined)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    auto m = p->parseModel(ex);
+    auto m = p->parseModel(in);
 
     EXPECT_EQ(size_t(0), p->errorCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     auto output = printer->printModel(m);
-    EXPECT_EQ(output, ex);
+    EXPECT_EQ(output, in);
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
@@ -705,7 +705,7 @@ TEST(Parser, encapsulationWithCycleDefined)
 
 TEST(Parser, encapsulationWithNoComponentAttribute)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <encapsulation>\n"
@@ -719,7 +719,7 @@ TEST(Parser, encapsulationWithNoComponentAttribute)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
@@ -730,7 +730,7 @@ TEST(Parser, encapsulationWithNoComponentRef)
         "Encapsulation in model 'model_name' has an invalid child element 'component_free'.",
     };
 
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <encapsulation>\n"
@@ -739,7 +739,7 @@ TEST(Parser, encapsulationWithNoComponentRef)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
@@ -752,7 +752,7 @@ TEST(Parser, encapsulationWithNoComponent)
         "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.",
     };
 
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <encapsulation>\n"
@@ -763,7 +763,7 @@ TEST(Parser, encapsulationWithNoComponent)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
@@ -775,7 +775,7 @@ TEST(Parser, encapsulationWithMissingComponent)
         "Encapsulation in model 'model_name' specifies 'bob' as a parent component_ref but it does not have any children.",
     };
 
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"bob\"/>\n"
@@ -787,14 +787,14 @@ TEST(Parser, encapsulationWithMissingComponent)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoComponentChild)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"bob\"/>\n"
@@ -807,13 +807,13 @@ TEST(Parser, encapsulationWithNoComponentChild)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationNoChildComponentRef)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"bob\"/>\n"
@@ -830,14 +830,14 @@ TEST(Parser, encapsulationNoChildComponentRef)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoGrandchildComponentRef)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"bob\"/>\n"
@@ -856,7 +856,7 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
@@ -937,7 +937,7 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError)
 
 TEST(Parser, variableAttributeAndChildErrors)
 {
-    const std::string input1 =
+    const std::string in1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"randy\">\n"
@@ -945,7 +945,7 @@ TEST(Parser, variableAttributeAndChildErrors)
         "  </component>\n"
         "</model>\n";
     const std::string expectError1 = "Variable 'Na' has an invalid attribute 'lame'.";
-    const std::string input2 =
+    const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component name=\"randy\">\n"
@@ -958,12 +958,12 @@ TEST(Parser, variableAttributeAndChildErrors)
     const std::string expectError3 = "Variable 'randy' has an invalid attribute 'son'.";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(input1);
+    p->parseModel(in1);
     EXPECT_EQ(size_t(1), p->errorCount());
     EXPECT_EQ(expectError1, p->error(0)->description());
 
     p->removeAllErrors();
-    p->parseModel(input2);
+    p->parseModel(in2);
     EXPECT_EQ(size_t(2), p->errorCount());
     EXPECT_EQ(expectError2, p->error(0)->description());
     EXPECT_EQ(expectError3, p->error(1)->description());
@@ -971,7 +971,7 @@ TEST(Parser, variableAttributeAndChildErrors)
 
 TEST(Parser, emptyConnections)
 {
-    const std::string ex =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <connection/>\n"
@@ -983,7 +983,7 @@ TEST(Parser, emptyConnections)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
@@ -1295,7 +1295,7 @@ TEST(Parser, connectionErrorNoMapVariablesType)
 
 TEST(Parser, invalidImportsAndGetError)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" sauce=\"hollandaise\">\n"
@@ -1322,7 +1322,7 @@ TEST(Parser, invalidImportsAndGetError)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr m = p->parseModel(input);
+    libcellml::ModelPtr m = p->parseModel(in);
     EXPECT_EQ(size_t(4), p->errorCount());
     EXPECT_EQ(expectError1, p->error(0)->description());
     EXPECT_EQ(expectError2, p->error(1)->description());
@@ -1349,7 +1349,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     std::vector<bool> foundKind(9, false);
 
     // Trigger CellML entity errors
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\" episode=\"four\">\n"
         "  <import princess=\"leia\"/>\n"
@@ -1377,7 +1377,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
 
     // Parse and check for CellML errors.
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, parser);
 
@@ -1424,13 +1424,13 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     }
 
     // Trigger an XML error
-    const std::string input3 = "jarjarbinks";
+    const std::string in3 = "jarjarbinks";
     const std::vector<std::string> expectedErrors3 = {
         "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input.",
+        "Could not get a valid XML root node from the provided in.",
     };
     libcellml::ParserPtr parser3 = libcellml::Parser::create();
-    parser3->parseModel(input3);
+    parser3->parseModel(in3);
     EXPECT_EQ_ERRORS(expectedErrors3, parser3);
     for (size_t i = 0; i < parser3->errorCount(); ++i) {
         if (parser3->error(i)->isKind(libcellml::Error::Kind::XML)) {
@@ -1448,7 +1448,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
 
 TEST(Parser, invalidModelWithTextInAllElements)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\">\n"
         "  episode7\n"
@@ -1503,14 +1503,14 @@ TEST(Parser, invalidModelWithTextInAllElements)
 
     // Parse and check for CellML errors.
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedErrors, parser);
 }
 
 TEST(Parser, parseIds)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
@@ -1527,7 +1527,7 @@ TEST(Parser, parseIds)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(input);
+    libcellml::ModelPtr model = p->parseModel(in);
 
     EXPECT_EQ(size_t(0), p->errorCount());
     EXPECT_EQ("mid", model->id());
@@ -1543,7 +1543,7 @@ TEST(Parser, parseIds)
 
 TEST(Parser, parseIdsOnEverythingButMath)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"mid\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
@@ -1595,7 +1595,7 @@ TEST(Parser, parseIdsOnEverythingButMath)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(input);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
     EXPECT_EQ("mid", model->id());
@@ -1612,12 +1612,12 @@ TEST(Parser, parseIdsOnEverythingButMath)
     EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
-    EXPECT_EQ(input, printer->printModel(model));
+    EXPECT_EQ(in, printer->printModel(model));
 }
 
 TEST(Parser, parseResets)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
@@ -1639,7 +1639,7 @@ TEST(Parser, parseResets)
         "</model>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(input);
+    libcellml::ModelPtr model = p->parseModel(in);
 
     libcellml::ComponentPtr c = model->component(0);
     EXPECT_EQ(size_t(1), c->resetCount());
@@ -1670,7 +1670,7 @@ TEST(Parser, parseResets)
 
 TEST(Parser, parseResetsWithErrors)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component1\">\n"
@@ -1755,7 +1755,7 @@ TEST(Parser, parseResetsWithErrors)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(input);
+    libcellml::ModelPtr model = p->parseModel(in);
 
     libcellml::ResetPtr resetExpected = model->component(1)->reset(0);
 
@@ -1766,7 +1766,7 @@ TEST(Parser, parseResetsWithErrors)
 
 TEST(Parser, unitsWithCellMLRealVariations)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
@@ -1799,7 +1799,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(input);
+    libcellml::ModelPtr model = parser->parseModel(in);
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(model);
@@ -1808,7 +1808,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
 
 TEST(Parser, xmlComments)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<!-- THIS COMMENT SHOULD BE IGNORED 0 -->\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -1848,14 +1848,14 @@ TEST(Parser, xmlComments)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Parser, mathWithNamespacesDefinedOnTheMathNode)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component>\n"
@@ -1874,14 +1874,14 @@ TEST(Parser, mathWithNamespacesDefinedOnTheMathNode)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component>\n"
@@ -1900,14 +1900,14 @@ TEST(Parser, mathWithNamespacesDefinedOnTheNodeThatUsesNamespace)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Parser, mathWithNonStandardCellMLPrefix)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component>\n"
@@ -1926,14 +1926,14 @@ TEST(Parser, mathWithNonStandardCellMLPrefix)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Parser, mathWithMathmlNamespaceOnModel)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:ns_2=\"http://www.w3.org/1998/Math/MathML\" xmlns:ns_1=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <component>\n"
@@ -1952,14 +1952,14 @@ TEST(Parser, mathWithMathmlNamespaceOnModel)
         "</model>\n";
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    parser->parseModel(input);
+    parser->parseModel(in);
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 }
 
 TEST(Parser, repeatedMathParsePrintBehaviour)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component name=\"component\">\n"
@@ -1982,18 +1982,18 @@ TEST(Parser, repeatedMathParsePrintBehaviour)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::PrinterPtr printer = libcellml::Printer::create();
 
-    libcellml::ModelPtr model1 = parser->parseModel(input);
+    libcellml::ModelPtr model1 = parser->parseModel(in);
     std::string output1 = printer->printModel(model1);
 
     libcellml::ModelPtr model2 = parser->parseModel(output1);
     std::string output2 = printer->printModel(model2);
 
-    EXPECT_EQ(input, output2);
+    EXPECT_EQ(in, output2);
 }
 
 TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <units name=\"blob\"/>\n"
@@ -2026,11 +2026,11 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::PrinterPtr printer = libcellml::Printer::create();
 
-    libcellml::ModelPtr model1 = parser->parseModel(input);
+    libcellml::ModelPtr model1 = parser->parseModel(in);
     std::string output1 = printer->printModel(model1);
 
     libcellml::ModelPtr model2 = parser->parseModel(output1);
     std::string output2 = printer->printModel(model2);
 
-    EXPECT_EQ(input, output2);
+    EXPECT_EQ(in, output2);
 }

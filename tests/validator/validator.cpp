@@ -771,7 +771,7 @@ TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
 
 TEST(Validator, parseAndValidateInvalidUnitErrors)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">\n"
         "  <units name=\"ampere\"/>\n"
@@ -793,7 +793,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr m = p->parseModel(input);
+    libcellml::ModelPtr m = p->parseModel(in);
     EXPECT_EQ(size_t(0), p->errorCount());
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -838,7 +838,7 @@ TEST(Validator, validateInvalidConnectionsVariableWithoutParentComponent)
 
 TEST(Validator, integerStrings)
 {
-    const std::string input =
+    const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">\n"
         "  <component name=\"component\">\n"
@@ -912,7 +912,7 @@ TEST(Validator, integerStrings)
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr m = p->parseModel(input);
+    libcellml::ModelPtr m = p->parseModel(in);
 
     EXPECT_EQ_ERRORS(expectedParsingErrors, p);
 
@@ -1354,7 +1354,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "  </apply>\n"
         "</math>\n";
 
-    const std::vector<std::string> expectedErrors {
+    const std::vector<std::string> expectedErrors = {
         "LibXml2 error: Namespace prefix cellml for units on cn is not defined.",
         "LibXml2 error: Namespace prefix cellml for units on cn is not defined.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -2291,7 +2291,7 @@ TEST(Validator, variableEquivalenceValidNetwork)
 
 TEST(Validator, variableEquivalenceUnreachable)
 {
-    const std::vector<std::string> e {
+    const std::vector<std::string> expectedErrors = {
         "The equivalence between 'v1' on component 'c1'  and 'v3' on component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor have a parent/child relationship.",
         "The equivalence between 'v3' on component 'c3'  and 'v1' on component 'c1' is invalid. Component 'c3' and 'c1' are neither siblings nor have a parent/child relationship.",
     };
@@ -2332,12 +2332,12 @@ TEST(Validator, variableEquivalenceUnreachable)
     libcellml::Variable::addEquivalence(v1, v3);
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(e, validator);
+    EXPECT_EQ_ERRORS(expectedErrors, validator);
 }
 
 TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 {
-    const std::vector<std::string> e {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
         "The equivalence between 'v2' on component 'c2'  and 'v4' on component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor have a parent/child relationship.",
         "The equivalence between 'v4' on component 'c4'  and 'v2' on component 'c2' is invalid. Component 'c4' and 'c2' are neither siblings nor have a parent/child relationship.",
@@ -2402,13 +2402,13 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(e, validator);
+    EXPECT_EQ_ERRORS(expectedErrors, validator);
     printErrors(validator);
 }
 
 TEST(Validator, variableInterfaceShouldBePublic)
 {
-    const std::vector<std::string> e {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has no interface type set. The interface type required is 'public'.",
         "Variable 'v2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
@@ -2443,12 +2443,12 @@ TEST(Validator, variableInterfaceShouldBePublic)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(e, validator);
+    EXPECT_EQ_ERRORS(expectedErrors, validator);
 }
 
 TEST(Validator, variableInterfaceShouldBePrivate)
 {
-    const std::vector<std::string> e {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
     };
 
@@ -2483,7 +2483,7 @@ TEST(Validator, variableInterfaceShouldBePrivate)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(e, validator);
+    EXPECT_EQ_ERRORS(expectedErrors, validator);
 }
 
 TEST(Validator, variableInterfaceCouldBePrivateButSetToPublicAndPrivate)
@@ -2524,7 +2524,7 @@ TEST(Validator, variableInterfaceCouldBePrivateButSetToPublicAndPrivate)
 
 TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
 {
-    const std::vector<std::string> e {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'v2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public_and_private'.",
     };
 
@@ -2569,7 +2569,7 @@ TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(e, validator);
+    EXPECT_EQ_ERRORS(expectedErrors, validator);
 }
 
 TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
