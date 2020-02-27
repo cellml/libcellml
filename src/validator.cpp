@@ -742,33 +742,34 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
 {
     // Parse as XML first.
 
-    doc->parse(input);
-    // Copy any XML parsing issues into the common validator issue handler.
-    if (doc->xmlErrorCount() > 0) {
-        for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+    std::vector<XmlDocPtr> docs = multiRootXml(input);
+    for (const auto &doc : docs) {
+        // Copy any XML parsing issues into the common validator issue handler.
+        if (doc->xmlErrorCount() > 0) {
+            for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+                IssuePtr issue = Issue::create();
+                issue->setDescription("LibXml2 error: " + doc->xmlError(i));
+                issue->setCause(Issue::Cause::XML);
+                mValidator->addIssue(issue);
+            }
+        }
+        XmlNodePtr node = doc->rootNode();
+        if (node == nullptr) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("LibXml2 error: " + doc->xmlError(i));
+            issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
+            issue->setCause(Issue::Cause::XML);
+            issue->setComponent(component);
+            mValidator->addIssue(issue);
+            return;
+        }
+        if (!node->isMathmlElement("math")) {
+            IssuePtr issue = Issue::create();
+            issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
+            issue->setComponent(component);
             issue->setCause(Issue::Cause::XML);
             mValidator->addIssue(issue);
+            return;
         }
-    }
-    XmlNodePtr node = doc->rootNode();
-    if (node == nullptr) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
-        issue->setCause(Issue::Cause::XML);
-        issue->setComponent(component);
-        mValidator->addIssue(issue);
-        return;
-    }
-    if (!node->isMathmlElement("math")) {
-        IssuePtr issue = Issue::create();
-        issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
-        issue->setComponent(component);
-        issue->setCause(Issue::Cause::XML);
-        mValidator->addIssue(issue);
-        return;
-    }
 
         XmlNodePtr nodeCopy = node;
         std::vector<std::string> variableNames;
@@ -793,18 +794,18 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         // Get the MathML string with cellml:units attributes and namespace already removed.
         std::string cleanMathml = mathNode->convertToString();
 
-    // Parse/validate the clean math string with the W3C MathML DTD.
-    XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
-    mathmlDoc->parseMathML(cleanMathml);
-    // Copy any MathML validation issues into the common validator issue handler.
-    if (mathmlDoc->xmlErrorCount() > 0) {
-        for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
-            IssuePtr issue = Issue::create();
-            issue->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
-            issue->setComponent(component);
-            issue->setCause(Issue::Cause::MATHML);
-            mValidator->addIssue(issue);
-
+        // Parse/validate the clean math string with the W3C MathML DTD.
+        XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
+        mathmlDoc->parseMathML(cleanMathml);
+        // Copy any MathML validation issues into the common validator issue handler.
+        if (mathmlDoc->xmlErrorCount() > 0) {
+            for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
+                IssuePtr issue = Issue::create();
+                issue->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
+                issue->setComponent(component);
+                issue->setCause(Issue::Cause::MATHML);
+                mValidator->addIssue(issue);
+            }
         }
     }
 }
