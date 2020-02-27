@@ -132,7 +132,7 @@ void printComponent(const libcellml::ComponentPtr &component, size_t const c, st
     }
 }
 
-void expectEqualIssues(const std::vector<std::string> &errors, const libcellml::LoggerPtr &logger)
+void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
 
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
