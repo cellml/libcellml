@@ -26,9 +26,9 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"E_Na", "millivolt", "sodium_channel", CONSTANT},
     {"g_Na_max", "milliS_per_cm2", "sodium_channel", CONSTANT},
-    {"i_Leak", "microA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_Leak", "microA_per_cm2", "leakage_current", ALGEBRAIC},
     {"g_Na", "milliS_per_cm2", "sodium_channel", ALGEBRAIC},
-    {"i_Na", "microA_per_cm2", "membrane", ALGEBRAIC},
+    {"i_Na", "microA_per_cm2", "sodium_channel", ALGEBRAIC},
     {"alpha_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"beta_m", "per_millisecond", "sodium_channel_m_gate", ALGEBRAIC},
     {"alpha_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
@@ -37,7 +37,7 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"g_K2", "milliS_per_cm2", "potassium_channel", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
     {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"i_K", "microA_per_cm2", "membrane", ALGEBRAIC}
+    {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC}
 };
 
 double * createStatesArray()
