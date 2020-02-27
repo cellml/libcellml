@@ -38,10 +38,10 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
 #endif
 {
 public:
-    ~Component() override; /**< Destructor */
-    Component(const Component &rhs) = delete; /**< Copy constructor */
-    Component(Component &&rhs) noexcept = delete; /**< Move constructor */
-    Component &operator=(Component rhs) = delete; /**< Assignment operator */
+    ~Component() override; /**< Destructor @private*/
+    Component(const Component &rhs) = delete; /**< Copy constructor @private */
+    Component(Component &&rhs) noexcept = delete; /**< Move constructor @private*/
+    Component &operator=(Component rhs) = delete; /**< Assignment operator @private*/
 
     /**
      * @brief Create a @c Component object.
@@ -49,18 +49,29 @@ public:
      * Factory method to create a @c Component.  Create a
      * blank component with::
      *
+     * @code
      *   ComponentPtr component = libcellml::Component::create();
-     *
-     * or a named component with name "Component" with::
-     *
-     *   ComponentPtr component = libcellml::Component::create("Component");
+     * @endcode
      *
      * @return A smart pointer to a @c Component object.
      */
     static ComponentPtr create() noexcept;
 
     /**
+     * @brief Create a @c Component object with a name.
+     *
+     * Factory method to create a @c Component with a name.
+     * Create a named component with name "Component" with:
+     *
+     * @code
+     *   ComponentPtr component = libcellml::Component::create("Component");
+     * @endcode
+     *
      * @overload
+     *
+     * @param name The name of the component.
+     *
+     * @return A smart pointer to a @c Component object.
      */
     static ComponentPtr create(const std::string &name) noexcept;
 
@@ -141,13 +152,13 @@ public:
     bool removeVariable(size_t index);
 
     /**
-     * @overload
-     *
      * @brief Remove the variable with the given @p name from this component.
      *
      * Remove the variable with the given name from this component. If the named variable to
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection.
+     *
+     * @overload
      *
      * @sa addVariable
      *
@@ -158,13 +169,13 @@ public:
     bool removeVariable(const std::string &name);
 
     /**
-     * @overload
-     *
      * @brief Remove the variable by the given @p variable pointer from this component.
      *
      * Remove the variable with the given pointer from this component. If the @p variable to
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection.
+     *
+     * @overload
      *
      * @sa addVariable
      *
@@ -197,12 +208,12 @@ public:
     VariablePtr variable(size_t index) const;
 
     /**
-     * @overload
-     *
      * @brief Get a variable with the given name @p name.
      *
      * Returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
+     *
+     * @overload
      *
      * @param name The name of the variable to return.
      *
@@ -225,13 +236,13 @@ public:
     VariablePtr takeVariable(size_t index);
 
     /**
-     * @overload
-     *
      * @brief Take a variable with the given name @p name.
      *
      * Remove the variable with the given name from this component and
      * returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
+     *
+     * @overload
      *
      * @param name The name of the variable to return.
      *
@@ -262,13 +273,13 @@ public:
     bool hasVariable(const VariablePtr &variable) const;
 
     /**
-     * @overload
-     *
      * @brief Test whether the variable named @p name is in this component.
      *
      * Tests whether a variable with the argument @p name exists in the set of this
      * component's variables. Returns @c true if the named variable is in this
      * component's variables and @c false otherwise.
+     *
+     * @overload
      *
      * @param name The name of the variable to check for in this component.
      *
@@ -304,11 +315,11 @@ public:
     bool removeReset(size_t index);
 
     /**
-     * @overload
-     *
      * @brief Remove the reset by the given @p reset pointer from this component.
      *
      * Remove the reset with the given pointer from this component.
+     *
+     * @overload
      *
      * @sa addReset
      *
@@ -374,13 +385,13 @@ public:
     ComponentPtr clone() const;
 
 private:
-    Component(); /**< Constructor */
-    explicit Component(const std::string &name);
+    Component(); /**< Constructor @private*/
+    explicit Component(const std::string &name); /**< Constructor named @private */
 
-    bool doAddComponent(const ComponentPtr &component) override;
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private */
 
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentImpl *mPimpl; /**< Private member to implementation pointer */
+    struct ComponentImpl; /**< Forward declaration for pImpl idiom. @private */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer. @private */
 };
 
 } // namespace libcellml
