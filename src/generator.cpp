@@ -2055,9 +2055,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     }
 
     for (const auto &generatorVariable : mVariables) {
-        auto variable = generatorVariable->variable();
-
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize,
+                                generatorVariable->variable());
     }
 
     return replace(replace(replace(objectString,
