@@ -75,8 +75,10 @@ public:
      * @brief Get the @c Component for this @c GeneratorVariable.
      *
      * Return the @c Component of this @c GeneratorVariable. It is the
-     * @c Component in which the @c Variable is actually computed (if
-     * applicable). It may, or not, be the same @c Component as the parent
+     * @c Component in which the @c Variable is first defined (in the case of
+     * the variable of integration), initialised (in the case of a constant) or
+     * actually computed (in the case of a state, computed constant or algebraic
+     * variable). It may, or not, be the same @c Component as the parent
      * component of the @c Variable.
      *
      * @return The @c Component.
