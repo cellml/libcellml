@@ -42,7 +42,7 @@ TEST(Parser, invalidXMLElements)
         "LibXml2 error: Opening and ending tag mismatch: Wizard line 5 and SomeGuyWithAStaff.",
         "LibXml2 error: Opening and ending tag mismatch: Elf line 6 and fellows.",
         "LibXml2 error: Premature end of data in tag fellowship line 2.",
-        "Could not get a valid XML root node from the provided in.",
+        "Could not get a valid XML root node from the provided input.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -114,7 +114,7 @@ TEST(Parser, nonXmlString)
     const std::string in = "Not an xml string.";
     const std::vector<std::string> expectedErrors = {
         "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided in.",
+        "Could not get a valid XML root node from the provided input.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1427,7 +1427,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     const std::string in3 = "jarjarbinks";
     const std::vector<std::string> expectedErrors3 = {
         "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided in.",
+        "Could not get a valid XML root node from the provided input.",
     };
     libcellml::ParserPtr parser3 = libcellml::Parser::create();
     parser3->parseModel(in3);
