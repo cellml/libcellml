@@ -75,8 +75,9 @@ public:
      * @brief Get the @c Component for this @c GeneratorVariable.
      *
      * Return the @c Component of this @c GeneratorVariable. It is the
-     * @c Component in which the @c Variable is actually computed. It may, or
-     * not, be the same @c Component as the parent component of the @c Variable.
+     * @c Component in which the @c Variable is actually computed (if
+     * applicable). It may, or not, be the same @c Component as the parent
+     * component of the @c Variable.
      *
      * @return The @c Component.
      */
