@@ -790,26 +790,18 @@ GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const Var
 
     GeneratorVariablePtr voi = nullptr;
 
-    for (size_t j = 0; j < component->variableCount(); ++j) {
+    for (size_t j = 0; j < component->variableCount() && voi == nullptr; ++j) {
         VariablePtr testVariable = component->variable(j);
 
         if (sameOrEquivalentVariable(variable, testVariable)) {
             voi = GeneratorVariable::create();
 
             voi->mPimpl->populate(testVariable, component, GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
-
-            break;
         }
     }
 
-    if (voi == nullptr) {
-        for (size_t i = 0; i < component->componentCount(); ++i) {
-            voi = variableFirstOccurrence(variable, component->component(i));
-
-            if (voi != nullptr) {
-                break;
-            }
-        }
+    for (size_t i = 0; i < component->componentCount() && voi == nullptr; ++i) {
+        voi = variableFirstOccurrence(variable, component->component(i));
     }
 
     return voi;
