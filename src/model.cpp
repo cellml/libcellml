@@ -942,16 +942,17 @@ bool Model::fixVariableInterfaces()
         findAllVariablesWithEquivalences(component(index), variables);
     }
 
-    bool modified = false;
+    bool allOk = true;
     for (const auto &variable : variables) {
         Variable::InterfaceType interfaceType = determineInterfaceType(variable);
-        if (interfaceType != Variable::InterfaceType::NONE && !variable->hasInterfaceType(interfaceType)) {
+        if (interfaceType == Variable::InterfaceType::NONE) {
+            allOk = false;
+        } else if (!variable->hasInterfaceType(interfaceType)) {
             variable->setInterfaceType(interfaceType);
-            modified = true;
         }
     }
 
-    return modified;
+    return allOk;
 }
 
 } // namespace libcellml
