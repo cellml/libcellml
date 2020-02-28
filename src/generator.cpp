@@ -1253,7 +1253,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                 // integration to be defined), so go through our components and
                 // look for the first occurrence of our variable of integration.
 
-                ModelPtr model = owningModel(std::dynamic_pointer_cast<Component>(variable->parent()));
+                ModelPtr model = owningModel(variable->parent());
 
                 for (size_t i = 0; i < model->componentCount(); ++i) {
                     ComponentPtr testComponent = model->component(i);
