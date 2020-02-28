@@ -1691,7 +1691,7 @@ TEST(Variable, variableInterfaceDontDowngrade)
     libcellml::Variable::addEquivalence(v1, v4);
     libcellml::Variable::addEquivalence(v1, v3);
 
-    EXPECT_TRUE(model->fixVariableInterfaces());
+    EXPECT_FALSE(model->fixVariableInterfaces());
 
     EXPECT_EQ("public", v1->interfaceType());
     EXPECT_EQ("", v3->interfaceType());

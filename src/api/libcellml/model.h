@@ -347,13 +347,14 @@ public:
      * @brief Fix @c Variable interfaces throughout the model.
      *
      * Traverses the model investigating variable equivalences to set the appropriate
-     * interface type.  If any variable interface is changed then the method returns
-     * true.  If nothing is changed then false is returned.
+     * interface type.  If all equivalent variables have the correct interface set then
+     * the method returns true.  If one or more equivalent variable interface cannot be
+     * set correctly then false is returned.
      *
-     * If the interface type for a variable cannot be determined it is left unchanged.
+     * If the interface type for a variable cannot be set correctly it is left unchanged.
      *
-     * @return True if the @c Model has had a variable interface changed,
-     * false otherwise.
+     * @return @c true if all the variable interfaces in the @c Model are correct and
+     * @c false otherwise.
      */
     bool fixVariableInterfaces();
 
