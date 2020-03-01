@@ -429,7 +429,7 @@ public:
      * @brief Return the scaling factor difference between two @c Units.
      *
      * This can be interpreted as factor, where units2 = (factor)*units1.  If the units
-     * are not compatible the factor returned is 0.
+     * are not compatible the factor returned is 0.0.
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
