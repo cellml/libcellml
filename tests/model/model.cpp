@@ -579,6 +579,7 @@ TEST(Model, equivalentVariableCountReportsCorrectlyAfterUsingRemoveComponent)
     EXPECT_EQ(size_t(0), model->component(0)->variable(0)->equivalentVariableCount());
     EXPECT_EQ(nullptr, model->component(0)->variable(0)->equivalentVariable(0));
 }
+
 TEST(Model, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
