@@ -58,7 +58,82 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
+void printModel(libcellml::ModelPtr &model)
+{
+    std::cout << "The model name is: '" << model->name() << "'" << std::endl;
+    if (model->id() != "") {
+        std::cout << "The model id is: '" << model->id() << "'" << std::endl;
+    }
+
+    // 2.a    Print any custom units of the model
+    std::cout << "The model defines " << model->unitsCount()
+              << " custom units:" << std::endl;
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        std::cout << "  Units[" << u << "] is '" << model->units(u)->name() << "'"
+                  << std::endl;
+    }
+
+    // 2.b    Print the components of the model
+    std::cout << "The model has " << model->componentCount()
+              << " components:" << std::endl;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        // 2.c  Printing the attributes of the component
+        auto component = model->component(c);
+        std::string spacer = "  ";
+        printComponent(component, c, spacer);
+    }
+}
+
+void printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
+{
+    std::cout << spacer << "Component[" << c << "] has name: '"
+              << component->name() << "'" << std::endl;
+    if (component->id() != "") {
+        std::cout << spacer << "Component[" << c << "] has id: '"
+                  << component->id() << "'" << std::endl;
+    }
+
+    std::cout << spacer << "Component[" << c << "] has "
+              << component->variableCount()
+              << " variables:" << std::endl;
+
+    // Printing the variables within the component
+    for (size_t v = 0; v < component->variableCount(); v++) {
+        std::cout << spacer << "  Variable[" << v << "] has name: '"
+                  << component->variable(v)->name() << "'" << std::endl;
+        if (component->variable(v)->initialValue() != "") {
+            std::cout << spacer << "  Variable[" << v << "] has initial_value: '"
+                      << component->variable(v)->initialValue() << "'"
+                      << std::endl;
+        }
+        if (component->variable(v)->units() != nullptr) {
+            std::cout << spacer << "  Variable[" << v << "] has units: '"
+                      << component->variable(v)->units()->name() << "'" << std::endl;
+        }
+    }
+
+    // Print the maths within the component
+    if (component->math() != "") {
+        std::cout << spacer << "  Maths in the component is:" << std::endl;
+        std::cout << component->math() << std::endl;
+    }
+
+    // Print the encapsulated components
+    if (component->componentCount() > 0) {
+        std::cout << spacer << "Component[" << c << "] has "
+                  << component->componentCount()
+                  << " child components:" << std::endl;
+
+        for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
+            auto child = component->component(c2);
+            std::string oneMoreSpacer = spacer + "  ";
+            printComponent(child, c2, oneMoreSpacer);
+        }
+    }
+}
+
+void expectEqualIssues(const std::vector<std::string> &errors, const libcellml::LoggerPtr &logger)
+
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {

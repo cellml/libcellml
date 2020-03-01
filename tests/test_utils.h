@@ -80,6 +80,11 @@ std::string TEST_EXPORT fileContents(const std::string &fileName);
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
 
 void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues,
+
+void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer);
+
+void TEST_EXPORT printModel(libcellml::ModelPtr &model);
+
                                    const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
                                                         const std::vector<std::string> &specificationHeadings,
