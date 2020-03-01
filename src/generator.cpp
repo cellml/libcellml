@@ -1128,7 +1128,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     std::string math = component->math();
 
     if (!math.empty()) {
-        xmlDoc->parseMathML(math);
+        xmlDoc->parseMathML(math, false);
 
         XmlNodePtr mathNode = xmlDoc->rootNode();
 
