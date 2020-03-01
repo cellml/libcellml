@@ -428,41 +428,41 @@ public:
     /**
      * @brief Return the scaling factor difference between two @c Units.
      *
-     * This can be interpreted as factor, where units2 = (factor)*units1.  This method
-     * does not check to see if the units are compatible.
+     * This can be interpreted as factor, where units2 = (factor)*units1.  If the units
+     * are not compatible the factor returned is 0.
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
      *
-     * @return The factor units1/units2.
+     * @return The factor units2/units1, where the units are compatible, or 0.0 otherwise.
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Test to determine whether two @c Units are equivalent or not.
+     * @brief Test to determine whether two @c Units are compatible or not.
      *
-     * Two @c Units are considered to be equivalent if they share the same units,
+     * Two @c Units are considered to be compatible if they share the same units,
      * independently of their dimension (e.g. volt and volt are equivalent as are
      * volt and millivolt).
      *
      * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
-     * @return @c true if the two @c Units are equivalent, @c false otherwise.
+     * @return @c true if the two @c Units are compatible, @c false otherwise.
      */
     static bool compatible(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
+     * @brief Test to determine whether two @c Units are exactly equivalent or not.
      *
-     * Two @c Units are considered to be dimensionally equivalent if they share the
-     * exact same units (e.g. volt and volt are dimensionally equivalent but
+     * Two @c Units are considered to be equivalent if they share the
+     * exact same units (e.g. volt and volt are equivalent but
      * volt and millivolt are not).
      *
      * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
-     * @return @c true if the two @c Units are dimensionally equivalent, @c false
+     * @return @c true if the two @c Units are equivalent, @c false
      * otherwise.
      */
     static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
