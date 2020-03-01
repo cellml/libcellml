@@ -495,7 +495,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
     return unitsMap;
 }
 
-bool Units::usesImportedUnits() const
+bool Units::requiresImports() const
 {
     // Function to check child unit dependencies for imports.
     std::string ref;
@@ -515,7 +515,7 @@ bool Units::usesImportedUnits() const
             if (child->isImport()) {
                 return true;
             }
-            if (child->usesImportedUnits()) {
+            if (child->requiresImports()) {
                 return true;
             }
         }
@@ -532,7 +532,7 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
     if ((units1->isImport()) || (units2->isImport())) {
         return false;
     }
-    if ((units1->usesImportedUnits()) || (units2->usesImportedUnits())) {
+    if ((units1->requiresImports()) || (units2->requiresImports())) {
         return false;
     }
     bool isValid = true;
