@@ -17,10 +17,10 @@ class VariableType(Enum):
     ALGEBRAIC = 3
 
 
-VOI_INFO = {"name": "t", "units": "ms", "component": "circle_x"}
+VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "x", "units": "mM", "component": "circle_x_source"},
+    {"name": "x", "units": "mM", "component": "circle_x"},
     {"name": "y", "units": "mM", "component": "circle_y_implementation"}
 ]
 

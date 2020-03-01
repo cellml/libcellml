@@ -33,9 +33,9 @@ struct Reset::ResetImpl
     int mOrder = 0; /**< An integer for determining relative order.*/
     VariablePtr mVariable; /**< The associated variable for the reset.*/
     VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
-    std::string mTestValue = ""; /**< The mathml string for the test_value.*/
+    std::string mTestValue = ""; /**< The MathML string for the test_value.*/
     std::string mTestValueId = ""; /**< The id of the test_value block */
-    std::string mResetValue = ""; /**< The mathml string for the reset_value.*/
+    std::string mResetValue = ""; /**< The MathML string for the reset_value.*/
     std::string mResetValueId = ""; /**< The id of the reset_value block */
 };
 
