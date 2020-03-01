@@ -1092,10 +1092,10 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             // mean a variable that is used in a "diff" element).
 
             if (node->parent()->firstChild()->isMathmlElement("diff")) {
-                equation->addOdeVariable(Generator::GeneratorImpl::generatorVariable(variable));
+                equation->addOdeVariable(generatorVariable(variable));
             } else if (!(node->parent()->isMathmlElement("bvar")
                          && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-                equation->addVariable(Generator::GeneratorImpl::generatorVariable(variable));
+                equation->addVariable(generatorVariable(variable));
             }
         } else {
             std::string modelName = entityName(owningModel(component));
