@@ -423,7 +423,7 @@ public:
      * @return @c true when these @c Units rely on @c Units which are imported,
      * or @c false otherwise.
      */
-    bool usesImportedUnits() const;
+    bool requiresImports() const;
 
     /**
      * @brief Return the scaling factor difference between two @c Units.
