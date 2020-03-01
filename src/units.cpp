@@ -405,7 +405,7 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        if ((units1->unitCount() != 0) && (units2->unitCount() != 0)) {
+        if (((units1->unitCount() != 0) || isStandardUnit(units1)) && ((units2->unitCount() != 0) || isStandardUnit(units2))) {
             double multiplier = 0.0;
 
             updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
@@ -454,7 +454,11 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 }
             } else {
                 auto model = owningModel(units);
-                if (model != nullptr) {
+                if (model == nullptr) {
+                    // We cannot resolve the reference for this units so we add
+                    // what we do know.
+                    unitsMap[ref] = uExp * exp;
+                } else {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
                         unitsMap.clear();
