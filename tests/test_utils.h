@@ -79,7 +79,9 @@ std::string TEST_EXPORT fileContents(const std::string &fileName);
 
 void TEST_EXPORT printErrors(const libcellml::LoggerPtr &l, bool headings = false, bool kinds = false, bool rule = false);
 
-void TEST_EXPORT printModel(const libcellml::ModelPtr &model);
+void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer);
+
+void TEST_EXPORT printModel(libcellml::ModelPtr &model);
 
 void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &errors,
                                    const libcellml::LoggerPtr &logger);

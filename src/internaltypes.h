@@ -23,9 +23,12 @@ limitations under the License.
 
 namespace libcellml {
 
+using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
+
 using IndexStack = std::vector<size_t>; /**< Type definition for tracking indicies. */
 using EquivalenceMap = std::map<IndexStack, std::vector<IndexStack>>; /**< Type definition for map of variable equivalences defined over model. */
+
 using NameList = std::vector<std::string>; /**< Type definition for list of names. */
-using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
+using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 
 } // namespace libcellml
