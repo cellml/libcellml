@@ -1578,7 +1578,7 @@ TEST(Units, compareEquivalentNonStandardWhichCannotBeResolvedUnits)
     u2->setName("b");
     u2->addUnit("millisecond", -1);
 
-    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+    EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
 }
 
 TEST(Units, compareEquivalentNonStandardUnitsOneUnitsWithParentModel)
