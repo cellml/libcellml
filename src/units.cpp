@@ -533,7 +533,7 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
     if ((units1->requiresImports()) || (units2->requiresImports())) {
         return false;
     }
-    bool isValid = true;
+    bool isValid; 
     auto units1Map = createUnitsMap(units1, isValid);
     if (!isValid) {
         return false;
