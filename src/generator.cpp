@@ -1306,7 +1306,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                 + "' in component '" + component->name()
                                 + "' of model '" + model->name()
                                 + "' cannot both be a variable of integration.");
-            issue->setCause(Error::Kind::GENERATOR);
+            issue->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(issue);
         }
