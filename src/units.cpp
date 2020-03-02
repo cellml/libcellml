@@ -398,7 +398,12 @@ size_t Units::unitCount() const
 
 double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    if (!Units::compatible(units1, units2)) {
+    return scalingFactor(units1, units2, true);
+}
+
+double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, const bool &checkCompatibility)
+{
+    if (checkCompatibility && !Units::compatible(units1, units2)) {
         return 0.0;
     }
 
@@ -499,14 +504,14 @@ bool Units::requiresImports() const
 {
     // Function to check child unit dependencies for imports.
 
-    if (hasParent()) {
+    auto model = std::dynamic_pointer_cast<Model>(parent());
+    if (model != nullptr) {
         std::string ref;
         std::string prefix;
         double exponent;
         double multiplier;
         std::string id;
 
-        auto model = std::dynamic_pointer_cast<Model>(parent());
         for (size_t u = 0; u < unitCount(); ++u) {
             unitAttributes(u, ref, prefix, exponent, multiplier, id);
             auto child = model->units(ref);
