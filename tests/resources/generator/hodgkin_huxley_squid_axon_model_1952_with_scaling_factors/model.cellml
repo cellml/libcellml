@@ -12,6 +12,10 @@
     <units name="millivolt">
         <unit prefix="milli" units="volt"/>
     </units>
+    <units name="per_volt_second">
+        <unit exponent="-1" units="volt"/>
+        <unit exponent="-1" units="second"/>
+    </units>
     <units name="per_millivolt_millisecond">
         <unit exponent="-1" units="millivolt"/>
         <unit exponent="-1" prefix="milli" units="second"/>
@@ -164,7 +168,7 @@
                     <divide/>
                     <apply>
                         <times/>
-                        <cn cellml:units="per_millivolt_millisecond">100000</cn>
+                        <cn cellml:units="per_volt_second">100000</cn>
                         <apply>
                             <plus/>
                             <ci>V</ci>
