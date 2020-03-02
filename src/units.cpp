@@ -396,12 +396,7 @@ size_t Units::unitCount() const
     return mPimpl->mUnits.size();
 }
 
-double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
-{
-    return scalingFactor(units1, units2, true);
-}
-
-double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, const bool &checkCompatibility)
+double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility)
 {
     if (checkCompatibility && !Units::compatible(units1, units2)) {
         return 0.0;
