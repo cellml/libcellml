@@ -426,7 +426,7 @@ TEST(Validator, validMath)
     EXPECT_EQ(size_t(0), v->errorCount());
 }
 
-TEST(Validator, validMathInMultipleMathMlBlocks)
+TEST(Validator, validMathInMultipleMathMLBlocks)
 {
     const std::string math =
         "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
@@ -1206,7 +1206,7 @@ TEST(Validator, resetNoResetValue)
     EXPECT_EQ(expectedError, validator->error(0)->description());
 }
 
-TEST(Validator, resetMultipleMathMlInResetValue)
+TEST(Validator, resetMultipleMathMLInResetValue)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -1278,7 +1278,7 @@ TEST(Validator, resetNoTestValue)
     EXPECT_EQ_ERRORS(expectedErrors, validator);
 }
 
-TEST(Validator, resetMultipleMathMlInTestValue)
+TEST(Validator, resetMultipleMathMLInTestValue)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
