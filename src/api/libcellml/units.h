@@ -426,17 +426,34 @@ public:
     bool requiresImports() const;
 
     /**
+     * @overload
+     * 
      * @brief Return the scaling factor difference between two @c Units.
      *
-     * This can be interpreted as `factor`, where units2 = factor*units1.  If the units
-     * are not compatible the factor returned is 0.0.
+     * This can be interpreted as `factor`, where units2 = factor*units1.  If the units are not 
+     * compatible the factor returned is 0.0.
+     *
+     * @param units1 The first units to compare.
+     * @param units2 The second units to compare. 
+     *
+     * @return The factor units2/units1.  Where the units are incompatible the factor returned is 0.0.
+     */
+    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
+
+    /**
+     * @brief Return the scaling factor difference between two @c Units.
+     *
+     * This can be interpreted as `factor`, where units2 = factor*units1.  If compatibility checking is
+     * turned on and the units are not compatible the factor returned is 0.0.
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
+     * @param checkCompatibility Set @c true for compatiblily checking, or @false to ignore base units. 
      *
-     * @return The factor units2/units1, where the units are compatible, or 0.0 otherwise.
+     * @return The factor units2/units1.  Where the units are incompatible and @c checkCompatibility 
+     * is @c true then the factor returned is 0.0.
      */
-    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
+    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, const bool &checkCompatibility);
 
     /**
      * @brief Test to determine whether two @c Units are compatible or not.

@@ -2259,3 +2259,19 @@ TEST(Units, parsedUnitsRequiringImports)
     EXPECT_FALSE(model->units("grandpa")->isImport());
     EXPECT_TRUE(model->units("grandpa")->requiresImports());
 }
+
+TEST(Units, scalingFactorIncompatibleUnitsNoChecking)
+{
+    // This test shows that a scaling factor can be returned for incompatible units
+    // when compatibility checking is turned off.
+
+    auto model = libcellml::Model::create("st_clements");
+    auto lemons = libcellml::Units::create("lemons");
+    lemons->addUnit("metre", "kilo");
+    auto oranges = libcellml::Units::create("oranges");
+    oranges->addUnit("second", "milli");
+    model->addUnits(oranges);
+    model->addUnits(lemons);
+
+    EXPECT_EQ(1.0E+6, libcellml::Units::scalingFactor(oranges, lemons, false));
+}
