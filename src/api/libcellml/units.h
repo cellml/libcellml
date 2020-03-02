@@ -360,7 +360,7 @@ public:
      *
      * @param index The index of the unit to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return @c true if the units were replaced, false otherwise.
      */
     bool removeUnit(size_t index);
 
@@ -373,7 +373,7 @@ public:
      *
      * @param reference The @c std::string unit reference of the unit to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return @c true if the units were replaced, @c false otherwise.
      */
     bool removeUnit(const std::string &reference);
 
@@ -386,7 +386,7 @@ public:
      *
      * @param standardRef The @c StandardUnit enum unit reference of the unit to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return @c true if the units were replaced, @c false otherwise.
      */
     bool removeUnit(StandardUnit standardRef);
 
@@ -428,7 +428,7 @@ public:
     /**
      * @brief Return the scaling factor difference between two @c Units.
      *
-     * This can be interpreted as factor, where units2 = (factor)*units1.  If the units
+     * This can be interpreted as `factor`, where units2 = factor*units1.  If the units
      * are not compatible the factor returned is 0.0.
      *
      * @param units1 The first units to compare.
@@ -442,7 +442,7 @@ public:
      * @brief Test to determine whether two @c Units are compatible or not.
      *
      * Two @c Units are considered to be compatible if they share the same units,
-     * independently of their dimension (e.g. volt and volt are equivalent as are
+     * independently of their scaling (e.g. volt and volt are compatible as are
      * volt and millivolt).
      *
      * @param1 units1 The first units to compare.
@@ -453,10 +453,10 @@ public:
     static bool compatible(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Test to determine whether two @c Units are exactly equivalent or not.
+     * @brief Test to determine whether two @c Units are equivalent or not.
      *
      * Two @c Units are considered to be equivalent if they share the
-     * exact same units (e.g. volt and volt are equivalent but
+     * same unit base as well as a scaling factor of 1.0 (e.g. volt and volt are equivalent but
      * volt and millivolt are not).
      *
      * @param1 units1 The first units to compare.
