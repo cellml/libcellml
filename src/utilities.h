@@ -16,11 +16,13 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/types.h"
-
+#include <algorithm>
+#include <cctype>
 #include <map>
 #include <string>
 #include <vector>
+
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -381,7 +383,7 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @brief Check if the provided @p name is a standard unit.
  *
  * Checks if the provided @p name is one of the standard units in the
- * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
+ * @c Units::StandardUnit @c enum. Returns @c true if @p name is a standard unit
  * and @c false otherwise.
  *
  * @param name The @c std::string name to check against the list of standard units.
@@ -389,6 +391,19 @@ void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &comp
  * @return @c true if @name is a standard unit and @c false otherwise.
  */
 bool isStandardUnitName(const std::string &name);
+
+/**
+ * @brief Test if the provided @c Units is a standard unit.
+ *
+ * Tests to determine if the provided @p units is equivalent to
+ * a standard unit.  Returns @c true if the @p units is a standard unit
+ * and @c false otherwise.
+ *
+ * @param units The @c Units to test.
+ *
+ * @return @c true if @p units is a standard unit, @c false otherwise.
+ */
+bool isStandardUnit(const UnitsPtr &units);
 
 /**
  * @brief Check if the provided @p name is a standard prefix.
@@ -416,5 +431,64 @@ bool isStandardPrefixName(const std::string &name);
  * number of variables in the component if the variable was not found.
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+
+/**
+ * @brief Trim whitespace from the front of a string (in place).
+ *
+ * Remove whitespace from the front of a string, modifying the passed string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void leftTrim(std::string &s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
+                return std::isspace(ch) == 0;
+            }));
+}
+
+/**
+ * @brief Trim whitespace from the end of a string (in place).
+ *
+ * Remove whitespace from the end of a string, modifying the passed string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void rightTrim(std::string &s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
+                return std::isspace(ch) == 0;
+            }).base(),
+            s.end());
+}
+
+/**
+ * @brief Trim whitespace from the beginning and end of a string(in place).
+ *
+ * Remove whitespace from the beginning and end of a string, modifying the passed
+ * string.
+ *
+ * @param s The @c std::string to trim.
+ */
+static inline void trim(std::string &s)
+{
+    leftTrim(s);
+    rightTrim(s);
+}
+
+/**
+ * @brief Trim whitespace from the beginning and end of a string.
+ *
+ * Remove whitespace from the beginning and end of a string
+ * returning the result.
+ *
+ * @param s The @c std::string to trim.
+ *
+ * @return The trimmed string.
+ */
+static inline std::string trimCopy(std::string s)
+{
+    trim(s);
+    return s;
+}
 
 } // namespace libcellml
