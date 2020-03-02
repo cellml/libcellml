@@ -1300,12 +1300,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             IssuePtr issue = Issue::create();
 
             issue->setDescription("Variable '" + mVoi->variable()->name()
-                                + "' in component '" + mVoi->component()->name()
-                                + "' of model '" + voiModel->name()
-                                + "' and variable '" + variable->name()
-                                + "' in component '" + component->name()
-                                + "' of model '" + model->name()
-                                + "' cannot both be a variable of integration.");
+                                  + "' in component '" + mVoi->component()->name()
+                                  + "' of model '" + voiModel->name()
+                                  + "' and variable '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' of model '" + model->name()
+                                  + "' cannot both be a variable of integration.");
             issue->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(issue);
