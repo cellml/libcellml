@@ -1060,22 +1060,6 @@ TEST(Units, scalingFactorWithTwoEmptyUnits)
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
 
-// TEST(Units, scalingFactorBetweenMultipliedUnits)
-// {
-//     // u1 = 1000*u2 ... but is it really ... ?
-//     libcellml::UnitsPtr u1 = libcellml::Units::create();
-//     u1->setName("u1");
-//     u1->addUnit("metre", 0, 3.0, 1000.0);
-//     libcellml::UnitsPtr u2 = libcellml::Units::create();
-//     u2->setName("u2");
-//     u2->addUnit("metre", 0, 1.0, 1.0);
-//     u2->addUnit("metre", 0, 1.0, 1.0);
-//     u2->addUnit("metre", 0, 1.0, 1.0);
-
-//     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
-//     EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
-// }
-
 TEST(Units, scalingFactorBetweenDissimilarUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -1145,6 +1129,7 @@ TEST(Units, dimensionlessScalingFactor)
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u4));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u3));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u5, u6));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u6, u5));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u5));
 }
 
@@ -1240,7 +1225,7 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
     EXPECT_EQ(1e-08, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, square_apple));
-    // Incompatible units but return a scaling factor of 0
+    // Incompatible units so we return a scaling factor of 0.0.
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(incredible_pile_of_square_apples, bunch_of_bananas));
 }
 
@@ -1351,7 +1336,7 @@ TEST(Units, checkScalingFactorOneUnitImported)
 
     u1->setImportSource(import);
 
-    // KRM Changed to be 0.0 because the units u1 contain an import?
+    // Scaling factor returns 0.0 because of imported units.
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u2, u1));
 }
@@ -1862,14 +1847,12 @@ TEST(Units, isEquivalentBaseUnitNotInModel)
     u2->setName("u2");
     u2->addUnit(libcellml::Units::StandardUnit::RADIAN, 0, 1.0, 1.0);
     u2->addUnit("u", 0, 1.0, 1.0);
-    // test should fail because base unit "u" is not present in u1, regardless of whether "apples" exists or not
+    // u1 compatible to u2 test should fail because base unit "u" is not present in u1, regardless of whether "apples" exists or not
 
     model->addUnits(u1);
     model->addUnits(u2);
-    // model->linkUnits();
-    // Units "u" not in model.  Units "apples" doesn't exist.  Units are not linked.
-    // Previously returned false because of mismatched number of child units.
 
+    // Units "u" not in model.  Units "apples" doesn't exist.  Units are not linked.
     EXPECT_FALSE(libcellml::Units::compatible(u1, u2));
     EXPECT_FALSE(libcellml::Units::compatible(u2, u1));
 }
@@ -2163,6 +2146,7 @@ TEST(Units, scalingFactorChildUnitsNotFound)
 TEST(Units, scalingFactorGrandchildUnitsNotFound)
 {
     auto model = libcellml::Model::create("nurseryrhymes");
+
     auto u0 = libcellml::Units::create("sheep");
     u0->addUnit("wool");
 
@@ -2170,13 +2154,14 @@ TEST(Units, scalingFactorGrandchildUnitsNotFound)
     u1->addUnit("sheep");
 
     auto u2 = libcellml::Units::create("flock");
+    u2->addUnit("sheep");
 
     model->addUnits(u0);
     model->addUnits(u1);
     model->addUnits(u2);
-    auto s = libcellml::Units::scalingFactor(u1, u2);
 
-    EXPECT_EQ(0.0, s);
+    // Child units of "wool" are not found within "sheep" units.  Comparison should return 0.0.
+    EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
 }
 
 TEST(Units, compatibleUnitsInDifferentModelsChildNotFound)
@@ -2194,10 +2179,11 @@ TEST(Units, compatibleUnitsInDifferentModelsChildNotFound)
     m2->addUnits(u2);
     m2->addUnits(u3);
 
+    // Child unit of "sheep" exists only in m2, return 0.0.
     EXPECT_EQ(0.0, libcellml::Units::scalingFactor(u1, u2));
 }
 
-TEST(Units, compatibleGrandchildUnitsImported)
+TEST(Units, importedGrandchildUnitsNotCompatible)
 {
     auto model = libcellml::Model::create("nurseryrhymes");
 
@@ -2225,6 +2211,9 @@ TEST(Units, compatibleGrandchildUnitsImported)
     model->addUnits(imported_units);
 
     // Expect false only because the first units "imported_units" is imported... otherwise it would be true.
+    // Imports are not resolved during the compatibility/equivalence checking, so any comparisons which
+    // have unresolved imports must return `false` as there's not enough information to confirm that they're
+    // the same.
     EXPECT_FALSE(libcellml::Units::compatible(u2, u3));
 }
 
@@ -2240,6 +2229,7 @@ TEST(Units, scalingFactorBetweenExponentialUnits)
     u2->addUnit("metre", 0, 1.0, 1.0);
 
     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
 }
 
 TEST(Units, scalingFactorBetweenMultipliedUnits)
@@ -2252,4 +2242,5 @@ TEST(Units, scalingFactorBetweenMultipliedUnits)
     u2->addUnit("metre", 0, 3.0, 1.0);
 
     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
 }

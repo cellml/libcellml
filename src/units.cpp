@@ -498,13 +498,14 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
 bool Units::requiresImports() const
 {
     // Function to check child unit dependencies for imports.
-    std::string ref;
-    std::string prefix;
-    double exponent;
-    double multiplier;
-    std::string id;
 
     if (hasParent()) {
+        std::string ref;
+        std::string prefix;
+        double exponent;
+        double multiplier;
+        std::string id;
+
         auto model = std::dynamic_pointer_cast<Model>(parent());
         for (size_t u = 0; u < unitCount(); ++u) {
             unitAttributes(u, ref, prefix, exponent, multiplier, id);
@@ -512,10 +513,7 @@ bool Units::requiresImports() const
             if (child == nullptr) {
                 continue;
             }
-            if (child->isImport()) {
-                return true;
-            }
-            if (child->requiresImports()) {
+            if (child->isImport() || child->requiresImports()) {
                 return true;
             }
         }
@@ -564,8 +562,8 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    // Units must be compatible to return a non-zero scaling factor
-    return (Units::scalingFactor(units1, units2) == 1.0);
+    // Units must be compatible to return a non-zero scaling factor.
+    return Units::scalingFactor(units1, units2) == 1.0;
 }
 
 UnitsPtr Units::clone() const
