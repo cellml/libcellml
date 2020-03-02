@@ -439,7 +439,7 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
  *
  * @param s The @c std::string to trim.
  */
-static inline void ltrim(std::string &s)
+static inline void leftTrim(std::string &s)
 {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
                 return std::isspace(ch) == 0;
@@ -453,7 +453,7 @@ static inline void ltrim(std::string &s)
  *
  * @param s The @c std::string to trim.
  */
-static inline void rtrim(std::string &s)
+static inline void rightTrim(std::string &s)
 {
     s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
                 return std::isspace(ch) == 0;
@@ -471,8 +471,8 @@ static inline void rtrim(std::string &s)
  */
 static inline void trim(std::string &s)
 {
-    ltrim(s);
-    rtrim(s);
+    leftTrim(s);
+    rightTrim(s);
 }
 
 /**
@@ -485,7 +485,7 @@ static inline void trim(std::string &s)
  *
  * @return The trimmed string.
  */
-static inline std::string trim_copy(std::string s)
+static inline std::string trimCopy(std::string s)
 {
     trim(s);
     return s;

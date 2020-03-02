@@ -61,7 +61,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
+                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::equivalent(u, units); });
 }
 
 Model::Model()
@@ -762,11 +762,11 @@ std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &uni
     for (size_t index = 0; index < units->unitCount(); ++index) {
         units->unitAttributes(index, ref, pre, uExp, expMult, id);
         if (!isStandardUnitName(ref)) {
-            auto u = model->units(ref);
-            if (u != nullptr) {
-                auto requiredUnitsUnits = referencedUnits(model, u);
+            auto refUnits = model->units(ref);
+            if (refUnits != nullptr) {
+                auto requiredUnitsUnits = referencedUnits(model, refUnits);
                 requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
-                requiredUnits.push_back(u);
+                requiredUnits.push_back(refUnits);
             }
         }
     }

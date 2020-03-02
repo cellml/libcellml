@@ -3,9 +3,15 @@
     <units name="per_second">
         <unit exponent="-1" units="second"/>
     </units>
+    <component name="dummy_component">
+    </component>
+    <component name="dummy_top_component">
+    </component>
+    <component name="dummy_bottom_component">
+    </component>
     <component name="my_component">
-        <variable name="t" units="second"/>
         <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="t" units="second"/>
         <variable name="eqnEq" units="dimensionless"/>
         <variable name="eqnEqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
@@ -2560,4 +2566,10 @@
             </apply>
         </math>
     </component>
+    <encapsulation>
+        <component_ref component="dummy_top_component">
+            <component_ref component="dummy_bottom_component"/>
+            <component_ref component="my_component"/>
+        </component_ref>
+    </encapsulation>
 </model>

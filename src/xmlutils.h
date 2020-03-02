@@ -51,12 +51,12 @@ XmlNamespaceMap determineMissingNamespaces(const XmlNamespaceMap &namespaceMap1,
 XmlNamespaceMap traverseTreeForUndefinedNamespaces(const XmlNodePtr &node);
 
 /**
- * @brief Turn xml content with potentially multiple root elements in a vector of documents.
+ * @brief Turn XML content with potentially multiple root elements in a vector of documents.
  *
- * Parse the @p content and try to find Xml documents returning a vector of any Xml documents
+ * Parse the @p content and try to find XML documents returning a vector of any XML documents
  * found.
  *
- * @param content The string to parse for Xml roots.
+ * @param content The string to parse for XML roots.
  * @return A vector of @c XmlDoc pointers.
  */
 std::vector<XmlDocPtr> multiRootXml(const std::string &content);
