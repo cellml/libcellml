@@ -468,7 +468,6 @@ TEST(Validator, validMathInMultipleMathMlBlocks)
 
     v->validateModel(m);
     EXPECT_EQ(size_t(0), v->errorCount());
-    printErrors(v);
 }
 
 TEST(Validator, invalidMath)
