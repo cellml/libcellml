@@ -562,6 +562,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     // defined in the model but not used by a variable (ie: only used by <cn> tags)
     // were not imported.
     auto validator = libcellml::Validator::create();
+    auto importer = libcellml::Importer::create();
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
 
@@ -573,9 +574,10 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     model->addComponent(c);
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+
+    importer->resolveImports(resourcePath(), model);
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
+    importer->flatten(model);
 
     // Confirm that the bug reported in #519 wherein units used solely by <cn> items
     // in imported components were not being imported is now fixed.
@@ -627,7 +629,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
     auto importedModel = parser->parseModel(in);
-
+    auto importer = libcellml::Importer::create();
     auto validator = libcellml::Validator::create();
 
     // No problems with the imported model.
@@ -651,7 +653,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
+    importer->flatten(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
@@ -697,6 +699,7 @@ TEST(Model, importUnitsDuplicated)
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
     auto importedModel = parser->parseModel(in);
+    auto importer = libcellml::Importer::create();
 
     auto validator = libcellml::Validator::create();
     validator->validateModel(importedModel);
@@ -714,8 +717,7 @@ TEST(Model, importUnitsDuplicated)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model->flatten();
-
+    importer->flatten(model);
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 
