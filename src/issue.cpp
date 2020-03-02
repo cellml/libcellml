@@ -187,12 +187,13 @@ ReferenceRule Issue::rule() const
     return mPimpl->mRule;
 }
 
-std::string Issue::url() const
-{
-    // Construct from the default address formula: BASE_ISSUE_URL + rule number.
-    // TODO check that this is appropriate for however we need to handle them.
-    return BASE_ISSUE_URL + referenceHeading();
-}
+// TODO Removed until the BASE_ISSUE_URL is finalised and ready.
+// std::string Issue::url() const
+// {
+//     // Construct from the default address formula: BASE_ISSUE_URL + rule number.
+//     // TODO check that this is appropriate for however we need to handle them.
+//     return BASE_ISSUE_URL + referenceHeading();
+// }
 
 void Issue::setComponent(const ComponentPtr &component)
 {
