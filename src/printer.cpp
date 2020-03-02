@@ -24,7 +24,6 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
-#include "libcellml/enumerations.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
@@ -201,6 +200,8 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
             repr += " id=\"" + units->id() + "\"";
         }
         repr += "/></import>";
+    } else if (isStandardUnit(units)) {
+        // Do nothing.
     } else {
         bool endTag = false;
         repr += "<units";
