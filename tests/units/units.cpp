@@ -2245,3 +2245,17 @@ TEST(Units, scalingFactorBetweenMultipliedUnits)
     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
     EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
 }
+
+TEST(Units, parsedUnitsRequiringImports)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("requires_imports.cellml"));
+
+    // When parsing a model it's hard to know whether the units it uses are imported
+    // or not if the import is in a child units item.  Using the Units::requiresImports()
+    // function should tell us.
+
+    EXPECT_EQ(size_t(3), model->unitsCount());
+    EXPECT_FALSE(model->units("grandpa")->isImport());
+    EXPECT_TRUE(model->units("grandpa")->requiresImports());
+}
