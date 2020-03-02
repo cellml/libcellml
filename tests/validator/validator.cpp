@@ -1476,6 +1476,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     m->addUnits(u2);
 
     const std::vector<std::string> expectedErrors = {
+        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
     };
@@ -2000,7 +2001,6 @@ TEST(Validator, unitMultiplierFactorDifference)
     m->linkUnits();
     validator->validateModel(m);
 
-    printErrors(validator);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
