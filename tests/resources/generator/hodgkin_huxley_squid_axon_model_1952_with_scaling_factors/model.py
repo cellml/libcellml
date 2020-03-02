@@ -17,7 +17,7 @@ class VariableType(Enum):
     ALGEBRAIC = 3
 
 
-VOI_INFO = {"name": "time", "units": "millisecond", "component": "sodium_channel_h_gate"}
+VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
 STATE_INFO = [
     {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
@@ -36,13 +36,13 @@ VARIABLE_INFO = [
     {"name": "E_Na", "units": "millivolt", "component": "sodium_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_Stim", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "i_L", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
-    {"name": "i_Na", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
+    {"name": "i_L", "units": "nanoA_per_cm2", "component": "leakage_current", "type": VariableType.ALGEBRAIC},
+    {"name": "i_Na", "units": "nanoA_per_cm2", "component": "sodium_channel", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_m", "units": "per_second", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_m", "units": "per_second", "component": "sodium_channel_m_gate", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_h", "units": "per_millisecond", "component": "sodium_channel_h_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "i_K", "units": "nanoA_per_cm2", "component": "membrane", "type": VariableType.ALGEBRAIC},
+    {"name": "i_K", "units": "nanoA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
     {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
 ]
