@@ -1122,8 +1122,8 @@ TEST(Units, dimensionlessScalingFactor)
 
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u1));
-    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u3));
-    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u4, u4));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u3, u4));
+    EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u4, u3));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u3));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u2, u4));
     EXPECT_EQ(1.0, libcellml::Units::scalingFactor(u1, u4));
@@ -1819,6 +1819,7 @@ TEST(Units, isCompatibleBaseGrandchildUnitImported)
     model->addUnits(u);
     model->addUnits(u1);
     model->addUnits(u2);
+    model->addUnits(u3);
 
     libcellml::ImportSourcePtr import = libcellml::ImportSource::create();
     import->setUrl("I_am_a_url");
