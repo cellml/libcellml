@@ -56,8 +56,8 @@ void printStringStringMap(const StringStringMap &map)
     }
 }
 
-static const std::string SPACES = "   ";
-static const std::string TRUNK = "   |";
+static const std::string SPACES = "  ";
+static const std::string TRUNK = "  │";
 
 struct GeneratorEquationAstTrunk
 {
@@ -266,12 +266,12 @@ void doPrintAst(const GeneratorEquationAstPtr &ast,
     doPrintAst(ast->mLeft, &trunk, true);
 
     if (prevTrunk == nullptr) {
-        trunk.mStr = "---";
+        trunk.mStr = "──";
     } else if (isLeft) {
-        trunk.mStr = ".---";
+        trunk.mStr = "╭──";
         prevStr = TRUNK;
     } else {
-        trunk.mStr = "`---";
+        trunk.mStr = "╰──";
         prevTrunk->mStr = prevStr;
     }
 
