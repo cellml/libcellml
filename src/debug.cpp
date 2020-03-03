@@ -261,21 +261,21 @@ void doPrintAst(const GeneratorEquationAstPtr &ast,
     }
 
     std::string prevStr = SPACES;
-    auto trunk = new struct GeneratorEquationAstTrunk(prevTrunk, prevStr);
+    GeneratorEquationAstTrunk trunk(prevTrunk, prevStr);
 
-    doPrintAst(ast->mLeft, trunk, true);
+    doPrintAst(ast->mLeft, &trunk, true);
 
     if (prevTrunk == nullptr) {
-        trunk->mStr = "---";
+        trunk.mStr = "---";
     } else if (isLeft) {
-        trunk->mStr = ".---";
+        trunk.mStr = ".---";
         prevStr = TRUNK;
     } else {
-        trunk->mStr = "`---";
+        trunk.mStr = "`---";
         prevTrunk->mStr = prevStr;
     }
 
-    doPrintAst(trunk);
+    doPrintAst(&trunk);
 
     std::cout << doPrintAst(ast) << std::endl;
 
@@ -283,11 +283,9 @@ void doPrintAst(const GeneratorEquationAstPtr &ast,
         prevTrunk->mStr = prevStr;
     }
 
-    trunk->mStr = TRUNK;
+    trunk.mStr = TRUNK;
 
-    doPrintAst(ast->mRight, trunk, false);
-
-    delete trunk;
+    doPrintAst(ast->mRight, &trunk, false);
 }
 
 void printAst(const GeneratorEquationAstPtr &ast)
