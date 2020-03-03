@@ -66,7 +66,6 @@ struct GeneratorEquationAstTrunk
 
     GeneratorEquationAstTrunk(GeneratorEquationAstTrunk *prev,
                               const std::string &str);
-    ~GeneratorEquationAstTrunk();
 };
 
 GeneratorEquationAstTrunk::GeneratorEquationAstTrunk(GeneratorEquationAstTrunk *prev,
