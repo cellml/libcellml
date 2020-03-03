@@ -26,7 +26,7 @@ Section A: Preamble and definitions
 =========================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :numbered:
     :glob:
 
@@ -36,7 +36,7 @@ Section B: Element information items
 =========================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :numbered:
     :glob:
 
@@ -46,7 +46,7 @@ Section C: Interpretation of CellML models
 ==========================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :numbered:
     :glob:
 
@@ -56,7 +56,7 @@ Section D: References
 =========================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :numbered:
     :glob:
 
