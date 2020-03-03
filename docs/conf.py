@@ -58,30 +58,35 @@ autosectionlabel_prefix_document = True
 # Declare below as:
 #   'shortcut': ('http://linkhere/%s',''), NB have to put the string insertion %s to make it work
 extlinks = {
-    'buildbot': ('https://buildbot.net%s',''),
-    'cellml1to2': ('https://github.com/hsorby/cellml1to2%s',''),
+    'buildbot': ('https://buildbot.net%s', ''),
+    'cellml1to2': ('https://github.com/hsorby/cellml1to2%s', ''),
     'cellml2': ('https://www.cellml.org/%s', ''),
-    'cellsolver': ('https://github.com/hsorby/cellsolver%s',''),
+    'cellsolver': ('https://github.com/hsorby/cellsolver%s', ''),
     'cmake': ('https://cmake.org/%s', ''),
-    'doxygen': ('http://www.doxygen.nl/%s',''),
-    'euler_method': ('https://en.wikipedia.org/wiki/Euler_method%s',''),
+    'doxygen': ('http://www.doxygen.nl/%s', ''),
+    'euler_method': ('https://en.wikipedia.org/wiki/Euler_method%s', ''),
     'git': ('https://git-scm.com/%s', ''),
     'github': ('https://github.com/%s', ''),
-    'google_styleguide': ('https://google.github.io/styleguide/cppguide.html%s',''),
-    'href_locator': ('http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators%s',''),
+    'google_styleguide': ('https://google.github.io/styleguide/cppguide.html%s', ''),
+    'href_locator': ('http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators%s', ''),
     'libcellml_repo': ('https://github.com/cellml/libcellml.git%s', ''),
-    'libxml2': ('http://www.xmlsoft.org/%s',''),
+    'libxml2': ('http://www.xmlsoft.org/%s', ''),
     'mathml2help': ('https://www.w3.org/TR/MathML2/chapter4.html#id.4.2.1.3%s', ''),
-    'mathml2spec': ('http://www.w3.org/TR/2003/REC-MathML2-20031021/%s',''),
-    'mathml2types': ('https://www.w3.org/TR/MathML2/chapter4.html#contm.typeattrib%s',''),
+    'mathml2spec': ('http://www.w3.org/TR/2003/REC-MathML2-20031021/%s', ''),
+    'mathml2types': ('https://www.w3.org/TR/MathML2/chapter4.html#contm.typeattrib%s', ''),
     'opencor': ('https://opencor.ws/%s', ''),
     'pmr': ('https://models.physiomeproject.org/welcome/%s', ''),
     'python': ('https://www.python.org/%s', ''),
-    'sphinx': ('http://sphinx-doc.org/%s',''),
+    'rfc2119': ('http://www.ietf.org/rfc/rfc2119.txt%s', ''),
+    'sphinx': ('http://sphinx-doc.org/%s', ''),
     'swig': ('http://www.swig.org/%s', ''),
-    'unicode': ('http://www.fileformat.info/info/unicode/char/%s/index.htm','U+'),
-    'xlink': ('http://www.w3.org/TR/2001/REC-xlink-20010627/%s',''),
-    'xml': ('https://www.w3.org/XML/%s', ''),
+    'unicode': ('http://www.fileformat.info/info/unicode/char/%s/index.htm', 'U+'),
+    'xlink': ('http://www.w3.org/TR/2001/REC-xlink-20010627/%s', ''),
+    'xml_help': ('https://www.w3.org/XML/%s', ''),
+    'xml_1_1': ('http://www.w3.org/TR/xml11/%s',''),
+    'xml_infoset': ('http://www.w3.org/TR/2004/REC-xml-infoset-20040204/%s',''),
+    'xml_namespace_1_1': ('https://www.w3.org/TR/2006/REC-xml-names11-20060816/%s',''),
+
 }
 
 # General information about the project.
@@ -313,6 +318,7 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
 
 def setup(app):
     app.add_css_file('libcellml.css')

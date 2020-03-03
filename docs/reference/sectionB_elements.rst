@@ -88,7 +88,7 @@ Specific information items
 3. Any CellML infoset imported, directly or indirectly, by the imported
    CellML infoset MUST NOT be semantically equivalent to the importing
    CellML infoset (see
-   :ref:`Semantically equivalent CellML infosets <semantic_equivalence>`
+   :ref:`Semantically equivalent CellML infosets <specA_semantic_equivalence>`
    ).
 
 .. marker3

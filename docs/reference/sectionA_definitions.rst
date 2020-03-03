@@ -48,18 +48,19 @@ https://doi.org/science/1.1.1.10.
 
 .. marker1
 
+.. _specA_terminology:
+
 Terminology
 ===========
 
 The keywords “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”,
 “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this
-document are to be interpreted as described in `RFC
-2119 <http://www.ietf.org/rfc/rfc2119.txt>`__.
+document are to be interpreted as described in
+:rfc2119:`RFC 2119`.
 
 The key phrase “information item”, as well as any specific type of
 information item such as an “element information item”, are to be
-interpreted as described in `XML Information
-Set <http://www.w3.org/TR/2004/REC-xml-infoset-20040204/>`__.
+interpreted as described in :xml_infoset:`XML Information Set`.
 
 .. glossary::
 
@@ -78,8 +79,8 @@ Set <http://www.w3.org/TR/2004/REC-xml-infoset-20040204/>`__.
 
    Namespace
 
-      An XML namespace, as defined in `Namespaces in XML
-      1.1 <https://www.w3.org/TR/2006/REC-xml-names11-20060816/>`__.
+      An XML namespace, as defined in
+      :xml_namespace_1_1:`Namespaces in XML 1.1`.
 
    CellML namespace
 
@@ -100,20 +101,12 @@ Set <http://www.w3.org/TR/2004/REC-xml-infoset-20040204/>`__.
    Basic Latin alphabetic character
 
       A Unicode character in the range
-      `U+0041 <http://www.fileformat.info/info/unicode/char/0041/index.htm>`__
-      to
-      `U+005A <http://www.fileformat.info/info/unicode/char/005A/index.htm>`__
-      or in the range
-      `U+0061 <http://www.fileformat.info/info/unicode/char/0061/index.htm>`__
-      to
-      `U+007A <http://www.fileformat.info/info/unicode/char/007A/index.htm>`__.
+      :unicode:`0041` to :unicode:`005A` or in the range
+      :unicode:`0061` to :unicode:`007A`.
 
    European numeral
 
-      A Unicode character in the range
-      `U+0030 <http://www.fileformat.info/info/unicode/char/0030/index.htm>`__
-      to
-      `U+0039 <http://www.fileformat.info/info/unicode/char/0039/index.htm>`__.
+      A Unicode character in the range :unicode:`0030` to :unicode:`0039`.
 
    Basic Latin alphanumeric character
 
@@ -122,51 +115,45 @@ Set <http://www.w3.org/TR/2004/REC-xml-infoset-20040204/>`__.
 
    Basic Latin underscore
 
-      The Unicode character
-      `U+005F <http://www.fileformat.info/info/unicode/char/005F/index.htm>`__.
+      The Unicode character :unicode:`005F`.
 
    Basic Latin plus
 
-      The Unicode character
-      `U+002B <http://www.fileformat.info/info/unicode/char/002b/index.htm>`__.
+      The Unicode character :unicode:`002B`.
 
    Basic Latin minus
 
-      The Unicode character
-      `U+002D <http://www.fileformat.info/info/unicode/char/002d/index.htm>`__.
+      The Unicode character :unicode:`002D`.
 
    Basic Latin full stop
 
-      The Unicode character
-      `U+002E <http://www.fileformat.info/info/unicode/char/002e/index.htm>`__.
+      The Unicode character :unicode:`002E`.
 
    Whitespace character
 
-      Any one of the Unicode characters
-      `U+0020 <http://www.fileformat.info/info/unicode/char/0020/index.htm>`__,
-      `U+0009 <http://www.fileformat.info/info/unicode/char/0009/index.htm>`__,
-      `U+000D <http://www.fileformat.info/info/unicode/char/000D/index.htm>`__
-      or
-      `U+000A <http://www.fileformat.info/info/unicode/char/000A/index.htm>`__.
+      Any one of the Unicode characters :unicode:`0020`,
+      :unicode:`0009`, :unicode:`000D` or :unicode:`000A`.
 
 ..  marker2
+
+.. _specA_cellml_information_sets:
 
 CellML information sets
 =======================
 
 CellML and XML
--------------------
+--------------
 
 #. Every CellML infoset SHALL be represented in an XML information set
-   which conforms with the well-formedness requirements of `XML
-   1.1 <http://www.w3.org/TR/xml11/>`__.
+   which conforms with the well-formedness requirements of
+   :xml_1_1:`XML 1.1`.
 
 #. In this document, the remaining provisions relating to CellML
    infosets SHALL be interpreted as additional constraints on the XML
    information set represented by a CellML infoset.
 
 Specific information items
--------------------------------
+--------------------------
 
 #. For the purposes of this specification, a specific information item
    is one of the following (see
@@ -196,7 +183,7 @@ Specific information items
    an element information item defined in this specification, SHALL NOT
    affect the semantic interpretation of the CellML model.
 
-.. _semantic_equivalence:
+.. _specA_semantic_equivalence:
 
 Semantically equivalent CellML infosets
 ---------------------------------------
@@ -224,14 +211,14 @@ Semantically equivalent CellML infosets
 
 
 Character information items
---------------------------------
+---------------------------
 
-#. An element information item in the :term:`CellML namespace` MUST NOT contain any
-   character information items, except for character information items
-   which consist entirely of whitespace characters.
+#. An element information item in the :term:`CellML namespace` MUST NOT
+   contain any character information items, except for character information
+   items which consist entirely of whitespace characters.
 
 Use of namespaces
-----------------------
+-----------------
 
 #. Element and attribute information items in a CellML infoset MUST
    belong to one of the following namespaces, unless explicitly
@@ -242,7 +229,7 @@ Use of namespaces
    #. The MathML namespace
 
 XML ID Attributes
-----------------------
+-----------------
 
 #. Any element information item in the :term:`CellML namespace` MAY contain an
    unprefixed attribute information item with local name :code:`id.` This
@@ -254,8 +241,10 @@ XML ID Attributes
 
 .. marker3
 
+.. _specA_data_representation_formats:
+
 Data representation formats in CellML
-========================================
+=====================================
 
 The following data representation formats are defined for use in this
 specification:
@@ -290,7 +279,7 @@ specification:
    #. SHALL be a base 10 representation of an integer.
 
    #. SHALL, when the integer being represented is negative, consist of
-      the Basic Latin hyphen-minus character :unicode:`002D`,
+      the Basic Latin hyphen-minus character :unicode:`002D`
       followed by the non-negative integer string representation of the
       absolute value of the integer.
 
@@ -305,12 +294,10 @@ specification:
 
    #. SHALL, when the basic real number being represented is negative,
       begin with the Basic Latin hyphen-minus character
-      `U+002D <http://www.fileformat.info/info/unicode/char/002D/index.htm>`__
-      as the sign indicator.
+      :unicode:`002D` as the sign indicator.
 
    #. MAY contain a single decimal point separator, which SHALL be the
-      Basic Latin full stop character
-      `U+002E <http://www.fileformat.info/info/unicode/char/002E/index.htm>`__.
+      Basic Latin full stop character :unicode:`002E`.
 
    #. SHALL, other than the sign indicator and the decimal point
       separator, consist only of Basic Latin numerals.
@@ -333,13 +320,9 @@ specification:
    #. An exponent SHALL be represented by an exponent separator
       character, followed by the integer string representation of the
       value of the exponent. Non-negative exponents MAY begin with the
-      Basic Latin plus sign character
-      `U+002B <http://www.fileformat.info/info/unicode/char/002B/index.htm>`__
-      as the sign indicator. The exponent separator character SHALL be
-      either the Basic Latin ‘E’ character
-      `U+0045 <http://www.fileformat.info/info/unicode/char/0045/index.htm>`__
-      or the Basic Latin ‘e’ character
-      `U+0065 <http://www.fileformat.info/info/unicode/char/0065/index.htm>`__.
+      Basic Latin plus sign character :unicode:`002B` as the sign indicator.
+      The exponent separator character SHALL be either the Basic Latin ‘E’
+      character :unicode:`0045` or the Basic Latin ‘e’ character :unicode:`0065`.
 
    #. A real number string without an exponent SHALL be a basic real
       number string.

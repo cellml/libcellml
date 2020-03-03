@@ -94,7 +94,7 @@ libCellML, but at the time of writing we do not test with it.
 
 LibXml2
 -------
-:libxml2:`LibXML2 <>` is a library used for parsing :xml:`XML <>` files, of
+:libxml2:`LibXML2 <>` is a library used for parsing :xml_help:`XML <>` files, of
 which the CellML file format is a subset.
 
 * On MacOS libXML2 is already installed, so no further action is required.
