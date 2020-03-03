@@ -1,7 +1,7 @@
 .. _index_reference:
 
 ==========================================
-Guidelines and format specifications
+Normative specification for CellML2.0
 ==========================================
 
 The first section here includes the normative specification documentation for
@@ -22,11 +22,8 @@ reference number.  This number will point to the section of the formal
 specification and/or guidelines to which it relates.
 
 
-Formal specification of the CellML format
-=========================================
-
 Section A: Preamble and definitions
------------------------------------
+=========================================
 
 .. toctree::
     :maxdepth: 1
@@ -36,7 +33,7 @@ Section A: Preamble and definitions
     specA*
 
 Section B: Element information items
-------------------------------------
+=========================================
 
 .. toctree::
     :maxdepth: 1
@@ -46,7 +43,7 @@ Section B: Element information items
     specB*
 
 Section C: Interpretation of CellML models
-------------------------------------------
+==========================================
 
 .. toctree::
     :maxdepth: 1
@@ -56,7 +53,7 @@ Section C: Interpretation of CellML models
     specC*
 
 Section D: References
----------------------
+=========================================
 
 .. toctree::
     :maxdepth: 1
