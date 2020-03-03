@@ -421,11 +421,11 @@ public:
     /**
      * @brief Test if this variable has the given interface type.
      *
-     * Test if this variable has the smae interface as @p interfaceType.
+     * Test if this variable has the same interface as @p interfaceType.
      *
      * @param interfaceType The interface type to test for.
      *
-     * @return True if the interface type is the same as the given interface type, false otherwise.
+     * @return @c true if the interface type is the same as the given interface type, @c false otherwise.
      */
     bool hasInterfaceType(InterfaceType interfaceType) const;
 

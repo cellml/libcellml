@@ -477,11 +477,11 @@ bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
 using PublicPrivateRequiredPair = std::pair<bool, bool>;
 
 /**
- * @brief Determine whether a public and/or private interface is required for the givn @p variable.
+ * @brief Determine whether a public and/or private interface is required for the given @p variable.
  *
- * Determine whether a public and/or private interface is required for the givn @p variable.  Returns
+ * Determine whether a public and/or private interface is required for the given @p variable.  Returns
  * a pair of booleans where the first item in the pair indicates that a public interface is required,
- * the second item in the pair indicates that a private interface is required, and if both are items
+ * the second item in the pair indicates that a private interface is required, and if both items
  * in the pair are false then this indicates an error has occured and the interface type cannot be
  * determined.
  *
