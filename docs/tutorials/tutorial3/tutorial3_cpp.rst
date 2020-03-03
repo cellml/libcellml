@@ -89,7 +89,7 @@ to better illustrate the operation of the :code:`Generator` later on.
 
 In order to use this in our model we need to write it as a
 MathML2 string.  The basic structure for these is described in the
-:mathml2:`W3 resource pages regarding MathML2 <>`.
+:mathml2help:`W3 resource pages regarding MathML2 <>`.
 
 .. container:: nb
 

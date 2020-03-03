@@ -426,7 +426,7 @@ add a definition for this stimulus current.
 
 .. container:: dothis
 
-    **7.a** Create a :mathml2:`MathML2 <>` equation to represent the stimulus
+    **7.a** Create a :mathml2help:`MathML2 <>` equation to represent the stimulus
     current having a value of 100 mA/cm^2 between 1ms < t < 1.2ms and zero
     otherwise.
 

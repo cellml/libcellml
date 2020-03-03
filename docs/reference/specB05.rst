@@ -1,5 +1,5 @@
 .. _specB05:
-.. _spec_units:
+.. _specB_units:
 
 .. include:: sectionB_elements.rst
   :start-after: marker5

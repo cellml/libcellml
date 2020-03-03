@@ -127,7 +127,7 @@ Once the maths is created, the process of adding it is very simple, and follows
 the same pattern as adding anything to anything else: there is a `setMath`
 command which which does the job nicely.  The more difficult part is creating
 the maths itself.  This was covered in :ref:`Tutorial 3<tutorial3_cpp>` and there
-are other resources on the :mathml2:`W3 resource pages for MathML2 <>` too.
+are other resources on the :mathml2help:`W3 resource pages for MathML2 <>` too.
 
 Consider the equation above, converted here into MathML2 format:
 

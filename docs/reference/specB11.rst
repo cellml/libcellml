@@ -1,5 +1,5 @@
 .. _specB11:
-.. _spec_math:
+.. _specB_math:
 
 .. include:: sectionB_elements.rst
   :start-after: markerB11

@@ -1,5 +1,5 @@
 .. _specB07:
-.. _spec_component:
+.. _specB_component:
 
 .. include:: sectionB_elements.rst
   :start-after: marker7

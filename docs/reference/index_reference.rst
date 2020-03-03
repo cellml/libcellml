@@ -23,7 +23,7 @@ specification and/or guidelines to which it relates.
 
 
 Section A: Preamble and definitions
-=========================================
+===================================
 
 .. toctree::
     :maxdepth: 2
@@ -33,7 +33,7 @@ Section A: Preamble and definitions
     specA*
 
 Section B: Element information items
-=========================================
+====================================
 
 .. toctree::
     :maxdepth: 2
@@ -53,7 +53,7 @@ Section C: Interpretation of CellML models
     specC*
 
 Section D: References
-=========================================
+=====================
 
 .. toctree::
     :maxdepth: 2

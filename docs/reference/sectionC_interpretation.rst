@@ -1,19 +1,23 @@
 ===========================================
-Section C: Interpretatioon of CellML models
+Section C: Interpretation of CellML models
 ===========================================
 
+.. _specC_imports:
+
 Interpretation of imports
--------------------------------
+-------------------------
 
 #. Each :code:`import` element present in a CellML infoset (the importing
    infoset) SHALL define a new and separate instance of the CellML
    infoset referenced by the :code:`href` attribute (the imported infoset).
-   See `Units reference <#_2u6wntf>`__ and `Component
-   reference <#_3tbugp1>`__ for the specifics of importing units and
-   components.
+   See :ref:`Units reference<specC_units_reference>` and
+   :ref:`Component reference<specC_component_reference>` for the specifics
+   of importing units and components.
+
+.. _specC_units_reference:
 
 Units reference
----------------------
+---------------
 
 #. A units reference SHALL be a CellML identifier and SHALL be
    interpreted dependent on the context of the CellML model in which it
@@ -38,9 +42,11 @@ Units reference
       :code:`import units` element.
 
    #. Where the units reference is equal to the value in the ‘Name’
-      column of the `Built-in units <#_yeg1dkj76wu6>`__ table, then the
-      units reference SHALL be a reference to the built-in units
+      column of the :ref:`Built-in units table<table_built_in_units>` ,
+      then the units reference SHALL be a reference to the built-in units
       corresponding to that row of the table.
+
+.. _table_built_in_units:
 
 Table: Built-in units
 ~~~~~~~~~~~~~~~~~~~~~
@@ -123,8 +129,10 @@ Table: Built-in units
 |               |                   | (second, -2), (ampere, -1)     |
 +---------------+-------------------+--------------------------------+
 
+.. _specC_units:
+
 Interpretation of units
------------------------------
+-----------------------
 
 #. The :code:`units` element SHALL be interpreted as the product of its
    :code:`unit` element children, according to the following rules:
@@ -136,7 +144,7 @@ Interpretation of units
       integer string, then the value of the prefix term SHALL be the
       numerical value of that string. Otherwise, the :code:`prefix`
       attribute information item MUST have a value taken from the ‘Name’
-      column of the `Prefix values <#_8ooet5xoo2mz>`__ table, and the
+      column of the :ref:`Prefix values table<table_prefix_values>`, and the
       prefix term SHALL have the value taken from the ‘Value’ column of
       the same row.
 
@@ -159,23 +167,22 @@ Interpretation of units
       numerical value, *x,* with units given by the encompassing
       :code:`units` element, SHALL be
 
-..
+      **TODO put equation here **
 
-   |Capture.JPG|
-
-   where: *u\ x* denotes the units of the :code:`units` element; *p\ i*,
-   *e\ i*, *m\ i*, and *u\ i* refer to the prefix, exponent and
-   multiplier terms and units of the *i*\ th :code:`unit` child element,
-   respectively. Square brackets encompass the units of numerical
-   values.
+      where: *u\ x* denotes the units of the :code:`units` element; *p\ i*,
+      *e\ i*, *m\ i*, and *u\ i* refer to the prefix, exponent and
+      multiplier terms and units of the *i*\ th :code:`unit` child element,
+      respectively. Square brackets encompass the units of numerical
+      values.
 
 #. For the purposes of this specification, the “irreducible units” of a
    model SHALL consist of 1) the units defined in a model that are not
    defined in terms of other units (i.e. the set of :code:`units` elements
    in the CellML model which have no :code:`unit` child elements), and 2)
    built-in irreducible units (those built-in units with ‘-’ in the
-   ‘Unit Reduction...’ column of the `Built-in units <#_yeg1dkj76wu6>`__
-   Table) referenced by variables or other units in the model.
+   ‘Unit Reduction...’ column of the
+   :ref:`Built-in units<table_built_in_units>`
+   table) referenced by variables or other units in the model.
 
 #. The “unit reduction” is a conceptual property of :code:`units` elements.
    It consists of a set of tuples where each tuple is composed of a) a
@@ -199,8 +206,8 @@ Interpretation of units
 
       #. Where the units reference of the :code:`unit` child element is to
          built-in units other than an irreducible unit, then the tuples
-         SHALL be derived directly from the `Built-in
-         units <#_yeg1dkj76wu6>`__ table. Specifically, the set of
+         SHALL be derived directly from the :ref:`Built-in
+         units<table_built_in_units>` table. Specifically, the set of
          tuples SHALL consist of the tuples given in the ‘Unit reduction
          tuple ... set’ column of the row for which the value in the
          ‘Name’ column matches the name of the units reference.
@@ -225,6 +232,8 @@ Interpretation of units
       combined tuples’ exponents. If the resulting tuple’s exponent term
       is zero, the tuple SHALL be removed from the set of tuples. Note
       that this can result in the set of tuples being empty.
+
+.. _table_prefix_values:
 
 Table: Prefix values
 ~~~~~~~~~~~~~~~~~~~~
@@ -253,8 +262,10 @@ zepto    −21
 yocto    −24
 ======== =========
 
+.. _specC_component_reference:
+
 Component reference
--------------------------
+-------------------
 
 #. A component reference SHALL be the name of a component, and SHALL be
    interpreted based on the context within the CellML model in which it
@@ -280,8 +291,10 @@ Component reference
    element which in turn references another :code:`import component`
    element.
 
+.. _specC_variable_reference:
+
 Variable reference
-------------------------
+------------------
 
 #. When present in an information item which is a descendant of a
    :code:`component` element, a variable reference SHALL be the name of a
@@ -294,8 +307,10 @@ Variable reference
    SHALL be treated as if it was just the variable name present in the
    :code:`component` element referenced by the component reference.
 
+.. _specC_initial_values:
+
 Interpretation of initial values
---------------------------------------
+--------------------------------
 
 #. The :code:`initial_value` attribute of a :code:`variable` element MUST
    either be a real number string, or a variable reference (see 19.5).
@@ -313,17 +328,21 @@ Interpretation of initial values
    attribute appears is equal to the referenced variable under the
    conditions when the initial value holds.
 
+.. _ specC_effect_of_units_on_variables:
+
 Effect of units on variables
-----------------------------------
+----------------------------
 
 #. The value of the :code:`units` attribute on every :code:`variable` element
    MUST be a valid units reference. The target of this units reference
    is referred to as the variable units, and the corresponding unit
-   reduction (see `Interpretation of units <#_19c6y18>`__) is referred
+   reduction (see :ref:`Interpretation of units<specC_units>`) is referred
    to as the variable unit reduction.
 
+.. _specC_mathematics:
+
 Interpretation of mathematics
------------------------------------
+-----------------------------
 
 #. The following :code:`component` elements SHALL, for the purposes of this
    specification, be “pertinent component elements”:
@@ -332,13 +351,14 @@ Interpretation of mathematics
       CellML model;
 
    #. All :code:`component` elements referenced by :code:`import component`
-      elements (see `The import component element information
-      item <#_j2041c9rinry>`__) in the top-level CellML infoset; and
+      elements (see
+      :ref:`The import component element <specC_component_reference>`)
+      in the top-level CellML infoset; and
 
    #. All :code:`component` elements which are descendants in the
-      encapsulation digraph (see `Interpretation of
-      encapsulation <#_46r0co2>`__) of a pertinent :code:`component`
-      element.
+      encapsulation digraph (see
+      :ref:`Interpretation of encapsulation <specC_encapsulation>`)
+      of a pertinent :code:`component` element.
 
 #. Every MathML element in the CellML model which appears as a direct
    child information item of a MathML :code:`math` element information item,
@@ -350,8 +370,10 @@ Interpretation of mathematics
 #. Units referenced by a :code:`units` attribute information item SHALL NOT
    affect the mathematical interpretation of the CellML model.
 
+.. _specC_encapsulation:
+
 Interpretation of encapsulation
--------------------------------------
+-------------------------------
 
 #. For the purposes of this specification, there SHALL be a “conceptual
    encapsulation digraph” in which there is EXACTLY one node for every
@@ -389,8 +411,10 @@ Interpretation of encapsulation
    the component referenced by the :code:`component_2` attribute, nor vice
    versa.
 
+.. _specC_map_variables:
+
 Interpretation of map_variables
---------------------------------------
+-------------------------------
 
 #.  For the purposes of this specification, the variable equivalence
     (conceptual) network SHALL be an undirected graph with one node for
@@ -425,8 +449,9 @@ Interpretation of map_variables
 #.  The variable equivalence network MUST NOT contain any cycles.
 
 #.  For each :code:`map_variables` element present in the CellML model, the
-    variable unit reduction (see `Effect of units on
-    variables <#_37m2jsg>`__) of variable *A* MUST have an identical set
+    variable unit reduction (see
+    :ref:`Effect of units on variables <specC_effect_of_units_on_variables>` )
+    of variable *A* MUST have an identical set
     of tuples to the variable unit reduction of variable *B*. Two sets
     of tuples SHALL be considered identical if all of the tuples from
     each set are present in the other, or if both sets are empty. Two
@@ -435,7 +460,7 @@ Interpretation of map_variables
 
 #.  Tuples differing by a multiplying factor in their unit reduction
     MUST be taken into account when interpreting the numerical values of
-    the variables (see `Interpretation of units <#_19c6y18>`__).
+    the variables (see :ref:`Interpretation of units<specC_units>`).
 
 #.  For a given variable, the available interfaces SHALL be determined
     by the :code:`interface` attribute information item on the corresponding
@@ -486,16 +511,19 @@ Interpretation of map_variables
     form a connected subgraph. Each set of connected variables
     represents one variable in the underlying mathematical model.
 
+.. _specC_variable_resets:
+
 Interpretation of variable resets
-----------------------------------------
+---------------------------------
 
 #. Each :code:`reset` element describes a change to be applied to the
    variable referenced by the :code:`variable` attribute when specified
    conditions are met during the simulation of the model.
 
 #. All :code:`reset` elements SHALL be considered sequentially for the
-   connected variable set (see `Interpretation of
-   map_variables <#_2lwamvv>`__) to which the referenced variable
+   connected variable set (see
+   :ref:`Interpretation of map_variables<specC_map_variables>`) to which
+   the referenced variable
    belongs. The sequence SHALL be determined by the value of the reset
    element’s :code:`order` attribute, lowest (least positive / most
    negative) having priority.

@@ -1,5 +1,5 @@
 .. _specB04:
-.. _spec_import_component:
+.. _specB_import_component:
 
 .. include:: sectionB_elements.rst
   :start-after: marker4

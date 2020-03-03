@@ -1,5 +1,5 @@
 .. _specB12:
-.. _spec_encapsulation:
+.. _specB_encapsulation:
 
 .. include:: sectionB_elements.rst
   :start-after: marker12

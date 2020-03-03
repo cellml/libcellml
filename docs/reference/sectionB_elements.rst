@@ -8,7 +8,7 @@ Section B: Element information items
 
 .. marker1
 
-.. _spec_model:
+.. _specB_model:
 
 The model element
 =================
@@ -51,7 +51,7 @@ Specific information items
 
 .. marker2
 
-.. _spec_import:
+.. _specB_import:
 
 The import element
 ==================
@@ -66,10 +66,8 @@ Specific information items
 1. Every :code:`import` element MUST contain an attribute
    in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
    name equal to :code:`href`. The value of this attribute SHALL be a valid
-   locator :code:`href`, as defined in `Section
-   5.4 <http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators>`__
-   of the `XLink
-   specification <http://www.w3.org/TR/2001/REC-xlink-20010627/>`__. The
+   locator :code:`href`, as defined in :href_locator:`Section 5.4` of the
+   :xlink:`XLink specification`. The
    :code:`href` attribute SHALL be treated according to the XLink
    specification, by applying the rules for simple-type elements. When
    describing an :code:`import` element or one of its children, the phrase
@@ -95,7 +93,7 @@ Specific information items
 
 .. marker3
 
-.. _spec_import_units:
+.. _specB_import_units:
 
 The import units element
 ========================
@@ -127,7 +125,7 @@ Specific information items
 
 .. marker4
 
-.. _spec_import_component:
+.. _specB_import_component:
 
 The import component element
 ============================
@@ -157,7 +155,7 @@ Specific information items
 
 .. marker5
 
-.. _spec_units:
+.. _specB_units:
 
 The units element
 =================
@@ -187,7 +185,7 @@ Specific information items
 
 .. marker6
 
-.. _spec_unit:
+.. _specB_unit:
 
 The unit element
 ================
@@ -236,7 +234,7 @@ Specific information items
 
 .. marker7
 
-.. _spec_component:
+.. _specB_component:
 
 The component element
 =====================
@@ -270,7 +268,7 @@ Specific information items
 
 .. marker8
 
-.. _spec_variable:
+.. _specB_variable:
 
 The variable element
 ====================
@@ -309,7 +307,7 @@ Specific information items
 
 .. marker9
 
-.. _spec_reset:
+.. _specB_reset:
 
 The reset element
 =================
@@ -349,7 +347,7 @@ Specific information items
 
 .. marker10
 
-.. _spec_test_value:
+.. _specB_test_value:
 
 The test_value element
 ======================
@@ -367,7 +365,7 @@ Specific information items
 
 .. marker11
 
-.. _spec_reset_value:
+.. _specB_reset_value:
 
 The reset_value element
 =======================
@@ -385,7 +383,7 @@ Specific information items
 
 .. marker12
 
-.. _spec_math:
+.. _specB_math:
 
 The math element
 ================
@@ -399,8 +397,7 @@ Specific information items
 --------------------------
 
 #. A :code:`math` element MUST be the top-level of a content MathML tree, as
-   described in `MathML
-   2.0 <http://www.w3.org/TR/2003/REC-MathML2-20031021/>`__.
+   described in :mathml2spec:`MathML 2.0`.
 
 #. Each element child of a :code:`math` element MUST have
    an element-type name that is listed in the :ref:`Supported MathML
@@ -416,8 +413,7 @@ Specific information items
    reference.
 
 #. The :code:`cn` element MUST be one of the following
-   `types <https://www.w3.org/TR/MathML2/chapter4.html#contm.typeattrib>`__:
-   real or e-notation.
+   :mathml2types:`types` : real or e-notation.
 
 #. The :code:`cn` element MUST be of base 10.
 
@@ -466,7 +462,7 @@ Table: Supported MathML Elements
 
 .. marker13
 
-.. _spec_encapsulation:
+.. _specB_encapsulation:
 
 The encapsulation element
 =========================
@@ -484,7 +480,7 @@ Specific information items
 
 .. marker14
 
-.. _spec_component_ref:
+.. _specB_component_ref:
 
 The component_ref element
 =========================
@@ -513,7 +509,7 @@ Specific information items
 
 .. marker15
 
-.. _spec_connection:
+.. _specB_connection:
 
 The connection element
 ======================
@@ -552,7 +548,7 @@ Specific information items
 
 .. marker16
 
-.. _spec_map_variables:
+.. _specB_map_variables:
 
 The map_variables element
 =========================

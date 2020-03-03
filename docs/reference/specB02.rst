@@ -1,6 +1,6 @@
 .. _specB02:
 
-.. _spec_import:
+.. _specB_import:
 
 .. include:: sectionB_elements.rst
   :start-after: marker2

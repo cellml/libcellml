@@ -1,6 +1,6 @@
 .. _specB03:
 
-.. _spec_import_units:
+.. _specB_import_units:
 
 .. include:: sectionB_elements.rst
   :start-after: marker3
