@@ -966,7 +966,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
  * @brief Test to see if the given variables are reachable from their parent components.
  *
  * Determine if the variables parents are reachable from one another.  That is they either
- * have a parent/child relationship or a sibling relationship in the models component
+ * have a parent/child relationship or a sibling relationship in the model's component
  * hierarchy.
  *
  * Both variables must have a valid parent.
@@ -974,8 +974,8 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
  * @param variable1 The first variable.
  * @param variable2 The second variable.
  *
- * @return True if the parents of the given variables are reachable in the model component
- * hierarchy.
+ * @return @c true if the parents of the given variables are reachable in the model component
+ * hierarchy, @c false otherwise.
  */
 bool reachableEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {

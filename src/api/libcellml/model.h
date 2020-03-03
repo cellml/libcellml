@@ -351,7 +351,7 @@ public:
      * the method returns true.  If one or more equivalent variable interface cannot be
      * set correctly then false is returned.
      *
-     * If the interface type for a variable cannot be set correctly it is left unchanged.
+     * If the interface type for a variable cannot be set correctly, it is left unchanged.
      *
      * @return @c true if all the variable interfaces in the @c Model are correct and
      * @c false otherwise.
