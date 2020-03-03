@@ -256,13 +256,11 @@ printing of the model to a CellML file for use in later tutorials.
     **8.b** Write the interface code (.h header) and implementation code
     (.c source) to files.
 
-
 .. container:: dothis
 
     **8.c**  Create a :code:`GeneratorProfile` and use it to change to Python.
     Reprocess the model, and write the implementation code (.py source) to
     a file.
-
 
 .. container:: dothis
 

@@ -167,7 +167,11 @@ Interpretation of units
       numerical value, *x,* with units given by the encompassing
       :code:`units` element, SHALL be
 
-      **TODO put equation here **
+      .. figure:: images/equation_units_expansion.png
+          :name: equation_units_expansion
+          :alt: Equation determining how units are combined
+          :align: center
+          :width: 50%
 
       where: *u\ x* denotes the units of the :code:`units` element; *p\ i*,
       *e\ i*, *m\ i*, and *u\ i* refer to the prefix, exponent and
