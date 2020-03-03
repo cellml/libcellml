@@ -23,16 +23,50 @@ specification and/or guidelines to which it relates.
 
 
 Formal specification of the CellML format
------------------------------------------
+=========================================
+
+Section A: Preamble and definitions
+-----------------------------------
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :numbered:
     :glob:
 
     specA*
+
+Section B: Element information items
+------------------------------------
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+    :glob:
+
     specB*
+
+Section C: Interpretation of CellML models
+------------------------------------------
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+    :glob:
+
     specC*
+
+Section D: References
+---------------------
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+    :glob:
+
+    specD*
+
+
+
 
 Additional references for libCellML
 -----------------------------------
