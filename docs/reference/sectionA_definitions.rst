@@ -290,8 +290,7 @@ specification:
    #. SHALL be a base 10 representation of an integer.
 
    #. SHALL, when the integer being represented is negative, consist of
-      the Basic Latin hyphen-minus character
-      `U+002D <http://www.fileformat.info/info/unicode/char/002D/index.htm>`__,
+      the Basic Latin hyphen-minus character :unicode:`002D`,
       followed by the non-negative integer string representation of the
       absolute value of the integer.
 

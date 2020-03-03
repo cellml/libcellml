@@ -79,6 +79,7 @@ extlinks = {
     'python': ('https://www.python.org/%s', ''),
     'sphinx': ('http://sphinx-doc.org/%s',''),
     'swig': ('http://www.swig.org/%s', ''),
+    'unicode': ('http://www.fileformat.info/info/unicode/char/%s/index.htm','U+'),
     'xlink': ('http://www.w3.org/TR/2001/REC-xlink-20010627/%s',''),
     'xml': ('https://www.w3.org/XML/%s', ''),
 }
