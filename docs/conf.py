@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.extlinks',
     'sphinx.ext.autosectionlabel',
+    'hoverxref.extension',
     # 'sphinxcontrib.contentui',    # For the toggle-class headers, not installed
     # 'sphinxcontrib.bibtex',       # Removing as not installed
 ]
@@ -146,6 +147,10 @@ html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'navigation_depth': 2,
 }
+
+# Automagically convert all :ref: blocks to show a tooltip using the hoverxref
+# extension.
+hoverxref_auto_ref = True
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = ['@SPHINX_THEME_DIR@']
