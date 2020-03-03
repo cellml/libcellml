@@ -256,7 +256,7 @@ Specific information items
 
 1. Every :code:`component` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a
-  :ref:`valid CellML identifier<specA_cellml_identifier>`.
+   :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute on any other :code:`component` element or
    :code:`import component` element in the CellML infoset.
@@ -310,8 +310,8 @@ Specific information items
       :code:`public_and_private`, or :code:`none`.
 
    #. The :code:`initial_value` attribute. If the attribute is present, it
-      MUST meet the requirements described by the :ref:`Interpretation of
-      initial values<specC_initial_values>` section.
+      MUST meet the requirements described by the
+      :ref:`Interpretation of initial values<specC_initial_values>` section.
 
 .. marker9
 
@@ -408,8 +408,8 @@ Specific information items
    described in :mathml2spec:`MathML 2.0`.
 
 #. Each element child of a :code:`math` element MUST have
-   an element-type name that is listed in the :ref:`Supported MathML
-   Elements <table_supported_mathml_elements>` table.
+   an element-type name that is listed in the
+   :ref:`Supported MathML Elements <table_supported_mathml_elements>` table.
 
 #. Every variable name given using the MathML :code:`ci` element MUST be a
    :ref:`variable reference<specC_variable_reference>` to a :code:`variable`

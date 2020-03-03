@@ -330,7 +330,7 @@ Interpretation of initial values
    attribute appears is equal to the referenced variable under the
    conditions when the initial value holds.
 
-.. _ specC_effect_of_units_on_variables:
+.. _specC_effect_of_units_on_variables:
 
 Effect of units on variables
 ----------------------------
