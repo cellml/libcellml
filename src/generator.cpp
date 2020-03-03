@@ -3194,6 +3194,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
 
     return res;
 }
+
 void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &code)
 {
     std::string interfaceComputeModelMethodsCode;
