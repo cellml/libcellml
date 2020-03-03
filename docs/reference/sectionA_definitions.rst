@@ -194,8 +194,10 @@ Specific information items
    an element information item defined in this specification, SHALL NOT
    affect the semantic interpretation of the CellML model.
 
+.. _semantic_equivalence:
+
 Semantically equivalent CellML infosets
---------------------------------------------
+---------------------------------------
 
 #. Two CellML infosets SHALL be deemed semantically equivalent if one
    can be transformed into the other by making zero or more of the
