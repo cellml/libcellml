@@ -27,10 +27,12 @@ Formal specification of the CellML format
 
 .. toctree::
     :maxdepth: 2
-    :titlesonly:
+    :numbered:
     :glob:
 
-    spec*
+    specA*
+    specB*
+    specC*
 
 Additional references for libCellML
 -----------------------------------
