@@ -45,7 +45,7 @@ then the library is available for use like so:
   #include <libcellml>
 
 Note that this doesn't invoke the libCellML namespace, so classes are accessed
-using the ``libcellml::`` prefix.
+using the :code:`libcellml::` prefix.
 
 .. code-block:: python
 
@@ -55,8 +55,8 @@ using the ``libcellml::`` prefix.
 
 Parse an existing Model from a file
 +++++++++++++++++++++++++++++++++++
-The following code will read a file called ``quickstart.cellml`` and deserialise
-its contents into a ``ModelPtr`` instance:
+The following code will read a file called :code:`quickstart.cellml` and deserialise
+its contents into a :code:`ModelPtr` instance:
 
 In C++:
 

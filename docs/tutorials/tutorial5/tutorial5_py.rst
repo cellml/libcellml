@@ -86,7 +86,7 @@ rate, :math:`\beta_y` is the closing rate, and :math:`t` is time.
 
 Now to add this equation into the component we created in Step 1.
 Once the maths is created, the process of adding it is very simple, and follows
-the same pattern as adding anything to anything else: there is a `setMath`
+the same pattern as adding anything to anything else: there is a :code:`setMath`
 command which which does the job nicely.  The more difficult part is creating
 the maths itself.  This was covered in :ref:`Tutorial 3<tutorial3_py>` and there
 are other resources on the :mathml2help:`W3 resource pages for MathML2 <>` too.
@@ -178,9 +178,9 @@ voltage, and :math:`i_K` is the current flow through the channel.
 Three functions are available for accessing and editing the math block, these
 are:
 
-- :code:`setMath(input)` replaces the existing MathML string with the `input`
+- :code:`setMath(input)` replaces the existing MathML string with the :code:`input`
   string
-- :code:`appendMath(input)` adds the `input` string to the existing MathML
+- :code:`appendMath(input)` adds the :code:`input` string to the existing MathML
   string
 - :code:`math()` returns the stored MathML string
 

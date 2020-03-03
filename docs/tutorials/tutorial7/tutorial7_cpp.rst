@@ -254,7 +254,7 @@ printing of the model to a CellML file for use in later tutorials.
 
 .. container:: dothis
 
-    **8.c**  Create a `GeneratorProfile` and use it to change to Python.
+    **8.c**  Create a :code:`GeneratorProfile` and use it to change to Python.
     Reprocess the model, and write the implementation code (.py source) to
     a file.
 
