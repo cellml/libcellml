@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 #include "debug.h"
 
 namespace libcellml {
@@ -32,11 +33,11 @@ void printStack(const IndexStack &stack)
 void printEquivalenceMap(const EquivalenceMap &map)
 {
     Debug() << "Print out of equivalence map";
-    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
-        auto key = iter->first;
+    for (const auto &iter : map) {
+        auto key = iter.first;
         Debug(false) << "key: ";
         printStack(key);
-        auto vector = iter->second;
+        auto vector = iter.second;
         for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
             Debug(false) << "value: ";
             printStack(*vectorIt);
@@ -47,8 +48,8 @@ void printEquivalenceMap(const EquivalenceMap &map)
 void printStringStringMap(const StringStringMap &map)
 {
     Debug() << "Print out of string -> string map";
-    for (std::map<std::string, std::string>::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
-        Debug() << iter->first << ": " << iter->second;
+    for (const auto &iter : map) {
+        Debug() << iter.first << ": " << iter.second;
     }
 }
 
