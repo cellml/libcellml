@@ -426,6 +426,50 @@ TEST(Validator, validMath)
     EXPECT_EQ(size_t(0), v->errorCount());
 }
 
+TEST(Validator, validMathInMultipleMathMLBlocks)
+{
+    const std::string math =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>A</ci>\n"
+        "    <apply>\n"
+        "      <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n"
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>B</ci>\n"
+        "    <apply>\n"
+        "      <cn cellml:units=\"dimensionless\">2</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ValidatorPtr v = libcellml::Validator::create();
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v->validateModel(m);
+    EXPECT_EQ(size_t(0), v->errorCount());
+}
+
 TEST(Validator, invalidMath)
 {
     const std::string math1 =
@@ -1106,6 +1150,40 @@ TEST(Validator, resetNoResetValue)
     EXPECT_EQ(expectedError, validator->error(0)->description());
 }
 
+TEST(Validator, resetMultipleMathMLInResetValue)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Multiple MathML in reset_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(6);
+    r->setResetValue(NON_EMPTY_MATH + NON_EMPTY_MATH);
+    r->setTestValue(NON_EMPTY_MATH);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(m);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
 TEST(Validator, resetNoTestValue)
 {
     const std::vector<std::string> expectedErrors = {
@@ -1142,6 +1220,40 @@ TEST(Validator, resetNoTestValue)
     validator->validateModel(m);
 
     EXPECT_EQ_ERRORS(expectedErrors, validator);
+}
+
+TEST(Validator, resetMultipleMathMLInTestValue)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    // Multiple MathML blocks in test_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(6);
+    r->setResetValue(NON_EMPTY_MATH);
+    r->setTestValue(NON_EMPTY_MATH + NON_EMPTY_MATH);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::ValidatorPtr validator = libcellml::Validator::create();
+    validator->validateModel(m);
+    EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
 TEST(Validator, resetWhitespaceAsMaths)
