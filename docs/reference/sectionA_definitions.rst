@@ -197,7 +197,7 @@ Specific information items
 Semantically equivalent CellML infosets
 --------------------------------------------
 
-1. Two CellML infosets SHALL be deemed semantically equivalent if one
+#. Two CellML infosets SHALL be deemed semantically equivalent if one
    can be transformed into the other by making zero or more of the
    following changes:
 
@@ -255,7 +255,7 @@ Data representation formats in CellML
 The following data representation formats are defined for use in this
 specification:
 
-#. A CellML identifier:
+1. A CellML identifier:
 
    #. SHALL be a sequence of Unicode characters.
 
@@ -272,7 +272,7 @@ specification:
 
 .. marker3_2
 
-#. A non-negative integer string:
+2. A non-negative integer string:
 
    #. SHALL be a base 10 representation of a non-negative integer.
 
@@ -280,7 +280,7 @@ specification:
 
 .. marker3_3
 
-#. An integer string:
+3. An integer string:
 
    #. SHALL be a base 10 representation of an integer.
 
@@ -295,7 +295,7 @@ specification:
 
 .. marker3_4
 
-#. A basic real number string:
+4. A basic real number string:
 
    #. SHALL be a base 10 representation of a real number.
 
@@ -313,7 +313,7 @@ specification:
 
 .. marker3_5
 
-#. A real number string:
+5. A real number string:
 
    #. SHALL be a base 10 representation of a real number
       *r*\ =\ *s*\ ⋅10\ *e*, where *s* is the significand, a real

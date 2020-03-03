@@ -1,6 +1,6 @@
 .. _specA1:
 
-.. include:: sectionA.rst
+.. include:: sectionA_definitions.rst
   :start-after: marker1
   :end-before: marker2
 

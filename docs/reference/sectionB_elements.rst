@@ -22,13 +22,13 @@ item is referred to as the :code:`model` element.
 Specific information items
 -------------------------------
 
-#. Every :code:`model` element MUST contain an unprefixed :code:`name`
+1. Every :code:`model` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a valid CellML
    identifier.
 
 .. marker1_1
 
-#. A :code:`model` element MAY contain one or more additional specific
+2. A :code:`model` element MAY contain one or more additional specific
    information item children, each of which MUST be of one of the
    following types:
 
@@ -44,7 +44,7 @@ Specific information items
 
 .. marker1_2
 
-#. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
+3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
    element.
 
 .. marker2
@@ -61,7 +61,7 @@ in the CellML namespace with a local name equal to :code:`import`.
 Specific information items
 -------------------------------
 
-#. Every :code:`import` element MUST contain an attribute information item
+1. Every :code:`import` element MUST contain an attribute information item
    in the namespace :code:`http://www.w3.org/1999/xlink`, and with a local
    name equal to :code:`href`. The value of this attribute SHALL be a valid
    locator :code:`href`, as defined in `section
@@ -76,7 +76,7 @@ Specific information items
 
 .. marker2_1
 
-#. Every :code:`import` element MAY contain one or more specific information
+2. Every :code:`import` element MAY contain one or more specific information
    item children, each of which MUST be of one of the following types:
 
    #. An :code:`import units` element; or
@@ -85,7 +85,7 @@ Specific information items
 
 .. marker2_2
 
-#. Any CellML infoset imported, directly or indirectly, by the imported
+3. Any CellML infoset imported, directly or indirectly, by the imported
    CellML infoset MUST NOT be semantically equivalent to the importing
    CellML infoset (see `Semantically equivalent CellML
    infosets <\l>`__).
@@ -105,7 +105,7 @@ appears as a child of an :code:`import` element.
 Specific information items
 -------------------------------
 
-#. Every :code:`import units` element MUST contain an unprefixed :code:`name`
+1. Every :code:`import units` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a valid CellML
    identifier. The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute of any other :code:`units` or
@@ -113,7 +113,7 @@ Specific information items
 
 .. marker3_1
 
-#. Every :code:`import units` element MUST contain an unprefixed
+2. Every :code:`import units` element MUST contain an unprefixed
    :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
    MUST be a valid CellML identifier. The value of the :code:`units_ref`
    attribute MUST match the value of the :code:`name` attribute on a
@@ -137,13 +137,13 @@ information item in the CellML namespace with a local name equal to
 Specific information items
 -------------------------------
 
-#. Every :code:`import component` element MUST contain an unprefixed
+1. Every :code:`import component` element MUST contain an unprefixed
    :code:`name` attribute. The value of the :code:`name` attribute MUST be a
    valid CellML identifier. The value of the :code:`name` attribute MUST NOT
    be identical to the :code:`name` attribute of any other :code:`component` or
    :code:`import component` element information item in the CellML infoset.
 
-#. Every :code:`import component` element MUST contain an unprefixed
+2. Every :code:`import component` element MUST contain an unprefixed
    :code:`component_ref` attribute. The value of the :code:`component_ref`
    attribute MUST be a valid CellML identifier. The value of the
    :code:`component_ref` attribute MUST match the value of the :code:`name`
@@ -166,7 +166,7 @@ element as its parent.
 Specific information items
 -------------------------------
 
-#. Every :code:`units` element MUST contain an unprefixed :code:`name`
+1. Every :code:`units` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a valid CellML
    identifier.
 
@@ -196,7 +196,7 @@ element as its parent.
 Specific information items
 -------------------------------
 
-#. Every :code:`unit` element MUST contain an unprefixed :code:`units`
+1. Every :code:`unit` element MUST contain an unprefixed :code:`units`
    attribute information item. The value of the :code:`units` attribute MUST be
    a valid units reference, as defined in the
    `Units reference <#_2u6wntf>`__ section.
@@ -216,7 +216,7 @@ Specific information items
 
 .. marker6_1
 
-#. A :code:`unit` element MAY contain any of the following unprefixed
+2. A :code:`unit` element MAY contain any of the following unprefixed
    attribute information items:
 
    #. The :code:`prefix` attribute. If present, the value of the attribute
@@ -246,7 +246,7 @@ which appears as a child of a :code:`model` element.
 Specific information items
 --------------------------------
 
-#. Every :code:`component` element MUST contain an unprefixed :code:`name`
+1. Every :code:`component` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a valid CellML
    identifier. The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute on any other :code:`component` element or
@@ -254,7 +254,7 @@ Specific information items
 
 .. marker7_2
 
-#. A :code:`component` element MAY contain one or more specific information
+2. A :code:`component` element MAY contain one or more specific information
    item children, each of which MUST be of one of the following types:
 
    #. A :code:`variable` element; or
@@ -278,7 +278,7 @@ which appears as a child of a :code:`component` element.
 Specific information items
 --------------------------------
 
-#. Every :code:`variable` element MUST have each of the following unprefixed
+1. Every :code:`variable` element MUST have each of the following unprefixed
    attribute information items:
 
    #. The :code:`name` attribute. The value of the :code:`name` attribute MUST
@@ -317,7 +317,7 @@ child of a :code:`component` element.
 Specific information items
 --------------------------------
 
-#. Every :code:`reset` element MUST have each of the following unprefixed
+1. Every :code:`reset` element MUST have each of the following unprefixed
    attribute information items:
 
    #. The :code:`variable` attribute. The value of the :code:`variable`
