@@ -1,8 +1,8 @@
 .. _specB11:
 .. _spec_math:
 
-.. include:: formal_specification.rst
-  :start-after: marker14
-  :end-before: marker15
+.. include:: sectionB_elements.rst
+  :start-after: markerB11
+  :end-before: markerB12
 
-.. include:: inform/inform14.rst
+.. include:: inform/informB11.rst

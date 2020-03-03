@@ -1,7 +1,7 @@
 .. _specB15:
 
-.. include:: formal_specification.rst
-  :start-after: marker18
-  :end-before: marker19
+.. include:: sectionB_elements.rst
+  :start-after: marker15
+  :end-before: marker16
 
-.. include:: inform/inform18.rst
+.. include:: inform/informB15.rst

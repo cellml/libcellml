@@ -1,8 +1,8 @@
 .. _specB12:
 .. _spec_encapsulation:
 
-.. include:: formal_specification.rst
-  :start-after: marker15
-  :end-before: marker16
+.. include:: sectionB_elements.rst
+  :start-after: marker12
+  :end-before: marker13
 
-.. include:: inform/inform15.rst
+.. include:: inform/informB12.rst

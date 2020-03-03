@@ -1,6 +1,6 @@
 .. _specC:
 
 .. include:: sectionC_interpretation.rst
-  :start-after: marker19
+  :start-after: marker1
 
-.. include:: inform/inform19.rst
+.. include:: inform/informC.rst
