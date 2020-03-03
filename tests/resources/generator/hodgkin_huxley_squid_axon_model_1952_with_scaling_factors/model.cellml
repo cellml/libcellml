@@ -12,6 +12,10 @@
     <units name="millivolt">
         <unit prefix="milli" units="volt"/>
     </units>
+    <units name="millivolt_per_second">
+        <unit units="millivolt"/>
+        <unit exponent="-1" units="second"/>
+    </units>
     <units name="per_volt_second">
         <unit exponent="-1" units="volt"/>
         <unit exponent="-1" units="second"/>
@@ -56,6 +60,7 @@
         <variable interface="public" name="i_K" units="nanoA_per_cm2"/>
         <variable interface="public" name="i_L" units="nanoA_per_cm2"/>
         <variable name="i_Stim" units="nanoA_per_cm2"/>
+        <variable name="dVdt" units="millivolt_per_second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -110,6 +115,17 @@
                         </apply>
                     </apply>
                     <ci>Cm</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>dVdt</ci>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>V</ci>
                 </apply>
             </apply>
         </math>

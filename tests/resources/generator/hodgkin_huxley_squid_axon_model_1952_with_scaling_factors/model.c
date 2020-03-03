@@ -38,7 +38,8 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"beta_h", "per_millisecond", "sodium_channel_h_gate", ALGEBRAIC},
     {"i_K", "nanoA_per_cm2", "potassium_channel", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
+    {"dVdt", "millivolt_per_second", "membrane", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -105,4 +106,5 @@ void computeVariables(double voi, double *states, double *rates, double *variabl
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14]);
     variables[16] = 0.01*(states[3]+10.0)/(exp((states[3]+10.0)/10.0)-1.0);
     variables[17] = 0.125*exp(states[3]/80.0);
+    variables[18] = 1000.0*rates[3];
 }
