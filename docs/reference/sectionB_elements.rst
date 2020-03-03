@@ -25,8 +25,8 @@ Specific information items
 --------------------------
 
 1. Every :code:`model` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a valid CellML
-   identifier.
+   attribute. The value of the :code:`name` attribute MUST be a
+   valid CellML identifier.
 
 .. marker1_1
 
@@ -68,8 +68,8 @@ Specific information items
    name equal to :code:`href`. The value of this attribute SHALL be a valid
    locator :code:`href`, as defined in :href_locator:`Section 5.4` of the
    :xlink:`XLink specification`. The
-   :code:`href` attribute SHALL be treated according to the XLink
-   specification, by applying the rules for simple-type elements. When
+   :code:`href` attribute SHALL be treated according to the
+   :xlink:`XLink specification`, by applying the rules for simple-type elements. When
    describing an :code:`import` element or one of its children, the phrase
    “imported CellML infoset” SHALL refer to the CellML infoset obtained
    by parsing the document referenced by the :code:`href` attribute.
@@ -107,8 +107,9 @@ Specific information items
 --------------------------
 
 1. Every :code:`import units` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a valid CellML
-   identifier. The value of the :code:`name` attribute MUST NOT be identical
+   attribute. The value of the :code:`name` attribute MUST be a
+   :ref:`:ref:`valid CellML identifier<specA_cellml_identifier>`<specA_cellml_identifier>`.
+   The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute of any other :code:`units` or
    :code:`import units` element in the CellML infoset.
 
@@ -116,7 +117,8 @@ Specific information items
 
 2. Every :code:`import units` element MUST contain an unprefixed
    :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
-   MUST be a valid CellML identifier. The value of the :code:`units_ref`
+   MUST be a
+   :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of the :code:`units_ref`
    attribute MUST match the value of the :code:`name` attribute on a
    :code:`units` or :code:`import units` element in the imported CellML
    infoset. The value of the :code:`units_ref` attribute MUST NOT match the
@@ -140,13 +142,13 @@ Specific information items
 
 1. Every :code:`import component` element MUST contain an unprefixed
    :code:`name` attribute. The value of the :code:`name` attribute MUST be a
-   valid CellML identifier. The value of the :code:`name` attribute MUST NOT
+   :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of the :code:`name` attribute MUST NOT
    be identical to the :code:`name` attribute of any other :code:`component` or
    :code:`import component` element in the CellML infoset.
 
 2. Every :code:`import component` element MUST contain an unprefixed
    :code:`component_ref` attribute. The value of the :code:`component_ref`
-   attribute MUST be a valid CellML identifier. The value of the
+   attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of the
    :code:`component_ref` attribute MUST match the value of the :code:`name`
    attribute on a :code:`component` or :code:`import component` element in the
    imported CellML infoset. See also the
@@ -169,8 +171,8 @@ Specific information items
 --------------------------
 
 1. Every :code:`units` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a valid CellML
-   identifier.
+   attribute. The value of the :code:`name` attribute MUST be a
+   valid CellML identifier.
 
 #. The value of the :code:`name` attribute MUST NOT be identical to the
    :code:`name` attribute of any other :code:`units` element or
@@ -250,8 +252,9 @@ Specific information items
 --------------------------
 
 1. Every :code:`component` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a valid CellML
-   identifier. The value of the :code:`name` attribute MUST NOT be identical
+   attribute. The value of the :code:`name` attribute MUST be a
+   valid CellML identifier.
+   The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute on any other :code:`component` element or
    :code:`import component` element in the CellML infoset.
 
@@ -285,12 +288,14 @@ Specific information items
    attributes:
 
    #. The :code:`name` attribute. The value of the :code:`name` attribute MUST
-      be a valid CellML identifier. The value of the :code:`name` attribute
+      be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value
+      of the :code:`name` attribute
       MUST NOT be identical to the :code:`name` attribute on any sibling
       :code:`variable` element.
 
    #. The :code:`units` attribute. The value of the :code:`units` attribute
-      MUST be a valid CellML identifier, and MUST meet the constraints
+      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
+      and MUST meet the constraints
       described in the :ref:`Effect of units on variables<**TODO**>`
       section.
 
@@ -496,7 +501,8 @@ Specific information items
 
 #. Every :code:`component_ref` element MUST contain an unprefixed
    :code:`component` attribute. The value of this attribute
-   MUST be a valid CellML identifier, and MUST match the :code:`name`
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
+   and MUST match the :code:`name`
    attribute on a :code:`component` element or an :code:`import component`
    element in the CellML infoset.
 
@@ -525,7 +531,8 @@ Specific information items
 #. Each :code:`connection` element MUST contain an unprefixed
    :code:`component_1` attribute. The value of the :code:`component_1`
    attribute
-   MUST be a valid CellML identifier. The value of this attribute MUST
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+   The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`component` or
    :code:`import component` element in the CellML infoset (see `Component
    reference <**TODO**>`__).
@@ -533,7 +540,8 @@ Specific information items
 #. Each :code:`connection` element MUST contain an unprefixed
    :code:`component_2` attribute. The value of the :code:`component_2`
    attribute
-   MUST be a valid CellML identifier. The value of this attribute MUST
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+   The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`component` or :code:`import
    component` element in the CellML infoset (see `Component
    reference <**TODO**>`__). It MUST NOT be equal to the value of the
@@ -564,7 +572,7 @@ Specific information items
 
 #. Each :code:`map_variables` element MUST contain an unprefixed
    :code:`variable_1` attribute. The value of the :code:`variable_1` attribute
-   MUST be a valid CellML identifier. The value of this attribute MUST
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`variable` element child
    of the :code:`component` element or :code:`import component` element
    referenced by the :code:`component_1` attribute on the :code:`connection`
@@ -572,7 +580,7 @@ Specific information items
 
 #. Each :code:`map_variables` element MUST contain an unprefixed
    :code:`variable_2` attribute. The value of the :code:`variable_2` attribute
-   MUST be a valid CellML identifier. The value of this attribute MUST
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`variable` element child
    of the :code:`component` element or :code:`import component` element
    referenced by the :code:`component_2` attribute on the :code:`connection`

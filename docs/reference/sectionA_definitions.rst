@@ -250,6 +250,8 @@ Data representation formats in CellML
 The following data representation formats are defined for use in this
 specification:
 
+.. _specA_cellml_identifier:
+
 1. A CellML identifier:
 
    #. SHALL be a sequence of Unicode characters.
@@ -271,6 +273,8 @@ specification:
 
 .. marker3_2
 
+.. _specA_nonnegative_integer:
+
 2. A non-negative integer string:
 
    #. SHALL be a base 10 representation of a non-negative integer.
@@ -278,6 +282,8 @@ specification:
    #. SHALL consist entirely of Basic Latin numerals. **TODO** European numerals?
 
 .. marker3_3
+
+.. _specA_integer:
 
 3. An integer string:
 
@@ -292,6 +298,8 @@ specification:
       of the non-negative integer string representation of the integer.
 
 .. marker3_4
+
+.. _specA_basic_real_number:
 
 4. A basic real number string:
 
@@ -308,6 +316,8 @@ specification:
       separator, consist only of Basic Latin numerals.
 
 .. marker3_5
+
+.. _specA_real_number:
 
 5. A real number string:
 

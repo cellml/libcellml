@@ -72,7 +72,7 @@
 
       </model>
 
-    3) **The component_ref attribute**. This must be a valid CellML identifier
+    3) **The component_ref attribute**. This must be a :ref:`valid CellML identifier<specA_cellml_identifier>`
     (see :ref:`Data representation formats in CellML<spec_data_representation>`).
     It also has to actually exist as a :code:`component` in the given
     :code:`href` location! Neither of the imports below are permitted:
@@ -86,7 +86,7 @@
           <component component_ref="I_dont_exist" name="pi_calculator"/>
         </import>
 
-        <!-- This component_ref name is not a valid CellML identifier -->
+        <!-- This component_ref name is not a :ref:`valid CellML identifier<specA_cellml_identifier>` -->
         <import xlink:href="series_approx_of_pi.cellml" xmlns:xlink="http://www.w3.org/1999/xlink">
           <component component_ref="I have spaces so am not a valid ID" name="pi_calculator"/>
         </import>
