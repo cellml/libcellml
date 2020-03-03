@@ -1389,6 +1389,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 {
     const std::vector<std::string> expectedErrors = {
+        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
         "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' with non-matching units of 'testunit1'. The mismatch is: metre^-1.",
@@ -2403,7 +2404,6 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
     validator->validateModel(model);
 
     EXPECT_EQ_ERRORS(expectedErrors, validator);
-    printErrors(validator);
 }
 
 TEST(Validator, variableInterfaceShouldBePublic)
