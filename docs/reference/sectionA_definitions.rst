@@ -110,8 +110,9 @@ interpreted as described in :xml_infoset:`XML Information Set`.
 
    Basic Latin alphanumeric character
 
-      A Unicode character which is either a basic Latin alphabetic
-      character or a European numeral.
+      A Unicode character which is either a
+      :term:`Basic Latin alphabetic character` or a
+      :term:`European numeral`.
 
    Basic Latin underscore
 
@@ -132,7 +133,7 @@ interpreted as described in :xml_infoset:`XML Information Set`.
    Whitespace character
 
       Any one of the Unicode characters :unicode:`0020`,
-      :unicode:`0009`, :unicode:`000D` or :unicode:`000A`.
+      :unicode:`0009`, :unicode:`000D`, or :unicode:`000A`.
 
 ..  marker2
 
@@ -253,12 +254,16 @@ specification:
 
    #. SHALL be a sequence of Unicode characters.
 
-   #. SHALL NOT contain any characters except Basic Latin alphanumeric
-      characters and Basic Latin underscores.
+   #. SHALL NOT contain any characters except
+      :term:`Basic Latin alphanumeric characters<Basic Latin alphanumeric character>`
+      and :term:`Basic Latin underscores<Basic Latin underscore>`.
 
-   #. SHALL contain at least one :term:`alphabetic<Basic Latin alphabetic character>` character.
+   #. SHALL contain at least one
+      :term:`alphabetic<Basic Latin alphabetic character>` character.
 
-   #. SHALL NOT begin with a numeral or an underscore.
+   #. SHALL NOT begin with a
+      :term:`numeral<European numeral>` or an
+      :term:`underscore<Basic Latin underscore>`.
 
    #. SHALL, when comparing two identifiers, be considered identical to
       another identifier if and only if both identifiers have identical
@@ -270,7 +275,7 @@ specification:
 
    #. SHALL be a base 10 representation of a non-negative integer.
 
-   #. SHALL consist entirely of Basic Latin numerals.
+   #. SHALL consist entirely of Basic Latin numerals. **TODO** European numerals?
 
 .. marker3_3
 

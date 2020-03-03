@@ -250,12 +250,14 @@ must be a valid variable name in the same component, or a real number.
 .. code-block:: console
 
     Validator error[4]:
-        Description: CellML identifiers must contain one or more basic Latin
-        :term:`alphabetic<Basic Latin alphabetic character>` characters.
+        Description: CellML identifiers must contain one or more
+        basic Latin alphabetic characters.
         See section 3.1.3 in the CellML specification.
     Validator error[5]:
         Description: Variable 'd' does not have a valid units attribute.
         See section 11.1.1.2 in the CellML specification.
+
+**TODO** update error messages
 
 These two errors go together too.  Because we haven't defined a :code:`units`
 attribute for variable :code:`d`, it effectively has a blank name, which is not
