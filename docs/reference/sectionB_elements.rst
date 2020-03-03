@@ -346,7 +346,7 @@ Specific information items
       that reference variables in the same connected variable set (see
       :ref:`Interpretation of map_variables<specC_map_variables>`).
 
-#. A :code:`reset` element MUST contain two specific element
+#. A :code:`reset` element MUST contain exactly two element
    children, which MUST be one each of the following types:
 
    #. A :code:`test_value` element; and,
