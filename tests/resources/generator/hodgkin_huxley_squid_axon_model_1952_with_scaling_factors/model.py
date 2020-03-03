@@ -8,7 +8,7 @@ __version__ = "0.1.0"
 LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 4
-VARIABLE_COUNT = 18
+VARIABLE_COUNT = 19
 
 
 class VariableType(Enum):

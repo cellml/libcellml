@@ -1117,7 +1117,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithScalingFactors)
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
     EXPECT_EQ(size_t(4), generator->stateCount());
-    EXPECT_EQ(size_t(18), generator->variableCount());
+    EXPECT_EQ(size_t(19), generator->variableCount());
 
     EXPECT_NE(nullptr, generator->voi());
     EXPECT_NE(nullptr, generator->state(0));
