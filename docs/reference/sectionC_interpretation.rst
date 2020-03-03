@@ -167,9 +167,7 @@ Interpretation of units
       numerical value, *x,* with units given by the encompassing
       :code:`units` element, SHALL be
 
-      .. figure:: images/equation_units_expansion.png
-          :name: equation_units_expansion
-          :alt: Equation determining how units are combined
+      .. image:: images/equation_units_expansion.png
           :align: center
           :width: 50%
 
