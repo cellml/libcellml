@@ -276,7 +276,7 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
 .. code-block:: console
 
      Validator error[0]:
-       Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
+       Description: CellML identifiers must contain one or more basic Latin :term:`alphabetic<Basic Latin alphabetic character>` characters.
          See section 3.1.3 in the CellML specification.
      Validator error[1]:
        Description: Variable 'a' does not have a valid units attribute.
@@ -468,7 +468,7 @@ and to include the units in the model.
 
      The validator has found 2 errors!
        Validator error[0]:
-         Description: CellML identifiers must contain one or more basic Latin alphabetic characters.
+         Description: CellML identifiers must contain one or more basic Latin :term:`alphabetic<Basic Latin alphabetic character>` characters.
          See section 3.1.3 in the CellML specification.
        Validator error[1]:
          Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.

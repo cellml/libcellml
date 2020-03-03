@@ -255,7 +255,7 @@ must be a valid variable name in the same component, or a real number.
 
      Validator error[4]:
         Description: CellML identifiers must contain one or more basic Latin
-        alphabetic characters.
+        :term:`alphabetic<Basic Latin alphabetic character>` characters.
         See section 3.1.3 in the CellML specification.
      Validator error[5]:
         Description: Variable 'd' does not have a valid units attribute.

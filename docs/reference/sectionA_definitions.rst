@@ -61,91 +61,93 @@ information item such as an “element information item”, are to be
 interpreted as described in `XML Information
 Set <http://www.w3.org/TR/2004/REC-xml-infoset-20040204/>`__.
 
-CellML infoset
+.. glossary::
 
-   An XML information set containing a hierarchy of information items
-   conforming to the rules described in this document. In this
-   specification such infosets are assumed to be CellML 2.0 infosets.
+   CellML infoset
 
-CellML model
+      An XML information set containing a hierarchy of information items
+      conforming to the rules described in this document. In this
+      specification such infosets are assumed to be CellML 2.0 infosets.
 
-   A mathematical model represented by a hierarchy of one or more CellML
-   infosets, according to the rules described in this document. In this
-   specification, the topmost CellML infoset in a hierarchy is referred
-   to as the top-level CellML infoset.
+   CellML model
 
-Namespace
+      A mathematical model represented by a hierarchy of one or more CellML
+      infosets, according to the rules described in this document. In this
+      specification, the topmost CellML infoset in a hierarchy is referred
+      to as the top-level CellML infoset.
 
-   An XML namespace, as defined in `Namespaces in XML
-   1.1 <https://www.w3.org/TR/2006/REC-xml-names11-20060816/>`__.
+   Namespace
 
-CellML namespace
+      An XML namespace, as defined in `Namespaces in XML
+      1.1 <https://www.w3.org/TR/2006/REC-xml-names11-20060816/>`__.
 
-   The CellML 2.0 namespace.
+   CellML namespace
 
-CellML 2.0 namespace
+      The CellML 2.0 namespace.
 
-   The namespace http://www.cellml.org/cellml/2.0#.
+   CellML 2.0 namespace
 
-MathML namespace
+      The namespace http://www.cellml.org/cellml/2.0#.
 
-   The namespace http://www.w3.org/1998/Math/MathML.
+   MathML namespace
 
-CellML information item
+      The namespace http://www.w3.org/1998/Math/MathML.
 
-   Any information item in the CellML namespace.
+   CellML information item
 
-Basic Latin alphabetic character
+      Any information item in the :term:`CellML namespace`.
 
-   A Unicode character in the range
-   `U+0041 <http://www.fileformat.info/info/unicode/char/0041/index.htm>`__
-   to
-   `U+005A <http://www.fileformat.info/info/unicode/char/005A/index.htm>`__
-   or in the range
-   `U+0061 <http://www.fileformat.info/info/unicode/char/0061/index.htm>`__
-   to
-   `U+007A <http://www.fileformat.info/info/unicode/char/007A/index.htm>`__.
+   Basic Latin alphabetic character
 
-European numeral
+      A Unicode character in the range
+      `U+0041 <http://www.fileformat.info/info/unicode/char/0041/index.htm>`__
+      to
+      `U+005A <http://www.fileformat.info/info/unicode/char/005A/index.htm>`__
+      or in the range
+      `U+0061 <http://www.fileformat.info/info/unicode/char/0061/index.htm>`__
+      to
+      `U+007A <http://www.fileformat.info/info/unicode/char/007A/index.htm>`__.
 
-   A Unicode character in the range
-   `U+0030 <http://www.fileformat.info/info/unicode/char/0030/index.htm>`__
-   to
-   `U+0039 <http://www.fileformat.info/info/unicode/char/0039/index.htm>`__.
+   European numeral
 
-Basic Latin alphanumeric character
+      A Unicode character in the range
+      `U+0030 <http://www.fileformat.info/info/unicode/char/0030/index.htm>`__
+      to
+      `U+0039 <http://www.fileformat.info/info/unicode/char/0039/index.htm>`__.
 
-   A Unicode character which is either a basic Latin alphabetic
-   character or a European numeral.
+   Basic Latin alphanumeric character
 
-Basic Latin underscore
+      A Unicode character which is either a basic Latin alphabetic
+      character or a European numeral.
 
-   The Unicode character
-   `U+005F <http://www.fileformat.info/info/unicode/char/005F/index.htm>`__.
+   Basic Latin underscore
 
-Basic Latin plus
+      The Unicode character
+      `U+005F <http://www.fileformat.info/info/unicode/char/005F/index.htm>`__.
 
-   The Unicode character
-   `U+002B <http://www.fileformat.info/info/unicode/char/002b/index.htm>`__.
+   Basic Latin plus
 
-Basic Latin minus
+      The Unicode character
+      `U+002B <http://www.fileformat.info/info/unicode/char/002b/index.htm>`__.
 
-   The Unicode character
-   `U+002D <http://www.fileformat.info/info/unicode/char/002d/index.htm>`__.
+   Basic Latin minus
 
-Basic Latin full stop
+      The Unicode character
+      `U+002D <http://www.fileformat.info/info/unicode/char/002d/index.htm>`__.
 
-   The Unicode character
-   `U+002E <http://www.fileformat.info/info/unicode/char/002e/index.htm>`__.
+   Basic Latin full stop
 
-Whitespace character
+      The Unicode character
+      `U+002E <http://www.fileformat.info/info/unicode/char/002e/index.htm>`__.
 
-   Any one of the Unicode characters
-   `U+0020 <http://www.fileformat.info/info/unicode/char/0020/index.htm>`__,
-   `U+0009 <http://www.fileformat.info/info/unicode/char/0009/index.htm>`__,
-   `U+000D <http://www.fileformat.info/info/unicode/char/000D/index.htm>`__
-   or
-   `U+000A <http://www.fileformat.info/info/unicode/char/000A/index.htm>`__.
+   Whitespace character
+
+      Any one of the Unicode characters
+      `U+0020 <http://www.fileformat.info/info/unicode/char/0020/index.htm>`__,
+      `U+0009 <http://www.fileformat.info/info/unicode/char/0009/index.htm>`__,
+      `U+000D <http://www.fileformat.info/info/unicode/char/000D/index.htm>`__
+      or
+      `U+000A <http://www.fileformat.info/info/unicode/char/000A/index.htm>`__.
 
 ..  marker2
 
@@ -212,7 +214,7 @@ Semantically equivalent CellML infosets
 
    #. The following paragraph applies only to character information
       items which are the direct child of an element information item in
-      a CellML namespace, or in the MathML namespace.
+      a :term:`CellML namespace`, or in the MathML namespace.
 
       Inserting or removing character information items that consist
       entirely of whitespace characters, changing the number of whitespace
@@ -224,7 +226,7 @@ Semantically equivalent CellML infosets
 Character information items
 --------------------------------
 
-#. An element information item in the CellML namespace MUST NOT contain any
+#. An element information item in the :term:`CellML namespace` MUST NOT contain any
    character information items, except for character information items
    which consist entirely of whitespace characters.
 
@@ -235,14 +237,14 @@ Use of namespaces
    belong to one of the following namespaces, unless explicitly
    indicated otherwise:
 
-   #. The CellML namespace
+   #. The :term:`CellML namespace`
 
    #. The MathML namespace
 
 XML ID Attributes
 ----------------------
 
-#. Any element information item in the CellML namespace MAY contain an
+#. Any element information item in the :term:`CellML namespace` MAY contain an
    unprefixed attribute information item with local name :code:`id.` This
    attribute information item SHALL be treated as having attribute type
    ID, as defined in `section
@@ -264,7 +266,7 @@ specification:
    #. SHALL NOT contain any characters except Basic Latin alphanumeric
       characters and Basic Latin underscores.
 
-   #. SHALL contain at least one alphabetic character.
+   #. SHALL contain at least one :term:`alphabetic<Basic Latin alphabetic character>` character.
 
    #. SHALL NOT begin with a numeral or an underscore.
 
