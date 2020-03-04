@@ -22,37 +22,30 @@ Top-level of CellML infosets
 ----------------------------
 
 
-Here you have |optparse.OptionParser|_.
+Here is the external link |externalBookmark|_.
 
-.. |optparse.OptionParser| replace:: ``optparse.OptionParser`` documentation
-.. _optparse.OptionParser: http://docs.python.org/library/optparse.html
-
-Here you have |component1|_.
-
-.. |component1| replace:: ``component1``
-.. _component1: http://docs.python.org/library/optparse.html
-
-Here you have |component2|_.
-
-.. |component2| replace:: ``component``
-.. _component2:
-
-My Component 2
-==============
+.. |externalBookmark| replace:: ``externalBookmark``
+.. _externalBookmark: http://www.example.com
 
 
+Here is an internal link |internalBookmark1|_ defined directly beneath the replace statement.
 
-.. |bookmark3| replace:: ``bookmark3``
+.. |internalBookmark1| replace:: ``internal bookmark 1``
 
+.. _internalBookmark1:
 
+My Internal Bookmark 1
+======================
+Stuff goes here ...
 
-I need a |bookmark3|_ here.
+.. |internalBookmark2| replace:: ``internal bookmark 2``
 
+I need an |internalBookmark2|_ to be able to be defined throughout the project.
 
-.. _bookmark3:
+.. _internalBookmark2:
 
-My Bookmark 3
-=============
+My Internal Bookmark 2
+======================
 
 
 The top-level element information item in a CellML infoset MUST be an
