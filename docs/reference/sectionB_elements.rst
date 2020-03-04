@@ -6,6 +6,29 @@
 Section B: Element information items
 ====================================
 
+
+**TESTING**
+
+I want to go to the :any:`component<specB_component>` item.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .. marker1
 
 .. _specB_model:
@@ -34,7 +57,7 @@ Specific information items
    element children, each of which MUST be of one of the
    following types:
 
-   #. A |component|_ element; or
+   #. A :code:`component` element; or
 
    #. A :code:`connection` element; or
 
