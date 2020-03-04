@@ -11,9 +11,12 @@
         });
         // Get the current URL for bookmark highlighting, if needed
         const url_object = new URL(window.location.href);
+        alert(url_object);
         // Gets the bookmark to highlight
         const issueCode = url_object.searchParams.get("issue");
-        $(".issue_"+issueCode).addClass("highlight");
+        alert(issueCode);
+        $(".issue_"+issueCode).css("color", "red");
+        alert("done!");
     });
 </script>
 {% endblock %}
