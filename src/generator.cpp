@@ -965,8 +965,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         VariablePtr variable = component->variable(variableName);
 
         if (variable != nullptr) {
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
-
             // Have our equation track the (ODE) variable (by ODE variable, we
             // mean a variable that is used in a "diff" element).
 
@@ -976,6 +974,10 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                          && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
                 equation->addVariable(generatorVariable(variable));
             }
+
+            // Add the variable to our AST.
+
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
         } else {
             std::string modelName = entityName(owningModel(component));
             ErrorPtr err = Error::create();
