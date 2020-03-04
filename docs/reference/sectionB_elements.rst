@@ -64,15 +64,15 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-.. container:: issue_myIssueCode
+.. container:: dothis
 
    Every :code:`import` element MUST contain an attribute
    in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
    name equal to :code:`href`.
 
    The value of this attribute SHALL be a valid
-   locator :code:`href`, as defined in :href_locator:`Section 5.4` of the
-   :xlink:`XLink specification`.
+   locator :code:`href`, as defined in
+   :href_locator:`Section 5.4 of the XLink specification`.
 
    The :code:`href` attribute SHALL be treated according to the
    :xlink:`XLink specification`, by applying the rules for simple-type elements.
