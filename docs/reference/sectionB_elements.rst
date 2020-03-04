@@ -34,7 +34,7 @@ Specific information items
    element children, each of which MUST be of one of the
    following types:
 
-   #. A :ref:`component` element; or
+   #. A :ref:`<component>` element; or
 
    #. A :code:`connection` element; or
 
