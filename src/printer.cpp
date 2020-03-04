@@ -30,19 +30,11 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "internaltypes.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
 namespace libcellml {
-
-// VariableMap
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
-using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
-using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
-// ComponentMap
-using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
-using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
-using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
 /**
  * @brief The Printer::PrinterImpl struct.
