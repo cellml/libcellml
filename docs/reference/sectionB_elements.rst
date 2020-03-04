@@ -6,29 +6,7 @@
 Section B: Element information items
 ====================================
 
-
-
-
-
-
 .. marker1
-
-
-.. _internalBookmark2:
-
-My Internal Bookmark 2
-======================
-other stuff goes here
-
-
-Other stuff goes here.  And a long way away.
-
-Some heading
-============
-I need an |internalBookmark2|_ to be able to be defined throughout the project.
-
-
-
 
 .. _model:
 
@@ -618,9 +596,5 @@ Specific information items
 #. A |connection|_ element MUST NOT contain more than one
    |map_variables|_ element with a given :code:`variable_1` attribute
    value and :code:`variable_2` attribute value pair.
-
-Some heading
-============
-I need an |internalBookmark2|_ to be able to be defined throughout the project.
 
 .. marker17

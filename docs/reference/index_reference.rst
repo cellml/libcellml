@@ -36,8 +36,7 @@ Section B: Element information items
 ====================================
 
 .. toctree::
-    :maxdepth: 2
-    :numbered:
+    :maxdepth: 3
     :glob:
 
     sectionB*
