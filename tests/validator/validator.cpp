@@ -1504,7 +1504,6 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
         "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' with non-matching units of 'testunit1'. The mismatch is: metre^-1.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1773,7 +1772,6 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
-        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1, multiplication factor of 10^-3.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1938,7 +1936,6 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
-        "Variable 'v2' has units of 'bunch_of_bananas' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-10, banana^5.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1985,7 +1982,6 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
         "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
-        "Variable 'v2' has units of '' and an equivalent variable 'v1' with non-matching units of ''. The mismatch is: ",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2006,7 +2002,6 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
-        "Variable 'v2' has units of 'second' and an equivalent variable 'v1' with non-matching units of 'metre'. The mismatch is: metre^-1, second^1.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2030,7 +2025,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
-        "Variable 'v2' has units of 'gram' and an equivalent variable 'v1' with non-matching units of 'litre'. The mismatch is: kilogram^1, metre^-3.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2406,7 +2400,6 @@ TEST(Validator, variableEquivalenceUnreachable)
 {
     const std::vector<std::string> expectedErrors {
         "The equivalence between 'v1' in component 'c1'  and 'v3' in component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor in a parent/child relationship.",
-        "The equivalence between 'v3' in component 'c3'  and 'v1' in component 'c1' is invalid. Component 'c3' and 'c1' are neither siblings nor in a parent/child relationship.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2453,7 +2446,6 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
     const std::vector<std::string> expectedErrors = {
         "Variable 'v1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
         "The equivalence between 'v2' in component 'c2'  and 'v4' in component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor in a parent/child relationship.",
-        "The equivalence between 'v4' in component 'c4'  and 'v2' in component 'c2' is invalid. Component 'c4' and 'c2' are neither siblings nor in a parent/child relationship.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();

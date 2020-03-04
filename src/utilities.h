@@ -25,6 +25,8 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/variable.h"
 
+#include "internaltypes.h"
+
 namespace libcellml {
 
 /**
@@ -208,10 +210,6 @@ static const std::map<Variable::InterfaceType, const std::string> interfaceTypeT
     {Variable::InterfaceType::PRIVATE, "private"},
     {Variable::InterfaceType::PUBLIC, "public"},
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
-
-using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::InterfaceType>;
-
-using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
 /**
  * @brief Convert the @p candidate @c std::string to a @c double.

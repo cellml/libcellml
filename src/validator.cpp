@@ -33,6 +33,8 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
+#include "debug.h"
+
 namespace libcellml {
 
 /**
@@ -144,7 +146,7 @@ struct Validator::ValidatorImpl
      */
     void validateConnections(const ModelPtr &model);
 
-    void validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable);
+    void validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported);
 
     void validateEquivalenceStructure(const VariablePtr &variable);
 
@@ -152,7 +154,7 @@ struct Validator::ValidatorImpl
      * @brief validateVariableInterface
      * @param variable
      */
-    void validateVariableInterface(const VariablePtr &variable);
+    void validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported);
 
     /**
      * @brief Check if the provided @p name is a valid CellML identifier.
@@ -1000,7 +1002,7 @@ bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequi
     return interfaceTypeCompatibleWith.find(interfaceTypeMinimumRequiredString) != std::string::npos;
 }
 
-void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable)
+void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported)
 {
     Variable::InterfaceType interfaceType = determineInterfaceType(variable);
     if (interfaceType == Variable::InterfaceType::NONE) {
@@ -1010,13 +1012,19 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
             const auto equivalentVariable = variable->equivalentVariable(index);
             auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
-                std::string equivalentComponentName = equivalentComponent->name();
+                VariablePair reversePair = std::make_pair(equivalentVariable, variable);
+                auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+                if (it == alreadyReported.end()) {
+                    VariablePair pair = std::make_pair(variable, equivalentVariable);
+                    alreadyReported.push_back(pair);
+                    std::string equivalentComponentName = equivalentComponent->name();
 
-                ErrorPtr err = Error::create();
-                err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                err->setVariable(variable);
-                err->setKind(Error::Kind::CONNECTION);
-                mValidator->addError(err);
+                    ErrorPtr err = Error::create();
+                    err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
+                    err->setVariable(variable);
+                    err->setKind(Error::Kind::CONNECTION);
+                    mValidator->addError(err);
+                }
             }
         }
     } else {
@@ -1035,20 +1043,26 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
     }
 }
 
-void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable)
+void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported)
 {
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
-            auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-            auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-            ErrorPtr err = Error::create();
-            err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-            err->setModel(model);
-            err->setKind(Error::Kind::UNITS);
-            mValidator->addError(err);
+            VariablePair reversePair = std::make_pair(equivalentVariable, variable);
+            auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+            if (it == alreadyReported.end()) {
+                VariablePair pair = std::make_pair(variable, equivalentVariable);
+                alreadyReported.push_back(pair);
+                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                ErrorPtr err = Error::create();
+                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+            }
         }
     }
 }
@@ -1072,7 +1086,8 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
 
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
-    std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
+    VariableMap interfaceErrorsAlreadyReported;
+    VariableMap equivalentUnitErrorsAlreadyReported;
 
     VariablePtrs variables;
 
@@ -1081,8 +1096,8 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 
     for (const VariablePtr &variable : variables) {
-        validateVariableInterface(variable);
-        validateEquivalenceUnits(model, variable);
+        validateVariableInterface(variable, interfaceErrorsAlreadyReported);
+        validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
         validateEquivalenceStructure(variable);
     }
 }
