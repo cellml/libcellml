@@ -26,21 +26,21 @@ Section A: Preamble and definitions
 ===================================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :numbered:
     :glob:
 
-    specA*
+    sectionA*
 
 Section B: Element information items
 ====================================
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
     :numbered:
     :glob:
 
-    specB*
+    sectionB*
 
 Section C: Interpretation of CellML models
 ==========================================
@@ -50,7 +50,7 @@ Section C: Interpretation of CellML models
     :numbered:
     :glob:
 
-    specC*
+    sectionC*
 
 Section D: References
 =====================
@@ -60,7 +60,7 @@ Section D: References
     :numbered:
     :glob:
 
-    specD*
+    sectionD*
 
 
 Additional references for libCellML
