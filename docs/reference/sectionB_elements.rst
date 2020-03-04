@@ -44,6 +44,13 @@ Specific information items
 
    #. A :code:`units` element;
 
+
+Here you have |optparse.OptionParser|_.
+
+.. |optparse.OptionParser| replace:: ``optparse.OptionParser`` documentation
+.. _optparse.OptionParser: http://docs.python.org/library/optparse.html
+
+
 .. marker1_2
 
 3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
