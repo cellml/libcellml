@@ -11,12 +11,10 @@
         });
         // Get the current URL for bookmark highlighting, if needed
         const url_object = new URL(window.location.href);
-        alert(url_object);
         // Gets the bookmark to highlight
         const issueCode = "issue_"+url_object.searchParams.get("issue");
-        alert(issueCode);
 
-        let myPara = document.getElementsByClassName(issueCode);
+        let myPara = document.getElementsByClassName("dothis");
         alert(myPara.text());
     });
 </script>
