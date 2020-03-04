@@ -26,7 +26,7 @@ Section A: Preamble and definitions
 ===================================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     index_sectionA.rst
 
@@ -34,7 +34,7 @@ Section B: Element information items
 ====================================
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     index_sectionB.rst
 
@@ -43,20 +43,16 @@ Section C: Interpretation of CellML models
 
 .. toctree::
     :maxdepth: 2
-    :numbered:
-    :glob:
 
-    sectionC*
+    index_sectionC.rst
 
 Section D: References
 =====================
 
 .. toctree::
     :maxdepth: 2
-    :numbered:
-    :glob:
 
-    sectionD*
+    sectionD_references.rst
 
 
 Additional references for libCellML
