@@ -146,13 +146,34 @@ struct Validator::ValidatorImpl
      */
     void validateConnections(const ModelPtr &model);
 
+    /**
+     * @brief Validate the units of the given variables equivalent variables.
+     *
+     * Validate that the variables that are equivalent to the given variable all
+     * have compatible units.
+     *
+     * @param model The model for which the variable and model belong.
+     * @param variable The variable to validate.
+     * @param alreadyReported A list of variable pointer pairs.
+     */
     void validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported);
 
+    /**
+     * @brief Validate the structure of the variables equivalences.
+     *
+     * Validate the structure of the variables equivalences.
+     *
+     * @param variable The variable to validate.
+     */
     void validateEquivalenceStructure(const VariablePtr &variable);
 
     /**
-     * @brief validateVariableInterface
-     * @param variable
+     * @brief Validate the variable interface type.
+     *
+     * Validate the interface type for the given variable.
+     *
+     * @param variable The variable to validate.
+     * @param alreadyReported A list of variable pointer pairs.
      */
     void validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported);
 
