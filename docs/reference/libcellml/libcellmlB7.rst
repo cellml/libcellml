@@ -13,6 +13,6 @@
 
     .. container:: heading3
 
-      Messages related to :code:`Component` items
+      Messages related to :code:`component` items
 
     **TODO** put errors here.

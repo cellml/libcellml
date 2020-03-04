@@ -134,7 +134,7 @@ the (otherwise) constant :math:`d` using the simple equation :math:`d=a+b+c+0.5`
 Classification of variables
 +++++++++++++++++++++++++++
 The :code:`Generator` then classifies all the :code:`Variable` items within
-the :code:`Component` as:
+the :code:`component` as:
 
   - *variables* do not require integration, but come in three types:
 

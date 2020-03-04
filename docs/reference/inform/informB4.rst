@@ -8,7 +8,7 @@
 
   .. container:: infospec
 
-    The ablility to import and reuse :code:`Component` items is one of the
+    The ablility to import and reuse :code:`component` items is one of the
     most powerful features in CellML, as it allows modellers to easily
     plug-n-play different variations and model parts.  There are three
     ingredients required in importing an item:
@@ -19,7 +19,7 @@
       - a file to import from, specified using the :code:`xlink:href`
         attribute of the parent :code:`import` block.  This is discussed in
         more detail in
-        :ref:`The import element information item<spec_import>`.  In the
+        :ref:`The import element information item<specB_import>`.  In the
         example below this is the :code:`pi_approximators.cellml` file.
 
       - the specific item name to retrieve from the imported file. In the
@@ -27,7 +27,7 @@
         passed to the :code:`component_ref` attribute.
 
     Thus we can read the import statement below as: "retrieve the
-    :code:`Component` named :code:`circumference_over_diameter` from the file
+    :code:`component` named :code:`circumference_over_diameter` from the file
     :code:`pi_approximators.cellml`, and store it here in this model under the
     name :code:`pi_calculator`".
 
