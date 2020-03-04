@@ -35,7 +35,6 @@ Here you have |component1|_.
 Here you have |component2|_.
 
 .. |component2| replace:: ``component``
-
 .. _component2:
 
 My Component 2
@@ -73,9 +72,9 @@ Specific information items
 
    #. An :code:`encapsulation` element; or
 
-   #. An :code:`import` element; or
+   #. An |import|_ element; or
 
-   #. A :code:`units` element;
+   #. A |units|_ element;
 
 
 .. marker1_2
@@ -85,7 +84,8 @@ Specific information items
 
 .. marker2
 
-.. _specB_import:
+.. |import| replace:: ``import``
+.. _import:
 
 The import element
 ==================
@@ -127,7 +127,9 @@ Specific information items
 
 .. marker3
 
-.. _specB_import_units:
+
+.. |import_units| replace:: ``import units``
+.. _import_units:
 
 The import units element
 ========================
@@ -194,7 +196,8 @@ Specific information items
 
 .. marker5
 
-.. _specB_units:
+.. |units| replace:: ``units``
+.. _units:
 
 The units element
 =================
