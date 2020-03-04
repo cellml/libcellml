@@ -30,7 +30,7 @@ Section A: Preamble and definitions
     :numbered:
     :glob:
 
-    specA*
+    sectionA*
 
 Section B: Element information items
 ====================================
@@ -40,7 +40,7 @@ Section B: Element information items
     :numbered:
     :glob:
 
-    specB*
+    sectionB*
 
 Section C: Interpretation of CellML models
 ==========================================
@@ -50,7 +50,7 @@ Section C: Interpretation of CellML models
     :numbered:
     :glob:
 
-    specC*
+    sectionC*
 
 Section D: References
 =====================
@@ -60,7 +60,7 @@ Section D: References
     :numbered:
     :glob:
 
-    specD*
+    sectionD*
 
 
 
