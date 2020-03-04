@@ -13,13 +13,6 @@ Section B: Element information items
 
 .. marker1
 
-.. _model:
-
-The model element
-=================
-
-Top-level of CellML infosets
-----------------------------
 
 .. _internalBookmark2:
 
@@ -37,7 +30,13 @@ I need an |internalBookmark2|_ to be able to be defined throughout the project.
 
 
 
+.. _model:
 
+The model element
+=================
+
+Top-level of CellML infosets
+----------------------------
 
 The top-level element information item in a CellML infoset MUST be an
 element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
@@ -75,7 +74,6 @@ Specific information items
 
 .. marker2
 
-.. |import| replace:: ``import``
 .. _import:
 
 The import element
@@ -118,8 +116,6 @@ Specific information items
 
 .. marker3
 
-
-.. |import_units| replace:: ``import units``
 .. _import_units:
 
 The import units element
@@ -187,7 +183,6 @@ Specific information items
 
 .. marker5
 
-.. |units| replace:: ``units``
 .. _units:
 
 The units element
