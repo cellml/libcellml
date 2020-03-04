@@ -17,9 +17,9 @@ Top-level of CellML infosets
 ----------------------------
 
 The top-level element information item in a CellML infoset MUST be an
-element in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal
-to :code:`model`. In this specification, the top-level element
-is referred to as the :code:`model` element.
+element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
+local name equal to :code:`model`. In this specification, the top-level
+element is referred to as the :code:`model` element.
 
 Specific information items
 --------------------------
@@ -34,7 +34,7 @@ Specific information items
    element children, each of which MUST be of one of the
    following types:
 
-   #. A :code:`component` element; or
+   #. A :ref:`component` element; or
 
    #. A :code:`connection` element; or
 
@@ -239,7 +239,8 @@ Specific information items
 
 .. marker7
 
-.. _specB_component:
+.. _component:
+.. _Component:
 
 The component element
 =====================
