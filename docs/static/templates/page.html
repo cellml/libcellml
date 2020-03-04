@@ -15,7 +15,9 @@
         // Gets the bookmark to highlight
         const issueCode = url_object.searchParams.get("issue");
         alert(issueCode);
-        $(".issue_"+issueCode).css("color", "red");
+
+        let myPara = $(".issue_"+issueCode).css("color", "red");
+        alert(myPara);
         alert("done!");
     });
 </script>
