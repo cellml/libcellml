@@ -66,7 +66,6 @@ The key phrase “information item”, as well as any specific type of
 information item such as an “element information item”, are to be
 interpreted as described in :xml_infoset:`XML Information Set`.
 
-
 .. _specA_cellml_infoset:
 
 **CellML infoset** An XML information set containing a hierarchy
@@ -121,27 +120,15 @@ A Unicode character which is either a
 :term:`Basic Latin alphabetic character` or a
 :term:`European numeral`.
 
-.. _specA_basic_latin_underscore:
+**Basic Latin underscore** The Unicode character :unicode:`005F`.
 
-**Basic Latin underscore**
+**Basic Latin plus** The Unicode character :unicode:`002B`.
 
-The Unicode character :unicode:`005F`.
+**Basic Latin minus** The Unicode character :unicode:`002D`.
 
-**Basic Latin plus**
+**Basic Latin full stop** The Unicode character :unicode:`002E`.
 
-The Unicode character :unicode:`002B`.
-
-**Basic Latin minus**
-
-The Unicode character :unicode:`002D`.
-
-**Basic Latin full stop**
-
-The Unicode character :unicode:`002E`.
-
-**Whitespace character**
-
-Any one of the Unicode characters :unicode:`0020`,
+**Whitespace character** Any one of the Unicode characters :unicode:`0020`,
 :unicode:`0009`, :unicode:`000D`, or :unicode:`000A`.
 
 ..  marker2
