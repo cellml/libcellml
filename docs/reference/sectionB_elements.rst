@@ -34,7 +34,7 @@ Specific information items
    element children, each of which MUST be of one of the
    following types:
 
-   #. A :code:`component` element; or
+   #. A |component| element; or
 
    #. A :code:`connection` element; or
 
@@ -43,12 +43,6 @@ Specific information items
    #. An :code:`import` element; or
 
    #. A :code:`units` element;
-
-
-Here you have |optparse.OptionParser|_.
-
-.. |optparse.OptionParser| replace:: ``optparse.OptionParser`` documentation
-.. _optparse.OptionParser: http://docs.python.org/library/optparse.html
 
 
 .. marker1_2
