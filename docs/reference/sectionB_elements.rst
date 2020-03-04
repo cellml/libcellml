@@ -27,6 +27,20 @@ Here you have |optparse.OptionParser|_.
 .. |optparse.OptionParser| replace:: ``optparse.OptionParser`` documentation
 .. _optparse.OptionParser: http://docs.python.org/library/optparse.html
 
+Here you have |component1|_.
+
+.. |component1| replace:: ``component1``
+.. _component1: http://docs.python.org/library/optparse.html
+
+Here you have |component2|_.
+
+.. |component2| replace:: ``component``
+
+.. _component2:
+
+My Component 2
+==============
+
 
 Here is a |specB_component|_.
 
