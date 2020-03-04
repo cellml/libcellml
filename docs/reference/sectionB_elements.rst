@@ -21,6 +21,8 @@ The model element
 Top-level of CellML infosets
 ----------------------------
 
+.. |internalBookmark2| replace:: ``internal bookmark 2``
+
 
 Here is the external link |externalBookmark|_.
 
@@ -38,9 +40,19 @@ My Internal Bookmark 1
 ======================
 Stuff goes here ...
 
-.. |internalBookmark2| replace:: ``internal bookmark 2``
+
 
 I need an |internalBookmark2|_ to be able to be defined throughout the project.
+
+Other stuff goes here.  And a long way away.
+Some heading
+============
+
+.. _internalBookmark2:
+
+My Internal Bookmark 2
+======================
+other stuff goes here
 
 The top-level element information item in a CellML infoset MUST be an
 element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
@@ -627,9 +639,3 @@ Specific information items
    value and :code:`variable_2` attribute value pair.
 
 .. marker17
-
-.. _internalBookmark2:
-
-My Internal Bookmark 2
-======================
-other stuff goes here
