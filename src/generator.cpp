@@ -1316,16 +1316,19 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
         }
-if (mEquations.size() == 18) {
-    size_t eqnNb = 0;
-    for (const auto &equation : mEquations) {
-        std::cout << "────────────────────────────────────┤Equation #" << ++eqnNb << "├───" << std::endl;
-        printAst(equation->mAst);
-        if (eqnNb == mEquations.size()) {
-            std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
+
+        // Note: delete the code below once we are done testing things.
+
+        if (mEquations.size() == 18) {
+            size_t eqnNb = 0;
+            for (const auto &equation : mEquations) {
+                std::cout << "────────────────────────────────────┤Equation #" << ++eqnNb << "├───" << std::endl;
+                printAst(equation->mAst);
+                if (eqnNb == mEquations.size()) {
+                    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
+                }
+            }
         }
-    }
-}
     }
 
     // Sort our variables, determine the index of our constant variables and
