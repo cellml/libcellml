@@ -69,14 +69,18 @@ interpreted as described in :xml_infoset:`XML Information Set`.
 
 .. _specA_cellml_infoset:
 
-**CellML infoset** An XML information set containing a hierarchy
+CellML infoset
+--------------
+An XML information set containing a hierarchy
 of information items
 conforming to the rules described in this document. In this
 specification such infosets are assumed to be CellML 2.0 infosets.
 
 .. _specA_cellml_model:
 
-**CellML model** A mathematical model represented by a hierarchy of
+CellML model
+------------
+A mathematical model represented by a hierarchy of
 one or more CellML
 infosets, according to the rules described in this document. In this
 specification, the topmost CellML infoset in a hierarchy is referred
@@ -89,7 +93,9 @@ to as the top-level CellML infoset.
 
 .. _specA_cellml_namespace:
 
-**CellML namespace** The CellML 2.0 namespace.
+CellML namespace
+----------------
+The CellML 2.0 namespace.
 
 .. _specA_cellml2_namespace:
 
