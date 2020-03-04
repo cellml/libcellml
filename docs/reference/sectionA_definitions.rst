@@ -10,7 +10,13 @@ Michael Clerx
 
 Jonathan Cooper
 
+Alan Garny
+
+Keri Moyle
+
 David P. Nickerson
+
+Hugh Sorby
 
 **Contributors:**
 
@@ -19,8 +25,6 @@ Jesús C. Fernández
 David Brooks
 
 Koray Atalag
-
-Alan Garny
 
 The authors also wish to acknowledge the significant contribution of the
 (discontinued) draft CellML 1.2 specification, much of the text of which
@@ -32,7 +36,7 @@ Andrew K. Miller (who wrote the text reused here), Jonathan Cooper,
 Justin Marsh, Alan Garny, Randall Britten, Poul Nielsen and David P.
 Nickerson
 
-\* corresponding author: mtcooling.research@gmail.com
+\* corresponding author: mtcooling.research@gmail.com  **TODO what should this be?**
 
 **Preamble**
 
@@ -62,78 +66,88 @@ The key phrase “information item”, as well as any specific type of
 information item such as an “element information item”, are to be
 interpreted as described in :xml_infoset:`XML Information Set`.
 
-.. glossary::
 
-   CellML infoset
+.. _specA_cellml_infoset:
+**CellML infoset**
 
-      An XML information set containing a hierarchy of information items
-      conforming to the rules described in this document. In this
-      specification such infosets are assumed to be CellML 2.0 infosets.
+   An XML information set containing a hierarchy of information items
+   conforming to the rules described in this document. In this
+   specification such infosets are assumed to be CellML 2.0 infosets.
 
-   CellML model
+.. _specA_cellml_model:
+**CellML model**
 
-      A mathematical model represented by a hierarchy of one or more CellML
-      infosets, according to the rules described in this document. In this
-      specification, the topmost CellML infoset in a hierarchy is referred
-      to as the top-level CellML infoset.
+   A mathematical model represented by a hierarchy of one or more CellML
+   infosets, according to the rules described in this document. In this
+   specification, the topmost CellML infoset in a hierarchy is referred
+   to as the top-level CellML infoset.
 
-   Namespace
+.. _specA_namespace:
+**Namespace**
 
-      An XML namespace, as defined in
-      :xml_namespace_1_1:`Namespaces in XML 1.1`.
+   An XML namespace, as defined in
+   :xml_namespace_1_1:`Namespaces in XML 1.1`.
 
-   CellML namespace
+.. _specA_cellml_namespace:
+**CellML namespace**
 
-      The CellML 2.0 namespace.
+   The CellML 2.0 namespace.
 
-   CellML 2.0 namespace
+.. _specA_cellml2_namespace:
+**CellML 2.0 namespace**
 
-      The namespace http://www.cellml.org/cellml/2.0#.
+   The namespace http://www.cellml.org/cellml/2.0#.
 
-   MathML namespace
+.. _specA_mathml_namespace:
+**MathML namespace**
 
-      The namespace http://www.w3.org/1998/Math/MathML.
+   The namespace http://www.w3.org/1998/Math/MathML.
 
-   CellML information item
+.. _specA_cellml_information_item:
+**CellML information item**
 
-      Any information item in the :term:`CellML namespace`.
+   Any information item in the :term:`CellML namespace`.
 
-   Basic Latin alphabetic character
+.. _specA_basic_latin_alphabetic_character:
+**Basic Latin alphabetic character**
 
-      A Unicode character in the range
-      :unicode:`0041` to :unicode:`005A` or in the range
-      :unicode:`0061` to :unicode:`007A`.
+   A Unicode character in the range
+   :unicode:`0041` to :unicode:`005A` or in the range
+   :unicode:`0061` to :unicode:`007A`.
 
-   European numeral
+.. _specA_european_numeral:
+**European numeral**
 
-      A Unicode character in the range :unicode:`0030` to :unicode:`0039`.
+   A Unicode character in the range :unicode:`0030` to :unicode:`0039`.
 
-   Basic Latin alphanumeric character
+.. _specA_basic_latin_alphanumeric_character:
+**Basic Latin alphanumeric character**
 
-      A Unicode character which is either a
-      :term:`Basic Latin alphabetic character` or a
-      :term:`European numeral`.
+   A Unicode character which is either a
+   :term:`Basic Latin alphabetic character` or a
+   :term:`European numeral`.
 
-   Basic Latin underscore
+.. _specA_basic_latin_underscore:
+**Basic Latin underscore**
 
-      The Unicode character :unicode:`005F`.
+   The Unicode character :unicode:`005F`.
 
-   Basic Latin plus
+**Basic Latin plus**
 
-      The Unicode character :unicode:`002B`.
+   The Unicode character :unicode:`002B`.
 
-   Basic Latin minus
+**Basic Latin minus**
 
-      The Unicode character :unicode:`002D`.
+   The Unicode character :unicode:`002D`.
 
-   Basic Latin full stop
+**Basic Latin full stop**
 
-      The Unicode character :unicode:`002E`.
+   The Unicode character :unicode:`002E`.
 
-   Whitespace character
+**Whitespace character**
 
-      Any one of the Unicode characters :unicode:`0020`,
-      :unicode:`0009`, :unicode:`000D`, or :unicode:`000A`.
+   Any one of the Unicode characters :unicode:`0020`,
+   :unicode:`0009`, :unicode:`000D`, or :unicode:`000A`.
 
 ..  marker2
 
