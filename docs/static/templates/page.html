@@ -16,9 +16,8 @@
         const issueCode = url_object.searchParams.get("issue");
         alert(issueCode);
 
-        let myPara = $(".issue_"+issueCode).css("color", "red");
-        alert(myPara);
-        alert("done!");
+        let myPara = $(".issue_"+issueCode);
+        alert(myPara.text());
     });
 </script>
 {% endblock %}
