@@ -608,7 +608,8 @@ Specific information items
 
 #. Each |map_variables|_ element MUST contain an unprefixed
    :code:`variable_2` attribute. The value of the :code:`variable_2` attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of this attribute MUST
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The
+   value of this attribute MUST
    be equal to the :code:`name` attribute on a |variable|_ element child
    of the |component|_ element or |import_component|_ element
    referenced by the :code:`component_2` attribute on the |connection|_
