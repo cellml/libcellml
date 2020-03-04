@@ -91,23 +91,23 @@ extlinks = {
 
 # rst_epilog to define formatted, clickable code substitutions throughout.  It's included
 # at the bottom of every file in the project.
-# rst_prolog = """
-# .. |internalBookmark2| replace:: ``internalBookmark2``
-# .. |model| replace:: ``model``
-# .. |component| replace:: ``component``
-# .. |units| replace:: ``units``
-# .. |unit| replace:: ``unit``
-# .. |variable| replace:: ``variable``
-# .. |reset| replace:: ``reset``
-# .. |reset_value| replace:: ``reset_value``
-# .. |test_value| replace:: ``test_value``
-# .. |import| replace:: ``import``
-# .. |import_component| replace:: ``import component``
-# .. |import_units| replace:: ``import units``
-# .. |map_variables| replace:: ``map_variables``
-# .. |connection| replace:: ``connection``
-# .. |math| replace:: ``math``
-# """
+rst_prolog = """
+.. |internalBookmark2| replace:: ``internalBookmark2``
+.. |model| replace:: ``model``
+.. |component| replace:: ``component``
+.. |units| replace:: ``units``
+.. |unit| replace:: ``unit``
+.. |variable| replace:: ``variable``
+.. |reset| replace:: ``reset``
+.. |reset_value| replace:: ``reset_value``
+.. |test_value| replace:: ``test_value``
+.. |import| replace:: ``import``
+.. |import_component| replace:: ``import component``
+.. |import_units| replace:: ``import units``
+.. |map_variables| replace:: ``map_variables``
+.. |connection| replace:: ``connection``
+.. |math| replace:: ``math``
+"""
 # rst_epilog = """
 # .. |component| replace:: ``component``
 # .. _component: :ref:`component`

@@ -13,22 +13,6 @@ Section B: Element information items
 
 .. marker1
 
-.. |internalBookmark2| replace:: ``internalBookmark2``
-.. |model| replace:: ``model``
-.. |component| replace:: ``component``
-.. |units| replace:: ``units``
-.. |unit| replace:: ``unit``
-.. |variable| replace:: ``variable``
-.. |reset| replace:: ``reset``
-.. |reset_value| replace:: ``reset_value``
-.. |test_value| replace:: ``test_value``
-.. |import| replace:: ``import``
-.. |import_component| replace:: ``import component``
-.. |import_units| replace:: ``import units``
-.. |map_variables| replace:: ``map_variables``
-.. |connection| replace:: ``connection``
-.. |math| replace:: ``math``
-
 .. _model:
 
 The model element
@@ -44,31 +28,11 @@ My Internal Bookmark 2
 other stuff goes here
 
 
-Here is the external link |externalBookmark|_.
-
-.. |externalBookmark| replace:: ``externalBookmark``
-.. _externalBookmark: http://www.example.com
-
-
-Here is an internal link |internalBookmark1|_ defined directly beneath the replace statement.
-
-.. |internalBookmark1| replace:: ``internal bookmark 1``
-
-.. _internalBookmark1:
-
-My Internal Bookmark 1
-======================
-Stuff goes here ...
-
-
-
-I need an |internalBookmark2|_ to be able to be defined throughout the project.
-
 Other stuff goes here.  And a long way away.
 
 Some heading
 ============
-
+I need an |internalBookmark2|_ to be able to be defined throughout the project.
 
 
 
@@ -658,5 +622,9 @@ Specific information items
 #. A |connection|_ element MUST NOT contain more than one
    |map_variables|_ element with a given :code:`variable_1` attribute
    value and :code:`variable_2` attribute value pair.
+
+Some heading
+============
+I need an |internalBookmark2|_ to be able to be defined throughout the project.
 
 .. marker17
