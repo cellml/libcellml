@@ -7,24 +7,6 @@ Section B: Element information items
 ====================================
 
 
-**TESTING**
-
-I want to go to the :any:`component<specB_component>` item.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -38,6 +20,15 @@ The model element
 
 Top-level of CellML infosets
 ----------------------------
+
+
+
+**TESTING**
+
+I want to go to the :any:`component<specB_component>` item.
+
+
+
 
 The top-level element information item in a CellML infoset MUST be an
 element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
