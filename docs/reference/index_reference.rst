@@ -30,10 +30,12 @@ Section A: Definitions and preamble
 
     index_sectionA.rst
 
+
 .. toctree::
     :maxdepth: 1
     :glob:
     :numbered:
+
     specA*
 
 
@@ -45,11 +47,13 @@ Section B: Element information items
 
     index_sectionB.rst
 
+
 .. toctree::
     :maxdepth: 1
     :glob:
     :numbered:
-    specA*
+
+    specB*
 
 Section C: Interpretation of CellML models
 ==========================================
