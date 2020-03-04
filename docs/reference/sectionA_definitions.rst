@@ -260,7 +260,7 @@ specification:
    #. SHALL be a sequence of Unicode characters.
 
    #. SHALL NOT contain any characters except
-      :term:`Basic Latin alphanumeric characters<Basic Latin alphanumeric character>`
+      :term:`Basic Latin alphanumeric characters`\s
       and :term:`Basic Latin underscores<Basic Latin underscore>`.
 
    #. SHALL contain at least one
@@ -282,7 +282,7 @@ specification:
 
    #. SHALL be a base 10 representation of a non-negative integer.
 
-   #. SHALL consist entirely of Basic Latin numerals. **TODO** European numerals?
+   #. SHALL consist entirely of European numerals.
 
 .. marker3_3
 
@@ -316,7 +316,7 @@ specification:
       Basic Latin full stop character :unicode:`002E`.
 
    #. SHALL, other than the sign indicator and the decimal point
-      separator, consist only of Basic Latin numerals.
+      separator, consist only of European numerals.
 
 .. marker3_5
 

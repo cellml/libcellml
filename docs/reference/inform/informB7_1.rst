@@ -20,5 +20,5 @@
     to their structure in relation to other :code:`component` items: this
     structure is called their *encapsulation* and is described in
     :ref:`The encapsulation item<spec_encapsulation>`.  The third relates to the
-    :code:`import_component` item, as described in
+    :code:`import component` item, as described in
     :ref:`The import_component item<spec_import_component>`.

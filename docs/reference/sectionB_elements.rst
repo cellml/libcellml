@@ -82,7 +82,7 @@ Specific information items
 
    #. An :code:`import units` element; or
 
-   #. An :code:`import_component` element.
+   #. An :code:`import component` element.
 
 .. marker2_2
 
@@ -129,32 +129,32 @@ Specific information items
 
 .. marker4
 
-.. _import_component:
+.. _import component:
 
 The import component element
 ============================
 
-An :code:`import_component` element information item (referred to in this
-specification as an :code:`import_component` element) is an element
+An :code:`import component` element information item (referred to in this
+specification as an :code:`import component` element) is an element
 in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to
 :code:`component`, which appears as a child of an :code:`import` element.
 
 Specific information items
 --------------------------
 
-1. Every :code:`import_component` element MUST contain an unprefixed
+1. Every :code:`import component` element MUST contain an unprefixed
    :code:`name` attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of the
    :code:`name` attribute MUST NOT
    be identical to the :code:`name` attribute of any other :code:`component` or
-   :code:`import_component` element in the CellML infoset.
+   :code:`import component` element in the CellML infoset.
 
-2. Every :code:`import_component` element MUST contain an unprefixed
+2. Every :code:`import component` element MUST contain an unprefixed
    :code:`component_ref` attribute. The value of the :code:`component_ref`
    attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the
    :code:`component_ref` attribute MUST match the value of the :code:`name`
-   attribute on a :code:`component` or :code:`import_component` element in the
+   attribute on a :code:`component` or :code:`import component` element in the
    imported CellML infoset. See also the
    :ref:`Component reference<specC_component_reference>`
    section.
@@ -260,7 +260,7 @@ Specific information items
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute on any other :code:`component` element or
-   :code:`import_component` element in the CellML infoset.
+   :code:`import component` element in the CellML infoset.
 
 .. marker7_2
 
@@ -508,7 +508,7 @@ Specific information items
    :code:`component` attribute. The value of this attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
    and MUST match the :code:`name`
-   attribute on a :code:`component` element or an :code:`import_component`
+   attribute on a :code:`component` element or an :code:`import component`
    element in the CellML infoset.
 
 #. Every :code:`component_ref` element MAY in turn contain one or more
@@ -539,7 +539,7 @@ Specific information items
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`component` or
-   :code:`import_component` element in the CellML infoset
+   :code:`import component` element in the CellML infoset
    (see :ref:`Component reference<specC_component_reference>`).
 
 #. Each :code:`connection` element MUST contain an unprefixed
@@ -548,7 +548,7 @@ Specific information items
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`component` or
-   :code:`import_component` element in the CellML infoset
+   :code:`import component` element in the CellML infoset
    (see :ref:`Component reference <specC_component_reference>`).
    It MUST NOT be equal to the value of the :code:`component_1` attribute.
 
@@ -580,7 +580,7 @@ Specific information items
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`variable` element child
-   of the :code:`component` element or :code:`import_component` element
+   of the :code:`component` element or :code:`import component` element
    referenced by the :code:`component_1` attribute on the :code:`connection`
    element which is the parent of this element.
 
@@ -589,7 +589,7 @@ Specific information items
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The
    value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`variable` element child
-   of the :code:`component` element or :code:`import_component` element
+   of the :code:`component` element or :code:`import component` element
    referenced by the :code:`component_2` attribute on the :code:`connection`
    element which is the parent of this element.
 
