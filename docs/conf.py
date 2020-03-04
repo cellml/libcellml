@@ -91,7 +91,7 @@ extlinks = {
 
 # rst_epilog to define formatted, clickable code substitutions throughout.  It's included
 # at the bottom of every file in the project.
-rst_epilog = """
+rst_prolog = """
 .. |internalBookmark2| replace:: ``internalBookmark2``
 .. |model| replace:: ``model``
 .. |component| replace:: ``component``

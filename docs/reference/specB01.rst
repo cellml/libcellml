@@ -1,5 +1,7 @@
 .. _specB01:
 
+.. include:: prolog.txt
+
 .. include:: sectionB_elements.rst
   :start-after: marker1
   :end-before: marker1_1

@@ -1,0 +1,16 @@
+.. |internalBookmark2| replace:: ``internalBookmark2``
+.. |model| replace:: ``model``
+.. |component| replace:: ``component``
+.. |units| replace:: ``units``
+.. |unit| replace:: ``unit``
+.. |variable| replace:: ``variable``
+.. |reset| replace:: ``reset``
+.. |reset_value| replace:: ``reset_value``
+.. |test_value| replace:: ``test_value``
+.. |import| replace:: ``import``
+.. |import_component| replace:: ``import component``
+.. |import_units| replace:: ``import units``
+.. |map_variables| replace:: ``map_variables``
+.. |connection| replace:: ``connection``
+.. |math| replace:: ``math``
+.. |encapsulation| replace:: ``encapsulation``

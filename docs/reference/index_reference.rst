@@ -39,7 +39,7 @@ Section B: Element information items
     :maxdepth: 3
     :glob:
 
-    sectionB*
+    specB*
 
 Section C: Interpretation of CellML models
 ==========================================
