@@ -21,7 +21,7 @@ The model element
 Top-level of CellML infosets
 ----------------------------
 
-.. |internalBookmark2| replace:: ``internal bookmark 2``
+
 
 
 Here is the external link |externalBookmark|_.
