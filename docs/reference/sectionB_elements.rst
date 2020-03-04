@@ -22,7 +22,10 @@ Top-level of CellML infosets
 ----------------------------
 
 
+Here you have |optparse.OptionParser|_.
 
+.. |optparse.OptionParser| replace:: ``optparse.OptionParser`` documentation
+.. _optparse.OptionParser: http://docs.python.org/library/optparse.html
 
 
 Here is a |specB_component|_.
