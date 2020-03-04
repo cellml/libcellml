@@ -34,7 +34,7 @@ Specific information items
    element children, each of which MUST be of one of the
    following types:
 
-   #. A |component| element; or
+   #. A |component|_ element; or
 
    #. A :code:`connection` element; or
 
@@ -240,7 +240,7 @@ Specific information items
 
 .. marker7
 
-.. _specB_component:
+.. _component:
 
 The component element
 =====================
