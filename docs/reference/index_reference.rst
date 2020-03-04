@@ -21,10 +21,6 @@ It should be noted that all messages returned from libCellML should contain a
 reference number.  This number will point to the section of the formal
 specification and/or guidelines to which it relates.
 
-
-Section A: Definitions and preamble
-===================================
-
 .. toctree::
     :maxdepth: 1
 
@@ -39,9 +35,6 @@ Section A: Definitions and preamble
     specA*
 
 
-Section B: Element information items
-====================================
-
 .. toctree::
     :maxdepth: 1
 
@@ -55,16 +48,11 @@ Section B: Element information items
 
     specB*
 
-Section C: Interpretation of CellML models
-==========================================
 
 .. toctree::
     :maxdepth: 2
 
     index_sectionC.rst
-
-Section D: References
-=====================
 
 .. toctree::
     :maxdepth: 2

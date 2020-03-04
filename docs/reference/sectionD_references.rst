@@ -1,5 +1,5 @@
 
-21. References
+References
 ==============
 
 `RFC 2119: Key words for use in RFCs to Indicate Requirement

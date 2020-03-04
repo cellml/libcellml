@@ -1,6 +1,4 @@
-===========================================
-Section C: Interpretation of CellML models
-===========================================
+.. sectnum::
 
 .. _specC_imports:
 
