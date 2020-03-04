@@ -18,36 +18,36 @@ Top-level of CellML infosets
 
 The top-level element information item in a CellML infoset MUST be an
 element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
-local name equal to |model|_. In this specification, the top-level
-element is referred to as the |model|_ element.
+local name equal to :code:`model`. In this specification, the top-level
+element is referred to as the :code:`model` element.
 
 Specific information items
 --------------------------
 
-1. Every |model|_ element MUST contain an unprefixed :code:`name`
+1. Every :code:`model` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
 .. marker1_1
 
-2. A |model|_ element MAY contain one or more additional specific
+2. A :code:`model` element MAY contain one or more additional specific
    element children, each of which MUST be of one of the
    following types:
 
-   #. A |component|_ element; or
+   #. A :code:`component` element; or
 
-   #. A |connection|_ element; or
+   #. A :code:`connection` element; or
 
-   #. An |encapsulation|_ element; or
+   #. An :code:`encapsulation` element; or
 
-   #. An |import|_ element; or
+   #. An :code:`import` element; or
 
-   #. A |units|_ element;
+   #. A :code:`units` element;
 
 
 .. marker1_2
 
-3. A |model|_ element MUST NOT contain more than one |encapsulation|_
+3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
    elements.
 
 .. marker2
@@ -82,7 +82,7 @@ Specific information items
 
    #. An :code:`import units` element; or
 
-   #. An |import_component|_ element.
+   #. An :code:`import_component` element.
 
 .. marker2_2
 
@@ -101,7 +101,7 @@ The import units element
 
 An :code:`import units` element information item (referred to in this
 specification as an :code:`import units` element) is an element in the
-:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to |units|_, which
+:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`units`, which
 appears as a child of an :code:`import` element.
 
 Specific information items
@@ -111,7 +111,7 @@ Specific information items
    attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the :code:`name` attribute MUST NOT be identical
-   to the :code:`name` attribute of any other |units|_ or
+   to the :code:`name` attribute of any other :code:`units` or
    :code:`import units` element in the CellML infoset.
 
 .. marker3_1
@@ -122,7 +122,7 @@ Specific information items
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the :code:`units_ref`
    attribute MUST match the value of the :code:`name` attribute on a
-   |units|_ or :code:`import units` element in the imported CellML
+   :code:`units` or :code:`import units` element in the imported CellML
    infoset. The value of the :code:`units_ref` attribute MUST NOT match the
    value of the :code:`units_ref` attribute on any sibling
    :code:`import units` element.
@@ -134,27 +134,27 @@ Specific information items
 The import component element
 ============================
 
-An |import_component|_ element information item (referred to in this
-specification as an |import_component|_ element) is an element
+An :code:`import_component` element information item (referred to in this
+specification as an :code:`import_component` element) is an element
 in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to
-|component|_, which appears as a child of an :code:`import` element.
+:code:`component`, which appears as a child of an :code:`import` element.
 
 Specific information items
 --------------------------
 
-1. Every |import_component|_ element MUST contain an unprefixed
+1. Every :code:`import_component` element MUST contain an unprefixed
    :code:`name` attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of the
    :code:`name` attribute MUST NOT
-   be identical to the :code:`name` attribute of any other |component|_ or
-   |import_component|_ element in the CellML infoset.
+   be identical to the :code:`name` attribute of any other :code:`component` or
+   :code:`import_component` element in the CellML infoset.
 
-2. Every |import_component|_ element MUST contain an unprefixed
+2. Every :code:`import_component` element MUST contain an unprefixed
    :code:`component_ref` attribute. The value of the :code:`component_ref`
    attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the
    :code:`component_ref` attribute MUST match the value of the :code:`name`
-   attribute on a |component|_ or |import_component|_ element in the
+   attribute on a :code:`component` or :code:`import_component` element in the
    imported CellML infoset. See also the
    :ref:`Component reference<specC_component_reference>`
    section.
@@ -166,27 +166,27 @@ Specific information items
 The units element
 =================
 
-A |units|_ element information item (referred to in this specification
-as a |units|_ element) is an element in the CellML
-namespace with a local name equal to |units|_, and with a |model|_
+A :code:`units` element information item (referred to in this specification
+as a :code:`units` element) is an element in the CellML
+namespace with a local name equal to :code:`units`, and with a :code:`model`
 element as its parent.
 
 Specific information items
 --------------------------
 
-1. Every |units|_ element MUST contain an unprefixed :code:`name`
+1. Every :code:`units` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
 #. The value of the :code:`name` attribute MUST NOT be identical to the
-   :code:`name` attribute of any other |units|_ element or
+   :code:`name` attribute of any other :code:`units` element or
    :code:`import units` element in the CellML infoset.
 
 #. The value of the :code:`name` attribute MUST NOT be equal to the name of
    any of the units listed in the :ref:`Built-in units <table_built_in_units>`
    table.
 
-#. A |units|_ element MAY contain one or more |unit|_ element
+#. A :code:`units` element MAY contain one or more :code:`unit` element
    children.
 
 .. marker6
@@ -196,36 +196,36 @@ Specific information items
 The unit element
 ================
 
-A |unit|_ element information item (referred to in this specification
-as a |unit|_ element) is an element in the CellML
-namespace with a local name equal to |unit|_, and with a |units|_
+A :code:`unit` element information item (referred to in this specification
+as a :code:`unit` element) is an element in the CellML
+namespace with a local name equal to :code:`unit`, and with a :code:`units`
 element as its parent.
 
 Specific information items
 --------------------------
 
-1. Every |unit|_ element MUST contain an unprefixed |units|_
-   attribute. The value of the |units|_ attribute MUST be
+1. Every :code:`unit` element MUST contain an unprefixed :code:`units`
+   attribute. The value of the :code:`units` attribute MUST be
    a valid units reference, as defined in the
    :ref:`Units reference <units_reference>` section.
 
    #. For the purpose of the constraint in the next paragraph, the
-      |units|_ element inclusion digraph SHALL be defined as a
+      :code:`units` element inclusion digraph SHALL be defined as a
       conceptual digraph which SHALL contain one node for every
-      |units|_ element in the CellML model. **TODO infoset?**
-      The |units|_ element
-      inclusion digraph SHALL contain an arc from |units|_ element *A*
-      to |units|_ element *B* if and only if |units|_ element *A*
-      contains a |unit|_ element with |units|_ attribute value that
-      is a units reference to |units|_ element *B*.
+      :code:`units` element in the CellML model. **TODO infoset?**
+      The :code:`units` element
+      inclusion digraph SHALL contain an arc from :code:`units` element *A*
+      to :code:`units` element *B* if and only if :code:`units` element *A*
+      contains a :code:`unit` element with :code:`units` attribute value that
+      is a units reference to :code:`units` element *B*.
 
-   #. The value of the |units|_ attribute MUST NOT be such that the
-      |units|_ element inclusion digraph contains one or more cycles
+   #. The value of the :code:`units` attribute MUST NOT be such that the
+      :code:`units` element inclusion digraph contains one or more cycles
       (in other words, units definitions must not be cyclical).
 
 .. marker6_1
 
-2. A |unit|_ element MAY contain any of the following unprefixed
+2. A :code:`unit` element MAY contain any of the following unprefixed
    attributes:
 
    #. The :code:`prefix` attribute. If present, the value of the attribute
@@ -245,33 +245,33 @@ Specific information items
 The component element
 =====================
 
-A |component|_ element information item (referred to in this
-specification as a |component|_ element) is an element
-in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to |component|_, and
-which appears as a child of a |model|_ element.
+A :code:`component` element information item (referred to in this
+specification as a :code:`component` element) is an element
+in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`component`, and
+which appears as a child of a :code:`model` element.
 
 .. marker7_1
 
 Specific information items
 --------------------------
 
-1. Every |component|_ element MUST contain an unprefixed :code:`name`
+1. Every :code:`component` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the :code:`name` attribute MUST NOT be identical
-   to the :code:`name` attribute on any other |component|_ element or
-   |import_component|_ element in the CellML infoset.
+   to the :code:`name` attribute on any other :code:`component` element or
+   :code:`import_component` element in the CellML infoset.
 
 .. marker7_2
 
-2. A |component|_ element MAY contain one or more specific element
+2. A :code:`component` element MAY contain one or more specific element
    children, each of which MUST be of one of the following types:
 
-   #. A |variable|_ element; or
+   #. A :code:`variable` element; or
 
-   #. A |reset|_ element; or
+   #. A :code:`reset` element; or
 
-   #. A |math|_ element.
+   #. A :code:`math` element.
 
 .. marker8
 
@@ -280,30 +280,30 @@ Specific information items
 The variable element
 ====================
 
-A |variable|_ element information item (referred to in this
-specification as a |variable|_ element) is an element
+A :code:`variable` element information item (referred to in this
+specification as a :code:`variable` element) is an element
 in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name
-equal to |variable|_, and which appears as a child of a |component|_ element.
+equal to :code:`variable`, and which appears as a child of a :code:`component` element.
 
 Specific information items
 --------------------------
 
-1. Every |variable|_ element MUST have each of the following unprefixed
+1. Every :code:`variable` element MUST have each of the following unprefixed
    attributes:
 
    #. The :code:`name` attribute. The value of the :code:`name` attribute MUST
       be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value
       of the :code:`name` attribute
       MUST NOT be identical to the :code:`name` attribute on any sibling
-      |variable|_ element.
+      :code:`variable` element.
 
-   #. The |units|_ attribute. The value of the |units|_ attribute
+   #. The :code:`units` attribute. The value of the :code:`units` attribute
       MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
       and MUST meet the constraints described in the
       :ref:`Effect of units on variables<specC_effect_of_units_on_variables>`
       section.
 
-#. Every |variable|_ element MAY contain one or more of the following
+#. Every :code:`variable` element MAY contain one or more of the following
    unprefixed attributes:
 
    #. The :code:`interface` attribute. If the attribute is present, it MUST
@@ -321,38 +321,38 @@ Specific information items
 The reset element
 =================
 
-A |reset|_ element information item (referred to in this specification
-as a |reset|_ element) is an element in the CellML
-namespace with a local name equal to |reset|_, and which appears as a
-child of a |component|_ element.
+A :code:`reset` element information item (referred to in this specification
+as a :code:`reset` element) is an element in the CellML
+namespace with a local name equal to :code:`reset`, and which appears as a
+child of a :code:`component` element.
 
 Specific information items
 --------------------------
 
-1. Every |reset|_ element MUST have each of the following unprefixed
+1. Every :code:`reset` element MUST have each of the following unprefixed
    attributes:
 
-   #. The |variable|_ attribute. The value of the |variable|_
+   #. The :code:`variable` attribute. The value of the :code:`variable`
       attribute MUST be a variable reference to a variable defined
-      within the parent |component|_ element of the |reset|_ element.
+      within the parent :code:`component` element of the :code:`reset` element.
 
    #. The :code:`test_variable` attribute. The value of the
       :code:`test_variable` attribute MUST be a variable reference to a
-      variable defined within the parent |component|_ element of the
-      |reset|_ element.
+      variable defined within the parent :code:`component` element of the
+      :code:`reset` element.
 
    #. The :code:`order` attribute. The value of the :code:`order` attribute
       MUST be an integer string. The value of the :code:`order` attribute MUST
-      be unique for all |reset|_ elements with |variable|_ attributes
+      be unique for all :code:`reset` elements with :code:`variable` attributes
       that reference variables in the same connected variable set (see
       :ref:`Interpretation of map_variables<specC_map_variables>`).
 
-#. A |reset|_ element MUST contain exactly two element
+#. A :code:`reset` element MUST contain exactly two element
    children, which MUST be one each of the following types:
 
-   #. A |test_value|_ element; and,
+   #. A :code:`test_value` element; and,
 
-   #. A |reset_value|_ element.
+   #. A :code:`reset_value` element.
 
 .. marker10
 
@@ -361,15 +361,15 @@ Specific information items
 The test_value element
 ======================
 
-A |test_value|_ element information item (referred to in this
-specification as a |test_value|_ element) is an element in the
-:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to |test_value|_,
-and which appears as a child of a |reset|_ element.
+A :code:`test_value` element information item (referred to in this
+specification as a :code:`test_value` element) is an element in the
+:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`test_value`,
+and which appears as a child of a :code:`reset` element.
 
 Specific information items
 --------------------------
 
-#. A |test_value|_ element MUST contain exactly one |math|_ element
+#. A :code:`test_value` element MUST contain exactly one :code:`math` element
    child.
 
 .. marker11
@@ -379,15 +379,15 @@ Specific information items
 The reset_value element
 =======================
 
-A |reset_value|_ element information item (referred to in this
-specification as a |reset_value|_ element) is an element in the CellML
-namespace with a local name equal to |reset_value|_,
-and which appears as a child of a |reset|_ element.
+A :code:`reset_value` element information item (referred to in this
+specification as a :code:`reset_value` element) is an element in the CellML
+namespace with a local name equal to :code:`reset_value`,
+and which appears as a child of a :code:`reset` element.
 
 Specific information items
 --------------------------
 
-#. A |reset_value|_ element MUST contain exactly one |math|_ element
+#. A :code:`reset_value` element MUST contain exactly one :code:`math` element
    child.
 
 .. marker12
@@ -397,28 +397,28 @@ Specific information items
 The math element
 ================
 
-A |math|_ element information item (referred to in this specification
-as a |math|_ element) is an element in the MathML
-namespace that appears as a direct child of a |component|_ element, a
-|test_value|_ element, or a |reset_value|_ element.
+A :code:`math` element information item (referred to in this specification
+as a :code:`math` element) is an element in the MathML
+namespace that appears as a direct child of a :code:`component` element, a
+:code:`test_value` element, or a :code:`reset_value` element.
 
 Specific information items
 --------------------------
 
-#. A |math|_ element MUST be the top-level of a content MathML tree, as
+#. A :code:`math` element MUST be the top-level of a content MathML tree, as
    described in :mathml2spec:`MathML 2.0`.
 
-#. Each element child of a |math|_ element MUST have
+#. Each element child of a :code:`math` element MUST have
    an element-type name that is listed in the
    :ref:`Supported MathML Elements <table_supported_mathml_elements>` table.
 
 #. Every variable name given using the MathML :code:`ci` element MUST be a
-   :ref:`variable reference<specC_variable_reference>` to a |variable|_
-   within the |component|_ element that the |math|_ element
+   :ref:`variable reference<specC_variable_reference>` to a :code:`variable`
+   within the :code:`component` element that the :code:`math` element
    is contained.
 
 #. Any MathML :code:`cn` elements MUST each have an attribute in the
-   :ref:`CellML namespace<specA_cellml_namespace>`, with a local name equal to |units|_.
+   :ref:`CellML namespace<specA_cellml_namespace>`, with a local name equal to :code:`units`.
    The value of this attribute MUST be a valid units
    reference.
 
@@ -433,41 +433,41 @@ Table: Supported MathML Elements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +----------------------------------+----------------------------------+
-| **Element Category**             | **Element List**                 |
+| **Element Category**             :code:` **Element List**                 :code:`
 +----------------------------------+----------------------------------+
-| Simple Operands                  | <ci>, <cn>, <sep>                |
+| Simple Operands                  :code:` <ci>, <cn>, <sep>                :code:`
 +----------------------------------+----------------------------------+
-| Basic Structural                 | <apply>, <piecewise>, <piece>,   |
-|                                  | <otherwise>                      |
+| Basic Structural                 :code:` <apply>, <piecewise>, <piece>,   :code:`
+|                                  :code:` <otherwise>                      :code:`
 +----------------------------------+----------------------------------+
-| Relational and Logical Operators | <eq>, <neq>, <gt>, <lt>, <geq>,  |
-|                                  | <leq>, <and>, <or>, <xor>, <not> |
+| Relational and Logical Operators :code:` <eq>, <neq>, <gt>, <lt>, <geq>,  :code:`
+|                                  :code:` <leq>, <and>, <or>, <xor>, <not> :code:`
 +----------------------------------+----------------------------------+
-| Arithmetic Operators             | <plus>, <minus>, <times>,        |
-|                                  | <divide>, <power>, <root>,       |
-|                                  | <abs>, <exp>, <ln>, <log>,       |
-|                                  | <floor>, <ceiling>, <min>,       |
-|                                  | <max>, <rem>,                    |
+| Arithmetic Operators             :code:` <plus>, <minus>, <times>,        :code:`
+|                                  :code:` <divide>, <power>, <root>,       :code:`
+|                                  :code:` <abs>, <exp>, <ln>, <log>,       :code:`
+|                                  :code:` <floor>, <ceiling>, <min>,       :code:`
+|                                  :code:` <max>, <rem>,                    :code:`
 +----------------------------------+----------------------------------+
-| Calculus Elements                | <diff>                           |
+| Calculus Elements                :code:` <diff>                           :code:`
 +----------------------------------+----------------------------------+
-| Qualifier Elements               | <bvar>, <logbase>, <degree>      |
-|                                  | (child of <root> or <diff>)      |
+| Qualifier Elements               :code:` <bvar>, <logbase>, <degree>      :code:`
+|                                  :code:` (child of <root> or <diff>)      :code:`
 +----------------------------------+----------------------------------+
-| Trigonometric Operators          | <sin>, <cos>, <tan>, <sec>,      |
-|                                  | <csc>, <cot>,                    |
-|                                  |                                  |
-|                                  | <sinh>, <cosh>, <tanh>, <sech>,  |
-|                                  | <csch>, <coth>, <arcsin>,        |
-|                                  | <arccos>, <arctan>,              |
-|                                  |                                  |
-|                                  | <arcsec>, <arccsc>, <arccot>,    |
-|                                  | <arcsinh>, <arccosh>, <arctanh>, |
-|                                  | <arcsech>, <arccsch>, <arccoth>  |
+| Trigonometric Operators          :code:` <sin>, <cos>, <tan>, <sec>,      :code:`
+|                                  :code:` <csc>, <cot>,                    :code:`
+|                                  :code:`                                  :code:`
+|                                  :code:` <sinh>, <cosh>, <tanh>, <sech>,  :code:`
+|                                  :code:` <csch>, <coth>, <arcsin>,        :code:`
+|                                  :code:` <arccos>, <arctan>,              :code:`
+|                                  :code:`                                  :code:`
+|                                  :code:` <arcsec>, <arccsc>, <arccot>,    :code:`
+|                                  :code:` <arcsinh>, <arccosh>, <arctanh>, :code:`
+|                                  :code:` <arcsech>, <arccsch>, <arccoth>  :code:`
 +----------------------------------+----------------------------------+
-| Mathematical and Logical         | <pi>, <exponentiale>,            |
-| Constants                        | <notanumber>, <infinity>,        |
-|                                  | <true>, <false>                  |
+| Mathematical and Logical         :code:` <pi>, <exponentiale>,            :code:`
+| Constants                        :code:` <notanumber>, <infinity>,        :code:`
+|                                  :code:` <true>, <false>                  :code:`
 +----------------------------------+----------------------------------+
 
 .. marker13
@@ -477,15 +477,15 @@ Table: Supported MathML Elements
 The encapsulation element
 =========================
 
-An |encapsulation|_ element information item (referred to in this
-specification as an |encapsulation|_ element) is an element in the
+An :code:`encapsulation` element information item (referred to in this
+specification as an :code:`encapsulation` element) is an element in the
 :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to
-|encapsulation|_, and which appears as a child of a |model|_ element.
+:code:`encapsulation`, and which appears as a child of a :code:`model` element.
 
 Specific information items
 --------------------------
 
-#. Every |encapsulation|_ element MUST contain one or more
+#. Every :code:`encapsulation` element MUST contain one or more
    :code:`component_ref` elements.
 
 .. marker14
@@ -498,24 +498,24 @@ The component_ref element
 A :code:`component_ref` element information item (referred to in this
 specification as a :code:`component_ref` element) is an element in the
 :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to
-:code:`component_ref`, and which appears as a child of an |encapsulation|_
+:code:`component_ref`, and which appears as a child of an :code:`encapsulation`
 element.
 
 Specific information items
 --------------------------
 
 #. Every :code:`component_ref` element MUST contain an unprefixed
-   |component|_ attribute. The value of this attribute
+   :code:`component` attribute. The value of this attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
    and MUST match the :code:`name`
-   attribute on a |component|_ element or an |import_component|_
+   attribute on a :code:`component` element or an :code:`import_component`
    element in the CellML infoset.
 
 #. Every :code:`component_ref` element MAY in turn contain one or more
    :code:`component_ref` element children.
 
 #. A :code:`component_ref` element which is an immediate child of an
-   |encapsulation|_ element MUST each contain at least one
+   :code:`encapsulation` element MUST each contain at least one
    :code:`component_ref` element child.
 
 .. marker15
@@ -525,39 +525,39 @@ Specific information items
 The connection element
 ======================
 
-A |connection|_ element information item (referred to in this
-specification as a |connection|_ element) is an element in the
-:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to |connection|_,
-and which appears as a child of a |model|_ element.
+A :code:`connection` element information item (referred to in this
+specification as a :code:`connection` element) is an element in the
+:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`connection`,
+and which appears as a child of a :code:`model` element.
 
 Specific information items
 --------------------------
 
-#. Each |connection|_ element MUST contain an unprefixed
+#. Each :code:`connection` element MUST contain an unprefixed
    :code:`component_1` attribute. The value of the :code:`component_1`
    attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of this attribute MUST
-   be equal to the :code:`name` attribute on a |component|_ or
-   |import_component|_ element in the CellML infoset
+   be equal to the :code:`name` attribute on a :code:`component` or
+   :code:`import_component` element in the CellML infoset
    (see :ref:`Component reference<specC_component_reference>`).
 
-#. Each |connection|_ element MUST contain an unprefixed
+#. Each :code:`connection` element MUST contain an unprefixed
    :code:`component_2` attribute. The value of the :code:`component_2`
    attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of this attribute MUST
-   be equal to the :code:`name` attribute on a |component|_ or
-   |import_component|_ element in the CellML infoset
+   be equal to the :code:`name` attribute on a :code:`component` or
+   :code:`import_component` element in the CellML infoset
    (see :ref:`Component reference <specC_component_reference>`).
    It MUST NOT be equal to the value of the :code:`component_1` attribute.
 
-#. A CellML infoset MUST NOT contain more than one |connection|_
-   element with a given pair of |component|_\ s referenced by the
+#. A CellML infoset MUST NOT contain more than one :code:`connection`
+   element with a given pair of :code:`component`\ s referenced by the
    :code:`component_1` and :code:`component_2` attribute values, in any order.
 
-#. Every |connection|_ element MUST contain one or more
-   |map_variables|_ elements.
+#. Every :code:`connection` element MUST contain one or more
+   :code:`map_variables` elements.
 
 .. marker16
 
@@ -566,35 +566,35 @@ Specific information items
 The map_variables element
 =========================
 
-A |map_variables|_ element information item (referred to in this
-specification as a |map_variables|_ element) is an element in the
+A :code:`map_variables` element information item (referred to in this
+specification as a :code:`map_variables` element) is an element in the
 :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to
-|map_variables|_, and which appears as a child of a |connection|_
+:code:`map_variables`, and which appears as a child of a :code:`connection`
 element.
 
 Specific information items
 --------------------------
 
-#. Each |map_variables|_ element MUST contain an unprefixed
+#. Each :code:`map_variables` element MUST contain an unprefixed
    :code:`variable_1` attribute. The value of the :code:`variable_1` attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of this attribute MUST
-   be equal to the :code:`name` attribute on a |variable|_ element child
-   of the |component|_ element or |import_component|_ element
-   referenced by the :code:`component_1` attribute on the |connection|_
+   be equal to the :code:`name` attribute on a :code:`variable` element child
+   of the :code:`component` element or :code:`import_component` element
+   referenced by the :code:`component_1` attribute on the :code:`connection`
    element which is the parent of this element.
 
-#. Each |map_variables|_ element MUST contain an unprefixed
+#. Each :code:`map_variables` element MUST contain an unprefixed
    :code:`variable_2` attribute. The value of the :code:`variable_2` attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The
    value of this attribute MUST
-   be equal to the :code:`name` attribute on a |variable|_ element child
-   of the |component|_ element or |import_component|_ element
-   referenced by the :code:`component_2` attribute on the |connection|_
+   be equal to the :code:`name` attribute on a :code:`variable` element child
+   of the :code:`component` element or :code:`import_component` element
+   referenced by the :code:`component_2` attribute on the :code:`connection`
    element which is the parent of this element.
 
-#. A |connection|_ element MUST NOT contain more than one
-   |map_variables|_ element with a given :code:`variable_1` attribute
+#. A :code:`connection` element MUST NOT contain more than one
+   :code:`map_variables` element with a given :code:`variable_1` attribute
    value and :code:`variable_2` attribute value pair.
 
 .. marker17
