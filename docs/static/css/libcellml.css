@@ -20,6 +20,15 @@ div.figure a.image-reference {
     border: none;
 }
 
+.issue111 {
+    background-color: none;
+}
+
+.highlight {
+    background-color: rgb(242, 249, 227);
+    padding:3px;
+}
+
 .dothis {
     border-left: 5px solid rgb(174, 189, 145);
     background:rgb(242, 249, 227);
@@ -112,13 +121,4 @@ div.figure a.image-reference {
     padding: 5px 0px 0px 10px;
     font-family: 'Consolas', 'Deja Vu Sans Mono','Bitstream Vera Sans Mono', monospace;
     font-size: 0.85em;
-}
-
-.issue_myIssueCode {
-    background-color: none;
-}
-
-.highlight {
-    background-color: rgb(242, 249, 227);
-    padding:3px;
 }

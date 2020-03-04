@@ -12,8 +12,8 @@
         // Get the current URL for bookmark highlighting, if needed
         const url_object = new URL(window.location.href);
         // Gets the bookmark to highlight
-        const issueCode = "issue_"+url_object.searchParams.get("issue");
-        $(".issue_"+issueCode).addClass("highlight");
+        const issueCode = ".issue"+url_object.searchParams.get("issue");
+        $(issueCode).addClass("highlight");
     });
 </script>
 {% endblock %}

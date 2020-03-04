@@ -64,7 +64,7 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-.. container:: issue_myIssueCode
+.. container:: issue111
 
    Every :code:`import` element MUST contain an attribute
    in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
