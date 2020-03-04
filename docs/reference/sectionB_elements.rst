@@ -172,10 +172,10 @@ Specific information items
    |import_component|_ element in the CellML infoset.
 
 2. Every |import_component|_ element MUST contain an unprefixed
-   |component_ref|_ attribute. The value of the |component_ref|_
+   :code:`component_ref` attribute. The value of the :code:`component_ref`
    attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
    The value of the
-   |component_ref|_ attribute MUST match the value of the :code:`name`
+   :code:`component_ref` attribute MUST match the value of the :code:`name`
    attribute on a |component|_ or |import_component|_ element in the
    imported CellML infoset. See also the
    :ref:`Component reference<specC_component_reference>`
@@ -508,7 +508,7 @@ Specific information items
 --------------------------
 
 #. Every |encapsulation|_ element MUST contain one or more
-   |component_ref|_ elements.
+   :code:`component_ref` elements.
 
 .. marker14
 
@@ -517,28 +517,28 @@ Specific information items
 The component_ref element
 =========================
 
-A |component_ref|_ element information item (referred to in this
-specification as a |component_ref|_ element) is an element in the
+A :code:`component_ref` element information item (referred to in this
+specification as a :code:`component_ref` element) is an element in the
 :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to
-|component_ref|_, and which appears as a child of an |encapsulation|_
+:code:`component_ref`, and which appears as a child of an |encapsulation|_
 element.
 
 Specific information items
 --------------------------
 
-#. Every |component_ref|_ element MUST contain an unprefixed
+#. Every :code:`component_ref` element MUST contain an unprefixed
    |component|_ attribute. The value of this attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
    and MUST match the :code:`name`
    attribute on a |component|_ element or an |import_component|_
    element in the CellML infoset.
 
-#. Every |component_ref|_ element MAY in turn contain one or more
-   |component_ref|_ element children.
+#. Every :code:`component_ref` element MAY in turn contain one or more
+   :code:`component_ref` element children.
 
-#. A |component_ref|_ element which is an immediate child of an
+#. A :code:`component_ref` element which is an immediate child of an
    |encapsulation|_ element MUST each contain at least one
-   |component_ref|_ element child.
+   :code:`component_ref` element child.
 
 .. marker15
 

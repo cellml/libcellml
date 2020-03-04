@@ -107,6 +107,7 @@ rst_epilog = """
 .. |map_variables| replace:: ``map_variables``
 .. |connection| replace:: ``connection``
 .. |math| replace:: ``math``
+.. |encapsulation| replace:: ``encapsulation``
 """
 # rst_epilog = """
 # .. |component| replace:: ``component``
