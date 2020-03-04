@@ -26,21 +26,17 @@ Section A: Preamble and definitions
 ===================================
 
 .. toctree::
-    :maxdepth: 1
-    :numbered:
-    :glob:
+    :maxdepth: 2
 
-    sectionA*
+    index_sectionA.rst
 
 Section B: Element information items
 ====================================
 
 .. toctree::
     :maxdepth: 2
-    :numbered:
-    :glob:
 
-    sectionB*
+    index_sectionB.rst
 
 Section C: Interpretation of CellML models
 ==========================================
