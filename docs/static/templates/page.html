@@ -13,9 +13,7 @@
         const url_object = new URL(window.location.href);
         // Gets the bookmark to highlight
         const issueCode = "issue_"+url_object.searchParams.get("issue");
-
-        let myPara = document.getElementsByClassName("dothis");
-        alert(myPara.text());
+        $(".issue_"+issueCode).addClass("highlight");
     });
 </script>
 {% endblock %}

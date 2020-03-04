@@ -115,5 +115,10 @@ div.figure a.image-reference {
 }
 
 .issue_myIssueCode {
-    background-color: red;
+    background-color: none;
+}
+
+.highlight {
+    background-color: rgb(242, 249, 227);
+    padding:3px;
 }
