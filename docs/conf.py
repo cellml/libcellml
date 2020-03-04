@@ -91,10 +91,10 @@ extlinks = {
 
 # rst_epilog to define formatted, clickable code substitutions throughout.  It's included
 # at the bottom of every file in the project.
-rst_epilog = """
-.. |component| replace:: ``component``
-.. _component: http://stackoverflow.com
-"""
+# rst_epilog = """
+# .. |component| replace:: ``component``
+# .. _component: :ref:`component`
+# """
 
 # General information about the project.
 project = u'libCellML'

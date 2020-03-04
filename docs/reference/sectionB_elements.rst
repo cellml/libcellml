@@ -229,8 +229,8 @@ Specific information items
    attributes:
 
    #. The :code:`prefix` attribute. If present, the value of the attribute
-      MUST meet the constraints specified in the :ref:`Interpretation of
-      units <specC_units>` section.
+      MUST meet the constraints specified in the
+      :ref:`Interpretation of units <specC_units>` section.
 
    #. The :code:`multiplier` attribute. If present, the value of the
       attribute MUST be a real number string.
@@ -240,7 +240,7 @@ Specific information items
 
 .. marker7
 
-.. _component:
+.. _specB_component:
 
 The component element
 =====================
