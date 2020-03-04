@@ -1309,10 +1309,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->component(i));
     }
 
-    // Process our different equations' AST to determine the type of our
-    // variables.
+    // Some more processing is needed, but it can only be done if we didn't come
+    // across any errors during the processing of our components.
 
     if (mGenerator->errorCount() == 0) {
+        // Process our different equations' AST to determine the type of our
+        // variables.
+
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
         }
@@ -1331,11 +1334,14 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Sort our variables, determine the index of our constant variables and
-    // then loop over our equations, checking which variables, if any, can be
-    // determined using a given equation.
+    // Some post-processing is now needed, but it can only be done if we didn't
+    // come across any errors during the processing of our equations' AST.
 
     if (mGenerator->errorCount() == 0) {
+        // Sort our variables, determine the index of our constant variables and
+        // then loop over our equations, checking which variables, if any, can
+        // be determined using a given equation.
+
         mInternalVariables.sort(compareVariablesByName);
 
         size_t variableIndex = MAX_SIZE_T;
@@ -1361,13 +1367,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 break;
             }
         }
-    } else {
-        mModelType = Generator::ModelType::INVALID;
-    }
 
-    // Make sure that our variables are valid.
+        // Make sure that our variables are valid.
 
-    if (mGenerator->errorCount() == 0) {
         for (const auto &internalVariable : mInternalVariables) {
             std::string errorType;
 
@@ -1407,12 +1409,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 mGenerator->addError(err);
             }
         }
-    }
 
-    // Determine the type of our model, if it hasn't already been categorised as
-    // being invalid.
+        // Determine the type of our model.
 
-    if (mModelType != Generator::ModelType::INVALID) {
         bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
                                                 return (variable->mType == GeneratorInternalVariable::Type::UNKNOWN)
                                                        || (variable->mType == GeneratorInternalVariable::Type::SHOULD_BE_STATE);
@@ -1436,6 +1435,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         } else if (!mInternalVariables.empty()) {
             mModelType = Generator::ModelType::ALGEBRAIC;
         }
+    } else {
+        mModelType = Generator::ModelType::INVALID;
     }
 
     // Sort our variables and equations, should we have a valid model, and make
