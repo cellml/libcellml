@@ -16,7 +16,7 @@
         const issueCode = url_object.searchParams.get("issue");
         alert(issueCode);
 
-        let myPara = $(".issue_"+issueCode);
+        let myPara = $(".issue_"+issueCode).first();
         alert(myPara.text());
     });
 </script>
