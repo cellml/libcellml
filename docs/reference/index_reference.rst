@@ -22,11 +22,11 @@ reference number.  This number will point to the section of the formal
 specification and/or guidelines to which it relates.
 
 
-Section A: Preamble and definitions
+Section A: Definitions and preamble
 ===================================
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     index_sectionA.rst
 
@@ -34,7 +34,7 @@ Section B: Element information items
 ====================================
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     index_sectionB.rst
 
