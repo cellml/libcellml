@@ -427,7 +427,16 @@ using UnitsMap = std::map<std::string, double>;
 
 bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
-    if (units->isBaseUnit()) {
+    if (isStandardUnitName(units->name())) {
+        auto unitsListIter = standardUnitsList.find(units->name());
+        for (const auto &baseUnitsComponent : unitsListIter->second) {
+            auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
+            if (unitsMapIter == unitsMap.end()) {
+                unitsMap[baseUnitsComponent.first] = 0.0;
+            }
+            unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * exp;
+        }
+    } else if (units->isBaseUnit()) {
         auto found = unitsMap.find(units->name());
         if (found == unitsMap.end()) {
             unitsMap.emplace(units->name(), exp);

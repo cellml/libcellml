@@ -2122,9 +2122,9 @@ TEST(Units, isNotBaseUnitImportedTwice)
 
 TEST(Units, scalingFactorAcrossStandardUnits)
 {
-    libcellml::UnitsPtr u1 = libcellml::Units::create("second");
-    libcellml::UnitsPtr u2 = libcellml::Units::create("millisecond");
-    u2->addUnit(libcellml::Units::StandardUnit::SECOND, libcellml::Units::Prefix::MILLI);
+    libcellml::UnitsPtr u1 = libcellml::Units::create("volt");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("millivolt");
+    u2->addUnit(libcellml::Units::StandardUnit::VOLT, libcellml::Units::Prefix::MILLI);
 
     EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
