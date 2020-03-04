@@ -37,6 +37,12 @@ The model element
 Top-level of CellML infosets
 ----------------------------
 
+.. _internalBookmark2:
+
+My Internal Bookmark 2
+======================
+other stuff goes here
+
 
 Here is the external link |externalBookmark|_.
 
@@ -63,11 +69,7 @@ Other stuff goes here.  And a long way away.
 Some heading
 ============
 
-.. _internalBookmark2:
 
-My Internal Bookmark 2
-======================
-other stuff goes here
 
 
 
