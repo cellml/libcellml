@@ -68,14 +68,14 @@ interpreted as described in :xml_infoset:`XML Information Set`.
 
 .. _specA_cellml_infoset:
 
-**CellML infoset** An XML information set containing a hierarchy
+**CellML infoset:** An XML information set containing a hierarchy
 of information items
 conforming to the rules described in this document. In this
 specification such infosets are assumed to be CellML 2.0 infosets.
 
 .. _specA_cellml_model:
 
-**CellML model** A mathematical model represented by a hierarchy of
+**CellML model:** A mathematical model represented by a hierarchy of
 one or more CellML
 infosets, according to the rules described in this document. In this
 specification, the topmost CellML infoset in a hierarchy is referred
@@ -83,52 +83,59 @@ to as the top-level CellML infoset.
 
 .. _specA_namespace:
 
-**Namespace** An XML namespace, as defined in
+**Namespace:** An XML namespace, as defined in
 :xml_namespace_1_1:`Namespaces in XML 1.1`.
 
 .. _specA_cellml_namespace:
 
-**CellML namespace** The CellML 2.0 namespace.
+**CellML namespace:** The CellML 2.0 namespace.
 
 .. _specA_cellml2_namespace:
 
-**CellML 2.0 namespace** The namespace http://www.cellml.org/cellml/2.0#.
+**CellML 2.0 namespace:** The namespace http://www.cellml.org/cellml/2.0#.
 
 .. _specA_mathml_namespace:
 
-**MathML namespace** The namespace http://www.w3.org/1998/Math/MathML.
+**MathML namespace:** The namespace http://www.w3.org/1998/Math/MathML.
 
 .. _specA_cellml_information_item:
 
-**CellML information item** Any information item in the :term:`CellML namespace`.
+**CellML information item:** Any information item in the :term:`CellML namespace`.
 
 .. _specA_basic_latin_alphabetic_character:
 
-**Basic Latin alphabetic character** A Unicode character in the range
+**Basic Latin alphabetic character:** A Unicode character in the range
 :unicode:`0041` to :unicode:`005A` or in the range :unicode:`0061` to :unicode:`007A`.
 
 .. _specA_european_numeral:
 
-**European numeral** A Unicode character in the range :unicode:`0030`
+**European numeral:** A Unicode character in the range :unicode:`0030`
 to :unicode:`0039`.
 
 .. _specA_basic_latin_alphanumeric_character:
 
-**Basic Latin alphanumeric character**
+**Basic Latin alphanumeric character:** A Unicode character which is either a
+:term:`Basic Latin alphabetic character` or a :term:`European numeral`.
 
-A Unicode character which is either a
-:term:`Basic Latin alphabetic character` or a
-:term:`European numeral`.
+.. _specA_basic_latin_underscore:
 
-**Basic Latin underscore** The Unicode character :unicode:`005F`.
+**Basic Latin underscore:** The Unicode character :unicode:`005F`.
 
-**Basic Latin plus** The Unicode character :unicode:`002B`.
+.. _specA_basic_latin_plus:
 
-**Basic Latin minus** The Unicode character :unicode:`002D`.
+**Basic Latin plus:** The Unicode character :unicode:`002B`.
 
-**Basic Latin full stop** The Unicode character :unicode:`002E`.
+.. _specA_basic_latin_minus:
 
-**Whitespace character** Any one of the Unicode characters :unicode:`0020`,
+**Basic Latin minus:** The Unicode character :unicode:`002D`.
+
+.. _specA_basic_latin_full_stop:
+
+**Basic Latin full stop:** The Unicode character :unicode:`002E`.
+
+.. _specA_whitespace_character:
+
+**Whitespace character:** Any one of the Unicode characters :unicode:`0020`,
 :unicode:`0009`, :unicode:`000D`, or :unicode:`000A`.
 
 ..  marker2
