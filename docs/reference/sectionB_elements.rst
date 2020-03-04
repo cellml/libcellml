@@ -41,11 +41,18 @@ My Component 2
 ==============
 
 
-Here is a |specB_component|_.
 
-.. |specB_component| replace:: ``component``
+.. |bookmark3| replace:: ``bookmark3``
 
 
+
+I need a |bookmark3|_ here.
+
+
+.. _bookmark3:
+
+My Bookmark 3
+=============
 
 
 The top-level element information item in a CellML infoset MUST be an
