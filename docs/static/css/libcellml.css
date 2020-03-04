@@ -113,3 +113,7 @@ div.figure a.image-reference {
     font-family: 'Consolas', 'Deja Vu Sans Mono','Bitstream Vera Sans Mono', monospace;
     font-size: 0.85em;
 }
+
+.highlight {
+    background-color: red;
+}

@@ -1,14 +1,19 @@
 {% extends "!page.html" %}
 
 {% block footer %}
- <script type="text/javascript">
-    $(document).ready(function() {
+<script type="text/javascript">
+    $(document).ready(function () {
         $(".toggle > *").hide();
         $(".toggle .header").show();
-        $(".toggle .header").click(function() {
+        $(".toggle .header").click(function () {
             $(this).parent().children().not(".header").toggle(400);
             $(this).parent().children(".header").toggleClass("open");
-        })
+        });
+        // Get the current URL for bookmark highlighting, if needed
+        const url_object = new URL(window.location.href);
+        // Gets the bookmark to highlight
+        const issueCode = url_object.searchParams.get("issue");
+        $(".issue_"+issueCode).addClass("highlight");
     });
 </script>
 {% endblock %}
