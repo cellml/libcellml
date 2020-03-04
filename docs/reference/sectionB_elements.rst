@@ -42,12 +42,6 @@ Stuff goes here ...
 
 I need an |internalBookmark2|_ to be able to be defined throughout the project.
 
-.. _internalBookmark2:
-
-My Internal Bookmark 2
-======================
-
-
 The top-level element information item in a CellML infoset MUST be an
 element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
 local name equal to :code:`model`. In this specification, the top-level
@@ -633,3 +627,9 @@ Specific information items
    value and :code:`variable_2` attribute value pair.
 
 .. marker17
+
+.. _internalBookmark2:
+
+My Internal Bookmark 2
+======================
+other stuff goes here
