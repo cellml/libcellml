@@ -23,7 +23,7 @@ Top-level of CellML infosets
 
 
 
-I want to go to the :any:`component <specB_component>` item.
+I want to go to the :any:`__component__ <specB_component>` item.
 
 
 
