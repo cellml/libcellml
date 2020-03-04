@@ -68,6 +68,7 @@ interpreted as described in :xml_infoset:`XML Information Set`.
 
 
 .. _specA_cellml_infoset:
+
 **CellML infoset**
 
    An XML information set containing a hierarchy of information items
@@ -75,6 +76,7 @@ interpreted as described in :xml_infoset:`XML Information Set`.
    specification such infosets are assumed to be CellML 2.0 infosets.
 
 .. _specA_cellml_model:
+
 **CellML model**
 
    A mathematical model represented by a hierarchy of one or more CellML
@@ -83,32 +85,38 @@ interpreted as described in :xml_infoset:`XML Information Set`.
    to as the top-level CellML infoset.
 
 .. _specA_namespace:
+
 **Namespace**
 
    An XML namespace, as defined in
    :xml_namespace_1_1:`Namespaces in XML 1.1`.
 
 .. _specA_cellml_namespace:
+
 **CellML namespace**
 
    The CellML 2.0 namespace.
 
 .. _specA_cellml2_namespace:
+
 **CellML 2.0 namespace**
 
    The namespace http://www.cellml.org/cellml/2.0#.
 
 .. _specA_mathml_namespace:
+
 **MathML namespace**
 
    The namespace http://www.w3.org/1998/Math/MathML.
 
 .. _specA_cellml_information_item:
+
 **CellML information item**
 
    Any information item in the :term:`CellML namespace`.
 
 .. _specA_basic_latin_alphabetic_character:
+
 **Basic Latin alphabetic character**
 
    A Unicode character in the range
@@ -116,11 +124,13 @@ interpreted as described in :xml_infoset:`XML Information Set`.
    :unicode:`0061` to :unicode:`007A`.
 
 .. _specA_european_numeral:
+
 **European numeral**
 
    A Unicode character in the range :unicode:`0030` to :unicode:`0039`.
 
 .. _specA_basic_latin_alphanumeric_character:
+
 **Basic Latin alphanumeric character**
 
    A Unicode character which is either a
@@ -128,6 +138,7 @@ interpreted as described in :xml_infoset:`XML Information Set`.
    :term:`European numeral`.
 
 .. _specA_basic_latin_underscore:
+
 **Basic Latin underscore**
 
    The Unicode character :unicode:`005F`.
