@@ -1319,7 +1319,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
         }
+    }
 
+    // Some post-processing is now needed, but it can only be done if we didn't
+    // come across any errors during the processing of our equations' AST.
+
+    if (mGenerator->errorCount() == 0) {
+        // Print our equations' AST.
         // Note: delete the code below once we are done testing things.
 
         if (mEquations.size() == 18) {
@@ -1332,12 +1338,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 }
             }
         }
-    }
 
-    // Some post-processing is now needed, but it can only be done if we didn't
-    // come across any errors during the processing of our equations' AST.
-
-    if (mGenerator->errorCount() == 0) {
         // Sort our variables, determine the index of our constant variables and
         // then loop over our equations, checking which variables, if any, can
         // be determined using a given equation.
