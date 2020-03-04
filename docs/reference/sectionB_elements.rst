@@ -114,6 +114,7 @@ Specific information items
 1. Every :code:`import units` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute of any other :code:`units` or
    :code:`import units` element in the CellML infoset.
@@ -124,10 +125,13 @@ Specific information items
    :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
    MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of the :code:`units_ref`
    attribute MUST match the value of the :code:`name` attribute on a
    :code:`units` or :code:`import units` element in the imported CellML
-   infoset. The value of the :code:`units_ref` attribute MUST NOT match the
+   infoset.
+
+   The value of the :code:`units_ref` attribute MUST NOT match the
    value of the :code:`units_ref` attribute on any sibling
    :code:`import units` element.
 
@@ -148,7 +152,9 @@ Specific information items
 
 1. Every :code:`import component` element MUST contain an unprefixed
    :code:`name` attribute. The value of the :code:`name` attribute MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`. The value of the
+   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+   The value of the
    :code:`name` attribute MUST NOT
    be identical to the :code:`name` attribute of any other :code:`component` or
    :code:`import component` element in the CellML infoset.
@@ -156,6 +162,7 @@ Specific information items
 2. Every :code:`import component` element MUST contain an unprefixed
    :code:`component_ref` attribute. The value of the :code:`component_ref`
    attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of the
    :code:`component_ref` attribute MUST match the value of the :code:`name`
    attribute on a :code:`component` or :code:`import component` element in the
@@ -217,6 +224,7 @@ Specific information items
       :code:`units` element inclusion digraph SHALL be defined as a
       conceptual digraph which SHALL contain one node for every
       :code:`units` element in the CellML model. **TODO infoset?**
+
       The :code:`units` element
       inclusion digraph SHALL contain an arc from :code:`units` element *A*
       to :code:`units` element *B* if and only if :code:`units` element *A*
@@ -262,6 +270,7 @@ Specific information items
 1. Every :code:`component` element MUST contain an unprefixed :code:`name`
    attribute. The value of the :code:`name` attribute MUST be a
    :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of the :code:`name` attribute MUST NOT be identical
    to the :code:`name` attribute on any other :code:`component` element or
    :code:`import component` element in the CellML infoset.
@@ -296,8 +305,9 @@ Specific information items
    attributes:
 
    #. The :code:`name` attribute. The value of the :code:`name` attribute MUST
-      be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The value
-      of the :code:`name` attribute
+      be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+      The value of the :code:`name` attribute
       MUST NOT be identical to the :code:`name` attribute on any sibling
       :code:`variable` element.
 
@@ -346,7 +356,9 @@ Specific information items
       :code:`reset` element.
 
    #. The :code:`order` attribute. The value of the :code:`order` attribute
-      MUST be an integer string. The value of the :code:`order` attribute MUST
+      MUST be an integer string.
+
+      The value of the :code:`order` attribute MUST
       be unique for all :code:`reset` elements with :code:`variable` attributes
       that reference variables in the same connected variable set (see
       :ref:`Interpretation of map_variables<specC_map_variables>`).
@@ -367,7 +379,8 @@ The test_value element
 
 A :code:`test_value` element information item (referred to in this
 specification as a :code:`test_value` element) is an element in the
-:ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`test_value`,
+:ref:`CellML namespace<specA_cellml_namespace>` with a local name
+equal to :code:`test_value`,
 and which appears as a child of a :code:`reset` element.
 
 Specific information items
@@ -437,41 +450,41 @@ Table: Supported MathML Elements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +----------------------------------+----------------------------------+
-| **Element Category**             :code:` **Element List**                 :code:`
+| **Element Category**             | **Element List**                 |
 +----------------------------------+----------------------------------+
-| Simple Operands                  :code:` <ci>, <cn>, <sep>                :code:`
+| Simple Operands                  | <ci>, <cn>, <sep>                |
 +----------------------------------+----------------------------------+
-| Basic Structural                 :code:` <apply>, <piecewise>, <piece>,   :code:`
-|                                  :code:` <otherwise>                      :code:`
+| Basic Structural                 | <apply>, <piecewise>, <piece>,   |
+|                                  | <otherwise>                      |
 +----------------------------------+----------------------------------+
-| Relational and Logical Operators :code:` <eq>, <neq>, <gt>, <lt>, <geq>,  :code:`
-|                                  :code:` <leq>, <and>, <or>, <xor>, <not> :code:`
+| Relational and Logical Operators | <eq>, <neq>, <gt>, <lt>, <geq>,  |
+|                                  | <leq>, <and>, <or>, <xor>, <not> |
 +----------------------------------+----------------------------------+
-| Arithmetic Operators             :code:` <plus>, <minus>, <times>,        :code:`
-|                                  :code:` <divide>, <power>, <root>,       :code:`
-|                                  :code:` <abs>, <exp>, <ln>, <log>,       :code:`
-|                                  :code:` <floor>, <ceiling>, <min>,       :code:`
-|                                  :code:` <max>, <rem>,                    :code:`
+| Arithmetic Operators             | <plus>, <minus>, <times>,        |
+|                                  | <divide>, <power>, <root>,       |
+|                                  | <abs>, <exp>, <ln>, <log>,       |
+|                                  | <floor>, <ceiling>, <min>,       |
+|                                  | <max>, <rem>,                    |
 +----------------------------------+----------------------------------+
-| Calculus Elements                :code:` <diff>                           :code:`
+| Calculus Elements                | <diff>                           |
 +----------------------------------+----------------------------------+
-| Qualifier Elements               :code:` <bvar>, <logbase>, <degree>      :code:`
-|                                  :code:` (child of <root> or <diff>)      :code:`
+| Qualifier Elements               | <bvar>, <logbase>, <degree>      |
+|                                  | (child of <root> or <diff>)      |
 +----------------------------------+----------------------------------+
-| Trigonometric Operators          :code:` <sin>, <cos>, <tan>, <sec>,      :code:`
-|                                  :code:` <csc>, <cot>,                    :code:`
-|                                  :code:`                                  :code:`
-|                                  :code:` <sinh>, <cosh>, <tanh>, <sech>,  :code:`
-|                                  :code:` <csch>, <coth>, <arcsin>,        :code:`
-|                                  :code:` <arccos>, <arctan>,              :code:`
-|                                  :code:`                                  :code:`
-|                                  :code:` <arcsec>, <arccsc>, <arccot>,    :code:`
-|                                  :code:` <arcsinh>, <arccosh>, <arctanh>, :code:`
-|                                  :code:` <arcsech>, <arccsch>, <arccoth>  :code:`
+| Trigonometric Operators          | <sin>, <cos>, <tan>, <sec>,      |
+|                                  | <csc>, <cot>,                    |
+|                                  |                                  |
+|                                  | <sinh>, <cosh>, <tanh>, <sech>,  |
+|                                  | <csch>, <coth>, <arcsin>,        |
+|                                  | <arccos>, <arctan>,              |
+|                                  |                                  |
+|                                  | <arcsec>, <arccsc>, <arccot>,    |
+|                                  | <arcsinh>, <arccosh>, <arctanh>, |
+|                                  | <arcsech>, <arccsch>, <arccoth>  |
 +----------------------------------+----------------------------------+
-| Mathematical and Logical         :code:` <pi>, <exponentiale>,            :code:`
-| Constants                        :code:` <notanumber>, <infinity>,        :code:`
-|                                  :code:` <true>, <false>                  :code:`
+| Mathematical and Logical         | <pi>, <exponentiale>,            |
+| Constants                        | <notanumber>, <infinity>,        |
+|                                  | <true>, <false>                  |
 +----------------------------------+----------------------------------+
 
 .. marker13
@@ -509,7 +522,9 @@ Specific information items
 --------------------------
 
 #. Every :code:`component_ref` element MUST contain an unprefixed
-   :code:`component` attribute. The value of this attribute
+   :code:`component` attribute.
+
+   The value of this attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
    and MUST match the :code:`name`
    attribute on a :code:`component` element or an :code:`import component`
@@ -541,6 +556,7 @@ Specific information items
    :code:`component_1` attribute. The value of the :code:`component_1`
    attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`component` or
    :code:`import component` element in the CellML infoset
@@ -550,10 +566,12 @@ Specific information items
    :code:`component_2` attribute. The value of the :code:`component_2`
    attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`component` or
    :code:`import component` element in the CellML infoset
    (see :ref:`Component reference <specC_component_reference>`).
+
    It MUST NOT be equal to the value of the :code:`component_1` attribute.
 
 #. A CellML infoset MUST NOT contain more than one :code:`connection`
@@ -580,8 +598,11 @@ Specific information items
 --------------------------
 
 #. Each :code:`map_variables` element MUST contain an unprefixed
-   :code:`variable_1` attribute. The value of the :code:`variable_1` attribute
+   :code:`variable_1` attribute.
+
+   The value of the :code:`variable_1` attribute
    MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
    The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`variable` element child
    of the :code:`component` element or :code:`import component` element
@@ -589,9 +610,12 @@ Specific information items
    element which is the parent of this element.
 
 #. Each :code:`map_variables` element MUST contain an unprefixed
-   :code:`variable_2` attribute. The value of the :code:`variable_2` attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`. The
-   value of this attribute MUST
+   :code:`variable_2` attribute.
+
+   The value of the :code:`variable_2` attribute
+   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+   The value of this attribute MUST
    be equal to the :code:`name` attribute on a :code:`variable` element child
    of the :code:`component` element or :code:`import component` element
    referenced by the :code:`component_2` attribute on the :code:`connection`
