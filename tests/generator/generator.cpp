@@ -1143,6 +1143,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithScalingFactors)
         libcellml::GeneratorVariable::Type::ALGEBRAIC,
         libcellml::GeneratorVariable::Type::ALGEBRAIC,
         libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
         libcellml::GeneratorVariable::Type::ALGEBRAIC};
 
     for (size_t i = 0; i < generator->variableCount(); ++i) {

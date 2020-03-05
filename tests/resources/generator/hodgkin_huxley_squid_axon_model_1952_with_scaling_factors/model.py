@@ -101,7 +101,7 @@ def compute_rates(voi, states, rates, variables):
     variables[7] = variables[0]*(states[3]-variables[6])
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14])
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8])
-    rates[3] = -0.001*(-variables[5]+1000000.0*variables[9]+variables[15]+1000.0*variables[7])/variables[1]
+    rates[3] = 0.001*-(-variables[5]+1000000.0*variables[9]+variables[15]+1000.0*variables[7])/variables[1]
 
 
 def compute_variables(voi, states, rates, variables):
