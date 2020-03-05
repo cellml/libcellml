@@ -494,6 +494,7 @@ struct Generator::GeneratorImpl
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
+    void printEquationsAst() const;
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
@@ -1269,6 +1270,27 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
+void Generator::GeneratorImpl::printEquationsAst() const
+{
+    // Print our equations' AST.
+    // Note: delete this method should be deleted once we are done with issue
+    //       #409.
+
+    if (mEquations.size() == 18) {
+        size_t eqnNb = 0;
+        for (const auto &equation : mEquations) {
+            ++eqnNb;
+            if (eqnNb == 3) {
+                std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
+                printAst(equation->mAst);
+                if (eqnNb == mEquations.size()) {
+                    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
+                }
+            }
+        }
+    }
+}
+
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 {
     // Reset a few things in case we were to process the model more than once.
@@ -1326,17 +1348,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     if (mGenerator->errorCount() == 0) {
         // Print our equations' AST.
-        // Note: delete the code below once we are done testing things.
 
-        if (mEquations.size() == 18) {
-            size_t eqnNb = 0;
-            for (const auto &equation : mEquations) {
-                std::cout << "────────────────────────────────────┤Equation #" << ++eqnNb << "├───" << std::endl;
-                printAst(equation->mAst);
-                if (eqnNb == mEquations.size()) {
-                    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
-                }
-            }
+        printEquationsAst();
         }
 
         // Sort our variables, determine the index of our constant variables and
