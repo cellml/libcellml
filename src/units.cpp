@@ -35,27 +35,27 @@ namespace libcellml {
  *
  * An internal map used to convert a Prefix into its string form.
  */
-static const std::map<Prefix, const std::string> prefixToString = {
-    {Prefix::ATTO, "atto"},
-    {Prefix::CENTI, "centi"},
-    {Prefix::DECA, "deca"},
-    {Prefix::DECI, "deci"},
-    {Prefix::EXA, "exa"},
-    {Prefix::FEMTO, "femto"},
-    {Prefix::GIGA, "giga"},
-    {Prefix::HECTO, "hecto"},
-    {Prefix::KILO, "kilo"},
-    {Prefix::MEGA, "mega"},
-    {Prefix::MICRO, "micro"},
-    {Prefix::MILLI, "milli"},
-    {Prefix::NANO, "nano"},
-    {Prefix::PETA, "peta"},
-    {Prefix::PICO, "pico"},
-    {Prefix::TERA, "tera"},
-    {Prefix::YOCTO, "yocto"},
-    {Prefix::YOTTA, "yotta"},
-    {Prefix::ZEPTO, "zepto"},
-    {Prefix::ZETTA, "zetta"}};
+static const std::map<Units::Prefix, const std::string> prefixToString = {
+    {Units::Prefix::ATTO, "atto"},
+    {Units::Prefix::CENTI, "centi"},
+    {Units::Prefix::DECA, "deca"},
+    {Units::Prefix::DECI, "deci"},
+    {Units::Prefix::EXA, "exa"},
+    {Units::Prefix::FEMTO, "femto"},
+    {Units::Prefix::GIGA, "giga"},
+    {Units::Prefix::HECTO, "hecto"},
+    {Units::Prefix::KILO, "kilo"},
+    {Units::Prefix::MEGA, "mega"},
+    {Units::Prefix::MICRO, "micro"},
+    {Units::Prefix::MILLI, "milli"},
+    {Units::Prefix::NANO, "nano"},
+    {Units::Prefix::PETA, "peta"},
+    {Units::Prefix::PICO, "pico"},
+    {Units::Prefix::TERA, "tera"},
+    {Units::Prefix::YOCTO, "yocto"},
+    {Units::Prefix::YOTTA, "yotta"},
+    {Units::Prefix::ZEPTO, "zepto"},
+    {Units::Prefix::ZETTA, "zetta"}};
 
 /**
  * @brief Map StandardUnit to their string forms.
@@ -405,7 +405,7 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        if ((units1->unitCount() != 0) && (units2->unitCount() != 0)) {
+        if (((units1->unitCount() != 0) || isStandardUnit(units1)) && ((units2->unitCount() != 0) || isStandardUnit(units2))) {
             double multiplier = 0.0;
 
             updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
@@ -454,7 +454,11 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 }
             } else {
                 auto model = owningModel(units);
-                if (model != nullptr) {
+                if (model == nullptr) {
+                    // We cannot resolve the reference for this units so we add
+                    // what we do know.
+                    unitsMap[ref] = uExp * exp;
+                } else {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
                         unitsMap.clear();

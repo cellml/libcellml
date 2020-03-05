@@ -23,7 +23,6 @@ set(SWIG_INTERFACE_SRCS
     ../interface/componententity.i
     ../interface/error.i
     ../interface/entity.i
-    ../interface/enumerations.i
     ../interface/generator.i
     ../interface/generatorprofile.i
     ../interface/importsource.i
