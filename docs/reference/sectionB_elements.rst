@@ -64,8 +64,7 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-   1.
-
+1.
    .. container:: issue111
 
       Every :code:`import` element MUST contain an attribute
