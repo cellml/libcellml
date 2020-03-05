@@ -2444,7 +2444,7 @@ TEST(Validator, variableEquivalenceUnreachable)
 TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
+        "Variable 'v1' in component 'c1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
         "The equivalence between 'v2' in component 'c2'  and 'v4' in component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor in a parent/child relationship.",
     };
 
@@ -2513,8 +2513,8 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 TEST(Validator, variableInterfaceShouldBePublic)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has no interface type set. The interface type required is 'public'.",
-        "Variable 'v2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
+        "Variable 'v1' in component 'c1' has no interface type set. The interface type required is 'public'.",
+        "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2553,7 +2553,7 @@ TEST(Validator, variableInterfaceShouldBePublic)
 TEST(Validator, variableInterfaceShouldBePrivate)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
+        "Variable 'v1' in component 'c1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -2629,7 +2629,7 @@ TEST(Validator, variableInterfaceCouldBePrivateButSetToPublicAndPrivate)
 TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'v2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public_and_private'.",
+        "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public_and_private'.",
     };
 
     libcellml::ModelPtr model = libcellml::Model::create();
