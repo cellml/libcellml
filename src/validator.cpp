@@ -1075,6 +1075,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setKind(Error::Kind::UNITS);
+                err->setRule(SpecificationRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addError(err);
             }
         }
