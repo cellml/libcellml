@@ -2005,6 +2005,100 @@ TEST(Units, isBaseUnitsNoImport)
     EXPECT_TRUE(u->isBaseUnit());
 }
 
+TEST(Units, isBaseUnitSecond)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("second");
+
+    EXPECT_TRUE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitSecondRedefined)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("second");
+    u->addUnit("volt");
+
+    EXPECT_FALSE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitVolt)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("volt");
+
+    EXPECT_FALSE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitAllStandardUnits)
+{
+    const std::vector<libcellml::Units::StandardUnit> standardUnits = {
+        libcellml::Units::StandardUnit::AMPERE,
+        libcellml::Units::StandardUnit::BECQUEREL,
+        libcellml::Units::StandardUnit::CANDELA,
+        libcellml::Units::StandardUnit::COULOMB,
+        libcellml::Units::StandardUnit::DIMENSIONLESS,
+        libcellml::Units::StandardUnit::FARAD,
+        libcellml::Units::StandardUnit::GRAM,
+        libcellml::Units::StandardUnit::GRAY,
+        libcellml::Units::StandardUnit::HENRY,
+        libcellml::Units::StandardUnit::HERTZ,
+        libcellml::Units::StandardUnit::JOULE,
+        libcellml::Units::StandardUnit::KATAL,
+        libcellml::Units::StandardUnit::KELVIN,
+        libcellml::Units::StandardUnit::KILOGRAM,
+        libcellml::Units::StandardUnit::LITRE,
+        libcellml::Units::StandardUnit::LUMEN,
+        libcellml::Units::StandardUnit::LUX,
+        libcellml::Units::StandardUnit::METRE,
+        libcellml::Units::StandardUnit::MOLE,
+        libcellml::Units::StandardUnit::NEWTON,
+        libcellml::Units::StandardUnit::OHM,
+        libcellml::Units::StandardUnit::PASCAL,
+        libcellml::Units::StandardUnit::RADIAN,
+        libcellml::Units::StandardUnit::SECOND,
+        libcellml::Units::StandardUnit::SIEMENS,
+        libcellml::Units::StandardUnit::SIEVERT,
+        libcellml::Units::StandardUnit::STERADIAN,
+        libcellml::Units::StandardUnit::TESLA,
+        libcellml::Units::StandardUnit::VOLT,
+        libcellml::Units::StandardUnit::WATT,
+        libcellml::Units::StandardUnit::WEBER,
+    };
+
+    const std::vector<size_t> baseUnitIndexes = {0, 2, 12, 13, 17, 18, 23};
+
+    EXPECT_EQ(size_t(31), standardUnits.size());
+    EXPECT_EQ(size_t(7), baseUnitIndexes.size());
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    std::string ref;
+    std::string pre;
+    std::string id;
+    double expMult;
+    double uExp;
+
+    size_t index = 0;
+    for (auto standardUnit : standardUnits) {
+        u->addUnit(standardUnit);
+        u->unitAttributes(0, ref, pre, uExp, expMult, id);
+
+        libcellml::UnitsPtr testUnit = libcellml::Units::create(ref);
+        auto found = std::find(baseUnitIndexes.begin(), baseUnitIndexes.end(), index);
+        if (found != baseUnitIndexes.end()) {
+            EXPECT_TRUE(testUnit->isBaseUnit());
+        } else {
+            EXPECT_FALSE(testUnit->isBaseUnit());
+        }
+
+        u->removeUnit(standardUnit);
+        index++;
+    }
+}
+
 TEST(Units, isBaseUnitsImportModelUnresolved)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
