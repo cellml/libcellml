@@ -465,13 +465,6 @@ struct Generator::GeneratorImpl
     bool mNeedAcsch = false;
     bool mNeedAcoth = false;
 
-    bool hasValidModel() const;
-
-    size_t mathmlChildCount(const XmlNodePtr &node) const;
-    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
-
-    GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
-
     static bool compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                        const GeneratorInternalVariablePtr &variable2);
     static bool compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
@@ -479,6 +472,13 @@ struct Generator::GeneratorImpl
 
     static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
                                            const GeneratorEquationPtr &equation2);
+
+    bool hasValidModel() const;
+
+    size_t mathmlChildCount(const XmlNodePtr &node) const;
+    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
+
+    GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
 
     bool sameOrEquivalentVariable(const VariablePtr &variable1,
                                   const VariablePtr &variable2);
@@ -586,6 +586,42 @@ struct Generator::GeneratorImpl
     void addImplementationComputeVariablesMethodCode(std::string &code,
                                                      std::vector<GeneratorEquationPtr> &remainingEquations);
 };
+
+bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
+                                                      const GeneratorInternalVariablePtr &variable2)
+{
+    // TODO: we can't currently instatiate imports, which means that we can't
+    //       have variables in different models. This also means that we can't
+    //       have code to check for the name of a model since this would fail
+    //       coverage test. So, once we can instantiate imports, we will need to
+    //       account for the name of a model.
+    VariablePtr realVariable1 = variable1->mVariable;
+    VariablePtr realVariable2 = variable2->mVariable;
+    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(realVariable1->parent());
+    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(realVariable2->parent());
+
+    if (realComponent1->name() == realComponent2->name()) {
+        return realVariable1->name() < realVariable2->name();
+    }
+
+    return realComponent1->name() < realComponent2->name();
+}
+
+bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
+                                                              const GeneratorInternalVariablePtr &variable2)
+{
+    if (variable1->mType == variable2->mType) {
+        return variable1->mIndex < variable2->mIndex;
+    }
+
+    return variable1->mType < variable2->mType;
+}
+
+bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
+                                                          const GeneratorEquationPtr &equation2)
+{
+    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
+}
 
 bool Generator::GeneratorImpl::hasValidModel() const
 {
@@ -1231,42 +1267,6 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     if (ast->mRight != nullptr) {
         processEquationAst(ast->mRight);
     }
-}
-
-bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
-                                                      const GeneratorInternalVariablePtr &variable2)
-{
-    // TODO: we can't currently instatiate imports, which means that we can't
-    //       have variables in different models. This also means that we can't
-    //       have code to check for the name of a model since this would fail
-    //       coverage test. So, once we can instantiate imports, we will need to
-    //       account for the name of a model.
-    VariablePtr realVariable1 = variable1->mVariable;
-    VariablePtr realVariable2 = variable2->mVariable;
-    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(realVariable1->parent());
-    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(realVariable2->parent());
-
-    if (realComponent1->name() == realComponent2->name()) {
-        return realVariable1->name() < realVariable2->name();
-    }
-
-    return realComponent1->name() < realComponent2->name();
-}
-
-bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
-                                                              const GeneratorInternalVariablePtr &variable2)
-{
-    if (variable1->mType == variable2->mType) {
-        return variable1->mIndex < variable2->mIndex;
-    }
-
-    return variable1->mType < variable2->mType;
-}
-
-bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
-                                                          const GeneratorEquationPtr &equation2)
-{
-    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
