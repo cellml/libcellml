@@ -1282,17 +1282,19 @@ void Generator::GeneratorImpl::printEquationsAst() const
     // Note: delete this method should be deleted once we are done with issue
     //       #409.
 
-    if (mEquations.size() == 18) {
-        size_t eqnNb = 0;
-        for (const auto &equation : mEquations) {
-            ++eqnNb;
-            if (eqnNb == 3) {
-                std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
-                printAst(equation->mAst);
-            }
+    size_t eqnNb = 0;
+
+    for (const auto &equation : mEquations) {
+        ++eqnNb;
+
+        if (eqnNb == 3) {
+            std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
+
+            printAst(equation->mAst);
         }
-        std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
     }
+
+    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
