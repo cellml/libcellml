@@ -213,7 +213,6 @@ Semantically equivalent CellML infosets
       whitespace characters at the beginning or end of any character
       information item.
 
-
 Character information items
 ---------------------------
 
@@ -257,22 +256,32 @@ specification:
 
 1. A CellML identifier:
 
-   #. SHALL be a sequence of Unicode characters.
+   .. container:: issue-data-repr-identifier-unicode
 
-   #. SHALL NOT contain any characters except
-      :term:`Basic Latin alphanumeric characters`\s
-      and :term:`Basic Latin underscores<Basic Latin underscore>`.
+      1. SHALL be a sequence of Unicode characters.
 
-   #. SHALL contain at least one
-      :term:`alphabetic<Basic Latin alphabetic character>` character.
+   .. container:: issue-data-repr-identifier-latin-alphanum
 
-   #. SHALL NOT begin with a
-      :term:`numeral<European numeral>` or an
-      :term:`underscore<Basic Latin underscore>`.
+      2. SHALL NOT contain any characters except
+         :term:`Basic Latin alphanumeric characters`\s
+         and :term:`Basic Latin underscores<Basic Latin underscore>`.
 
-   #. SHALL, when comparing two identifiers, be considered identical to
-      another identifier if and only if both identifiers have identical
-      sequences of characters.
+   .. container:: issue-data-repr-identifier-at-least-one-alphanum
+
+      3. SHALL contain at least one
+         :term:`alphabetic<Basic Latin alphabetic character>` character.
+
+   .. container:: issue-data-repr-identifier-begin-euro-num
+
+      4. SHALL NOT begin with a
+         :term:`numeral<European numeral>` or an
+         :term:`underscore<Basic Latin underscore>`.
+
+   .. container:: issue-data-repr-identifier-identical
+
+      5. SHALL, when comparing two identifiers, be considered identical to
+         another identifier if and only if both identifiers have identical
+         sequences of characters.
 
 .. marker3_2
 
@@ -280,9 +289,13 @@ specification:
 
 2. A non-negative integer string:
 
-   #. SHALL be a base 10 representation of a non-negative integer.
+   .. container:: issue-data-repr-nneg-int-base10
 
-   #. SHALL consist entirely of European numerals.
+      1. SHALL be a base 10 representation of a non-negative integer.
+
+   .. container:: issue-data-repr-nneg-in-euro-num
+
+      2. SHALL consist entirely of European numerals.
 
 .. marker3_3
 
