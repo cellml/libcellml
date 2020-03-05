@@ -16,39 +16,47 @@ The model element
 Top-level of CellML infosets
 ----------------------------
 
-The top-level element information item in a CellML infoset MUST be an
-element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
-local name equal to :code:`model`. In this specification, the top-level
-element is referred to as the :code:`model` element.
+.. container:: issue_MODEL_ELEMENT
+
+   The top-level element information item in a CellML infoset MUST be an
+   element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
+   local name equal to :code:`model`. In this specification, the top-level
+   element is referred to as the :code:`model` element.
 
 Specific information items
 --------------------------
 
-1. Every :code:`model` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue_MODEL_NAME
+
+   1. Every :code:`model` element MUST contain an unprefixed :code:`name`
+      attribute. The value of the :code:`name` attribute MUST be a
+      :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
 .. marker1_1
 
-2. A :code:`model` element MAY contain one or more additional specific
-   element children, each of which MUST be of one of the
-   following types:
+.. container:: issue_MODEL_CHILD
 
-   #. A :code:`component` element; or
+   2. A :code:`model` element MAY contain one or more additional specific
+      element children, each of which MUST be of one of the
+      following types:
 
-   #. A :code:`connection` element; or
+      #. A :code:`component` element; or
 
-   #. An :code:`encapsulation` element; or
+      #. A :code:`connection` element; or
 
-   #. An :code:`import` element; or
+      #. An :code:`encapsulation` element; or
 
-   #. A :code:`units` element;
+      #. An :code:`import` element; or
+
+      #. A :code:`units` element;
 
 
 .. marker1_2
 
-3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
-   elements.
+.. container:: issue_MODEL_MORE_THAN_ONE_ENCAPSULATION
+
+   3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
+      elements.
 
 .. marker2
 
