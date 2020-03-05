@@ -1283,11 +1283,9 @@ void Generator::GeneratorImpl::printEquationsAst() const
             if (eqnNb == 3) {
                 std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
                 printAst(equation->mAst);
-                if (eqnNb == mEquations.size()) {
-                    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
-                }
             }
         }
+        std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
     }
 }
 
