@@ -28,6 +28,11 @@ div[class^="issue"], div[class*=" issue"] {
     /* margin-bottom: 24px; */
 }
 
+div[class^="issue"], div[class*=" issue"] > ol {
+    margin-bottom: 0;
+}
+
+
 .highlight {
     background-color: rgb(242, 249, 227);
 }
