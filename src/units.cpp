@@ -442,7 +442,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
     if (units->isBaseUnit()) {
         auto unitsName = units->name();
         if (isStandardUnitName(unitsName)) {
-                updateUnitsMapWithStandardUnit(unitsName, unitsMap, exp);
+            updateUnitsMapWithStandardUnit(unitsName, unitsMap, exp);
         } else {
             auto found = unitsMap.find(unitsName);
             if (found == unitsMap.end()) {
