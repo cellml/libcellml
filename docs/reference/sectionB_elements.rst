@@ -58,6 +58,7 @@ Specific information items
    3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
       elements.
 
+.. marker_model_end
 .. marker_import_start
 
 .. _import:
