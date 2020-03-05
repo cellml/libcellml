@@ -494,8 +494,13 @@ struct Generator::GeneratorImpl
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
-    void scaleEquationAst(const GeneratorEquationAstPtr &ast);
+
+    double scalingFactor(const VariablePtr &variable);
+
+    void scaleEquationAst(const GeneratorEquationAstPtr &ast, int eqNb);
+
     void printEquationsAst() const;
+
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
@@ -1271,70 +1276,118 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
-void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast)
+double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
+{
+    // Return the scaling factor for the given variable.
+    // Note: we should not be passing `false` to `scalingFactor()`, but for this
+    //       issue #563 must be fixed.
+
+    return Units::scalingFactor(variable->units(),
+                                generatorVariable(variable)->mVariable->units(), false);
+}
+
+void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast,
+                                                int eqNb)
 {
     // Recursively scale the given AST's children.
 
     if (ast->mLeft != nullptr) {
-        scaleEquationAst(ast->mLeft);
+        scaleEquationAst(ast->mLeft, eqNb);
     }
 
     if (ast->mRight != nullptr) {
-        scaleEquationAst(ast->mRight);
+        scaleEquationAst(ast->mRight, eqNb);
     }
 
-    // If the given AST node is a rate variable (i.e. a CI node with a DIFF node
-    // as a parent) then we may need to do some scaling using the scaling factor
-    // for its corresponding variable of integration.
+    // If the given AST node is a variabe (i.e. a CI node) then we may need to
+    // do some scaling.
 
-    GeneratorEquationAstPtr astParent = ast->mParent.lock();
+    if (ast->mType == GeneratorEquationAst::Type::CI) {
+        // The kind of scaling we may end up doing depends on whether we are
+        // dealing with a rate or some other variable, i.e. whether or not it
+        // has a DIFF node as a parent.
 
-    if ((ast->mType == GeneratorEquationAst::Type::CI)
-        && (astParent->mType == GeneratorEquationAst::Type::DIFF)) {
-        // Retrieve the scaling factor for the current CI element and apply it,
-        // if needed.
-        // Note: we should not be passing `false` to `scalingFactor()`, but for
-        //       this issue #563 must be fixed.
+        GeneratorEquationAstPtr astParent = ast->mParent.lock();
+if (eqNb == 7) {
+std::cout << "Variable: " << ast->mVariable->name()
+          << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO")
+          << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO")
+          << " | DIFF: " << ((astParent->mType == GeneratorEquationAst::Type::DIFF)?"YES":"NO")
+          << " | BVAR: " << ((astParent->mType == GeneratorEquationAst::Type::BVAR)?"YES":"NO")
+          << " | Scaling factor: " << Generator::GeneratorImpl::scalingFactor(ast->mVariable)
+          << " | Crt unit: " << ast->mVariable->units()->name()
+          << " | Ref unit: " << generatorVariable(ast->mVariable)->mVariable->units()->name()
+          << " | Crt comp: " << entityName(ast->mVariable->parent())
+          << " | Ref comp: " << generatorVariable(ast->mVariable)->mComponent->name()
+          << std::endl;
+}
 
-        GeneratorEquationAstPtr voi = astParent->mLeft->mLeft;
-        double scalingFactor = Units::scalingFactor(voi->mVariable->units(),
-                                                    Generator::GeneratorImpl::generatorVariable(voi->mVariable)->mVariable->units(), false);
+        if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
+            // We are dealing with a rate, so retrieve the scaling factor for
+            // its corresponding variable of integration and apply it, if
+            // needed.
 
-        if (scalingFactor != 1.0) {
-            // We need to scale, but how it is done depends on whether the rate
-            // variable is to be computed or used.
+            double scalingFactor = Generator::GeneratorImpl::scalingFactor(astParent->mLeft->mLeft->mVariable);
 
-            GeneratorEquationAstPtr astGrandParent = astParent->mParent.lock();
+            if (!areEqual(scalingFactor, 1.0)) {
+                // We need to scale, but how we do it depends on whether the
+                // rate is to be computed or used.
 
-            if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
-                && (astGrandParent->mLeft == astParent)) {
-                // The rate variable is to be computed, so apply the scaling
-                // factor to the RHS of the equation.
+                GeneratorEquationAstPtr astGrandParent = astParent->mParent.lock();
 
-                GeneratorEquationAstPtr rhsAst = astGrandParent->mRight;
-                GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
+                if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
+                    && (astGrandParent->mLeft == astParent)) {
+                    // The rate is to be computed, so apply the scaling factor
+                    // to the RHS of the equation.
+
+                    GeneratorEquationAstPtr rhsAst = astGrandParent->mRight;
+                    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
+
+                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+                    scaledAst->mRight = rhsAst;
+
+                    rhsAst->mParent = astGrandParent;
+
+                    astGrandParent->mRight = scaledAst;
+                } else {
+                    // The rate is to be used, so scale it using the inverse of
+                    // the scaling factor.
+
+                    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
+
+                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(1.0 / scalingFactor), scaledAst);
+                    scaledAst->mRight = astParent;
+
+                    astParent->mParent = scaledAst;
+
+                    if (astGrandParent->mLeft == astParent) {
+                        astGrandParent->mLeft = scaledAst;
+                    } else {
+                        astGrandParent->mRight = scaledAst;
+                    }
+                }
+            }
+        } else if (((astParent->mType != GeneratorEquationAst::Type::ASSIGNMENT)
+                    || (astParent->mLeft != ast))
+                   && (astParent->mType != GeneratorEquationAst::Type::BVAR)) {
+            // We are dealing with a variable which is not to be computed and
+            // which is not our variable of integration, so retrieve its scaling
+            // factor and apply it, if needed.
+
+            double scalingFactor = Generator::GeneratorImpl::scalingFactor(ast->mVariable);
+
+            if (!areEqual(scalingFactor, 1.0)) {
+                GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
 
                 scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
-                scaledAst->mRight = rhsAst;
+                scaledAst->mRight = ast;
 
-                rhsAst->mParent = astGrandParent;
+                ast->mParent = scaledAst;
 
-                astGrandParent->mRight = scaledAst;
-            } else {
-                // The rate variable is to be used to compute something, so
-                // scale it using the inverse of our scaling factor.
-
-                GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
-
-                scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(1.0/scalingFactor), scaledAst);
-                scaledAst->mRight = astParent;
-
-                astParent->mParent = scaledAst;
-
-                if (astGrandParent->mLeft == astParent) {
-                    astGrandParent->mLeft = scaledAst;
+                if (astParent->mLeft == ast) {
+                    astParent->mLeft = scaledAst;
                 } else {
-                    astGrandParent->mRight = scaledAst;
+                    astParent->mRight = scaledAst;
                 }
             }
         }
@@ -1347,13 +1400,13 @@ void Generator::GeneratorImpl::printEquationsAst() const
     // Note: delete this method should be deleted once we are done with issue
     //       #409.
 
-    if (mEquations.size() == 19) {
+    if (mEquations.size() == 18) {
         size_t eqnNb = 0;
 
         for (const auto &equation : mEquations) {
             ++eqnNb;
 
-            if (eqnNb == 2) {
+            if (eqnNb == 7) {
                 std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
 
                 printAst(equation->mAst);
@@ -1420,22 +1473,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // come across any errors during the processing of our equations' AST.
 
     if (mGenerator->errorCount() == 0) {
-        // Print our equations' AST.
-
-        printEquationsAst();
-
-        // Scale our equations' AST, i.e. take into account the fact that we may
-        // have mapped variables that use compatible units rather than
-        // equivalent ones.
-
-        for (const auto &equation : mEquations) {
-            scaleEquationAst(equation->mAst);
-        }
-
-        // Print our updated equations' AST.
-
-        printEquationsAst();
-
         // Sort our variables, determine the index of our constant variables and
         // then loop over our equations, checking which variables, if any, can
         // be determined using a given equation.
@@ -1537,11 +1574,35 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         mModelType = Generator::ModelType::INVALID;
     }
 
-    // Sort our variables and equations, should we have a valid model, and make
-    // our internal variables available through our API.
+    // Some final post-processing is now needed, if we have a valid model.
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
+        // Print our equations' AST.
+
+        printEquationsAst();
+
+        // Scale our equations' AST, i.e. take into account the fact that we may
+        // have mapped variables that use compatible units rather than
+        // equivalent ones.
+
+        int eqNb = 0;
+
+        for (const auto &equation : mEquations) {
+            if (mEquations.size() == 18) {
+                ++eqNb;
+            }
+
+            scaleEquationAst(equation->mAst, eqNb);
+        }
+
+        // Print our updated equations' AST.
+
+        printEquationsAst();
+
+        // Sort our variables and equations and make our internal variables
+        // available through our API.
+
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mEquations.sort(compareEquationsByVariable);
 
