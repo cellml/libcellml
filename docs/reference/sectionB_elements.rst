@@ -310,24 +310,28 @@ which appears as a child of a :code:`model` element.
 Specific information items
 --------------------------
 
-1. Every :code:`component` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue-component-name
 
-   The value of the :code:`name` attribute MUST NOT be identical
-   to the :code:`name` attribute on any other :code:`component` element or
-   :code:`import component` element in the CellML infoset.
+   1. Every :code:`component` element MUST contain an unprefixed :code:`name`
+      attribute. The value of the :code:`name` attribute MUST be a
+      :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+      The value of the :code:`name` attribute MUST NOT be identical
+      to the :code:`name` attribute on any other :code:`component` element or
+      :code:`import component` element in the CellML infoset.
 
 .. marker7_2
 
-2. A :code:`component` element MAY contain one or more specific element
-   children, each of which MUST be of one of the following types:
+.. container:: issue-component-child
 
-   #. A :code:`variable` element; or
+   2. A :code:`component` element MAY contain one or more specific element
+      children, each of which MUST be of one of the following types:
 
-   #. A :code:`reset` element; or
+      #. A :code:`variable` element; or
 
-   #. A :code:`math` element.
+      #. A :code:`reset` element; or
+
+      #. A :code:`math` element.
 
 .. marker8
 
@@ -347,29 +351,37 @@ Specific information items
 1. Every :code:`variable` element MUST have each of the following unprefixed
    attributes:
 
-   #. The :code:`name` attribute. The value of the :code:`name` attribute MUST
-      be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+   .. container:: issue-variable-name
 
-      The value of the :code:`name` attribute
-      MUST NOT be identical to the :code:`name` attribute on any sibling
-      :code:`variable` element.
+      1. The :code:`name` attribute. The value of the :code:`name` attribute MUST
+         be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-   #. The :code:`units` attribute. The value of the :code:`units` attribute
-      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
-      and MUST meet the constraints described in the
-      :ref:`Effect of units on variables<specC_effect_of_units_on_variables>`
-      section.
+         The value of the :code:`name` attribute
+         MUST NOT be identical to the :code:`name` attribute on any sibling
+         :code:`variable` element.
 
-#. Every :code:`variable` element MAY contain one or more of the following
+   .. container:: issue-variable-units
+
+      2. The :code:`units` attribute. The value of the :code:`units` attribute
+         MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
+         and MUST meet the constraints described in the
+         :ref:`Effect of units on variables<specC_effect_of_units_on_variables>`
+         section.
+
+2. Every :code:`variable` element MAY contain one or more of the following
    unprefixed attributes:
 
-   #. The :code:`interface` attribute. If the attribute is present, it MUST
-      have value of :code:`public`, :code:`private`,
-      :code:`public_and_private`, or :code:`none`.
+   .. container:: issue-variable-interface
 
-   #. The :code:`initial_value` attribute. If the attribute is present, it
-      MUST meet the requirements described by the
-      :ref:`Interpretation of initial values<specC_initial_values>` section.
+      1. The :code:`interface` attribute. If the attribute is present, it MUST
+         have value of :code:`public`, :code:`private`,
+         :code:`public_and_private`, or :code:`none`.
+
+   .. container:: issue-variable-initial-value
+
+      2. The :code:`initial_value` attribute. If the attribute is present, it
+         MUST meet the requirements described by the
+         :ref:`Interpretation of initial values<specC_initial_values>` section.
 
 .. marker9
 
@@ -389,29 +401,41 @@ Specific information items
 1. Every :code:`reset` element MUST have each of the following unprefixed
    attributes:
 
-   #. The :code:`variable` attribute. The value of the :code:`variable`
-      attribute MUST be a variable reference to a variable defined
-      within the parent :code:`component` element of the :code:`reset` element.
+   .. container:: issue-reset-variable-reference
 
-   #. The :code:`test_variable` attribute. The value of the
-      :code:`test_variable` attribute MUST be a variable reference to a
-      variable defined within the parent :code:`component` element of the
-      :code:`reset` element.
+      1. The :code:`variable` attribute. The value of the :code:`variable`
+         attribute MUST be a variable reference to a variable defined
+         within the parent :code:`component` element of the :code:`reset` element.
 
-   #. The :code:`order` attribute. The value of the :code:`order` attribute
-      MUST be an integer string.
+   .. container:: issue-reset-test-variable-reference
 
-      The value of the :code:`order` attribute MUST
-      be unique for all :code:`reset` elements with :code:`variable` attributes
-      that reference variables in the same connected variable set (see
-      :ref:`Interpretation of map_variables<specC_map_variables>`).
+      2. The :code:`test_variable` attribute. The value of the
+         :code:`test_variable` attribute MUST be a variable reference to a
+         variable defined within the parent :code:`component` element of the
+         :code:`reset` element.
 
-#. A :code:`reset` element MUST contain exactly two element
-   children, which MUST be one each of the following types:
+   .. container:: issue-reset-order
 
-   #. A :code:`test_value` element; and,
+      3. The :code:`order` attribute. The value of the :code:`order` attribute
+         MUST be an integer string.
 
-   #. A :code:`reset_value` element.
+         The value of the :code:`order` attribute MUST
+         be unique for all :code:`reset` elements with :code:`variable` attributes
+         that reference variables in the same connected variable set (see
+         :ref:`Interpretation of map_variables<specC_map_variables>`).
+
+.. container:: issue-reset-child
+
+   2. A :code:`reset` element MUST contain exactly two element
+      children, which MUST be one each of the following types:
+
+      .. container:: issue-reset-test-value
+
+         1. A :code:`test_value` element; and,
+
+      .. container:: issue-reset-reset-value
+
+         2. A :code:`reset_value` element.
 
 .. marker10
 
