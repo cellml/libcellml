@@ -494,6 +494,7 @@ struct Generator::GeneratorImpl
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
+    void scaleEquationAst(const GeneratorEquationAstPtr &ast);
     void printEquationsAst() const;
     void processModel(const ModelPtr &model);
 
@@ -1270,6 +1271,11 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
+void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast)
+{
+    (void)ast;
+}
+
 void Generator::GeneratorImpl::printEquationsAst() const
 {
     // Print our equations' AST.
@@ -1348,7 +1354,18 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         // Print our equations' AST.
 
         printEquationsAst();
+
+        // Scale our equations' AST, i.e. take into account the fact that we may
+        // have mapped variables that use compatible units rather than
+        // equivalent ones.
+
+        for (const auto &equation : mEquations) {
+            scaleEquationAst(equation->mAst);
         }
+
+        // Print our updated equations' AST.
+
+        printEquationsAst();
 
         // Sort our variables, determine the index of our constant variables and
         // then loop over our equations, checking which variables, if any, can
