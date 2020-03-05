@@ -16,7 +16,7 @@ The model element
 Top-level of CellML infosets
 ----------------------------
 
-.. container:: issue_MODEL_ELEMENT
+.. container:: issue-model-element
 
    The top-level element information item in a CellML infoset MUST be an
    element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
@@ -26,7 +26,7 @@ Top-level of CellML infosets
 Specific information items
 --------------------------
 
-.. container:: issue_MODEL_NAME
+.. container:: issue-model-name
 
    1. Every :code:`model` element MUST contain an unprefixed :code:`name`
       attribute. The value of the :code:`name` attribute MUST be a
@@ -34,7 +34,7 @@ Specific information items
 
 .. marker1_1
 
-.. container:: issue_MODEL_CHILD
+.. container:: issue-model-child
 
    2. A :code:`model` element MAY contain one or more additional specific
       element children, each of which MUST be of one of the
