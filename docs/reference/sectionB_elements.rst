@@ -72,10 +72,9 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-1.
-   .. container:: issue111
+.. container:: issue_IMPORT_HREF
 
-      Every :code:`import` element MUST contain an attribute
+   1. Every :code:`import` element MUST contain an attribute
       in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
       name equal to :code:`href`.
 
@@ -92,20 +91,24 @@ Specific information items
 
 .. marker2_1
 
-2. Every :code:`import` element MAY contain one or more specific element
-   children, each of which MUST be of one of the following types:
+.. container:: issue_IMPORT_CHILD
 
-   #. An :code:`import units` element; or
+   2. Every :code:`import` element MAY contain one or more specific element
+      children, each of which MUST be of one of the following types:
 
-   #. An :code:`import component` element.
+      #. An :code:`import units` element; or
+
+      #. An :code:`import component` element.
 
 .. marker2_2
 
-3. Any CellML infoset imported, directly or indirectly, by the imported
-   CellML infoset MUST NOT be semantically equivalent to the importing
-   CellML infoset (see
-   :ref:`Semantically equivalent CellML infosets <specA_semantic_equivalence>`
-   ).
+.. container:: issue_IMPORT_CIRCULAR
+
+   3. Any CellML infoset imported, directly or indirectly, by the imported
+      CellML infoset MUST NOT be semantically equivalent to the importing
+      CellML infoset (see
+      :ref:`Semantically equivalent CellML infosets <specA_semantic_equivalence>`
+      ).
 
 .. marker3
 
