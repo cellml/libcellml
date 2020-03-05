@@ -20,18 +20,13 @@ div.figure a.image-reference {
     border: none;
 }
 
-
 div[class^="issue"], div[class*=" issue"] {
     background-color: none;
 }
 
-/* .issue111 {
-    background-color: none;
-} */
-
 .highlight {
     background-color: rgb(242, 249, 227);
-    margin: 10px;
+    padding: 10px;
 }
 
 .dothis {

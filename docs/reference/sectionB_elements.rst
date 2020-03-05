@@ -64,22 +64,24 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-.. container:: issue111
+   1.
 
-   Every :code:`import` element MUST contain an attribute
-   in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
-   name equal to :code:`href`.
+   .. container:: issue111
 
-   The value of this attribute SHALL be a valid
-   locator :code:`href`, as defined in
-   :href_locator:`Section 5.4 of the XLink specification`.
+      Every :code:`import` element MUST contain an attribute
+      in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
+      name equal to :code:`href`.
 
-   The :code:`href` attribute SHALL be treated according to the
-   :xlink:`XLink specification`, by applying the rules for simple-type elements.
+      The value of this attribute SHALL be a valid
+      locator :code:`href`, as defined in
+      :href_locator:`Section 5.4 of the XLink specification`.
 
-   When describing an :code:`import` element or one of its children, the phrase
-   “imported CellML infoset” SHALL refer to the CellML infoset obtained
-   by parsing the document referenced by the :code:`href` attribute.
+      The :code:`href` attribute SHALL be treated according to the
+      :xlink:`XLink specification`, by applying the rules for simple-type elements.
+
+      When describing an :code:`import` element or one of its children, the phrase
+      “imported CellML infoset” SHALL refer to the CellML infoset obtained
+      by parsing the document referenced by the :code:`href` attribute.
 
 .. marker2_1
 
