@@ -14,7 +14,7 @@
         // Gets the bookmark to highlight
         const issueCode = ".issue-" + url_object.searchParams.get("issue").toLowerCase().replace("_","-");
         alert(issueCode);
-        $(issueCode).addClass("highlight");
+        $(issueCode).addClass("highlight-issue");
     });
 </script>
 {% endblock %}

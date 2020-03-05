@@ -33,8 +33,10 @@ div[class^="issue"], div[class*=" issue"] > ol {
 }
 
 
-.highlight {
-    background-color: rgb(242, 249, 227);
+.highlight-issue {
+    background-color: rgb(255, 246, 198);
+    font-weight: 600;
+    padding: 10px;
 }
 
 .dothis {
