@@ -1273,7 +1273,72 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
 void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast)
 {
-    (void)ast;
+    // Recursively scale the given AST's children.
+
+    if (ast->mLeft != nullptr) {
+        scaleEquationAst(ast->mLeft);
+    }
+
+    if (ast->mRight != nullptr) {
+        scaleEquationAst(ast->mRight);
+    }
+
+    // If the given AST node is a rate variable (i.e. a CI node with a DIFF node
+    // as a parent) then we may need to do some scaling using the scaling factor
+    // for its corresponding variable of integration.
+
+    GeneratorEquationAstPtr astParent = ast->mParent.lock();
+
+    if ((ast->mType == GeneratorEquationAst::Type::CI)
+        && (astParent->mType == GeneratorEquationAst::Type::DIFF)) {
+        // Retrieve the scaling factor for the current CI element and apply it,
+        // if needed.
+        // Note: we should not be passing `false` to `scalingFactor()`, but for
+        //       this issue #563 must be fixed.
+
+        GeneratorEquationAstPtr voi = astParent->mLeft->mLeft;
+        double scalingFactor = Units::scalingFactor(voi->mVariable->units(),
+                                                    Generator::GeneratorImpl::generatorVariable(voi->mVariable)->mVariable->units(), false);
+
+        if (scalingFactor != 1.0) {
+            // We need to scale, but how it is done depends on whether the rate
+            // variable is to be computed or used.
+
+            GeneratorEquationAstPtr astGrandParent = astParent->mParent.lock();
+
+            if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
+                && (astGrandParent->mLeft == astParent)) {
+                // The rate variable is to be computed, so apply the scaling
+                // factor to the RHS of the equation.
+
+                GeneratorEquationAstPtr rhsAst = astGrandParent->mRight;
+                GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
+
+                scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+                scaledAst->mRight = rhsAst;
+
+                rhsAst->mParent = astGrandParent;
+
+                astGrandParent->mRight = scaledAst;
+            } else {
+                // The rate variable is to be used to compute something, so
+                // scale it using the inverse of our scaling factor.
+
+                GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
+
+                scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(1.0/scalingFactor), scaledAst);
+                scaledAst->mRight = astParent;
+
+                astParent->mParent = scaledAst;
+
+                if (astGrandParent->mLeft == astParent) {
+                    astGrandParent->mLeft = scaledAst;
+                } else {
+                    astGrandParent->mRight = scaledAst;
+                }
+            }
+        }
+    }
 }
 
 void Generator::GeneratorImpl::printEquationsAst() const
@@ -1282,19 +1347,21 @@ void Generator::GeneratorImpl::printEquationsAst() const
     // Note: delete this method should be deleted once we are done with issue
     //       #409.
 
-    size_t eqnNb = 0;
+    if (mEquations.size() == 19) {
+        size_t eqnNb = 0;
 
-    for (const auto &equation : mEquations) {
-        ++eqnNb;
+        for (const auto &equation : mEquations) {
+            ++eqnNb;
 
-        if (eqnNb == 3) {
-            std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
+            if (eqnNb == 2) {
+                std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
 
-            printAst(equation->mAst);
+                printAst(equation->mAst);
+            }
         }
-    }
 
-    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
+        std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
+    }
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
