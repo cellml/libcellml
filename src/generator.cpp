@@ -1392,7 +1392,7 @@ bool isDerivativeOperator(const GeneratorEquationAstPtr &ast)
     return type == libcellml::GeneratorEquationAst::Type::DIFF;
 }
 
-bool isBottomVariableOperator(const GeneratorEquationAstPtr &ast)
+bool isBoundVariableOperator(const GeneratorEquationAstPtr &ast)
 {
     const GeneratorEquationAst::Type type = ast->mType;
     return type == libcellml::GeneratorEquationAst::Type::BVAR;
@@ -1885,7 +1885,7 @@ UnitsMap processEquationUnitsAst(const GeneratorEquationAstPtr &ast, std::vector
                 return addMappings(leftMap, rightMap, 1);
             }
 
-            if (isBottomVariableOperator(ast)) {
+            if (isBoundVariableOperator(ast)) {
                 for (auto &unit : leftMap) {
                     unit.second *= -1.0; // Bottom variable will be "per" the unit on the top
                 }
@@ -1980,7 +1980,7 @@ double processEquationMultiplierAst(const GeneratorEquationAstPtr &ast, std::vec
                 leftMult = leftMult + rightMult;
             }
 
-            if (isBottomVariableOperator(ast)) {
+            if (isBoundVariableOperator(ast)) {
                 leftMult = 0.0 - leftMult;
             }
             return leftMult;
