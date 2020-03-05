@@ -475,9 +475,9 @@ bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
 /**
  * @brief Determine the interface type of the @p variable.
  *
- * Determines the interface type of the given @p variable.  If the variable
- * type is determined to be NONE this indicates an error (if the variable has
- * at least one equivalent variable).
+ * Determine the interface type of the given @p variable. For variables with
+ * at least one equivalent variable, returning an interface type of
+ * Variable::InterfaceType::NONE indicates an error.
  *
  * @param variable The variable to determine the interface type for.
  *
@@ -486,9 +486,9 @@ bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
 Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
 
 /**
- * @brief Traverses the component tree looking for variables with equivalences.
+ * @brief Traverse the component tree looking for variables with equivalences.
  *
- * Searches through the component tree starting at @p component looking for variables
+ * Search through the component tree starting at @p component looking for variables
  * with equivalences.  Variables found in the component tree with equivalences are added
  * to the @p variables list.
  *

@@ -45,7 +45,7 @@ namespace libcellml {
 * Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
 * Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
 *
-* @param model The model containing the variables
+* @param model The model containing the variables.
 * @param v1 The variable which may contain units.
 * @param v2 The equivalent variable which may contain units.
 * @param hints String containing error messages to be passed back to the calling function for logging.
@@ -59,7 +59,7 @@ bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const Vari
 * @param model The model containing the variables.
 * @param unitMap A list of the exponents of base variables.
 * @param uName String name of the current variable being investigated.
-* @param standardList Nested map of the conversion between built-in units and the base units they contain
+* @param standardList Nested map of the conversion between built-in units and the base units they contain.
 * @param uExp Exponent of the current unit in its parent.
 * @param direction Specify whether we want to increment (1) or decrement (-1).
 */
@@ -1002,19 +1002,12 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
  */
 bool reachableEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    bool reachable = false;
     auto parent1 = variable1->parent();
     auto parent2 = variable2->parent();
 
-    if (isEntityChildOf(parent1, parent2)) {
-        reachable = true;
-    } else if (isEntityChildOf(parent2, parent1)) {
-        reachable = true;
-    } else if (areEntitiesSiblings(parent1, parent2)) {
-        reachable = true;
-    }
-
-    return reachable;
+    return isEntityChildOf(parent1, parent2)
+           || isEntityChildOf(parent2, parent1)
+           || areEntitiesSiblings(parent1, parent2);
 }
 
 bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequired, const std::string &interfaceTypeCompatibleWith)

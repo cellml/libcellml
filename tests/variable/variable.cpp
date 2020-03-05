@@ -1614,6 +1614,8 @@ TEST(Variable, distantVariableEquivalence)
 
     EXPECT_FALSE(model->fixVariableInterfaces());
 
+    // Couldn't determine interface types for variables that are
+    // too distant from each other in the component hierarchy.
     EXPECT_EQ("", v1->interfaceType());
     EXPECT_EQ("", v3->interfaceType());
 }
