@@ -9,11 +9,8 @@
             $(this).parent().children().not(".header").toggle(400);
             $(this).parent().children(".header").toggleClass("open");
         });
-        // Get the current URL for bookmark highlighting, if needed
         const url_object = new URL(window.location.href);
-        // Gets the bookmark to highlight
         const issueCode = ".issue-" + url_object.searchParams.get("issue").toLowerCase().replace("_","-");
-        alert(issueCode);
         $(issueCode).addClass("highlight-issue");
     });
 </script>
