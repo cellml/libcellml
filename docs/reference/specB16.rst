@@ -5,4 +5,4 @@
   :end-before: marker_map_variables_end
 
 
-.. include:: inform/informB16.rst
+.. include:: inform/informB16_map_variables1.rst

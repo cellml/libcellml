@@ -4,4 +4,4 @@
   :start-after: marker_component_ref_start
   :end-before: marker_component_ref_end
 
-.. include:: inform/informB14.rst
+.. include:: inform/informB14_component_ref1.rst

@@ -5,6 +5,6 @@
   :start-after: marker_import_component_start
   :end-before: marker_import_component_end
 
-.. include:: inform/informB4.rst
+.. include:: inform/informB4_import_component1.rst
 
 .. include:: libcellml/libcellmlB4.rst

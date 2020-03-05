@@ -4,4 +4,4 @@
   :start-after: marker_encapsulation_start
   :end-before: marker_encapsulation_end
 
-.. include:: inform/informB13.rst
+.. include:: inform/informB13_encapsulation1.rst

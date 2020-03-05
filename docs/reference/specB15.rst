@@ -5,4 +5,4 @@
   :end-before: marker_connection_end
 
 
-.. include:: inform/informB15.rst
+.. include:: inform/informB15_connection1.rst

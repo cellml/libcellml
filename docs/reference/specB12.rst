@@ -5,4 +5,4 @@
   :start-after: marker_math_start
   :end-before: marker_math_end
 
-.. include:: inform/informB12.rst
+.. include:: inform/informB12_math1.rst

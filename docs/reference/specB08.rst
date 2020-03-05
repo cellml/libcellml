@@ -4,4 +4,4 @@
   :start-after: marker_variable_start
   :end-before: marker_variable_end
 
-.. include:: inform/informB8.rst
+.. include:: inform/informB8_variable1.rst
