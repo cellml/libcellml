@@ -106,7 +106,7 @@ TEST(Units, addUnitsVariations)
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
     u->addUnit(libcellml::Units::StandardUnit::KELVIN, -3, 2.0, 5.5);
 
     EXPECT_EQ(size_t(2), u->unitCount());
@@ -129,9 +129,9 @@ TEST(Units, compoundUnitsUsingDefines)
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
     u->addUnit(libcellml::Units::StandardUnit::KELVIN);
-    u->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
+    u->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Units::Prefix::MILLI, -1.0);
 
     m->addUnits(u);
 
@@ -363,7 +363,7 @@ TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToVariableButNotModel)
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
-TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToBothModelAndVariable)
+TEST(Units, hasLinkedUnitsWhenUnitsObjectAddedToBothModelAndVariable)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = libcellml::Component::create();
@@ -381,7 +381,27 @@ TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToBothModelAndVariable)
     EXPECT_FALSE(m->hasUnlinkedUnits());
 }
 
-TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelBeforeNameUsedForVariableUnits)
+TEST(Units, hasUnlinkedUnitsWhenUnitsObjectsWithSameNameAddedToModelAndVariable)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u2->setName("a_unit");
+
+    v1->setUnits(u1);
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+    m->addUnits(u2);
+
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToVariableByName)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = libcellml::Component::create();
@@ -395,12 +415,10 @@ TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelBeforeNameUsedForVariableUn
     c1->addVariable(v1);
     m->addComponent(c1);
 
-    // Adding units to model before adding to a variable
-    // means the units are linked.
     m->addUnits(u1);
     v1->setUnits("a_unit");
 
-    EXPECT_FALSE(m->hasUnlinkedUnits());
+    EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
 TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelAfterNameUsedForVariableUnits)
@@ -415,29 +433,6 @@ TEST(Units, hasUnlinkedUnitsWhenBaseUnitsAddedToModelAfterNameUsedForVariableUni
     c1->addVariable(v1);
     m->addComponent(c1);
 
-    // Adding units to model after adding to a variable
-    // means the units are not linked.
-    v1->setUnits("a_unit");
-    m->addUnits(u1);
-
-    EXPECT_TRUE(m->hasUnlinkedUnits());
-}
-
-TEST(Units, hasUnlinkedUnitsWhenNonBaseUnitsAddedToModelAfterNameUsedForVariableUnits)
-{
-    libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr c1 = libcellml::Component::create();
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-
-    u1->setName("a_unit");
-    u1->addUnit("second");
-
-    c1->addVariable(v1);
-    m->addComponent(c1);
-
-    // Adding units to model after adding to a variable
-    // means the units are not linked.
     v1->setUnits("a_unit");
     m->addUnits(u1);
 
@@ -512,6 +507,93 @@ TEST(Units, hasUnlinkedUnitsSiblingComponentsWithVariables)
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
+TEST(Units, hasUnlinkedUnitsInDeepComponentHierarchy)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    model->setName("model");
+    u->setName("my_units");
+    model->addUnits(u);
+
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+    c2->addComponent(c3);
+
+    c3->addVariable(createVariableWithUnits("v", "my_units"));
+
+    EXPECT_TRUE(model->hasUnlinkedUnits());
+
+    model->linkUnits();
+    EXPECT_FALSE(model->hasUnlinkedUnits());
+}
+
+TEST(Units, linkUnitsViaName)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    v1->setUnits("a_unit");
+    m->addUnits(u1);
+
+    m->linkUnits();
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, linkUnitsViaUnitsObject)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+    u2->setName("a_unit");
+
+    v1->setUnits(u1);
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+    m->addUnits(u2);
+
+    m->linkUnits();
+    EXPECT_FALSE(m->hasUnlinkedUnits());
+}
+
+TEST(Units, cannotLinkUnitsNotAddedToModel)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    u1->setName("a_unit");
+
+    c1->addVariable(v1);
+    m->addComponent(c1);
+
+    v1->setUnits(u1);
+
+    m->linkUnits();
+    EXPECT_TRUE(m->hasUnlinkedUnits());
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
@@ -534,9 +616,9 @@ TEST(Units, multiply)
     libcellml::UnitsPtr u1 = libcellml::Units::create();
     u1->setName("compound_unit");
 
-    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
     u1->addUnit(libcellml::Units::StandardUnit::KELVIN);
-    u1->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Units::Prefix::MILLI, -1.0);
 
     m->addUnits(u1);
 
@@ -672,8 +754,8 @@ TEST(Units, multipleUnitUsingStandardRef)
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::CENTI);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Units::Prefix::MICRO);
 
     EXPECT_EQ(size_t(4), u->unitCount());
 
@@ -1383,6 +1465,43 @@ TEST(Units, compareEquivalentUnits)
     EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
 }
 
+TEST(Units, compareEquivalentNonStandardWhichCannotBeResolvedUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("a");
+    u1->addUnit("millisecond", -1);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("b");
+    u2->addUnit("millisecond", -1);
+
+    EXPECT_TRUE(libcellml::Units::equivalent(u1, u2));
+}
+
+TEST(Units, compareEquivalentNonStandardUnitsOneUnitsWithParentModel)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->setName("millisecond");
+    u->addUnit("second", "milli");
+
+    libcellml::UnitsPtr u1 = libcellml::Units::create();
+    u1->setName("per_millisecond");
+    u1->addUnit("millisecond", -1);
+
+    m->addUnits(u);
+    m->addUnits(u1);
+
+    libcellml::UnitsPtr u2 = libcellml::Units::create();
+    u2->setName("per_millisecond");
+    u2->addUnit("millisecond", -1);
+
+    // Cannot resolve reference to millisecond in u2 so
+    // the two units are not considered equivalent.
+    EXPECT_FALSE(libcellml::Units::equivalent(u1, u2));
+}
+
 TEST(Units, compareNonEquivalenteUnits)
 {
     libcellml::UnitsPtr u1 = libcellml::Units::create();
@@ -1874,4 +1993,14 @@ TEST(Units, isNotBaseUnitImportedTwice)
     EXPECT_TRUE(u_i1->isImport());
     EXPECT_FALSE(u_i2->isImport());
     EXPECT_FALSE(u_i0->isBaseUnit());
+}
+
+TEST(Units, scalingFactorAcrossStandardUnits)
+{
+    libcellml::UnitsPtr u1 = libcellml::Units::create("second");
+    libcellml::UnitsPtr u2 = libcellml::Units::create("millisecond");
+    u2->addUnit(libcellml::Units::StandardUnit::SECOND, libcellml::Units::Prefix::MILLI);
+
+    EXPECT_EQ(0.001, libcellml::Units::scalingFactor(u1, u2));
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(u2, u1));
 }

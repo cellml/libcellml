@@ -875,7 +875,6 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <units name=\"invalid name\"/>\n"
         "  <component name=\"valid_name\">\n"
         "    <variable name=\"valid_name\" units=\"invalid name\"/>\n"
         "  </component>\n"
@@ -894,8 +893,6 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
     libcellml::UnitsPtr u = libcellml::Units::create();
     u->setName("invalid name");
     v->setUnits(u);
-
-    m->linkUnits();
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string a = printer->printModel(m);
