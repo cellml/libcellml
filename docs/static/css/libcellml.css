@@ -22,11 +22,14 @@ div.figure a.image-reference {
 
 div[class^="issue"], div[class*=" issue"] {
     background-color: none;
+    line-height: 24px;
+    margin: 0;
+    font-size: 16px;
+    margin-bottom: 24px;
 }
 
 .highlight {
     background-color: rgb(242, 249, 227);
-    padding: 10px;
 }
 
 .dothis {
