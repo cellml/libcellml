@@ -53,7 +53,7 @@ Specific information items
 
 .. marker1_2
 
-.. container:: issue_MODEL_MORE_THAN_ONE_ENCAPSULATION
+.. container:: issue-model-more-than-one-encapsulation
 
    3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
       elements.
@@ -102,7 +102,7 @@ Specific information items
 
 .. marker2_2
 
-.. container:: issue_IMPORT_CIRCULAR
+.. container:: issue-import-circular
 
    3. Any CellML infoset imported, directly or indirectly, by the imported
       CellML infoset MUST NOT be semantically equivalent to the importing
@@ -125,29 +125,33 @@ appears as a child of an :code:`import` element.
 Specific information items
 --------------------------
 
-1. Every :code:`import units` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. contianer:: issue-import-units-name
 
-   The value of the :code:`name` attribute MUST NOT be identical
-   to the :code:`name` attribute of any other :code:`units` or
-   :code:`import units` element in the CellML infoset.
+   1. Every :code:`import units` element MUST contain an unprefixed :code:`name`
+      attribute. The value of the :code:`name` attribute MUST be a
+      :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+      The value of the :code:`name` attribute MUST NOT be identical
+      to the :code:`name` attribute of any other :code:`units` or
+      :code:`import units` element in the CellML infoset.
 
 .. marker3_1
 
-2. Every :code:`import units` element MUST contain an unprefixed
-   :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
-   MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue-import-units-ref
 
-   The value of the :code:`units_ref`
-   attribute MUST match the value of the :code:`name` attribute on a
-   :code:`units` or :code:`import units` element in the imported CellML
-   infoset.
+   2. Every :code:`import units` element MUST contain an unprefixed
+      :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
+      MUST be a
+      :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-   The value of the :code:`units_ref` attribute MUST NOT match the
-   value of the :code:`units_ref` attribute on any sibling
-   :code:`import units` element.
+      The value of the :code:`units_ref`
+      attribute MUST match the value of the :code:`name` attribute on a
+      :code:`units` or :code:`import units` element in the imported CellML
+      infoset.
+
+      The value of the :code:`units_ref` attribute MUST NOT match the
+      value of the :code:`units_ref` attribute on any sibling
+      :code:`import units` element.
 
 .. marker4
 
@@ -164,25 +168,28 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-1. Every :code:`import component` element MUST contain an unprefixed
-   :code:`name` attribute. The value of the :code:`name` attribute MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue-import-component-name
 
-   The value of the
-   :code:`name` attribute MUST NOT
-   be identical to the :code:`name` attribute of any other :code:`component` or
-   :code:`import component` element in the CellML infoset.
+   1. Every :code:`import component` element MUST contain an unprefixed
+      :code:`name` attribute. The value of the :code:`name` attribute MUST be a
+      :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-2. Every :code:`import component` element MUST contain an unprefixed
-   :code:`component_ref` attribute. The value of the :code:`component_ref`
-   attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+      The value of the :code:`name` attribute MUST NOT
+      be identical to the :code:`name` attribute of any other :code:`component` or
+      :code:`import component` element in the CellML infoset.
 
-   The value of the
-   :code:`component_ref` attribute MUST match the value of the :code:`name`
-   attribute on a :code:`component` or :code:`import component` element in the
-   imported CellML infoset. See also the
-   :ref:`Component reference<specC_component_reference>`
-   section.
+.. container:: issue-import-component-ref
+
+   2. Every :code:`import component` element MUST contain an unprefixed
+      :code:`component_ref` attribute. The value of the :code:`component_ref`
+      attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+      The value of the
+      :code:`component_ref` attribute MUST match the value of the :code:`name`
+      attribute on a :code:`component` or :code:`import component` element in the
+      imported CellML infoset. See also the
+      :ref:`Component reference<specC_component_reference>`
+      section.
 
 .. marker5
 
@@ -199,20 +206,28 @@ element as its parent.
 Specific information items
 --------------------------
 
-1. Every :code:`units` element MUST contain an unprefixed :code:`name`
-   attribute. The value of the :code:`name` attribute MUST be a
-   :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue-units-name
 
-#. The value of the :code:`name` attribute MUST NOT be identical to the
-   :code:`name` attribute of any other :code:`units` element or
-   :code:`import units` element in the CellML infoset.
+   1. Every :code:`units` element MUST contain an unprefixed :code:`name`
+      attribute. The value of the :code:`name` attribute MUST be a
+      :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-#. The value of the :code:`name` attribute MUST NOT be equal to the name of
-   any of the units listed in the :ref:`Built-in units <table_built_in_units>`
-   table.
+.. contianer:: issue-units-name-unique
 
-#. A :code:`units` element MAY contain one or more :code:`unit` element
-   children.
+   2. The value of the :code:`name` attribute MUST NOT be identical to the
+      :code:`name` attribute of any other :code:`units` element or
+      :code:`import units` element in the CellML infoset.
+
+.. container:: issue-units-standard
+
+   3. The value of the :code:`name` attribute MUST NOT be equal to the name of
+      any of the units listed in the :ref:`Built-in units <table_built_in_units>`
+      table.
+
+.. container:: issue-units-child
+
+   4. A :code:`units` element MAY contain one or more :code:`unit` element
+      children.
 
 .. marker6
 
@@ -229,40 +244,54 @@ element as its parent.
 Specific information items
 --------------------------
 
-1. Every :code:`unit` element MUST contain an unprefixed :code:`units`
-   attribute. The value of the :code:`units` attribute MUST be
-   a valid units reference, as defined in the
-   :ref:`Units reference <units_reference>` section.
+.. container:: issue-unit-units-ref
 
-   #. For the purpose of the constraint in the next paragraph, the
-      :code:`units` element inclusion digraph SHALL be defined as a
-      conceptual digraph which SHALL contain one node for every
-      :code:`units` element in the CellML model. **TODO infoset?**
+   1. Every :code:`unit` element MUST contain an unprefixed :code:`units`
+      attribute. The value of the :code:`units` attribute MUST be
+      a valid units reference, as defined in the
+      :ref:`Units reference <units_reference>` section.
 
-      The :code:`units` element
-      inclusion digraph SHALL contain an arc from :code:`units` element *A*
-      to :code:`units` element *B* if and only if :code:`units` element *A*
-      contains a :code:`unit` element with :code:`units` attribute value that
-      is a units reference to :code:`units` element *B*.
+      .. contianer:: issue-unit-digraph
 
-   #. The value of the :code:`units` attribute MUST NOT be such that the
-      :code:`units` element inclusion digraph contains one or more cycles
-      (in other words, units definitions must not be cyclical).
+         1. For the purpose of the constraint in the next paragraph, the
+            :code:`units` element inclusion digraph SHALL be defined as a
+            conceptual digraph which SHALL contain one node for every
+            :code:`units` element in the CellML model. **TODO infoset?**
+
+            The :code:`units` element
+            inclusion digraph SHALL contain an arc from :code:`units` element *A*
+            to :code:`units` element *B* if and only if :code:`units` element *A*
+            contains a :code:`unit` element with :code:`units` attribute value that
+            is a units reference to :code:`units` element *B*.
+
+      .. container:: issue-unit-circular-ref
+
+         2. The value of the :code:`units` attribute MUST NOT be such that the
+            :code:`units` element inclusion digraph contains one or more cycles
+            (in other words, units definitions must not be cyclical).
 
 .. marker6_1
 
-2. A :code:`unit` element MAY contain any of the following unprefixed
-   attributes:
+.. container:: issue-unit-optional-attribute
 
-   #. The :code:`prefix` attribute. If present, the value of the attribute
-      MUST meet the constraints specified in the
-      :ref:`Interpretation of units <specC_units>` section.
+   2. A :code:`unit` element MAY contain any of the following unprefixed
+      attributes:
 
-   #. The :code:`multiplier` attribute. If present, the value of the
-      attribute MUST be a real number string.
+      .. container:: issue-unit-prefix
 
-   #. The :code:`exponent` attribute. If present, the value of the attribute
-      MUST be a real number string.
+         1. The :code:`prefix` attribute. If present, the value of the attribute
+            MUST meet the constraints specified in the
+            :ref:`Interpretation of units <specC_units>` section.
+
+      .. container:: issue-unit-multiplier
+
+         2. The :code:`multiplier` attribute. If present, the value of the
+            attribute MUST be a real number string.
+
+      .. container:: issue-unit-exponent
+
+         3. The :code:`exponent` attribute. If present, the value of the attribute
+            MUST be a real number string.
 
 .. marker7
 
