@@ -1,5 +1,8 @@
 .. sectnum::
 
+
+.. marker_interpretation_of_imports_start
+
 .. _specC_imports:
 
 Interpretation of imports
@@ -11,6 +14,9 @@ Interpretation of imports
    See :ref:`Units reference<specC_units_reference>` and
    :ref:`Component reference<specC_component_reference>` for the specifics
    of importing units and components.
+
+.. marker_interpretation_of_imports_end
+.. marker_units_reference_start
 
 .. _specC_units_reference:
 
@@ -43,6 +49,8 @@ Units reference
       column of the :ref:`Built-in units table<table_built_in_units>` ,
       then the units reference SHALL be a reference to the built-in units
       corresponding to that row of the table.
+
+.. marker_units_reference1
 
 .. _table_built_in_units:
 
@@ -126,6 +134,9 @@ Table: Built-in units
 | weber         | 1, 1, 1, 1        | (metre, 2), (kilogram, 1),     |
 |               |                   | (second, -2), (ampere, -1)     |
 +---------------+-------------------+--------------------------------+
+
+.. marker_units_reference_end
+.. marker_interpretation_of_units_start
 
 .. _specC_units:
 
@@ -262,6 +273,10 @@ zepto    −21
 yocto    −24
 ======== =========
 
+
+.. marker_interpretation_of_units_end
+.. marker_component_reference_start
+
 .. _specC_component_reference:
 
 Component reference
@@ -291,6 +306,9 @@ Component reference
    element which in turn references another :code:`import component`
    element.
 
+.. marker_component_reference_end
+.. marker_variable_reference_start
+
 .. _specC_variable_reference:
 
 Variable reference
@@ -306,6 +324,9 @@ Variable reference
    reference and a variable name. In this case, the variable reference
    SHALL be treated as if it was just the variable name present in the
    :code:`component` element referenced by the component reference.
+
+.. marker_variable_reference_end
+.. marker_interpretation_of_initial_values_start
 
 .. _specC_initial_values:
 
@@ -328,6 +349,9 @@ Interpretation of initial values
    attribute appears is equal to the referenced variable under the
    conditions when the initial value holds.
 
+.. marker_interpretation_of_initial_values_end
+.. marker_effect_of_units_on_variables_start
+
 .. _specC_effect_of_units_on_variables:
 
 Effect of units on variables
@@ -338,6 +362,9 @@ Effect of units on variables
    is referred to as the variable units, and the corresponding unit
    reduction (see :ref:`Interpretation of units<specC_units>`) is referred
    to as the variable unit reduction.
+
+.. marker_effect_of_units_on_variables_end
+.. marker_interpretation_of_mathematics_start
 
 .. _specC_mathematics:
 
@@ -369,6 +396,9 @@ Interpretation of mathematics
 
 #. Units referenced by a :code:`units` attribute information item SHALL NOT
    affect the mathematical interpretation of the CellML model.
+
+.. marker_interpretation_of_mathematics_end
+.. marker_interpretation_of_encapsulation_start
 
 .. _specC_encapsulation:
 
@@ -410,6 +440,9 @@ Interpretation of encapsulation
    referenced by the :code:`component_1` attribute is in the hidden set of
    the component referenced by the :code:`component_2` attribute, nor vice
    versa.
+
+.. marker_interpretation_of_encapsulation_end
+.. marker_interpretation_of_map_variables_start
 
 .. _specC_map_variables:
 
@@ -511,6 +544,9 @@ Interpretation of map_variables
     form a connected subgraph. Each set of connected variables
     represents one variable in the underlying mathematical model.
 
+.. marker_interpretation_of_map_variables_end
+.. marker_interpretation_of_variable_resets_start
+
 .. _specC_variable_resets:
 
 Interpretation of variable resets
@@ -535,3 +571,5 @@ Interpretation of variable resets
 #. When a reset occurs, the variable referenced by the reset element’s
    :code:`variable` attribute SHALL be set to the result of evaluating the
    MathML expression encoded in the :code:`reset_value`.
+
+.. marker_interpretation_of_variable_resets_end

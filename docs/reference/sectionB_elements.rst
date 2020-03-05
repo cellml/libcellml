@@ -150,10 +150,6 @@ Specific information items
       :code:`units` or :code:`import units` element in the imported CellML
       infoset.
 
-      The value of the :code:`units_ref` attribute MUST NOT match the
-      value of the :code:`units_ref` attribute on any sibling
-      :code:`import units` element.
-
 .. marker_import_units_end
 .. marker_import_component_start
 

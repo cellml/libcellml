@@ -26,7 +26,6 @@ specification and/or guidelines to which it relates.
 
     index_sectionA.rst
 
-
 .. toctree::
     :maxdepth: 1
     :glob:
@@ -34,12 +33,10 @@ specification and/or guidelines to which it relates.
 
     specA*
 
-
 .. toctree::
     :maxdepth: 1
 
     index_sectionB.rst
-
 
 .. toctree::
     :maxdepth: 1
@@ -48,14 +45,20 @@ specification and/or guidelines to which it relates.
 
     specB*
 
-
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     index_sectionC.rst
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
+    :glob:
+    :numbered:
+
+    specC*
+
+.. toctree::
+    :maxdepth: 1
 
     sectionD_references.rst
 
