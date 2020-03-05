@@ -2,8 +2,8 @@
 .. _specB_import_component:
 
 .. include:: sectionB_elements.rst
-  :start-after: marker4
-  :end-before: marker5
+  :start-after: marker_import_component_start
+  :end-before: marker_import_component_end
 
 .. include:: inform/informB4.rst
 

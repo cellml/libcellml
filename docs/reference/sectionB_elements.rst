@@ -6,7 +6,7 @@
 Section B: Element information items
 ====================================
 
-.. marker1
+.. marker_model_start
 
 .. _model:
 
@@ -32,7 +32,7 @@ Specific information items
       attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-.. marker1_1
+.. marker_model_1
 
 .. container:: issue-model-child
 
@@ -51,14 +51,14 @@ Specific information items
       #. A :code:`units` element;
 
 
-.. marker1_2
+.. marker_model_2
 
 .. container:: issue-model-more-than-one-encapsulation
 
    3. A :code:`model` element MUST NOT contain more than one :code:`encapsulation`
       elements.
 
-.. marker2
+.. marker_import_start
 
 .. _import:
 
@@ -89,7 +89,7 @@ Specific information items
       “imported CellML infoset” SHALL refer to the CellML infoset obtained
       by parsing the document referenced by the :code:`href` attribute.
 
-.. marker2_1
+.. marker_import_1
 
 .. container:: issue-import-child
 
@@ -100,7 +100,7 @@ Specific information items
 
       #. An :code:`import component` element.
 
-.. marker2_2
+.. marker_import_2
 
 .. container:: issue-import-circular
 
@@ -110,7 +110,8 @@ Specific information items
       :ref:`Semantically equivalent CellML infosets <specA_semantic_equivalence>`
       ).
 
-.. marker3
+.. marker_import_end
+.. marker_import_units_start
 
 .. _import_units:
 
@@ -135,7 +136,7 @@ Specific information items
       to the :code:`name` attribute of any other :code:`units` or
       :code:`import units` element in the CellML infoset.
 
-.. marker3_1
+.. marker_import_units_1
 
 .. container:: issue-import-units-ref
 
@@ -153,7 +154,8 @@ Specific information items
       value of the :code:`units_ref` attribute on any sibling
       :code:`import units` element.
 
-.. marker4
+.. marker_import_units_end
+.. marker_import_component_start
 
 .. _import_component:
 
@@ -191,7 +193,8 @@ Specific information items
       :ref:`Component reference<specC_component_reference>`
       section.
 
-.. marker5
+.. marker_import_component_end
+.. marker_units_start
 
 .. _units:
 
@@ -229,7 +232,8 @@ Specific information items
    4. A :code:`units` element MAY contain one or more :code:`unit` element
       children.
 
-.. marker6
+.. marker_units_end
+.. marker_unit_start
 
 .. _unit:
 
@@ -270,7 +274,7 @@ Specific information items
             :code:`units` element inclusion digraph contains one or more cycles
             (in other words, units definitions must not be cyclical).
 
-.. marker6_1
+.. marker_unit_1
 
 .. container:: issue-unit-optional-attribute
 
@@ -293,7 +297,8 @@ Specific information items
          3. The :code:`exponent` attribute. If present, the value of the attribute
             MUST be a real number string.
 
-.. marker7
+.. marker_unit_end
+.. marker_component_start
 
 .. _component:
 
@@ -305,7 +310,7 @@ specification as a :code:`component` element) is an element
 in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`component`, and
 which appears as a child of a :code:`model` element.
 
-.. marker7_1
+.. marker_component_1
 
 Specific information items
 --------------------------
@@ -320,7 +325,7 @@ Specific information items
       to the :code:`name` attribute on any other :code:`component` element or
       :code:`import component` element in the CellML infoset.
 
-.. marker7_2
+.. marker_component_2
 
 .. container:: issue-component-child
 
@@ -333,7 +338,8 @@ Specific information items
 
       #. A :code:`math` element.
 
-.. marker8
+.. marker_component_end
+.. marker_variable_start
 
 .. _variable:
 
@@ -383,7 +389,8 @@ Specific information items
          MUST meet the requirements described by the
          :ref:`Interpretation of initial values<specC_initial_values>` section.
 
-.. marker9
+.. marker_variable_end
+.. marker_reset_start
 
 .. _reset:
 
@@ -437,7 +444,8 @@ Specific information items
 
          2. A :code:`reset_value` element.
 
-.. marker10
+.. marker_reset_end
+.. marker_test_value_start
 
 .. _test_value:
 
@@ -458,7 +466,8 @@ Specific information items
    1. A :code:`test_value` element MUST contain exactly one :code:`math` element
       child.
 
-.. marker11
+.. marker_test_value_end
+.. marker_reset_value_start
 
 .. _reset_value:
 
@@ -478,7 +487,8 @@ Specific information items
    1. A :code:`reset_value` element MUST contain exactly one :code:`math` element
       child.
 
-.. marker12
+.. marker_reset_value_end
+.. marker_math_start
 
 .. _math:
 
@@ -570,7 +580,8 @@ Table: Supported MathML Elements
 |                                  | <true>, <false>                  |
 +----------------------------------+----------------------------------+
 
-.. marker13
+.. marker_math_end
+.. marker_encapsulation_start
 
 .. _encapsulation:
 
@@ -590,7 +601,8 @@ Specific information items
    1. Every :code:`encapsulation` element MUST contain one or more
       :code:`component_ref` elements.
 
-.. marker14
+.. marker_encapsulation_end
+.. marker_component_ref_start
 
 .. _component_ref:
 
@@ -628,7 +640,8 @@ Specific information items
       :code:`encapsulation` element MUST each contain at least one
       :code:`component_ref` element child.
 
-.. marker15
+.. marker_component_ref_end
+.. marker_connection_start
 
 .. _connection:
 
@@ -680,7 +693,8 @@ Specific information items
    4. Every :code:`connection` element MUST contain one or more
       :code:`map_variables` elements.
 
-.. marker16
+.. marker_connection_end
+.. marker_map_variables_start
 
 .. _map_variables:
 
@@ -730,4 +744,4 @@ Specific information items
       :code:`map_variables` element with a given :code:`variable_1` attribute
       value and :code:`variable_2` attribute value pair.
 
-.. marker17
+.. marker_map_variables_end

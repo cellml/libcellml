@@ -3,20 +3,20 @@
 .. _specB_import:
 
 .. include:: sectionB_elements.rst
-  :start-after: marker2
-  :end-before: marker2_1
+  :start-after: marker_import_start
+  :end-before: marker_import_1
 
 .. include:: inform/informB2_1.rst
 
 .. include:: sectionB_elements.rst
-  :start-after: marker2_1
-  :end-before: marker2_2
+  :start-after: marker_import_1
+  :end-before: marker_import_2
 
 .. include:: inform/informB2_2.rst
 
 .. include:: sectionB_elements.rst
-  :start-after: marker2_2
-  :end-before: marker3
+  :start-after: marker_import_2
+  :end-before: marker_import_end
 
 .. include:: inform/informB2_3.rst
 

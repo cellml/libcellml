@@ -1,7 +1,7 @@
 .. _specB14:
 
 .. include:: sectionB_elements.rst
-  :start-after: marker14
-  :end-before: marker15
+  :start-after: marker_component_ref_start
+  :end-before: marker_component_ref_end
 
 .. include:: inform/informB14.rst
