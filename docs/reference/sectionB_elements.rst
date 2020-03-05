@@ -212,7 +212,7 @@ Specific information items
       attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-.. contianer:: issue-units-name-unique
+.. container:: issue-units-name-unique
 
    2. The value of the :code:`name` attribute MUST NOT be identical to the
       :code:`name` attribute of any other :code:`units` element or
@@ -453,8 +453,10 @@ and which appears as a child of a :code:`reset` element.
 Specific information items
 --------------------------
 
-#. A :code:`test_value` element MUST contain exactly one :code:`math` element
-   child.
+.. container:: issue-test-value-todo
+
+   1. A :code:`test_value` element MUST contain exactly one :code:`math` element
+      child.
 
 .. marker11
 
@@ -471,8 +473,10 @@ and which appears as a child of a :code:`reset` element.
 Specific information items
 --------------------------
 
-#. A :code:`reset_value` element MUST contain exactly one :code:`math` element
-   child.
+.. container:: issue-reset-value-todo
+
+   1. A :code:`reset_value` element MUST contain exactly one :code:`math` element
+      child.
 
 .. marker12
 
@@ -489,27 +493,39 @@ namespace that appears as a direct child of a :code:`component` element, a
 Specific information items
 --------------------------
 
-#. A :code:`math` element MUST be the top-level of a content MathML tree, as
-   described in :mathml2spec:`MathML 2.0`.
+.. container:: issue-math-mathml
 
-#. Each element child of a :code:`math` element MUST have
-   an element-type name that is listed in the
-   :ref:`Supported MathML Elements <table_supported_mathml_elements>` table.
+   1. A :code:`math` element MUST be the top-level of a content MathML tree, as
+      described in :mathml2spec:`MathML 2.0`.
 
-#. Every variable name given using the MathML :code:`ci` element MUST be a
-   :ref:`variable reference<specC_variable_reference>` to a :code:`variable`
-   within the :code:`component` element that the :code:`math` element
-   is contained.
+.. container:: issue-math-child
 
-#. Any MathML :code:`cn` elements MUST each have an attribute in the
-   :ref:`CellML namespace<specA_cellml_namespace>`, with a local name equal to :code:`units`.
-   The value of this attribute MUST be a valid units
-   reference.
+   2. Each element child of a :code:`math` element MUST have
+      an element-type name that is listed in the
+      :ref:`Supported MathML Elements <table_supported_mathml_elements>` table.
 
-#. The :code:`cn` element MUST be one of the following
-   :mathml2types:`types` : real or e-notation.
+.. container:: issue-math-ci-variable-reference
 
-#. The :code:`cn` element MUST be of base 10.
+   3. Every variable name given using the MathML :code:`ci` element MUST be a
+      :ref:`variable reference<specC_variable_reference>` to a :code:`variable`
+      within the :code:`component` element that the :code:`math` element
+      is contained.
+
+.. container:: issue-math-cn-units-attribute
+
+   4. Any MathML :code:`cn` elements MUST each have an attribute in the
+      :ref:`CellML namespace<specA_cellml_namespace>`, with a local name equal to :code:`units`.
+      The value of this attribute MUST be a valid units
+      reference.
+
+.. container:: issue-math-todo
+
+   5. The :code:`cn` element MUST be one of the following
+      :mathml2types:`types` : real or e-notation.
+
+.. container:: issue-math-todo
+
+   6. The :code:`cn` element MUST be of base 10.
 
 .. _table_supported_mathml_elements:
 
@@ -569,8 +585,10 @@ specification as an :code:`encapsulation` element) is an element in the
 Specific information items
 --------------------------
 
-#. Every :code:`encapsulation` element MUST contain one or more
-   :code:`component_ref` elements.
+.. container:: issue-encapsulation-component-ref
+
+   1. Every :code:`encapsulation` element MUST contain one or more
+      :code:`component_ref` elements.
 
 .. marker14
 
@@ -588,21 +606,27 @@ element.
 Specific information items
 --------------------------
 
-#. Every :code:`component_ref` element MUST contain an unprefixed
-   :code:`component` attribute.
+.. container:: issue-component-ref-component-attribute
 
-   The value of this attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
-   and MUST match the :code:`name`
-   attribute on a :code:`component` element or an :code:`import component`
-   element in the CellML infoset.
+   1. Every :code:`component_ref` element MUST contain an unprefixed
+      :code:`component` attribute.
 
-#. Every :code:`component_ref` element MAY in turn contain one or more
-   :code:`component_ref` element children.
+      The value of this attribute
+      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
+      and MUST match the :code:`name`
+      attribute on a :code:`component` element or an :code:`import component`
+      element in the CellML infoset.
 
-#. A :code:`component_ref` element which is an immediate child of an
-   :code:`encapsulation` element MUST each contain at least one
-   :code:`component_ref` element child.
+.. container:: issue-component-ref-child
+
+   2. Every :code:`component_ref` element MAY in turn contain one or more
+      :code:`component_ref` element children.
+
+.. container:: issue-component-ref-encapsulation
+
+   3. A :code:`component_ref` element which is an immediate child of an
+      :code:`encapsulation` element MUST each contain at least one
+      :code:`component_ref` element child.
 
 .. marker15
 
@@ -619,34 +643,42 @@ and which appears as a child of a :code:`model` element.
 Specific information items
 --------------------------
 
-#. Each :code:`connection` element MUST contain an unprefixed
-   :code:`component_1` attribute. The value of the :code:`component_1`
-   attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue-connection-component1
 
-   The value of this attribute MUST
-   be equal to the :code:`name` attribute on a :code:`component` or
-   :code:`import component` element in the CellML infoset
-   (see :ref:`Component reference<specC_component_reference>`).
+   1. Each :code:`connection` element MUST contain an unprefixed
+      :code:`component_1` attribute. The value of the :code:`component_1`
+      attribute
+      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-#. Each :code:`connection` element MUST contain an unprefixed
-   :code:`component_2` attribute. The value of the :code:`component_2`
-   attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+      The value of this attribute MUST
+      be equal to the :code:`name` attribute on a :code:`component` or
+      :code:`import component` element in the CellML infoset
+      (see :ref:`Component reference<specC_component_reference>`).
 
-   The value of this attribute MUST
-   be equal to the :code:`name` attribute on a :code:`component` or
-   :code:`import component` element in the CellML infoset
-   (see :ref:`Component reference <specC_component_reference>`).
+.. container:: issue-connection-component2
 
-   It MUST NOT be equal to the value of the :code:`component_1` attribute.
+   2. Each :code:`connection` element MUST contain an unprefixed
+      :code:`component_2` attribute. The value of the :code:`component_2`
+      attribute
+      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-#. A CellML infoset MUST NOT contain more than one :code:`connection`
-   element with a given pair of :code:`component`\ s referenced by the
-   :code:`component_1` and :code:`component_2` attribute values, in any order.
+      The value of this attribute MUST
+      be equal to the :code:`name` attribute on a :code:`component` or
+      :code:`import component` element in the CellML infoset
+      (see :ref:`Component reference <specC_component_reference>`).
 
-#. Every :code:`connection` element MUST contain one or more
-   :code:`map_variables` elements.
+      It MUST NOT be equal to the value of the :code:`component_1` attribute.
+
+.. container:: issue-connection-unique-transitive
+
+   3. A CellML infoset MUST NOT contain more than one :code:`connection`
+      element with a given pair of :code:`component`\ s referenced by the
+      :code:`component_1` and :code:`component_2` attribute values, in any order.
+
+.. container:: issue-connection-map-variables
+
+   4. Every :code:`connection` element MUST contain one or more
+      :code:`map_variables` elements.
 
 .. marker16
 
@@ -664,32 +696,38 @@ element.
 Specific information items
 --------------------------
 
-#. Each :code:`map_variables` element MUST contain an unprefixed
-   :code:`variable_1` attribute.
+.. container:: issue-map-variables-variable1
 
-   The value of the :code:`variable_1` attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+   1. Each :code:`map_variables` element MUST contain an unprefixed
+      :code:`variable_1` attribute.
 
-   The value of this attribute MUST
-   be equal to the :code:`name` attribute on a :code:`variable` element child
-   of the :code:`component` element or :code:`import component` element
-   referenced by the :code:`component_1` attribute on the :code:`connection`
-   element which is the parent of this element.
+      The value of the :code:`variable_1` attribute
+      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
-#. Each :code:`map_variables` element MUST contain an unprefixed
-   :code:`variable_2` attribute.
+      The value of this attribute MUST
+      be equal to the :code:`name` attribute on a :code:`variable` element child
+      of the :code:`component` element or :code:`import component` element
+      referenced by the :code:`component_1` attribute on the :code:`connection`
+      element which is the parent of this element.
 
-   The value of the :code:`variable_2` attribute
-   MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+.. container:: issue-map-variables-variable2
 
-   The value of this attribute MUST
-   be equal to the :code:`name` attribute on a :code:`variable` element child
-   of the :code:`component` element or :code:`import component` element
-   referenced by the :code:`component_2` attribute on the :code:`connection`
-   element which is the parent of this element.
+   2. Each :code:`map_variables` element MUST contain an unprefixed
+      :code:`variable_2` attribute.
 
-#. A :code:`connection` element MUST NOT contain more than one
-   :code:`map_variables` element with a given :code:`variable_1` attribute
-   value and :code:`variable_2` attribute value pair.
+      The value of the :code:`variable_2` attribute
+      MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
+
+      The value of this attribute MUST
+      be equal to the :code:`name` attribute on a :code:`variable` element child
+      of the :code:`component` element or :code:`import component` element
+      referenced by the :code:`component_2` attribute on the :code:`connection`
+      element which is the parent of this element.
+
+.. container:: issue-map-variables-unique
+
+   3. A :code:`connection` element MUST NOT contain more than one
+      :code:`map_variables` element with a given :code:`variable_1` attribute
+      value and :code:`variable_2` attribute value pair.
 
 .. marker17
