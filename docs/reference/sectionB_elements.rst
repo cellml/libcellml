@@ -72,7 +72,7 @@ in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal t
 Specific information items
 --------------------------
 
-.. container:: issue_IMPORT_HREF
+.. container:: issue-import-href
 
    1. Every :code:`import` element MUST contain an attribute
       in the namespace :code:`http://www.w3.org/1999/xlink`, with a local
@@ -91,7 +91,7 @@ Specific information items
 
 .. marker2_1
 
-.. container:: issue_IMPORT_CHILD
+.. container:: issue-import-child
 
    2. Every :code:`import` element MAY contain one or more specific element
       children, each of which MUST be of one of the following types:
