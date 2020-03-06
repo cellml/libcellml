@@ -1030,12 +1030,10 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
         } else {
-            std::string modelName = entityName(owningModel(component));
             ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + variableName
                                 + "' in component '" + component->name()
-                                + "' of model '" + modelName
                                 + "' is referenced in an equation, but it is not defined anywhere.");
             err->setKind(Error::Kind::GENERATOR);
 
@@ -1144,17 +1142,13 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         } else if ((variable != generatorVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
-            ModelPtr model = owningModel(component);
             ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
-            ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
             ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + variable->name()
                                 + "' in component '" + component->name()
-                                + "' of model '" + model->name()
                                 + "' and variable '" + generatorVariable->mVariable->name()
                                 + "' in component '" + trackedVariableComponent->name()
-                                + "' of model '" + trackedVariableModel->name()
                                 + "' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
 
@@ -1196,12 +1190,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                std::string modelName = entityName(owningModel(component));
                 ErrorPtr err = Error::create();
 
                 err->setDescription("Variable '" + variable->name()
                                     + "' in component '" + component->name()
-                                    + "' of model '" + modelName
                                     + "' cannot be both a variable of integration and initialised.");
                 err->setKind(Error::Kind::GENERATOR);
 
@@ -1227,17 +1219,13 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             }
         } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->variable()->parent());
-            ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ModelPtr model = owningModel(component);
             ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + mVoi->variable()->name()
                                 + "' in component '" + voiComponent->name()
-                                + "' of model '" + voiModel->name()
                                 + "' and variable '" + variable->name()
                                 + "' in component '" + component->name()
-                                + "' of model '" + model->name()
                                 + "' cannot both be a variable of integration.");
             err->setKind(Error::Kind::GENERATOR);
 
@@ -1254,12 +1242,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         if (convertToDouble(ast->mValue) != 1.0) {
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ModelPtr model = owningModel(component);
             ErrorPtr err = Error::create();
 
             err->setDescription("The differential equation for variable '" + variable->name()
                                 + "' in component '" + component->name()
-                                + "' of model '" + model->name()
                                 + "' must be of the first order.");
             err->setKind(Error::Kind::GENERATOR);
 
@@ -1539,11 +1525,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 ErrorPtr err = Error::create();
                 VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
-                ModelPtr realModel = owningModel(realComponent);
 
                 err->setDescription("Variable '" + realVariable->name()
                                     + "' in component '" + realComponent->name()
-                                    + "' of model '" + realModel->name() + "' " + errorType + ".");
+                                    + "' " + errorType + ".");
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);
