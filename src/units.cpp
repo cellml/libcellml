@@ -145,8 +145,7 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
 
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
-    return name == "ampere" || name == "candela" || name == "kelvin" ||
-            name == "kilogram" || name == "metre" || name == "mole" || name == "second";
+    return name == "ampere" || name == "candela" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
 }
 
 /**
