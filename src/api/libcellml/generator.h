@@ -63,28 +63,39 @@ public:
     static GeneratorVariablePtr create() noexcept;
 
     /**
-     * @brief Get the initial value @c Variable for this @c GeneratorVariable.
+     * @brief Get the original @c Variable for this @c GeneratorVariable.
      *
-     * Return the @c Variable of this @c GeneratorVariable. It can be used to
-     * retrieve the initial value of the @c Variable.
+     * Return the original @c Variable of this @c GeneratorVariable. It is used
+     * to retrieve the initial value of the @c Variable, if any. It may or may
+     * not be the same @c Variable as the one returned by @sa variable. If it is
+     * not the same then the initial value retrieved from this variable may have
+     * to be scaled to account for the variables' units not being equivalent
+     * (e.g. one variable is expressed in millivolts while the other is
+     * expressed in volts, so the initial value will have to be multiplied or
+     * divided by 1000).
+     *
+     * @sa variable
      *
      * @return The @c Variable.
      */
     VariablePtr initialValueVariable() const;
 
     /**
-     * @brief Get the reference @c Variable for this @c GeneratorVariable.
+     * @brief Get the @c Variable for this @c GeneratorVariable.
      *
-     * Return the reference @c Variable of this @c GeneratorVariable. Its
-     * @c Component is the one in which the @c Variable is first defined (in the
+     * Return the @c Variable of this @c GeneratorVariable. Its @c Component is
+     * the one in which the @c Variable is first defined (in the
      * case of the variable of integration), initialised (in the case of a
      * constant) or computed (in the case of a state, computed constant or
      * algebraic variable). It may or may not be the same @c Variable as the one
-     * returned by @sa initialValueVariable.
+     * returned by @sa initialValueVariable. For example, a state variable may
+     * be initialised in one component and computed in another.
      *
-     * @return The reference @c Variable.
+     * @sa initialValueVariable
+     *
+     * @return The @c Variable.
      */
-    VariablePtr referenceVariable() const;
+    VariablePtr variable() const;
 
     /**
      * @brief Get the @c Type for this @c GeneratorVariable.
