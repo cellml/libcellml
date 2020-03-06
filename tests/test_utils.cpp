@@ -58,7 +58,7 @@ void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool 
     }
 }
 
-void printModel(libcellml::ModelPtr &model)
+void printModel(const libcellml::ModelPtr &model)
 {
     std::cout << "The model name is: '" << model->name() << "'" << std::endl;
     if (model->id() != "") {
@@ -98,18 +98,25 @@ void printComponent(const libcellml::ComponentPtr &component, size_t const c, st
               << " variables:" << std::endl;
 
     // Printing the variables within the component
-    for (size_t v = 0; v < component->variableCount(); v++) {
-        std::cout << spacer << "  Variable[" << v << "] has name: '"
-                  << component->variable(v)->name() << "'" << std::endl;
-        if (component->variable(v)->initialValue() != "") {
-            std::cout << spacer << "  Variable[" << v << "] has initial_value: '"
-                      << component->variable(v)->initialValue() << "'"
+    for (size_t vIndex = 0; vIndex < component->variableCount(); vIndex++) {
+        auto v = component->variable(vIndex);
+        std::cout << spacer << "  Variable[" << vIndex << "] has name: '"
+                  << v->name() << "'" << std::endl;
+        if (v->initialValue() != "") {
+            std::cout << spacer << "  Variable[" << vIndex << "] has initial_value: '"
+                      << v->initialValue() << "'"
                       << std::endl;
         }
-        if (component->variable(v)->units() != nullptr) {
-            std::cout << spacer << "  Variable[" << v << "] has units: '"
-                      << component->variable(v)->units()->name() << "'" << std::endl;
+        if (v->units() != nullptr) {
+            std::cout << spacer << "  Variable[" << vIndex << "] has units: '"
+                      << v->units()->name() << "'" << std::endl;
         }
+        std::cout << spacer << "  Variable[" << vIndex << "] has " << v->equivalentVariableCount() << " equivalent variable(s): ";
+        for (size_t eIndex = 0; eIndex < v->equivalentVariableCount(); ++eIndex) {
+            auto equivVariable = v->equivalentVariable(eIndex);
+            std::cout << equivVariable->name() << ", ";
+        }
+        std::cout << std::endl;
     }
 
     // Print the maths within the component
@@ -213,21 +220,4 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
     c2->addVariable(v2);
 
     return model;
-}
-
-void printModel(const libcellml::ModelPtr &model)
-{
-    for (size_t cIndex = 0; cIndex < model->componentCount(); ++cIndex) {
-        auto component = model->component(cIndex);
-        std::cout << "Component " << cIndex << " " << component << " " << component->name() << std::endl;
-        for (size_t vIndex = 0; vIndex < component->variableCount(); ++vIndex) {
-            auto variable = component->variable(vIndex);
-            std::cout << "  Variable " << vIndex << " " << variable << " " << variable->name()
-                      << " has " << variable->equivalentVariableCount() << " equivalent variables:" << std::endl;
-            for (size_t eIndex = 0; eIndex < variable->equivalentVariableCount(); ++eIndex) {
-                auto equivVariable = variable->equivalentVariable(eIndex);
-                std::cout << "      - Equivalent variable: " << eIndex << " " << equivVariable << " " << equivVariable->name() << " [parent " << equivVariable->parent() << "]" << std::endl;
-            }
-        }
-    }
 }
