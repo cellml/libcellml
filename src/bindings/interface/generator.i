@@ -18,7 +18,7 @@
 %feature("docstring") libcellml::GeneratorVariable::initialValueVariable
 "Return the :class:`Variable`.";
 
-%feature("docstring") libcellml::GeneratorVariable::referenceVariable
+%feature("docstring") libcellml::GeneratorVariable::variable
 "Return the :class:`Variable`.";
 
 %feature("docstring") libcellml::GeneratorVariable::type
