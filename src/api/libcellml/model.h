@@ -343,6 +343,21 @@ public:
      */
     void flatten();
 
+    /**
+     * @brief Fix @c Variable interfaces throughout the model.
+     *
+     * Traverses the model investigating variable equivalences to set the appropriate
+     * interface type.  If all equivalent variables have the correct interface type set then
+     * the method returns @c true.  If the interface type of one or more equivalent variables
+     * cannot be set correctly then @c false is returned.
+     *
+     * If the interface type for a variable cannot be set correctly, it is left unchanged.
+     *
+     * @return @c true if all the variable interfaces in the @c Model are correct and
+     * @c false otherwise.
+     */
+    bool fixVariableInterfaces();
+
 private:
     Model(); /**< Constructor */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
