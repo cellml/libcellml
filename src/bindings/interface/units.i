@@ -65,6 +65,10 @@ Only the first matching unit is removed.
 "Returns the attributes of the unit specified by index, reference, or
 StandardUnit.";
 
+%feature("docstring") libcellml::Units::requiresImports
+"Returns `True` when this Units object depends on an imported child
+Units object, or `False` otherwise.";
+
 %feature("docstring") libcellml::Units::unitCount
 "Returns the number of units contained by this units object.";
 
@@ -75,11 +79,11 @@ extract the units with the given `name`.";
 %feature("docstring") libcellml::Units::scalingFactor
 "Returns the scaling factor between two Units objects.";
 
-%feature("docstring") libcellml::Units::equivalent
-"Tests if two Units are equivalent.";
+%feature("docstring") libcellml::Units::compatible
+"Tests if two Units have the same dimensional basis.";
 
-%feature("docstring") libcellml::Units::dimensionallyEquivalent
-"Tests if two Units are dimensionally equivalent.";
+%feature("docstring") libcellml::Units::equivalent
+"Tests if two Units are equivalent in base units as well as scaling factor.";
 
 %feature("docstring") libcellml::Units::clone
 "Create a copy of this units.";
