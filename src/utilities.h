@@ -23,6 +23,9 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/types.h"
+#include "libcellml/variable.h"
+
+#include "internaltypes.h"
 
 namespace libcellml {
 
@@ -196,6 +199,17 @@ const std::vector<std::string> supportedMathMLElements = {
     "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc",
     "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
     "notanumber", "infinity", "true", "false"};
+
+/**
+ * @brief Map to convert an interface type into its string form.
+ *
+ * An internal map used to convert a Variable InterfaceType enum class member into its string form.
+ */
+static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
+    {Variable::InterfaceType::NONE, "none"},
+    {Variable::InterfaceType::PRIVATE, "private"},
+    {Variable::InterfaceType::PUBLIC, "public"},
+    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
  * @brief Convert the @p candidate @c std::string to a @c double.
@@ -431,6 +445,57 @@ bool isStandardPrefixName(const std::string &name);
  * number of variables in the component if the variable was not found.
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+
+/**
+ * @brief Test to determine if @p entity1 is a child of @p entity2.
+ *
+ * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
+ * @p entity1 is a child of @p entity2 and @c false otherwise.
+ *
+ * @param entity1 The @c Entity to test if it is a child of @p entity2.
+ * @param entity2 The @c Entity that is potentially the parent of @p entity1.
+ *
+ * @return @c true if @p entity1 is a child of @p entity2 and @c false otherwise.
+ */
+bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
+
+/**
+ * @brief Test to determine if @p entity1 and @p entity2 are siblings.
+ *
+ * Test to determine if @p entity1 and @p entity2 are siblings.  Returns
+ * @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
+ *
+ * @param entity1 An @c Entity to test if it is a sibling to @p entity2.
+ * @param entity2 An @c Entity to test if it is a sibling to @p entity1.
+ *
+ * @return @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
+ */
+bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
+
+/**
+ * @brief Determine the interface type of the @p variable.
+ *
+ * Determine the interface type of the given @p variable. For variables with
+ * at least one equivalent variable, returning an interface type of
+ * Variable::InterfaceType::NONE indicates an error.
+ *
+ * @param variable The variable to determine the interface type for.
+ *
+ * @return The @p variable's interface type.
+ */
+Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
+
+/**
+ * @brief Traverse the component tree looking for variables with equivalences.
+ *
+ * Search through the component tree starting at @p component looking for variables
+ * with equivalences.  Variables found in the component tree with equivalences are added
+ * to the @p variables list.
+ *
+ * @param component The @c Component to search.
+ * @param variables The list of equivalent variables found.
+ */
+void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 /**
  * @brief Trim whitespace from the front of a string (in place).
