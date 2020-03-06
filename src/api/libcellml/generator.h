@@ -65,25 +65,26 @@ public:
     /**
      * @brief Get the @c Variable for this @c GeneratorVariable.
      *
-     * Return the @c Variable of this @c GeneratorVariable.
+     * Return the @c Variable of this @c GeneratorVariable. It can be used to
+     * retrieve the initial value of the @c Variable.
      *
      * @return The @c Variable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Get the @c Component for this @c GeneratorVariable.
+     * @brief Get the reference @c Variable for this @c GeneratorVariable.
      *
-     * Return the @c Component of this @c GeneratorVariable. It is the
-     * @c Component in which the @c Variable is first defined (in the case of
-     * the variable of integration), initialised (in the case of a constant) or
-     * actually computed (in the case of a state, computed constant or algebraic
-     * variable). It may or may not be the same @c Component as the parent
-     * component of the @c Variable.
+     * Return the reference @c Variable of this @c GeneratorVariable. Its
+     * @c Component is the one in which the @c Variable is first defined (in the
+     * case of the variable of integration), initialised (in the case of a
+     * constant) or computed (in the case of a state, computed constant or
+     * algebraic variable). It may or may not be the same @c Variable as the one
+     * returned by @sa variable.
      *
-     * @return The @c Component.
+     * @return The reference @c Variable.
      */
-    ComponentPtr component() const;
+    VariablePtr referenceVariable() const;
 
     /**
      * @brief Get the @c Type for this @c GeneratorVariable.

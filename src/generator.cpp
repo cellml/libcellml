@@ -53,19 +53,20 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 struct GeneratorVariable::GeneratorVariableImpl
 {
     VariablePtr mVariable;
-    ComponentPtr mComponent;
+    VariablePtr mReferenceVariable;
     GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
 
-    void populate(const VariablePtr &variable, const ComponentPtr &component,
+    void populate(const VariablePtr &variable,
+                  const VariablePtr &referenceVariable,
                   GeneratorVariable::Type type);
 };
 
 void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &variable,
-                                                        const ComponentPtr &component,
+                                                        const VariablePtr &referenceVariable,
                                                         GeneratorVariable::Type type)
 {
     mVariable = variable;
-    mComponent = component;
+    mReferenceVariable = referenceVariable;
     mType = type;
 }
 
@@ -89,9 +90,9 @@ VariablePtr GeneratorVariable::variable() const
     return mPimpl->mVariable;
 }
 
-ComponentPtr GeneratorVariable::component() const
+VariablePtr GeneratorVariable::referenceVariable() const
 {
-    return mPimpl->mComponent;
+    return mPimpl->mReferenceVariable;
 }
 
 GeneratorVariable::Type GeneratorVariable::type() const
@@ -122,7 +123,7 @@ struct GeneratorInternalVariable
     Type mType = Type::UNKNOWN;
 
     VariablePtr mVariable;
-    ComponentPtr mComponent;
+    VariablePtr mReferenceVariable;
 
     GeneratorEquationWeakPtr mEquation;
 
@@ -137,7 +138,7 @@ struct GeneratorInternalVariable
 using GeneratorInternalVariablePtr = std::shared_ptr<GeneratorInternalVariable>;
 
 GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable)
-    : mComponent(std::dynamic_pointer_cast<Component>(variable->parent()))
+    : mReferenceVariable(variable)
 {
     setVariable(variable);
 }
@@ -306,6 +307,16 @@ bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &ode
            || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
+bool sameOrEquivalentVariable(const VariablePtr &variable1,
+                              const VariablePtr &variable2)
+{
+    // Return whether the given variables are the same or are equivalent (be it
+    // directly or indirectly).
+
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
+}
+
+
 bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
                               size_t &variableIndex)
 {
@@ -379,8 +390,17 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        VariablePtr referenceVariable = nullptr;
 
-        variable->mComponent = mComponent;
+        for (size_t i = 0; i < mComponent->variableCount(); ++i) {
+            VariablePtr testVariable = mComponent->variable(i);
+
+            if (sameOrEquivalentVariable(variable->mVariable, testVariable)) {
+                referenceVariable = testVariable;
+            }
+        }
+
+        variable->mReferenceVariable = referenceVariable;
 
         if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
@@ -479,9 +499,6 @@ struct Generator::GeneratorImpl
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
-
-    bool sameOrEquivalentVariable(const VariablePtr &variable1,
-                                  const VariablePtr &variable2);
 
     GeneratorVariablePtr variableFirstOccurrence(const VariablePtr &variable,
                                                  const ComponentPtr &component);
@@ -695,15 +712,6 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     return internalVariable;
 }
 
-bool Generator::GeneratorImpl::sameOrEquivalentVariable(const VariablePtr &variable1,
-                                                        const VariablePtr &variable2)
-{
-    // Return whether the given variables are the same or are equivalent (be it
-    // directly or indirectly).
-
-    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
-}
-
 GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const VariablePtr &variable,
                                                                        const ComponentPtr &component)
 {
@@ -712,13 +720,13 @@ GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const Var
 
     GeneratorVariablePtr voi = nullptr;
 
-    for (size_t j = 0; j < component->variableCount() && voi == nullptr; ++j) {
-        VariablePtr testVariable = component->variable(j);
+    for (size_t i = 0; i < component->variableCount() && voi == nullptr; ++i) {
+        VariablePtr testVariable = component->variable(i);
 
         if (sameOrEquivalentVariable(variable, testVariable)) {
             voi = GeneratorVariable::create();
 
-            voi->mPimpl->populate(testVariable, component, GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
+            voi->mPimpl->populate(testVariable, testVariable, GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
         }
     }
 
@@ -1218,13 +1226,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                 }
             }
         } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
-            ModelPtr voiModel = owningModel(mVoi->component());
+            ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->variable()->parent());
+            ModelPtr voiModel = owningModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = owningModel(component);
             ErrorPtr err = Error::create();
 
             err->setDescription("Variable '" + mVoi->variable()->name()
-                                + "' in component '" + mVoi->component()->name()
+                                + "' in component '" + voiComponent->name()
                                 + "' of model '" + voiModel->name()
                                 + "' and variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -1279,11 +1288,9 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
 {
     // Return the scaling factor for the given variable.
-    // Note: we should not be passing `false` to `scalingFactor()`, but for this
-    //       issue #563 must be fixed.
 
     return Units::scalingFactor(variable->units(),
-                                generatorVariable(variable)->mVariable->units(), false);
+                                generatorVariable(variable)->mReferenceVariable->units());
 }
 
 void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast,
@@ -1318,7 +1325,7 @@ std::cout << "Variable: " << ast->mVariable->name()
           << " | Crt unit: " << ast->mVariable->units()->name()
           << " | Ref unit: " << generatorVariable(ast->mVariable)->mVariable->units()->name()
           << " | Crt comp: " << entityName(ast->mVariable->parent())
-          << " | Ref comp: " << generatorVariable(ast->mVariable)->mComponent->name()
+          << " | Ref comp: " << entityName(generatorVariable(ast->mVariable)->mReferenceVariable)
           << std::endl;
 }
 
@@ -1367,12 +1374,10 @@ std::cout << "Variable: " << ast->mVariable->name()
                     }
                 }
             }
-        } else if (((astParent->mType != GeneratorEquationAst::Type::ASSIGNMENT)
-                    || (astParent->mLeft != ast))
-                   && (astParent->mType != GeneratorEquationAst::Type::BVAR)) {
-            // We are dealing with a variable which is not to be computed and
-            // which is not our variable of integration, so retrieve its scaling
-            // factor and apply it, if needed.
+        } else if (astParent->mType != GeneratorEquationAst::Type::BVAR) {
+            // We are dealing with a variable which is not our variable of
+            // integration, so retrieve its scaling factor and apply it, if
+            // needed.
 
             double scalingFactor = Generator::GeneratorImpl::scalingFactor(ast->mVariable);
 
@@ -1627,7 +1632,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             GeneratorVariablePtr stateOrVariable = GeneratorVariable::create();
 
             stateOrVariable->mPimpl->populate(internalVariable->mVariable,
-                                              internalVariable->mComponent,
+                                              internalVariable->mReferenceVariable,
                                               type);
 
             if (type == GeneratorVariable::Type::STATE) {
@@ -1736,9 +1741,9 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const GeneratorVariablePtr &variable)
 {
-    auto variableComponentSize = variable->component()->name().length() + 1;
-    auto variableNameSize = variable->variable()->name().length() + 1;
-    auto variableUnitsSize = variable->variable()->units()->name().length() + 1;
+    auto variableComponentSize = entityName(variable->referenceVariable()->parent()).length() + 1;
+    auto variableNameSize = variable->referenceVariable()->name().length() + 1;
+    auto variableUnitsSize = variable->referenceVariable()->units()->name().length() + 1;
     // Note: +1 to account for the end of string termination.
 
     componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
@@ -2226,7 +2231,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
 
         std::string name = (mVoi != nullptr) ? mVoi->variable()->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->variable()->units()->name() : "";
-        std::string component = (mVoi != nullptr) ? mVoi->component()->name() : "";
+        std::string component = (mVoi != nullptr) ? entityName(mVoi->referenceVariable()->parent()) : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -2252,7 +2257,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->variable()->name(),
                                                                 state->variable()->units()->name(),
-                                                                state->component()->name());
+                                                                entityName(state->referenceVariable()->parent()));
         }
 
         if (!infoElementsCode.empty()) {
@@ -2297,7 +2302,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
                                                           "<UNITS>", variable->variable()->units()->name()),
-                                                  "<COMPONENT>", variable->component()->name()),
+                                                  "<COMPONENT>", entityName(variable->referenceVariable()->parent())),
                                           "<TYPE>", variableType);
         }
 
