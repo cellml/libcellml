@@ -20,7 +20,7 @@ class VariableType(Enum):
 VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "x", "units": "M", "component": "circle_x"},
+    {"name": "x", "units": "mM", "component": "circle_x"},
     {"name": "y", "units": "uM", "component": "circle_y_implementation"}
 ]
 

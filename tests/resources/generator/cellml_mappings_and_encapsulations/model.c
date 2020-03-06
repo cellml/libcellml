@@ -14,7 +14,7 @@ const size_t VARIABLE_COUNT = 2;
 const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "M", "circle_x"},
+    {"x", "mM", "circle_x"},
     {"y", "uM", "circle_y_implementation"}
 };
 
