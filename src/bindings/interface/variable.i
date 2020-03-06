@@ -50,7 +50,10 @@ updated).";
 reference.";
 
 %feature("docstring") libcellml::Variable::interfaceType
-"Returns this variable's interface type as string.";
+"Returns this variable's interface type as a string.";
+
+%feature("docstring") libcellml::Variable::hasInterfaceType
+"Test if this variable has the given interface type.";
 
 %feature("docstring") libcellml::Variable::removeInterfaceType
 "Clear the interface type for this variable.";
