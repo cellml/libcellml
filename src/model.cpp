@@ -934,4 +934,25 @@ void Model::flatten()
     linkUnits();
 }
 
+bool Model::fixVariableInterfaces()
+{
+    VariablePtrs variables;
+
+    for (size_t index = 0; index < componentCount(); ++index) {
+        findAllVariablesWithEquivalences(component(index), variables);
+    }
+
+    bool allOk = true;
+    for (const auto &variable : variables) {
+        Variable::InterfaceType interfaceType = determineInterfaceType(variable);
+        if (interfaceType == Variable::InterfaceType::NONE) {
+            allOk = false;
+        } else if (!variable->hasInterfaceType(interfaceType)) {
+            variable->setInterfaceType(interfaceType);
+        }
+    }
+
+    return allOk;
+}
+
 } // namespace libcellml
