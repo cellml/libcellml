@@ -205,9 +205,11 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
 
     libcellml::VariablePtr v1 = libcellml::Variable::create();
     v1->setName(v1Name);
+    v1->setInterfaceType("public");
     c1->addVariable(v1);
     libcellml::VariablePtr v2 = libcellml::Variable::create();
     v2->setName(v2Name);
+    v2->setInterfaceType("public");
     c2->addVariable(v2);
 
     return model;
