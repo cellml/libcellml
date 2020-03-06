@@ -172,7 +172,7 @@ bool updateUnitMultiplier(double &multiplier,
     bool updated = false;
     auto unitsName = units->name();
 
-    if (units->isBaseUnit()) {
+    if (units->unitCount() == 0) {
         multiplier += direction * logMult;
         updated = true;
     } else {
@@ -466,16 +466,14 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
         auto unitsName = units->name();
-        if (isStandardUnitName(unitsName)) {
-            updateUnitsMapWithStandardUnit(unitsName, unitsMap, exp);
+        auto found = unitsMap.find(unitsName);
+        if (found == unitsMap.end()) {
+            unitsMap.emplace(unitsName, exp);
         } else {
-            auto found = unitsMap.find(unitsName);
-            if (found == unitsMap.end()) {
-                unitsMap.emplace(unitsName, exp);
-            } else {
-                found->second += exp;
-            }
+            found->second += exp;
         }
+    } else if (isStandardUnit(units)) {
+        updateUnitsMapWithStandardUnit(units->name(), unitsMap, exp);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
