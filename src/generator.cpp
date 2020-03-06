@@ -52,7 +52,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
  */
 struct GeneratorVariable::GeneratorVariableImpl
 {
-    VariablePtr mVariable;
+    VariablePtr mInitialValueVariable;
     VariablePtr mReferenceVariable;
     GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
 
@@ -65,7 +65,7 @@ void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &varia
                                                         const VariablePtr &referenceVariable,
                                                         GeneratorVariable::Type type)
 {
-    mVariable = variable;
+    mInitialValueVariable = variable;
     mReferenceVariable = referenceVariable;
     mType = type;
 }
@@ -85,9 +85,9 @@ GeneratorVariablePtr GeneratorVariable::create() noexcept
     return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {}};
 }
 
-VariablePtr GeneratorVariable::variable() const
+VariablePtr GeneratorVariable::initialValueVariable() const
 {
-    return mPimpl->mVariable;
+    return mPimpl->mInitialValueVariable;
 }
 
 VariablePtr GeneratorVariable::referenceVariable() const
@@ -1217,12 +1217,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                     }
                 }
             }
-        } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
-            ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->variable()->parent());
+        } else if (!sameOrEquivalentVariable(variable, mVoi->referenceVariable())) {
+            ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->referenceVariable()->parent());
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ErrorPtr err = Error::create();
 
-            err->setDescription("Variable '" + mVoi->variable()->name()
+            err->setDescription("Variable '" + mVoi->referenceVariable()->name()
                                 + "' in component '" + voiComponent->name()
                                 + "' and variable '" + variable->name()
                                 + "' in component '" + component->name()
@@ -2214,8 +2214,8 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
             code += "\n";
         }
 
-        std::string name = (mVoi != nullptr) ? mVoi->variable()->name() : "";
-        std::string units = (mVoi != nullptr) ? mVoi->variable()->units()->name() : "";
+        std::string name = (mVoi != nullptr) ? mVoi->referenceVariable()->name() : "";
+        std::string units = (mVoi != nullptr) ? mVoi->referenceVariable()->units()->name() : "";
         std::string component = (mVoi != nullptr) ? entityName(mVoi->referenceVariable()->parent()) : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
@@ -2240,8 +2240,8 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             }
 
             infoElementsCode += mProfile->indentString()
-                                + generateVariableInfoEntryCode(state->variable()->name(),
-                                                                state->variable()->units()->name(),
+                                + generateVariableInfoEntryCode(state->referenceVariable()->name(),
+                                                                state->referenceVariable()->units()->name(),
                                                                 entityName(state->referenceVariable()->parent()));
         }
 
@@ -2285,8 +2285,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
 
             infoElementsCode += mProfile->indentString()
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
-                                                                  "<NAME>", variable->variable()->name()),
-                                                          "<UNITS>", variable->variable()->units()->name()),
+                                                                  "<NAME>", variable->referenceVariable()->name()),
+                                                          "<UNITS>", variable->referenceVariable()->units()->name()),
                                                   "<COMPONENT>", entityName(variable->referenceVariable()->parent())),
                                           "<TYPE>", variableType);
         }

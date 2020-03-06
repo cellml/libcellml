@@ -1086,7 +1086,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
         libcellml::GeneratorVariable::Type::ALGEBRAIC};
 
     for (size_t i = 0; i < generator->variableCount(); ++i) {
-        EXPECT_NE(nullptr, generator->variable(i)->variable());
+        EXPECT_NE(nullptr, generator->variable(i)->referenceVariable());
         EXPECT_EQ(expectedTypes[i], generator->variable(i)->type());
     }
 
@@ -1147,7 +1147,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithScalingFactors)
         libcellml::GeneratorVariable::Type::ALGEBRAIC};
 
     for (size_t i = 0; i < generator->variableCount(); ++i) {
-        EXPECT_NE(nullptr, generator->variable(i)->variable());
+        EXPECT_NE(nullptr, generator->variable(i)->referenceVariable());
         EXPECT_EQ(expectedTypes[i], generator->variable(i)->type());
     }
 
