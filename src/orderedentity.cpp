@@ -43,40 +43,13 @@ OrderedEntity::~OrderedEntity()
     delete mPimpl;
 }
 
-OrderedEntity::OrderedEntity(const OrderedEntity &rhs)
-    : Entity(rhs)
-    , mPimpl(new OrderedEntityImpl())
-{
-    mPimpl->mOrder = rhs.mPimpl->mOrder;
-    mPimpl->mOrderSet = rhs.mPimpl->mOrderSet;
-}
-
-OrderedEntity::OrderedEntity(OrderedEntity &&rhs)
-    :  Entity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
-OrderedEntity& OrderedEntity::operator=(OrderedEntity e)
-{
-    Entity::operator= (e);
-    e.swap(*this);
-    return *this;
-}
-
-void OrderedEntity::swap(OrderedEntity &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
 void OrderedEntity::setOrder(int order)
 {
     mPimpl->mOrder = order;
     mPimpl->mOrderSet = true;
 }
 
-int OrderedEntity::getOrder() const
+int OrderedEntity::order() const
 {
     return mPimpl->mOrder;
 }
@@ -91,4 +64,4 @@ bool OrderedEntity::isOrderSet()
     return mPimpl->mOrderSet;
 }
 
-}
+} // namespace libcellml
