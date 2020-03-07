@@ -936,6 +936,41 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
     EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.py"), generator->implementationCode());
 }
 
+TEST(Generator, cellmlUnitScaling)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    generator->processModel(model);
+
+    EXPECT_EQ(size_t(0), generator->errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+
+    EXPECT_EQ(size_t(2), generator->stateCount());
+    EXPECT_EQ(size_t(2), generator->variableCount());
+
+    EXPECT_NE(nullptr, generator->voi());
+    EXPECT_NE(nullptr, generator->state(0));
+    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
+    EXPECT_NE(nullptr, generator->variable(0));
+    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling/model.c"), generator->implementationCode());
+
+    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling/model.py"), generator->implementationCode());
+}
+
 TEST(Generator, dependentEqns)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
