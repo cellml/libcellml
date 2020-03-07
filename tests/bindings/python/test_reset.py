@@ -5,15 +5,13 @@
 import unittest
 
 
-class OrderedEntityTestCase(unittest.TestCase):
+class ResetTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
         from libcellml import Reset
 
         x = Reset()
-        y = Reset()
-        z = Reset(y)
-        del(x, y, z)
+        del(x)
 
     def test_set_get_variable(self):
         from libcellml import Reset
@@ -23,121 +21,71 @@ class OrderedEntityTestCase(unittest.TestCase):
         v = Variable()
         v.setName("glucose")
 
-        self.assertEqual(None, r.getVariable())
+        self.assertEqual(None, r.variable())
 
         r.setVariable(v)
 
-        self.assertEqual("glucose", r.getVariable().getName())
+        self.assertEqual("glucose", r.variable().name())
 
-    def test_add_when(self):
+    def test_set_get_test_variable(self):
         from libcellml import Reset
-        from libcellml import When
+        from libcellml import Variable
 
-        # addWhen()
-        w = When()
+        r = Reset()
+        v = Variable()
+        v.setName("glucose")
+
+        self.assertEqual(None, r.testVariable())
+
+        r.setTestVariable(v)
+
+        self.assertEqual("glucose", r.testVariable().name())
+
+    def test_set_order(self):
+        from libcellml import Reset
+
         x = Reset()
-        x.addWhen(w)
-        self.assertEqual(1, x.whenCount())
+        x.setOrder(3)
+        self.assertEqual(3, x.order())
 
-    def test_remove_when(self):
+    def test_is_order_set(self):
         from libcellml import Reset
-        from libcellml import When
 
-        w = When()
-        r = Reset()
+        # bool isOrderSet()
+        x = Reset()
+        self.assertFalse(x.isOrderSet())
+        x.setOrder(2)
+        self.assertTrue(x.isOrderSet())
 
-        r.addWhen(w)
-
-        self.assertEqual(1, r.whenCount())
-
-        self.assertTrue(r.removeWhen(0))
-        self.assertEqual(0, r.whenCount())
-
-        r.addWhen(w)
-
-        self.assertTrue(r.removeWhen(w))
-        self.assertEqual(0, r.whenCount())
-
-    def test_remove_all_whens(self):
+    def test_unset_order(self):
         from libcellml import Reset
-        from libcellml import When
 
-        w1 = When()
-        w2 = When()
-        w3 = When()
-        r = Reset()
+        # unsetOrder()
+        x = Reset()
+        x.setOrder(-4)
+        self.assertTrue(x.isOrderSet())
+        x.unsetOrder()
+        self.assertFalse(x.isOrderSet())
 
-        r.addWhen(w1)
-        r.addWhen(w2)
-        r.addWhen(w3)
-        self.assertEqual(3, r.whenCount())
-
-        r.removeAllWhens()
-        self.assertEqual(0, r.whenCount())
-
-    def test_contains_when(self):
+    def test_set_get_test_value(self):
         from libcellml import Reset
-        from libcellml import When
 
-        w1 = When()
-        w2 = When()
-        r = Reset()
+        x = Reset()
+        self.assertEqual("", x.testValue())
 
-        r.addWhen(w1)
+        x.setTestValue("A MathML string.")
 
-        self.assertTrue(r.containsWhen(w1))
-        self.assertFalse(r.containsWhen(w2))
+        self.assertEqual("A MathML string.", x.testValue())
 
-    def test_get_when(self):
+    def test_set_get_reset_value(self):
         from libcellml import Reset
-        from libcellml import When
 
-        w = When()
-        r = Reset()
+        x = Reset()
+        self.assertEqual("", x.resetValue())
 
-        r.addWhen(w)
+        x.setResetValue("A value MathML string.")
 
-        self.assertEqual(None, r.getWhen(2))
-        self.assertEqual(None, r.getWhen(-4))
-        self.assertNotEqual(None, r.getWhen(0))
-
-    def test_take_when(self):
-        from libcellml import Reset
-        from libcellml import When
-
-        w = When()
-        r = Reset()
-
-        r.addWhen(w)
-
-        self.assertEqual(1, r.whenCount())
-        self.assertEqual(None, r.takeWhen(2))
-
-        w_returned = r.takeWhen(0)
-
-        self.assertNotEqual(None, w_returned)
-        self.assertEqual(0, r.whenCount())
-
-    def test_replace_when(self):
-        from libcellml import Reset
-        from libcellml import When
-
-        w1 = When()
-        w1.setCondition("x=exp(y)")
-        w2 = When()
-        w2.setValue("a=2")
-
-        r = Reset()
-
-        r.addWhen(w1)
-
-        self.assertFalse(r.replaceWhen(3, w2))
-        self.assertEqual("x=exp(y)", r.getWhen(0).getCondition())
-        self.assertEqual("", r.getWhen(0).getValue())
-
-        self.assertTrue(r.replaceWhen(0, w2))
-        self.assertEqual("", r.getWhen(0).getCondition())
-        self.assertEqual("a=2", r.getWhen(0).getValue())
+        self.assertEqual("A value MathML string.", x.resetValue())
 
 
 if __name__ == '__main__':

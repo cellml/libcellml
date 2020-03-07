@@ -20,7 +20,7 @@ function(TARGET_WARNINGS_AS_ERRORS _TARGET)
   if(${_INDEX} GREATER -1)
     set(_COMPILER_WAE -Wall -W -Werror)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(_COMPILER_WAE /W3)
+    set(_COMPILER_WAE /W4 /WX)
   endif()
 
   if(_COMPILER_WAE)
@@ -31,12 +31,15 @@ endfunction()
 
 function(INTERNALISE_CMAKE_VARIABLES)
   # internalise some CMake variables
-  set( CMAKE_INSTALL_PREFIX ${LIBCELLML_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE )
-  set( CMAKE_BUILD_TYPE ${LIBCELLML_BUILD_TYPE} CACHE INTERNAL "Internalise CMAKE_BUILD_TYPE, manipulate via LIBCELLML_BUILD_TYPE" FORCE )
-  set( BUILD_SHARED_LIBS ${LIBCELLML_BUILD_SHARED} CACHE INTERNAL "Internalise BUILD_SHARED_LIBS, manipulate via LIBCELLML_BUILD_SHARED" FORCE )
+  file(TO_CMAKE_PATH ${LIBCELLML_INSTALL_PREFIX} _CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX ${_CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE)
+  set(CMAKE_BUILD_TYPE ${LIBCELLML_BUILD_TYPE} CACHE INTERNAL "Internalise CMAKE_BUILD_TYPE, manipulate via LIBCELLML_BUILD_TYPE" FORCE)
+  set(BUILD_SHARED_LIBS ${LIBCELLML_BUILD_SHARED} CACHE INTERNAL "Internalise BUILD_SHARED_LIBS, manipulate via LIBCELLML_BUILD_SHARED" FORCE)
 endfunction()
 
 function(HIDE_DISTRACTING_VARIABLES)
+  # Mark cache variables that aren't libCellML configuration variables as advanced
+  # to hide them from the user in a CMake GUI.
   mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
   mark_as_advanced(CMAKE_CODEBLOCKS_EXECUTABLE)
   mark_as_advanced(QT_QMAKE_EXECUTABLE)
@@ -44,6 +47,17 @@ function(HIDE_DISTRACTING_VARIABLES)
     mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
     mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
     mark_as_advanced(CMAKE_OSX_SYSROOT)
+  endif()
+  if(WIN32)
+    if(LibXml2_FOUND AND HAVE_LIBXML2_CONFIG)
+      mark_as_advanced(LibXml2_DIR)
+    elseif(LibXml2_FOUND AND NOT HAVE_LIBXML2_CONFIG)
+      mark_as_advanced(LIBXML2_INCLUDE_DIR)
+      mark_as_advanced(LIBXML2_LIBRARY)
+      mark_as_advanced(LIBXML2_XMLLINT_EXECUTABLE)
+    endif()
+  else()
+    mark_as_advanced(pkgcfg_lib_PC_LIBXML_xml2)
   endif()
 endfunction()
 
@@ -71,4 +85,184 @@ function(GROUP_SOURCE_TO_DIR_STRUCTURE)
       source_group("${_FILE_PREFIX}${_FILE_GROUP}" FILES "${_FILE}")
     endforeach()
   endif()
+endfunction()
+
+function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
+     OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    # The full list of diagnostic flags in Clang can be found at
+    # https://clang.llvm.org/docs/DiagnosticsReference.html
+    set(_COMPILE_OPTIONS
+      -Weverything
+      -Wno-c++98-compat
+      -Wno-c++98-compat-pedantic
+      -Wno-documentation
+      -Wno-documentation-unknown-command
+      -Wno-exit-time-destructors
+      -Wno-global-constructors
+      -Wno-missing-prototypes
+      -Wno-padded
+    )
+
+    if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)
+      list(APPEND _COMPILE_OPTIONS
+        -Wno-reserved-id-macro
+      )
+    endif()
+
+    if(NOT "${_TARGET}" STREQUAL "cellml")
+      list(APPEND _COMPILE_OPTIONS
+        -Wno-used-but-marked-unused
+        --system-header-prefix=gtest/
+      )
+    endif()
+
+    set_target_properties(${_TARGET} PROPERTIES
+      COMPILE_OPTIONS "${_COMPILE_OPTIONS}"
+    )
+  endif()
+
+  if(CLANG_TIDY_AVAILABLE)
+    if(NOT "${_TARGET}" STREQUAL "cellml")
+        set(_NO_BUGPRONE_EXCEPTION_ESCAPE -bugprone-exception-escape)
+        set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
+        set(_NO_HICPP_VARARG -hicpp-vararg)
+    endif()
+
+    # The full list of Clang-Tidy checks can be found at
+    # https://clang.llvm.org/extra/clang-tidy/checks/list.html
+    set(_CLANG_TIDY_CHECKS
+      -*
+      bugprone-*
+      -bugprone-branch-clone
+      ${_NO_BUGPRONE_EXCEPTION_ESCAPE}
+      cert-*
+      -cert-err58-cpp
+      cppcoreguidelines-*
+      -cppcoreguidelines-avoid-magic-numbers
+      -cppcoreguidelines-owning-memory
+      -cppcoreguidelines-pro-type-reinterpret-cast
+      ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
+      -cppcoreguidelines-slicing
+      -cppcoreguidelines-special-member-functions
+      fuchsia-*
+      -fuchsia-default-arguments
+      -fuchsia-default-arguments-calls
+      -fuchsia-default-arguments-declarations
+      -fuchsia-multiple-inheritance
+      -fuchsia-overloaded-operator
+      -fuchsia-statically-constructed-objects
+      google-*
+      -google-readability-todo
+      -google-runtime-references
+      hicpp-*
+      -hicpp-special-member-functions
+      ${_NO_HICPP_VARARG}
+      llvm-*
+      -llvm-header-guard
+      misc-*
+      -misc-non-private-member-variables-in-classes
+      modernize-*
+      -modernize-make-shared
+      -modernize-pass-by-value
+      -modernize-raw-string-literal
+      -modernize-use-trailing-return-type
+      performance-*
+      -performance-inefficient-string-concatenation
+      readability-*
+      -readability-convert-member-functions-to-static
+      -readability-magic-numbers
+    )
+    string(REPLACE ";" ","
+           _CLANG_TIDY_CHECKS "${_CLANG_TIDY_CHECKS}")
+    if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
+      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_CHECKS}")
+    endif()
+
+    if("${CMAKE_GENERATOR}" STREQUAL "Ninja")
+      set(_HEADER_FILTER_DIR ..)
+    else()
+      set(_HEADER_FILTER_DIR ${CMAKE_SOURCE_DIR})
+    endif()
+
+    set(_HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}/src/")
+
+    string(REPLACE "." "\\\."
+           _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
+    string(REPLACE "/" "\\\/"
+           _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
+
+    set_target_properties(${_TARGET} PROPERTIES
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+    )
+  endif()
+endfunction()
+
+function(GET_SYSTEM_NAME RETURN_SYSTEM_NAME)
+  if(WIN32)
+    set(SYSTEM_NAME "Windows" )
+  elseif(APPLE)
+    set(SYSTEM_NAME "macOS" )
+  elseif(UNIX)
+    find_program(LSB lsb_release DOC "Distribution information tool")
+    mark_as_advanced(LSB)
+    if(LSB)
+      execute_process(COMMAND ${LSB} -i
+        RESULT_VARIABLE RETFLAG
+        OUTPUT_VARIABLE DISTINFO
+        ERROR_VARIABLE ERRDISTINFO
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+      if(NOT RETFLAG)
+        string(SUBSTRING ${DISTINFO} 16 -1 SYSTEM_NAME)
+      endif()
+    endif()
+    if(NOT SYSTEM_NAME)
+      execute_process(COMMAND cat /etc/issue RESULT_VARIABLE COMMAND_RESULT OUTPUT_VARIABLE COMMAND_OUTPUT ERROR_VARIABLE ERROR_OUTPUT)
+      if(COMMAND_RESULT EQUAL 0)
+        if(NOT COMMAND_OUTPUT MATCHES "^\\\\")
+          string(REGEX MATCH "^[^\\]*" COMMAND_OUTPUT ${COMMAND_OUTPUT} )
+          string(STRIP ${COMMAND_OUTPUT} COMMAND_OUTPUT )
+          string(REPLACE " " "-" SYSTEM_NAME ${COMMAND_OUTPUT} )
+        endif()
+      endif()
+    endif()
+    if(NOT SYSTEM_NAME)
+      execute_process(COMMAND cat /etc/os-release RESULT_VARIABLE COMMAND_RESULT OUTPUT_VARIABLE COMMAND_OUTPUT ERROR_VARIABLE ERROR_OUTPUT)
+      if(COMMAND_RESULT EQUAL 0)
+        string(REGEX MATCH "^NAME=\\\"([^\\\"]*)" NAME_OUTPUT ${COMMAND_OUTPUT})
+        string(REPLACE " " "-" SYSTEM_NAME ${CMAKE_MATCH_1})
+      endif()
+    endif()
+    if(NOT SYSTEM_NAME)
+      set(SYSTEM_NAME Unix-Based)
+    endif()
+  else()
+    message(FATAL_ERROR "Don't yet know this system.")
+  endif()
+
+  string(REPLACE "\n" "_" SYSTEM_NAME ${SYSTEM_NAME})
+
+  set(${RETURN_SYSTEM_NAME} ${SYSTEM_NAME} PARENT_SCOPE)
+endfunction()
+
+function(DEBIAN_BASED _RESULT)
+  set(_DEBIAN_BASED FALSE)
+  string(FIND ${LIBCELLML_SYSTEM} "Ubuntu" INDEX)
+  if(INDEX EQUAL 0)
+    set(_DEBIAN_BASED TRUE)
+  elseif(EXISTS "/etc/debian_version")
+    set(_DEBIAN_BASED TRUE)
+  endif()
+  set(${_RESULT} ${_DEBIAN_BASED} PARENT_SCOPE)
+endfunction()
+
+function(REDHAT_BASED _RESULT)
+  set(_REDHAT_BASED FALSE)
+  if(EXISTS "/etc/redhat-release")
+    set(_REDHAT_BASED TRUE)
+  elseif(EXISTS "/etc/centos-release")
+    set(_REDHAT_BASED TRUE)
+  endif()
+  set(${_RESULT} ${_REDHAT_BASED} PARENT_SCOPE)
 endfunction()

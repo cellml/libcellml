@@ -7,31 +7,33 @@ import unittest
 class ModelTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
+        import libcellml
         from libcellml import Model
 
         x = Model()
         del(x)
-        y = Model()
-        z = Model(y)
-        del(y, z)
+
+        y = Model('bob')
+        self.assertEqual('bob', y.name())
+
+        z = libcellml.Model()
+        del z
 
     def test_inheritance(self):
         import libcellml
         from libcellml import Model
 
         x = Model()
-        self.assertIsInstance(x, libcellml.ComponentEntity)
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
+        self.assertIsInstance(x, libcellml.componententity.ComponentEntity)
+        self.assertIsInstance(x, libcellml.namedentity.NamedEntity)
+        self.assertIsInstance(x, libcellml.entity.Entity)
 
         # Test access to inherited methods
         x = Model()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
-        y = Model(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(x.id(), idx)
 
     def test_add_units(self):
         from libcellml import Model, Units
@@ -75,7 +77,6 @@ class ModelTestCase(unittest.TestCase):
         self.assertFalse(m.removeUnits(u1))
         m.addUnits(u1)
         self.assertFalse(m.removeUnits(u2))
-        self.assertTrue(m.removeUnits(u1))
         self.assertFalse(m.removeUnits(u1))
         del(m, u1, u2)
 
@@ -110,33 +111,33 @@ class ModelTestCase(unittest.TestCase):
         v = Units()
         self.assertFalse(m.hasUnits(v))
 
-    def test_get_units(self):
+    def test_units(self):
         from libcellml import Model, Units
 
-        # UnitsPtr getUnits(size_t index)
+        # UnitsPtr units(size_t index)
         name = 'naaame'
         m = Model()
         u = Units()
         u.setName(name)
-        self.assertIsNone(m.getUnits(0))
-        self.assertIsNone(m.getUnits(1))
-        self.assertIsNone(m.getUnits(-1))
+        self.assertIsNone(m.units(0))
+        self.assertIsNone(m.units(1))
+        self.assertIsNone(m.units(-1))
         m.addUnits(u)
-        self.assertIsNone(m.getUnits(1))
-        self.assertIsNone(m.getUnits(-1))
-        self.assertIsNotNone(m.getUnits(0))
-        self.assertEqual(m.getUnits(0).getName(), name)
+        self.assertIsNone(m.units(1))
+        self.assertIsNone(m.units(-1))
+        self.assertIsNotNone(m.units(0))
+        self.assertEqual(m.units(0).name(), name)
         del(m, u, name)
 
-        # UnitsPtr getUnits(const std::string &name)
+        # UnitsPtr units(const std::string &name)
         name = 'kermit'
         m = Model()
         u = Units()
         u.setName(name)
-        self.assertIsNone(m.getUnits(name))
+        self.assertIsNone(m.units(name))
         m.addUnits(u)
-        self.assertIsNotNone(m.getUnits(name))
-        self.assertEqual(m.getUnits(name).getName(), name)
+        self.assertIsNotNone(m.units(name))
+        self.assertEqual(m.units(name).name(), name)
         del(m, u, name)
 
     def test_take_units(self):
@@ -157,7 +158,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertIsNone(m.takeUnits(0))
         m.addUnits(Units())
         m.addUnits(u)
-        self.assertEqual(m.takeUnits(1).getName(), name)
+        self.assertEqual(m.takeUnits(1).name(), name)
         del(m, u)
 
         # UnitsPtr takeUnits(const std::string &name)
@@ -167,7 +168,7 @@ class ModelTestCase(unittest.TestCase):
         u.setName(name)
         self.assertIsNone(m.takeUnits(name))
         m.addUnits(u)
-        self.assertEquals(m.takeUnits(name).getName(), name)
+        self.assertEqual(m.takeUnits(name).name(), name)
         self.assertIsNone(m.takeUnits(name))
         del(m, u, name)
 
@@ -184,7 +185,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertTrue(m.replaceUnits(0, u2))
         self.assertFalse(m.replaceUnits(1, u1))
         self.assertFalse(m.replaceUnits(-1, u1))
-        self.assertEqual(m.getUnits(0).getName(), 'b')
+        self.assertEqual(m.units(0).name(), 'b')
         del(m, u1, u2)
 
         # bool replaceUnits(const std::string &name, const UnitsPtr &units)
@@ -206,8 +207,7 @@ class ModelTestCase(unittest.TestCase):
         m.addUnits(a)
         b = Units()
         self.assertFalse(m.replaceUnits(b, a))
-        self.assertTrue(m.replaceUnits(a, b))
-        self.assertTrue(m.replaceUnits(b, a))
+        self.assertFalse(m.replaceUnits(a, b))
         self.assertFalse(m.replaceUnits(b, a))
         del(m, a, b)
 

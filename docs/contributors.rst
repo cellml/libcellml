@@ -15,7 +15,7 @@ List of Funding Organisations
 List of Contributors
 ====================
 
-The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the libCellML project on or before 2019-03-06.
+The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the libCellML project on or before 2019-09-23.
 
  * `Ted Ahmadi <https://github.com/TedAhmadi>`_
  * `Robert Blake <https://github.com/rblake-llnl>`_
@@ -23,7 +23,9 @@ The following is a list of contributors (in surname alphabetical order) who have
  * `Jonathan Cooper <https://github.com/jonc125>`_
  * `Alan Garny <https://github.com/agarny>`_
  * `David Ladd <https://github.com/dladd>`_
- * `Gary Mirams <https://github.com/mirams>`_
+ * `Massimiliano Leoni <https://github.com/massimiliano-leoni>`_
+ * `Kyle Medley <https://github.com/0u812>`_
+ * `Keri Moyle <https://github.com/kerimoyle>`_
  * `David Nickerson <https://github.com/nickerso>`_
  * `Hugh Sorby <https://github.com/hsorby>`_
 

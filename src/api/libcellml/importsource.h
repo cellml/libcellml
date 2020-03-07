@@ -32,11 +32,22 @@ namespace libcellml {
 class LIBCELLML_EXPORT ImportSource: public Entity
 {
 public:
-    ImportSource(); /**< Constructor */
     ~ImportSource() override; /**< Destructor */
-    ImportSource(const ImportSource &rhs); /**< Copy constructor */
-    ImportSource(ImportSource &&rhs); /**< Move constructor */
-    ImportSource& operator=(ImportSource rhs); /**< Assignment operator */
+    ImportSource(const ImportSource &rhs) = delete; /**< Copy constructor */
+    ImportSource(ImportSource &&rhs) noexcept = delete; /**< Move constructor */
+    ImportSource &operator=(ImportSource rhs) = delete; /**< Assignment operator */
+
+    /**
+     * @brief Create a @c ImportSource object.
+     *
+     * Factory method to create an @c ImportSource.  Create an
+     * import source with::
+     *
+     *   ImportSourcePtr importSource = libcellml::ImportSource::create();
+     *
+     * @return A smart pointer to an @c ImportSource object.
+     */
+    static ImportSourcePtr create() noexcept;
 
     /**
      * @brief Get the source @c Model's URL.
@@ -46,7 +57,7 @@ public:
      *
      * @return The URL of the source @c Model if set otherwise the emtpy string.
      */
-    std::string getUrl() const;
+    std::string url() const;
 
     /**
      * @brief Set the source @c Model's URL.
@@ -65,7 +76,7 @@ public:
      *
      * @return The @c Model used to resolve this @c ImportSource.
      */
-    libcellml::ModelPtr getModel() const;
+    ModelPtr model() const;
 
     /**
      * @brief Provide the @c Model used to resolve this import.
@@ -75,7 +86,7 @@ public:
      *
      * @param model The @c Model to use in resolving this @c ImportSource.
      */
-    void setModel(libcellml::ModelPtr model);
+    void setModel(const ModelPtr &model);
 
     /**
      * @brief Test if this @c ImportSource is resolved.
@@ -88,11 +99,21 @@ public:
      */
     bool hasModel() const;
 
+    /**
+     * @brief Create a clone of this import source.
+     *
+     * Creates a full separate copy of this import source without copying
+     * the parent.
+     *
+     * @return a new @c ImportSourcePtr to the cloned import source.
+     */
+    ImportSourcePtr clone() const;
+
 private:
-    void swap(ImportSource &rhs); /**< Swap method required for C++ 11 move semantics. */
+    ImportSource(); /**< Constructor */
 
     struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

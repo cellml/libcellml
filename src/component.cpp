@@ -15,12 +15,16 @@ limitations under the License.
 */
 
 #include "libcellml/component.h"
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
 
 #include <algorithm>
 #include <string>
 #include <vector>
+
+#include "libcellml/reset.h"
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -34,17 +38,18 @@ namespace libcellml {
 struct Component::ComponentImpl
 {
     std::string mMath;
+    std::vector<ResetPtr> mResets;
+    std::vector<VariablePtr> mVariables;
+
+    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
-    std::vector<VariablePtr> mVariables;
-    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
-    std::vector<ResetPtr> mResets;
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v->getName() == name; });
+                        [=](const VariablePtr &v) -> bool { return v->name() == name; });
 }
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
@@ -64,53 +69,48 @@ Component::Component()
 {
 }
 
+Component::Component(const std::string &name)
+    : mPimpl(new ComponentImpl())
+{
+    setName(name);
+}
+
 Component::~Component()
 {
-    if (mPimpl) {
-        for (std::vector<VariablePtr>::iterator iter = mPimpl->mVariables.begin(); iter != mPimpl->mVariables.end(); ++iter) {
-            (*iter)->clearParent();
+    if (mPimpl != nullptr) {
+        for (const auto &variable : mPimpl->mVariables) {
+            variable->removeParent();
         }
     }
     delete mPimpl;
 }
 
-Component::Component(const Component &rhs)
-    : ComponentEntity(rhs)
-    , ImportedEntity(rhs)
-    , mPimpl(new ComponentImpl())
+ComponentPtr Component::create() noexcept
 {
-    mPimpl->mVariables = rhs.mPimpl->mVariables;
-    mPimpl->mResets = rhs.mPimpl->mResets;
-    mPimpl->mMath = rhs.mPimpl->mMath;
+    return std::shared_ptr<Component> {new Component {}};
 }
 
-Component::Component(Component &&rhs)
-    : ComponentEntity(std::move(rhs))
-    , ImportedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
+ComponentPtr Component::create(const std::string &name) noexcept
 {
-    rhs.mPimpl = nullptr;
+    return std::shared_ptr<Component> {new Component {name}};
 }
 
-Component& Component::operator=(Component c)
+bool Component::doAddComponent(const ComponentPtr &component)
 {
-    ComponentEntity::operator= (c);
-    ImportedEntity::operator = (c);
-    c.swap(*this);
-    return *this;
-}
-
-void Component::swap(Component &rhs)
-{
-    std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-void Component::doAddComponent(const ComponentPtr &component)
-{
-    if (!hasParent(component.get())) {
-        component->setParent(this);
-        ComponentEntity::doAddComponent(component);
+    bool hasParent = component->hasParent();
+    if (hasParent) {
+        if (hasAncestor(component)) {
+            return false;
+        }
+        auto parent = component->parent();
+        removeComponentFromEntity(parent, component);
+    } else if (!hasParent && hasAncestor(component)) {
+        return false;
+    } else if (shared_from_this() == component) {
+        return false;
     }
+    component->setParent(shared_from_this());
+    return ComponentEntity::doAddComponent(component);
 }
 
 void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)
@@ -119,101 +119,106 @@ void Component::setSourceComponent(const ImportSourcePtr &importSource, const st
     setImportReference(name);
 }
 
-void Component::appendMath(const std::string &math) {
+void Component::appendMath(const std::string &math)
+{
     mPimpl->mMath.append(math);
 }
 
-std::string Component::getMath() const{
+std::string Component::math() const
+{
     return mPimpl->mMath;
 }
 
-void Component::setMath(const std::string &math) {
+void Component::setMath(const std::string &math)
+{
     mPimpl->mMath = math;
+}
+
+void Component::removeMath()
+{
+    mPimpl->mMath.clear();
 }
 
 void Component::addVariable(const VariablePtr &variable)
 {
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(this);
+    variable->setParent(shared_from_this());
 }
 
 bool Component::removeVariable(size_t index)
 {
-    bool status = false;
     if (index < mPimpl->mVariables.size()) {
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + index);
-        status = true;
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 bool Component::removeVariable(const std::string &name)
 {
-    bool status = false;
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 bool Component::removeVariable(const VariablePtr &variable)
 {
-    bool status = false;
     auto result = mPimpl->findVariable(variable);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
-        status = true;
+        variable->removeParent();
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 void Component::removeAllVariables()
 {
+    for (const auto &variable : mPimpl->mVariables) {
+        variable->removeParent();
+    }
     mPimpl->mVariables.clear();
 }
 
-VariablePtr Component::getVariable(size_t index) const
+VariablePtr Component::variable(size_t index) const
 {
-    VariablePtr variable = nullptr;
     if (index < mPimpl->mVariables.size()) {
-        variable = mPimpl->mVariables.at(index);
+        return mPimpl->mVariables.at(index);
     }
 
-    return variable;
+    return nullptr;
 }
 
-VariablePtr Component::getVariable(const std::string &name) const
+VariablePtr Component::variable(const std::string &name) const
 {
-    VariablePtr variable = nullptr;
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
-        variable = *result;
+        return *result;
     }
 
-    return variable;
+    return nullptr;
 }
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr variable = nullptr;
-    variable = getVariable(index);
+    VariablePtr res = variable(index);
     removeVariable(index);
 
-    return variable;
+    return res;
 }
 
 VariablePtr Component::takeVariable(const std::string &name)
 {
-    VariablePtr variable = nullptr;
-    variable = getVariable(name);
+    VariablePtr res = variable(name);
     removeVariable(name);
 
-    return variable;
+    return res;
 }
 
 size_t Component::variableCount() const
@@ -238,25 +243,23 @@ void Component::addReset(const ResetPtr &reset)
 
 bool Component::removeReset(size_t index)
 {
-    bool status = false;
     if (index < mPimpl->mResets.size()) {
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + index);
-        status = true;
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 bool Component::removeReset(const ResetPtr &reset)
 {
-    bool status = false;
     auto result = mPimpl->findReset(reset);
     if (result != mPimpl->mResets.end()) {
         mPimpl->mResets.erase(result);
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 void Component::removeAllResets()
@@ -264,14 +267,13 @@ void Component::removeAllResets()
     mPimpl->mResets.clear();
 }
 
-ResetPtr Component::getReset(size_t index) const
+ResetPtr Component::reset(size_t index) const
 {
-    ResetPtr reset = nullptr;
     if (index < mPimpl->mResets.size()) {
-        reset = mPimpl->mResets.at(index);
+        return mPimpl->mResets.at(index);
     }
 
-    return reset;
+    return nullptr;
 }
 
 size_t Component::resetCount() const
@@ -284,4 +286,59 @@ bool Component::hasReset(const ResetPtr &reset) const
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
+size_t getVariableIndexInComponent(const std::shared_ptr<const Component> &component, const VariablePtr &variable)
+{
+    size_t index = 0;
+    bool found = false;
+    while (index < component->variableCount() && !found) {
+        if (component->variable(index) == variable) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    return index;
 }
+
+ComponentPtr Component::clone() const
+{
+    auto c = create();
+
+    c->setId(id());
+    c->setName(name());
+    c->setMath(math());
+
+    c->setImportSource(importSource());
+    c->setImportReference(importReference());
+
+    for (size_t index = 0; index < variableCount(); ++index) {
+        auto v = variable(index);
+        c->addVariable(v->clone());
+    }
+
+    for (size_t index = 0; index < resetCount(); ++index) {
+        auto r = reset(index);
+        auto rClone = r->clone();
+        c->addReset(rClone);
+        size_t variableIndex = getVariableIndexInComponent(shared_from_this(), r->variable());
+        if (variableIndex < variableCount()) {
+            auto v = c->variable(variableIndex);
+            rClone->setVariable(v);
+        }
+        size_t testVariableIndex = getVariableIndexInComponent(shared_from_this(), r->testVariable());
+        if (testVariableIndex < variableCount()) {
+            auto v = c->variable(testVariableIndex);
+            rClone->setTestVariable(v);
+        }
+    }
+
+    for (size_t index = 0; index < componentCount(); ++index) {
+        auto cChild = component(index);
+        c->addComponent(cChild->clone());
+    }
+
+    return c;
+}
+
+} // namespace libcellml

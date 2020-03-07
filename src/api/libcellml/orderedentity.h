@@ -29,11 +29,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT OrderedEntity: public Entity
 {
 public:
-    OrderedEntity(); /**< Constructor */
     ~OrderedEntity() override; /**< Destructor */
-    OrderedEntity(const OrderedEntity &rhs); /**< Copy constructor */
-    OrderedEntity(OrderedEntity &&rhs); /**< Move constructor */
-    OrderedEntity& operator=(OrderedEntity n); /**< Assignment operator */
+    OrderedEntity(const OrderedEntity &rhs) = delete; /**< Copy constructor */
+    OrderedEntity(OrderedEntity &&rhs) noexcept = delete; /**< Move constructor */
+    OrderedEntity &operator=(OrderedEntity rhs) = delete; /**< Assignment operator */
 
     /**
      * @brief Set the order of this entity.
@@ -51,7 +50,7 @@ public:
      *
      * @return The order.
      */
-    int getOrder() const;
+    int order() const;
 
     /**
      * @brief Mark the order as unset.
@@ -69,12 +68,12 @@ public:
      */
     bool isOrderSet();
 
-private:
-    void swap(OrderedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
+protected:
+    OrderedEntity(); /**< Constructor */
 
+private:
     struct OrderedEntityImpl; /**< Forward declaration for pImpl idiom. */
     OrderedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
-
 };
 
-}
+} // namespace libcellml

@@ -10,10 +10,10 @@
 %feature("docstring") libcellml::Logger::addError
 "Adds an error to this logger.";
 
-%feature("docstring") libcellml::Logger::clearErrors
+%feature("docstring") libcellml::Logger::removeAllErrors
 "Clears all errors from this logger.";
 
-%feature("docstring") libcellml::Logger::getError
+%feature("docstring") libcellml::Logger::error
 "Returns the error at the specified `index`.";
 
 %feature("docstring") libcellml::Logger::errorCount
@@ -22,9 +22,9 @@
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
-        ErrorPtr getError(long index) {
-            if(index < 0) return nullptr;
-            return $self->getError(size_t(index));
+        ErrorPtr error(long index) {
+            if (index < 0) return nullptr;
+            return $self->error(size_t(index));
         }
     }
 #endif
@@ -33,8 +33,7 @@
 #include "libcellml/logger.h"
 %}
 
-%ignore libcellml::Logger::Logger(Logger &&);
-%ignore libcellml::Logger::operator =;
+%ignore libcellml::Logger::Logger();
 
 %include "libcellml/types.h"
 %include "libcellml/logger.h"

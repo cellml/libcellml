@@ -20,6 +20,10 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Component>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -28,13 +32,48 @@ namespace libcellml {
  * The Component class is for representing a CellML Component.
  */
 class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                                  public std::enable_shared_from_this<Component>
+#endif
 {
 public:
-    Component(); /**< Constructor */
-    ~Component() override; /**< Destructor */
-    Component(const Component &rhs); /**< Copy constructor */
-    Component(Component &&rhs); /**< Move constructor */
-    Component& operator=(Component m); /**< Assignment operator */
+    ~Component() override; /**< Destructor @private*/
+    Component(const Component &rhs) = delete; /**< Copy constructor @private */
+    Component(Component &&rhs) noexcept = delete; /**< Move constructor @private*/
+    Component &operator=(Component rhs) = delete; /**< Assignment operator @private*/
+
+    /**
+     * @brief Create a @c Component object.
+     *
+     * Factory method to create a @c Component.  Create a
+     * blank component with::
+     *
+     * @code
+     *   ComponentPtr component = libcellml::Component::create();
+     * @endcode
+     *
+     * @return A smart pointer to a @c Component object.
+     */
+    static ComponentPtr create() noexcept;
+
+    /**
+     * @brief Create a @c Component object with a name.
+     *
+     * Factory method to create a @c Component with a name.
+     * Create a named component with name "Component" with:
+     *
+     * @code
+     *   ComponentPtr component = libcellml::Component::create("Component");
+     * @endcode
+     *
+     * @overload
+     *
+     * @param name The name of the component.
+     *
+     * @return A smart pointer to a @c Component object.
+     */
+    static ComponentPtr create(const std::string &name) noexcept;
 
     /**
      * @brief Set the source component for this component.
@@ -64,7 +103,7 @@ public:
      *
      * @return @c std::string math for this component.
      */
-    std::string getMath() const;
+    std::string math() const;
 
     /**
      * @brief Set the math string for this component.
@@ -75,6 +114,13 @@ public:
      * @param math The @c std::string to append for this component.
      */
     void setMath(const std::string &math);
+
+    /**
+     * @brief Clear the math from this component.
+     *
+     * Clears the math string from this component.
+     */
+    void removeMath();
 
     /**
      * @brief Add a variable by reference as part of this component.
@@ -112,9 +158,9 @@ public:
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection.
      *
-     * @sa addVariable
-     *
      * @overload
+     *
+     * @sa addVariable
      *
      * @param name The name of the variable to remove.
      *
@@ -129,9 +175,9 @@ public:
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection.
      *
-     * @sa addVariable
-     *
      * @overload
+     *
+     * @sa addVariable
      *
      * @param variable The pointer to the variable to remove.
      *
@@ -159,7 +205,7 @@ public:
      *
      * @return A reference to the variable at the given index on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(size_t index) const;
+    VariablePtr variable(size_t index) const;
 
     /**
      * @brief Get a variable with the given name @p name.
@@ -173,7 +219,7 @@ public:
      *
      * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(const std::string &name) const;
+    VariablePtr variable(const std::string &name) const;
 
     /**
      * @brief Take a variable at index.
@@ -203,7 +249,7 @@ public:
      * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
     VariablePtr takeVariable(const std::string &name);
-    
+
     /**
      * @brief Get the number of variables in the component.
      *
@@ -273,9 +319,9 @@ public:
      *
      * Remove the reset with the given pointer from this component.
      *
-     * @sa addReset
-     *
      * @overload
+     *
+     * @sa addReset
      *
      * @param reset The pointer to the reset to remove.
      *
@@ -301,7 +347,7 @@ public:
      *
      * @return A reference to the reset at the given index on success, @c nullptr otherwise.
      */
-    ResetPtr getReset(size_t index) const;
+    ResetPtr reset(size_t index) const;
 
     /**
      * @brief Get the number of resets in the component.
@@ -325,13 +371,27 @@ public:
      */
     bool hasReset(const ResetPtr &reset) const;
 
+    /**
+     * @brief Create a clone of this component.
+     *
+     * Creates a full separate copy of this component without copying
+     * the parent.  Thus the cloned (returned) version of this component
+     * will not have a parent set even if this component does.  Any and
+     * all child components will also be cloned recreating the full
+     * component hierarchy that this component is the root of.
+     *
+     * @return a new @c ComponentPtr to the cloned component.
+     */
+    ComponentPtr clone() const;
+
 private:
-    void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
+    Component(); /**< Constructor @private*/
+    explicit Component(const std::string &name); /**< Constructor named @private */
 
-    void doAddComponent(const ComponentPtr &component) override;
+    bool doAddComponent(const ComponentPtr &component) override; /**< Virtual method for implementing addComponent, @private */
 
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentImpl *mPimpl; /**< Private member to implementation pointer */
+    struct ComponentImpl; /**< Forward declaration for pImpl idiom. @private */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer. @private */
 };
 
-}
+} // namespace libcellml
