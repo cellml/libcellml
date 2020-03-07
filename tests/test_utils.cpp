@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -42,8 +43,9 @@ std::string fileContents(const std::string &fileName)
 
 void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool rule)
 {
+    int width = floor(log10(l->errorCount()));
     for (size_t i = 0; i < l->errorCount(); ++i) {
-        std::cout << "Error " << std::setw(3) << i + 1 << ": ";
+        std::cout << "Error " << std::setw(width) << i + 1 << ": ";
         std::cout << l->error(i)->description();
         if (headings) {
             std::cout << ", " << l->error(i)->specificationHeading();
