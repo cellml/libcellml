@@ -28,7 +28,7 @@ Specific information items
 
 .. container:: issue-model-name
 
-   1. Every :code:`model` element MUST contain an unprefixed :code:`name`
+   1. Every :code:`model` element MUST contain a :code:`name`
       attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
@@ -129,7 +129,7 @@ Specific information items
 
 .. contianer:: issue-import-units-name
 
-   1. Every :code:`import units` element MUST contain an unprefixed :code:`name`
+   1. Every :code:`import units` element MUST contain a :code:`name`
       attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
@@ -141,7 +141,7 @@ Specific information items
 
 .. container:: issue-import-units-ref
 
-   2. Every :code:`import units` element MUST contain an unprefixed
+   2. Every :code:`import units` element MUST contain a
       :code:`units_ref` attribute. The value of the :code:`units_ref` attribute
       MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
@@ -169,7 +169,7 @@ Specific information items
 
 .. container:: issue-import-component-name
 
-   1. Every :code:`import component` element MUST contain an unprefixed
+   1. Every :code:`import component` element MUST contain a
       :code:`name` attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
@@ -179,7 +179,7 @@ Specific information items
 
 .. container:: issue-import-component-ref
 
-   2. Every :code:`import component` element MUST contain an unprefixed
+   2. Every :code:`import component` element MUST contain a
       :code:`component_ref` attribute. The value of the :code:`component_ref`
       attribute MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
@@ -208,7 +208,7 @@ Specific information items
 
 .. container:: issue-units-name
 
-   1. Every :code:`units` element MUST contain an unprefixed :code:`name`
+   1. Every :code:`units` element MUST contain a :code:`name`
       attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
@@ -247,7 +247,7 @@ Specific information items
 
 .. container:: issue-unit-units-ref
 
-   1. Every :code:`unit` element MUST contain an unprefixed :code:`units`
+   1. Every :code:`unit` element MUST contain a :code:`units`
       attribute. The value of the :code:`units` attribute MUST be
       a valid units reference, as defined in the
       :ref:`Units reference <units_reference>` section.
@@ -275,8 +275,7 @@ Specific information items
 
 .. container:: issue-unit-optional-attribute
 
-   2. A :code:`unit` element MAY contain any of the following unprefixed
-      attributes:
+   2. A :code:`unit` element MAY contain any of the following attributes:
 
       .. container:: issue-unit-prefix
 
@@ -314,7 +313,7 @@ Specific information items
 
 .. container:: issue-component-name
 
-   1. Every :code:`component` element MUST contain an unprefixed :code:`name`
+   1. Every :code:`component` element MUST contain a :code:`name`
       attribute. The value of the :code:`name` attribute MUST be a
       :ref:`valid CellML identifier<specA_cellml_identifier>`.
 
@@ -351,7 +350,7 @@ equal to :code:`variable`, and which appears as a child of a :code:`component` e
 Specific information items
 --------------------------
 
-1. Every :code:`variable` element MUST have each of the following unprefixed
+1. Every :code:`variable` element MUST have exactly one of each of the following
    attributes:
 
    .. container:: issue-variable-name
@@ -372,7 +371,7 @@ Specific information items
          section.
 
 2. Every :code:`variable` element MAY contain one or more of the following
-   unprefixed attributes:
+   attributes:
 
    .. container:: issue-variable-interface
 
@@ -402,7 +401,7 @@ child of a :code:`component` element.
 Specific information items
 --------------------------
 
-1. Every :code:`reset` element MUST have each of the following unprefixed
+1. Every :code:`reset` element MUST have exactly one each each of the following
    attributes:
 
    .. container:: issue-reset-variable-reference
@@ -617,7 +616,7 @@ Specific information items
 
 .. container:: issue-component-ref-component-attribute
 
-   1. Every :code:`component_ref` element MUST contain an unprefixed
+   1. Every :code:`component_ref` element MUST contain a
       :code:`component` attribute.
 
       The value of this attribute
@@ -655,7 +654,7 @@ Specific information items
 
 .. container:: issue-connection-component1
 
-   1. Each :code:`connection` element MUST contain an unprefixed
+   1. Each :code:`connection` element MUST contain a
       :code:`component_1` attribute. The value of the :code:`component_1`
       attribute
       MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
@@ -667,7 +666,7 @@ Specific information items
 
 .. container:: issue-connection-component2
 
-   2. Each :code:`connection` element MUST contain an unprefixed
+   2. Each :code:`connection` element MUST contain a
       :code:`component_2` attribute. The value of the :code:`component_2`
       attribute
       MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`.
@@ -709,7 +708,7 @@ Specific information items
 
 .. container:: issue-map-variables-variable1
 
-   1. Each :code:`map_variables` element MUST contain an unprefixed
+   1. Each :code:`map_variables` element MUST contain a
       :code:`variable_1` attribute.
 
       The value of the :code:`variable_1` attribute
@@ -723,7 +722,7 @@ Specific information items
 
 .. container:: issue-map-variables-variable2
 
-   2. Each :code:`map_variables` element MUST contain an unprefixed
+   2. Each :code:`map_variables` element MUST contain a
       :code:`variable_2` attribute.
 
       The value of the :code:`variable_2` attribute

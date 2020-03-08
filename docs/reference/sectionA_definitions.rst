@@ -235,9 +235,9 @@ Use of namespaces
 XML ID Attributes
 -----------------
 
-#. Any element information item in the :term:`CellML namespace` MAY contain an
-   unprefixed attribute information item with local name :code:`id.` This
-   attribute information item SHALL be treated as having attribute type
+#. Any element information item in the :term:`CellML namespace` MAY
+   contain an attribute with local name :code:`id.` This
+   attribute SHALL be treated as having attribute type
    ID, as defined in
    `section
    3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__ of `XML
