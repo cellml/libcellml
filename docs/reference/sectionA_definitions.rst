@@ -305,13 +305,19 @@ specification:
 
 3. An integer string:
 
-   #. SHALL be a base 10 representation of an integer.
+   .. container:: issue-data-repr-int-base10
 
-   #. SHALL, when the integer being represented is negative,
-      begin with the Basic Latin hyphen-minus character
-      :unicode:`002D` as the sign indicator.
+      1. SHALL be a base 10 representation of an integer.
 
-   #. SHALL, other than the sign indicator, consist only of European numerals.
+   .. container:: issue-data-repr-neg-sign
+
+      2. SHALL, when the integer being represented is negative,
+         begin with the Basic Latin hyphen-minus character
+         :unicode:`002D` as the sign indicator.
+
+   .. container:: issue-data-repr-in-euro-num
+
+      3. SHALL, other than the sign indicator, consist only of European numerals.
 
 .. marker_data_formats_3
 
@@ -319,17 +325,25 @@ specification:
 
 4. A basic real number string:
 
-   #. SHALL be a base 10 representation of a real number.
+   .. container:: issue-data-repr-basic-real-base10
 
-   #. SHALL, when the basic real number being represented is negative,
-      begin with the Basic Latin hyphen-minus character
-      :unicode:`002D` as the sign indicator.
+      1. SHALL be a base 10 representation of a real number.
 
-   #. MAY contain a single decimal point separator, which SHALL be the
-      Basic Latin full stop character :unicode:`002E`.
+   .. container:: issue-data-repr-basic-real-sign
 
-   #. SHALL, other than the sign indicator and the decimal point
-      separator, consist only of European numerals.
+      2. SHALL, when the basic real number being represented is negative,
+         begin with the Basic Latin hyphen-minus character
+         :unicode:`002D` as the sign indicator.
+
+   .. container:: issue-data-repr-basic-real-decimal
+
+      3. MAY contain a single decimal point separator, which SHALL be the
+         Basic Latin full stop character :unicode:`002E`.
+
+   .. container:: issue-data-repr-basic-real-euro-num
+
+      4. SHALL, other than the sign indicator and the decimal point
+         separator, consist only of European numerals.
 
 .. marker_data_formats_4
 
@@ -337,25 +351,35 @@ specification:
 
 5. A real number string:
 
-   #. SHALL be a base 10 representation of a real number
-      *r*\ =\ *s*\ ⋅10\ *e*, where *s* is the significand, a real
-      number, and *e* is the exponent, an integer.
+   .. container:: issue-data-repr-real-base10
 
-   #. The representation of the number SHALL be the representation of
-      the significand followed immediately by the representation of the
-      exponent.
+      1. SHALL be a base 10 representation of a real number
+         *r*\ =\ *s*\ ⋅10\ *e*, where *s* is the significand, a real
+         number, and *e* is the exponent, an integer.
 
-   #. The significand SHALL be represented as a basic real number
-      string.
+   .. container:: issue-data-repr-real-repr
 
-   #. An exponent SHALL be represented by an exponent separator
-      character, followed by the integer string representation of the
-      value of the exponent. Non-negative exponents MAY begin with the
-      Basic Latin plus sign character :unicode:`002B` as the sign indicator.
-      The exponent separator character SHALL be either the Basic Latin ‘E’
-      character :unicode:`0045` or the Basic Latin ‘e’ character :unicode:`0065`.
+      2. The representation of the number SHALL be the representation of
+         the significand followed immediately by the representation of the
+         exponent.
 
-   #. A real number string without an exponent SHALL be a basic real
-      number string.
+   .. container:: issue-data-repr-real-significand
+
+      3. The significand SHALL be represented as a basic real number
+         string.
+
+   .. container:: issue-data-repr-real-exponent
+
+      4. An exponent SHALL be represented by an exponent separator
+         character, followed by the integer string representation of the
+         value of the exponent. Non-negative exponents MAY begin with the
+         Basic Latin plus sign character :unicode:`002B` as the sign indicator.
+         The exponent separator character SHALL be either the Basic Latin ‘E’
+         character :unicode:`0045` or the Basic Latin ‘e’ character :unicode:`0065`.
+
+   .. container:: issue-data-repr-real-noexponent
+
+      5. A real number string without an exponent SHALL be a basic real
+         number string.
 
 .. marker_data_formats_end
