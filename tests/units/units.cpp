@@ -2109,10 +2109,10 @@ TEST(Units, isBaseUnitAllStandardUnits)
         libcellml::Units::StandardUnit::WEBER,
     };
 
-    const std::vector<size_t> baseUnitIndexes = {0, 2, 4, 12, 13, 17, 18, 23};
+    const std::vector<size_t> baseUnitIndices = {0, 2, 4, 12, 13, 17, 18, 23};
 
     EXPECT_EQ(size_t(31), standardUnits.size());
-    EXPECT_EQ(size_t(8), baseUnitIndexes.size());
+    EXPECT_EQ(size_t(8), baseUnitIndices.size());
 
     libcellml::UnitsPtr u = libcellml::Units::create();
     std::string ref;
@@ -2127,8 +2127,8 @@ TEST(Units, isBaseUnitAllStandardUnits)
         u->unitAttributes(0, ref, pre, uExp, expMult, id);
 
         libcellml::UnitsPtr testUnit = libcellml::Units::create(ref);
-        auto found = std::find(baseUnitIndexes.begin(), baseUnitIndexes.end(), index);
-        if (found != baseUnitIndexes.end()) {
+        auto found = std::find(baseUnitIndices.begin(), baseUnitIndices.end(), index);
+        if (found != baseUnitIndices.end()) {
             EXPECT_TRUE(testUnit->isBaseUnit());
         } else {
             EXPECT_FALSE(testUnit->isBaseUnit());
