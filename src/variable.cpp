@@ -261,6 +261,7 @@ VariablePtr Variable::equivalentVariable(size_t index) const
 
 size_t Variable::equivalentVariableCount() const
 {
+    mPimpl->cleanExpiredVariables();
     return mPimpl->mEquivalentVariables.size();
 }
 
