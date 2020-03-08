@@ -8,7 +8,8 @@
 Interpretation of imports
 -------------------------
 
-#. Each :code:`import` element present in a CellML infoset (the importing
+#. Each :code:`import` element present in a
+   :ref:`CellML infosets<specA_cellml_infoset>` (the importing
    infoset) SHALL define a new and separate instance of the CellML
    infoset referenced by the :code:`href` attribute (the imported infoset).
    See :ref:`Units reference<specC_units_reference>` and
@@ -28,7 +29,7 @@ Units reference
    occurs, according to the units referencing rules defined later in
    this section.
 
-#. A CellML infoset MUST NOT contain a units reference for which no
+#. A :ref:`CellML infoset<specA_cellml_infoset>` MUST NOT contain a units reference for which no
    referencing rule can be held to have been followed.
 
 #. The units referencing rules are:
@@ -37,7 +38,7 @@ Units reference
       identical to the units reference, then the units reference SHALL
       refer to that :code:`units` element.
 
-   #. Where there is an :code:`import units` element in the CellML infoset,
+   #. Where there is an :code:`import units` element in the :ref:`CellML infoset<specA_cellml_infoset>`,
       such that the :code:`import units` element has a :code:`name` attribute
       identical to the units reference, then the units reference SHALL
       be treated with respect to referencing rules as if the units
@@ -374,13 +375,14 @@ Interpretation of mathematics
 #. The following :code:`component` elements SHALL, for the purposes of this
    specification, be “pertinent component elements”:
 
-   #. All :code:`component` elements in the top-level CellML infoset for the
+   #. All :code:`component` elements in the top-level
+      :ref:`CellML infoset<specA_cellml_infoset>` for the
       CellML model;
 
    #. All :code:`component` elements referenced by :code:`import component`
       elements (see
       :ref:`The import component element <specC_component_reference>`)
-      in the top-level CellML infoset; and
+      in the top-level :ref:`CellML infoset<specA_cellml_infoset>`; and
 
    #. All :code:`component` elements which are descendants in the
       encapsulation digraph (see

@@ -18,7 +18,7 @@ Top-level of CellML infosets
 
 .. container:: issue-model-element
 
-   The top-level element information item in a CellML infoset MUST be an
+   The top-level element information item in a :ref:`CellML infoset<specA_cellml_infoset>` MUST be an
    element in the :ref:`CellML namespace<specA_cellml_namespace>` with a
    local name equal to :code:`model`. In this specification, the top-level
    element is referred to as the :code:`model` element.
@@ -68,7 +68,8 @@ The import element
 
 An :code:`import` element information item (referred to in this
 specification as an :code:`import` element) is an element
-in the :ref:`CellML namespace<specA_cellml_namespace>` with a local name equal to :code:`import`.
+in the :ref:`CellML namespace<specA_cellml_namespace>`
+with a local name equal to :code:`import`.
 
 Specific information items
 --------------------------
@@ -87,7 +88,8 @@ Specific information items
       :xlink:`XLink specification`, by applying the rules for simple-type elements.
 
       When describing an :code:`import` element or one of its children, the phrase
-      “imported CellML infoset” SHALL refer to the CellML infoset obtained
+      “imported CellML infoset” SHALL refer to the
+      :ref:`CellML infoset<specA_cellml_infoset>` obtained
       by parsing the document referenced by the :code:`href` attribute.
 
 .. marker_import_1
@@ -105,7 +107,7 @@ Specific information items
 
 .. container:: issue-import-circular
 
-   3. Any CellML infoset imported, directly or indirectly, by the imported
+   3. Any :ref:`CellML infoset<specA_cellml_infoset>` imported, directly or indirectly, by the imported
       CellML infoset MUST NOT be semantically equivalent to the importing
       CellML infoset (see
       :ref:`Semantically equivalent CellML infosets <specA_semantic_equivalence>`
@@ -135,7 +137,7 @@ Specific information items
 
       The value of the :code:`name` attribute MUST NOT be identical
       to the :code:`name` attribute of any other :code:`units` or
-      :code:`import units` element in the CellML infoset.
+      :code:`import units` element in the :ref:`CellML infoset<specA_cellml_infoset>`.
 
 .. marker_import_units_1
 
@@ -175,7 +177,7 @@ Specific information items
 
       The value of the :code:`name` attribute MUST NOT
       be identical to the :code:`name` attribute of any other :code:`component` or
-      :code:`import component` element in the CellML infoset.
+      :code:`import component` element in the :ref:`CellML infoset<specA_cellml_infoset>`.
 
 .. container:: issue-import-component-ref
 
@@ -186,7 +188,7 @@ Specific information items
       The value of the
       :code:`component_ref` attribute MUST match the value of the :code:`name`
       attribute on a :code:`component` or :code:`import component` element in the
-      imported CellML infoset. See also the
+      imported :ref:`CellML infoset<specA_cellml_infoset>`. See also the
       :ref:`Component reference<specC_component_reference>`
       section.
 
@@ -216,7 +218,7 @@ Specific information items
 
    2. The value of the :code:`name` attribute MUST NOT be identical to the
       :code:`name` attribute of any other :code:`units` element or
-      :code:`import units` element in the CellML infoset.
+      :code:`import units` element in the :ref:`CellML infoset<specA_cellml_infoset>`.
 
 .. container:: issue-units-standard
 
@@ -319,7 +321,7 @@ Specific information items
 
       The value of the :code:`name` attribute MUST NOT be identical
       to the :code:`name` attribute on any other :code:`component` element or
-      :code:`import component` element in the CellML infoset.
+      :code:`import component` element in the :ref:`CellML infoset<specA_cellml_infoset>`.
 
 .. marker_component_2
 
@@ -623,7 +625,7 @@ Specific information items
       MUST be a :ref:`valid CellML identifier<specA_cellml_identifier>`,
       and MUST match the :code:`name`
       attribute on a :code:`component` element or an :code:`import component`
-      element in the CellML infoset.
+      element in the :ref:`CellML infoset<specA_cellml_infoset>`.
 
 .. container:: issue-component-ref-child
 
@@ -661,7 +663,7 @@ Specific information items
 
       The value of this attribute MUST
       be equal to the :code:`name` attribute on a :code:`component` or
-      :code:`import component` element in the CellML infoset
+      :code:`import component` element in the :ref:`CellML infoset<specA_cellml_infoset>`
       (see :ref:`Component reference<specC_component_reference>`).
 
 .. container:: issue-connection-component2
@@ -673,14 +675,14 @@ Specific information items
 
       The value of this attribute MUST
       be equal to the :code:`name` attribute on a :code:`component` or
-      :code:`import component` element in the CellML infoset
+      :code:`import component` element in the :ref:`CellML infoset<specA_cellml_infoset>`
       (see :ref:`Component reference <specC_component_reference>`).
 
       It MUST NOT be equal to the value of the :code:`component_1` attribute.
 
 .. container:: issue-connection-unique-transitive
 
-   3. A CellML infoset MUST NOT contain more than one :code:`connection`
+   3. A :ref:`CellML infoset<specA_cellml_infoset>` MUST NOT contain more than one :code:`connection`
       element with a given pair of :code:`component`\ s referenced by the
       :code:`component_1` and :code:`component_2` attribute values, in any order.
 

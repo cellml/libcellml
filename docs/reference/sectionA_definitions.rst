@@ -193,7 +193,7 @@ Specific information items
 Semantically equivalent CellML infosets
 ---------------------------------------
 
-#. Two CellML infosets SHALL be deemed semantically equivalent if one
+#. Two :ref:`CellML infosets<specA_cellml_infoset>` SHALL be deemed semantically equivalent if one
    can be transformed into the other by making zero or more of the
    following changes:
 
