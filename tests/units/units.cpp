@@ -1890,23 +1890,30 @@ TEST(Units, compareCompatibleUnitsWhichAreDimensionless)
 
     // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians, etc.
     libcellml::UnitsPtr u1 = libcellml::Units::create();
-    u1->setName("testunit5");
-    u1->addUnit("metre", -2.0);
-    u1->addUnit("metre", 2.0);
+    u1->setName("dimensionless");
     libcellml::UnitsPtr u2 = libcellml::Units::create();
-    u2->setName("testunit6");
-    u2->addUnit("dimensionless");
+    u2->setName("testunit2");
+    u2->addUnit("metre", -2.0);
+    u2->addUnit("metre", 2.0);
     libcellml::UnitsPtr u3 = libcellml::Units::create();
-    u3->setName("testunit7");
+    u3->setName("testunit3");
     u3->addUnit("steradian");
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    u4->setName("testunit4");
+    u4->addUnit("metre", 1.0);
+    u4->addUnit("metre", -1.0);
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    u5->setName("testunit5");
+    u5->addUnit("radian");
 
     model->addUnits(u1);
     model->addUnits(u2);
     model->addUnits(u3);
 
     EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
-    EXPECT_TRUE(libcellml::Units::compatible(u2, u3));
     EXPECT_TRUE(libcellml::Units::compatible(u1, u3));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u4));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u5));
 }
 
 TEST(Units, compareCompatibleUnitsWhichAreNested)
@@ -2014,6 +2021,15 @@ TEST(Units, isBaseUnitSecond)
     EXPECT_TRUE(u->isBaseUnit());
 }
 
+TEST(Units, isBaseUnitDimensionless)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("dimensionless");
+
+    EXPECT_TRUE(u->isBaseUnit());
+}
+
 TEST(Units, isBaseUnitSecondRedefined)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
@@ -2093,10 +2109,10 @@ TEST(Units, isBaseUnitAllStandardUnits)
         libcellml::Units::StandardUnit::WEBER,
     };
 
-    const std::vector<size_t> baseUnitIndexes = {0, 2, 12, 13, 17, 18, 23};
+    const std::vector<size_t> baseUnitIndexes = {0, 2, 4, 12, 13, 17, 18, 23};
 
     EXPECT_EQ(size_t(31), standardUnits.size());
-    EXPECT_EQ(size_t(7), baseUnitIndexes.size());
+    EXPECT_EQ(size_t(8), baseUnitIndexes.size());
 
     libcellml::UnitsPtr u = libcellml::Units::create();
     std::string ref;

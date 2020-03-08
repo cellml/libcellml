@@ -132,7 +132,7 @@ struct Units::UnitsImpl
      * @param name The name of the units.
      *
      * @return @c true if the name of the units is one of: "ampere",
-     * "candela", "kelvin", "kilogram", "metre", "mole" , "second".
+     * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
      */
     bool isBaseUnit(const std::string &name) const;
 };
@@ -145,7 +145,7 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
 
 bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
 {
-    return name == "ampere" || name == "candela" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
+    return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
 }
 
 /**
