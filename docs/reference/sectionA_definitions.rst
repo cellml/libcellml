@@ -50,7 +50,7 @@ https://doi.org/science/1.1.1.10.
 
 .. sectnum::
 
-.. marker1
+.. marker_terminology_start
 
 .. _specA_terminology:
 
@@ -138,7 +138,8 @@ to :unicode:`0039`.
 **Whitespace character:** Any one of the Unicode characters :unicode:`0020`,
 :unicode:`0009`, :unicode:`000D`, or :unicode:`000A`.
 
-..  marker2
+.. marker_terminology_end
+.. marker_cellml_information_sets_start
 
 .. _specA_cellml_information_sets:
 
@@ -242,7 +243,8 @@ XML ID Attributes
    3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__ of `XML
    1.1 <http://www.w3.org/TR/xml11/>`__.
 
-.. marker3_start
+.. marker_cellml_informations_sets_end
+.. marker_data_formats_start
 
 .. _specA_data_representation_formats:
 
@@ -283,7 +285,7 @@ specification:
          another identifier if and only if both identifiers have identical
          sequences of characters.
 
-.. marker3_2
+.. marker_data_formats_1
 
 .. _specA_nonnegative_integer:
 
@@ -297,7 +299,7 @@ specification:
 
       2. SHALL consist entirely of European numerals.
 
-.. marker3_3
+.. marker_data_formats_2
 
 .. _specA_integer:
 
@@ -311,7 +313,7 @@ specification:
 
    #. SHALL, other than the sign indicator, consist only of European numerals.
 
-.. marker3_4
+.. marker_data_formats_3
 
 .. _specA_basic_real_number:
 
@@ -329,7 +331,7 @@ specification:
    #. SHALL, other than the sign indicator and the decimal point
       separator, consist only of European numerals.
 
-.. marker3_5
+.. marker_data_formats_4
 
 .. _specA_real_number:
 
@@ -356,4 +358,4 @@ specification:
    #. A real number string without an exponent SHALL be a basic real
       number string.
 
-.. marker3_end
+.. marker_data_formats_end
