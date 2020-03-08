@@ -2024,6 +2024,30 @@ TEST(Units, isBaseUnitSecondRedefined)
     EXPECT_FALSE(u->isBaseUnit());
 }
 
+TEST(Units, isBaseUnitSecondRedefinedPrinted)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"second\">\n"
+        "    <unit units=\"volt\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+    libcellml::ModelPtr m = libcellml::Model::create("model");
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("second");
+    u->addUnit("volt");
+
+    m->addUnits(u);
+
+    EXPECT_FALSE(u->isBaseUnit());
+
+    EXPECT_EQ(e, p->printModel(m));
+}
+
 TEST(Units, isBaseUnitVolt)
 {
     libcellml::UnitsPtr u = libcellml::Units::create();
