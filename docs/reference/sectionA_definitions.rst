@@ -224,13 +224,16 @@ Character information items
 Use of namespaces
 -----------------
 
-#. Element and attribute information items in a CellML infoset MUST
+#. Element information items in a CellML infoset MUST
    belong to one of the following namespaces, unless explicitly
    indicated otherwise:
 
    #. The :term:`CellML namespace`
 
    #. The MathML namespace
+
+#. Attribute information items in a CellML element MUST NOT be prefixed with a
+   namespace, unless explicitly indicated otherwise.
 
 XML ID Attributes
 -----------------
@@ -239,9 +242,9 @@ XML ID Attributes
    contain an attribute with local name :code:`id.` This
    attribute SHALL be treated as having attribute type
    ID, as defined in
-   `section
-   3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__ of `XML
-   1.1 <http://www.w3.org/TR/xml11/>`__.
+   `section 3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__
+   of
+   `XML 1.1 <http://www.w3.org/TR/xml11/>`__.
 
 .. marker_cellml_information_sets_end
 .. marker_data_formats_start
