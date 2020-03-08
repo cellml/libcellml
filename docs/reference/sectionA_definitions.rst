@@ -305,14 +305,6 @@ specification:
 
    #. SHALL be a base 10 representation of an integer.
 
-.. #. SHALL, when the integer being represented is negative, consist of
-..    the Basic Latin hyphen-minus character :unicode:`002D`
-..    followed by the non-negative integer string representation of the
-..    absolute value of the integer.
-
-.. #. SHALL, when the integer being represented is non-negative, consist
-..    of the non-negative integer string representation of the integer.
-
    #. SHALL, when the integer being represented is negative,
       begin with the Basic Latin hyphen-minus character
       :unicode:`002D` as the sign indicator.
