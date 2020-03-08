@@ -243,7 +243,7 @@ XML ID Attributes
    3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__ of `XML
    1.1 <http://www.w3.org/TR/xml11/>`__.
 
-.. marker_cellml_informations_sets_end
+.. marker_cellml_information_sets_end
 .. marker_data_formats_start
 
 .. _specA_data_representation_formats:
