@@ -10,11 +10,14 @@
             $(this).parent().children(".header").toggleClass("open");
         });
         const url_object = new URL(window.location.href);
-        alert("URL is: " + url_object);
-        const issueCode = ".issue-" + url_object.searchParams.get("issue").toLowerCase().replace("_", "-");
-        alert("Issue code is: " + issueCode);
-        $(issueCode).addClass("highlight-issue");
-        alert("Objects found: " + len($(issueCode)));
+        const issueCode = ".issue-" + url_object.searchParams.get("issue");
+        if (issueCode) {
+            issueCode.toLowerCase().replace("_", "-");
+            $(issueCode).addClass("highlight-issue");
+        }
+        else {
+            alert("Could not GET issue");
+        }
     });
 </script>
 {% endblock %}
