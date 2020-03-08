@@ -100,7 +100,7 @@ to as the top-level CellML infoset.
 
 .. _specA_cellml_information_item:
 
-**CellML information item:** Any information item in the :term:`CellML namespace`.
+**CellML information item:** Any information item in the :ref:`CellML namespace<specA_cellml_namespace>`.
 
 .. _specA_basic_latin_alphabetic_character:
 
@@ -115,7 +115,8 @@ to :unicode:`0039`.
 .. _specA_basic_latin_alphanumeric_character:
 
 **Basic Latin alphanumeric character:** A Unicode character which is either a
-:term:`Basic Latin alphabetic character` or a :term:`European numeral`.
+:ref:`Basic Latin alphabetic character<specA_basic_latin_alphabetic_character>`
+or a :ref:`European numeral<specA_european_numeral>`.
 
 .. _specA_basic_latin_underscore:
 
@@ -186,16 +187,16 @@ Specific information items
 
 #. The order in which specific information items appear, as children of
    an element information item defined in this specification, SHALL NOT
-   affect the semantic interpretation of the CellML model.
+   affect the semantic interpretation of the :ref:`CellML model<specA_cellml_model>`.
 
 .. _specA_semantic_equivalence:
 
 Semantically equivalent CellML infosets
 ---------------------------------------
 
-#. Two :ref:`CellML infosets<specA_cellml_infoset>` SHALL be deemed semantically equivalent if one
-   can be transformed into the other by making zero or more of the
-   following changes:
+#. Two :ref:`CellML infosets<specA_cellml_infoset>` SHALL be deemed
+   semantically equivalent if one can be transformed into the other
+   by making zero or more of the following changes:
 
    #. Adding, removing, and/or modifying comment information items.
 
@@ -206,31 +207,32 @@ Semantically equivalent CellML infosets
 
    #. The following paragraph applies only to character information
       items which are the direct child of an element information item in
-      a :term:`CellML namespace`, or in the MathML namespace.
+      a :ref:`CellML namespace<specA_cellml_namespace>`, or in the
+      :ref:`MathML namespace<specA_mathml_namespace>`.
 
       Inserting or removing character information items that consist
-      entirely of whitespace characters, changing the number of whitespace
-      characters in such an information item, or changing the number of
-      whitespace characters at the beginning or end of any character
-      information item.
+      entirely of :ref:`whitespace characters<specA_whitexpace_character>`,
+      changing the number of whitespace characters in such an information item,
+      or changing the number of whitespace characters at the beginning or end
+      of any character information item.
 
 Character information items
 ---------------------------
 
-#. An element information item in the :term:`CellML namespace` MUST NOT
-   contain any character information items, except for character information
+#. An element information item in the :ref:`CellML namespace<specA_cellml_namespace>`
+   MUST NOT contain any character information items, except for character information
    items which consist entirely of whitespace characters.
 
 Use of namespaces
 -----------------
 
-#. Element information items in a CellML infoset MUST
-   belong to one of the following namespaces, unless explicitly
-   indicated otherwise:
+#. Element information items in a
+   :ref:`CellML infoset<specA_cellml_infoset>` MUST belong to one of the
+   following namespaces, unless explicitly indicated otherwise:
 
-   #. The :term:`CellML namespace`
+   #. The :ref:`CellML namespace<specA_cellml_namespace>`
 
-   #. The MathML namespace
+   #. The :ref:`MathML namespace<specA_mathml_namespace>`
 
 #. Attribute information items in a CellML element MUST NOT be prefixed with a
    namespace, unless explicitly indicated otherwise.
@@ -238,10 +240,9 @@ Use of namespaces
 XML ID Attributes
 -----------------
 
-#. Any element information item in the :term:`CellML namespace` MAY
-   contain an attribute with local name :code:`id.` This
-   attribute SHALL be treated as having attribute type
-   ID, as defined in
+#. Any element information item in the :ref:`CellML namespace<specA_cellml_namespace>`
+   MAY contain an attribute with local name :code:`id.` This attribute SHALL be
+   treated as having attribute type ID, as defined in
    `section 3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__
    of
    `XML 1.1 <http://www.w3.org/TR/xml11/>`__.
@@ -268,19 +269,19 @@ specification:
    .. container:: issue-data-repr-identifier-latin-alphanum
 
       2. SHALL NOT contain any characters except
-         :term:`Basic Latin alphanumeric character`\s
-         and :term:`Basic Latin underscores<Basic Latin underscore>`.
+         :ref:`Basic Latin alphanumeric characters<specA_basic_latin_alphanumeric_character>`
+         and :ref:`Basic Latin underscores<specA_basic_latin_underscore>`.
 
    .. container:: issue-data-repr-identifier-at-least-one-alphanum
 
       3. SHALL contain at least one
-         :term:`alphabetic<Basic Latin alphabetic character>` character.
+         :ref:`alphabetic<specA_basic_latin_alphabetic_character>` character.
 
    .. container:: issue-data-repr-identifier-begin-euro-num
 
       4. SHALL NOT begin with a
-         :term:`numeral<European numeral>` or an
-         :term:`underscore<Basic Latin underscore>`.
+         :ref:`numeral<specA_european_numeral>` or an
+         :ref:`underscore<specA_basic_latin_underscore>`.
 
    .. container:: issue-data-repr-identifier-identical
 

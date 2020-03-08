@@ -25,7 +25,7 @@ Units reference
 ---------------
 
 #. A units reference SHALL be a CellML identifier and SHALL be
-   interpreted dependent on the context of the CellML model in which it
+   interpreted dependent on the context of the :ref:`CellML model<specA_cellml_model>` in which it
    occurs, according to the units referencing rules defined later in
    this section.
 
@@ -190,7 +190,7 @@ Interpretation of units
 #. For the purposes of this specification, the “irreducible units” of a
    model SHALL consist of 1) the units defined in a model that are not
    defined in terms of other units (i.e. the set of :code:`units` elements
-   in the CellML model which have no :code:`unit` child elements), and 2)
+   in the :ref:`CellML model<specA_cellml_model>` which have no :code:`unit` child elements), and 2)
    built-in irreducible units (those built-in units with ‘-’ in the
    ‘Unit Reduction...’ column of the
    :ref:`Built-in units<table_built_in_units>`
@@ -284,7 +284,7 @@ Component reference
 -------------------
 
 #. A component reference SHALL be the name of a component, and SHALL be
-   interpreted based on the context within the CellML model in which it
+   interpreted based on the context within the :ref:`CellML model<specA_cellml_model>` in which it
    occurs.
 
 #. A component reference present in an information item which is a
@@ -338,7 +338,7 @@ Interpretation of initial values
    either be a real number string, or a variable reference (see 19.5).
 
 #. The conditions when initial values hold are (by design) not defined
-   in a CellML model document.
+   in a :ref:`CellML model<specA_cellml_model>` document.
 
 #. Where the :code:`initial_value` attribute has a real number value, it
    SHALL be interpreted as a statement that the variable on which the
@@ -377,7 +377,7 @@ Interpretation of mathematics
 
    #. All :code:`component` elements in the top-level
       :ref:`CellML infoset<specA_cellml_infoset>` for the
-      CellML model;
+      :ref:`CellML model<specA_cellml_model>`;
 
    #. All :code:`component` elements referenced by :code:`import component`
       elements (see
@@ -389,7 +389,7 @@ Interpretation of mathematics
       :ref:`Interpretation of encapsulation <specC_encapsulation>`)
       of a pertinent :code:`component` element.
 
-#. Every MathML element in the CellML model which appears as a direct
+#. Every MathML element in the :ref:`CellML model<specA_cellml_model>` which appears as a direct
    child information item of a MathML :code:`math` element information item,
    which in turn appears as a child information item of a pertinent
    :code:`component` element, SHALL be treated, in terms of the semantics of
@@ -397,7 +397,7 @@ Interpretation of mathematics
    unconditionally.
 
 #. Units referenced by a :code:`units` attribute information item SHALL NOT
-   affect the mathematical interpretation of the CellML model.
+   affect the mathematical interpretation of the :ref:`CellML model<specA_cellml_model>`.
 
 .. marker_interpretation_of_mathematics_end
 .. marker_interpretation_of_encapsulation_start
@@ -409,7 +409,7 @@ Interpretation of encapsulation
 
 #. For the purposes of this specification, there SHALL be a “conceptual
    encapsulation digraph” in which there is EXACTLY one node for every
-   component in the CellML model. Therefore the encapsulation digraph
+   component in the :ref:`CellML model<specA_cellml_model>`. Therefore the encapsulation digraph
    will not contain any loops.
 
 #. Where a :code:`component_ref` element appears as a child of another
@@ -453,7 +453,7 @@ Interpretation of map_variables
 
 #.  For the purposes of this specification, the variable equivalence
     (conceptual) network SHALL be an undirected graph with one node for
-    every :code:`variable` element in the CellML model. The arcs of this
+    every :code:`variable` element in the :ref:`CellML model<specA_cellml_model>`. The arcs of this
     graph SHALL be equivalences defined in the CellML model.
 
 #.  For each :code:`map_variables` element present in the CellML model, we

@@ -259,7 +259,7 @@ Specific information items
          1. For the purpose of the constraint in the next paragraph, the
             :code:`units` element inclusion digraph SHALL be defined as a
             conceptual digraph which SHALL contain one node for every
-            :code:`units` element in the CellML model. **TODO infoset?**
+            :code:`units` element in the :ref:`CellML model<specA_cellml_model>`. **TODO infoset?**
 
             The :code:`units` element
             inclusion digraph SHALL contain an arc from :code:`units` element *A*
