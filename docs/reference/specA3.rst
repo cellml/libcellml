@@ -3,7 +3,7 @@
 .. _spec_data_representation:
 
 .. include:: sectionA_definitions.rst
-  :start-after: marker3
+  :start-after: marker3_start
   :end-before: marker3_2
 
 .. include:: inform/informA3_1.rst
@@ -28,6 +28,6 @@
 
 .. include:: sectionA_definitions.rst
   :start-after: marker3_5
-  :end-before: marker4
+  :end-before: marker3_end
 
 .. include:: inform/informA3_5.rst

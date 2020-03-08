@@ -242,7 +242,7 @@ XML ID Attributes
    3.3.1 <http://www.w3.org/TR/xml11/#sec-attribute-types>`__ of `XML
    1.1 <http://www.w3.org/TR/xml11/>`__.
 
-.. marker3
+.. marker3_start
 
 .. _specA_data_representation_formats:
 
@@ -355,3 +355,5 @@ specification:
 
    #. A real number string without an exponent SHALL be a basic real
       number string.
+
+.. marker3_end
