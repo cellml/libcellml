@@ -263,7 +263,7 @@ specification:
    .. container:: issue-data-repr-identifier-latin-alphanum
 
       2. SHALL NOT contain any characters except
-         :term:`Basic Latin alphanumeric characters`\s
+         :term:`Basic Latin alphanumeric character`\s
          and :term:`Basic Latin underscores<Basic Latin underscore>`.
 
    .. container:: issue-data-repr-identifier-at-least-one-alphanum
