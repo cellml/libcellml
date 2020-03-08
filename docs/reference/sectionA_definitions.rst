@@ -301,7 +301,7 @@ specification:
 
    .. container:: issue-data-repr-nneg-in-euro-num
 
-      2. SHALL consist entirely of European numerals.
+      2. SHALL consist entirely of :ref:`European numerals<specA_european_numeral>`.
 
 .. marker_data_formats_2
 
@@ -321,7 +321,8 @@ specification:
 
    .. container:: issue-data-repr-in-euro-num
 
-      3. SHALL, other than the sign indicator, consist only of European numerals.
+      3. SHALL, other than the sign indicator, consist only of
+      :ref:`European numerals<specA_european_numeral>`.
 
 .. marker_data_formats_3
 
@@ -347,7 +348,7 @@ specification:
    .. container:: issue-data-repr-basic-real-euro-num
 
       4. SHALL, other than the sign indicator and the decimal point
-         separator, consist only of European numerals.
+         separator, consist only of :ref:`European numerals<specA_european_numeral>`.
 
 .. marker_data_formats_4
 
@@ -369,13 +370,14 @@ specification:
 
    .. container:: issue-data-repr-real-significand
 
-      3. The significand SHALL be represented as a basic real number
-         string.
+      3. The significand SHALL be represented as a
+         :ref: `basic real number string<specA_basic_real_number>`.
 
    .. container:: issue-data-repr-real-exponent
 
       4. An exponent SHALL be represented by an exponent separator
-         character, followed by the integer string representation of the
+         character, followed by the
+         :ref:`integer string representation<specA_integer>` of the
          value of the exponent. Non-negative exponents MAY begin with the
          Basic Latin plus sign character :unicode:`002B` as the sign indicator.
          The exponent separator character SHALL be either the Basic Latin ‘E’
@@ -383,7 +385,7 @@ specification:
 
    .. container:: issue-data-repr-real-noexponent
 
-      5. A real number string without an exponent SHALL be a basic real
-         number string.
+      5. A real number string without an exponent SHALL be a
+         :ref:`basic real number string<specA_basic_real_number>`.
 
 .. marker_data_formats_end
