@@ -47,7 +47,6 @@ configure_file(
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
-  $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp>
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
@@ -106,7 +105,6 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
-  $<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/debug.h>
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
@@ -168,6 +166,31 @@ set_target_properties(cellml PROPERTIES
   VERSION ${libCellML_VERSION}
   INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
+)
+
+set(DEBUG_SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
+)
+
+set(DEBUG_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+)
+
+add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
+
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_11)
+
+target_include_directories(cellml_debug_utilities
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
+)
+
+target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+
+group_source_to_dir_structure(
+  ${DEBUG_SOURCE_FILES}
+  ${DEBUG_HEADER_FILES}
 )
 
 configure_clang_and_clang_tidy_settings(cellml)

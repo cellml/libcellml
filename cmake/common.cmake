@@ -64,10 +64,6 @@ endfunction()
 function(GROUP_SOURCE_TO_DIR_STRUCTURE)
   if(MSVC)
     foreach(_FILE ${ARGN})
-      # Remove generator expression text because the `source_group` command cannot understand it.
-      if(${_FILE} MATCHES "^\\$<\\$<CONFIG:Debug>:(.+)>$")
-        set(_FILE ${CMAKE_MATCH_1})
-      endif()
       # Basic test for determining if current file is a source file or header file.
       if(${_FILE} MATCHES ".+\.cpp$")
         set(_FILE_PREFIX "Source Files\\")
