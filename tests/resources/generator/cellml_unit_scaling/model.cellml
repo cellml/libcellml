@@ -1,5 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Different tests to check that unit conversation is properly handled at the connection level:
+ - Two main components:
+    - One where the VOI, t, is expressed in milliseconds; and
+    - Another where the VOI, scaled_t, is expressed in seconds.
+ - Each of these two main components features the following:
+    - Use a constant, k, to compute the x state variable; and
+    - Use a scaled constant, scaled_k, to compute the scaled_x state variable. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
@@ -9,12 +16,83 @@
     <component name="environment">
         <variable interface="public" name="t" units="ms"/>
     </component>
-    <component name="main">
-        <variable interface="public_and_private" name="t" units="ms"/>
-        <variable interface="private" name="x" units="mM"/>
-        <variable interface="public_and_private" name="y" units="mM"/>
+    <component name="t">
+        <variable interface="public" name="t" units="ms"/>
+        <variable interface="public" name="k" units="mV"/>
+        <variable interface="public" name="scaled_k" units="V"/>
+        <variable initial_value="0" interface="public" name="x" units="mV"/>
+        <variable initial_value="0" interface="public" name="scaled_x" units="V"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <ci>k</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>scaled_x</ci>
+                </apply>
+                <ci>scaled_k</ci>
+            </apply>
+        </math>
+    </component>
+    <component name="scaled_t">
+        <variable interface="public" name="scaled_t" units="s"/>
+        <variable interface="public" name="k" units="mV"/>
+        <variable interface="public" name="scaled_k" units="V"/>
+        <variable initial_value="0" interface="public" name="x" units="mV"/>
+        <variable initial_value="0" interface="public" name="scaled_x" units="V"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>scaled_t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <ci>k</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>scaled_t</ci>
+                    </bvar>
+                    <ci>scaled_x</ci>
+                </apply>
+                <ci>scaled_k</ci>
+            </apply>
+        </math>
     </component>
     <component name="constants">
-        <variable initial_value="123" interface="public" name="K" units="mV"/>
+        <variable initial_value="123" interface="public" name="k" units="mV"/>
     </component>
+    <connection component_1="environment" component_2="t">
+        <map_variables variable_1="t" variable_2="t"/>
+    </connection>
+    <connection component_1="environment" component_2="scaled_t">
+        <map_variables variable_1="t" variable_2="scaled_t"/>
+    </connection>
+    <connection component_1="t" component_2="constants">
+        <map_variables variable_1="k" variable_2="k"/>
+        <map_variables variable_1="scaled_k" variable_2="k"/>
+    </connection>
+    <connection component_1="scaled_t" component_2="constants">
+        <map_variables variable_1="k" variable_2="k"/>
+        <map_variables variable_1="scaled_k" variable_2="k"/>
+    </connection>
 </model>
