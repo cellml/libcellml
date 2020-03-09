@@ -459,7 +459,7 @@ and which appears as a child of a :code:`reset` element.
 Specific information items
 --------------------------
 
-.. container:: issue-test-value-todo
+.. container:: issue-test-value
 
    1. A :code:`test_value` element MUST contain exactly one :code:`math` element
       child.
@@ -480,7 +480,7 @@ and which appears as a child of a :code:`reset` element.
 Specific information items
 --------------------------
 
-.. container:: issue-reset-value-todo
+.. container:: issue-reset-value
 
    1. A :code:`reset_value` element MUST contain exactly one :code:`math` element
       child.
@@ -526,12 +526,12 @@ Specific information items
       The value of this attribute MUST be a valid units
       reference.
 
-.. container:: issue-math-todo
+.. container:: issue-math-cn-type
 
    5. The :code:`cn` element MUST be one of the following
       :mathml2types:`types` : real or e-notation.
 
-.. container:: issue-math-todo
+.. container:: issue-math-cn-base10
 
    6. The :code:`cn` element MUST be of base 10.
 

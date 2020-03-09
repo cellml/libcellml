@@ -313,13 +313,13 @@ specification:
 
       1. SHALL be a base 10 representation of an integer.
 
-   .. container:: issue-data-repr-neg-sign
+   .. container:: issue-data-repr-int-sign
 
       2. SHALL, when the integer being represented is negative,
          begin with the Basic Latin hyphen-minus character
          :unicode:`002D` as the sign indicator.
 
-   .. container:: issue-data-repr-in-euro-num
+   .. container:: issue-data-repr-int-euro-num
 
       3. SHALL, other than the sign indicator, consist only of
       :ref:`European numerals<specA_european_numeral>`.
@@ -383,7 +383,7 @@ specification:
          The exponent separator character SHALL be either the Basic Latin ‘E’
          character :unicode:`0045` or the Basic Latin ‘e’ character :unicode:`0065`.
 
-   .. container:: issue-data-repr-real-noexponent
+   .. container:: issue-data-repr-real-no-exponent
 
       5. A real number string without an exponent SHALL be a
          :ref:`basic real number string<specA_basic_real_number>`.
