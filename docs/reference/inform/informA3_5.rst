@@ -29,4 +29,5 @@
       - :code:`"123.45"` is valid, and is treated as if it were a basic real number string: the exponent term
         is effectivly zero,
       - :code:`"123.45E"` is not valid (if the exponent is present it may not be blank), and
-      - :code:`0x123abc` is not valid (base 10 numbers only)
+      - :code:`"123,456.7e89"` is not valid (you may not use a thousands separator),
+      - :code:`"0x123abc"` is not valid (base 10 numbers only)
