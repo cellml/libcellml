@@ -371,7 +371,7 @@ specification:
    .. container:: issue-data-repr-real-significand
 
       3. The significand SHALL be represented as a
-         :ref: `basic real number string<specA_basic_real_number>`.
+         :ref:`basic real number string<specA_basic_real_number>`.
 
    .. container:: issue-data-repr-real-exponent
 
