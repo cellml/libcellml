@@ -70,175 +70,224 @@ void testSpecificationRule(const libcellml::ErrorPtr &e)
 {
     switch (e->rule()) {
     case libcellml::SpecificationRule::COMPONENT_CHILD:
-        EXPECT_EQ("10.1.2", e->specificationHeading());
+        EXPECT_EQ("B7.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::COMPONENT_NAME:
-        EXPECT_EQ("10.1.1", e->specificationHeading());
+        EXPECT_EQ("B7.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::COMPONENT_REF_CHILD:
-        EXPECT_EQ("16.1.2", e->specificationHeading());
+        EXPECT_EQ("B14.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE:
-        EXPECT_EQ("16.1.1", e->specificationHeading());
+        EXPECT_EQ("B14.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::COMPONENT_REF_ENCAPSULATION:
-        EXPECT_EQ("16.1.3", e->specificationHeading());
+        EXPECT_EQ("B14.1.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::CONNECTION_COMPONENT1:
-        EXPECT_EQ("17.1.1", e->specificationHeading());
+        EXPECT_EQ("B15.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::CONNECTION_COMPONENT2:
-        EXPECT_EQ("17.1.2", e->specificationHeading());
+        EXPECT_EQ("B15.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::CONNECTION_UNIQUE_TRANSITIVE:
-        EXPECT_EQ("17.1.3", e->specificationHeading());
+        EXPECT_EQ("B15.1.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::CONNECTION_MAP_VARIABLES:
-        EXPECT_EQ("17.1.4", e->specificationHeading());
+        EXPECT_EQ("B15.1.4", e->specificationHeading());
         break;
+    case libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_BASE10:
+        EXPECT_EQ("A3.4.1", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_DECIMAL:
+        EXPECT_EQ("A3.4.3", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_EURO_NUM:
+        EXPECT_EQ("A3.4.4", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_SIGN:
+        EXPECT_EQ("A3.4.2", e->specificationHeading());
+        break;
+
     case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM:
-        EXPECT_EQ("3.1.3", e->specificationHeading());
+        EXPECT_EQ("A3.1.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM:
-        EXPECT_EQ("3.1.4", e->specificationHeading());
+        EXPECT_EQ("A3.1.4", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_IDENTICAL:
-        EXPECT_EQ("3.1.5", e->specificationHeading());
+        EXPECT_EQ("A3.1.5", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM:
-        EXPECT_EQ("3.1.2", e->specificationHeading());
+        EXPECT_EQ("A3.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE:
-        EXPECT_EQ("3.1.1", e->specificationHeading());
+        EXPECT_EQ("A3.1.1", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_INT_BASE10:
+        EXPECT_EQ("A3.3.1", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_INT_EURO_NUM:
+        EXPECT_EQ("A3.3.3", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_INT_SIGN:
+        EXPECT_EQ("A3.3.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_NNEG_INT_BASE10:
-        EXPECT_EQ("3.2.1", e->specificationHeading());
+        EXPECT_EQ("A3.2.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_NNEG_INT_EURO_NUM:
-        EXPECT_EQ("3.2.2", e->specificationHeading());
+        EXPECT_EQ("A3.2.2", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_REAL_BASE10:
+        EXPECT_EQ("A3.5.1", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_REAL_EXPONENT:
+        EXPECT_EQ("A3.5.4", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_REAL_NO_EXPONENT:
+        EXPECT_EQ("A3.5.5", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_REAL_REPR:
+        EXPECT_EQ("A3.5.2", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::DATA_REPR_REAL_SIGNIFICAND:
+        EXPECT_EQ("A3.5.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::ENCAPSULATION_COMPONENT_REF:
-        EXPECT_EQ("15.1.1", e->specificationHeading());
+        EXPECT_EQ("B13.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_CHILD:
-        EXPECT_EQ("5.1.2", e->specificationHeading());
+        EXPECT_EQ("B2.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_CIRCULAR:
-        EXPECT_EQ("5.1.3", e->specificationHeading());
+        EXPECT_EQ("B2.1.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_COMPONENT_NAME:
-        EXPECT_EQ("7.1.1", e->specificationHeading());
+        EXPECT_EQ("B4.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_COMPONENT_REF:
-        EXPECT_EQ("7.1.2", e->specificationHeading());
+        EXPECT_EQ("B4.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_HREF:
-        EXPECT_EQ("5.1.1", e->specificationHeading());
+        EXPECT_EQ("B2.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_UNITS_NAME:
-        EXPECT_EQ("6.1.1", e->specificationHeading());
+        EXPECT_EQ("B3.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::IMPORT_UNITS_REF:
-        EXPECT_EQ("6.1.2", e->specificationHeading());
+        EXPECT_EQ("B3.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
-        EXPECT_EQ("19.10.6", e->specificationHeading());
+        EXPECT_EQ("C10.6", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MAP_VARIABLES_UNIQUE:
-        EXPECT_EQ("18.1.3", e->specificationHeading());
+        EXPECT_EQ("B16.1.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MAP_VARIABLES_VARIABLE1:
-        EXPECT_EQ("18.1.1", e->specificationHeading());
+        EXPECT_EQ("B16.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MAP_VARIABLES_VARIABLE2:
-        EXPECT_EQ("18.1.2", e->specificationHeading());
+        EXPECT_EQ("B16.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MATH_CHILD:
-        EXPECT_EQ("14.1.2", e->specificationHeading());
+        EXPECT_EQ("B12.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MATH_CI_VARIABLE_REFERENCE:
-        EXPECT_EQ("14.1.3", e->specificationHeading());
+        EXPECT_EQ("B12.1.3", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::MATH_CN_TYPE:
+        EXPECT_EQ("B12.1.5", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::MATH_CN_BASE10:
+        EXPECT_EQ("B12.1.6", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MATH_CN_UNITS_ATTRIBUTE:
-        EXPECT_EQ("14.1.4", e->specificationHeading());
+        EXPECT_EQ("B12.1.4", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MATH_MATHML:
-        EXPECT_EQ("14.1.1", e->specificationHeading());
+        EXPECT_EQ("B12.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MODEL_CHILD:
-        EXPECT_EQ("4.2.2", e->specificationHeading());
+        EXPECT_EQ("B1.2.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MODEL_ELEMENT:
-        EXPECT_EQ("4.1", e->specificationHeading());
+        EXPECT_EQ("B1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION:
-        EXPECT_EQ("4.2.3", e->specificationHeading());
+        EXPECT_EQ("B1.2.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::MODEL_NAME:
-        EXPECT_EQ("4.2.1", e->specificationHeading());
+        EXPECT_EQ("B1.2.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::RESET_CHILD:
-        EXPECT_EQ("12.1.2", e->specificationHeading());
+        EXPECT_EQ("B9.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::RESET_VARIABLE_REFERENCE:
-        EXPECT_EQ("12.1.1.1", e->specificationHeading());
+        EXPECT_EQ("B9.1.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::RESET_TEST_VARIABLE_REFERENCE:
-        EXPECT_EQ("12.1.1.1", e->specificationHeading());
+        EXPECT_EQ("B9.1.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::RESET_ORDER:
-        EXPECT_EQ("12.1.1.2", e->specificationHeading());
-        break;
-    case libcellml::SpecificationRule::RESET_TEST_VALUE:
-        EXPECT_EQ("12.1.2", e->specificationHeading());
+        EXPECT_EQ("B9.1.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::RESET_RESET_VALUE:
-        EXPECT_EQ("12.1.2", e->specificationHeading());
+        EXPECT_EQ("B9.1.2", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::RESET_TEST_VALUE:
+        EXPECT_EQ("B9.1.2", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::RESET_RESET_VALUE_CHILD:
+        EXPECT_EQ("B11.1.1", e->specificationHeading());
+        break;
+    case libcellml::SpecificationRule::RESET_TEST_VALUE_CHILD:
+        EXPECT_EQ("B10.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNITS_CHILD:
-        EXPECT_EQ("8.1.4", e->specificationHeading());
+        EXPECT_EQ("B5.1.4", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNITS_NAME:
-        EXPECT_EQ("8.1.1", e->specificationHeading());
+        EXPECT_EQ("B5.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNITS_NAME_UNIQUE:
-        EXPECT_EQ("8.1.2", e->specificationHeading());
+        EXPECT_EQ("B5.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNITS_STANDARD:
-        EXPECT_EQ("8.1.3", e->specificationHeading());
+        EXPECT_EQ("B5.1.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE:
-        EXPECT_EQ("9.1.2", e->specificationHeading());
+        EXPECT_EQ("B6.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_CIRCULAR_REF:
-        EXPECT_EQ("9.1.1.2", e->specificationHeading());
+        EXPECT_EQ("B6.1.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_DIGRAPH:
-        EXPECT_EQ("9.1.1.1", e->specificationHeading());
+        EXPECT_EQ("B6.1.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_EXPONENT:
-        EXPECT_EQ("9.1.2.3", e->specificationHeading());
+        EXPECT_EQ("B6.1.2.3", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_MULTIPLIER:
-        EXPECT_EQ("9.1.2.2", e->specificationHeading());
+        EXPECT_EQ("B6.1.2.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_PREFIX:
-        EXPECT_EQ("9.1.2.1", e->specificationHeading());
+        EXPECT_EQ("B6.1.2.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNIT_UNITS_REF:
-        EXPECT_EQ("9.1.1", e->specificationHeading());
+        EXPECT_EQ("B6.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::VARIABLE_INITIAL_VALUE:
-        EXPECT_EQ("11.1.2.2", e->specificationHeading());
+        EXPECT_EQ("B8.1.2.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::VARIABLE_INTERFACE:
-        EXPECT_EQ("11.1.2.1", e->specificationHeading());
+        EXPECT_EQ("B8.1.2.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::VARIABLE_NAME:
-        EXPECT_EQ("11.1.1.1", e->specificationHeading());
+        EXPECT_EQ("B8.1.1.1", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::VARIABLE_UNITS:
-        EXPECT_EQ("11.1.1.2", e->specificationHeading());
+        EXPECT_EQ("B8.1.1.2", e->specificationHeading());
         break;
     case libcellml::SpecificationRule::UNDEFINED:
         EXPECT_EQ("", e->specificationHeading());
@@ -280,6 +329,18 @@ TEST(Error, specificationRule)
     e->setRule(libcellml::SpecificationRule::CONNECTION_MAP_VARIABLES);
     ++count;
     testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_BASE10);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_DECIMAL);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_EURO_NUM);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_BASIC_REAL_SIGN);
+    ++count;
+    testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
     ++count;
     testSpecificationRule(e);
@@ -295,10 +356,34 @@ TEST(Error, specificationRule)
     e->setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE);
     ++count;
     testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_INT_BASE10);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_INT_EURO_NUM);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_INT_SIGN);
+    ++count;
+    testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::DATA_REPR_NNEG_INT_BASE10);
     ++count;
     testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::DATA_REPR_NNEG_INT_EURO_NUM);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_REAL_BASE10);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_REAL_EXPONENT);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_REAL_NO_EXPONENT);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_REAL_REPR);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::DATA_REPR_REAL_SIGNIFICAND);
     ++count;
     testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::ENCAPSULATION_COMPONENT_REF);
@@ -323,6 +408,24 @@ TEST(Error, specificationRule)
     ++count;
     testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::IMPORT_UNITS_REF);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::MATH_CHILD);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::MATH_CI_VARIABLE_REFERENCE);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::MATH_CN_TYPE);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::MATH_CN_BASE10);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::MATH_CN_UNITS_ATTRIBUTE);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::MATH_MATHML);
     ++count;
     testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
@@ -353,6 +456,18 @@ TEST(Error, specificationRule)
     ++count;
     testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::RESET_VARIABLE_REFERENCE);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::RESET_RESET_VALUE);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::RESET_RESET_VALUE_CHILD);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::RESET_TEST_VALUE);
+    ++count;
+    testSpecificationRule(e);
+    e->setRule(libcellml::SpecificationRule::RESET_TEST_VALUE_CHILD);
     ++count;
     testSpecificationRule(e);
     e->setRule(libcellml::SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
@@ -406,5 +521,5 @@ TEST(Error, specificationRule)
     e->setRule(libcellml::SpecificationRule::VARIABLE_UNITS);
     ++count;
     testSpecificationRule(e);
-    EXPECT_EQ(size_t(52), count);
+    EXPECT_EQ(size_t(74), count);
 }
