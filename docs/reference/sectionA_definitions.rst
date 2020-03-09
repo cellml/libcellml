@@ -299,7 +299,7 @@ specification:
 
       1. SHALL be a base 10 representation of a non-negative integer.
 
-   .. container:: issue-data-repr-nneg-in-euro-num
+   .. container:: issue-data-repr-nneg-int-euro-num
 
       2. SHALL consist entirely of :ref:`European numerals<specA_european_numeral>`.
 
