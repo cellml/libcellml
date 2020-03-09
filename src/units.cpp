@@ -425,14 +425,31 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
 
 using UnitsMap = std::map<std::string, double>;
 
+void updateUnitsMapWithStandardUnit(const std::string &name, UnitsMap &unitsMap, double exp)
+{
+    auto unitsListIter = standardUnitsList.find(name);
+    for (const auto &baseUnitsComponent : unitsListIter->second) {
+        auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
+        if (unitsMapIter == unitsMap.end()) {
+            unitsMap[baseUnitsComponent.first] = 0.0;
+        }
+        unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * exp;
+    }
+}
+
 bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
-        auto found = unitsMap.find(units->name());
-        if (found == unitsMap.end()) {
-            unitsMap.emplace(units->name(), exp);
+        auto unitsName = units->name();
+        if (isStandardUnitName(unitsName)) {
+            updateUnitsMapWithStandardUnit(unitsName, unitsMap, exp);
         } else {
-            found->second += exp;
+            auto found = unitsMap.find(unitsName);
+            if (found == unitsMap.end()) {
+                unitsMap.emplace(unitsName, exp);
+            } else {
+                found->second += exp;
+            }
         }
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
@@ -443,14 +460,7 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             double uExp;
             units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
-                auto unitsListIter = standardUnitsList.find(ref);
-                for (const auto &baseUnitsComponent : unitsListIter->second) {
-                    auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
-                    if (unitsMapIter == unitsMap.end()) {
-                        unitsMap[baseUnitsComponent.first] = 0.0;
-                    }
-                    unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * uExp * exp;
-                }
+                updateUnitsMapWithStandardUnit(ref, unitsMap, uExp * exp);
             } else {
                 auto model = owningModel(units);
                 if (model == nullptr) {
