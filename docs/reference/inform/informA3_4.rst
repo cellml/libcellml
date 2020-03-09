@@ -25,3 +25,4 @@
       - :code:`"+123.4567"` is not valid (must not contain the plus sign :code:`+`)
       - :code:`"1234567"` is valid (it's ok to not have a decimal point :code:`.`)
       - :code:`"123,4567"` is not valid (the decimal signifyer must be a full-stop symbol :code:`.`)
+      - :code:`0x123abc` is not valid (base 10 numbers only)
