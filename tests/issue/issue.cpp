@@ -142,6 +142,9 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::ReferenceRule::IMPORT_UNITS_REF:
         EXPECT_EQ("6.1.2", e->referenceHeading());
         break;
+    case libcellml::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
+        EXPECT_EQ("16.1.3", e->referenceHeading());
+        break;
     case libcellml::ReferenceRule::MAP_VARIABLES_UNIQUE:
         EXPECT_EQ("18.1.3", e->referenceHeading());
         break;
