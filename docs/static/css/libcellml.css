@@ -42,6 +42,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
     background-color: rgba(255, 255, 0, 0.2);
     font-weight: 500;
     padding: 10px;
+    border-left: solid 5px saddlebrown;
 }
 
 .dothis {
