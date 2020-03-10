@@ -514,7 +514,7 @@ struct Generator::GeneratorImpl
     double scalingFactor(const VariablePtr &variable);
 
     void scaleEquationAst(const GeneratorEquationAstPtr &ast, bool debug,
-                          int eqNb);
+                          int eqnNb);
 
     void printEquationsAst() const;
 
@@ -1275,16 +1275,16 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
 }
 
 void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast,
-                                                bool debug, int eqNb)
+                                                bool debug, int eqnNb)
 {
     // Recursively scale the given AST's children.
 
     if (ast->mLeft != nullptr) {
-        scaleEquationAst(ast->mLeft, debug, eqNb);
+        scaleEquationAst(ast->mLeft, debug, eqnNb);
     }
 
     if (ast->mRight != nullptr) {
-        scaleEquationAst(ast->mRight, debug, eqNb);
+        scaleEquationAst(ast->mRight, debug, eqnNb);
     }
 
     // If the given AST node is a variabe (i.e. a CI node) then we may need to
@@ -1296,7 +1296,7 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         // has a DIFF node as a parent.
 
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
-if (debug && (eqNb == 1)) {
+if (debug && (eqnNb == 1)) {
 std::cout << "Variable: " << ast->mVariable->name()
           << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO")
           << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO")
