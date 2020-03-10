@@ -80,6 +80,7 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
+        (*result)->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -95,7 +96,9 @@ bool ComponentEntity::removeComponent(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
+        auto component = mPimpl->mComponents[index];
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        component->removeParent();
         status = true;
     }
 
@@ -107,6 +110,7 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
+        (*result)->removeParent();
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -120,6 +124,9 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 
 void ComponentEntity::removeAllComponents()
 {
+    for (const auto &component : mPimpl->mComponents) {
+        component->removeParent();
+    }
     mPimpl->mComponents.clear();
 }
 
@@ -216,9 +223,13 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &compone
 {
     bool status = false;
     ComponentEntityPtr oldComponent = ComponentEntity::component(index);
+    EntityPtr parent = nullptr;
+    if (oldComponent != nullptr && oldComponent->hasParent()) {
+        parent = oldComponent->parent();
+    }
     if (removeComponent(index)) {
         mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
-        component->setParent(oldComponent->parent());
+        component->setParent(parent);
         status = true;
     }
 
