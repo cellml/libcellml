@@ -33,7 +33,41 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
+#include "debug.h"
+
 namespace libcellml {
+
+/**
+* @brief Validate that equivalent variable pairs in the @p model
+* have equivalent units.
+* Any errors will be logged in the @c Validator.
+*
+* Any difference in base units is reported as an error in the @c Validator, but the multiplier difference does not trigger a validator error.
+* Where the base units are equivalent, the multiplier may be interpreted as units_of_v1 = (10^multiplier)*units_of_v2
+*
+* @param model The model containing the variables.
+* @param v1 The variable which may contain units.
+* @param v2 The equivalent variable which may contain units.
+* @param hints String containing error messages to be passed back to the calling function for logging.
+* @param multiplier Double returning the effective multiplier mismatch between the units.
+*/
+bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
+
+/**
+* @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
+*
+* @param model The model containing the variables.
+* @param unitMap A list of the exponents of base variables.
+* @param uName String name of the current variable being investigated.
+* @param standardList Nested map of the conversion between built-in units and the base units they contain.
+* @param uExp Exponent of the current unit in its parent.
+* @param direction Specify whether we want to increment (1) or decrement (-1).
+*/
+void updateBaseUnitCount(const ModelPtr &model,
+                         std::map<std::string, double> &unitMap,
+                         double &multiplier,
+                         const std::string &uName,
+                         double uExp, double logMult, int direction);
 
 /**
  * @brief The Validator::ValidatorImpl struct.
@@ -111,6 +145,37 @@ struct Validator::ValidatorImpl
      * @param model The model which may contain variable connections to validate.
      */
     void validateConnections(const ModelPtr &model);
+
+    /**
+     * @brief Validate the units of the given variables equivalent variables.
+     *
+     * Validate that the variables that are equivalent to the given variable all
+     * have compatible units.
+     *
+     * @param model The model for which the variable and model belong.
+     * @param variable The variable to validate.
+     * @param alreadyReported A list of variable pointer pairs.
+     */
+    void validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported);
+
+    /**
+     * @brief Validate the structure of the variables equivalences.
+     *
+     * Validate the structure of the variables equivalences.
+     *
+     * @param variable The variable to validate.
+     */
+    void validateEquivalenceStructure(const VariablePtr &variable);
+
+    /**
+     * @brief Validate the variable interface type.
+     *
+     * Validate the interface type for the given variable.
+     *
+     * @param variable The variable to validate.
+     * @param alreadyReported A list of variable pointer pairs.
+     */
+    void validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported);
 
     /**
      * @brief Check if the provided @p name is a valid CellML identifier.
@@ -224,7 +289,7 @@ struct Validator::ValidatorImpl
     * @param hints String containing issue messages to be passed back to the calling function for logging.
     * @param multiplier Double returning the effective multiplier mismatch between the units.
     */
-    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
+    // KRM bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints, double &multiplier);
 
     /**
     * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
@@ -952,60 +1017,137 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
+/**
+ * @brief Test to see if the given variables are reachable from their parent components.
+ *
+ * Determine if the variables parents are reachable from one another.  That is they either
+ * have a parent/child relationship or a sibling relationship in the model's component
+ * hierarchy.
+ *
+ * Both variables must have a valid parent.
+ *
+ * @param variable1 The first variable.
+ * @param variable2 The second variable.
+ *
+ * @return @c true if the parents of the given variables are reachable in the model component
+ * hierarchy, @c false otherwise.
+ */
+bool reachableEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    std::string hints;
-    std::vector<std::pair<VariablePtr, VariablePtr>> checkedPairs;
+    auto parent1 = variable1->parent();
+    auto parent2 = variable2->parent();
 
-    // Check the components in this model.
-    if (model->componentCount() > 0) {
-        for (size_t i = 0; i < model->componentCount(); ++i) {
-            ComponentPtr component = model->component(i);
-            // Check the variables in this component.
-            for (size_t j = 0; j < component->variableCount(); ++j) {
-                VariablePtr variable = component->variable(j);
-                // Check the equivalent variables in this variable.
-                if (variable->equivalentVariableCount() > 0) {
-                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                        VariablePtr equivalentVariable = variable->equivalentVariable(k);
+    return isEntityChildOf(parent1, parent2)
+           || isEntityChildOf(parent2, parent1)
+           || areEntitiesSiblings(parent1, parent2);
+}
 
-                        // Skip if this pairing has been checked before.
-                        auto checkPairing = std::make_pair(variable, equivalentVariable);
+bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequired, const std::string &interfaceTypeCompatibleWith)
+{
+    std::string interfaceTypeMinimumRequiredString = interfaceTypeToString.find(interfaceTypeMinimumRequired)->second;
+    return interfaceTypeCompatibleWith.find(interfaceTypeMinimumRequiredString) != std::string::npos;
+}
 
-                        if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) == checkedPairs.end()) {
-                            // Swap the order for storage in the pair.
-                            checkPairing = std::make_pair(equivalentVariable, variable);
-                            checkedPairs.push_back(checkPairing);
+void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported)
+{
+    Variable::InterfaceType interfaceType = determineInterfaceType(variable);
+    auto component = std::dynamic_pointer_cast<Component>(variable->parent());
+    std::string componentName = component->name();
+    if (interfaceType == Variable::InterfaceType::NONE) {
+        for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
+            const auto equivalentVariable = variable->equivalentVariable(index);
+            auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
+                VariablePair reversePair = std::make_pair(equivalentVariable, variable);
+                auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+                if (it == alreadyReported.end()) {
+                    VariablePair pair = std::make_pair(variable, equivalentVariable);
+                    alreadyReported.push_back(pair);
+                    std::string equivalentComponentName = equivalentComponent->name();
 
-                            // TODO: validate variable interfaces according to 17.10.8.
-                            // TODO: add check for cyclical connections (17.10.5).
-                            double multiplier = 0.0;
-                            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
-                                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
-                                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
-                                IssuePtr issue = Issue::create();
-                                issue->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-                                issue->setModel(model);
-                                issue->setCause(Issue::Cause::UNITS);
-                                mValidator->addIssue(issue);
-                            }
-
-                            if (equivalentVariable->hasEquivalentVariable(variable)) {
-                                // Check that the equivalent variable has a valid parent component.
-                                auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-                                if (component2 == nullptr || !component2->hasVariable(equivalentVariable)) {
-                                    IssuePtr issue = Issue::create();
-                                    issue->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                                    issue->setModel(model);
-                                    issue->setCause(Issue::Cause::CONNECTION);
-                                    mValidator->addIssue(issue);
-                                }
-                            }
-                        }
-                    }
+                    IssuePtr err = Issue::create();
+                    err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
+                    err->setVariable(variable);
+                    err->setCause(Issue::Cause::CONNECTION);
+                    err->setLevel(Issue::Level::ERROR);
+                    mValidator->addIssue(err);
                 }
             }
         }
+    } else {
+        auto interfaceTypeString = variable->interfaceType();
+        if (!interfaceTypeIsCompatible(interfaceType, interfaceTypeString)) {
+            IssuePtr err = Issue::create();
+            if (interfaceTypeString.empty()) {
+                err->setDescription("Variable '" + variable->name() + "' in component '" + componentName + "' has no interface type set. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
+            } else {
+                err->setDescription("Variable '" + variable->name() + "' in component '" + componentName + "' has an interface type set to '" + interfaceTypeString + "' which is not the correct interface type for this variable. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
+            }
+            err->setVariable(variable);
+            err->setCause(Issue::Cause::CONNECTION);
+            err->setLevel(Issue::Level::ERROR);
+            mValidator->addIssue(err);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported)
+{
+    std::string hints;
+    for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
+        auto equivalentVariable = variable->equivalentVariable(index);
+        double multiplier = 0.0;
+        if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
+            VariablePair reversePair = std::make_pair(equivalentVariable, variable);
+            auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+            if (it == alreadyReported.end()) {
+                VariablePair pair = std::make_pair(variable, equivalentVariable);
+                alreadyReported.push_back(pair);
+                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                IssuePtr err = Issue::create();
+                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setModel(model);
+                err->setCause(Issue::Cause::UNITS);
+                err->setRule(ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+                mValidator->addIssue(err);
+            }
+        }
+    }
+}
+
+void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &variable)
+{
+    for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
+        auto equivalentVariable = variable->equivalentVariable(index);
+        if (equivalentVariable->hasEquivalentVariable(variable)) {
+            auto component = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            if (component == nullptr) {
+                IssuePtr err = Issue::create();
+                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
+                err->setVariable(equivalentVariable);
+                err->setCause(Issue::Cause::CONNECTION);
+                mValidator->addIssue(err);
+            }
+        }
+    }
+}
+
+void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
+{
+    VariableMap interfaceErrorsAlreadyReported;
+    VariableMap equivalentUnitErrorsAlreadyReported;
+
+    VariablePtrs variables;
+
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        findAllVariablesWithEquivalences(model->component(index), variables);
+    }
+
+    for (const VariablePtr &variable : variables) {
+        validateVariableInterface(variable, interfaceErrorsAlreadyReported);
+        validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
+        validateEquivalenceStructure(variable);
     }
 }
 
@@ -1047,11 +1189,11 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
     return result;
 }
 
-bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
-                                                  const VariablePtr &v1,
-                                                  const VariablePtr &v2,
-                                                  std::string &hints,
-                                                  double &multiplier)
+bool unitsAreEquivalent(const ModelPtr &model,
+                        const VariablePtr &v1,
+                        const VariablePtr &v2,
+                        std::string &hints,
+                        double &multiplier)
 {
     std::map<std::string, double> unitMap = {};
 
@@ -1126,12 +1268,12 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     return status;
 }
 
-void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
-                                                   std::map<std::string, double> &unitMap,
-                                                   double &multiplier,
-                                                   const std::string &uName,
-                                                   double uExp, double logMult,
-                                                   int direction)
+void updateBaseUnitCount(const ModelPtr &model,
+                         std::map<std::string, double> &unitMap,
+                         double &multiplier,
+                         const std::string &uName,
+                         double uExp, double logMult,
+                         int direction)
 {
     if (model->hasUnits(uName)) {
         UnitsPtr u = model->units(uName);

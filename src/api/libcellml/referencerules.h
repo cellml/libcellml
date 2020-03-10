@@ -83,8 +83,8 @@ enum class ReferenceRule
     CONNECTION_MAP_VARIABLES,
     MAP_VARIABLES_VARIABLE1,
     MAP_VARIABLES_VARIABLE2,
-    MAP_VARIABLES_UNIQUE
-    // Code generation errors go here ... TODO
+    MAP_VARIABLES_UNIQUE,
+    MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION
 };
 
 } // namespace libcellml

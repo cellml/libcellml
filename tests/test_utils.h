@@ -81,7 +81,7 @@ void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = fals
 
 void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer);
 
-void TEST_EXPORT printModel(libcellml::ModelPtr &model);
+void TEST_EXPORT printModel(const libcellml::ModelPtr &model);
 
 void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger);
 
