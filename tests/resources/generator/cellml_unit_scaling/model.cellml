@@ -3,15 +3,18 @@
     <!-- Different tests to check that unit conversation is properly handled at
 the connection level:
  - A component, constants, where we define a constant, k.
- - A component, states, where we define a compute a state variable, y.
+ - A component, states, where we initialise and compute a state variable, y, and
+   initialise two state variables, t_z and scaled_t_z.
  - Two main components:
     - One where the VOI, t, is expressed in milliseconds; and
     - Another where the VOI, scaled_t, is expressed in seconds.
  - Each of these two main components features the following:
-    - Use a constant, k, and state, y, to compute the x state variable; and
-    - Use a scaled constant, scaled_k, and a scaled state variable, scaled_y, to
-      compute the scaled_x state variable.
-    - Use the VOI to compute the [scaled_]voi variable. -->
+    - Compute the x state variable, which is initialised in this component;
+    - Compute the scaled_x state variable. which is initialised in this
+      component;
+    - Compute the [scaled_]z state variable, which is initialised in the states
+      component.
+    - Compute the [scaled_]voi variable. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
@@ -27,6 +30,8 @@ the connection level:
     <component name="states">
         <variable interface="public" name="t" units="ms"/>
         <variable initial_value="789" interface="public" name="y" units="mV"/>
+        <variable initial_value="1.23" interface="public" name="t_z" units="mV"/>
+        <variable initial_value="7.89" interface="public" name="scaled_t_z" units="mV"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -49,6 +54,7 @@ the connection level:
         <variable initial_value="3" interface="public" name="scaled_x" units="volt"/>
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
+        <variable interface="public" name="z" units="mV"/>
         <variable interface="public" name="voi" units="ms"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -64,6 +70,7 @@ the connection level:
                     <plus/>
                     <ci>k</ci>
                     <ci>y</ci>
+                    <ci>z</ci>
                 </apply>
             </apply>
             <apply>
@@ -83,6 +90,21 @@ the connection level:
             </apply>
             <apply>
                 <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>z</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>k</ci>
+                    <ci>y</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>voi</ci>
                 <ci>t</ci>
             </apply>
@@ -96,6 +118,7 @@ the connection level:
         <variable initial_value="103" interface="public" name="scaled_x" units="volt"/>
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
+        <variable interface="public" name="scaled_z" units="volt"/>
         <variable interface="public" name="scaled_voi" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -126,6 +149,22 @@ the connection level:
                     <plus/>
                     <ci>scaled_k</ci>
                     <ci>scaled_y</ci>
+                    <ci>scaled_z</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>scaled_t</ci>
+                    </bvar>
+                    <ci>scaled_z</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <ci>scaled_k</ci>
+                    <ci>scaled_y</ci>
                 </apply>
             </apply>
             <apply>
@@ -148,6 +187,7 @@ the connection level:
     <connection component_1="t" component_2="states">
         <map_variables variable_1="y" variable_2="y"/>
         <map_variables variable_1="scaled_y" variable_2="y"/>
+        <map_variables variable_1="z" variable_2="t_z"/>
     </connection>
     <connection component_1="environment" component_2="scaled_t">
         <map_variables variable_1="t" variable_2="scaled_t"/>
@@ -159,5 +199,6 @@ the connection level:
     <connection component_1="scaled_t" component_2="states">
         <map_variables variable_1="y" variable_2="y"/>
         <map_variables variable_1="scaled_y" variable_2="y"/>
+        <map_variables variable_1="scaled_z" variable_2="scaled_t_z"/>
     </connection>
 </model>
