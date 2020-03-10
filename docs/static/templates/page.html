@@ -12,13 +12,13 @@
         const url_object = new URL(window.location.href);
         const code = url_object.searchParams.get("issue");
         if (code!=null) {
-
-
-            issueCode = ".issue-" + issueCode.toLowerCase().replace("_", "-");
+            let issueCode = ".issue-" + issueCode.toLowerCase().replace("_", "-");
             // Add error code as title of blocks:
             let contents = $(issueCode).html();
             let title = "<div id='title'>Title goes here</div>";
             $(issueCode).html(title+contents);
+            alert(title+contents);
+            alert(issueCode);
             $(issueCode).addClass("highlight-issue");
 
         }
