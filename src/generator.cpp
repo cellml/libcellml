@@ -513,11 +513,12 @@ struct Generator::GeneratorImpl
 
     double scalingFactor(const VariablePtr &variable);
 
-    void scaleEquationAst(const GeneratorEquationAstPtr &ast, int eqNb);
+    void scaleEquationAst(const GeneratorEquationAstPtr &ast, bool debug,
+                          int eqNb);
 
     void printEquationsAst() const;
 
-    void processModel(const ModelPtr &model);
+    void processModel(const ModelPtr &model, bool debug);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
     bool isAndOperator(const GeneratorEquationAstPtr &ast) const;
@@ -1274,16 +1275,16 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
 }
 
 void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast,
-                                                int eqNb)
+                                                bool debug, int eqNb)
 {
     // Recursively scale the given AST's children.
 
     if (ast->mLeft != nullptr) {
-        scaleEquationAst(ast->mLeft, eqNb);
+        scaleEquationAst(ast->mLeft, debug, eqNb);
     }
 
     if (ast->mRight != nullptr) {
-        scaleEquationAst(ast->mRight, eqNb);
+        scaleEquationAst(ast->mRight, debug, eqNb);
     }
 
     // If the given AST node is a variabe (i.e. a CI node) then we may need to
@@ -1295,7 +1296,7 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         // has a DIFF node as a parent.
 
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
-if (eqNb == 7) {
+if (debug && (eqNb == 1)) {
 std::cout << "Variable: " << ast->mVariable->name()
           << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO")
           << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO")
@@ -1382,27 +1383,24 @@ std::cout << "Variable: " << ast->mVariable->name()
 void Generator::GeneratorImpl::printEquationsAst() const
 {
     // Print our equations' AST.
-    // Note: delete this method should be deleted once we are done with issue
-    //       #409.
+    // Note: this method should be deleted once we are done with issue #409.
 
-    if (mEquations.size() == 18) {
-        size_t eqnNb = 0;
+    size_t eqnNb = 0;
 
-        for (const auto &equation : mEquations) {
-            ++eqnNb;
+    for (const auto &equation : mEquations) {
+        ++eqnNb;
 
-            if (eqnNb == 7) {
-                std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
+        if (eqnNb == 1) {
+            std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
 
-                printAst(equation->mAst);
-            }
+            printAst(equation->mAst);
         }
-
-        std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
     }
+
+    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
 }
 
-void Generator::GeneratorImpl::processModel(const ModelPtr &model)
+void Generator::GeneratorImpl::processModel(const ModelPtr &model, bool debug)
 {
     // Reset a few things in case we were to process the model more than once.
     // Note: one would normally process the model only once, so we shouldn't
@@ -1564,7 +1562,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
         // Print our equations' AST.
 
-        printEquationsAst();
+        if (debug) {
+            printEquationsAst();
+        }
 
         // Scale our equations' AST, i.e. take into account the fact that we may
         // have mapped variables that use compatible units rather than
@@ -1573,16 +1573,18 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         int eqNb = 0;
 
         for (const auto &equation : mEquations) {
-            if (mEquations.size() == 18) {
+            if (debug) {
                 ++eqNb;
             }
 
-            scaleEquationAst(equation->mAst, eqNb);
+            scaleEquationAst(equation->mAst, debug, eqNb);
         }
 
         // Print our updated equations' AST.
 
-        printEquationsAst();
+        if (debug) {
+            printEquationsAst();
+        }
 
         // Sort our variables and equations and make our internal variables
         // available through our API.
@@ -3381,7 +3383,7 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
     mPimpl->mProfile = profile;
 }
 
-void Generator::processModel(const ModelPtr &model)
+void Generator::processModel(const ModelPtr &model, bool debug)
 {
     // Make sure that the model is valid before processing it.
 
@@ -3404,7 +3406,7 @@ void Generator::processModel(const ModelPtr &model)
 
     // Process the model.
 
-    mPimpl->processModel(model);
+    mPimpl->processModel(model, debug);
 }
 
 Generator::ModelType Generator::modelType() const
