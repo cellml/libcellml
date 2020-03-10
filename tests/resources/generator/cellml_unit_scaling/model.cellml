@@ -16,6 +16,9 @@
     <component name="environment">
         <variable interface="public" name="t" units="ms"/>
     </component>
+    <component name="constants">
+        <variable initial_value="123" interface="public" name="k" units="mV"/>
+    </component>
     <component name="t">
         <variable interface="public" name="t" units="ms"/>
         <variable interface="public" name="k" units="mV"/>
@@ -77,9 +80,6 @@
                 <ci>scaled_k</ci>
             </apply>
         </math>
-    </component>
-    <component name="constants">
-        <variable initial_value="123" interface="public" name="k" units="mV"/>
     </component>
     <connection component_1="environment" component_2="t">
         <map_variables variable_1="t" variable_2="t"/>
