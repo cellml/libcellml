@@ -121,12 +121,31 @@ struct Units::UnitsImpl
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 
     std::vector<Unit>::iterator findUnit(const std::string &reference);
+
+    /**
+     * @brief Test if this units is a standard unit that is a base unit.
+     *
+     * Only tests if the name of the units matches a standard unit name
+     * that is a base units.  Returns @c true if the unit name does match
+     * a base units name and @c false otherwise.
+     *
+     * @param name The name of the units.
+     *
+     * @return @c true if the name of the units is one of: "ampere",
+     * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
+     */
+    bool isBaseUnit(const std::string &name) const;
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
+}
+
+bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
+{
+    return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
 }
 
 /**
@@ -152,7 +171,7 @@ bool updateUnitMultiplier(double &multiplier,
     bool updated = false;
     auto unitsName = units->name();
 
-    if (units->isBaseUnit()) {
+    if (units->unitCount() == 0) {
         multiplier += direction * logMult;
         updated = true;
     } else {
@@ -224,7 +243,12 @@ bool Units::isBaseUnit() const
         return false;
     }
 
-    return unitCount() == 0;
+    auto unitsName = name();
+    bool standardUnitCheck = true;
+    if (isStandardUnitName(unitsName)) {
+        standardUnitCheck = mPimpl->isBaseUnit(unitsName);
+    }
+    return unitCount() == 0 && standardUnitCheck;
 }
 
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
@@ -441,16 +465,14 @@ bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
         auto unitsName = units->name();
-        if (isStandardUnitName(unitsName)) {
-            updateUnitsMapWithStandardUnit(unitsName, unitsMap, exp);
+        auto found = unitsMap.find(unitsName);
+        if (found == unitsMap.end()) {
+            unitsMap.emplace(unitsName, exp);
         } else {
-            auto found = unitsMap.find(unitsName);
-            if (found == unitsMap.end()) {
-                unitsMap.emplace(unitsName, exp);
-            } else {
-                found->second += exp;
-            }
+            found->second += exp;
         }
+    } else if (isStandardUnit(units)) {
+        updateUnitsMapWithStandardUnit(units->name(), unitsMap, exp);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
