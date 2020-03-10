@@ -1298,15 +1298,15 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
 if (debug && (eqnNb == 1)) {
 std::cout << "Variable: " << ast->mVariable->name()
-          << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO")
-          << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO")
-          << " | DIFF: " << ((astParent->mType == GeneratorEquationAst::Type::DIFF)?"YES":"NO")
-          << " | BVAR: " << ((astParent->mType == GeneratorEquationAst::Type::BVAR)?"YES":"NO")
+//          << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO ")
+//          << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO ")
+//          << " | DIFF: " << ((astParent->mType == GeneratorEquationAst::Type::DIFF)?"YES":"NO ")
+//          << " | BVAR: " << ((astParent->mType == GeneratorEquationAst::Type::BVAR)?"YES":"NO ")
           << " | Scaling factor: " << Generator::GeneratorImpl::scalingFactor(ast->mVariable)
-          << " | Crt unit: " << ast->mVariable->units()->name()
-          << " | Ref unit: " << generatorVariable(ast->mVariable)->mVariable->units()->name()
-          << " | Crt comp: " << entityName(ast->mVariable->parent())
-          << " | Ref comp: " << entityName(generatorVariable(ast->mVariable)->mVariable)
+          << " | Unit: " << ast->mVariable->units()->name()
+          << " | Init unit: " << generatorVariable(ast->mVariable)->mInitialValueVariable->units()->name()
+          << " | Comp: " << entityName(ast->mVariable->parent())
+          << " | Init comp: " << entityName(generatorVariable(ast->mVariable)->mInitialValueVariable->parent())
           << std::endl;
 }
 
