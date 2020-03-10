@@ -1296,7 +1296,7 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         // has a DIFF node as a parent.
 
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
-if (debug && (eqnNb == 1)) {
+if (debug && (eqnNb == 4)) {
 std::cout << "Variable: " << ast->mVariable->name()
 //          << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO ")
 //          << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO ")
@@ -1390,7 +1390,7 @@ void Generator::GeneratorImpl::printEquationsAst() const
     for (const auto &equation : mEquations) {
         ++eqnNb;
 
-        if (eqnNb == 1) {
+        if (eqnNb == 4) {
             std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
 
             printAst(equation->mAst);
