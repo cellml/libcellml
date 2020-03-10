@@ -315,7 +315,6 @@ bool sameOrEquivalentVariable(const VariablePtr &variable1,
     return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
-
 bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
                               size_t &variableIndex)
 {
@@ -1296,19 +1295,20 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         // has a DIFF node as a parent.
 
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
-if (debug && (eqnNb == 4)) {
-std::cout << "Variable: " << ast->mVariable->name()
-//          << " | ASSIGNMENT: " << ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)?"YES":"NO ")
-//          << " | Parent->left: " << ((astParent->mLeft == ast)?"YES":"NO ")
-//          << " | DIFF: " << ((astParent->mType == GeneratorEquationAst::Type::DIFF)?"YES":"NO ")
-//          << " | BVAR: " << ((astParent->mType == GeneratorEquationAst::Type::BVAR)?"YES":"NO ")
-          << " | Scaling factor: " << Generator::GeneratorImpl::scalingFactor(ast->mVariable)
-          << " | Unit: " << ast->mVariable->units()->name()
-          << " | Init unit: " << generatorVariable(ast->mVariable)->mInitialValueVariable->units()->name()
-          << " | Comp: " << entityName(ast->mVariable->parent())
-          << " | Init comp: " << entityName(generatorVariable(ast->mVariable)->mInitialValueVariable->parent())
-          << std::endl;
-}
+        if (debug && (eqnNb == 4)) {
+            std::string debugInfo = "Variable: " + ast->mVariable->name()
+//                                    + " | ASSIGNMENT: " + ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT) ? "YES" : "NO ")
+//                                    + " | Parent->left: " + ((astParent->mLeft == ast) ? "YES" : "NO ")
+//                                    + " | DIFF: " + ((astParent->mType == GeneratorEquationAst::Type::DIFF) ? "YES" : "NO ")
+//                                    + " | BVAR: " + ((astParent->mType == GeneratorEquationAst::Type::BVAR) ? "YES" : "NO ")
+                                    + " | Scaling factor: " + convertToString(Generator::GeneratorImpl::scalingFactor(ast->mVariable))
+                                    + " | Unit: " + ast->mVariable->units()->name()
+                                    + " | Init unit: " + generatorVariable(ast->mVariable)->mInitialValueVariable->units()->name()
+                                    + " | Comp: " + entityName(ast->mVariable->parent())
+                                    + " | Init comp: " + entityName(generatorVariable(ast->mVariable)->mInitialValueVariable->parent());
+
+            std::cout << debugInfo << std::endl;
+        }
 
         if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
             // We are dealing with a rate, so retrieve the scaling factor for
