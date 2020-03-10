@@ -93,7 +93,7 @@ extlinks = {
 # Mapping to get references in the specification document repo into this one
 # See: https://docs.readthedocs.io/en/stable/guides/intersphinx.html
 intersphinx_mapping = {
-    'spec': ('https://www.sphinx-doc.org/en/master/', None),
+    'spec': ('https://cellml-specification-dev.readthedocs.io/', None),
 }
 
 # rst_epilog to define formatted, clickable code substitutions throughout.  It's included
