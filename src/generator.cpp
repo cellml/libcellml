@@ -1325,16 +1325,16 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
 
                 if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
                     && (astGrandParent->mLeft == astParent)) {
-                    // The rate is to be computed, so apply the scaling factor
-                    // to the RHS of the equation.
+                    // The rate is to be computed, so apply the inverse of the
+                    // scaling factor to the RHS of the equation.
 
                     GeneratorEquationAstPtr rhsAst = astGrandParent->mRight;
                     GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
 
-                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(1.0 / scalingFactor), scaledAst);
                     scaledAst->mRight = rhsAst;
 
-                    rhsAst->mParent = astGrandParent;
+                    rhsAst->mParent = scaledAst;
 
                     astGrandParent->mRight = scaledAst;
                 } else {
