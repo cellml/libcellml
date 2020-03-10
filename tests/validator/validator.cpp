@@ -1542,7 +1542,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     const std::vector<std::string> expectedIssues = {
         "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+        "Variable 'tomayto' in component 'comp1' has units of 'testunit1' and an equivalent variable 'tomahto' in component 'comp2' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
     };
 
     // This one is now an issue.
@@ -1777,8 +1777,7 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
-    };
+        "Variable 'pjs' in component 'yousay' has units of 'testunit13' and an equivalent variable 'pajamas' in component 'wesay' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -1869,6 +1868,7 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 {
     // This test is intended to demonstrate that the effect of different multiplicator sources (prefix, multiplier term)
     // does not affect the equivalence of the underlying base variables.
+    const std::vector<std::string> expectedIssues = {"Variable 'v1' in component 'component1' has units of 'u4' and an equivalent variable 'v2' in component 'component2' has compatible but not equivalent units of 'u5'. The mismatch is: multiplication factor of 10^12."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -1935,17 +1935,17 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(0), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
-    EXPECT_EQ(size_t(0), validator->warningCount());
+    EXPECT_EQ(size_t(1), validator->warningCount());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
-    };
+        "Variable 'v1' in component 'c1' has units of 'bushell_of_apples' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
@@ -1990,7 +1990,7 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
         "Variable 'v1' does not have a valid units attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
-        "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
+        "Variable 'v1' in component 'c1' has units of '' and an equivalent variable 'v2' in component 'c2' with non-matching units of ''. The mismatch is: ",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2010,8 +2010,7 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
 TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
-    };
+        "Variable 'v1' in component 'c1' has units of 'metre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
@@ -2033,8 +2032,7 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
-    };
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3."};
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
@@ -2055,6 +2053,8 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
 TEST(Validator, unitMultiplierFactorDifference)
 {
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' has compatible but not equivalent units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3."};
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
     auto c1 = m->component(0);
@@ -2077,10 +2077,11 @@ TEST(Validator, unitMultiplierFactorDifference)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(0), validator->warningCount());
+    EXPECT_EQ(size_t(1), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitStandardMultipliersLitre)
@@ -2341,6 +2342,8 @@ TEST(Validator, validateModelWithoutAndWithMath)
 
 TEST(Validator, unitEquivalenceMultiplier)
 {
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'comp1' has units of 'u1' and an equivalent variable 'v2' in component 'comp2' has compatible but not equivalent units of 'u2'. The mismatch is: multiplication factor of 10^1."};
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr comp1 = libcellml::Component::create();
@@ -2378,10 +2381,11 @@ TEST(Validator, unitEquivalenceMultiplier)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(0), validator->warningCount());
+    EXPECT_EQ(size_t(1), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
@@ -2421,6 +2425,8 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 
 TEST(Validator, mismatchedMultipliersInUnits)
 {
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'Brobdingnag' has units of 'megametre' and an equivalent variable 'v2' in component 'Lilliput' has compatible but not equivalent units of 'millimetre'. The mismatch is: multiplication factor of 10^9."};
     auto model = libcellml::Model::create("Gulliver");
     auto c1 = libcellml::Component::create("Brobdingnag");
     auto c2 = libcellml::Component::create("Lilliput");
@@ -2435,6 +2441,8 @@ TEST(Validator, mismatchedMultipliersInUnits)
 
     v1->setUnits(u1);
     v2->setUnits(u2);
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
     c1->addVariable(v1);
     c2->addVariable(v2);
     model->addComponent(c1);
@@ -2447,10 +2455,12 @@ TEST(Validator, mismatchedMultipliersInUnits)
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(2), validator->issueCount());
+    EXPECT_EQ(size_t(1), validator->issueCount());
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(2), validator->warningCount());
+    EXPECT_EQ(size_t(1), validator->warningCount());
     EXPECT_EQ(size_t(0), validator->hintCount());
+
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, variableEquivalenceValidNetwork)

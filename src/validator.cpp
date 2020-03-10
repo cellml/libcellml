@@ -1102,14 +1102,37 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
+                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
                 err->setRule(ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+                mValidator->addIssue(err);
+            }
+        } else if (multiplier != 0.0) {
+            VariablePair reversePair = std::make_pair(equivalentVariable, variable);
+            auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+            if (it == alreadyReported.end()) {
+                VariablePair pair = std::make_pair(variable, equivalentVariable);
+                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                alreadyReported.push_back(pair);
+                auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
+                auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
+                IssuePtr err = Issue::create();
+                std::string des = "Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName;
+                des += "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name();
+                des += "' has compatible but not equivalent units of '" + equivalentUnitsName + "'. The mismatch is: " + hints;
+                err->setModel(model);
+                err->setDescription(des);
+                err->setCause(Issue::Cause::UNITS);
+                err->setRule(ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+                err->setLevel(Issue::Level::WARNING);
                 mValidator->addIssue(err);
             }
         }
