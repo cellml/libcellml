@@ -29,17 +29,6 @@ limitations under the License.
 
 namespace libcellml {
 
-/**
- * @brief Map to convert an interface type into its string form.
- *
- * An internal map used to convert a Variable InterfaceType enum class member into its string form.
- */
-static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
-    {Variable::InterfaceType::NONE, "none"},
-    {Variable::InterfaceType::PRIVATE, "private"},
-    {Variable::InterfaceType::PUBLIC, "public"},
-    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
-
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 /**
@@ -226,7 +215,7 @@ VariablePtr Variable::create(const std::string &name) noexcept
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    return (variable1 != nullptr && variable1->mPimpl->setEquivalentTo(variable2) && variable2 != nullptr && variable2->mPimpl->setEquivalentTo(variable1));
+    return (variable1 != nullptr && variable2 != nullptr && variable1->mPimpl->setEquivalentTo(variable2) && variable2->mPimpl->setEquivalentTo(variable1));
 }
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
@@ -272,6 +261,7 @@ VariablePtr Variable::equivalentVariable(size_t index) const
 
 size_t Variable::equivalentVariableCount() const
 {
+    mPimpl->cleanExpiredVariables();
     return mPimpl->mEquivalentVariables.size();
 }
 
@@ -476,6 +466,14 @@ std::string Variable::interfaceType() const
 void Variable::removeInterfaceType()
 {
     mPimpl->mInterfaceType.clear();
+}
+
+bool Variable::hasInterfaceType(InterfaceType interfaceType) const
+{
+    if (interfaceType == Variable::InterfaceType::NONE && mPimpl->mInterfaceType.empty()) {
+        return true;
+    }
+    return mPimpl->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
 }
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
