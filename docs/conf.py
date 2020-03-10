@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.extlinks',
     'sphinx.ext.autosectionlabel',
+    'sphinx.ext.intersphinx',
     'hoverxref.extension',
     # 'sphinxcontrib.contentui',    # For the toggle-class headers, not installed
     # 'sphinxcontrib.bibtex',       # Removing as not installed
@@ -87,6 +88,12 @@ extlinks = {
     'xml_infoset': ('http://www.w3.org/TR/2004/REC-xml-infoset-20040204/%s',''),
     'xml_namespace_1_1': ('https://www.w3.org/TR/2006/REC-xml-names11-20060816/%s',''),
 
+}
+
+# Mapping to get references in the specification document repo into this one
+# See: https://docs.readthedocs.io/en/stable/guides/intersphinx.html
+intersphinx_mapping = {
+    'spec': ('https://www.sphinx-doc.org/en/master/', None),
 }
 
 # rst_epilog to define formatted, clickable code substitutions throughout.  It's included

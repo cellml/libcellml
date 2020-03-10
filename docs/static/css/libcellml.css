@@ -37,7 +37,6 @@ div[class^="issue"], div[class*=" issue"] > ol {
     font-size: large;
 }
 
-
 .highlight-issue {
     background-color: rgba(255, 255, 0, 0.2);
     font-weight: 500;
