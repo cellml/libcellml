@@ -15,9 +15,9 @@ const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
 const VariableInfo STATE_INFO[] = {
     {"x", "mV", "t"},
-    {"scaled_x", "V", "t"},
+    {"scaled_x", "volt", "t"},
     {"x", "mV", "scaled_t"},
-    {"scaled_x", "V", "scaled_t"}
+    {"scaled_x", "volt", "scaled_t"}
 };
 
 const VariableInfoWithType VARIABLE_INFO[] = {

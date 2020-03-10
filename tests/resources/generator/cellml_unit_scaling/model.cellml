@@ -19,9 +19,9 @@
     <component name="t">
         <variable interface="public" name="t" units="ms"/>
         <variable interface="public" name="k" units="mV"/>
-        <variable interface="public" name="scaled_k" units="V"/>
+        <variable interface="public" name="scaled_k" units="volt"/>
         <variable initial_value="0" interface="public" name="x" units="mV"/>
-        <variable initial_value="0" interface="public" name="scaled_x" units="V"/>
+        <variable initial_value="0" interface="public" name="scaled_x" units="volt"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -48,11 +48,11 @@
         </math>
     </component>
     <component name="scaled_t">
-        <variable interface="public" name="scaled_t" units="s"/>
+        <variable interface="public" name="scaled_t" units="second"/>
         <variable interface="public" name="k" units="mV"/>
-        <variable interface="public" name="scaled_k" units="V"/>
+        <variable interface="public" name="scaled_k" units="volt"/>
         <variable initial_value="0" interface="public" name="x" units="mV"/>
-        <variable initial_value="0" interface="public" name="scaled_x" units="V"/>
+        <variable initial_value="0" interface="public" name="scaled_x" units="volt"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
