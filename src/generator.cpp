@@ -3207,7 +3207,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
-    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mInitialValueVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    std::string scalingFactorCode;
+    double scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->mInitialValueVariable);
+
+    if (!areEqual(scalingFactor, 1.0)) {
+        scalingFactorCode = convertToString(1.0/scalingFactor) + mProfile->timesString();
+    }
+
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + scalingFactorCode + generateDoubleCode(variable->mInitialValueVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
