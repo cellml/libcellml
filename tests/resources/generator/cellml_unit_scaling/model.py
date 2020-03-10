@@ -21,9 +21,9 @@ VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
 
 STATE_INFO = [
     {"name": "x", "units": "mV", "component": "t"},
-    {"name": "scaled_x", "units": "V", "component": "t"},
+    {"name": "scaled_x", "units": "volt", "component": "t"},
     {"name": "x", "units": "mV", "component": "scaled_t"},
-    {"name": "scaled_x", "units": "V", "component": "scaled_t"}
+    {"name": "scaled_x", "units": "volt", "component": "scaled_t"}
 ]
 
 VARIABLE_INFO = [
@@ -54,8 +54,8 @@ def compute_computed_constants(variables):
 def compute_rates(voi, states, rates, variables):
     rates[0] = variables[0]
     rates[1] = 0.001*variables[0]
-    rates[2] = 0.001*variables[0];
-    rates[3] = 1000.0*0.001*variables[0];
+    rates[2] = 0.001*variables[0]
+    rates[3] = 1000.0*0.001*variables[0]
 
 
 def compute_variables(voi, states, rates, variables):
