@@ -14,7 +14,7 @@
         if (code!=null) {
             let issueCode = ".issue-" + code.toLowerCase().replace("_", "-");
             let contents = $(issueCode).html();
-            let title = "<div style='color:saddlebrown;font-weight:700;padding-bottom:10px;padding-left_30px'>";
+            let title = "<div style='color:saddlebrown;font-weight:700;padding-bottom:10px;padding-left:30px;'>";
             title += "Information for the "+code.toUpperCase().replace("-","_") +" error code</div>"
             $(issueCode).html(title + contents);
             $(issueCode).addClass("highlight-issue");
