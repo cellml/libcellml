@@ -10,15 +10,10 @@
             $(this).parent().children(".header").toggleClass("open");
         });
         const url_object = new URL(window.location.href);
-        const issueCode = ".issue-" + url_object.searchParams.get("issue");
-        alert(issueCode);
-        if (issueCode) {
-            issueCode = issueCode.toLowerCase().replace("_", "-");
+        const code = url_object.searchParams.get("issue");
+        if (code!=null) {
+            issueCode = ".issue-" + issueCode.toLowerCase().replace("_", "-");
             $(issueCode).addClass("highlight-issue");
-            alert(issueCode);
-        }
-        else {
-            alert("Could not GET issue");
         }
     });
 </script>

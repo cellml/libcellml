@@ -1,6 +1,5 @@
 .. _inform1:
 
-
 .. container:: toggle
 
     .. container:: header
