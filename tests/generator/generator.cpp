@@ -951,7 +951,7 @@ TEST(Generator, cellmlUnitScaling)
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
-    EXPECT_EQ(size_t(4), generator->stateCount());
+    EXPECT_EQ(size_t(5), generator->stateCount());
     EXPECT_EQ(size_t(1), generator->variableCount());
 
     EXPECT_NE(nullptr, generator->voi());
