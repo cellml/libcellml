@@ -11,7 +11,7 @@ and must not be included in order for a model to be syntactically valid CellML.
 
 .. toctree::
 
-    Section A: Terminology and preamble <:ref:`<spec:sectionA_index`>
-    Section B: Element information items <:ref:`<spec:sectionB_index`>
-    Section C: Interpretation <:ref:`<spec:sectionC_index`>
-    Section D: References <:ref:`<spec:sectionD_index`>
+    Section A: Terminology and preamble <https://cellml-specification-dev.readthedocs.io/en/latest/reference/index_sectionA.html>
+    Section B: Element information items <https://cellml-specification-dev.readthedocs.io/en/latest/reference/index_sectionB.html>
+    Section C: Interpretation <https://cellml-specification-dev.readthedocs.io/en/latest/reference/index_sectionC.html>
+    Section D: References <https://cellml-specification-dev.readthedocs.io/en/latest/reference/index_sectionD.html>
