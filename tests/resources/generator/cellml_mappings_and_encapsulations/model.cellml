@@ -18,15 +18,9 @@
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
-    <units name="M">
-        <unit units="mole"/>
-        <unit exponent="-1" units="litre"/>
-    </units>
     <units name="mM">
-        <unit prefix="milli" units="M"/>
-    </units>
-    <units name="uM">
-        <unit prefix="micro" units="M"/>
+        <unit prefix="milli" units="mole"/>
+        <unit exponent="-1" units="litre"/>
     </units>
     <units name="milli_mole">
         <unit prefix="milli" units="mole"/>
@@ -65,7 +59,7 @@
         </math>
     </component>
     <component name="circle_x_source">
-        <variable initial_value="0" interface="public" name="x" units="M"/>
+        <variable initial_value="0" interface="public" name="x" units="mM"/>
     </component>
     <component name="circle_x_sibling">
         <variable interface="public" name="x" units="mM"/>
@@ -89,7 +83,7 @@
     </component>
     <component name="circle_y_implementation">
         <variable interface="public" name="t" units="ms"/>
-        <variable initial_value="1" interface="public" name="y" units="uM"/>
+        <variable initial_value="1" interface="public" name="y" units="mM"/>
         <variable interface="public" name="x" units="mM"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
