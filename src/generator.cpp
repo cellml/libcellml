@@ -512,6 +512,9 @@ struct Generator::GeneratorImpl
 
     double scalingFactor(const VariablePtr &variable);
 
+    void scaleAst(const GeneratorEquationAstPtr &ast,
+                  const GeneratorEquationAstPtr &astParent,
+                  double scalingFactor);
     void scaleEquationAst(const GeneratorEquationAstPtr &ast, bool debug,
                           int eqnNb);
 
@@ -1273,6 +1276,26 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
                                 generatorVariable(variable)->mVariable->units());
 }
 
+void Generator::GeneratorImpl::scaleAst(const GeneratorEquationAstPtr &ast,
+                                        const GeneratorEquationAstPtr &astParent,
+                                        double scalingFactor)
+{
+    // Scale the given AST using the given scaling factor
+
+    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
+
+    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mRight = ast;
+
+    ast->mParent = scaledAst;
+
+    if (astParent->mLeft == ast) {
+        astParent->mLeft = scaledAst;
+    } else {
+        astParent->mRight = scaledAst;
+    }
+}
+
 void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast,
                                                 bool debug, int eqnNb)
 {
@@ -1314,41 +1337,17 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
             double scalingFactor = Generator::GeneratorImpl::scalingFactor(astParent->mLeft->mLeft->mVariable);
 
             if (!areEqual(scalingFactor, 1.0)) {
-                // We need to scale, but how we do it depends on whether the
-                // rate is to be computed or used.
+                // We need to scale using the inverse of the scaling factor, but
+                // how we do it depends on whether the rate is to be computed or
+                // used.
 
                 GeneratorEquationAstPtr astGrandParent = astParent->mParent.lock();
 
                 if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
                     && (astGrandParent->mLeft == astParent)) {
-                    // The rate is to be computed, so apply the inverse of the
-                    // scaling factor to the RHS of the equation.
-
-                    GeneratorEquationAstPtr rhsAst = astGrandParent->mRight;
-                    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
-
-                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(1.0 / scalingFactor), scaledAst);
-                    scaledAst->mRight = rhsAst;
-
-                    rhsAst->mParent = scaledAst;
-
-                    astGrandParent->mRight = scaledAst;
+                    scaleAst(astGrandParent->mRight, astGrandParent, 1.0 / scalingFactor);
                 } else {
-                    // The rate is to be used, so scale it using the inverse of
-                    // the scaling factor.
-
-                    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astGrandParent);
-
-                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(1.0 / scalingFactor), scaledAst);
-                    scaledAst->mRight = astParent;
-
-                    astParent->mParent = scaledAst;
-
-                    if (astGrandParent->mLeft == astParent) {
-                        astGrandParent->mLeft = scaledAst;
-                    } else {
-                        astGrandParent->mRight = scaledAst;
-                    }
+                    scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
                 }
             }
         }
@@ -1365,32 +1364,9 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
 
             if (!areEqual(scalingFactor, 1.0)) {
                 if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
-                    GeneratorEquationAstPtr astRealParent = astParent->mParent.lock();
-                    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astRealParent);
-
-                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
-                    scaledAst->mRight = astParent;
-
-                    astParent->mParent = scaledAst;
-
-                    if (astRealParent->mLeft == astParent) {
-                        astRealParent->mLeft = scaledAst;
-                    } else {
-                        astRealParent->mRight = scaledAst;
-                    }
+                    scaleAst(astParent, astParent->mParent.lock(), scalingFactor);
                 } else {
-                    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
-
-                    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
-                    scaledAst->mRight = ast;
-
-                    ast->mParent = scaledAst;
-
-                    if (astParent->mLeft == ast) {
-                        astParent->mLeft = scaledAst;
-                    } else {
-                        astParent->mRight = scaledAst;
-                    }
+                    scaleAst(ast, astParent, scalingFactor);
                 }
             }
         }
