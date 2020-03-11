@@ -1,6 +1,6 @@
 /* @import url("../theme.css"); */
 
-.code.literal {
+.rst-content tt.literal, .rst-content tt.literal, .rst-content code.literal {
     color:darkslategray;
 }
 
