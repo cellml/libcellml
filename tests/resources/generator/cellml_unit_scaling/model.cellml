@@ -15,6 +15,7 @@ the connection level:
       component;
     - Compute the [scaled_]z state variable, which is initialised in the states
       component.
+    - Compute the scaled_T variable.
     - Compute the scaled_dTdt variable. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
@@ -65,6 +66,7 @@ the connection level:
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
         <variable interface="public" name="z" units="mV"/>
+        <variable name="scaled_T" units="volt"/>
         <variable name="scaled_dTdt" units="V_per_ms"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -120,6 +122,15 @@ the connection level:
             </apply>
             <apply>
                 <eq/>
+                <ci>scaled_T</ci>
+                <apply>
+                    <plus/>
+                    <ci>scaled_x</ci>
+                    <ci>scaled_y</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>scaled_dTdt</ci>
                 <apply>
                     <plus/>
@@ -151,6 +162,7 @@ the connection level:
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
         <variable interface="public" name="scaled_z" units="volt"/>
+        <variable name="scaled_T" units="volt"/>
         <variable name="scaled_dTdt" units="V_per_s"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
@@ -201,6 +213,15 @@ the connection level:
                 <apply>
                     <plus/>
                     <ci>scaled_k</ci>
+                    <ci>scaled_y</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>scaled_T</ci>
+                <apply>
+                    <plus/>
+                    <ci>scaled_x</ci>
                     <ci>scaled_y</ci>
                 </apply>
             </apply>
