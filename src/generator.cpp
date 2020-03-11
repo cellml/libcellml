@@ -1321,10 +1321,10 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         if (debug && (eqnNb == 11)) {
             std::string debugInfo = "Variable: " + ast->mVariable->name()
                                     + " | Scaling factor: " + convertToString(Generator::GeneratorImpl::scalingFactor(ast->mVariable))
-                                    + " | Unit: " + ast->mVariable->units()->name()
-                                    + " | Init unit: " + generatorVariable(ast->mVariable)->mVariable->units()->name()
-                                    + " | Comp: " + entityName(ast->mVariable->parent())
-                                    + " | Init comp: " + entityName(generatorVariable(ast->mVariable)->mVariable->parent());
+                                    + " | Crt Unit: " + ast->mVariable->units()->name()
+                                    + " | Ref unit: " + generatorVariable(ast->mVariable)->mVariable->units()->name()
+                                    + " | Crt comp: " + entityName(ast->mVariable->parent())
+                                    + " | Ref comp: " + entityName(generatorVariable(ast->mVariable)->mVariable->parent());
 
             std::cout << debugInfo << std::endl;
         }
