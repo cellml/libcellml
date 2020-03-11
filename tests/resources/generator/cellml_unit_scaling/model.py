@@ -20,23 +20,23 @@ class VariableType(Enum):
 VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "y", "units": "mV", "component": "states"},
-    {"name": "x", "units": "mV", "component": "t"},
-    {"name": "scaled_x", "units": "volt", "component": "t"},
-    {"name": "z", "units": "mV", "component": "t"},
-    {"name": "x", "units": "mV", "component": "scaled_t"},
-    {"name": "scaled_x", "units": "volt", "component": "scaled_t"},
-    {"name": "scaled_z", "units": "volt", "component": "scaled_t"}
+    {"name": "y", "units": "mM", "component": "states"},
+    {"name": "x", "units": "mM", "component": "t"},
+    {"name": "scaled_x", "units": "M", "component": "t"},
+    {"name": "z", "units": "mM", "component": "t"},
+    {"name": "x", "units": "mM", "component": "scaled_t"},
+    {"name": "scaled_x", "units": "M", "component": "scaled_t"},
+    {"name": "scaled_z", "units": "M", "component": "scaled_t"}
 ]
 
 VARIABLE_INFO = [
-    {"name": "k", "units": "mV", "component": "constants", "type": VariableType.CONSTANT},
+    {"name": "k", "units": "mM", "component": "constants", "type": VariableType.CONSTANT},
     {"name": "voi", "units": "ms", "component": "t", "type": VariableType.ALGEBRAIC},
-    {"name": "scaled_T", "units": "volt", "component": "t", "type": VariableType.ALGEBRAIC},
-    {"name": "scaled_dTdt", "units": "V_per_ms", "component": "t", "type": VariableType.ALGEBRAIC},
+    {"name": "scaled_T", "units": "M", "component": "t", "type": VariableType.ALGEBRAIC},
+    {"name": "scaled_dTdt", "units": "M_per_ms", "component": "t", "type": VariableType.ALGEBRAIC},
     {"name": "scaled_voi", "units": "second", "component": "scaled_t", "type": VariableType.ALGEBRAIC},
-    {"name": "scaled_T", "units": "volt", "component": "scaled_t", "type": VariableType.ALGEBRAIC},
-    {"name": "scaled_dTdt", "units": "V_per_s", "component": "scaled_t", "type": VariableType.ALGEBRAIC}
+    {"name": "scaled_T", "units": "M", "component": "scaled_t", "type": VariableType.ALGEBRAIC},
+    {"name": "scaled_dTdt", "units": "M_per_s", "component": "scaled_t", "type": VariableType.ALGEBRAIC}
 ]
 
 

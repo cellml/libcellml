@@ -14,23 +14,23 @@ const size_t VARIABLE_COUNT = 7;
 const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
 const VariableInfo STATE_INFO[] = {
-    {"y", "mV", "states"},
-    {"x", "mV", "t"},
-    {"scaled_x", "volt", "t"},
-    {"z", "mV", "t"},
-    {"x", "mV", "scaled_t"},
-    {"scaled_x", "volt", "scaled_t"},
-    {"scaled_z", "volt", "scaled_t"}
+    {"y", "mM", "states"},
+    {"x", "mM", "t"},
+    {"scaled_x", "M", "t"},
+    {"z", "mM", "t"},
+    {"x", "mM", "scaled_t"},
+    {"scaled_x", "M", "scaled_t"},
+    {"scaled_z", "M", "scaled_t"}
 };
 
 const VariableInfoWithType VARIABLE_INFO[] = {
-    {"k", "mV", "constants", CONSTANT},
+    {"k", "mM", "constants", CONSTANT},
     {"voi", "ms", "t", ALGEBRAIC},
-    {"scaled_T", "volt", "t", ALGEBRAIC},
-    {"scaled_dTdt", "V_per_ms", "t", ALGEBRAIC},
+    {"scaled_T", "M", "t", ALGEBRAIC},
+    {"scaled_dTdt", "M_per_ms", "t", ALGEBRAIC},
     {"scaled_voi", "second", "scaled_t", ALGEBRAIC},
-    {"scaled_T", "volt", "scaled_t", ALGEBRAIC},
-    {"scaled_dTdt", "V_per_s", "scaled_t", ALGEBRAIC}
+    {"scaled_T", "M", "scaled_t", ALGEBRAIC},
+    {"scaled_dTdt", "M_per_s", "scaled_t", ALGEBRAIC}
 };
 
 double * createStatesArray()
