@@ -1322,9 +1322,9 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
             std::string debugInfo = "Variable: " + ast->mVariable->name()
                                     + " | Scaling factor: " + convertToString(Generator::GeneratorImpl::scalingFactor(ast->mVariable))
                                     + " | Unit: " + ast->mVariable->units()->name()
-                                    + " | Init unit: " + generatorVariable(ast->mVariable)->mInitialValueVariable->units()->name()
+                                    + " | Init unit: " + generatorVariable(ast->mVariable)->mVariable->units()->name()
                                     + " | Comp: " + entityName(ast->mVariable->parent())
-                                    + " | Init comp: " + entityName(generatorVariable(ast->mVariable)->mInitialValueVariable->parent());
+                                    + " | Init comp: " + entityName(generatorVariable(ast->mVariable)->mVariable->parent());
 
             std::cout << debugInfo << std::endl;
         }
