@@ -55,7 +55,7 @@ Guidelines and specifications
    :maxdepth: 2
    :titlesonly:
 
-   CellML2.0 specification <https://cellml-specification-dev.readthedocs.io/>
+   index_reference.rst
 
 Documentation for developers
 ----------------------------
