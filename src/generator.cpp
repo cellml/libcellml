@@ -1295,12 +1295,8 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         // has a DIFF node as a parent.
 
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
-        if (debug && (eqnNb == 4)) {
+        if (debug && (eqnNb == 11)) {
             std::string debugInfo = "Variable: " + ast->mVariable->name()
-//                                    + " | ASSIGNMENT: " + ((astParent->mType == GeneratorEquationAst::Type::ASSIGNMENT) ? "YES" : "NO ")
-//                                    + " | Parent->left: " + ((astParent->mLeft == ast) ? "YES" : "NO ")
-//                                    + " | DIFF: " + ((astParent->mType == GeneratorEquationAst::Type::DIFF) ? "YES" : "NO ")
-//                                    + " | BVAR: " + ((astParent->mType == GeneratorEquationAst::Type::BVAR) ? "YES" : "NO ")
                                     + " | Scaling factor: " + convertToString(Generator::GeneratorImpl::scalingFactor(ast->mVariable))
                                     + " | Unit: " + ast->mVariable->units()->name()
                                     + " | Init unit: " + generatorVariable(ast->mVariable)->mInitialValueVariable->units()->name()
@@ -1390,7 +1386,7 @@ void Generator::GeneratorImpl::printEquationsAst() const
     for (const auto &equation : mEquations) {
         ++eqnNb;
 
-        if (eqnNb == 4) {
+        if (eqnNb == 11) {
             std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
 
             printAst(equation->mAst);
