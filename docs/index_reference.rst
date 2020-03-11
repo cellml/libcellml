@@ -10,21 +10,8 @@ and must not be included in order for a model to be syntactically valid CellML.
 
 
 .. toctree::
-    :maxdepth: 2
 
-    Section A: Terminology and preamble <:ref:`<spec:sectionA_index>`>
-
-.. toctree::
-    :maxdepth: 2
-
-    Section B: Element information items <:ref:`<spec:sectionB_index>`>
-
-.. toctree::
-    :maxdepth: 2
-
-    Section C: Interpretation <:ref:`<spec:sectionC_index>`>
-
-.. toctree::
-    :maxdepth: 2
-
-    Section D: References <:ref:`<spec:sectionD_index>`>
+    Section A: Terminology and preamble <http://www.google.com>
+    Section B: Element information items <http://www.google.com>
+    Section C: Interpretation <http://www.google.com>
+    Section D: References <http://www.google.com>
