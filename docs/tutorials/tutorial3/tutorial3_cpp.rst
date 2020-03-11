@@ -103,7 +103,7 @@ Looking at the top equation first, the MathML2 representation of
 
     <apply><eq/>
        <ci>c</ci>
-       <apply><olus/>
+       <apply><plus/>
            <ci>a</ci>
            <cn>2.0</cn>
        </apply>
