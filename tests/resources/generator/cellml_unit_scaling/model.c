@@ -9,7 +9,7 @@ const char VERSION[] = "0.1.0";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t STATE_COUNT = 7;
-const size_t VARIABLE_COUNT = 3;
+const size_t VARIABLE_COUNT = 5;
 
 const VariableInfo VOI_INFO = {"t", "ms", "environment"};
 
@@ -26,7 +26,9 @@ const VariableInfo STATE_INFO[] = {
 const VariableInfoWithType VARIABLE_INFO[] = {
     {"k", "mV", "constants", CONSTANT},
     {"voi", "ms", "t", ALGEBRAIC},
-    {"scaled_voi", "second", "scaled_t", ALGEBRAIC}
+    {"scaled_dTdt", "V_per_ms", "t", ALGEBRAIC},
+    {"scaled_voi", "second", "scaled_t", ALGEBRAIC},
+    {"scaled_dTdt", "V_per_s", "scaled_t", ALGEBRAIC}
 };
 
 double * createStatesArray()
@@ -74,5 +76,7 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
     variables[1] = voi;
-    variables[2] = 0.001*voi;
+    variables[2] = rates[2]+0.001*rates[0];
+    variables[3] = 0.001*voi;
+    variables[4] = 1000.0*rates[5]+1000.0*0.001*rates[0];
 }
