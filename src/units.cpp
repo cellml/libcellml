@@ -190,7 +190,7 @@ bool updateUnitMultiplier(double &multiplier, const UnitsPtr &units, int directi
 
             if (isStandardUnitName(ref)) {
                 standardMult = standardMultiplierList.at(ref);
-                // Combine the information into a single local multiplier: exponent only applies to standard multiplier
+                // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
                 localMultiplier += mult + standardMult * exp + prefixMult;
             } else {
                 auto model = owningModel(units);
@@ -198,7 +198,7 @@ bool updateUnitMultiplier(double &multiplier, const UnitsPtr &units, int directi
                     auto refUnits = model->units(ref);
                     double branchMult = 0.0;
                     updated = updateUnitMultiplier(branchMult, refUnits, 1);
-                    // Make the direction positive on all branches, direction is only applied at the end
+                    // Make the direction positive on all branches, direction is only applied at the end.
                     localMultiplier += mult + branchMult * exp + prefixMult;
                 } else {
                     return false;
