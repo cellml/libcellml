@@ -23,7 +23,7 @@ the connection level:
     <units name="mV">
         <unit prefix="milli" units="volt"/>
     </units>
-    <units name="V_per_mS">
+    <units name="V_per_ms">
         <unit units="volt"/>
         <unit exponent="-1" units="ms"/>
     </units>
