@@ -9,12 +9,12 @@ the connection level:
     - One where the VOI, t, is expressed in milliseconds; and
     - Another where the VOI, scaled_t, is expressed in seconds.
  - Each of these two main components features the following:
+    - Compute the [scaled_]voi variable.
     - Compute the x state variable, which is initialised in this component;
     - Compute the scaled_x state variable. which is initialised in this
       component;
     - Compute the [scaled_]z state variable, which is initialised in the states
-      component.
-    - Compute the [scaled_]voi variable. -->
+      component. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
@@ -48,6 +48,7 @@ the connection level:
     </component>
     <component name="t">
         <variable interface="public" name="t" units="ms"/>
+        <variable interface="public" name="voi" units="ms"/>
         <variable initial_value="1" interface="public" name="x" units="mV"/>
         <variable interface="public" name="k" units="mV"/>
         <variable interface="public" name="y" units="mV"/>
@@ -55,8 +56,12 @@ the connection level:
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
         <variable interface="public" name="z" units="mV"/>
-        <variable interface="public" name="voi" units="ms"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>voi</ci>
+                <ci>t</ci>
+            </apply>
             <apply>
                 <eq/>
                 <apply>
@@ -103,15 +108,11 @@ the connection level:
                     <ci>y</ci>
                 </apply>
             </apply>
-            <apply>
-                <eq/>
-                <ci>voi</ci>
-                <ci>t</ci>
-            </apply>
         </math>
     </component>
     <component name="scaled_t">
         <variable interface="public" name="scaled_t" units="second"/>
+        <variable interface="public" name="scaled_voi" units="second"/>
         <variable initial_value="101" interface="public" name="x" units="mV"/>
         <variable interface="public" name="k" units="mV"/>
         <variable interface="public" name="y" units="mV"/>
@@ -119,8 +120,12 @@ the connection level:
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
         <variable interface="public" name="scaled_z" units="volt"/>
-        <variable interface="public" name="scaled_voi" units="second"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>scaled_voi</ci>
+                <ci>scaled_t</ci>
+            </apply>
             <apply>
                 <eq/>
                 <apply>
@@ -166,11 +171,6 @@ the connection level:
                     <ci>scaled_k</ci>
                     <ci>scaled_y</ci>
                 </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>scaled_voi</ci>
-                <ci>scaled_t</ci>
             </apply>
         </math>
     </component>
