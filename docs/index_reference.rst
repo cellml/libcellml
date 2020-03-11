@@ -1,13 +1,13 @@
 .. _index:
 
-==========================================
+=====================================
 Normative specification for CellML2.0
-==========================================
+=====================================
 
-The first section here includes the normative specification documentation for
-the CellML format.  These represent the official rules about what must
-and must not be included in order for a model to be syntactically valid CellML.
-
+The full normative specification for the CellML2.0 syntax is available here,
+divided into four sections below.  Throughout the documentation informal
+help and examples are available; just click the "Show more +" link on the
+right hand side of the item for more.
 
 .. toctree::
 
