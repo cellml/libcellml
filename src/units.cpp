@@ -603,7 +603,7 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Units must be compatible and return a scaling factor of 1.0.
-    return Units::scalingFactor(units1, units2, true) == 1.0;
+    return Units::scalingFactor(units1, units2) == 1.0;
 }
 
 UnitsPtr Units::clone() const
