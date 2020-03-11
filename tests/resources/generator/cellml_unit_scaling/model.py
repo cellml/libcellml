@@ -8,7 +8,7 @@ __version__ = "0.1.0"
 LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 7
-VARIABLE_COUNT = 3
+VARIABLE_COUNT = 5
 
 
 class VariableType(Enum):
@@ -32,7 +32,9 @@ STATE_INFO = [
 VARIABLE_INFO = [
     {"name": "k", "units": "mV", "component": "constants", "type": VariableType.CONSTANT},
     {"name": "voi", "units": "ms", "component": "t", "type": VariableType.ALGEBRAIC},
-    {"name": "scaled_voi", "units": "second", "component": "scaled_t", "type": VariableType.ALGEBRAIC}
+    {"name": "scaled_dTdt", "units": "V_per_ms", "component": "t", "type": VariableType.ALGEBRAIC},
+    {"name": "scaled_voi", "units": "second", "component": "scaled_t", "type": VariableType.ALGEBRAIC},
+    {"name": "scaled_dTdt", "units": "V_per_s", "component": "scaled_t", "type": VariableType.ALGEBRAIC}
 ]
 
 
@@ -71,4 +73,6 @@ def compute_rates(voi, states, rates, variables):
 
 def compute_variables(voi, states, rates, variables):
     variables[1] = voi
-    variables[2] = 0.001*voi
+    variables[2] = rates[2]+0.001*rates[0]
+    variables[3] = 0.001*voi
+    variables[4] = 1000.0*rates[5]+1000.0*0.001*rates[0]

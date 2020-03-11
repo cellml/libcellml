@@ -14,12 +14,21 @@ the connection level:
     - Compute the scaled_x state variable. which is initialised in this
       component;
     - Compute the [scaled_]z state variable, which is initialised in the states
-      component. -->
+      component.
+    - Compute the scaled_dTdt variable. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
     <units name="mV">
         <unit prefix="milli" units="volt"/>
+    </units>
+    <units name="V_per_mS">
+        <unit units="volt"/>
+        <unit exponent="-1" units="ms"/>
+    </units>
+    <units name="V_per_s">
+        <unit units="volt"/>
+        <unit exponent="-1" units="second"/>
     </units>
     <component name="environment">
         <variable interface="public" name="t" units="ms"/>
@@ -56,6 +65,7 @@ the connection level:
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
         <variable interface="public" name="z" units="mV"/>
+        <variable name="scaled_dTdt" units="V_per_ms"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -108,6 +118,27 @@ the connection level:
                     <ci>y</ci>
                 </apply>
             </apply>
+            <apply>
+                <eq/>
+                <ci>scaled_dTdt</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>scaled_x</ci>
+                    </apply>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>t</ci>
+                        </bvar>
+                        <ci>scaled_y</ci>
+                    </apply>
+                </apply>
+            </apply>
         </math>
     </component>
     <component name="scaled_t">
@@ -120,6 +151,7 @@ the connection level:
         <variable interface="public" name="scaled_k" units="volt"/>
         <variable interface="public" name="scaled_y" units="volt"/>
         <variable interface="public" name="scaled_z" units="volt"/>
+        <variable name="scaled_dTdt" units="V_per_s"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -170,6 +202,27 @@ the connection level:
                     <plus/>
                     <ci>scaled_k</ci>
                     <ci>scaled_y</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>scaled_dTdt</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>scaled_t</ci>
+                        </bvar>
+                        <ci>scaled_x</ci>
+                    </apply>
+                    <apply>
+                        <diff/>
+                        <bvar>
+                            <ci>scaled_t</ci>
+                        </bvar>
+                        <ci>scaled_y</ci>
+                    </apply>
                 </apply>
             </apply>
         </math>
