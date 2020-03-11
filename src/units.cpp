@@ -150,7 +150,6 @@ bool updateUnitMultiplier(double &multiplier,
                           int direction)
 {
     bool updated = false;
-    auto unitsName = units->name();
 
     if (units->isBaseUnit()) {
         multiplier += direction * logMult;
