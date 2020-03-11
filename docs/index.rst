@@ -52,10 +52,10 @@ Guidelines and specifications
 -----------------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :titlesonly:
 
-   https://cellml-specification-dev.readthedocs.io/
+   CellML2.0 specification <https://cellml-specification-dev.readthedocs.io/>
 
 Documentation for developers
 ----------------------------
