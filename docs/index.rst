@@ -55,7 +55,7 @@ Guidelines and specifications
    :maxdepth: 1
    :titlesonly:
 
-   reference/index_reference
+   https://cellml-specification-dev.readthedocs.io/
 
 Documentation for developers
 ----------------------------
