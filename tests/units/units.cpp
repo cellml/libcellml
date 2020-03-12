@@ -2419,3 +2419,37 @@ TEST(Units, scalingFactorIncompatibleUnitsNoChecking)
 
     EXPECT_EQ(1.0E+6, libcellml::Units::scalingFactor(oranges, lemons, false));
 }
+
+TEST(Units, scalingFactorSelfReferencingUnits1)
+{
+    auto model = libcellml::Model::create();
+    auto X = libcellml::Units::create("X");
+    X->addUnit("mole");
+    auto mX = libcellml::Units::create("mX");
+    mX->addUnit("X", "milli");
+    model->addUnits(X);
+    model->addUnits(mX);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+
+    X->addUnit("litre", -1.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+}
+
+TEST(Units, scalingFactorSelfReferencingUnits2)
+{
+    auto model = libcellml::Model::create();
+    auto X = libcellml::Units::create("X");
+    X->addUnit("mole");
+    auto mX = libcellml::Units::create("mX");
+    mX->addUnit("X", "milli");
+    model->addUnits(X);
+    model->addUnits(mX);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+
+    X->addUnit("litre", -3.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+}
