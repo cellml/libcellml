@@ -161,7 +161,6 @@ bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
  *
  * @return Either @c true or @c false, depending if the units were successfully updated.
  */
-
 bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multiplier)
 {
     double localMultiplier = 0;
