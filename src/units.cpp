@@ -155,14 +155,14 @@ bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
  * If the units are not base units, we travel up the model hierarchy to find
  * the base units.
  *
- * @param multiplier The multiplier to find.
  * @param units The units to find the multiplier for.
  * @param direction The direction to update multiplier. Either 1 or -1.
+ * @param multiplier The multiplier to find.
  *
  * @return Either @c true or @c false, depending if the units were successfully updated.
  */
 
-bool updateUnitMultiplier(double &multiplier, const UnitsPtr &units, int direction)
+bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multiplier)
 {
     double localMultiplier = 0;
     bool updated = false;
@@ -197,7 +197,7 @@ bool updateUnitMultiplier(double &multiplier, const UnitsPtr &units, int directi
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
                     double branchMult = 0.0;
-                    updated = updateUnitMultiplier(branchMult, refUnits, 1);
+                    updated = updateUnitMultiplier(refUnits, 1, branchMult);
                     // Make the direction positive on all branches, direction is only applied at the end.
                     localMultiplier += mult + branchMult * exp + prefixMult;
                 } else {
@@ -440,8 +440,8 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
     if ((units1 != nullptr) && (units2 != nullptr)) {
         double multiplier = 0.0;
 
-        updateUnits1 = updateUnitMultiplier(multiplier, units1, -1);
-        updateUnits2 = updateUnitMultiplier(multiplier, units2, 1);
+        updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
+        updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
 
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
