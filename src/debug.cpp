@@ -23,12 +23,14 @@ namespace libcellml {
 
 void printStack(const IndexStack &stack)
 {
+    bool first = true;
     Debug(false) << "[";
-    for (auto iter = stack.begin(); iter < stack.end(); ++iter) {
-        Debug(false) << *iter;
-        if (iter + 1 < stack.end()) {
+    for (const auto &iter : stack) {
+        if (!first) {
             Debug(false) << ", ";
         }
+        Debug(false) << iter;
+        first = false;
     }
     Debug() << "]";
 }
@@ -41,9 +43,9 @@ void printEquivalenceMap(const EquivalenceMap &map)
         Debug(false) << "key: ";
         printStack(key);
         auto vector = iter.second;
-        for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
+        for (const auto &vectorIt : vector) {
             Debug(false) << "value: ";
-            printStack(*vectorIt);
+            printStack(vectorIt);
         }
     }
 }
