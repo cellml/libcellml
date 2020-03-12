@@ -3142,6 +3142,10 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::NAN:
         return mProfile->nanString();
     }
+
+    return {};
+    // Note: we cannot never reach this point, but this is needed for some
+    //       compilers.
 }
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)

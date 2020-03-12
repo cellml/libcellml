@@ -24,6 +24,11 @@ limitations under the License.
 
 #undef NAN
 
+#ifdef __linux__
+#    undef TRUE
+#    undef FALSE
+#endif
+
 namespace libcellml {
 
 using ComponentNameMap = std::map<std::string, ComponentPtr>; /**< Type definition for map of component name to component pointer. */
