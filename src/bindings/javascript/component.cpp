@@ -9,14 +9,15 @@ using namespace emscripten;
 EMSCRIPTEN_BINDINGS(libcellml_component) {
 
     class_<libcellml::Component, base<libcellml::ComponentEntity>>("Component")
-        .smart_ptr_constructor("Component", &std::make_shared<libcellml::Component>)
+        .smart_ptr_constructor("Component", select_overload<libcellml::ComponentPtr()>(&libcellml::Component::create))
+//        .smart_ptr_constructor("ComponentSetName", select_overload<libcellml::ComponentPtr(const std::string &)>(&libcellml::Component::create))
         .function("addReset", &libcellml::Component::addReset)
         .function("addVariable", &libcellml::Component::addVariable)
         .function("appendMath", &libcellml::Component::appendMath)
-        .function("getMath", &libcellml::Component::getMath)
-        .function("getReset", &libcellml::Component::getReset)
-        .function("getVariableByIndex", select_overload<libcellml::VariablePtr(size_t) const>(&libcellml::Component::getVariable))
-        .function("getVariableByName", select_overload<libcellml::VariablePtr(const std::string &) const>(&libcellml::Component::getVariable))
+        .function("math", &libcellml::Component::math)
+        .function("reset", &libcellml::Component::reset)
+        .function("variableByIndex", select_overload<libcellml::VariablePtr(size_t) const>(&libcellml::Component::variable))
+        .function("variableByName", select_overload<libcellml::VariablePtr(const std::string &) const>(&libcellml::Component::variable))
         .function("hasReset", &libcellml::Component::hasReset)
         .function("hasVariableByName", select_overload<bool(const std::string &) const>(&libcellml::Component::hasVariable))
         .function("hasVariableByVariable", select_overload<bool(const libcellml::VariablePtr &) const>(&libcellml::Component::hasVariable))
@@ -33,5 +34,10 @@ EMSCRIPTEN_BINDINGS(libcellml_component) {
         .function("takeVariableByIndex", select_overload<libcellml::VariablePtr(size_t)>(&libcellml::Component::takeVariable))
         .function("takeVariableByName", select_overload<libcellml::VariablePtr(const std::string &)>(&libcellml::Component::takeVariable))
         .function("variableCount", &libcellml::Component::variableCount)
+            .function("isImport", &libcellml::ImportedEntity::isImport)
+            .function("importReference", &libcellml::ImportedEntity::importReference)
+            .function("importSource", &libcellml::ImportedEntity::importSource)
+            .function("setImportSource", &libcellml::ImportedEntity::setImportSource)
+            .function("setImportReference", &libcellml::ImportedEntity::setImportReference)
     ;
 }

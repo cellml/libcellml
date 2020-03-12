@@ -3,7 +3,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.cpp
+#    ${CMAKE_CURRENT_SOURCE_DIR}/enumerations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
@@ -28,10 +28,10 @@ set_target_properties(libcellml PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
-  LINK_FLAGS "--bind -s 'EXPORT_NAME=\"libCellML\"'"
+  LINK_FLAGS "--bind -s 'EXPORT_NAME=\"libCellML\"' -s EXPORT_ES6=1 -s MODULARIZE=1 -s USE_ES6_IMPORT_META=0"
   COMPILE_FLAGS "-s ASSERTIONS=1"
 )
 
-message(STATUS "EMSCRIPTEN_ROOT_PATH: ${EMSCRIPTEN_ROOT_PATH}")
-target_include_directories(libcellml PRIVATE /usr/local/Cellar/emscripten/1.38.29/libexec/system/include/)
+#message(STATUS "EMSCRIPTEN_ROOT_PATH: ${EMSCRIPTEN_ROOT_PATH}")
+#target_include_directories(libcellml PRIVATE /usr/local/Cellar/emscripten/1.39.8/libexec/system/include/)
 
