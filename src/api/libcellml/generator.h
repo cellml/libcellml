@@ -174,7 +174,7 @@ public:
      *
      * @param model The @c Model to process.
      */
-    void processModel(const ModelPtr &model, bool debug = false);
+    void processModel(const ModelPtr &model);
 
     /**
      * @brief Get the @c ModelType of the @c Model.

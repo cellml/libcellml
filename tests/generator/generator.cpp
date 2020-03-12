@@ -945,7 +945,7 @@ TEST(Generator, cellmlUnitScaling)
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
-    generator->processModel(model, true);
+    generator->processModel(model);
 
     EXPECT_EQ(size_t(0), generator->errorCount());
 
