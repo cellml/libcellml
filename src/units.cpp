@@ -155,24 +155,18 @@ bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
  * If the units are not base units, we travel up the model hierarchy to find
  * the base units.
  *
- * @param multiplier The multiplier to find.
  * @param units The units to find the multiplier for.
- * @param uExp The exponential of the units.
- * @param logMult The log multiplier of the units.
  * @param direction The direction to update multiplier. Either 1 or -1.
+ * @param multiplier The multiplier to find.
  *
  * @return Either @c true or @c false, depending if the units were successfully updated.
  */
-bool updateUnitMultiplier(double &multiplier,
-                          const UnitsPtr &units,
-                          double uExp, double logMult,
-                          int direction)
+bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multiplier)
 {
+    double localMultiplier = 0;
     bool updated = false;
-    auto unitsName = units->name();
 
     if (units->unitCount() == 0) {
-        multiplier += direction * logMult;
         updated = true;
     } else {
         std::string ref;
@@ -181,25 +175,38 @@ bool updateUnitMultiplier(double &multiplier,
         double exp;
         double mult;
         double expMult;
+        double standardMult = 0.0;
+        double prefixMult = 0.0;
         for (size_t i = 0; i < units->unitCount(); ++i) {
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
+
+            if (isStandardPrefixName(pre)) {
+                prefixMult = standardPrefixList.at(pre);
+            } else {
+                return false;
+            }
+
             if (isStandardUnitName(ref)) {
-                if (!isStandardPrefixName(pre)) {
-                    return false;
-                }
-                multiplier += direction * (mult + (standardMultiplierList.at(ref) + logMult + standardPrefixList.at(pre)) * exp);
-                updated = true;
+                standardMult = standardMultiplierList.at(ref);
+                // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
+                localMultiplier += mult + standardMult * exp + prefixMult;
             } else {
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
-                    updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                    double branchMult = 0.0;
+                    updated = updateUnitMultiplier(refUnits, 1, branchMult);
+                    // Make the direction positive on all branches, direction is only applied at the end.
+                    localMultiplier += mult + branchMult * exp + prefixMult;
+                } else {
+                    return false;
                 }
             }
         }
+        multiplier += localMultiplier * direction;
+        updated = true;
     }
-
     return updated;
 }
 
@@ -432,8 +439,8 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
     if ((units1 != nullptr) && (units2 != nullptr)) {
         double multiplier = 0.0;
 
-        updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
-        updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
+        updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
+        updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
 
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
@@ -594,7 +601,7 @@ bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 
 bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    // Units must be compatible to return a non-zero scaling factor.
+    // Units must be compatible and return a scaling factor of 1.0.
     return Units::scalingFactor(units1, units2) == 1.0;
 }
 
