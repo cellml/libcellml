@@ -33,8 +33,6 @@ limitations under the License.
 #include "xmldoc.h"
 #include "xmlutils.h"
 
-#include "debug.h"
-
 namespace libcellml {
 
 /**
