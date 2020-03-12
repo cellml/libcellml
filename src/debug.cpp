@@ -95,164 +95,298 @@ void doPrintAst(GeneratorEquationAstTrunk *trunk)
 
 std::string doPrintAst(const GeneratorEquationAstPtr &ast)
 {
+    std::string res;
+
     switch (ast->mType) {
         // Assignment.
 
     case GeneratorEquationAst::Type::ASSIGNMENT:
-        return "ASSIGNMENT";
+        res = "ASSIGNMENT";
+
+        break;
 
         // Relational and logical operators.
 
     case GeneratorEquationAst::Type::EQ:
-        return "EQ";
+        res = "EQ";
+
+        break;
     case GeneratorEquationAst::Type::NEQ:
-        return "NEQ";
+        res = "NEQ";
+
+        break;
     case GeneratorEquationAst::Type::LT:
-        return "LT";
+        res = "LT";
+
+        break;
     case GeneratorEquationAst::Type::LEQ:
-        return "LEQ";
+        res = "LEQ";
+
+        break;
     case GeneratorEquationAst::Type::GT:
-        return "GT";
+        res = "GT";
+
+        break;
     case GeneratorEquationAst::Type::GEQ:
-        return "LEQ";
+        res = "LEQ";
+
+        break;
     case GeneratorEquationAst::Type::AND:
-        return "AND";
+        res = "AND";
+
+        break;
     case GeneratorEquationAst::Type::OR:
-        return "OR";
+        res = "OR";
+
+        break;
     case GeneratorEquationAst::Type::XOR:
-        return "XOR";
+        res = "XOR";
+
+        break;
     case GeneratorEquationAst::Type::NOT:
-        return "NOT";
+        res = "NOT";
+
+        break;
 
         // Arithmetic operators.
 
     case GeneratorEquationAst::Type::PLUS:
-        return "PLUS";
+        res = "PLUS";
+
+        break;
     case GeneratorEquationAst::Type::MINUS:
-        return "MINUS";
+        res = "MINUS";
+
+        break;
     case GeneratorEquationAst::Type::TIMES:
-        return "TIMES";
+        res = "TIMES";
+
+        break;
     case GeneratorEquationAst::Type::DIVIDE:
-        return "DIVIDE";
+        res = "DIVIDE";
+
+        break;
     case GeneratorEquationAst::Type::POWER:
-        return "POWER";
+        res = "POWER";
+
+        break;
     case GeneratorEquationAst::Type::ROOT:
-        return "ROOT";
+        res = "ROOT";
+
+        break;
     case GeneratorEquationAst::Type::ABS:
-        return "ABS";
+        res = "ABS";
+
+        break;
     case GeneratorEquationAst::Type::EXP:
-        return "EXP";
+        res = "EXP";
+
+        break;
     case GeneratorEquationAst::Type::LN:
-        return "LN";
+        res = "LN";
+
+        break;
     case GeneratorEquationAst::Type::LOG:
-        return "LOG";
+        res = "LOG";
+
+        break;
     case GeneratorEquationAst::Type::CEILING:
-        return "CEILING";
+        res = "CEILING";
+
+        break;
     case GeneratorEquationAst::Type::FLOOR:
-        return "FLOOR";
+        res = "FLOOR";
+
+        break;
     case GeneratorEquationAst::Type::MIN:
-        return "MIN";
+        res = "MIN";
+
+        break;
     case GeneratorEquationAst::Type::MAX:
-        return "MAX";
+        res = "MAX";
+
+        break;
     case GeneratorEquationAst::Type::REM:
-        return "REM";
+        res = "REM";
+
+        break;
 
         // Calculus elements.
 
     case GeneratorEquationAst::Type::DIFF:
-        return "DIFF";
+        res = "DIFF";
+
+        break;
 
         // Trigonometric operators.
 
     case GeneratorEquationAst::Type::SIN:
-        return "SIN";
+        res = "SIN";
+
+        break;
     case GeneratorEquationAst::Type::COS:
-        return "COS";
+        res = "COS";
+
+        break;
     case GeneratorEquationAst::Type::TAN:
-        return "TAN";
+        res = "TAN";
+
+        break;
     case GeneratorEquationAst::Type::SEC:
-        return "SEC";
+        res = "SEC";
+
+        break;
     case GeneratorEquationAst::Type::CSC:
-        return "CSC";
+        res = "CSC";
+
+        break;
     case GeneratorEquationAst::Type::COT:
-        return "COT";
+        res = "COT";
+
+        break;
     case GeneratorEquationAst::Type::SINH:
-        return "SINH";
+        res = "SINH";
+
+        break;
     case GeneratorEquationAst::Type::COSH:
-        return "COSH";
+        res = "COSH";
+
+        break;
     case GeneratorEquationAst::Type::TANH:
-        return "TANH";
+        res = "TANH";
+
+        break;
     case GeneratorEquationAst::Type::SECH:
-        return "SECH";
+        res = "SECH";
+
+        break;
     case GeneratorEquationAst::Type::CSCH:
-        return "CSCH";
+        res = "CSCH";
+
+        break;
     case GeneratorEquationAst::Type::COTH:
-        return "COTH";
+        res = "COTH";
+
+        break;
     case GeneratorEquationAst::Type::ASIN:
-        return "ASIN";
+        res = "ASIN";
+
+        break;
     case GeneratorEquationAst::Type::ACOS:
-        return "ACOS";
+        res = "ACOS";
+
+        break;
     case GeneratorEquationAst::Type::ATAN:
-        return "ATAN";
+        res = "ATAN";
+
+        break;
     case GeneratorEquationAst::Type::ASEC:
-        return "ASEC";
+        res = "ASEC";
+
+        break;
     case GeneratorEquationAst::Type::ACSC:
-        return "ACSC";
+        res = "ACSC";
+
+        break;
     case GeneratorEquationAst::Type::ACOT:
-        return "ACOT";
+        res = "ACOT";
+
+        break;
     case GeneratorEquationAst::Type::ASINH:
-        return "ASINH";
+        res = "ASINH";
+
+        break;
     case GeneratorEquationAst::Type::ACOSH:
-        return "ACOSH";
+        res = "ACOSH";
+
+        break;
     case GeneratorEquationAst::Type::ATANH:
-        return "ATANH";
+        res = "ATANH";
+
+        break;
     case GeneratorEquationAst::Type::ASECH:
-        return "ASECH";
+        res = "ASECH";
+
+        break;
     case GeneratorEquationAst::Type::ACSCH:
-        return "ACSCH";
+        res = "ACSCH";
+
+        break;
     case GeneratorEquationAst::Type::ACOTH:
-        return "ACOTH";
+        res = "ACOTH";
+
+        break;
 
         // Piecewise statement.
 
     case GeneratorEquationAst::Type::PIECEWISE:
-        return "PIECEWISE";
+        res = "PIECEWISE";
+
+        break;
     case GeneratorEquationAst::Type::PIECE:
-        return "PIECE";
+        res = "PIECE";
+
+        break;
     case GeneratorEquationAst::Type::OTHERWISE:
-        return "OTHERWISE";
+        res = "OTHERWISE";
+
+        break;
 
         // Token elements.
 
     case GeneratorEquationAst::Type::CI:
-        return ast->mVariable->name();
+        res = ast->mVariable->name();
+
+        break;
     case GeneratorEquationAst::Type::CN:
-        return ast->mValue;
+        res = ast->mValue;
+
+        break;
 
         // Qualifier elements.
 
     case GeneratorEquationAst::Type::DEGREE:
-        return "DEGREE";
+        res = "DEGREE";
+
+        break;
     case GeneratorEquationAst::Type::LOGBASE:
-        return "LOGBASE";
+        res = "LOGBASE";
+
+        break;
     case GeneratorEquationAst::Type::BVAR:
-        return "BVAR";
+        res = "BVAR";
+
+        break;
 
         // Constants.
 
     case GeneratorEquationAst::Type::TRUE:
-        return "TRUE";
+        res = "TRUE";
+
+        break;
     case GeneratorEquationAst::Type::FALSE:
-        return "FALSE";
+        res = "FALSE";
+
+        break;
     case GeneratorEquationAst::Type::E:
-        return "E";
+        res = "E";
+
+        break;
     case GeneratorEquationAst::Type::PI:
-        return "PI";
+        res = "PI";
+
+        break;
     case GeneratorEquationAst::Type::INF:
-        return "INF";
+        res = "INF";
+
+        break;
     case GeneratorEquationAst::Type::NAN:
-        return "NAN";
+        res = "NAN";
+
+        break;
     }
+
+    return res;
 }
 
 void doPrintAst(const GeneratorEquationAstPtr &ast,
