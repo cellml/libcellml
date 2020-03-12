@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "debug.h"
 
 #include "libcellml/generator.h"
 
@@ -515,12 +514,9 @@ struct Generator::GeneratorImpl
     void scaleAst(const GeneratorEquationAstPtr &ast,
                   const GeneratorEquationAstPtr &astParent,
                   double scalingFactor);
-    void scaleEquationAst(const GeneratorEquationAstPtr &ast, bool debug,
-                          int eqnNb);
+    void scaleEquationAst(const GeneratorEquationAstPtr &ast);
 
-    void printEquationsAst() const;
-
-    void processModel(const ModelPtr &model, bool debug);
+    void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
     bool isAndOperator(const GeneratorEquationAstPtr &ast) const;
@@ -1296,17 +1292,16 @@ void Generator::GeneratorImpl::scaleAst(const GeneratorEquationAstPtr &ast,
     }
 }
 
-void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast,
-                                                bool debug, int eqnNb)
+void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast)
 {
     // Recursively scale the given AST's children.
 
     if (ast->mLeft != nullptr) {
-        scaleEquationAst(ast->mLeft, debug, eqnNb);
+        scaleEquationAst(ast->mLeft);
     }
 
     if (ast->mRight != nullptr) {
-        scaleEquationAst(ast->mRight, debug, eqnNb);
+        scaleEquationAst(ast->mRight);
     }
 
     // If the given AST node is a variabe (i.e. a CI node) then we may need to
@@ -1318,17 +1313,6 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         // has a DIFF node as a parent.
 
         GeneratorEquationAstPtr astParent = ast->mParent.lock();
-        if (debug && (eqnNb == 11)) {
-            std::string debugInfo = "Variable: " + ast->mVariable->name()
-                                    + " | Scaling factor: " + convertToString(Generator::GeneratorImpl::scalingFactor(ast->mVariable))
-                                    + " | Crt Unit: " + ast->mVariable->units()->name()
-                                    + " | Ref unit: " + generatorVariable(ast->mVariable)->mVariable->units()->name()
-                                    + " | Crt comp: " + entityName(ast->mVariable->parent())
-                                    + " | Ref comp: " + entityName(generatorVariable(ast->mVariable)->mVariable->parent());
-
-            std::cout << debugInfo << std::endl;
-        }
-
         if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
@@ -1373,27 +1357,7 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
     }
 }
 
-void Generator::GeneratorImpl::printEquationsAst() const
-{
-    // Print our equations' AST.
-    // Note: this method should be deleted once we are done with issue #409.
-
-    size_t eqnNb = 0;
-
-    for (const auto &equation : mEquations) {
-        ++eqnNb;
-
-        if (eqnNb == 11) {
-            std::cout << "────────────────────────────────────┤Equation #" << eqnNb << "├───" << std::endl;
-
-            printAst(equation->mAst);
-        }
-    }
-
-    std::cout << "────────────────────────────────────┤THE END!├───" << std::endl;
-}
-
-void Generator::GeneratorImpl::processModel(const ModelPtr &model, bool debug)
+void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 {
     // Reset a few things in case we were to process the model more than once.
     // Note: one would normally process the model only once, so we shouldn't
@@ -1553,30 +1517,12 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model, bool debug)
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
-        // Print our equations' AST.
-
-        if (debug) {
-            printEquationsAst();
-        }
-
         // Scale our equations' AST, i.e. take into account the fact that we may
         // have mapped variables that use compatible units rather than
         // equivalent ones.
 
-        int eqNb = 0;
-
         for (const auto &equation : mEquations) {
-            if (debug) {
-                ++eqNb;
-            }
-
-            scaleEquationAst(equation->mAst, debug, eqNb);
-        }
-
-        // Print our updated equations' AST.
-
-        if (debug) {
-            printEquationsAst();
+            scaleEquationAst(equation->mAst);
         }
 
         // Sort our variables and equations and make our internal variables
@@ -3383,7 +3329,7 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
     mPimpl->mProfile = profile;
 }
 
-void Generator::processModel(const ModelPtr &model, bool debug)
+void Generator::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it.
 
@@ -3406,7 +3352,7 @@ void Generator::processModel(const ModelPtr &model, bool debug)
 
     // Process the model.
 
-    mPimpl->processModel(model, debug);
+    mPimpl->processModel(model);
 }
 
 Generator::ModelType Generator::modelType() const
