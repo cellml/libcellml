@@ -8,14 +8,14 @@ using namespace emscripten;
 
 EMSCRIPTEN_BINDINGS(libcellml_componententity) {
     class_<libcellml::ComponentEntity, base<libcellml::NamedEntity>>("ComponentEntity")
-        .smart_ptr_constructor("ComponentEntity", &std::make_shared<libcellml::ComponentEntity>)
+//        .smart_ptr_constructor("ComponentEntity", &std::make_shared<libcellml::ComponentEntity>)
         .function("addComponent", &libcellml::ComponentEntity::addComponent)
         .function("componentCount", &libcellml::ComponentEntity::componentCount)
         .function("containsComponentByName", select_overload<bool(const std::string &, bool) const>(&libcellml::ComponentEntity::containsComponent))
         .function("containsComponentByComponent", select_overload<bool(const libcellml::ComponentPtr &, bool) const>(&libcellml::ComponentEntity::containsComponent))
-        .function("getComponentByIndex", select_overload<libcellml::ComponentPtr(size_t) const>(&libcellml::ComponentEntity::getComponent))
-        .function("getComponentByName", select_overload<libcellml::ComponentPtr(const std::string &, bool) const>(&libcellml::ComponentEntity::getComponent))
-        .function("getEncapsulationId", &libcellml::ComponentEntity::getEncapsulationId)
+        .function("componentByIndex", select_overload<libcellml::ComponentPtr(size_t) const>(&libcellml::ComponentEntity::component))
+        .function("componentByName", select_overload<libcellml::ComponentPtr(const std::string &, bool) const>(&libcellml::ComponentEntity::component))
+        .function("encapsulationId", &libcellml::ComponentEntity::encapsulationId)
         .function("removeAllComponents", &libcellml::ComponentEntity::removeAllComponents)
         .function("removeComponentByIndex", select_overload<bool(size_t)>(&libcellml::ComponentEntity::removeComponent))
         .function("removeComponentByName", select_overload<bool(const std::string &, bool)>(&libcellml::ComponentEntity::removeComponent))

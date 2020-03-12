@@ -13,7 +13,7 @@ public:
 
     void addUnit(const std::string &reference, const std::string &prefix, double exponent=1.0,
                  double multiplier=1.0, const std::string &id="") {libcellml::Units::addUnit(reference, prefix, exponent, multiplier, id);}
-    void addUnit(const std::string &reference, libcellml::Prefix prefix, double exponent=1.0,
+    void addUnit(const std::string &reference, libcellml::Units::Prefix prefix, double exponent=1.0,
                  double multiplier=1.0, const std::string &id="") {libcellml::Units::addUnit(reference, prefix, exponent, multiplier, id);}
     void addUnit(const std::string &reference, double prefix, double exponent,
                  double multiplier=1.0, const std::string &id="") {libcellml::Units::addUnit(reference, prefix, exponent, multiplier, id);}
@@ -21,7 +21,7 @@ public:
     void addUnit(const std::string &reference) {libcellml::Units::addUnit(reference);}
     void addUnit(libcellml::Units::StandardUnit standardRef, const std::string &prefix, double exponent=1.0,
                  double multiplier=1.0, const std::string &id="") {libcellml::Units::addUnit(standardRef, prefix, exponent, multiplier, id);}
-    void addUnit(libcellml::Units::StandardUnit standardRef, libcellml::Prefix prefix, double exponent=1.0,
+    void addUnit(libcellml::Units::StandardUnit standardRef, libcellml::Units::Prefix prefix, double exponent=1.0,
                  double multiplier=1.0, const std::string &id="") {libcellml::Units::addUnit(standardRef, prefix, exponent, multiplier, id);}
     void addUnit(libcellml::Units::StandardUnit standardRef, double prefix, double exponent,
                  double multiplier=1.0, const std::string &id="") {libcellml::Units::addUnit(standardRef, prefix, exponent, multiplier, id);}
@@ -51,11 +51,9 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .value("KATAL", libcellml::Units::StandardUnit::KATAL)
         .value("KELVIN", libcellml::Units::StandardUnit::KELVIN)
         .value("KILOGRAM", libcellml::Units::StandardUnit::KILOGRAM)
-        .value("LITER", libcellml::Units::StandardUnit::LITER)
         .value("LITRE", libcellml::Units::StandardUnit::LITRE)
         .value("LUMEN", libcellml::Units::StandardUnit::LUMEN)
         .value("LUX", libcellml::Units::StandardUnit::LUX)
-        .value("METER", libcellml::Units::StandardUnit::METER)
         .value("METRE", libcellml::Units::StandardUnit::METRE)
         .value("MOLE", libcellml::Units::StandardUnit::MOLE)
         .value("NEWTON", libcellml::Units::StandardUnit::NEWTON)
@@ -74,17 +72,19 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
 
     //    class_<libcellml::Units, base<libcellml::NamedEntity>>("Units")
     class_<libcellml::Units, base<libcellml::NamedEntity>>("Units")
-        .smart_ptr_constructor("Units", &std::make_shared<libcellml::Units>)
+        .smart_ptr_constructor("Units", select_overload<libcellml::UnitsPtr()>(&libcellml::Units::create))
+//        .smart_ptr_constructor("UnitsSetName", select_overload<libcellml::UnitsPtr(const std::string &)>(&libcellml::Units::create))
+//        .smart_ptr_constructor("Units", &libcellml::Units::create)
         .function("isBaseUnit", &libcellml::Units::isBaseUnit)
 //        .function("isImport", &libcellml::Units::isImport)
         .function("addUnitByStringPrefix", select_overload<void(const std::string &, const std::string &, double, double, const std::string &)>(&libcellml::Units::addUnit))
-        .function("addUnitByEnumPrefix", select_overload<void(const std::string &, libcellml::Prefix, double, double, const std::string &)>(&libcellml::Units::addUnit))
-        .function("addUnitByDoublePrefix", select_overload<void(const std::string &, double, double, double, const std::string &)>(&libcellml::Units::addUnit))
+        .function("addUnitByEnumPrefix", select_overload<void(const std::string &, libcellml::Units::Prefix, double, double, const std::string &)>(&libcellml::Units::addUnit))
+//        .function("addUnitByDoublePrefix", select_overload<void(const std::string &, double, double, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByExponent", select_overload<void(const std::string &, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByReference", select_overload<void(const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByStandardUnitStringPrefix", select_overload<void(libcellml::Units::StandardUnit, const std::string &, double, double, const std::string &)>(&libcellml::Units::addUnit))
-        .function("addUnitByStandardUnitEnumPrefix", select_overload<void(libcellml::Units::StandardUnit, libcellml::Prefix, double, double, const std::string &)>(&libcellml::Units::addUnit))
-        .function("addUnitByStandardUnitDoublePrefix", select_overload<void(libcellml::Units::StandardUnit, double, double, double, const std::string &)>(&libcellml::Units::addUnit))
+        .function("addUnitByStandardUnitEnumPrefix", select_overload<void(libcellml::Units::StandardUnit, libcellml::Units::Prefix, double, double, const std::string &)>(&libcellml::Units::addUnit))
+//        .function("addUnitByStandardUnitDoublePrefix", select_overload<void(libcellml::Units::StandardUnit, double, double, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByStandardUnitAndExponent", select_overload<void(libcellml::Units::StandardUnit, double, const std::string &)>(&libcellml::Units::addUnit))
         .function("addUnitByStandardUnit", select_overload<void(libcellml::Units::StandardUnit)>(&libcellml::Units::addUnit))
 //        .function("getUnitAttributesByIndex", select_overload<void(size_t, std::string&, std::string&, double &, double &, std::string&) const>(&libcellml::Units::getUnitAttributes))
@@ -96,5 +96,10 @@ EMSCRIPTEN_BINDINGS(libcellml_units) {
         .function("setSourceUnits", &libcellml::Units::setSourceUnits)
         .function("removeAllUnits", &libcellml::Units::removeAllUnits)
         .function("unitCount", &libcellml::Units::unitCount)
+            .function("isImport", &libcellml::ImportedEntity::isImport)
+            .function("importReference", &libcellml::ImportedEntity::importReference)
+            .function("importSource", &libcellml::ImportedEntity::importSource)
+            .function("setImportSource", &libcellml::ImportedEntity::setImportSource)
+            .function("setImportReference", &libcellml::ImportedEntity::setImportReference)
     ;
 }
