@@ -84,7 +84,7 @@ struct Debug
     template<class T>
     Debug &operator<<(const T &x)
     {
-        mSS << x; // NOLINT
+        mSS << x;
         return *this;
     }
 
