@@ -19,12 +19,14 @@ namespace libcellml {
 
 void printStack(const IndexStack &stack)
 {
+    bool first = true;
     Debug(false) << "[";
-    for (auto iter = stack.begin(); iter < stack.end(); ++iter) {
-        Debug(false) << *iter;
-        if (iter + 1 < stack.end()) {
+    for (const auto &iter : stack) {
+        if (!first) {
             Debug(false) << ", ";
         }
+        Debug(false) << iter;
+        first = false;
     }
     Debug() << "]";
 }
@@ -32,14 +34,14 @@ void printStack(const IndexStack &stack)
 void printEquivalenceMap(const EquivalenceMap &map)
 {
     Debug() << "Print out of equivalence map";
-    for (EquivalenceMap::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
-        auto key = iter->first;
+    for (const auto &iter : map) {
+        auto key = iter.first;
         Debug(false) << "key: ";
         printStack(key);
-        auto vector = iter->second;
-        for (auto vectorIt = vector.begin(); vectorIt < vector.end(); ++vectorIt) {
+        auto vector = iter.second;
+        for (const auto &vectorIt : vector) {
             Debug(false) << "value: ";
-            printStack(*vectorIt);
+            printStack(vectorIt);
         }
     }
 }
@@ -47,8 +49,8 @@ void printEquivalenceMap(const EquivalenceMap &map)
 void printStringStringMap(const StringStringMap &map)
 {
     Debug() << "Print out of string -> string map";
-    for (std::map<std::string, std::string>::const_iterator iter = map.begin(); iter != map.end(); ++iter) {
-        Debug() << iter->first << ": " << iter->second;
+    for (const auto &iter : map) {
+        Debug() << iter.first << ": " << iter.second;
     }
 }
 
