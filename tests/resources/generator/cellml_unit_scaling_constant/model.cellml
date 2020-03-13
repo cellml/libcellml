@@ -35,7 +35,11 @@
                     </bvar>
                     <ci>x</ci>
                 </apply>
-                <ci>k_x</ci>
+                <apply>
+                    <plus/>
+                    <ci>k_x</ci>
+                    <ci>k_x</ci>
+                </apply>
             </apply>
             <apply>
                 <eq/>
@@ -46,7 +50,11 @@
                     </bvar>
                     <ci>y</ci>
                 </apply>
-                <ci>k_y</ci>
+                <apply>
+                    <plus/>
+                    <ci>k_y</ci>
+                    <ci>k_y</ci>
+                </apply>
             </apply>
         </math>
     </component>
