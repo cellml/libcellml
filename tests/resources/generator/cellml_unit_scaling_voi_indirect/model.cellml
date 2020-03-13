@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Define the VOI as being time (expressed in milliseconds). Then:
- - Use the VOI as-is (i.e. time expressed in milliseconds) in a component to compute a simple ODE; and
- - Use a scaled version of the VOI (here, time expressed in seconds) in a component to compute a simple ODE. -->
+ - Use the VOI as-is (i.e. time expressed in milliseconds) in a component to compute an ODE; and
+ - Use a scaled version of the VOI (here, time expressed in seconds) in a component to compute an ODE. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
