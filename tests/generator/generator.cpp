@@ -1054,13 +1054,13 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     EXPECT_EQ(size_t(0), generator->errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator->modelType());
 
-    EXPECT_EQ(size_t(2), generator->stateCount());
-    EXPECT_EQ(size_t(1), generator->variableCount());
+    EXPECT_EQ(size_t(0), generator->stateCount());
+    EXPECT_EQ(size_t(3), generator->variableCount());
 
-    EXPECT_NE(nullptr, generator->voi());
-    EXPECT_NE(nullptr, generator->state(0));
+    EXPECT_EQ(nullptr, generator->voi());
+    EXPECT_EQ(nullptr, generator->state(0));
     EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
     EXPECT_NE(nullptr, generator->variable(0));
     EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));

@@ -7,8 +7,8 @@ from math import *
 __version__ = "0.1.0"
 LIBCELLML_VERSION = "0.2.0"
 
-STATE_COUNT = 2
-VARIABLE_COUNT = 1
+STATE_COUNT = 0
+VARIABLE_COUNT = 3
 
 
 class VariableType(Enum):
@@ -17,15 +17,15 @@ class VariableType(Enum):
     ALGEBRAIC = 3
 
 
-VOI_INFO = {"name": "t", "units": "ms", "component": "environment"}
+VOI_INFO = {"name": "", "units": "", "component": ""}
 
 STATE_INFO = [
-    {"name": "x", "units": "mM", "component": "main"},
-    {"name": "y", "units": "M", "component": "main"}
 ]
 
 VARIABLE_INFO = [
-    {"name": "k", "units": "mM", "component": "constants", "type": VariableType.CONSTANT}
+    {"name": "k", "units": "mM", "component": "constants", "type": VariableType.CONSTANT},
+    {"name": "x", "units": "mM", "component": "main", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "y", "units": "M", "component": "main", "type": VariableType.COMPUTED_CONSTANT}
 ]
 
 
@@ -38,18 +38,16 @@ def create_variables_array():
 
 
 def initialize_states_and_constants(states, variables):
-    states[0] = 3.0
-    states[1] = 5.0
     variables[0] = 123.0
 
 
 def compute_computed_constants(variables):
-    pass
+    variables[1] = variables[0]+variables[0]
+    variables[2] = 0.001*variables[0]+0.001*variables[0]
 
 
 def compute_rates(voi, states, rates, variables):
-    rates[0] = variables[0]+variables[0]
-    rates[1] = 0.001*variables[0]+0.001*variables[0]
+    pass
 
 
 def compute_variables(voi, states, rates, variables):
