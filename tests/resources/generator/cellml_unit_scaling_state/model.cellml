@@ -35,20 +35,14 @@
     </component>
     <component name="main">
         <variable interface="public" name="t" units="ms"/>
-        <variable initial_value="3" name="x" units="mM"/>
-        <variable initial_value="5" name="y" units="M"/>
+        <variable name="x" units="mM"/>
+        <variable name="y" units="M"/>
         <variable interface="public" name="k_x" units="mM"/>
         <variable interface="public" name="k_y" units="M"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <apply>
-                    <diff/>
-                    <bvar>
-                        <ci>t</ci>
-                    </bvar>
-                    <ci>x</ci>
-                </apply>
+                <ci>x</ci>
                 <apply>
                     <plus/>
                     <ci>k_x</ci>
@@ -57,13 +51,7 @@
             </apply>
             <apply>
                 <eq/>
-                <apply>
-                    <diff/>
-                    <bvar>
-                        <ci>t</ci>
-                    </bvar>
-                    <ci>y</ci>
-                </apply>
+                <ci>y</ci>
                 <apply>
                     <plus/>
                     <ci>k_y</ci>
