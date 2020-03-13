@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Define 'k' as a constant expressed in mM in component 'constants'. Then:
- - Use 'k' as-is (i.e. expressed in mM) to compute a simple ODE; and
- - Use a scaled version of 'k' (here, expressed in M) to compute a simple ODE. -->
+ - Use 'k' as-is (i.e. expressed in mM) to compute an ODE; and
+ - Use a scaled version of 'k' (here, expressed in M) to compute an ODE. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
