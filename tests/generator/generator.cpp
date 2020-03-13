@@ -971,10 +971,10 @@ TEST(Generator, cellmlUnitScaling)
     EXPECT_EQ(fileContents("generator/cellml_unit_scaling/model.py"), generator->implementationCode());
 }
 
-TEST(Generator, cellmlUnitScalingVoi)
+TEST(Generator, cellmlUnitScalingVoiIndirect)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi/model.cellml"));
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_indirect/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->errorCount());
 
@@ -995,15 +995,50 @@ TEST(Generator, cellmlUnitScalingVoi)
     EXPECT_EQ(nullptr, generator->variable(0));
     EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
 
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi/model.h"), generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi/model.c"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.c"), generator->implementationCode());
 
     libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi/model.py"), generator->implementationCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_indirect/model.py"), generator->implementationCode());
+}
+
+TEST(Generator, cellmlUnitScalingVoiDirect)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_direct/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    generator->processModel(model);
+
+    EXPECT_EQ(size_t(0), generator->errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+
+    EXPECT_EQ(size_t(2), generator->stateCount());
+    EXPECT_EQ(size_t(0), generator->variableCount());
+
+    EXPECT_NE(nullptr, generator->voi());
+    EXPECT_NE(nullptr, generator->state(0));
+    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
+    EXPECT_EQ(nullptr, generator->variable(0));
+    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.c"), generator->implementationCode());
+
+    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/cellml_unit_scaling_voi_direct/model.py"), generator->implementationCode());
 }
 
 TEST(Generator, cellmlUnitScalingConstant)
