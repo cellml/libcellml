@@ -19,6 +19,7 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
+#include "generatorequationast.h"
 #include "internaltypes.h"
 
 namespace libcellml {

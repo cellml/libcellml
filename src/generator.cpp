@@ -31,7 +31,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
 
-#include "internaltypes.h"
+#include "generatorequationast.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
