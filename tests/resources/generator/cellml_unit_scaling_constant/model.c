@@ -8,18 +8,18 @@
 const char VERSION[] = "0.1.0";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
-const size_t STATE_COUNT = 2;
-const size_t VARIABLE_COUNT = 1;
+const size_t STATE_COUNT = 0;
+const size_t VARIABLE_COUNT = 3;
 
-const VariableInfo VOI_INFO = {"t", "ms", "environment"};
+const VariableInfo VOI_INFO = {"", "", ""};
 
 const VariableInfo STATE_INFO[] = {
-    {"x", "mM", "main"},
-    {"y", "M", "main"}
 };
 
 const VariableInfoWithType VARIABLE_INFO[] = {
-    {"k", "mM", "constants", CONSTANT}
+    {"k", "mM", "constants", CONSTANT},
+    {"x", "mM", "main", COMPUTED_CONSTANT},
+    {"y", "M", "main", COMPUTED_CONSTANT}
 };
 
 double * createStatesArray()
@@ -39,19 +39,17 @@ void deleteArray(double *array)
 
 void initializeStatesAndConstants(double *states, double *variables)
 {
-    states[0] = 3.0;
-    states[1] = 5.0;
     variables[0] = 123.0;
 }
 
 void computeComputedConstants(double *variables)
 {
+    variables[1] = variables[0]+variables[0];
+    variables[2] = 0.001*variables[0]+0.001*variables[0];
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables)
 {
-    rates[0] = variables[0]+variables[0];
-    rates[1] = 0.001*variables[0]+0.001*variables[0];
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
