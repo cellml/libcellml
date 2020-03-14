@@ -46,7 +46,7 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables):
-    rates[0] = 789.0
+    rates[0] = 1.23
 
 
 def compute_variables(voi, states, rates, variables):

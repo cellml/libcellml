@@ -48,7 +48,7 @@ void computeComputedConstants(double *variables)
 
 void computeRates(double voi, double *states, double *rates, double *variables)
 {
-    rates[0] = 789.0;
+    rates[0] = 1.23;
 }
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
