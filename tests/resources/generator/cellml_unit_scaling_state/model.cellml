@@ -29,7 +29,7 @@
                     </bvar>
                     <ci>k</ci>
                 </apply>
-                <cn cellml:units="mM">789</cn>
+                <cn cellml:units="mM">1.23</cn>
             </apply>
         </math>
     </component>
