@@ -2,7 +2,11 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Define 'k' as a state variable expressed in mM in component 'states'. Then:
  - Use the rate of 'k' as-is (i.e. expressed in mM) to compute a variable; and
- - Use the rate of a scaled version of 'k' (here, expressed in M) to compute another variable. -->
+ - Use the rate of a scaled version of 'k' (here, expressed in M) to compute another variable.
+Note: the component 'main' in which the rate of [a scaled version of] 'k' is
+      used is expressed in seconds. Thus, in the case of the scaled version of
+      'k', we end up with a double scaling. Indeed, we use dk/dt, and both 'k'
+      and 't' need to be scaled. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
@@ -34,7 +38,7 @@
         </math>
     </component>
     <component name="main">
-        <variable interface="public" name="t" units="ms"/>
+        <variable interface="public" name="t" units="second"/>
         <variable name="x" units="mM"/>
         <variable name="y" units="M"/>
         <variable interface="public" name="k_x" units="mM"/>
