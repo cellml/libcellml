@@ -2,7 +2,7 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Define 'k' as a state variable expressed in mM in component 'states'. Then:
  - Use 'k' as-is (i.e. expressed in mM) to compute an ODE; and
- - Use a scaled version of 'k' (here, expressed in M) to compute an ODE. -->
+ - Use a scaled version of 'k' (here, expressed in M) to compute another ODE. -->
     <units name="ms">
         <unit prefix="milli" units="second"/>
     </units>
