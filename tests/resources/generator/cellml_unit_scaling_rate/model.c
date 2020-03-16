@@ -53,6 +53,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[0] = rates[0]+rates[0];
-    variables[1] = 0.001*rates[0]+0.001*rates[0];
+    variables[0] = 1000.0*rates[0]+1000.0*rates[0];
+    variables[1] = 1000.0*0.001*rates[0]+1000.0*0.001*rates[0];
 }
