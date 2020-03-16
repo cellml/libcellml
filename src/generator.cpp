@@ -1339,7 +1339,7 @@ void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &a
         if (((astParent->mType != GeneratorEquationAst::Type::ASSIGNMENT)
              || (astParent->mLeft != ast))
             && (astParent->mType != GeneratorEquationAst::Type::BVAR)) {
-            // We are dealing with a variable which is neither the computed
+            // We are dealing with a variable which is neither a computed
             // variable nor our variable of integration, so retrieve its scaling
             // factor and apply it, if needed, distinguishing between a rate
             // variable and an algebraic variable.
