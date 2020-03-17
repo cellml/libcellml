@@ -1125,9 +1125,10 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
         // Replace the variable held by `generatorVariable`, in case the
-        // existing one has no initial value while `variable` does. Otherwise,
-        // generate an error if the variable held by `generatorVariable` and
-        // `variable` are both initialised.
+        // existing one has no initial value while `variable` does and after
+        // insuring that the initial value is either a double or an existing
+        // variable. Otherwise, generate an error if the variable held by
+        // `generatorVariable` and `variable` are both initialised.
 
         if (!variable->initialValue().empty()
             && generatorVariable->mVariable->initialValue().empty()) {
@@ -1146,6 +1147,24 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
+        }
+
+        if (!generatorVariable->mVariable->initialValue().empty()
+            && !isCellMLReal(generatorVariable->mVariable->initialValue())) {
+            // The initial value is not a double, so it has to be an existing
+            // variable.
+
+            if (component->variable(generatorVariable->mVariable->initialValue()) == nullptr) {
+                ErrorPtr err = Error::create();
+
+                err->setDescription("Variable '" + variable->name()
+                                    + "' in component '" + component->name()
+                                    + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
+                                    + "', but it cannot be found.");
+                err->setKind(Error::Kind::GENERATOR);
+
+                mGenerator->addError(err);
+            }
         }
     }
 
