@@ -84,3 +84,46 @@ TEST(Coverage, entityHasParent)
     EXPECT_TRUE(c2->hasParent());
     EXPECT_FALSE(c3->hasParent());
 }
+
+TEST(Parser, parseResetWithNanOrder)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"component2\" id=\"c2id\">\n"
+        "    <variable name=\"variable1\" id=\"vid\"/>\n"
+        "    <variable name=\"variable2\" id=\"vid2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"12345678901\" id=\"rid\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">          some condition in mathml        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">          some value in mathml        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"component2\" id=\"c2id\">\n"
+        "    <variable name=\"variable1\" id=\"vid\"/>\n"
+        "    <variable name=\"variable2\" id=\"vid2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"0\" id=\"rid\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">          some condition in mathml        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">          some value in mathml        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ModelPtr model = p->parseModel(in);
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    const std::string a = printer->printModel(model);
+    EXPECT_EQ(e, a);
+}

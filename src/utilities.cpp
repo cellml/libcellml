@@ -57,7 +57,11 @@ std::string convertToString(double value)
 
 int convertToInt(const std::string &candidate)
 {
-    return std::stoi(candidate);
+    try {
+        return std::stoi(candidate);
+    } catch (...) {
+        return 0;
+    }
 }
 
 std::string convertToString(size_t value)
