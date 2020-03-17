@@ -36,9 +36,7 @@ double convertToDouble(const std::string &candidate)
 {
     try {
         return std::stod(candidate);
-    } catch (const std::invalid_argument &) {
-        return std::numeric_limits<double>::quiet_NaN();
-    } catch (const std::out_of_range &) {
+    } catch (...) {
         if (*candidate.begin() == '-') {
             return -std::numeric_limits<double>::infinity();
         }
