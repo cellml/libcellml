@@ -120,11 +120,6 @@ set(HEADER_FILES
   ${MATHML_CONFIG_H}
 )
 
-if (LIBCELLML_ENABLE_DEBUG_FUNCTIONS)
-  list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp)
-  list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/debug.h)
-endif()
-
 # Only does anything if configuration target is Visual Studio.
 group_source_to_dir_structure(
   ${SOURCE_FILES}
@@ -171,6 +166,31 @@ set_target_properties(cellml PROPERTIES
   VERSION ${libCellML_VERSION}
   INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
+)
+
+set(DEBUG_SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
+)
+
+set(DEBUG_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+)
+
+add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
+
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_11)
+
+target_include_directories(cellml_debug_utilities
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
+)
+
+target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+
+group_source_to_dir_structure(
+  ${DEBUG_SOURCE_FILES}
+  ${DEBUG_HEADER_FILES}
 )
 
 configure_clang_and_clang_tidy_settings(cellml)
