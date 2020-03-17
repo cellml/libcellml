@@ -9,6 +9,18 @@
 %feature("docstring") libcellml::Reset
 "The Reset class is for describing a CellML reset.";
 
+%feature("docstring") libcellml::Reset::order
+"Returns the order for this reset as an integer value.";
+
+%feature("docstring") libcellml::Reset::setOrder
+"Set the order for this reset.  The order value must be an integer.";
+
+%feature("docstring") libcellml::Reset::unsetOrder
+"Sets the state of the order to unset.";
+
+%feature("docstring") libcellml::Reset::isOrderSet
+"Returns True if the order is set, False otherwise.";
+
 %feature("docstring") libcellml::Reset::setVariable
 "Sets the :class: variable for this reset.";
 
