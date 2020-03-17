@@ -38,7 +38,7 @@ double convertToDouble(const std::string &candidate)
     try {
         value = std::stod(candidate);
     } catch (...) {
-        value = std::numeric_limits<double>::infinity();
+        value = std::numeric_limits<double>::quiet_NaN();
     }
     return value;
 }
