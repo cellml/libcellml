@@ -34,13 +34,16 @@ namespace libcellml {
 
 double convertToDouble(const std::string &candidate)
 {
-    double value;
     try {
-        value = std::stod(candidate);
-    } catch (...) {
-        value = std::numeric_limits<double>::quiet_NaN();
+        return std::stod(candidate);
+    } catch (const std::invalid_argument &) {
+        return std::numeric_limits<double>::quiet_NaN();
+    } catch (const std::out_of_range &) {
+        if (*candidate.begin() == '-') {
+            return -std::numeric_limits<double>::infinity();
+        }
+        return std::numeric_limits<double>::infinity();
     }
-    return value;
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
