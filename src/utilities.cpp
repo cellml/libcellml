@@ -34,7 +34,7 @@ namespace libcellml {
 
 double convertToDouble(const std::string &candidate)
 {
-    double value = 0.0;
+    double value;
     try {
         value = std::stod(candidate);
     } catch (...) {
