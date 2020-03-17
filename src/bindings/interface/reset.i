@@ -3,7 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %import "createconstructor.i"
-%import "orderedentity.i"
+%import "entity.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Reset
