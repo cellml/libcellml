@@ -2091,58 +2091,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 //     EXPECT_EQ_ISSUES(expectedIssues, validator);
 // }
 
-TEST(Validator, unitStandardMultipliersLitre)
-{
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
-    auto c1 = m->component(0);
-    auto c2 = m->component(1);
-    auto v1 = c1->variable(0);
-    auto v2 = c2->variable(0);
-
-    v1->setUnits("litre");
-
-    libcellml::UnitsPtr u = libcellml::Units::create();
-    u->setName("decimetre_cubed");
-    u->addUnit("metre", "deci", 3.0); // a litre is a (0.1m)^3
-    m->addUnits(u);
-
-    v2->setUnits("decimetre_cubed");
-
-    libcellml::Variable::addEquivalence(v1, v2); // litre = dm^3 .
-
-    m->linkUnits();
-
-    validator->validateModel(m);
-    printIssues(validator);
-
-    EXPECT_EQ(size_t(0), validator->issueCount());
-}
-
-TEST(Validator, unitStandardMultipliersGram)
-{
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
-    auto c1 = m->component(0);
-    auto c2 = m->component(1);
-    auto v1 = c1->variable(0);
-    auto v2 = c2->variable(0);
-
-    v1->setUnits("kilogram");
-
-    libcellml::UnitsPtr u = libcellml::Units::create();
-    u->setName("thousand_grams");
-    u->addUnit("gram", "kilo");
-    m->addUnits(u);
-    v2->setUnits(u);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-
-    m->linkUnits();
-    validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-}
-
 TEST(Validator, unitSimpleCycle)
 {
     // Testing that indirect dependence is caught in the unit cycles. The network is:
