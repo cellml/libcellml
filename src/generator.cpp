@@ -578,6 +578,7 @@ struct Generator::GeneratorImpl
     std::string generateMethodBodyCode(const std::string &methodBody);
 
     std::string generateDoubleCode(const std::string &value);
+    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable);
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          const GeneratorEquationAstPtr &ast = nullptr);
 
@@ -2572,6 +2573,22 @@ std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &valu
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
+std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable)
+{
+    if (isCellMLReal(variable->initialValue())) {
+        return generateDoubleCode(variable->initialValue());
+    }
+
+    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+    VariablePtr initValueVariable = component->variable(variable->initialValue());
+    GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initValueVariable);
+    std::ostringstream index;
+
+    index << generatorInitialValueVariable->mIndex;
+
+    return mProfile->variablesArrayString() + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
+}
+
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
 {
     GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
@@ -3316,7 +3333,7 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
     }
 
-    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + scalingFactorCode + generateDoubleCode(variable->mInitialValueVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->mInitialValueVariable) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
