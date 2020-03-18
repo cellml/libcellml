@@ -1160,7 +1160,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                 err->setDescription("Variable '" + variable->name()
                                     + "' in component '" + component->name()
                                     + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                    + "', but it cannot be found.");
+                                    + "' which cannot be found.");
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);

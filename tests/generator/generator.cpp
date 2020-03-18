@@ -233,7 +233,7 @@ TEST(Generator, nonExistingInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->errorCount());
 
     const std::vector<std::string> expectedErrors = {
-        "Variable 'x' in component 'main' is initialised using variable 'k', but it cannot be found.",
+        "Variable 'x' in component 'main' is initialised using variable 'k' which cannot be found.",
     };
     const std::vector<libcellml::Error::Kind> expectedKinds = {
         libcellml::Error::Kind::GENERATOR,
