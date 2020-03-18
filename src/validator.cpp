@@ -274,22 +274,6 @@ struct Validator::ValidatorImpl
     bool isSupportedMathMLElement(const XmlNodePtr &node);
 
     /**
-    * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
-    *
-    * @param model The model containing the variables.
-    * @param unitMap A list of the exponents of base variables.
-    * @param uName String name of the current variable being investigated.
-    * @param standardList Nested map of the conversion between built-in units and the base units they contain
-    * @param uExp Exponent of the current unit in its parent.
-    * @param direction Specify whether we want to increment (1) or decrement (-1).
-    */
-    void updateBaseUnitCount(const ModelPtr &model,
-                             std::map<std::string, double> &unitMap,
-                             double &multiplier,
-                             const std::string &uName,
-                             double uExp, double logMult, int direction);
-
-    /**
     * @brief Checks dependency hierarchies of units in the model.
     *
     * @param model The model containing the units to be tested.
