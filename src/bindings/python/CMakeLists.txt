@@ -32,8 +32,8 @@ set(SWIG_INTERFACE_SRCS
     ../interface/namedentity.i
     ../interface/parser.i
     ../interface/printer.i
-    ../interface/reset.i
     ../interface/referencerule.i
+    ../interface/reset.i
     ../interface/units.i
     ../interface/validator.i
     ../interface/variable.i
