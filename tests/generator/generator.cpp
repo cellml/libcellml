@@ -225,6 +225,39 @@ TEST(Generator, variableInitializedTwice)
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
 }
 
+TEST(Generator, nonConstantInitialisingVariable)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_constant_initialising_variable.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'x' in component 'main' is initialised using variable 'k2' which is not a constant.",
+    };
+    const std::vector<libcellml::Error::Kind> expectedKinds = {
+        libcellml::Error::Kind::GENERATOR,
+    };
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    generator->processModel(model);
+
+    EXPECT_EQ_ERRORS_KINDS(expectedErrors, expectedKinds, generator);
+
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
+
+    EXPECT_EQ(size_t(0), generator->stateCount());
+    EXPECT_EQ(size_t(0), generator->variableCount());
+
+    EXPECT_EQ(nullptr, generator->voi());
+    EXPECT_EQ(nullptr, generator->state(0));
+    EXPECT_EQ(nullptr, generator->variable(0));
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
+}
+
 TEST(Generator, nonExistingInitialisingVariable)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();

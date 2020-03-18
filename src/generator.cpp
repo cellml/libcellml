@@ -1152,9 +1152,11 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         if (!generatorVariable->mVariable->initialValue().empty()
             && !isCellMLReal(generatorVariable->mVariable->initialValue())) {
             // The initial value is not a double, so it has to be an existing
-            // variable.
+            // variable of constant type.
 
-            if (component->variable(generatorVariable->mVariable->initialValue()) == nullptr) {
+            VariablePtr initialValueVariable = component->variable(generatorVariable->mVariable->initialValue());
+
+            if (initialValueVariable == nullptr) {
                 ErrorPtr err = Error::create();
 
                 err->setDescription("Variable '" + variable->name()
@@ -1164,6 +1166,20 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);
+            } else {
+                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initialValueVariable);
+
+                if (generatorInitialValueVariable->mType != GeneratorInternalVariable::Type::CONSTANT) {
+                    ErrorPtr err = Error::create();
+
+                    err->setDescription("Variable '" + variable->name()
+                                        + "' in component '" + component->name()
+                                        + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
+                                        + "' which is not a constant.");
+                    err->setKind(Error::Kind::GENERATOR);
+
+                    mGenerator->addError(err);
+                }
             }
         }
     }
