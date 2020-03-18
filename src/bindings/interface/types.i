@@ -16,7 +16,6 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Logger)
 %shared_ptr(libcellml::Model)
 %shared_ptr(libcellml::NamedEntity)
-%shared_ptr(libcellml::OrderedEntity)
 %shared_ptr(libcellml::Parser)
 %shared_ptr(libcellml::Printer)
 %shared_ptr(libcellml::Reset)
