@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "libcellml/issue.h"
 #include "libcellml/types.h"
+
 #include "utilities.h"
 
 #include <map>

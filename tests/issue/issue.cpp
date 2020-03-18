@@ -15,7 +15,6 @@ limitations under the License->
 */
 
 #include "gtest/gtest.h"
-#include "libcellml/referencerules.h"
 
 #include <libcellml>
 
@@ -411,9 +410,7 @@ TEST(Issue, createModelWarning)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
-
     e->setLevel(libcellml::Issue::Level::WARNING);
-
     EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
@@ -432,7 +429,6 @@ TEST(Issue, createVariableWarning)
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
     e->setLevel(libcellml::Issue::Level::WARNING);
-
     EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
@@ -442,7 +438,6 @@ TEST(Issue, createUnitsWarning)
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
     e->setLevel(libcellml::Issue::Level::WARNING);
-
     EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
@@ -452,7 +447,6 @@ TEST(Issue, createImportSourceWarning)
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
     e->setLevel(libcellml::Issue::Level::WARNING);
-
     EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
@@ -462,7 +456,6 @@ TEST(Issue, createResetWarning)
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);
     e->setLevel(libcellml::Issue::Level::WARNING);
-
     EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
@@ -478,6 +471,7 @@ TEST(Issue, isWarning)
 {
     auto e = libcellml::Issue::create();
     e->setLevel(libcellml::Issue::Level::WARNING);
+
     EXPECT_TRUE(e->isLevel(libcellml::Issue::Level::WARNING));
 }
 
@@ -494,7 +488,6 @@ TEST(Issue, isHint)
 //     auto e = libcellml::Issue::create();
 //     e->setRule(libcellml::ReferenceRule::MODEL_NAME);
 //     auto ref = e->referenceHeading();
-
 //     // TODO How to get this from the utilties.h file??  Won't be this address in the long run.
 //     std::string url = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=" + ref;
 //     EXPECT_EQ(e->url(), url);

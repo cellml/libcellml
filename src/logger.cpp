@@ -100,11 +100,9 @@ void Logger::removeAllIssues()
 
 void Logger::addIssue(const IssuePtr &issue)
 {
-    // When an issue is added
+    // When an issue is added, update the appropriate array based on its level.
+    size_t index = mPimpl->mIssues.size();
     mPimpl->mIssues.push_back(issue);
-    size_t index = mPimpl->mIssues.size() - 1;
-    // Update the appropriate array based on its level
-
     libcellml::Issue::Level level = issue->level();
     switch (level) {
     case libcellml::Issue::Level::ERROR:
