@@ -1371,7 +1371,8 @@ TEST(Validator, resetVariableOutsideComponent)
 {
     const std::vector<std::string> expectedIssues = {
         "Reset in component 'c1' with order '1', with variable 'v2', with test_variable 'v1', refers to a variable 'v2' in a different component 'c2'.",
-        "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'."};
+        "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'.",
+    };
 
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = libcellml::Component::create();
@@ -1949,7 +1950,8 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' in component 'c1' has units of 'bushell_of_apples' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5."};
+        "Variable 'v1' in component 'c1' has units of 'bushell_of_apples' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
@@ -2037,7 +2039,8 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
     const std::vector<std::string> expectedIssues = {
-        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3."};
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
+    };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
