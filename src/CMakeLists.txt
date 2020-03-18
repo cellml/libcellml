@@ -56,7 +56,6 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/orderedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
@@ -83,7 +82,6 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/orderedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
