@@ -1155,7 +1155,8 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             // The initial value is not a double, so it has to be an existing
             // variable of constant type.
 
-            VariablePtr initialValueVariable = component->variable(generatorVariable->mVariable->initialValue());
+            ComponentPtr initialValueComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
+            VariablePtr initialValueVariable = initialValueComponent->variable(generatorVariable->mVariable->initialValue());
 
             if (initialValueVariable == nullptr) {
                 ErrorPtr err = Error::create();
