@@ -305,39 +305,6 @@ def create_variables_array():
 
 
 def initialize_states_and_constants(states, variables):
-    states[0] = 0.9308
-    states[1] = 6.181512e-9
-    states[2] = 4.595622e-10
-    states[3] = 0.069199
-    states[4] = 0.409551
-    states[5] = 0.844449
-    states[6] = 0.017929
-    states[7] = 0.259947
-    states[8] = 0.653777
-    states[9] = 0.217311
-    states[10] = 0.158521
-    states[11] = 0.138975
-    states[12] = 9.15641e-6
-    states[13] = 0.435148
-    states[14] = 0.009508
-    states[15] = 0.447724
-    states[16] = 0.003058
-    states[17] = 0.846702
-    states[18] = 0.268909
-    states[19] = 0.020484
-    states[20] = 0.430836
-    states[21] = 0.014523
-    states[22] = 0.283185
-    states[23] = 0.011068
-    states[24] = 0.709051
-    states[25] = 0.00277
-    states[26] = 0.011845
-    states[27] = 0.845304
-    states[28] = 0.1162
-    states[29] = 0.001921
-    states[30] = 6.226104e-5
-    states[31] = -47.787168
-    states[32] = 5.0
     variables[0] = 0.45
     variables[1] = 2.5
     variables[2] = 15.0
@@ -429,6 +396,39 @@ def initialize_states_and_constants(states, variables):
     variables[88] = 0.00427
     variables[89] = 0.0
     variables[90] = 3.5e-3
+    states[0] = 0.9308
+    states[1] = 6.181512e-9
+    states[2] = 4.595622e-10
+    states[3] = 0.069199
+    states[4] = 0.409551
+    states[5] = 0.844449
+    states[6] = 0.017929
+    states[7] = 0.259947
+    states[8] = 0.653777
+    states[9] = 0.217311
+    states[10] = 0.158521
+    states[11] = 0.138975
+    states[12] = 9.15641e-6
+    states[13] = 0.435148
+    states[14] = 0.009508
+    states[15] = 0.447724
+    states[16] = 0.003058
+    states[17] = 0.846702
+    states[18] = 0.268909
+    states[19] = 0.020484
+    states[20] = 0.430836
+    states[21] = 0.014523
+    states[22] = 0.283185
+    states[23] = 0.011068
+    states[24] = 0.709051
+    states[25] = 0.00277
+    states[26] = 0.011845
+    states[27] = 0.845304
+    states[28] = 0.1162
+    states[29] = 0.001921
+    states[30] = 6.226104e-5
+    states[31] = -47.787168
+    states[32] = 5.0
 
 
 def compute_computed_constants(variables):

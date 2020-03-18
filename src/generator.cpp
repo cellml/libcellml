@@ -3382,8 +3382,7 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
         std::string methodBody;
 
         for (const auto &internalVariable : mInternalVariables) {
-            if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
-                || (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)) {
+            if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
                 methodBody += generateInitializationCode(internalVariable);
             }
         }
@@ -3391,6 +3390,12 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
         for (const auto &equation : mEquations) {
             if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
+            }
+        }
+
+        for (const auto &internalVariable : mInternalVariables) {
+            if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
+                methodBody += generateInitializationCode(internalVariable);
             }
         }
 

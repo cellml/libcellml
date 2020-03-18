@@ -304,7 +304,6 @@ void deleteArray(double *array)
 
 void initializeStatesAndConstants(double *states, double *variables)
 {
-    states[0] = 0.0;
     variables[0] = 1.0;
     variables[1] = 2.0;
     variables[2] = 3.0;
@@ -322,6 +321,7 @@ void initializeStatesAndConstants(double *states, double *variables)
     variables[183] = 3.14159265358979;
     variables[184] = INFINITY;
     variables[185] = NAN;
+    states[0] = 0.0;
 }
 
 void computeComputedConstants(double *variables)
