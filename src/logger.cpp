@@ -56,7 +56,7 @@ size_t Logger::errorCount() const
 IssuePtr Logger::error(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if ((index < mPimpl->mErrors.size()) && (mPimpl->mErrors.at(index) < mPimpl->mIssues.size())) {
+    if (index < mPimpl->mErrors.size()) {
         issue = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
     }
     return issue;
