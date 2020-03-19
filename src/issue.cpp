@@ -150,15 +150,6 @@ Issue::Cause Issue::cause() const
     return mPimpl->mCause;
 }
 
-bool Issue::isCause(Cause cause) const
-{
-    bool response = false;
-    if (mPimpl->mCause == cause) {
-        response = true;
-    }
-    return response;
-}
-
 void Issue::setLevel(Issue::Level level)
 {
     mPimpl->mLevel = level;
@@ -169,21 +160,12 @@ Issue::Level Issue::level() const
     return mPimpl->mLevel;
 }
 
-bool Issue::isLevel(Level level) const
-{
-    bool response = false;
-    if (mPimpl->mLevel == level) {
-        response = true;
-    }
-    return response;
-}
-
-void Issue::setRule(ReferenceRule rule)
+void Issue::setReferenceRule(ReferenceRule rule)
 {
     mPimpl->mRule = rule;
 }
 
-ReferenceRule Issue::rule() const
+ReferenceRule Issue::referenceRule() const
 {
     return mPimpl->mRule;
 }
@@ -329,7 +311,7 @@ static const std::map<ReferenceRule, const std::string> ruleToHeading = {
 std::string Issue::referenceHeading() const
 {
     std::string heading = "X.Y.Z";
-    auto search = ruleToHeading.find(rule());
+    auto search = ruleToHeading.find(referenceRule());
     if (search != ruleToHeading.end()) {
         heading = search->second;
     }

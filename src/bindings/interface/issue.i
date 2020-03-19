@@ -20,9 +20,6 @@
 "Get the ``cause`` of this issue. If no cause has been set for this issue, will
 return Cause::UNDEFINED.";
 
-%feature("docstring") libcellml::Issue::isCause
-"Tests if this issue matches the given ``cause``.";
-
 %feature("docstring") libcellml::Issue::setCause
 "Sets the ``cause`` of this issue.";
 
@@ -30,16 +27,13 @@ return Cause::UNDEFINED.";
 "Get the ``level`` of this issue. If no level has been set for this issue,
 Level::ERROR will be returned.";
 
-%feature("docstring") libcellml::Issue::isLevel
-"Tests if this issue matches the given ``level``.";
-
 %feature("docstring") libcellml::Issue::setLevel
 "Sets the ``level`` of this issue.";
 
-%feature("docstring") libcellml::Issue::rule
+%feature("docstring") libcellml::Issue::referenceRule
 "Get the :class:`ReferenceRule` of this issue.";
 
-%feature("docstring") libcellml::Issue::setRule
+%feature("docstring") libcellml::Issue::setReferenceRule
 "Sets the :class:`ReferenceRule` for this issue.";
 
 %feature("docstring") libcellml::Issue::url

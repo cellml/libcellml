@@ -166,17 +166,6 @@ public:
     Cause cause() const;
 
     /**
-     * @brief Check whether the cause of this issue matches the argument cause.
-     *
-     * Return @c true if the @p cause matches the the @c Issue::Cause for this
-     * issue and @c false otherwise.
-     *
-     * @return @c true if the @p cause matches the the @c Issue::Cause for this
-     * issue and @c false otherwise.
-     */
-    bool isCause(Cause cause) const;
-
-    /**
      * @brief Set the level of this issue.
      *
      * Set the @p level of this issue from the options available in
@@ -197,17 +186,6 @@ public:
     Level level() const;
 
     /**
-     * @brief Check whether the level of this issue matches the argument level.
-     *
-     * Return @c true if the @p level matches the the @c Issue::Level for this
-     * issue and @c false otherwise.
-     *
-     * @return @c true if the @p level matches the the @c Issue::Level for this
-     * issue and @c false otherwise.
-     */
-    bool isLevel(Level level) const;
-
-    /**
      * @brief Set the @c enum ReferenceRule of this issue.
      *
      * Set the @p rule of this issue from the options available in
@@ -215,7 +193,7 @@ public:
      *
      * @param rule The @c ReferenceRule to set.
      */
-    void setRule(ReferenceRule rule);
+    void setReferenceRule(ReferenceRule rule);
 
     /**
      * @brief Get the @c enum ReferenceRule of this issue.
@@ -225,7 +203,7 @@ public:
      *
      * @return The @c ReferenceRule for this issue.
      */
-    ReferenceRule rule() const;
+    ReferenceRule referenceRule() const;
 
     // /**
     //  * @brief Get the @c url of this issue.

@@ -125,11 +125,11 @@ class IssueTestCase(unittest.TestCase):
 
         # Test conversion to enum
         e = Issue()
-        e.setRule(ReferenceRule.UNDEFINED)
+        e.setReferenceRule(ReferenceRule.UNDEFINED)
         self.assertRaises(
-            RuntimeError, e.setRule, ReferenceRule.UNDEFINED - 1)
+            RuntimeError, e.setReferenceRule, ReferenceRule.UNDEFINED - 1)
         self.assertRaises(
-            RuntimeError, e.setRule,
+            RuntimeError, e.setReferenceRule,
             ReferenceRule.MAP_VARIABLES_UNIQUE + 1)
         del(e)
 
@@ -168,27 +168,19 @@ class IssueTestCase(unittest.TestCase):
         e.setCause(Issue.Cause.MATHML)
         self.assertEqual(e.cause(), Issue.Cause.MATHML)
 
-    def test_is_cause(self):
-        from libcellml import Issue
-
-        # bool isCause(const Cause &cause)
-        e = Issue()
-        self.assertTrue(e.isCause(Issue.Cause.UNDEFINED))
-        self.assertFalse(e.isCause(Issue.Cause.MODEL))
-
     def test_set_rule(self):
         from libcellml import Issue, ReferenceRule
 
-        # void setRule(ReferenceRule rule)
+        # void setReferenceRule(ReferenceRule rule)
         e = Issue()
-        e.setRule(ReferenceRule.MAP_VARIABLES_VARIABLE2)
+        e.setReferenceRule(ReferenceRule.MAP_VARIABLES_VARIABLE2)
 
     def test_rule(self):
         from libcellml import Issue, ReferenceRule
 
-        # ReferenceRule rule()
+        # ReferenceRule referenceRule()
         e = Issue()
-        self.assertEqual(e.rule(), ReferenceRule.UNDEFINED)
+        self.assertEqual(e.referenceRule(), ReferenceRule.UNDEFINED)
 
     def test_specification_heading(self):
         from libcellml import Issue
