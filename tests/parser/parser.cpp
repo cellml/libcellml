@@ -1420,7 +1420,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->isCause(libcellml::Issue::Cause::UNDEFINED)) {
+    if (parser2->issue(0)->cause()==libcellml::Issue::Cause::UNDEFINED) {
         foundCause.at(7) = true;
     }
 
@@ -1434,7 +1434,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     parser3->parseModel(input3);
     EXPECT_EQ_ISSUES(expectedIssues3, parser3);
     for (size_t i = 0; i < parser3->issueCount(); ++i) {
-        if (parser3->issue(i)->isCause(libcellml::Issue::Cause::XML)) {
+        if (parser3->issue(i)->cause()==libcellml::Issue::Cause::XML) {
             foundCause.at(8) = true;
         }
     }
