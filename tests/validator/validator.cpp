@@ -2059,41 +2059,6 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-// TODO Removed until after PR 521 has been merged
-// TEST(Validator, unitMultiplierFactorDifference)
-// {
-//     const std::vector<std::string> expectedIssues = {
-//         "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' has compatible but not equivalent units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3.",
-//     };
-//     libcellml::ValidatorPtr validator = libcellml::Validator::create();
-//     libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
-//     auto c1 = m->component(0);
-//     auto c2 = m->component(1);
-//     auto v1 = c1->variable(0);
-//     auto v2 = c2->variable(0);
-
-//     v1->setUnits("litre");
-
-//     libcellml::UnitsPtr u = libcellml::Units::create();
-//     u->setName("big_barrel");
-//     u->addUnit("metre", 3.0);
-//     m->addUnits(u);
-
-//     v2->setUnits("big_barrel");
-
-//     libcellml::Variable::addEquivalence(v1, v2); // 1000L = 1m^3
-
-//     m->linkUnits();
-
-//     validator->validateModel(m);
-
-//     EXPECT_EQ(size_t(1), validator->issueCount());
-//     EXPECT_EQ(size_t(0), validator->errorCount());
-//     EXPECT_EQ(size_t(1), validator->warningCount());
-//     EXPECT_EQ(size_t(0), validator->hintCount());
-//     EXPECT_EQ_ISSUES(expectedIssues, validator);
-// }
-
 TEST(Validator, unitSimpleCycle)
 {
     // Testing that indirect dependence is caught in the unit cycles. The network is:
@@ -2298,56 +2263,6 @@ TEST(Validator, validateModelWithoutAndWithMath)
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
-// TODO Removed until after PR 521 is merged.
-// TEST(Validator, unitEquivalenceMultiplier)
-// {
-//     const std::vector<std::string> expectedIssues = {
-//         "Variable 'v1' in component 'comp1' has units of 'u1' and an equivalent variable 'v2' in component 'comp2' has compatible but not equivalent units of 'u2'. The mismatch is: multiplication factor of 10^1.",
-//     };
-//     libcellml::ValidatorPtr validator = libcellml::Validator::create();
-//     libcellml::ModelPtr m = libcellml::Model::create();
-//     libcellml::ComponentPtr comp1 = libcellml::Component::create();
-//     libcellml::ComponentPtr comp2 = libcellml::Component::create();
-//     libcellml::VariablePtr v1 = libcellml::Variable::create();
-//     libcellml::VariablePtr v2 = libcellml::Variable::create();
-
-//     v1->setName("v1");
-//     v1->setInterfaceType("public");
-//     v2->setName("v2");
-//     v2->setInterfaceType("public");
-//     m->setName("model");
-//     comp1->setName("comp1");
-//     comp2->setName("comp2");
-//     comp1->addVariable(v1);
-//     comp2->addVariable(v2);
-//     m->addComponent(comp1);
-//     m->addComponent(comp2);
-
-//     // u1 = 10*u2
-//     libcellml::UnitsPtr u1 = libcellml::Units::create();
-//     u1->setName("u1");
-//     u1->addUnit("metre", 1, 1.0, 10.0);
-//     libcellml::UnitsPtr u2 = libcellml::Units::create();
-//     u2->setName("u2");
-//     u2->addUnit("metre", 1, 1.0, 1.0);
-
-//     v1->setUnits(u1);
-//     v2->setUnits(u2);
-
-//     m->addUnits(u1);
-//     m->addUnits(u2);
-
-//     libcellml::Variable::addEquivalence(v1, v2);
-
-//     validator->validateModel(m);
-
-//     EXPECT_EQ(size_t(1), validator->issueCount());
-//     EXPECT_EQ(size_t(0), validator->errorCount());
-//     EXPECT_EQ(size_t(1), validator->warningCount());
-//     EXPECT_EQ(size_t(0), validator->hintCount());
-//     EXPECT_EQ_ISSUES(expectedIssues, validator);
-// }
-
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
     const std::vector<std::string> expectedIssues = {
@@ -2382,48 +2297,6 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
-
-// TODO Removed until after PR 521 is merged.
-// TEST(Validator, mismatchedMultipliersInUnits)
-// {
-//     const std::vector<std::string> expectedIssues = {
-//         "Variable 'v1' in component 'Brobdingnag' has units of 'megametre' and an equivalent variable 'v2' in component 'Lilliput' has compatible but not equivalent units of 'millimetre'. The mismatch is: multiplication factor of 10^9.",
-//     };
-//     auto model = libcellml::Model::create("Gulliver");
-//     auto c1 = libcellml::Component::create("Brobdingnag");
-//     auto c2 = libcellml::Component::create("Lilliput");
-//     auto v1 = libcellml::Variable::create("v1");
-//     auto v2 = libcellml::Variable::create("v2");
-
-//     auto u1 = libcellml::Units::create("megametre");
-//     u1->addUnit("metre", "mega");
-
-//     auto u2 = libcellml::Units::create("millimetre");
-//     u2->addUnit("metre", "milli");
-
-//     v1->setUnits(u1);
-//     v2->setUnits(u2);
-//     v1->setInterfaceType("public");
-//     v2->setInterfaceType("public");
-//     c1->addVariable(v1);
-//     c2->addVariable(v2);
-//     model->addComponent(c1);
-//     model->addComponent(c2);
-//     model->addUnits(u1);
-//     model->addUnits(u2);
-
-//     libcellml::Variable::addEquivalence(v1, v2);
-
-//     auto validator = libcellml::Validator::create();
-//     validator->validateModel(model);
-
-//     EXPECT_EQ(size_t(1), validator->issueCount());
-//     EXPECT_EQ(size_t(0), validator->errorCount());
-//     EXPECT_EQ(size_t(1), validator->warningCount());
-//     EXPECT_EQ(size_t(0), validator->hintCount());
-
-//     EXPECT_EQ_ISSUES(expectedIssues, validator);
-// }
 
 TEST(Validator, variableEquivalenceValidNetwork)
 {
