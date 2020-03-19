@@ -1035,7 +1035,6 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
                     err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
                     err->setVariable(variable);
                     err->setCause(Issue::Cause::CONNECTION);
-                    err->setLevel(Issue::Level::ERROR);
                     mValidator->addIssue(err);
                 }
             }
@@ -1051,7 +1050,6 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
             }
             err->setVariable(variable);
             err->setCause(Issue::Cause::CONNECTION);
-            err->setLevel(Issue::Level::ERROR);
             mValidator->addIssue(err);
         }
     }
