@@ -131,21 +131,4 @@ IssuePtr Logger::issue(size_t index) const
     return issue;
 }
 
-IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const
-{
-    IssuePtr e = nullptr;
-    switch (level) {
-    case libcellml::Issue::Level::ERROR:
-        e = error(index);
-        break;
-    case libcellml::Issue::Level::WARNING:
-        e = warning(index);
-        break;
-    case libcellml::Issue::Level::HINT:
-        e = hint(index);
-        break;
-    }
-    return e;
-}
-
 } // namespace libcellml

@@ -77,21 +77,6 @@ public:
     IssuePtr issue(size_t index) const;
 
     /**
-     * @brief Get issue of specified @p level at the specified @p index.
-     *
-     * Returns an issue at the @p index of specified @p level.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#issues_of_level).
-     *
-     * @param index The index of the issue to return.
-     * @param level The level of issue to search.
-     *
-     * @return A reference to the issue from the list of issues at the given level,
-     * at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr issue(size_t index, libcellml::Issue::Level level) const;
-
-    /**
      * @brief Get the number of issues with level of ERROR.
      *
      * Return the number of errors currently stored in the logger.
