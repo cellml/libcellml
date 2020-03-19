@@ -318,7 +318,7 @@ void Validator::validateModel(const ModelPtr &model)
         IssuePtr issue = Issue::create();
         issue->setDescription("Model does not have a valid name attribute.");
         issue->setModel(model);
-        issue->setReferenceRule(ReferenceRule::MODEL_NAME);
+        issue->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
         addIssue(issue);
     }
     // Check for components in this model.
@@ -347,7 +347,7 @@ void Validator::validateModel(const ModelPtr &model)
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Imported units '" + unitsName + "' does not have a valid units_ref attribute.");
                         issue->setUnits(units);
-                        issue->setReferenceRule(ReferenceRule::IMPORT_UNITS_REF);
+                        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                         addIssue(issue);
                         foundImportIssue = true;
                     }
@@ -357,7 +357,7 @@ void Validator::validateModel(const ModelPtr &model)
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
                         issue->setImportSource(units->importSource());
-                        issue->setReferenceRule(ReferenceRule::IMPORT_HREF);
+                        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
                         addIssue(issue);
                         foundImportIssue = true;
                     }
@@ -369,7 +369,7 @@ void Validator::validateModel(const ModelPtr &model)
                             IssuePtr issue = Issue::create();
                             issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
                             issue->setModel(model);
-                            issue->setReferenceRule(ReferenceRule::IMPORT_UNITS_REF);
+                            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_REF);
                             addIssue(issue);
                         }
                     }
@@ -382,7 +382,7 @@ void Validator::validateModel(const ModelPtr &model)
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.");
                     issue->setModel(model);
-                    issue->setReferenceRule(ReferenceRule::UNITS_NAME_UNIQUE);
+                    issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME_UNIQUE);
                     addIssue(issue);
                 }
                 unitsNames.push_back(unitsName);
@@ -438,7 +438,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         IssuePtr issue = Issue::create();
         issue->setComponent(component);
         issue->setDescription("Imported component does not have a valid name attribute.");
-        issue->setReferenceRule(ReferenceRule::IMPORT_COMPONENT_NAME);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
 
@@ -451,14 +451,14 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         IssuePtr issue = Issue::create();
         issue->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
         issue->setComponent(component);
-        issue->setReferenceRule(ReferenceRule::IMPORT_COMPONENT_REF);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_REF);
         mValidator->addIssue(issue);
     }
     if (importSource.empty()) {
         IssuePtr issue = Issue::create();
         issue->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
         issue->setImportSource(component->importSource());
-        issue->setReferenceRule(ReferenceRule::IMPORT_HREF);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
         mValidator->addIssue(issue);
     } else {
         xmlURIPtr uri = xmlParseURI(importSource.c_str());
@@ -466,7 +466,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
             IssuePtr issue = Issue::create();
             issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
             issue->setImportSource(component->importSource());
-            issue->setReferenceRule(ReferenceRule::IMPORT_HREF);
+            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
             mValidator->addIssue(issue);
 
         } else {
@@ -482,7 +482,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         IssuePtr issue = Issue::create();
         issue->setComponent(component);
         issue->setDescription("Component does not have a valid name attribute.");
-        issue->setReferenceRule(ReferenceRule::COMPONENT_NAME);
+        issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
     // Check for variables in this component.
@@ -497,7 +497,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Component '" + component->name() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
                     issue->setComponent(component);
-                    issue->setReferenceRule(ReferenceRule::VARIABLE_NAME);
+                    issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
                     mValidator->addIssue(issue);
                 }
                 variableNames.push_back(variableName);
@@ -529,10 +529,10 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         issue->setUnits(units);
         if (units->isImport()) {
             issue->setDescription("Imported units does not have a valid name attribute.");
-            issue->setReferenceRule(ReferenceRule::IMPORT_UNITS_NAME);
+            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME);
         } else {
             issue->setDescription("Units does not have a valid name attribute.");
-            issue->setReferenceRule(ReferenceRule::UNITS_NAME);
+            issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
         }
         mValidator->addIssue(issue);
     } else {
@@ -541,7 +541,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
             IssuePtr issue = Issue::create();
             issue->setDescription("Units is named '" + units->name() + "' which is a protected standard unit name.");
             issue->setUnits(units);
-            issue->setReferenceRule(ReferenceRule::UNITS_STANDARD);
+            issue->setReferenceRule(Issue::ReferenceRule::UNITS_STANDARD);
             mValidator->addIssue(issue);
         }
     }
@@ -567,14 +567,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             IssuePtr issue = Issue::create();
             issue->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
             issue->setUnits(units);
-            issue->setReferenceRule(ReferenceRule::UNIT_UNITS_REF);
+            issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
             mValidator->addIssue(issue);
         }
     } else {
         IssuePtr issue = Issue::create();
         issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference.");
         issue->setUnits(units);
-        issue->setReferenceRule(ReferenceRule::UNIT_UNITS_REF);
+        issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
     }
     if (!prefix.empty()) {
@@ -583,7 +583,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 issue->setUnits(units);
-                issue->setReferenceRule(ReferenceRule::UNIT_PREFIX);
+                issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                 mValidator->addIssue(issue);
             } else {
                 try {
@@ -593,7 +593,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
                     issue->setUnits(units);
-                    issue->setReferenceRule(ReferenceRule::UNIT_PREFIX);
+                    issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                     mValidator->addIssue(issue);
                 }
             }
@@ -608,7 +608,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         IssuePtr issue = Issue::create();
         issue->setDescription("Variable does not have a valid name attribute.");
         issue->setVariable(variable);
-        issue->setReferenceRule(ReferenceRule::VARIABLE_NAME);
+        issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
         mValidator->addIssue(issue);
     }
     // Check for a valid units attribute.
@@ -617,7 +617,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         IssuePtr issue = Issue::create();
         issue->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
         issue->setVariable(variable);
-        issue->setReferenceRule(ReferenceRule::VARIABLE_UNITS);
+        issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
     } else if (!isStandardUnitName(unitsName)) {
         ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
@@ -626,7 +626,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             IssuePtr issue = Issue::create();
             issue->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' has a units reference '" + unitsName + "' which is neither standard nor defined in the parent model.");
             issue->setVariable(variable);
-            issue->setReferenceRule(ReferenceRule::VARIABLE_UNITS);
+            issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
             mValidator->addIssue(issue);
         }
     }
@@ -637,7 +637,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             IssuePtr issue = Issue::create();
             issue->setDescription("Variable '" + variable->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
             issue->setVariable(variable);
-            issue->setReferenceRule(ReferenceRule::VARIABLE_INTERFACE);
+            issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_INTERFACE);
             mValidator->addIssue(issue);
         }
     }
@@ -651,7 +651,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Variable '" + variable->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
                 issue->setVariable(variable);
-                issue->setReferenceRule(ReferenceRule::VARIABLE_INITIAL_VALUE);
+                issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_INITIAL_VALUE);
                 mValidator->addIssue(issue);
             }
         }
@@ -722,49 +722,49 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not have an order set.");
         issue->setComponent(component);
-        issue->setReferenceRule(ReferenceRule::RESET_ORDER);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_ORDER);
         mValidator->addIssue(issue);
     }
     if (noVariable) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not reference a variable.");
         issue->setReset(reset);
-        issue->setReferenceRule(ReferenceRule::RESET_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
         mValidator->addIssue(issue);
     }
     if (noTestVariable) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not reference a test_variable.");
         issue->setReset(reset);
-        issue->setReferenceRule(ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addIssue(issue);
     }
     if (noTestValue) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not have a test_value specified.");
         issue->setReset(reset);
-        issue->setReferenceRule(ReferenceRule::RESET_TEST_VALUE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VALUE);
         mValidator->addIssue(issue);
     }
     if (noResetValue) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not have a reset_value specified.");
         issue->setReset(reset);
-        issue->setReferenceRule(ReferenceRule::RESET_RESET_VALUE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_RESET_VALUE);
         mValidator->addIssue(issue);
     }
     if (varOutsideComponent) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
         issue->setReset(reset);
-        issue->setReferenceRule(ReferenceRule::RESET_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
         mValidator->addIssue(issue);
     }
     if (testVarOutsideComponent) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
         issue->setReset(reset);
-        issue->setReferenceRule(ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addIssue(issue);
     }
 }
@@ -1077,7 +1077,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
-                err->setReferenceRule(ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+                err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
             // TODO Removed until after PR 521 has been merged.
@@ -1098,7 +1098,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
             //         err->setModel(model);
             //         err->setDescription(des);
             //         err->setCause(Issue::Cause::UNITS);
-            //         err->setReferenceRule(ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+            //         err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
             //         err->setLevel(Issue::Level::WARNING);
             //         mValidator->addIssue(err);
             //     }
@@ -1157,7 +1157,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
             result = false;
             IssuePtr issue = Issue::create();
             issue->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");
-            issue->setReferenceRule(ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
+            issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
             mValidator->addIssue(issue);
         } else {
             // Basic Latin alphanumeric characters and underscores.
@@ -1165,7 +1165,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
                 result = false;
                 IssuePtr issue = Issue::create();
                 issue->setDescription("CellML identifiers must not contain any characters other than [a-zA-Z0-9_].");
-                issue->setReferenceRule(ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
+                issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
                 mValidator->addIssue(issue);
             }
         }
@@ -1173,7 +1173,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
         result = false;
         IssuePtr issue = Issue::create();
         issue->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
-        issue->setReferenceRule(ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
+        issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
         mValidator->addIssue(issue);
     }
     return result;

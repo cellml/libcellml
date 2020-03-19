@@ -112,6 +112,5 @@ Level::ERROR will be returned.";
 }
 
 %include "libcellml/exportdefinitions.h"
-%include "libcellml/referencerules.h"
 %include "libcellml/types.h"
 %include "libcellml/issue.h"
