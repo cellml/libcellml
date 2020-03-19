@@ -34,7 +34,7 @@ struct Issue::IssueImpl
     std::string mDescription; /**< The string description for why this issue was raised. */
     Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
-    Issue::ReferenceRule mRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
+    Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
     ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the issue occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the issue occurred in. */
@@ -160,14 +160,14 @@ Issue::Level Issue::level() const
     return mPimpl->mLevel;
 }
 
-void Issue::setReferenceRule(Issue::ReferenceRule rule)
+void Issue::setReferenceRule(Issue::ReferenceRule referenceRule)
 {
-    mPimpl->mRule = rule;
+    mPimpl->mReferenceRule = referenceRule;
 }
 
 Issue::ReferenceRule Issue::referenceRule() const
 {
-    return mPimpl->mRule;
+    return mPimpl->mReferenceRule;
 }
 
 // TODO Removed until the BASE_ISSUE_URL is finalised and ready.

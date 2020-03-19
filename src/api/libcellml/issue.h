@@ -255,18 +255,18 @@ public:
     /**
      * @brief Set the @c enum ReferenceRule of this issue.
      *
-     * Set the @p rule of this issue from the options available in
+     * Set the @p referenceRule of this issue from the options available in
      * the @c ReferenceRule @c enum.
      *
-     * @param rule The @c ReferenceRule to set.
+     * @param referenceRule The @c ReferenceRule to set.
      */
-    void setReferenceRule(ReferenceRule rule);
+    void setReferenceRule(ReferenceRule referenceRule);
 
     /**
      * @brief Get the @c enum ReferenceRule of this issue.
      *
-     * Get the @c enum @c ReferenceRule value @p rule of this issue. If
-     * no rule has been set for this issue, will return ReferenceRule::UNDEFINED.
+     * Get the @c enum @c ReferenceRule value of this issue. If no reference
+     * rule has been set for this issue, return ReferenceRule::UNDEFINED.
      *
      * @return The @c ReferenceRule for this issue.
      */
