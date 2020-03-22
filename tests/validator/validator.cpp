@@ -1317,7 +1317,7 @@ TEST(Validator, resetEmptyMathML)
     libcellml::ResetPtr r = libcellml::Reset::create();
 
     // Empty test_value and reset_value math block
-    // TODO: For now, empty maths blocks are valid. Issue #365
+    // TODO: For now, empty maths blocks are valid. Issue #365.
     r->setVariable(v1);
     r->setTestVariable(v2);
     r->setOrder(9);
