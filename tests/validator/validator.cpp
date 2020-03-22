@@ -938,6 +938,16 @@ TEST(Validator, integerStrings)
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
+        "    <reset variable=\"variable\" test_variable=\"other_variable\" order=\"12345678901\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
         "  </component>\n"
         "</model>\n";
 
@@ -946,9 +956,11 @@ TEST(Validator, integerStrings)
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
+        "Reset in component 'component' referencing variable 'variable' has an out of range integer order value '12345678901'.",
     };
 
     const std::vector<std::string> expectedValidationErrors = {
+        "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
