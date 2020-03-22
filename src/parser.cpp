@@ -625,9 +625,16 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             prefix = attribute->value();
         } else if (attribute->isType("exponent")) {
             if (isCellMLReal(attribute->value())) {
-                exponent = convertToDouble(attribute->value());
+                if (!convertToDouble(attribute->value(), exponent)) {
+                    // TODO This value won't be saved for validation later, so it does need to be reported now.
+                    IssuePtr issue = Issue::create();
+                    issue->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
+                    issue->setUnits(units);
+                    issue->setReferenceRule(Issue::ReferenceRule::UNIT_EXPONENT);
+                    mParser->addIssue(issue);
+                }
             } else {
-                // TODO This value won't be saved for validation later, so it does need to be reported now
+                // TODO This value won't be saved for validation later, so it does need to be reported now.
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 issue->setUnits(units);
@@ -636,9 +643,16 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             }
         } else if (attribute->isType("multiplier")) {
             if (isCellMLReal(attribute->value())) {
-                multiplier = convertToDouble(attribute->value());
+                if (!convertToDouble(attribute->value(), multiplier)) {
+                    // TODO This value won't be saved for validation later, so it does need to be reported now.
+                    IssuePtr issue = Issue::create();
+                    issue->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is a representation of a CellML real valued number, but out of range of the 'double' type.");
+                    issue->setUnits(units);
+                    issue->setReferenceRule(Issue::ReferenceRule::UNIT_MULTIPLIER);
+                    mParser->addIssue(issue);
+                }
             } else {
-                // TODO his value won't be saved for validation later, so it does need to be reported now
+                // TODO This value won't be saved for validation later, so it does need to be reported now.
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 issue->setUnits(units);
@@ -1297,18 +1311,14 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     int order = 0;
     bool orderValid = false;
     bool orderDefined = false;
-    VariablePtr referencedVariable = nullptr;
-    VariablePtr testVariable = nullptr;
-    std::string variableName;
-    std::string testVariableName;
 
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("variable")) {
             const std::string variableReference = attribute->value();
-            referencedVariable = component->variable(variableReference);
+            VariablePtr referencedVariable = component->variable(variableReference);
 
-            // TODO This follows the same pattern as the issues returned from parsing the encapsulations
+            // TODO This follows the same pattern as the issues returned from parsing the encapsulations.
             if (referencedVariable == nullptr) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
@@ -1320,9 +1330,9 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             }
         } else if (attribute->isType("test_variable")) {
             const std::string testVariableReference = attribute->value();
-            testVariable = component->variable(testVariableReference);
+            VariablePtr testVariable = component->variable(testVariableReference);
             if (testVariable == nullptr) {
-                // TODO This follows the same pattern as the issues returned from parsing the encapsulations
+                // TODO This follows the same pattern as the issues returned from parsing the encapsulations.
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
                 issue->setReset(reset);
@@ -1335,8 +1345,20 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
-                order = convertToInt(attribute->value());
+                orderValid = convertToInt(attribute->value(), order);
+                if (!orderValid) {
+                    std::string variableName;
+                    if (reset->variable() != nullptr) {
+                        variableName = reset->variable()->name();
+                    }
+                    IssuePtr issue = Issue::create();
+                    issue->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has an out of range integer order value '" + attribute->value() + "'.");
+                    issue->setReset(reset);
+                    issue->setReferenceRule(Issue::ReferenceRule::RESET_ORDER);
+                    mParser->addIssue(issue);
+                }
             } else { // This value won't be saved for validation later, so it does need to be reported now.
+                std::string variableName;
                 if (reset->variable() != nullptr) {
                     variableName = reset->variable()->name();
                 }

@@ -583,7 +583,7 @@ TEST(Parser, modelWithInvalidUnits)
         "    <unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"kelvin\" bill=\"murray\">\n"
         "      <degrees/>\n"
         "    </unit>\n"
-        "    <unit exponent=\"-35.0E+310\" units=\"kelvin\"/>\n"
+        "    <unit multiplier=\"-35.0E+310\" units=\"kelvin\"/>\n"
         "    <bobshouse address=\"34 Rich Lane\"/>\n"
         "    <unit GUnit=\"50c\"/>\n"
         "  </units>\n"
@@ -597,8 +597,8 @@ TEST(Parser, modelWithInvalidUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit exponent=\"inf\" units=\"kelvin\"/>\n"
-        "    <unit exponent=\"-inf\" units=\"kelvin\"/>\n"
+        "    <unit units=\"kelvin\"/>\n"
+        "    <unit units=\"kelvin\"/>\n"
         "    <unit units=\"\"/>\n"
         "  </units>\n"
         "  <units>\n"
@@ -611,7 +611,9 @@ TEST(Parser, modelWithInvalidUnits)
         "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
         "Unit referencing 'kelvin' in units 'fahrenheitish' has an invalid child element 'degrees'.",
         "Unit referencing 'kelvin' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has an exponent with the value '35.0E+310' that is a representation of a CellML real valued number, but out of range of the 'double' type.",
         "Unit referencing 'kelvin' in units 'fahrenheitish' has an invalid attribute 'bill'.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has a multiplier with the value '-35.0E+310' that is a representation of a CellML real valued number, but out of range of the 'double' type.",
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
         "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
