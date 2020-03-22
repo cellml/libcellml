@@ -369,14 +369,10 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     }
     reference = u.mReference;
     prefix = u.mPrefix;
-    if (!u.mExponent.empty()) {
-        convertToDouble(u.mExponent, exponent);
-    } else {
+    if (u.mExponent.empty() || !convertToDouble(u.mExponent, exponent)) {
         exponent = 1.0;
     }
-    if (!u.mMultiplier.empty()) {
-        convertToDouble(u.mMultiplier, multiplier);
-    } else {
+    if (u.mMultiplier.empty() || !convertToDouble(u.mMultiplier, multiplier)) {
         multiplier = 1.0;
     }
     id = u.mId;
