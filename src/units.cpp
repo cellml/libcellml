@@ -370,12 +370,12 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     reference = u.mReference;
     prefix = u.mPrefix;
     if (!u.mExponent.empty()) {
-        exponent = convertToDouble(u.mExponent);
+        convertToDouble(u.mExponent, exponent);
     } else {
         exponent = 1.0;
     }
     if (!u.mMultiplier.empty()) {
-        multiplier = convertToDouble(u.mMultiplier);
+        convertToDouble(u.mMultiplier, multiplier);
     } else {
         multiplier = 1.0;
     }

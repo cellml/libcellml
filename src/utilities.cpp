@@ -32,16 +32,14 @@ limitations under the License.
 
 namespace libcellml {
 
-double convertToDouble(const std::string &candidate)
+bool convertToDouble(const std::string &from, double &to)
 {
     try {
-        return std::stod(candidate);
+        to = std::stod(from);
     } catch (...) {
-        if (*candidate.begin() == '-') {
-            return -std::numeric_limits<double>::infinity();
-        }
-        return std::numeric_limits<double>::infinity();
+        return false;
     }
+    return true;
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -56,9 +54,14 @@ std::string convertToString(double value)
     return strs.str();
 }
 
-int convertToInt(const std::string &candidate)
+bool convertToInt(const std::string &from, int &to)
 {
-    return std::stoi(candidate);
+    try {
+        to = std::stoi(from);
+    } catch (...) {
+        return false;
+    }
+    return true;
 }
 
 std::string convertToString(size_t value)
