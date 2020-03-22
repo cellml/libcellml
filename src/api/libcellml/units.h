@@ -433,10 +433,10 @@ public:
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
-     * @param checkCompatibility Set @c true for compatibility checking, or @c false to ignore base units. 
+     * @param checkCompatibility Set @c true for compatibility checking, or @c false to ignore base units.
      * The default is @c true.
      *
-     * @return The factor units2/units1.  Where the units are incompatible and @p checkCompatibility 
+     * @return The factor units2/units1.  Where the units are incompatible and @p checkCompatibility
      * is @c true then the factor returned is 0.0.
      */
     static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility = true);
