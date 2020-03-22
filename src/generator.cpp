@@ -1269,7 +1269,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::DEGREE)
         && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::BVAR)
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
-        if (convertToDouble(ast->mValue) != 1.0) {
+        double value;
+        if (!convertToDouble(ast->mValue, value) || !areEqual(value, 1.0)) {
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ErrorPtr err = Error::create();
@@ -3062,11 +3063,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         break;
     case GeneratorEquationAst::Type::POWER: {
         std::string stringValue = generateCode(ast->mRight);
-        double doubleValue = convertToDouble(stringValue);
+        double doubleValue;
+        bool validConversion = convertToDouble(stringValue, doubleValue);
 
-        if (areEqual(doubleValue, 0.5)) {
+        if (validConversion && areEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
-        } else if (areEqual(doubleValue, 2.0) && !mProfile->squareString().empty()) {
+        } else if (validConversion && areEqual(doubleValue, 2.0)
+                   && !mProfile->squareString().empty()) {
             code = generateOneParameterFunctionCode(mProfile->squareString(), ast);
         } else {
             code = mProfile->hasPowerOperator() ?
@@ -3078,9 +3081,10 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     }
     case GeneratorEquationAst::Type::ROOT:
         if (ast->mRight != nullptr) {
-            double doubleValue = convertToDouble(generateCode(ast->mLeft));
+            double doubleValue;
 
-            if (areEqual(doubleValue, 2.0)) {
+            if (convertToDouble(generateCode(ast->mLeft), doubleValue)
+                && areEqual(doubleValue, 2.0)) {
                 code = mProfile->squareRootString() + "(" + generateCode(ast->mRight) + ")";
             } else {
                 GeneratorEquationAstPtr rootValueAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, ast);
@@ -3112,9 +3116,10 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::LOG:
         if (ast->mRight != nullptr) {
             std::string stringValue = generateCode(ast->mLeft);
-            double doubleValue = convertToDouble(stringValue);
+            double doubleValue;
 
-            if (areEqual(doubleValue, 10.0)) {
+            if (convertToDouble(stringValue, doubleValue)
+                && areEqual(doubleValue, 10.0)) {
                 code = mProfile->commonLogarithmString() + "(" + generateCode(ast->mRight) + ")";
             } else {
                 code = mProfile->napierianLogarithmString() + "(" + generateCode(ast->mRight) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
