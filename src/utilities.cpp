@@ -32,10 +32,10 @@ limitations under the License.
 
 namespace libcellml {
 
-bool convertToDouble(const std::string &from, double &to)
+bool convertToDouble(const std::string &in, double &out)
 {
     try {
-        to = std::stod(from);
+        out = std::stod(in);
     } catch (...) {
         return false;
     }
@@ -54,10 +54,10 @@ std::string convertToString(double value)
     return strs.str();
 }
 
-bool convertToInt(const std::string &from, int &to)
+bool convertToInt(const std::string &in, int &out)
 {
     try {
-        to = std::stoi(from);
+        out = std::stoi(in);
     } catch (...) {
         return false;
     }
