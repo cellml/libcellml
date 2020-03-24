@@ -240,7 +240,7 @@ TEST(Connection, parseValidAlternateFormConnection)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(in);
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
     EXPECT_EQ(size_t(2), model->componentCount());
     EXPECT_EQ(size_t(1), model->component("component1")->variable("variable1")->equivalentVariableCount());
 }
@@ -1114,7 +1114,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
@@ -1146,16 +1146,16 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
         "  </component>\n"
         "</model>\n";
 
-    const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
+    const std::string expectIssue = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(s);
-    EXPECT_EQ(size_t(1), parser->errorCount());
+    EXPECT_EQ(size_t(1), parser->issueCount());
 
-    EXPECT_EQ(expectError, parser->error(0)->description());
-    parser->removeAllErrors();
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(expectIssue, parser->issue(0)->description());
+    parser->removeAllIssues();
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(model);

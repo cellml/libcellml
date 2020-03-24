@@ -1024,14 +1024,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
         } else {
-            ErrorPtr err = Error::create();
+            IssuePtr issue = Issue::create();
 
-            err->setDescription("Variable '" + variableName
-                                + "' in component '" + component->name()
-                                + "' is referenced in an equation, but it is not defined anywhere.");
-            err->setKind(Error::Kind::GENERATOR);
+            issue->setDescription("Variable '" + variableName
+                                  + "' in component '" + component->name()
+                                  + "' is referenced in an equation, but it is not defined anywhere.");
+            issue->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(issue);
         }
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
@@ -1138,16 +1138,16 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
             ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
-            ErrorPtr err = Error::create();
+            IssuePtr issue = Issue::create();
 
-            err->setDescription("Variable '" + variable->name()
-                                + "' in component '" + component->name()
-                                + "' and variable '" + generatorVariable->mVariable->name()
-                                + "' in component '" + trackedVariableComponent->name()
-                                + "' are equivalent and cannot therefore both be initialised.");
-            err->setKind(Error::Kind::GENERATOR);
+            issue->setDescription("Variable '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' and variable '" + generatorVariable->mVariable->name()
+                                  + "' in component '" + trackedVariableComponent->name()
+                                  + "' are equivalent and cannot therefore both be initialised.");
+            issue->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(issue);
         }
 
         if (!generatorVariable->mVariable->initialValue().empty()
@@ -1159,28 +1159,28 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             VariablePtr initialValueVariable = initialValueComponent->variable(generatorVariable->mVariable->initialValue());
 
             if (initialValueVariable == nullptr) {
-                ErrorPtr err = Error::create();
+                IssuePtr issue = Issue::create();
 
-                err->setDescription("Variable '" + variable->name()
+                issue->setDescription("Variable '" + variable->name()
                                     + "' in component '" + component->name()
                                     + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
                                     + "' which cannot be found.");
-                err->setKind(Error::Kind::GENERATOR);
+                issue->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addError(err);
+                mGenerator->addIssue(issue);
             } else {
                 GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initialValueVariable);
 
                 if (generatorInitialValueVariable->mType != GeneratorInternalVariable::Type::CONSTANT) {
-                    ErrorPtr err = Error::create();
+                    IssuePtr issue = Issue::create();
 
-                    err->setDescription("Variable '" + variable->name()
+                    issue->setDescription("Variable '" + variable->name()
                                         + "' in component '" + component->name()
                                         + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
                                         + "' which is not a constant.");
-                    err->setKind(Error::Kind::GENERATOR);
+                    issue->setCause(Issue::Cause::GENERATOR);
 
-                    mGenerator->addError(err);
+                    mGenerator->addIssue(issue);
                 }
             }
         }
@@ -1210,7 +1210,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         generatorVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
-        //       variable of integration) otherwise unnecessary error messages
+        //       variable of integration) otherwise unnecessary issue messages
         //       may be reported (since the type of the variable would be
         //       unknown).
 
@@ -1220,14 +1220,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                ErrorPtr err = Error::create();
+                IssuePtr issue = Issue::create();
 
-                err->setDescription("Variable '" + variable->name()
-                                    + "' in component '" + component->name()
-                                    + "' cannot be both a variable of integration and initialised.");
-                err->setKind(Error::Kind::GENERATOR);
+                issue->setDescription("Variable '" + variable->name()
+                                      + "' in component '" + component->name()
+                                      + "' cannot be both a variable of integration and initialised.");
+                issue->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addError(err);
+                mGenerator->addIssue(issue);
             } else {
                 // We have found our variable of integration, but this may not
                 // be the one defined in our first component (i.e. the component
@@ -1250,16 +1250,16 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->variable()->parent());
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ErrorPtr err = Error::create();
+            IssuePtr issue = Issue::create();
 
-            err->setDescription("Variable '" + mVoi->variable()->name()
-                                + "' in component '" + voiComponent->name()
-                                + "' and variable '" + variable->name()
-                                + "' in component '" + component->name()
-                                + "' cannot both be a variable of integration.");
-            err->setKind(Error::Kind::GENERATOR);
+            issue->setDescription("Variable '" + mVoi->variable()->name()
+                                  + "' in component '" + voiComponent->name()
+                                  + "' and variable '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' cannot both be a variable of integration.");
+            issue->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(issue);
         }
     }
 
@@ -1273,14 +1273,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         if (!convertToDouble(ast->mValue, value) || !areEqual(value, 1.0)) {
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ErrorPtr err = Error::create();
+            IssuePtr issue = Issue::create();
 
-            err->setDescription("The differential equation for variable '" + variable->name()
-                                + "' in component '" + component->name()
-                                + "' must be of the first order.");
-            err->setKind(Error::Kind::GENERATOR);
+            issue->setDescription("The differential equation for variable '" + variable->name()
+                                  + "' in component '" + component->name()
+                                  + "' must be of the first order.");
+            issue->setCause(Issue::Cause::GENERATOR);
 
-            mGenerator->addError(err);
+            mGenerator->addIssue(issue);
         }
     }
 
@@ -1426,7 +1426,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mNeedAcsch = false;
     mNeedAcoth = false;
 
-    mGenerator->removeAllErrors();
+    mGenerator->removeAllIssues();
 
     // Recursively process the model's components, so that we end up with an AST
     // for each of the model's equations.
@@ -1484,15 +1484,15 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         // Make sure that our variables are valid.
 
         for (const auto &internalVariable : mInternalVariables) {
-            std::string errorType;
+            std::string issueType;
 
             switch (internalVariable->mType) {
             case GeneratorInternalVariable::Type::UNKNOWN:
-                errorType = "is not computed";
+                issueType = "is not computed";
 
                 break;
             case GeneratorInternalVariable::Type::SHOULD_BE_STATE:
-                errorType = "is used in an ODE, but it is not initialised";
+                issueType = "is used in an ODE, but it is not initialised";
 
                 break;
             case GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION:
@@ -1503,22 +1503,22 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             case GeneratorInternalVariable::Type::ALGEBRAIC:
                 break;
             case GeneratorInternalVariable::Type::OVERCONSTRAINED:
-                errorType = "is computed more than once";
+                issueType = "is computed more than once";
 
                 break;
             }
 
-            if (!errorType.empty()) {
-                ErrorPtr err = Error::create();
+            if (!issueType.empty()) {
+                IssuePtr issue = Issue::create();
                 VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
 
-                err->setDescription("Variable '" + realVariable->name()
-                                    + "' in component '" + realComponent->name()
-                                    + "' " + errorType + ".");
-                err->setKind(Error::Kind::GENERATOR);
+                issue->setDescription("Variable '" + realVariable->name()
+                                      + "' in component '" + realComponent->name()
+                                      + "' " + issueType + ".");
+                issue->setCause(Issue::Cause::GENERATOR);
 
-                mGenerator->addError(err);
+                mGenerator->addIssue(issue);
             }
         }
 
@@ -3529,12 +3529,12 @@ void Generator::processModel(const ModelPtr &model)
 
     validator->validateModel(model);
 
-    if (validator->errorCount() > 0) {
-        // The model is not valid, so retrieve the validation errors and make
+    if (validator->issueCount() > 0) {
+        // The model is not valid, so retrieve the validation issues and make
         // them our own.
 
-        for (size_t i = 0; i < validator->errorCount(); ++i) {
-            addError(validator->error(i));
+        for (size_t i = 0; i < validator->issueCount(); ++i) {
+            addIssue(validator->issue(i));
         }
 
         return;
