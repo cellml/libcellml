@@ -30,13 +30,6 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * Base URL from which the user guidelines used in the Issue class can be derived.
- * Adding the issue's rule number to the end will search the documentation for that section.
- * KRM This is clumsy and should be given a static address via formal bookmarks, but will do for proof of concept.
- */
-const std::string BASE_ISSUE_URL = "https://libcellml.org/reference/cellml2.0/search.html?q=";
-
-/**
  * Vector of base units.
  */
 const std::vector<std::string> baseUnitsList = {
