@@ -585,7 +585,7 @@ TEST(Clone, generateFromClonedModel)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 

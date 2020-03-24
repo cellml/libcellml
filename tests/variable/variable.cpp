@@ -1187,7 +1187,7 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
 
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 }
 
 TEST(Variable, parentlessUsingRemoveVariable)

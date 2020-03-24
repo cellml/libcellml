@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/importsource.h"
+
 #include "libcellml/model.h"
 
 namespace libcellml {

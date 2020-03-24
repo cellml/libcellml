@@ -16,9 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/logger.h"
-
 #include <string>
+
+#include "libcellml/logger.h"
 
 namespace libcellml {
 
