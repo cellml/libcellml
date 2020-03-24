@@ -111,14 +111,14 @@ TEST(Parser, emptyModelString)
 
 TEST(Parser, nonXmlString)
 {
-    const std::string ex = "Not an xml string.";
+    const std::string in = "Not an xml string.";
     const std::vector<std::string> expectedIssues = {
         "LibXml2 error: Start tag expected, '<' not found.",
         "Could not get a valid XML root node from the provided input.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    p->parseModel(ex);
+    p->parseModel(in);
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 
