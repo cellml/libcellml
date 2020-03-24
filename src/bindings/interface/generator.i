@@ -16,7 +16,7 @@
 "Defines a variable created by processing a :class:`Model` with the :class:`Generator`.";
 
 %feature("docstring") libcellml::GeneratorVariable::initialValueVariable
-"Return the :class:`Variable`.";
+"Return the initial value :class:`Variable`.";
 
 %feature("docstring") libcellml::GeneratorVariable::variable
 "Return the :class:`Variable`.";
