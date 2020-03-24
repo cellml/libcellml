@@ -225,7 +225,7 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
         "  </encapsulation>\n"
         "</model>\n";
 
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Model 'main' contains multiple components with the name 'repeated_component'. Valid component names must be unique to their model.",
     };
 
@@ -246,7 +246,7 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Encapsulation, hierarchyWaterfallAndParse)
@@ -318,7 +318,7 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(in);
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
     EXPECT_EQ(size_t(1), model->componentCount());
     auto component = model->component(0);
     for (size_t i = 0; i < 3; ++i) {

@@ -16,10 +16,10 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
-
-#include <string>
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
@@ -259,14 +259,14 @@ public:
      * linked to @c Units added to the model.  This method will link
      * variable units specified by name to units in the model
      * (if they are found). Any variable units that cannot be linked
-     * to units in the model are left in an unlinked state.  This means it 
-     * is possible to still have unlinked @c Units in the model after 
+     * to units in the model are left in an unlinked state.  This means it
+     * is possible to still have unlinked @c Units in the model after
      * calling this method.
      *
      * Unlinked variable units can occur when a @c Variable's units are
-     * set by name.  If the @c Model to which the @c Variable belongs 
+     * set by name.  If the @c Model to which the @c Variable belongs
      * has @c Units defined with the same name, then that @c Variable's
-     * @c Units will not be linked to the @c Model's @c Units.  This 
+     * @c Units will not be linked to the @c Model's @c Units.  This
      * method will link the two units (the one from the variable and the
      * one from the model).
      *
