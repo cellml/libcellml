@@ -1162,9 +1162,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                 IssuePtr issue = Issue::create();
 
                 issue->setDescription("Variable '" + variable->name()
-                                    + "' in component '" + component->name()
-                                    + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                    + "' which cannot be found.");
+                                      + "' in component '" + component->name()
+                                      + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
+                                      + "' which cannot be found.");
                 issue->setCause(Issue::Cause::GENERATOR);
 
                 mGenerator->addIssue(issue);
@@ -1175,9 +1175,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                     IssuePtr issue = Issue::create();
 
                     issue->setDescription("Variable '" + variable->name()
-                                        + "' in component '" + component->name()
-                                        + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                        + "' which is not a constant.");
+                                          + "' in component '" + component->name()
+                                          + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
+                                          + "' which is not a constant.");
                     issue->setCause(Issue::Cause::GENERATOR);
 
                     mGenerator->addIssue(issue);
