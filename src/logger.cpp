@@ -71,7 +71,7 @@ size_t Logger::warningCount() const
 IssuePtr Logger::warning(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if ((index < mPimpl->mWarnings.size()) && (mPimpl->mWarnings.at(index) < mPimpl->mIssues.size())) {
+    if (index < mPimpl->mWarnings.size()) {
         issue = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
     }
     return issue;
@@ -85,7 +85,7 @@ size_t Logger::hintCount() const
 IssuePtr Logger::hint(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if ((index < mPimpl->mHints.size()) && (mPimpl->mHints.at(index) < mPimpl->mIssues.size())) {
+    if (index < mPimpl->mHints.size()) {
         issue = mPimpl->mIssues.at(mPimpl->mHints.at(index));
     }
     return issue;
