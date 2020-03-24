@@ -480,14 +480,3 @@ TEST(Issue, isHint)
     e->setLevel(libcellml::Issue::Level::HINT);
     EXPECT_EQ(e->level(), libcellml::Issue::Level::HINT);
 }
-
-// TODO Remove this test until the base URL for the CellML2.0 specification exists and the spec is finalised.
-// TEST(Issue, getDefaultUrl)
-// {
-//     auto e = libcellml::Issue::create();
-//     e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
-//     auto ref = e->referenceHeading();
-//     // TODO How to get this from the utilties.h file??  Won't be this address in the long run.
-//     std::string url = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=" + ref;
-//     EXPECT_EQ(e->url(), url);
-// }
