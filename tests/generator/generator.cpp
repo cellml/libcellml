@@ -1147,13 +1147,13 @@ TEST(Generator, cellmlUnitScalingState)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
