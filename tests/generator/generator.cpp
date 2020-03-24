@@ -230,7 +230,7 @@ TEST(Generator, nonConstantInitialisingVariable)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_constant_initialising_variable.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' is initialised using variable 'k2' which is not a constant.",
@@ -263,7 +263,7 @@ TEST(Generator, nonExistingInitialisingVariable)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/non_existing_initialising_variable.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' is initialised using variable 'k' which cannot be found.",
@@ -1007,13 +1007,13 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_state_initialised_using_variable/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
@@ -1042,13 +1042,13 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_indirect/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
@@ -1077,13 +1077,13 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_voi_direct/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
@@ -1112,13 +1112,13 @@ TEST(Generator, cellmlUnitScalingConstant)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_constant/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator->modelType());
 
@@ -1182,13 +1182,13 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state_initialised_using_constant/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
@@ -1217,13 +1217,13 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_state_initialised_using_variable/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
@@ -1252,13 +1252,13 @@ TEST(Generator, cellmlUnitScalingRate)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("generator/cellml_unit_scaling_rate/model.cellml"));
 
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 
     generator->processModel(model);
 
-    EXPECT_EQ(size_t(0), generator->errorCount());
+    EXPECT_EQ(size_t(0), generator->issueCount());
 
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
 
