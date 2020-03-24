@@ -219,7 +219,7 @@ TEST(Printer, printModelWithImports)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations_import.xml"));
 
-    EXPECT_EQ(size_t(0), p->errorCount());
+    EXPECT_EQ(size_t(0), p->issueCount());
     EXPECT_TRUE(model->hasUnresolvedImports());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
