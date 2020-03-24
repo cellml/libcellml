@@ -1318,7 +1318,6 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             const std::string variableReference = attribute->value();
             VariablePtr referencedVariable = component->variable(variableReference);
 
-            // TODO This follows the same pattern as the issues returned from parsing the encapsulations.
             if (referencedVariable == nullptr) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
@@ -1332,7 +1331,6 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             const std::string testVariableReference = attribute->value();
             VariablePtr testVariable = component->variable(testVariableReference);
             if (testVariable == nullptr) {
-                // TODO This follows the same pattern as the issues returned from parsing the encapsulations.
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
                 issue->setReset(reset);
