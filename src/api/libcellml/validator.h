@@ -53,7 +53,7 @@ public:
      * @brief Validate the @p model using the CellML 2.0 Specification.
      *
      * Validate the given @p model and its encapsulated entities using the
-     * CellML 2.0 Specification. Any issues will be logged in the @c Validator.
+     * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
      *
      * @param model The model to validate.
      */
