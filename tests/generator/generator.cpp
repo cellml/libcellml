@@ -68,7 +68,7 @@ TEST(Generator, initializedVariableOfIntegration)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
@@ -79,7 +79,7 @@ TEST(Generator, initializedVariableOfIntegration)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIsues, expectedCauses, generator);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -101,7 +101,7 @@ TEST(Generator, twoVariablesOfIntegration)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be a variable of integration.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
@@ -112,7 +112,7 @@ TEST(Generator, twoVariablesOfIntegration)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIsues, expectedCauses, generator);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -134,7 +134,7 @@ TEST(Generator, nonFirstOrderOdes)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "The differential equation for variable 'x' in component 'main' must be of the first order.",
         "The differential equation for variable 'y' in component 'sub' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
@@ -149,7 +149,7 @@ TEST(Generator, nonFirstOrderOdes)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIsues, expectedCauses, generator);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -171,7 +171,7 @@ TEST(Generator, undefinedVariables)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'a' in component 'my_component' is referenced in an equation, but it is not defined anywhere.",
         "Variable 'b' in component 'my_component' is referenced in an equation, but it is not defined anywhere.",
     };
@@ -180,7 +180,7 @@ TEST(Generator, undefinedVariables)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIsues, generator);
+    EXPECT_EQ_ISSUES(expectedIssues, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -202,7 +202,7 @@ TEST(Generator, variableInitializedTwice)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
     };
 
@@ -210,7 +210,7 @@ TEST(Generator, variableInitializedTwice)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIsues, generator);
+    EXPECT_EQ_ISSUES(expectedIssues, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
 
@@ -298,7 +298,7 @@ TEST(Generator, nonInitializedState)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
     };
 
@@ -306,7 +306,7 @@ TEST(Generator, nonInitializedState)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIsues, generator);
+    EXPECT_EQ_ISSUES(expectedIssues, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator->modelType());
 
@@ -328,7 +328,7 @@ TEST(Generator, underconstrained)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is not computed.",
     };
 
@@ -336,7 +336,7 @@ TEST(Generator, underconstrained)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIsues, generator);
+    EXPECT_EQ_ISSUES(expectedIssues, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator->modelType());
 
@@ -358,7 +358,7 @@ TEST(Generator, overconstrained)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is computed more than once.",
     };
 
@@ -366,7 +366,7 @@ TEST(Generator, overconstrained)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIsues, generator);
+    EXPECT_EQ_ISSUES(expectedIssues, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::OVERCONSTRAINED, generator->modelType());
 
@@ -388,7 +388,7 @@ TEST(Generator, unsuitablyConstrained)
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIsues = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is not computed.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
@@ -397,7 +397,7 @@ TEST(Generator, unsuitablyConstrained)
 
     generator->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIsues, generator);
+    EXPECT_EQ_ISSUES(expectedIssues, generator);
 
     EXPECT_EQ(libcellml::Generator::ModelType::UNSUITABLY_CONSTRAINED, generator->modelType());
 
