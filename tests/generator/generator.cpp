@@ -1433,7 +1433,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
     for (size_t i = 0; i < generator->variableCount(); ++i) {
         EXPECT_NE(nullptr, generator->variable(i)->variable());
-        EXPECT_NE(nullptr, generator->variable(i)->initialValueVariable());
+        EXPECT_NE(nullptr, generator->variable(i)->initialisingVariable());
         EXPECT_EQ(expectedTypes[i], generator->variable(i)->type());
     }
 
