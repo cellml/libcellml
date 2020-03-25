@@ -55,16 +55,16 @@ struct GeneratorVariable::GeneratorVariableImpl
     VariablePtr mVariable;
     GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
 
-    void populate(const VariablePtr &initialValueVariable,
+    void populate(const VariablePtr &initialisingVariable,
                   const VariablePtr &variable,
                   GeneratorVariable::Type type);
 };
 
-void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &initialValueVariable,
+void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &initialisingVariable,
                                                         const VariablePtr &variable,
                                                         GeneratorVariable::Type type)
 {
-    mInitialValueVariable = initialValueVariable;
+    mInitialValueVariable = initialisingVariable;
     mVariable = variable;
     mType = type;
 }
@@ -84,7 +84,7 @@ GeneratorVariablePtr GeneratorVariable::create() noexcept
     return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {}};
 }
 
-VariablePtr GeneratorVariable::initialValueVariable() const
+VariablePtr GeneratorVariable::initialisingVariable() const
 {
     return mPimpl->mInitialValueVariable;
 }
@@ -1156,9 +1156,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             // variable of constant type.
 
             ComponentPtr initialValueComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
-            VariablePtr initialValueVariable = initialValueComponent->variable(generatorVariable->mVariable->initialValue());
+            VariablePtr initialisingVariable = initialValueComponent->variable(generatorVariable->mVariable->initialValue());
 
-            if (initialValueVariable == nullptr) {
+            if (initialisingVariable == nullptr) {
                 IssuePtr issue = Issue::create();
 
                 issue->setDescription("Variable '" + variable->name()
@@ -1169,7 +1169,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
                 mGenerator->addIssue(issue);
             } else {
-                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initialValueVariable);
+                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initialisingVariable);
 
                 if (generatorInitialValueVariable->mType != GeneratorInternalVariable::Type::CONSTANT) {
                     IssuePtr issue = Issue::create();

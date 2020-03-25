@@ -63,9 +63,9 @@ public:
     static GeneratorVariablePtr create() noexcept;
 
     /**
-     * @brief Get the initial value @c Variable for this @c GeneratorVariable.
+     * @brief Get the initialising @c Variable for this @c GeneratorVariable.
      *
-     * Return the initial value @c Variable of this @c GeneratorVariable. It is
+     * Return the initialising @c Variable of this @c GeneratorVariable. It is
      * used to retrieve the initial value of the @c Variable, if any. It may or
      * may not be the same @c Variable as the one returned by @sa variable. If
      * it is not the same then the initial value retrieved from this variable
@@ -79,7 +79,7 @@ public:
      *
      * @return The @c Variable.
      */
-    VariablePtr initialValueVariable() const;
+    VariablePtr initialisingVariable() const;
 
     /**
      * @brief Get the @c Variable for this @c GeneratorVariable.
@@ -89,10 +89,10 @@ public:
      * case of the variable of integration), initialised (in the case of a
      * constant) or computed (in the case of a state, computed constant or
      * algebraic variable). It may or may not be the same @c Variable as the one
-     * returned by @sa initialValueVariable (e.g., a state variable may be
+     * returned by @sa initialisingVariable (e.g., a state variable may be
      * initialised in one component and computed in another).
      *
-     * @sa initialValueVariable
+     * @sa initialisingVariable
      *
      * @return The @c Variable.
      */
