@@ -102,7 +102,7 @@ TEST(Generator, twoVariablesOfIntegration)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be a variable of integration.",
+        "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
