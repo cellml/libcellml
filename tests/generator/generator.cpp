@@ -233,7 +233,7 @@ TEST(Generator, nonConstantInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k2' which is not a constant.",
+        "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
@@ -266,7 +266,7 @@ TEST(Generator, nonExistingInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k' which cannot be found.",
+        "Variable 'x' in component 'main' is initialised using variable 'k', but it is not defined anywhere.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,

@@ -1164,7 +1164,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
                                       + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                      + "' which cannot be found.");
+                                      + "', but it is not defined anywhere.");
                 issue->setCause(Issue::Cause::GENERATOR);
 
                 mGenerator->addIssue(issue);
@@ -1177,7 +1177,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                     issue->setDescription("Variable '" + variable->name()
                                           + "' in component '" + component->name()
                                           + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                          + "' which is not a constant.");
+                                          + "', but it is not a constant.");
                     issue->setCause(Issue::Cause::GENERATOR);
 
                     mGenerator->addIssue(issue);
