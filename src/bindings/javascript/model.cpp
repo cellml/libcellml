@@ -29,5 +29,6 @@ EMSCRIPTEN_BINDINGS(libcellml_model) {
         .function("unitsCount", &libcellml::Model::unitsCount)
         .function("resolveImports", &libcellml::Model::resolveImports)
         .function("hasUnresolvedImports", &libcellml::Model::hasUnresolvedImports)
+            .function("clone", &libcellml::Model::clone)
     ;
 }
