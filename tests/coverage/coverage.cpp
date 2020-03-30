@@ -40,7 +40,7 @@ TEST(Coverage, connectionComment)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
-    EXPECT_EQ(size_t(4), p->errorCount());
+    EXPECT_EQ(size_t(4), p->issueCount());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -63,7 +63,7 @@ TEST(Coverage, importWithNonHrefXlink)
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(e);
-    EXPECT_EQ(size_t(0), parser->errorCount());
+    EXPECT_EQ(size_t(0), parser->issueCount());
 }
 
 TEST(Coverage, entityHasParent)

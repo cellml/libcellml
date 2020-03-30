@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "utilities.h"
+#include "libcellml/units.h"
 
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/units.h"
 
 #include <algorithm>
 #include <cassert>
@@ -27,6 +26,8 @@ limitations under the License.
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -369,14 +370,10 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     }
     reference = u.mReference;
     prefix = u.mPrefix;
-    if (!u.mExponent.empty()) {
-        exponent = std::stod(u.mExponent);
-    } else {
+    if (u.mExponent.empty() || !convertToDouble(u.mExponent, exponent)) {
         exponent = 1.0;
     }
-    if (!u.mMultiplier.empty()) {
-        multiplier = std::stod(u.mMultiplier);
-    } else {
+    if (u.mMultiplier.empty() || !convertToDouble(u.mMultiplier, multiplier)) {
         multiplier = 1.0;
     }
     id = u.mId;
