@@ -34,6 +34,7 @@ EMSCRIPTEN_BINDINGS(libcellml_component) {
         .function("takeVariableByIndex", select_overload<libcellml::VariablePtr(size_t)>(&libcellml::Component::takeVariable))
         .function("takeVariableByName", select_overload<libcellml::VariablePtr(const std::string &)>(&libcellml::Component::takeVariable))
         .function("variableCount", &libcellml::Component::variableCount)
+            .function("clone", &libcellml::Component::clone)
             .function("isImport", &libcellml::ImportedEntity::isImport)
             .function("importReference", &libcellml::ImportedEntity::importReference)
             .function("importSource", &libcellml::ImportedEntity::importSource)
