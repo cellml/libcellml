@@ -320,6 +320,43 @@ public:
     void unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
                         double &multiplier, std::string &id) const;
 
+    std::string unitAttributeReferenceByIndex(size_t index) {
+        std::string ref;
+        std::string pre;
+        double exp;
+        double mult;
+        std::string id;
+        unitAttributes(index, ref, pre, exp, mult, id);
+        return ref;
+    }
+    std::string unitAttributePrefixByIndex(size_t index) {
+        std::string ref;
+        std::string pre;
+        double exp;
+        double mult;
+        std::string id;
+        unitAttributes(index, ref, pre, exp, mult, id);
+        return pre;
+    }
+    double unitAttributeExponentByIndex(size_t index) {
+        std::string ref;
+        std::string pre;
+        double exp;
+        double mult;
+        std::string id;
+        unitAttributes(index, ref, pre, exp, mult, id);
+        return exp;
+    }
+    double unitAttributeMultiplierByIndex(size_t index) {
+        std::string ref;
+        std::string pre;
+        double exp;
+        double mult;
+        std::string id;
+        unitAttributes(index, ref, pre, exp, mult, id);
+        return mult;
+    }
+
     /**
      * @overload
      *
