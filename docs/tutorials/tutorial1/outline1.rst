@@ -10,10 +10,10 @@ If, however, you just need to jump in and figure out one specific idea, you can 
 
 After completing this tutorial you will be able to:
 
-- read the contents of a CellML file;
-- deserialse its contents using the :code:`Parser` to create a :code:`Model` structure;
-- investigate the hierarchical contents of the :code:`Model`, including the :code:`Components`, :code:`Variables`, and MathML blocks; and
-- serialise the model and write to another file using the :code:`Printer`.
+- Read the contents of a CellML file;
+- Deserialse its contents using the :code:`Parser` to create a :code:`Model` structure;
+- Investigate the hierarchical contents of the :code:`Model`, including the :code:`Components`, :code:`Variables`, and MathML blocks; and
+- Serialise the model and write to another file using the :code:`Printer`.
 
 C++ instructions
 ----------------
