@@ -1,11 +1,10 @@
 .. _tutorial0:
 
-====================================
-Tutorial 0: Installation and testing
-====================================
+===================================
+Tutorial 0: Instalation and testing
+===================================
 
-This tutorial will walk you through the processes of installing, building,
-and linking to the libCellML library.
+This tutorial will walk you through the processes of instaling, building, and linking to the libCellML library.
 
 C++ instructions
 ----------------
