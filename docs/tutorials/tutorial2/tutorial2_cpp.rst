@@ -42,15 +42,15 @@ Running the template:
        TUTORIAL 2: ERROR CHECKING AND VALIDATION
     -----------------------------------------------
 
-1: Create a ``Model`` from the contents of a CellML file
-========================================================
+Step 1: Create a ``Model`` from the contents of a CellML file
+=============================================================
 
 .. container:: dothis
 
     **1.a** As you did in :ref:`Tutorial 1<tutorial1_cpp>`, use the :code:`Parser` to create a model from the "Tutorial2.cellml" file provided.
 
-2: Print the contents of the file to the screen
-===============================================
+Step 2: Print the contents of the file to the screen
+====================================================
 
 Instead of duplicating the work you did throughout the middle steps of :ref:`Tutorial 1<tutorial1_cpp>`, we've provided you with a set of utility functions in the :code:`utility/tutorial_utilities.[cpp,h]` files which will help with some of the repeated bits of these tutorials.
 
@@ -119,8 +119,8 @@ These are the :code:`description` (which does what you'd think) and the :code:`s
                   << " in the CellML specification." << std::endl;
     }
 
-3: Fix the errors that were reported
-====================================
+Step 3: Fix the errors that were reported
+=========================================
 As you go through these tutorials you should be able to compile and run your code at any stage.
 If you haven't been doing so already, then do it now, and take a look at what you've printed.
 This section works through each of the errors found and shows you how to fix them.

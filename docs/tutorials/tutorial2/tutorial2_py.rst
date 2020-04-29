@@ -17,8 +17,8 @@ For the same tutorial in C++ please see the :ref:`Tutorial 2 C++<tutorial2_cpp>`
 .. contents:: Contents
     :local:
 
-0: Setup
-========
+Step 0: Setup
+=============
 For each of the tutorials, there is template code provided for you to get started in each of the :code:`tutorial*.py` files.
 
 .. container:: dothis
@@ -41,14 +41,14 @@ This should give the output:
      -----------------------------------------------
 
 
-1: Create a ``Model`` from the contents of a CellML file
-========================================================
+Step 1: Create a ``Model`` from the contents of a CellML file
+=============================================================
 
 .. container:: dothis
 
     **1.a** As you did in :ref:`Tutorial 1<tutorial1_py>`, use the :code:`Parser` to create a model from the :code:`resources/tutorial2.cellml` file provided.
 
-2: Print the contents of the file to the screen
+Step 2: Print the contents of the file to the screen
 ====================================================
 Instead of duplicating the work you did throughout the middle steps of :ref:`Tutorial 1<tutorial1_py>`, we've provided you with a set of utility functions in the :code:`tutorial_utilities.py` file which will help with some of the repeated bits of these tutorials.
 
@@ -117,8 +117,8 @@ These are the :code:`description()` (which does what you'd think) and the :code:
                 r=specification_heading
                 ))
 
-3: Fix the errors that were reported
-====================================================
+Step 3: Fix the errors that were reported
+=========================================
 As you go through these tutorials you should be able to compile and run your code at any stage.
 If you haven't been doing so already, then do it now, and take a look at what you've printed.
 This section works through each of the errors found and shows you how to fix them.
@@ -245,8 +245,8 @@ Since we corrected - or tried to - this earlier by naming the first variable in 
 
     **3.e** Fix up this last error, and check for yourself that your corrected model is now error-free.
 
-4: Have a look at the corrected model
-=====================================
+Step 4: Have a look at the corrected model
+==========================================
 Let's have a look at our corrected model by calling that same utility function which we used earlier to print it to the screen.
 You should see something like this:
 
@@ -270,8 +270,8 @@ You should see something like this:
                 Variable[3] has units: 'dimensionless'
 
 
-5: Serialise and output the model to a file
-===========================================
+Step 5: Serialise and output the model to a file
+================================================
 
 .. container:: dothis
 
