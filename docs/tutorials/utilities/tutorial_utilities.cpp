@@ -122,7 +122,7 @@ void printErrorsToTerminal(libcellml::GeneratorPtr &item)
             std::cout << "  Generator error[" << e << "]:" << std::endl;
             std::cout << "     Description: " << error->description()
                       << std::endl;
-            // std::cout << "     Kind: " << (int)validatorError->kind() << std::endl;
+            // std::cout << "     Kind: " << (int)validatorError->cause() << std::endl;
             if (errorReference != "") {
                 std::cout << "    See section " << errorReference
                           << " in the CellML specification." << std::endl;

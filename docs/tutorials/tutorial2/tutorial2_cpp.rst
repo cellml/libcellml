@@ -115,7 +115,7 @@ These are the :code:`description` (which does what you'd think) and the :code:`s
                   << std::endl;
 
         // Print the specification reference to the screen:
-        std::cout << "    See section " << validatorError->specificationHeading()
+        std::cout << "    See section " << validatorError->referenceHeading()
                   << " in the CellML specification." << std::endl;
     }
 

@@ -94,7 +94,7 @@ using an index:
     the_fifteenth_rror = validator->error(14)
 
 Inside an :code:`Issue` structure are two fields which are really useful.
-These are the :code:`description()` (which does what you'd think) and the :code:`specificationHeading()`, which points you to the section in the CellML2.0 specification document for reference.
+These are the :code:`description()` (which does what you'd think) and the :code:`referenceHeading()`, which points you to the section in the CellML2.0 specification document for reference.
 
 .. container:: dothis
 
@@ -111,7 +111,7 @@ These are the :code:`description()` (which does what you'd think) and the :code:
         print("     Description: " + validator_error.description())
 
         # Checking for a specification, and printing to the terminal if found
-        specification_heading = validator_error.specificationHeading()
+        specification_heading = validator_error.referenceHeading()
         if specification_heading != "":
             print("    See section {r} in the CellML specification.".format(
                 r=specification_heading

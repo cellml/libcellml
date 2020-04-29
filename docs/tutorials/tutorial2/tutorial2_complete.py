@@ -57,7 +57,7 @@ if __name__ == "__main__":
         for e in range(0, number_of_validation_errors):
             validator_error = validator.error(e)
 
-            specification_heading = validator_error.specificationHeading()
+            specification_heading = validator_error.referenceHeading()
 
             print("  Validator error[{e}]: ".format(e=e))
             print("     Description: " + validator_error.description())

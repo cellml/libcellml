@@ -71,12 +71,12 @@ int main()
         for (size_t e = 0; e < numberOfValidationErrors; ++e) {
             libcellml::IssuePtr validatorError = validator->error(e);
             std::string errorSpecificationReference =
-                validatorError->specificationHeading();
+                validatorError->referenceHeading();
 
             std::cout << "  Validator error[" << e << "]:" << std::endl;
             std::cout << "     Description: " << validatorError->description()
                       << std::endl;
-            std::cout << "     Kind: " << (int)validatorError->kind() << std::endl;
+            std::cout << "     Kind: " << (int)validatorError->cause() << std::endl;
             if (errorSpecificationReference != "") {
                 std::cout << "    See section " << errorSpecificationReference
                           << " in the CellML specification." << std::endl;

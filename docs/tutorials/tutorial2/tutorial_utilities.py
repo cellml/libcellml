@@ -79,7 +79,7 @@ def print_errors_to_terminal(item):
     if number_of_validation_errors != 0:
         for e in range(0, number_of_validation_errors):
             validation_error = item.error(e)
-            specification = validation_error.specificationHeading()
+            specification = validation_error.referenceHeading()
             print("  Validator error[{e}]:".format(e=e))
             print("    Description: {d}".format(d=validation_error.description()))
             if specification != "":

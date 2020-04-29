@@ -64,8 +64,12 @@ The hard work of this transformation is done by the :code:`Parser` object which 
     inFileContents << inFile.rdbuf();
 
 At this stage our :code:`inFileContents` contains the raw CellML from the input file provided, :code:`tutorial1.cellml`.
+You can either copy the :code:`tutorial1.cellml` file to this folder, or use a relative file path to access it.
 
-**Note** that all the files for each tutorial are provided for you in the :code:`resources` folder: though they are designed to build from one to the next, you're able to use the ready-made ones if you want to jump in at any point.
+.. container:: nb
+
+    All the files for each tutorial are provided for you in the :code:`resources` folder: though they are designed to build from one to the next, you're able to use the ready-made ones if you want to jump in at any point.
+
 
 .. container:: dothis
 
@@ -92,15 +96,16 @@ For example, to find the name of the model we simply call its :code:`name()` fun
 .. code-block:: cpp
 
     std::string modelName = myFirstModel->name();
-    std::string modelId = myFirstModel->id();
+    auto modelId = myFirstModel->id();
 
-Obviously, the type of item you're retrieving will determine how you declare it: names and ids are returned as strings.
+Obviously, the type of item you're retrieving will determine how you declare it.
+Note that names and ids are both returned as strings, but you could use the :code:`auto` type (as above) too.
 
 .. container:: dothis
 
     **2.a** Find out the name and id of your model and print it to the terminal.
 
-The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` objects, and a set of :code:`Component` objects.  There are generic :code:`somethingCount` functions which will return the number of :code:`Something` items within that object:
+The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` objects, and a set of :code:`Component` objects.  There are generic :code:`somethingCount()` functions which will return the number of :code:`Something` items within that object:
 
 .. code-block:: cpp
 
@@ -111,8 +116,8 @@ The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` obj
     **2.b** Find out the number of :code:`Component` items in the model, and print it to the terminal.
 
 Items like components and units (and later, variables) which are stored in sets can be accessed by their index as well as by their name.
-At this stage, we don't *know* the name of the components, so we'll have to use their index to access them for printing to the terminal.
-The indices begin from :code:`0`.
+At this stage, we don't *know* the name of the components, so we'll have to use their indices to access them for printing to the terminal.
+The indices start at :code:`0`.
 
 Each :code:`Component` itself (or later, :code:`Units` or :code:`Variable`) is retrieved from its parent item as a pointer (that is, a :code:`ComponentPtr` type) using the same idiom as the names and ids:
 

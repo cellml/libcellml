@@ -63,7 +63,7 @@ In C++:
     // Checking the Parser for errors
     for(size_t e = 0; e < parser->errorCount(); ++e) {
       std::cout<<parser->error(e)->description()<<std::endl;
-      std::cout<<parser->error(e)->specificationHeading()<<std::endl;
+      std::cout<<parser->error(e)->referenceHeading()<<std::endl;
     }
 
 In Python:
@@ -83,7 +83,7 @@ In Python:
     # Check the parser for errors
     for e in range(0, parser.errorCount()):
         print(parser.error(e).description())
-        print(parser.error(e).specificationHeading())
+        print(parser.error(e).referenceHeading())
 
 
 Debug and validate a Model
@@ -121,7 +121,7 @@ In Python:
     # Check the validator for errors
     for e in range(0, validator.errorCount()):
         print(validator.error(e).description())
-        print(validator.error(e).specificationHeading())
+        print(validator.error(e).referenceHeading())
 
 Serialise a ``Model`` into CellML2 for printing to a file
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -168,7 +168,7 @@ In Python:
     # Check the printer for errors
     for e in range(0, printer.errorCount()):
         print(printer.error(e).description())
-        print(printer.error(e).specificationHeading())
+        print(printer.error(e).referenceHeading())
 
     # Write the string to a file
     write_file = open("my_printed_file.cellml", "w")
