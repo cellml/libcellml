@@ -9,10 +9,10 @@ For instructions in Python please see the :ref:`Tutorial 1 in Python<tutorial1_p
 
 Requirements:
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
     - :download:`tutorial1.cpp` Either the skeleton code, or ..
-    - :download:`tutorial1_complete.cpp` the completed tutorial code
-    - :download:`../resources/tutorial1.cellml` The input CellML file to read
+    - :download:`tutorial1_complete.cpp` the completed tutorial code; and
+    - :download:`../resources/tutorial1.cellml` The input CellML file to read.
 
 .. contents:: Contents
     :local:
@@ -25,8 +25,7 @@ started in each of the tutorial folders.
 
 .. container:: dothis
 
-    **0.a** Navigate into the "tutorial1" folder and confirm that you're able to compile
-    and run this template against the libCellML library.
+    **0.a** Navigate into the "tutorial1" folder and confirm that you're able to compile and run this template against the libCellML library.
 
 .. code-block:: console
 
@@ -89,7 +88,8 @@ Now we have a *deserialsied* CellML model which we can manipulate using the libC
 ========================================
 
 Now that we have a model, let's see what's inside it.
-All retrieval functions - where you want to read something about any item - are callable from simple functions naming the thing you want. For example, to find the name of the model we simply call its :code:`name()` function:
+All retrieval functions - where you want to read something about any item - are callable from simple functions naming the thing you want.
+For example, to find the name of the model we simply call its :code:`name()` function:
 
 .. code-block:: cpp
 
@@ -100,8 +100,7 @@ Obviously, the type of item you're retrieving will determine how you declare it:
 
 .. container:: dothis
 
-    **2.a** Find out the name and id of your model and print it to the
-    terminal.
+    **2.a** Find out the name and id of your model and print it to the terminal.
 
 The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` objects, and a set of :code:`Component` objects.  There are generic :code:`somethingCount` functions which will return the number of :code:`Something` items within that object:
 
@@ -111,8 +110,7 @@ The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` obj
 
 .. container:: dothis
 
-    **2.b**
-    Find out the number of :code:`Component` items in the model, and print it to the terminal.
+    **2.b** Find out the number of :code:`Component` items in the model, and print it to the terminal.
 
 Items like components and units (and later, variables) which are stored in sets can be accessed by their index as well as by their name.
 At this stage, we don't *know* the name of the components, so we'll have to use their index to access them for printing to the terminal.
@@ -122,8 +120,7 @@ Each :code:`Component` itself (or later, :code:`Units` or :code:`Variable`) is r
 
 .. code-block:: cpp
 
-    // Retrieving the 33rd component from myFirstModel.  Note the indexing
-    // from zero.
+    // Retrieve the 33rd component from myFirstModel.  Note the indexing from zero.
     auto thirtyThirdComponent = myFirstModel->component(32);
 
 .. container:: dothis
@@ -138,8 +135,7 @@ Each :code:`Component` itself (or later, :code:`Units` or :code:`Variable`) is r
 - (for later) a set of :code:`Reset` items; and
 - (also for later) an optional nested subset of :code:`Component` items too.
 
-In this tutorial we'll only look at the variables and maths, leaving the nested
-components for :ref:`Tutorial 6<tutorial6>`.
+In this tutorial we'll only look at the variables and maths, leaving the nested components for :ref:`Tutorial 6<tutorial6>`.
 
 .. container:: dothis
 
@@ -165,7 +161,7 @@ This reverse operation is handled by the :code:`Printer`, which will transform a
 
 .. container:: dothis
 
-    **3.a** Create a printer and use it to deserialise your model
+    **3.a** Create a printer and use it to deserialise your model.
 
 .. container:: dothis
 
@@ -173,4 +169,4 @@ This reverse operation is handled by the :code:`Printer`, which will transform a
 
 .. container:: dothis
 
-    **4** Go and have a cuppa, you're done :)
+    **3.c** Go and have a cuppa, you're done :)

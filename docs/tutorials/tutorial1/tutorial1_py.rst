@@ -10,8 +10,8 @@ For C++ please see the :ref:`Tutorial 1 C++<tutorial1_cpp>` page instead.
 
 Requirements:
 
-    - :download:`tutorial1.py` Either the skeleton code, or ...
-    - :download:`tutorial1_complete.py` the completed tutorial code.
+    - :download:`tutorial1.py` Either the skeleton code; or ...
+    - :download:`tutorial1_complete.py` the completed tutorial code; and
     - :download:`../resources/tutorial1.cellml` The input CellML file to read.
 
 .. contents:: Contents
@@ -24,10 +24,8 @@ For each of the tutorials, there is template code provided for you to get starte
 
 .. container:: dothis
 
-    **0.a** Confirm that you're able to run the :code:`tutorial1.py`
-    template against the libCellML library.  Navigate into the
-    :code:`tutorial1` directory and run the skeleton code file,
-    :code:`tutorial1.py`.
+    **0.a** Confirm that you're able to run the :code:`tutorial1.py` template against the libCellML library.
+    Navigate into the :code:`tutorial1` directory and run the skeleton code file, :code:`tutorial1.py`.
 
 .. code-block:: console
 
@@ -71,7 +69,7 @@ At this stage our :code:`read_file_contents` contains the raw CellML from the in
 .. code-block:: python
 
     #  1.b   Create a libCellML Parser, and use it to parse the file
-    #        string contents and convert it into a CellML Model structure
+    #        string contents and convert it into a CellML Model structure.
     parser = libcellml.Parser()
     model = parser->parseModel(read_file_contents)
 
@@ -114,7 +112,7 @@ Each :code:`Component` itself (or later, :code:`Units` or :code:`Variable`) is r
 
 .. code-block:: python
 
-    # Retrieving the 33rd component from my_first_model.  Note the indexing from zero.
+    # Retrieve the 33rd component from my_first_model.  Note the indexing from zero.
     component_33 = my_first_model.component(32)
 
 .. container:: dothis
