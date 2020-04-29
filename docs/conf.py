@@ -61,7 +61,7 @@ autosectionlabel_prefix_document = True
 extlinks = {
     'buildbot': ('https://buildbot.net%s', ''),
     'cellml1to2': ('https://github.com/hsorby/cellml1to2%s', ''),
-    'cellml2': ('https://www.cellml.org/%s', ''),
+    'cellml2': ('https://cellml-specification.readthedocs.io/en/latest/%s', ''),
     'cellsolver': ('https://github.com/hsorby/cellsolver%s', ''),
     'cmake': ('https://cmake.org/%s', ''),
     'doxygen': ('http://www.doxygen.nl/%s', ''),
