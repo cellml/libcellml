@@ -78,7 +78,7 @@ This is really easy:
     **2.b** Create a validator instance and pass your model to it, as above.
 
 When you've created a :code:`Validator` object and called it to check a model, a record of any errors is stored inside the validator.
-To figure out what's going on, you need to retrieve the pointers to these :code:`Error` objects.
+To figure out what's going on, you need to retrieve the pointers to these :code:`Issue` objects.
 
 As in :ref:`Tutorial 1<tutorial1_cpp>`, we can call a :code:`count` function (in the case of a validator, this is the :code:`errorCount()` function to determine whether any errors have been raised.
 
@@ -91,9 +91,9 @@ Again following the same retrieval idiom as in Tutorial 1 for items in sets, we 
 
 .. code-block:: cpp
 
-    libcellml::ErrorPtr theFifteenthError = validator->error(14);
+    libcellml::IssuePtr theFifteenthError = validator->error(14);
 
-Inside an :code:`Error` structure are two fields which are really useful.
+Inside an :code:`Issue` structure are two fields which are really useful.
 These are the :code:`description` (which does what you'd think) and the :code:`specificationHeading`, which points you to the section in the CellML2.0 specification document for reference.
 
 .. container:: dothis
@@ -106,7 +106,7 @@ These are the :code:`description` (which does what you'd think) and the :code:`s
     for (size_t e = 0; e < validator->errorCount(); ++e) {
 
         // Retrieve the e'th error as a pointer:
-        libcellml::ErrorPtr validatorError = validator->error(e);
+        libcellml::IssuePtr validatorError = validator->error(e);
 
         std::cout << "  Validator error[" << e << "]:" << std::endl;
 

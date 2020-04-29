@@ -77,7 +77,7 @@ This is really easy:
     **2.b** Create a :code:`Validator` and pass your model to it, as above.
 
 When you've created a :code:`Validator` object and called it to check a model, a record of any errors is stored inside the validator.
-To figure out what's going on, you need to retrieve the pointers to these :code:`Error` objects.
+To figure out what's going on, you need to retrieve the pointers to these :code:`Issue` objects.
 
 As in :ref:`Tutorial 1<tutorial1_py>`, you can call a :code:`count` function (in the case of a :code:`Validator`, this is the :code:`errorCount()` function to determine whether any errors have been raised.
 
@@ -93,7 +93,7 @@ using an index:
 
     the_fifteenth_rror = validator->error(14)
 
-Inside an :code:`Error` structure are two fields which are really useful.
+Inside an :code:`Issue` structure are two fields which are really useful.
 These are the :code:`description()` (which does what you'd think) and the :code:`specificationHeading()`, which points you to the section in the CellML2.0 specification document for reference.
 
 .. container:: dothis

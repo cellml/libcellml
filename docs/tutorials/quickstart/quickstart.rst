@@ -102,7 +102,7 @@ In C++:
     // Retrieve the errors from the validator and print their specificiation
     // reference and description
     for (size_t e = 0; e < validator->errorCount(); ++e) {
-        libcellml::ErrorPtr error = validator->error(e);
+        libcellml::IssuePtr error = validator->error(e);
         std::cout << error->description() << std::endl;
         std::cout << error->specificationReference() << std::endl
                   << std::endl;
@@ -141,7 +141,7 @@ In C++:
 
     // Check the printer for errors
     for (size_t e = 0; e < printer->errorCount(); ++e) {
-        libcellml::ErrorPtr error = printer->error(e);
+        libcellml::IssuePtr error = printer->error(e);
         std::cout << error->description() << std::endl;
         std::cout << error->specificationReference() << std::endl
                   << std::endl;

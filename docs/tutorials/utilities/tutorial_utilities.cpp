@@ -91,7 +91,7 @@ void printErrorsToTerminal(libcellml::ValidatorPtr &item)
         // 2.c  Retrieve the errors, and print their description and specification
         //      reference to the terminal
         for (size_t e = 0; e < numberOfValidationErrors; ++e) {
-            libcellml::ErrorPtr validatorError = item->error(e);
+            libcellml::IssuePtr validatorError = item->error(e);
             std::string errorSpecificationReference =
                 validatorError->specificationHeading();
 
@@ -118,7 +118,7 @@ void printErrorsToTerminal(libcellml::GeneratorPtr &item)
         // 2.c  Retrieve the errors, and print their description and specification
         //      reference to the terminal
         for (size_t e = 0; e < numberOfErrors; ++e) {
-            libcellml::ErrorPtr error = item->error(e);
+            libcellml::IssuePtr error = item->error(e);
             std::string errorSpecificationReference =
                 error->specificationHeading();
 
@@ -174,7 +174,7 @@ void insertIntoMathMLString(std::string &maths, std::string &addMe)
     maths.erase(maths.find_last_not_of(" \t\n\r\f\v") + 1);
     std::string before = maths.substr(0, maths.length() - tag.length() - 1);
     std::string after = maths.substr(maths.length() - tag.length());
-   
+
     // test the final characters of the existing math string
     if (after == tag) {
         maths = before + addMe + tag;
@@ -190,7 +190,7 @@ void insertIntoMathMLString(std::string &maths, std::string &addMe)
 
 //     // Split the string at equals tags
 
-//     // Retrieve and return entire equation starting with the lhs variable name  
+//     // Retrieve and return entire equation starting with the lhs variable name
 // }
 
 std::string getModelTypeFromEnum(libcellml::Generator::ModelType myType)

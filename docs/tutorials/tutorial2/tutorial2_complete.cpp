@@ -69,7 +69,7 @@ int main()
         // 2.c  Retrieve the errors, and print their description and specification
         //      reference to the terminal
         for (size_t e = 0; e < numberOfValidationErrors; ++e) {
-            libcellml::ErrorPtr validatorError = validator->error(e);
+            libcellml::IssuePtr validatorError = validator->error(e);
             std::string errorSpecificationReference =
                 validatorError->specificationHeading();
 
