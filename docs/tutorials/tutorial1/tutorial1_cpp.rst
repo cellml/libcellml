@@ -7,12 +7,12 @@ Tutorial 1 C++: Reading and writing CellML files
 For overview, please see the :ref:`Tutorial 1 overview page<tutorial1>`.
 For instructions in Python please see the :ref:`Tutorial 1 in Python<tutorial1_py>` page instead.
 
-Requirements:
+**Requirements**
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
-    - :download:`tutorial1.cpp` Either the skeleton code, or ..
-    - :download:`tutorial1_complete.cpp` the completed tutorial code; and
-    - :download:`../resources/tutorial1.cellml` The input CellML file to read.
+- :download:`CMakeLists.txt` The CMake file for building this tutorial;
+- :download:`tutorial1.cpp` Either the skeleton code, or ..
+- :download:`tutorial1_complete.cpp` the completed tutorial code; and
+- :download:`../resources/tutorial1.cellml` The input CellML file to read.
 
 .. contents:: Contents
     :local:
@@ -20,8 +20,7 @@ Requirements:
 0: Setup
 ========
 
-For each of the tutorials, there is template code provided for you to get
-started in each of the tutorial folders.
+For each of the tutorials, there is template code provided for you to get started in each of the tutorial folders.
 
 .. container:: dothis
 
@@ -56,7 +55,7 @@ The hard work of this transformation is done by the :code:`Parser` object which 
 
 .. container:: dothis
 
-    **1.a** The first step is to read the file contents as-is:
+    **1.a** Open the file and read its contents.
 
 .. code-block:: cpp
 
@@ -71,7 +70,6 @@ At this stage our :code:`inFileContents` contains the raw CellML from the input 
 .. container:: dothis
 
     **1.b** Now we need to transform the raw CellML import into the linked :code:`Model` using the :code:`Parser`.
-    This is quite straightforward:
 
 .. code-block:: cpp
 

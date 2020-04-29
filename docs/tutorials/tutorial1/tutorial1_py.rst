@@ -8,11 +8,11 @@ For overview, please see the :ref:`Tutorial 1 overview page<tutorial1>`.
 These are the Python instructions.
 For C++ please see the :ref:`Tutorial 1 C++<tutorial1_cpp>` page instead.
 
-Requirements:
+**Requirements**
 
-    - :download:`tutorial1.py` Either the skeleton code; or ...
-    - :download:`tutorial1_complete.py` the completed tutorial code; and
-    - :download:`../resources/tutorial1.cellml` The input CellML file to read.
+- :download:`tutorial1.py` Either the skeleton code; or ...
+- :download:`tutorial1_complete.py` the completed tutorial code; and
+- :download:`../resources/tutorial1.cellml` The input CellML file to read.
 
 .. contents:: Contents
     :local:
@@ -49,7 +49,7 @@ The hard work of this transformation is done by a :code:`Parser` object which wi
 
 .. container:: dothis
 
-    **1.a** The first step is to read the file contents as-is:
+    **1.a** Open the file and read its contents.
 
 .. code-block:: python
 
