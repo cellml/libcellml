@@ -21,11 +21,11 @@ class ValidatorTestCase(unittest.TestCase):
         self.assertIsInstance(x, libcellml.logger.Logger)
 
         # Test access to inherited methods
-        self.assertIsNone(x.error(0))
-        self.assertIsNone(x.error(-1))
-        self.assertEqual(x.errorCount(), 0)
-        x.addError(libcellml.Error())
-        self.assertEqual(x.errorCount(), 1)
+        self.assertIsNone(x.issue(0))
+        self.assertIsNone(x.issue(-1))
+        self.assertEqual(x.issueCount(), 0)
+        x.addIssue(libcellml.Issue())
+        self.assertEqual(x.issueCount(), 1)
 
     def test_validate_model(self):
         import libcellml
