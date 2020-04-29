@@ -118,7 +118,7 @@ void printErrorsToTerminal(libcellml::GeneratorPtr &item)
         for (size_t e = 0; e < numberOfErrors; ++e) {
             libcellml::IssuePtr error = item->error(e);
             std::string errorReference =
-                error->specificationHeading();
+                error->referenceHeading();
 
             std::cout << "  Generator error[" << e << "]:" << std::endl;
             std::cout << "     Description: " << error->description()
