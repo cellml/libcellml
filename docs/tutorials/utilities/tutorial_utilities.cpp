@@ -88,19 +88,17 @@ void printErrorsToTerminal(libcellml::ValidatorPtr &item)
     std::cout << "The validator has found " << numberOfValidationErrors
               << " errors!" << std::endl;
     if (numberOfValidationErrors != 0) {
-        // 2.c  Retrieve the errors, and print their description and specification
+        // 2.c  Retrieve the errors, and print their description and
         //      reference to the terminal
         for (size_t e = 0; e < numberOfValidationErrors; ++e) {
             libcellml::IssuePtr validatorError = item->error(e);
-            std::string errorSpecificationReference =
-                validatorError->specificationHeading();
+            std::string errorReference = validatorError->referenceHeading();
 
             std::cout << "  Validator error[" << e << "]:" << std::endl;
             std::cout << "     Description: " << validatorError->description()
                       << std::endl;
-            // std::cout << "     Kind: " << (int)validatorError->kind() << std::endl;
-            if (errorSpecificationReference != "") {
-                std::cout << "    See section " << errorSpecificationReference
+            if (errorReference != "") {
+                std::cout << "    See section " << errorReference
                           << " in the CellML specification." << std::endl;
             }
         }
@@ -115,19 +113,19 @@ void printErrorsToTerminal(libcellml::GeneratorPtr &item)
     std::cout << "The generator has found " << numberOfErrors
               << " errors!" << std::endl;
     if (numberOfErrors != 0) {
-        // 2.c  Retrieve the errors, and print their description and specification
+        // 2.c  Retrieve the errors, and print their description and
         //      reference to the terminal
         for (size_t e = 0; e < numberOfErrors; ++e) {
             libcellml::IssuePtr error = item->error(e);
-            std::string errorSpecificationReference =
+            std::string errorReference =
                 error->specificationHeading();
 
             std::cout << "  Generator error[" << e << "]:" << std::endl;
             std::cout << "     Description: " << error->description()
                       << std::endl;
             // std::cout << "     Kind: " << (int)validatorError->kind() << std::endl;
-            if (errorSpecificationReference != "") {
-                std::cout << "    See section " << errorSpecificationReference
+            if (errorReference != "") {
+                std::cout << "    See section " << errorReference
                           << " in the CellML specification." << std::endl;
             }
         }
