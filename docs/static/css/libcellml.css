@@ -58,6 +58,10 @@ div[class^="issue"], div[class*=" issue"] > ol {
     color: rgb(30, 46, 0);
 }
 
+.dothis > .highlight-console {
+    margin: 6px 6px 6px 0;
+}
+
 .toggle .header {
     display: block;
     clear: both;

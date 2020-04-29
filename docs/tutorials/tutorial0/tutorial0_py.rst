@@ -158,7 +158,7 @@ Finally, let's test that the installation has worked by running Tutorial 0.
     cd tutorial0
     python3 tutorial0.py
 
-You should see the output similar to that shown below, with a welcome statement and the version number of the libCellML installation you built earlier:
+You should see the output similar to that shown below, with a welcome statement and the version number of the libCellML instalation you built earlier:
 
 .. code-block:: console
 
