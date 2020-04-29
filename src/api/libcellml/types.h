@@ -21,8 +21,8 @@ limitations under the License.
 namespace libcellml {
 
 // General classes.
-class Error; /**< Forward declaration of Error class. */
-using ErrorPtr = std::shared_ptr<Error>; /**< Type definition for shared error pointer. */
+class Issue; /**< Forward declaration of Issue class. */
+using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */

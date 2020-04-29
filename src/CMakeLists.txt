@@ -48,15 +48,14 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/orderedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/reset.cpp
@@ -75,19 +74,17 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/error.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/issue.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/orderedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/reset.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/specificationrules.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
@@ -119,11 +116,6 @@ set(HEADER_FILES
   ${LIBCELLML_VERSIONCONFIG_H}
   ${MATHML_CONFIG_H}
 )
-
-if (LIBCELLML_ENABLE_DEBUG_FUNCTIONS)
-  list(APPEND SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp)
-  list(APPEND HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/debug.h)
-endif()
 
 # Only does anything if configuration target is Visual Studio.
 group_source_to_dir_structure(
@@ -171,6 +163,31 @@ set_target_properties(cellml PROPERTIES
   VERSION ${libCellML_VERSION}
   INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
+)
+
+set(DEBUG_SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.cpp
+)
+
+set(DEBUG_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/debug.h
+)
+
+add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
+
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_11)
+
+target_include_directories(cellml_debug_utilities
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
+)
+
+target_link_libraries(cellml PRIVATE debug cellml_debug_utilities)
+
+group_source_to_dir_structure(
+  ${DEBUG_SOURCE_FILES}
+  ${DEBUG_HEADER_FILES}
 )
 
 configure_clang_and_clang_tidy_settings(cellml)
