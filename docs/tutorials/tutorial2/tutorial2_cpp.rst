@@ -94,7 +94,7 @@ Again following the same retrieval idiom as in Tutorial 1 for items in sets, we 
     libcellml::IssuePtr theFifteenthError = validator->error(14);
 
 Inside an :code:`Issue` structure are two fields which are really useful.
-These are the :code:`description` (which does what you'd think) and the :code:`specificationHeading`, which points you to the section in the CellML2.0 specification document for reference.
+These are the :code:`description` (which does what you'd think) and the :code:`referenceHeading`, which points you to the section in the CellML2.0 specification document for reference.
 
 .. container:: dothis
 
@@ -169,8 +169,7 @@ We'll change it to be :code:`"dimensionless"` instead.
 
 .. container:: nb
 
-    **Remember** that items can be accessed through their name (as below) or their
-    index (as above).
+    **Remember** that items can be accessed through their name (as below) or their index (as above).
 
 .. code-block:: cpp
 

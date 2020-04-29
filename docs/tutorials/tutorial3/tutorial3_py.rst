@@ -361,7 +361,7 @@ These will be combinations of those which we've already created, as defined by t
 
 .. container:: dothis
 
-    **3.d** Create two units representing "per fish month" (for the :code:`b` variable) and "per fish month" (for the :code:`d` variable).
+    **3.d** Create two units representing "per shark month" (for the :code:`b` variable) and "per fish month" (for the :code:`d` variable).
 
 The final two steps are to associate each variable with its appropriate units, and to include the units in the model.
 

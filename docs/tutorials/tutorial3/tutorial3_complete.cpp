@@ -104,14 +104,15 @@ int main()
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
-    //  1.f Add the maths strings in to the component
+    //  1.f, g Add the maths strings in to the component.
     component->setMath(mathHeader);
     component->appendMath(equation1);
     component->appendMath(equation2);
     component->appendMath(equation3);
     component->appendMath(mathFooter);
 
-    //  1.g Call the validator and check for error so far.  We expect there to be 20 errors found, related to missing variables
+    //  1.h Call the validator and check for error so far.
+    //      We expect there to be 18 errors found, related to missing variables
     //      in the component.
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);

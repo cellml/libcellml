@@ -46,11 +46,12 @@ Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting
 
 .. container:: dothis
 
-    **1.a** Create a new :code:`Model` using the :code:`libcellml::SomethingPtr something = libcellml::Something::create("myThingName");` idiom to create and name your model.
+    **1.a** Create a new :code:`Model` using the :code:`auto something = libcellml::Something::create("myThingName");` idiom to create and name your model.
 
 .. container:: dothis
 
     **1.b** Create a new :code:`Component` as above with a name, and add it to the model you created in 1.a.
+    This will be the integrator of the equations.
 
 Now for the real bit.
 In order to actually model anything, we need to include the mathematical equations which represent the phyiscal situation of interest.
@@ -95,10 +96,10 @@ Looking at the top equation first, the MathML2 representation of :math:`c = a - 
 
 Four things can be seen here:
 
-- the :code:`<apply>` opening and :code:`</apply>` closing tags which surround the *operations*;
-- the *operations* tags like :code:`<eq/>` and :code:`<plus/>` (or :code:`<minus/>`, :code:`<times/>`, :code:`<divide/>`) which stand alone rather than in an open/close pair;
-- the :code:`<ci>` opening and :code:`</ci>` closing tags which surround the variable names; and
-- the :code:`<cn>` opening and :code:`</cn>` closing tags which surround the constant :math:`2.0` value.
+- The :code:`<apply>` opening and :code:`</apply>` closing tags which surround the *operations*;
+- The *operations* tags like :code:`<eq/>` and :code:`<plus/>` (or :code:`<minus/>`, :code:`<times/>`, :code:`<divide/>`) which stand alone rather than in an open/close pair;
+- The :code:`<ci>` opening and :code:`</ci>` closing tags which surround the variable names; and
+- The :code:`<cn>` opening and :code:`</cn>` closing tags which surround the constant :math:`2.0` value.
 
 .. container:: dothis
 
@@ -189,20 +190,22 @@ It's simple to do this once in your code using a string to represent the opening
 Our last step in defining the mathematics is to link it into the component.
 The functions available to manipulate maths are:
 
-- A :code:`setMath` function, which overwrites any existing MathML strings
+- A :code:`setMath(yourMathsHere)` function, which overwrites any existing MathML strings
   stored in the :code:`Component` item;
-- An :code:`appendMath` function, which performs a straightforward string
+- An :code:`appendMath(yourMathsHere)` function, which performs a straightforward string
   concatenation with the current contents of the maths string in the
   :code:`Component`; and
-- A :code:`clearMath` function to remove all maths contents.
+- A :code:`clearMath()` function to remove all maths contents.
 
 .. container:: dothis
 
     **1.g**
-    Use the functions above to include the :code:`mathHeader`,
-    :code:`equation`, and :code:`mathFooter` strings into your component.
-    Note that the order in which these are added is important, as they are
-    stored as a single string.
+    Use the functions above to include the :code:`mathHeader`, :code:`equation`, and :code:`mathFooter` strings into your component.
+
+.. container:: nb
+
+    Note that the order in which strings are added might be important, as they are stored as a single concatenated string.
+    However, the order in which complete MathML equations occur in the overall MathML string is not important.
 
 .. container:: dothis
 
@@ -230,15 +233,15 @@ Step 2: Create the variables
 
 .. container:: dothis
 
-    **2.a** Create :code:`Variable` items for each of the missing
-    variables discovered above.  Remember that:
+    **2.a** Create :code:`Variable` items for each of the missing variables discovered above.
+    Remember that:
 
-    - Each must have a name, either using the naming constructor :code:`Variable::create("name_here")` or by manually calling the :code:`setName` function; and
+    - Each must have a name, either using the naming constructor :code:`Variable::create("myNewVariable")` or by manually calling the :code:`setName` function; and
     - Each name must match that inside your MathML string.
 
 .. container:: dothis
 
-    **2.b** Add each of your new variables to the component using the :code:`addVariable` function.
+    **2.b** Add each of your new variables to the component using the :code:`addVariable(myNewVariable)` function.
 
 .. container:: dothis
 
@@ -260,7 +263,10 @@ Step 3: Built-in and customised units
 Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
 Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
-There are four different kinds of units used here.
+There are four different kinds of units used here: irreducible units, built-in units, derived or combination units, and custom irreducible units.
+
+Irreducible units
+-----------------
 The first are called *irreducible* because they represent the physical base quantities which cannot be further simplified:
 
 - length (:code:`metre`)
@@ -268,11 +274,14 @@ The first are called *irreducible* because they represent the physical base quan
 - amount of a substance (:code:`mole`)
 - temperature (:code:`kelvin`)
 - mass (:code:`kilogram`)
-- current (:code:`ampere`)
+- electrical current (:code:`ampere`)
 - luminous intensity (:code:`candela`)
 - non-dimensional (:code:`dimensionless`)
 
 These *irreducible* units can be used to create all other physically-based units by combining them using different exponents, multipliers, and prefixes.
+
+Built-in units
+--------------
 Some of these combinations form our second type of units, the *built-in units*, these being common relationships which have been constructed from combinations of the irreducible units.
 The combinations can involve:
 
@@ -286,6 +295,8 @@ The combinations can involve:
 
 A list of pre-existing *built-in* convenience units is shown in the :ref:`Built-in Units page<builtinunits>`, along with their relationships to the irreducible units.
 
+Combination or derived units
+----------------------------
 The third type of units are those *combinations* which users can define for themselves based on the built-in units, the irreducible units, any other units already created, or (see below) their own custom irreducible units.
 
 For example, let's say that you want to simulate the time variable, :math:`t`, in units of milliseconds.
@@ -346,6 +357,8 @@ For example, after defining our :code:`millisecond` units, we could then use thi
 
     **3.b** Create a :code:`Units` item called "per_month" based on the one you just created, as shown above.
 
+Custom irreducible units
+------------------------
 The final type of unit is a custom irreducible unit.
 While this is not common in purely physical models (all of the seven physical attributes are already included), for times when you're modelling something non-physical (such as our numbers of sharks or fishes), you're able to define your own.
 Here's an example.
@@ -355,7 +368,8 @@ Here's an example.
     // Create a custom irreducible unit named "banana".
     auto uBanana = libcellml::Units::create("banana");
 
-    // Note that when a UnitsPtr is defined with a name only, it is effectively irreducible.
+    // Note that when a UnitsPtr is defined with a name only (that is, without any
+    // calls to the addUnit(...) function), it is effectively irreducible.
 
     // Create a new compound unit based on the "banana" unit above.
     auto uBunchOfBananas = libcellml::Units::create("bunch_of_bananas");
@@ -371,13 +385,11 @@ These will be combinations of those which we've already created, as defined by t
 
 .. container:: dothis
 
-    **3.d** Create two units representing "per fish month" (for the :code:`b` variable) and "per fish month" (for the :code:`d` variable).
+    **3.d** Create two units representing "per shark month" (for the :code:`b` variable) and "per fish month" (for the :code:`d` variable).
 
 The final two steps are to associate each variable with its appropriate units, and to include the units in the model.
 
 .. container:: nb
-
-    **Note:**
 
     - When you add different sub-unit parts into a :code:`Units` item, the function is :code:`addUnit` (singular), and it takes as argument the *name* of the sub-unit as a string (eg: :code:`"second"` used above).
     - When you add the final created combination into the :code:`Model` item, the function is :code:`addUnits` (plural), and it takes as argument the *reference* of the combined units (eg: :code:`ms`).
