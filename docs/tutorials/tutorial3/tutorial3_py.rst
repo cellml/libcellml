@@ -4,23 +4,22 @@
 Tutorial 3 Python: Model creation and code generation in the API
 ================================================================
 
-The outline for this tutorial is shown on the :ref:`Tutorial 3<tutorial3>`
-page. These are the Python instructions.  For the same tutorial in C++
-please see the :ref:`Tutorial 3 in C++<tutorial3_cpp>` page instead.
+The outline for this tutorial is shown on the :ref:`Tutorial 3<tutorial3>` page.
+These are the Python instructions.
+For the same tutorial in C++ please see the :ref:`Tutorial 3 in C++<tutorial3_cpp>` page instead.
 
-Requirements:
+*Requirements*
 
-    - :download:`tutorial3.py` Either the skeleton code, or ..
-    - :download:`tutorial3_complete.py` the completed tutorial code
+    - :download:`tutorial3.py` Either the skeleton code; or
+    - :download:`tutorial3_complete.py` the completed tutorial code.
 
 .. contents:: Contents
     :local:
 
 0: Setup
 ========
-Navigate into the :code:`tutorial3` folder and check that you can run the
-skeleton code against the libCellML library successfully.  Running the
-template:
+Navigate into the :code:`tutorial3` folder and check that you can run the skeleton code against the libCellML library successfully.
+Running the template:
 
 .. code-block:: console
 
@@ -37,31 +36,21 @@ template:
 
 1: Set up the governing equations
 =================================
-Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting
-up a :code:`Model` instance, and creating a component inside it.
+Just as you did in :ref:`Tutorial 2<tutorial2_cpp>`, we need to start by setting up a :code:`Model` instance, and creating a component inside it.
 
 .. container:: dothis
 
-    **1.a**
-    Create a new :code:`Model` using the
-    :code:`something = libcellml.Something("myThingName")` idiom to create and
-    name your model.
+    **1.a** Create a new :code:`Model` using the :code:`something = libcellml.Something("myThingName")` idiom to create and name your model.
 
 .. container:: dothis
 
-    **1.b**
-    Create a new :code:`Component` as above with a name, and add it
-    to the model you created in 1.a.
+    **1.b** Create a new :code:`Component` as above with a name, and add it to the model you created in 1.a.
 
-Now for the real bit.  In order to actually model anything, we need to include
-the mathematical equations which represent the phyiscal situation of interest.
-As you saw in :ref:`Tutorial 2<tutorial2_py>`, the maths and the
-:code:`Variable` items which it references live inside a parent
-:code:`Component` item.  At this point it should be noted that the *order* in
-which you add your components, or models, or variables (or anything) is not
-important to the final product, but it *can* affect how quickly you're able to
-find and fix bugs along the way.  In these tutorials, we have suggested that
-you add the mathematics first and use a :code:`Validator` to notify you of the
+Now for the real bit.
+In order to actually model anything, we need to include the mathematical equations which represent the phyiscal situation of interest.
+As you saw in :ref:`Tutorial 2<tutorial2_py>`, the maths and the :code:`Variable` items which it references live inside a parent :code:`Component` item.
+At this point it should be noted that the *order* in which you add your components, or models, or variables (or anything) is not important to the final product, but it *can* affect how quickly you're able to find and fix bugs along the way.
+In these tutorials, we have suggested that you add the mathematics first and use a :code:`Validator` to notify you of the
 outstanding items, but you can really do this in any order you choose.
 
 The system of equations which describe the populations are given by:
@@ -75,23 +64,18 @@ The system of equations which describe the populations are given by:
     \frac{dy_f}{dt} =f(sharks, fish, time) = c y_f + d y_s y_f
 
 
-where :math:`y_s` and :math:`y_f` are the number of sharks and thousands of
-fish respectively, and the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)`
-govern their behaviour.  It's clear that the value of constant :math:`c` is
-easily calculable from the first equation, but we will leave it in this form
+where :math:`y_s` and :math:`y_f` are the number of sharks and thousands of fish respectively, and the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)` govern their behaviour.
+It's clear that the value of constant :math:`c` is easily calculable from the first equation, but we will leave it in this form
 to better illustrate the operation of the :code:`Generator` later on.
 
-In order to use this in our model we need to write it as a
-MathML2 string.  The basic structure for these is described in the
-:mathml2help:`W3 resource pages regarding MathML2 <>`.
+In order to use this in our model we need to write it as a MathML2 string.
+The basic structure for these is described in the :mathml2help:`W3 resource pages regarding MathML2 <>`.
 
 .. container:: nb
 
-    **Note** that libCellML will **only** accept MathML2 markup, even though
-    later versions (3 and 4) are now available.
+    **Note** that libCellML will **only** accept MathML2 markup, even though later versions (3 and 4) are now available.
 
-Looking at the top equation first, the MathML2 representation of
-:math:`c=a-2.0` is:
+Looking at the top equation first, the MathML2 representation of :math:`c = a - 2.0` is:
 
 .. code-block:: xml
 
@@ -105,22 +89,17 @@ Looking at the top equation first, the MathML2 representation of
 
 Four things can be seen here:
 
-- the :code:`<apply>` opening and :code:`</apply>` closing tags which surround
-  the *operations*,
-- the *operations* tags like :code:`<eq/>` and :code:`<plus/>` (or :code:`<minus/>`,
-  :code:`<times/>`, :code:`<divide/>`) which stand alone rather than in an
-  open/close pair,
-- the :code:`<ci>` opening and :code:`</ci>` closing tags which surround the
-  variable names, and
-- the :code:`<cn>` opening and :code:`</cn>` closing tags which surround the
-  constant :math:`2.0` value.
+- The :code:`<apply>` opening and :code:`</apply>` closing tags which surround
+  the *operations*;
+- The *operations* tags like :code:`<eq/>` and :code:`<plus/>` (or :code:`<minus/>`, :code:`<times/>`, :code:`<divide/>`) which stand alone rather than in an open/close pair;
+- The :code:`<ci>` opening and :code:`</ci>` closing tags which surround the variable names; and
+- The :code:`<cn>` opening and :code:`</cn>` closing tags which surround the constant :math:`2.0` value.
 
 .. container:: dothis
 
   **1.c** Create a string containing the MathML which represents equation 1 above.
 
-Differential terms, such as those on the left-hand side of equations 2 and 3
-:math:`\frac{dx}{dt}` in MathML become:
+Differential terms, such as those on the left-hand side of equations 2 and 3 :math:`\frac{dx}{dt}` in MathML become:
 
 .. code-block:: xml
 
@@ -133,14 +112,11 @@ Differential terms, such as those on the left-hand side of equations 2 and 3
 
 Two further items to note:
 
-- The base variable for the integration is identified by the
-  :code:`<bvar> ... </bvar>` tags.  These variables are refered to as
-  *variables of integration* or *base variables*.
-- The :code:`<diff/>` operation signifies differentiation with respect to the
-  base variable.
+- The base variable for the integration is identified by the :code:`<bvar> ... </bvar>` tags.
+  These variables are refered to as *variables of integration* or *base variables*.
+- The :code:`<diff/>` operation signifies differentiation with respect to the base variable.
 
-The right-hand side becomes a collection of nested operations, all bracketed by
-:code:`<apply>...</apply>` tags for each operation:
+The right-hand side becomes a collection of nested operations, all bracketed by :code:`<apply>...</apply>` tags for each operation:
 
 .. code-block:: xml
 
@@ -156,8 +132,7 @@ The right-hand side becomes a collection of nested operations, all bracketed by
       </apply>
     </apply>
 
-When both sides are defined we need to equate them by :code:`<apply>` -ing the
-:code:`<eq/>` equals operator, and create a string so that we end up with:
+When both sides are defined we need to equate them by :code:`<apply>` -ing the :code:`<eq/>` equals operator, and create a string so that we end up with:
 
 .. code-block:: cpp
 
@@ -186,15 +161,12 @@ When both sides are defined we need to equate them by :code:`<apply>` -ing the
 
     **1.e** Create a third string representing equation 3.
 
-Next you need to define the namespace in which the maths will be applied
-by enclosing it in the :code:`<math> ... </math>` tags with the two namespaces:
+Next you need to define the namespace in which the maths will be applied by enclosing it in the :code:`<math> ... </math>` tags with the two namespaces:
 
-- the MathML2 namespace :code:`xmlns` at http://www.w3.org/1998/Math/MathML
-- the CellML2 namespace :code:`xmlns:cellml` at http://www.cellml.org/cellml/2.0#
+- The MathML2 namespace :code:`xmlns` at http://www.w3.org/1998/Math/MathML; and
+- The CellML2 namespace :code:`xmlns:cellml` at http://www.cellml.org/cellml/2.0# .
 
-It's simple to do this once in your code using a string to represent the
-opening attributes and namespaces; this string can be reused easily
-throughout your code as needed later:
+It's simple to do this once in your code using a string to represent the opening attributes and namespaces; this string can be reused easily throughout your code as needed later:
 
 .. code-block:: python
 
@@ -206,31 +178,22 @@ throughout your code as needed later:
 
     **1.f** Copy the opening and closing math strings above into your code.
 
-Our last step in defining the mathematics is to link it into the component. The
-functions available to manipulate maths are:
+Our last step in defining the mathematics is to link it into the component.
+The functions available to manipulate maths are:
 
-- a :code:`setMath` function, which overwrites any existing MathML strings
-  stored in the :code:`Component` item.
-- an :code:`appendMath` function, which performs a straightforward string
-  concatenation with the current contents of the maths string in the
-  :code:`Component`.
-- a :code:`clearMath` function to remove all maths contents.
+- A :code:`setMath` function, which overwrites any existing MathML strings stored in the :code:`Component` item;
+- An :code:`appendMath` function, which performs a straightforward string concatenation with the current contents of the maths string in the :code:`Component`; and
+- A :code:`clearMath` function to remove all maths contents.
 
 .. container:: dothis
 
-    **1.g**
-    Use the functions above to include the :code:`math_header`,
-    :code:`equation`, and :code:`math_footer` strings into your component.
-    Note that the order in which these are added is important, as they are
-    stored as a single string.
+    **1.g** Use the functions above to include the :code:`math_header`, :code:`equation`, and :code:`math_footer` strings into your component.
+    Note that the order in which these are added is important, as they are stored as a single string.
 
 .. container:: dothis
 
-    **1.h**
-    Create a :code:`Validator` and use it to check for errors in the
-    model at this point.  Use the utility function
-    :code:`print_errors_to_terminal` to output the messages to the
-    terminal.
+    **1.h** Create a :code:`Validator` and use it to check for errors in the model at this point.
+    Use the utility function :code:`print_errors_to_terminal` to output the messages to the terminal.
 
 You should see an output similar to that shown below:
 
@@ -245,33 +208,29 @@ You should see an output similar to that shown below:
          Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
        ...
 
-Running the validator will alert you variables in the MathML that don't (yet)
-exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
+Running the validator will alert you variables in the MathML that don't (yet) exist in your component.
+This was explained in :ref:`Tutorial 2<tutorial2_py>`.
 
 2: Create the variables
 =======================
 
 .. container:: dothis
 
-    **2.a** Create :code:`Variable` items for each of the missing
-    variables discovered above.  Remember that:
+    **2.a** Create :code:`Variable` items for each of the missing variables discovered above.
+    Remember that:
 
-    - each must have a name, either using the naming constructor
-      :code:`Variable("name_here")` or by manually calling the
-      :code:`setName` function;
-    - each name must match that inside your MathML string.
+    - Each must have a name, either using the naming constructor :code:`Variable("name_here")` or by manually calling the :code:`setName` function; and
+    - Each name must match that inside your MathML string.
 
 .. container:: dothis
 
-    **2.b** Add each of your new variables to the component using the
-    :code:`addVariable` function.
+    **2.b** Add each of your new variables to the component using the :code:`addVariable` function.
 
 .. container:: dothis
 
-    **2.c** Call the validator again to check for errors.  At this stage you
-    can expect errors like those below relating to missing units for the
-    variables.  Note that both these errors refer to the same thing: when the unit
-    is missing the variable sees its name field as being blank, hence the first error.
+    **2.c** Call the validator again to check for errors.
+    At this stage you can expect errors like those below relating to missing units for the variables.
+    Note that both these errors refer to the same thing: when the unit is missing the variable sees its name field as being blank, hence the first error.
 
 .. code-block:: console
 
@@ -284,16 +243,11 @@ exist in your component.  This was explained in :ref:`Tutorial 2<tutorial2_py>`.
 
 3: Built-in and customised units
 ================================
-Linking variables to the *name* of their units is straightforward, but in
-order to be able to use them we need to also define what the name actually
-*means* by creating the units themselves.  Some basic units have been defined
-and built into libCellML, others you can define by combining the built-in
-ones using scaling factors and exponents, or you can define your own from
-scratch if need be.
+Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
+Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
-There are four different kinds of units used here.  The first are called
-*irreducible* because they represent the physical base quantities which cannot
-be further simplified:
+There are four different kinds of units used here.
+The first are called *irreducible* because they represent the physical base quantities which cannot be further simplified:
 
 - length (:code:`metre`)
 - time (:code:`second`)
@@ -304,47 +258,36 @@ be further simplified:
 - luminous intensity (:code:`candela`)
 - non-dimensional (:code:`dimensionless`)
 
-These *irreducible* units can be used to create all other physically-based
-units by combining them using different exponents, multipliers, and prefixes.
-Some of these combinations form our second type of units, the *built-in units*,
-these being common relationships which have been constructed from combinations
-of the irreducible units.  The combinations can involve:
+These *irreducible* units can be used to create all other physically-based units by combining them using different exponents, multipliers, and prefixes.
+Some of these combinations form our second type of units, the *built-in units*, these being common relationships which have been constructed from combinations of the irreducible units.
+The combinations can involve:
 
-- a scaling factor (the units :code:`millisecond` is equivalent to
-  :code:`second` and a factor of 0.001)
-- a combination of units (a :code:`coulomb` is a :code:`second` multiplied by
-  an :code:`ampere`)
-- powers of units (a :code:`Hertz` has a base of :code:`second` with an
-  exponent of -1)
-- any combination of the above.
+- A scaling factor (the units :code:`millisecond` is equivalent to
+  :code:`second` and a factor of 0.001);
+- A combination of units (a :code:`coulomb` is a :code:`second` multiplied by
+  an :code:`ampere`);
+- Powers of units (a :code:`Hertz` has a base of :code:`second` with an
+  exponent of -1); and
+- Any combination of the above.
 
-A list of pre-existing *built-in* convenience units is shown in the
-:ref:`Built-in Units page<builtinunits>`, along with
+A list of pre-existing *built-in* convenience units is shown in the :ref:`Built-in Units page<builtinunits>`, along with
 their relationships to the irreducible units.
 
-The third type of units are those *combinations* which users can define for
-themselves based on the built-in units, the irreducible units, any other units
-already created, or (see below) their own custom irreducible units.
+The third type of units are those *combinations* which users can define for themselves based on the built-in units, the irreducible units, any other units already created, or (see below) their own custom irreducible units.
 
-For example, let's say that you want to simulate the time variable,
-:math:`t`, in units of milliseconds.  This isn't one of the built-in units, so
-you'll need to define it, but it's easy to see that it's based on the built-in
+For example, let's say that you want to simulate the time variable, :math:`t`, in units of milliseconds.
+This isn't one of the built-in units, so you'll need to define it, but it's easy to see that it's based on the built-in
 :code:`second`, but needs a scaling factor.
 
-For convenience libCellML gives a variety of options for defining such scaling
-factors:
+For convenience libCellML gives a variety of options for defining such scaling factors:
 
--  either through the use of named prefixes which are listed on the
-   :ref:`Prefix page<prefixes>`:
-      eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`
--  by defining an integer or integer string as a prefix which represents the
-    :math:`log_{10}` of the scaling factor:
-      eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3`
-   gives a scaling factor of :math:`10^{-3}=0.001`
-      NB: using an integer string like :code:`prefix="-3"` gives the same
-   result
--  by defining the scaling factor directly, as a multiplier:
-      eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`
+-  Either through the use of named prefixes which are listed on the :ref:`Prefix page<prefixes>`:
+      eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`;
+-  By defining an integer or integer string as a prefix which represents the :math:`log_{10}` of the scaling factor:
+      eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3` gives a scaling factor of :math:`10^{-3}=0.001`;
+      NB: using an integer string like :code:`prefix="-3"` gives the same result; or
+-  By defining the scaling factor directly, as a multiplier:
+      eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`.
 
 The overloaded argument option list is shown below:
 
@@ -356,18 +299,16 @@ The overloaded argument option list is shown below:
 where :code:`reference` can be another unit name string or a StandardUnits.
 And :code:`prefix` can be a string or an integer.
 
-To create a :code:`Units` item you need will follow the same basic steps as
-other entities: declare it, name it, define it, and then add it in.  For
-example:
+To create a :code:`Units` item you need will follow the same basic steps as other entities: declare it, name it, define it, and then add it in.
+For example:
 
-**TODO** Check the overloads of the addUnit function ... not sure these are
-consistent
+**TODO** Check the overloads of the addUnit function ... not sure these are consistent
 
 .. code-block:: python
 
     from libcellml import Units
 
-    # Declaring, naming, and defining a "millisecond" unit pointer
+    # Declare, name, and define a "millisecond" unit pointer.
     ms = Units("millisecond")
 
     # The manner of specification here is agnostic: all three definitions are identical.
@@ -379,90 +320,72 @@ consistent
 
 .. container:: dothis
 
-    **3.a** Use the example above to create, name and define the units of "month"
-    which will represent your time variable.  This should be defined as a
-    multiple of the built-in unit :code:`second`.
+    **3.a** Use the example above to create, name and define the units of "month" which will represent your time variable.  This should be defined as a multiple of the built-in unit :code:`second`.
 
-Units can be defined based on one another as well.  For example, after defining
-our :code:`millisecond` units, we could then use this definition to define the
-:code:`per_millisecond` units by simply including it with an exponent of -1:
+Units can be defined based on one another as well.
+For example, after defining our :code:`millisecond` units, we could then use this definition to define the :code:`per_millisecond` units by simply including it with an exponent of -1:
 
 .. code-block:: cpp
 
-    # Defining a per_millisecond unit based on millisecond^-1
+    # Defining a per_millisecond unit based on millisecond^-1.
     per_ms.addUnit(ms, -1.0)  # reference unit, exponent
 
 .. container:: dothis
 
-    **3.b** Create a :code:`Units` called "per_month" based on the one you just
-    created, as shown above.
+    **3.b** Create a :code:`Units` called "per_month" based on the one you just created, as shown above.
 
 The final type of unit is a custom irreducible unit.
-While this is not common in purely physical models (all of the seven physical
-attributes are already included), for times when you're modelling something
-non-physical (such as our numbers of sharks or fishes), you're able to define your
-own.  Here's an example.
+While this is not common in purely physical models (all of the seven physical attributes are already included), for times when you're modelling something non-physical (such as our numbers of sharks or fishes), you're able to define your own.
+Here's an example.
 
 .. code-block:: python
 
     from libcellml import Units
 
-    # Create a custom irreducible unit named "banana"
+    # Create a custom irreducible unit named "banana".
     uBanana = Units("banana")
 
     # Note that when a Units is defined with a name only, it is effectively irreducible.
 
-    # Create a new compound unit based on the "banana" unit above
+    # Create a new compound unit based on the "banana" unit above.
     uBunchOfBananas = Units("bunch_of_bananas")
     uBunchOfBananas.addUnit("banana", 5.0)  # include bananas^5 in the bunch_of_bananas unit
 
 .. container:: dothis
 
-    **3.c** Create the irreducible units needed by the shark and fish
-    populations.  Call these "number_of_sharks" and "thousands_of_fish"
-    respectively.
+    **3.c** Create the irreducible units needed by the shark and fish populations.
+    Call these "number_of_sharks" and "thousands_of_fish" respectively.
 
 Finally we need to create the units for the constants :code:`b` and :code:`d`.
-These will be combinations of those which we've already created, as defined
-by the need for dimensional consistency in our governing equations.
+These will be combinations of those which we've already created, as defined by the need for dimensional consistency in our governing equations.
 
 .. container:: dothis
 
-    **3.d** Create two units representing "per fish month" (for the :code:`b`
-    variable) and "per fish month" (for the :code:`d` variable).
+    **3.d** Create two units representing "per fish month" (for the :code:`b` variable) and "per fish month" (for the :code:`d` variable).
 
-The final two steps are to associate each variable with its appropriate units,
-and to include the units in the model.
+The final two steps are to associate each variable with its appropriate units, and to include the units in the model.
 
 .. container:: nb
 
     **Note:**
 
-    - When you add different sub-unit parts into a :code:`Units` item, the function
-      is :code:`addUnit` (singular), and it takes as argument the *name* of the
-      sub-unit as a string (eg: :code:`"second"` used above)
-    - When you add the final created combination into the :code:`Model` item,
-      the function is :code:`addUnits` (plural), and it takes as argument the
-      *reference* of the combined units (eg: :code:`ms`)
+    - When you add different sub-unit parts into a :code:`Units` item, the function is :code:`addUnit` (singular), and it takes as argument the *name* of the sub-unit as a string (eg: :code:`"second"` used above).
+    - When you add the final created combination into the :code:`Model` item, the function is :code:`addUnits` (plural), and it takes as argument the *reference* of the combined units (eg: :code:`ms`).
 
 .. container:: dothis
 
-    **3.e** Add the units to their variables using
-    :code:`my_variable.setUnits(myUnits)`.  Add the units to the model using
-    :code:`my_model.addUnits(myUnits)`.
+    **3.e** Add the units to their variables using :code:`my_variable.setUnits(myUnits)`.
+    Add the units to the model using :code:`my_model.addUnits(myUnits)`.
 
 .. container:: nb
 
-    **Gotcha**  When you specify the :code:`Units` for a :code:`Variable` using
-    its name then you may need to call the :code:`Model::linkUnits()` function
-    before validating the model.  If you see errors related to missing units
-    which do in fact exist, then a call to the :code:`Model::linkUnits()`
-    function is needed.
+    **Gotcha!**  When you specify the :code:`Units` for a :code:`Variable` using its name then you may need to call the :code:`Model::linkUnits()` function before validating the model.
+    If you see errors related to missing units which do in fact exist, then a call to the :code:`Model::linkUnits()` function is needed.
 
 .. container:: dothis
 
-    **3.f** Call the validator to check your model for errors.  You should see an
-    output similar to that shown below.
+    **3.f** Call the validator to check your model for errors.
+    You should see an output similar to that shown below.
 
 .. code-block:: console
 
@@ -473,32 +396,25 @@ and to include the units in the model.
        Validator error[1]:
          Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
 
-These messages are really referring to just one issue.  In the first MathML
-equation we used a real number :code:`<cn>2.0</cn>` without specifying any
-units for it.
+These messages are really referring to just one issue.
+In the first MathML equation we used a real number :code:`<cn>2.0</cn>` without specifying any units for it.
 
-Because the dimensionality of the equation needs to be valid, all real numbers
-must be associated with units, just the same way that variables are.  These are
-defined within the tags of the MathML, and must
-also refer to the :code:`cellml` namespace.  For example:
+Because the dimensionality of the equation needs to be valid, all real numbers must be associated with units, just the same way that variables are.
+These are defined within the tags of the MathML, and must also refer to the :code:`cellml` namespace.
+For example:
 
 .. code-block:: xml
 
     <cn cellml:units="bunch_of_bananas">1</cn>
 
-... which gives us one bunch of bananas, without needing to create a
-corresponding :code:`Variable` item.  Of course, you may need to create the
-corresponding :code:`Units` item and add it to the model, if it is not already
-present.
+... which gives us one bunch of bananas, without needing to create a corresponding :code:`Variable` item.
+Of course, you may need to create the corresponding :code:`Units` item and add it to the model, if it is not already present.
 
 .. container:: dothis
 
-    **3.g**  Create a copy of the MathML statement from step 1.c and add the
-    namespace and units definition as in the example above into the string.
-    Recall that using the :code:`setMath()` function will overwrite the
-    existing maths, and repeat the process you did in step 1.e to
-    include the new MathML instead.  Remember that you will need to reinclude
-    the opening and closing :code:`<math>` tags and other equations too.
+    **3.g**  Create a copy of the MathML statement from step 1.c and add the namespace and units definition as in the example above into the string.
+    Recall that using the :code:`setMath()` function will overwrite the existing maths, and repeat the process you did in step 1.e to include the new MathML instead.
+    Remember that you will need to reinclude the opening and closing :code:`<math>` tags and other equations too.
 
 .. container:: dothis
 
@@ -506,45 +422,36 @@ present.
 
 4: Use code generation to change the output langauge
 ====================================================
-Some exciting new functionality of libCellML is its ability to generate a
-runable file from a model description.  This means that if you already have
-a solver in either C or Python, you can simply translate your model from here
-into that language.  Let's give it a go.
+Some exciting new functionality of libCellML is its ability to generate a runable file from a model description.
+This means that if you already have a solver in either C or Python, you can simply translate your model from here into that language.
+Let's give it a go.
 
 The generator is instantiated in the same way as the other items:
 
 .. code-block:: python
 
-    # Instantiate the generator and submit the model to it for processing
+    # Instantiate the generator and submit the model to it for processing.
     generator = libcellml.Generator()
     generator.processModel(model)
 
-The :code:`Generator` has to re-interpret all of the maths, including the
-variables, their interaction with each other in different equations, values,
-initial conditions and units before it can output your model in your choice
-of language.  For the maths to make sense, the definitions in your model's
-variables, maths blocks and units need to be solvable too.  There are several
-requirements that need to be satisfied in order for the code generation
-functionality to be able to work.  These are:
+The :code:`Generator` has to re-interpret all of the maths, including the variables, their interaction with each other in different equations, values, initial conditions and units before it can output your model in your choice of language.
+For the maths to make sense, the definitions in your model's variables, maths blocks and units need to be solvable too.
+There are several requirements that need to be satisfied in order for the code generation functionality to be able to work.  These are:
 
-- the mathematical model definition must be appropriately constrained (not
-  over- or under-constrained)
-- initial conditions must be specified for variables which are integrated
-- initial conditions must not be specified for variables which are the base of
-  integration
-- the values of constants must be specified or calculable
+- The mathematical model definition must be appropriately constrained (not over- or under-constrained);
+- Initial conditions must be specified for variables which are integrated;
+- Initial conditions must not be specified for variables which are the base of integration;
+- The values of constants must be specified or calculable; and
 - **TODO get full list of stuff here ...**
 
 .. container:: dothis
 
-    **4.a**  Create a :code:`Generator` instance and follow the example above
-    to process your model.
+    **4.a**  Create a :code:`Generator` instance and follow the example above to process your model.
 
 .. container:: dothis
 
-    **4.b** Call the utility function :code:`print_errors_to_terminal` for your
-    generator to check it.  You should see an output similar to that shown
-    below.
+    **4.b** Call the utility function :code:`print_errors_to_terminal` for your generator to check it.
+    You should see an output similar to that shown below.
 
 .. code-block:: console
 
@@ -569,40 +476,30 @@ functionality to be able to work.  These are:
          is used in an ODE, but it is not initialised.
 
 
-The error messages above refer to the fact that though our model has passed
-validation tests, it's not yet sufficiently constrained to allow it to be
-solved, which is what the :code:`Generator` checks for.  We need to set initial
-conditions for the variables we're solving for, the populations of sharks and
-fish, using the :code:`setInitialValue` function.  The values of the constants
-:code:`a, b, c, d` are just that - constant - and their values are set using
-the same :code:`setInitialValue` function.
+The error messages above refer to the fact that though our model has passed validation tests, it's not yet sufficiently constrained to allow it to be solved, which is what the :code:`Generator` checks for.
+We need to set initial conditions for the variables we're solving for, the populations of sharks and fish, using the :code:`setInitialValue` function.
+The values of the constants :code:`a, b, c, d` are just that - constant - and their values are set using the same :code:`setInitialValue` function.
 
 .. container:: dothis
 
-    **4.c** Set the values of the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)`
-    and the initial conditions such that :math:`y_f(t=0)=2.0` and
-    :math:`y_s(t=0)=1.0`.  Note that:
+    **4.c** Set the values of the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)` and the initial conditions such that :math:`y_f(t=0)=2.0` and :math:`y_s(t=0)=1.0`.  Note that:
 
-    - the constant :math:`c` will be calculated by our equation 1, so does
-      not need to be specified,
-    - the base variable (or "variable of integration", or "voi") :math:`t`
+    - The constant :math:`c` will be calculated by our equation 1, so does
+      not need to be specified; and
+    - The base variable (or "variable of integration", or "voi") :math:`t`
       must *not* have an initial condition set.
 
 .. container:: dothis
 
     **4.d** Reprocess the model and verify that the generator returns no errors.
 
-Once the generator is happy we can use it to retrieve code generated according
-to the :code:`GeneratorProfile`, either C or Python.  Of course, your choice of
-generator profile (language) will affect *what* you need to export:
+Once the generator is happy we can use it to retrieve code generated according to the :code:`GeneratorProfile`, either C or Python.
+Of course, your choice of generator profile (language) will affect *what* you need to export:
 
-- If you're using the C profile, then you will need both the header file
-  as well as the source code.
+- If you're using the C profile, then you will need both the header file as well as the source code.
 - If you're using Python, you will only need the source code.
 
-By default the :code:`GeneratorProfile` is set to C so we can use it as-is to
-generate implementation code (source code) and interface code (header code)
-like this:
+By default the :code:`GeneratorProfile` is set to C so we can use it as-is to generate implementation code (source code) and interface code (header code) like this:
 
 .. code-block:: python
 
@@ -618,16 +515,13 @@ like this:
 
 .. container:: dothis
 
-    **4.e** Use the examples above to create your own interface code
-    (that is, the \*.h file contents) and source code
-    (that is, the \*.c file contents) from your model, and save them into
-    appropriately named files.
+    **4.e** Use the examples above to create your own interface code (that is, the \*.h file contents) and source code (that is, the \*.c file contents) from your model, and save them into appropriately named files.
 
 We can change the profile to Python using the following expression:
 
 .. code-block:: python
 
-    # Change the generated language from the default C to Python
+    # Change the generated language from the default C to Python.
     profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
     generator.setProfile(profile)
 
@@ -637,14 +531,12 @@ We can change the profile to Python using the following expression:
 
 .. container:: dothis
 
-    **4.g** In the same way as earlier, retrieve the implementation code and write it to
-    a Python file.  For the Python profile you will not need interface code.
+    **4.g** In the same way as earlier, retrieve the implementation code and write it to a Python file.
+    For the Python profile you will not need interface code.
 
 Check that you have indeed created three new files.
 
 .. container:: dothis
 
-    **4.h**
-    Go and have a cuppa, you're done (for now).  The contents of these
-    generated files and their usage is described in the next tutorial,
-    :ref:`Tutorial 4<tutorial4>`.
+    **4.h** Go and have a cuppa, you're done (for now).
+    The contents of these generated files and their usage is described in the next tutorial, :ref:`Tutorial 4<tutorial4>`.
