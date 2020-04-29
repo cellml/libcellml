@@ -846,9 +846,9 @@ TEST(Units, multipleAndParse)
 
 TEST(Units, unitsWithPrefixOutOfRange)
 {
-    // int limit is 18,446,744,073,709,551,615
+    // int limit is 2,147,483,647
 
-    const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
+    const std::string e = "Prefix '2147483648' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -860,7 +860,7 @@ TEST(Units, unitsWithPrefixOutOfRange)
     libcellml::UnitsPtr u = libcellml::Units::create();
 
     u->setName("myUnits");
-    u->addUnit("second", "18446744073709551616");
+    u->addUnit("second", "2147483648");
     v->setUnits(u);
     c->addVariable(v);
     m->addComponent(c);
@@ -870,8 +870,8 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(e, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(e, validator->issue(0)->description());
 }
 
 TEST(Units, parentOfUnits)
@@ -2418,4 +2418,38 @@ TEST(Units, scalingFactorIncompatibleUnitsNoChecking)
     model->addUnits(lemons);
 
     EXPECT_EQ(1.0E+6, libcellml::Units::scalingFactor(oranges, lemons, false));
+}
+
+TEST(Units, scalingFactorSelfReferencingUnits1)
+{
+    auto model = libcellml::Model::create();
+    auto X = libcellml::Units::create("X");
+    X->addUnit("mole");
+    auto mX = libcellml::Units::create("mX");
+    mX->addUnit("X", "milli");
+    model->addUnits(X);
+    model->addUnits(mX);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+
+    X->addUnit("litre", -1.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+}
+
+TEST(Units, scalingFactorSelfReferencingUnits2)
+{
+    auto model = libcellml::Model::create();
+    auto X = libcellml::Units::create("X");
+    X->addUnit("mole");
+    auto mX = libcellml::Units::create("mX");
+    mX->addUnit("X", "milli");
+    model->addUnits(X);
+    model->addUnits(mX);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+
+    X->addUnit("litre", -3.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
 }
