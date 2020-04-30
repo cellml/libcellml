@@ -6,9 +6,9 @@ set(INSTALL_PREFIX "" CACHE PATH "Please enter the path to the libCellML install
 set(libCellML_DIR "${INSTALL_PREFIX}/lib/cmake/libCellML")
 find_package(libCellML REQUIRED)
 
-#   1.b Note that you will need to adjust the file name here to match the one that you generated 
-#       in Tutorial 3.  You will also need to change its extension to be *.cpp instead of *.c in
-#       order for CMake to accept it.
+#   1.b, c Note that you will need to adjust the file name here to match the one that you generated
+#          in Tutorial 3.  You will also need to change its extension to be *.cpp instead of *.c in
+#          order for CMake to accept it.
 set (PROJECT_SRC
         ${PROJECT_NAME}.cpp
         ../utilities/tutorial_utilities.cpp

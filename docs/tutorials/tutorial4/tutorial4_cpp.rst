@@ -6,19 +6,19 @@ Tutorial 4 C++: Generating code and model simulation
 
 This tutorial assumes that you are comfortable with:
 
- - Interacting with a model and its entities using the API (see :ref:`Tutorial 3<tutorial3_cpp>`); and
- - Using the Generator functionality to output files in C or Python (see :ref:`Tutorial 3<tutorial3_cpp>`).
+    - Interacting with a model and its entities using the API (see :ref:`Tutorial 3<tutorial3_cpp>`); and
+    - Using the :code:`Generator` functionality to output files in C or Python (see :ref:`Tutorial 3<tutorial3_cpp>`).
 
 By the end of this tutorial you will be able to:
 
-- Interact with files created by the :code:`Generator` to retrieve information for integrating; and
-- Use the simple solver provided to numerically integrate the governing equations of the model.
+    - Interact with files created by the :code:`Generator` to retrieve information for integrating; and
+    - Use the simple solver provided to numerically integrate the governing equations of the model.
 
 .. contents:: Contents
     :local:
 
-1: Include the generated code in this project
-=============================================
+Step 1: Include the generated code in this project
+==================================================
 In :ref:`Tutorial 3<tutorial3_cpp>` you created a CellML model representing the population dynamics in a predator-prey situation, and used the :code:`Generator` to write files which can be run using a numerical integration solver in either Python or C.
 
 This tutorial is slightly different from the other ones because you will need to change the way your project is compiled and built in order to include the generated code.
@@ -32,25 +32,38 @@ Because this is for generated code in C you will need the files:
 
 .. container:: dothis
 
-    **1.a** Enter the path to the generated header/interface :code:`*.h` file in the :code:`#include` section at the top of your :code:`tutorial4.cpp` file.
+    **1.a** Enter the path to the generated header/interface :code:`.h` file in the :code:`#include` section at the top of your :code:`tutorial4.cpp` file.
 
 .. container:: dothis
 
-    **1.b** If you're using the generated file with a :code:`*.c` extension you will need to change the file extension to :code:`*.cpp` for it to build correctly with the supplied template.
+    **1.b** If you're using the generated file with a :code:`.c` extension you will need to change the file extension to :code:`.cpp` for it to build correctly with the supplied template.
     Do this now.
 
 .. container:: dothis
 
     **1.c** Add the name and path of the implementation :code:`.cpp` file into the CMakeLists.txt file so that it's built with your project.
 
+    Inside the CMakeLists.txt file:
+    .. code-block:: cmake
+
+        #   1.b, c Note that you will need to adjust the file name here to match the one that you generated
+        #          in Tutorial 3.  You will also need to change its extension to be *.cpp instead of *.c in
+        #          order for CMake to accept it.
+        set (PROJECT_SRC
+                ${PROJECT_NAME}.cpp
+                ../utilities/tutorial_utilities.cpp
+                ../resources/tutorial3_PredatorPrey_generated.cpp
+             )
+
 .. container:: dothis
 
-    **1.d** Open your generated :code:`.cpp` file and change the name of the header it includes using the :code:`#include` statement to be the name of your generated header :code:`*.h` file.
+    **1.d** Open your generated :code:`.cpp` file and change the name of the header it includes using the :code:`#include` statement to be the name of your generated header :code:`.h` file.
     By default this is :code:`#include "model.h"`.
 
 .. container:: dothis
 
-    **1.e** The version which the generated code was created with is stored in a variable called :code:`LIBCELLML_VERSION`.  Print this to the terminal and check that it matches the version of libCellML library which you're using, just like in :ref:`Tutorial 0<tutorial0_cpp>`.
+    **1.e** The version which the generated code was created with is stored in a variable called :code:`LIBCELLML_VERSION`.
+    Print this to the terminal and check that it matches the version of libCellML library which you're using, just like in :ref:`Tutorial 0<tutorial0_cpp>`.
 
 .. container:: dothis
 
@@ -62,8 +75,8 @@ Because this is for generated code in C you will need the files:
         make -j
         ./tutorial4
 
-2: Investigate the information items in the generated files
-===========================================================
+Step 2: Investigate the information items in the generated files
+================================================================
 This step is about figuring out what's contained in the generated files, and demonstrating how you can use them to run your simulation.
 
 The implementation code contains some constants as well as functions which make it simple to switch between models for solution.
@@ -79,8 +92,7 @@ The :code:`Generator` classifies all the :code:`Variable` items within each :cod
     - :code:`COMPUTED_CONSTANT` variables need calculation but not integration, and
     - :code:`ALGEBRAIC` variables need ...?? **TODO**
 
-  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>`
-    tags in the MathML.
+  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>` tags in the MathML.
     These must not be initialised.
   - *states* are those variables which do need integration by a solver.
 
@@ -104,7 +116,6 @@ We can see this results of this classification process in the generated code ret
       {"c", "dimensionless", "shark_fish_interaction", CONSTANT},
       {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
   };
-
 
 These are accessible in the generated code:
 
@@ -148,8 +159,8 @@ This is stored in :code:`VOI_INFO`, a :code:`VariableInfo` item.
 
     **2.c** Retrieve the information about the VOI and print it to the terminal.
 
-3: Investigate the functions provided in the generated files
-============================================================
+Step 3: Investigate the functions provided in the generated files
+=================================================================
 As well as the information items, the generated code also contains functions which are derived from the governing equations in the MathML blocks in the original CellML model.
 
 In order to perform any kind of numerical integration, a solver needs three things:
@@ -223,8 +234,8 @@ There's a second helper function :code:`computeComputedConstants(double *variabl
 
 Now we're ready to begin solving the model.
 
-4: Iterate through the solution
-===============================
+Step 4: Iterate through the solution
+====================================
 A simple solver has been provided for you and is described in the :ref:`Theory of ODE section <theory_ode_solutions>`, or you can easily write your own following the steps below.
 
 This part will make use of a simple routine to step through the solution iterations using the Euler method to update the state variables.
@@ -289,8 +300,8 @@ This is done by calling the :code:`computeRates` function to recalculate the rat
         - Compute the state variables using the update method above; and
         - Write to the file.
 
-5: Output
-=========
+Step 5: Output
+==============
 
 .. container:: dothis
 
