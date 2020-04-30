@@ -413,12 +413,11 @@ The values of the constants :code:`a, b, c, d` are just that - constant - and th
 
 .. container:: dothis
 
-    **4.c** Set the values of the constants :math:`(a, b, d)=(-0.8, 0.3, -0.6)` and the initial conditions such that :math:`y_f(t=0)=2.0` and :math:`y_s(t=0)=1.0`.  Note that:
+    **4.c** Set the values of the constants :math:`(a, b, d) = (-0.8, 0.3, -0.6)` and the initial conditions such that :math:`y_f(t=0)=2.0` and :math:`y_s(t=0)=1.0`.
+    Note that:
 
-    - The constant :math:`c` will be calculated by our equation 1, so does
-      not need to be specified; and
-    - The base variable (or "variable of integration", or "voi") :math:`t`
-      must *not* have an initial condition set.
+    - The constant :math:`c` will be calculated by our equation 1, so does not need to be specified; and
+    - The base variable (or "variable of integration", or "voi") :math:`t` must *not* have an initial condition set.
 
 .. container:: dothis
 

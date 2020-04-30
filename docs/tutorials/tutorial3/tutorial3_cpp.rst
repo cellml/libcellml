@@ -263,7 +263,13 @@ Step 3: Built-in and customised units
 Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
 Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
+.. container:: toggle
 
+    .. container:: header
+
+        Read more about units
+
+    .. include:: aside_units.rst
 
 To create a :code:`Units` item you need will follow the same basic steps as other entities: declare it, name it, define it, and then add it in.
 For example:
@@ -334,7 +340,7 @@ The final two steps are to associate each variable with its appropriate units, a
 
      The validator has found 2 errors!
        Validator error[0]:
-         Description: CellML identifiers must contain one or more basic Latin :term:`alphabetic<Basic Latin alphabetic character>` characters.
+         Description: CellML identifiers must contain one or more basic Latin characters.
          See section 3.1.3 in the CellML specification.
        Validator error[1]:
          Description: Math cn element with the value '2.0' does not have a valid cellml:units attribute.
@@ -350,8 +356,7 @@ These are defined within the tags of the MathML, and must also refer to the :cod
     <cn cellml:units="bunch_of_bananas">1</cn>
 
 ... which gives us one bunch of bananas, without needing to create a corresponding :code:`Variable` item.
-Of course, you may need to create the corresponding :code:`Units` item and add it to the model, if it is not already
-present.
+Of course, you may need to create the corresponding :code:`Units` item and add it to the model, if it is not already present.
 
 .. container:: dothis
 
@@ -362,7 +367,6 @@ present.
 .. container:: dothis
 
     **3.h** Check that the model is now free of validation errors.
-
 
 Step 4: Use code generation to change the output langauge
 =========================================================
