@@ -246,63 +246,13 @@ Step 3: Built-in and customised units
 Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
 Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
-There are four different kinds of units used here.
-The first are called *irreducible* because they represent the physical base quantities which cannot be further simplified:
+.. container:: toggle
 
-- length (:code:`metre`)
-- time (:code:`second`)
-- amount of a substance (:code:`mole`)
-- temperature (:code:`kelvin`)
-- mass (:code:`kilogram`)
-- current (:code:`ampere`)
-- luminous intensity (:code:`candela`)
-- non-dimensional (:code:`dimensionless`)
+    .. container:: header
 
-These *irreducible* units can be used to create all other physically-based units by combining them using different exponents, multipliers, and prefixes.
-Some of these combinations form our second type of units, the *built-in units*, these being common relationships which have been constructed from combinations of the irreducible units.
-The combinations can involve:
+        Read more about units
 
-- A scaling factor (the units :code:`millisecond` is equivalent to
-  :code:`second` and a factor of 0.001);
-- A combination of units (a :code:`coulomb` is a :code:`second` multiplied by
-  an :code:`ampere`);
-- Powers of units (a :code:`Hertz` has a base of :code:`second` with an
-  exponent of -1); and
-- Any combination of the above.
-
-A list of pre-existing *built-in* convenience units is shown in the :ref:`Built-in Units page<builtinunits>`, along with
-their relationships to the irreducible units.
-
-The third type of units are those *combinations* which users can define for themselves based on the built-in units, the irreducible units, any other units already created, or (see below) their own custom irreducible units.
-
-For example, let's say that you want to simulate the time variable, :math:`t`, in units of milliseconds.
-This isn't one of the built-in units, so you'll need to define it, but it's easy to see that it's based on the built-in
-:code:`second`, but needs a scaling factor.
-
-For convenience libCellML gives a variety of options for defining such scaling factors:
-
--  Either through the use of named prefixes which are listed on the :ref:`Prefix page<prefixes>`:
-      eg: :code:`millisecond` is :code:`second` with :code:`prefix="milli"`;
--  By defining an integer or integer string as a prefix which represents the :math:`log_{10}` of the scaling factor:
-      eg: :code:`millisecond` is :code:`second` with :code:`prefix=-3` gives a scaling factor of :math:`10^{-3}=0.001`;
-      NB: using an integer string like :code:`prefix="-3"` gives the same result; or
--  By defining the scaling factor directly, as a multiplier:
-      eg: :code:`millisecond` is :code:`second` with :code:`multiplier=0.001`.
-
-The overloaded argument option list is shown below:
-
-.. code-block:: python
-    addUnit(reference, prefix, exponent=1, multiplier=1)
-    addUnit(reference, exponent)
-    addUnit(reference)
-
-where :code:`reference` can be another unit name string or a StandardUnits.
-And :code:`prefix` can be a string or an integer.
-
-To create a :code:`Units` item you need will follow the same basic steps as other entities: declare it, name it, define it, and then add it in.
-For example:
-
-**TODO** Check the overloads of the addUnit function ... not sure these are consistent
+    .. include:: aside_units.rst
 
 .. code-block:: python
 
@@ -320,7 +270,8 @@ For example:
 
 .. container:: dothis
 
-    **3.a** Use the example above to create, name and define the units of "month" which will represent your time variable.  This should be defined as a multiple of the built-in unit :code:`second`.
+    **3.a** Create, name and define the units of "month" which will represent your time variable.
+    This should be defined as a multiple of the built-in unit :code:`second`.
 
 Units can be defined based on one another as well.
 For example, after defining our :code:`millisecond` units, we could then use this definition to define the :code:`per_millisecond` units by simply including it with an exponent of -1:
@@ -333,23 +284,6 @@ For example, after defining our :code:`millisecond` units, we could then use thi
 .. container:: dothis
 
     **3.b** Create a :code:`Units` called "per_month" based on the one you just created, as shown above.
-
-The final type of unit is a custom irreducible unit.
-While this is not common in purely physical models (all of the seven physical attributes are already included), for times when you're modelling something non-physical (such as our numbers of sharks or fishes), you're able to define your own.
-Here's an example.
-
-.. code-block:: python
-
-    from libcellml import Units
-
-    # Create a custom irreducible unit named "banana".
-    uBanana = Units("banana")
-
-    # Note that when a Units is defined with a name only, it is effectively irreducible.
-
-    # Create a new compound unit based on the "banana" unit above.
-    uBunchOfBananas = Units("bunch_of_bananas")
-    uBunchOfBananas.addUnit("banana", 5.0)  # include bananas^5 in the bunch_of_bananas unit
 
 .. container:: dothis
 
@@ -366,8 +300,6 @@ These will be combinations of those which we've already created, as defined by t
 The final two steps are to associate each variable with its appropriate units, and to include the units in the model.
 
 .. container:: nb
-
-    **Note:**
 
     - When you add different sub-unit parts into a :code:`Units` item, the function is :code:`addUnit` (singular), and it takes as argument the *name* of the sub-unit as a string (eg: :code:`"second"` used above).
     - When you add the final created combination into the :code:`Model` item, the function is :code:`addUnits` (plural), and it takes as argument the *reference* of the combined units (eg: :code:`ms`).
