@@ -1,8 +1,8 @@
 .. _tutorial4_cpp:
 
-=======================================================
+====================================================
 Tutorial 4 C++: Generating code and model simulation
-=======================================================
+====================================================
 
 This tutorial assumes that you are comfortable with:
 
@@ -86,15 +86,17 @@ Classification of variables
 +++++++++++++++++++++++++++
 The :code:`Generator` classifies all the :code:`Variable` items within each :code:`Component` as:
 
-  - *variables* do not require integration, but come in three types:
+    - **Variables**: These do not require integration, but come in three types:
 
-    - :code:`CONSTANT` variables do not need any kind of calculation
-    - :code:`COMPUTED_CONSTANT` variables need calculation but not integration, and
-    - :code:`ALGEBRAIC` variables need ...?? **TODO**
+      - :code:`CONSTANT` variables do not need any kind of calculation;
+      - :code:`COMPUTED_CONSTANT` variables need calculation but not integration; and
+      - :code:`ALGEBRAIC` variables need ...?? **TODO**
 
-  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>` tags in the MathML.
-    These must not be initialised.
-  - *states* are those variables which do need integration by a solver.
+    - **Variables of integration**: Also called "base variables", "free variables", or "VOI", these are specified by the :code:`<bvar>` child of the :code:`<diff>` operator.
+      VOI must not be initialised.
+
+    - **States**: These are those variables which need integration by a solver.
+      They are the :code:`<ci>` child of the :code:`<diff>` operator.
 
 We can see this results of this classification process in the generated code returned by a call to the :code:`implementationCode` function of the :code:`Generator`.
 
@@ -120,13 +122,15 @@ We can see this results of this classification process in the generated code ret
 These are accessible in the generated code:
 
     - :code:`VARIABLE_COUNT` is an integer representing the number of variables (including constants) in the model.
-    Note that these are variables which might need calculation, but do not need integration.
+      Note that these are variables which might need calculation, but do not need integration.
+
     - :code:`VARIABLE_INFO` is an array of :code:`VariableInfoWithType` structs, which contains:
 
         - a :code:`name` field;
         - a :code:`units` field;
         - a :code:`component` field; and
         - a :code:`type` enum field.
+
     - the :code:`VARIABLE_INFO` array is :code:`VARIABLE_COUNT` long.
 
 .. container:: dothis
@@ -136,9 +140,8 @@ These are accessible in the generated code:
 There are similar information items related to the state variables.
 These are:
 
-    - :code:`STATE_COUNT` is an integer representing the number of state
-      variables in the model.  These are the variables which need to be
-      integrated.
+    - :code:`STATE_COUNT` is an integer representing the number of state variables in the model.
+      These are the variables which need to be integrated.
     - :code:`STATE_INFO` is an array of :code:`VariableInfo`
       structs, which contains:
 
@@ -169,6 +172,8 @@ In order to perform any kind of numerical integration, a solver needs three thin
     - A way to update the gradient function of each of the state variables as the solution progresses; and
     - A method to move from the current solution position to the next one.
 
+For a more detailed background on numerical integration, please see :ref:`Solution methods for ODEs<theory_ode_solutions>`.
+
 Allocating arrays
 +++++++++++++++++
 Because we're writing this tutorial based around a general situation, we can use the helper functions provided to allocate these arrays to the right size.
@@ -196,11 +201,11 @@ In :ref:`Tutorial 3<tutorial3_cpp>` we used three equations to define this model
 
 with constants :math:`(a, b, d)=(1.2, -0.6, 0.3)` and initial condtions of :math:`y_s(t=0)=2.0` and :math:`y_f(t=0)=1.0`.
 
-If you look inside the implementation file (:code:`*.c/cpp`) which was generated in the last tutorial you'll see:
+If you look inside the implementation file (:code:`*.c/cpp`) which was generated in the last tutorial you'll see the code shown below, and recognise its correlation with the initial conditions above.
 
 .. code-block:: cpp
 
-    // tutorial3_PredatorPrey_generated.cpp
+    // tutorial3_PredatorPrey_generated.cpp:
     void initializeStatesAndConstants(double *states, double *variables)
     {
         states[0] = 2.0;        // represents the inital number of sharks
@@ -210,19 +215,17 @@ If you look inside the implementation file (:code:`*.c/cpp`) which was generated
         variables[2] = 0.3;     // d, constant in the rates equation for fish
     }
 
-From here we can see the correlation with the initial conditions we specified in Tutorial 3.
-
 .. container:: dothis
 
     **3.b** Call the :code:`initializeStatesAndConstants` function to initalise the arrays you created earlier.
     Print them to the terminal for checking.
 
-Printing to the terminal should show you that while the CellML :code:`Variable` items for which we specified an inital value have been applied, the constant :code:`c` has not yet been evaluated.
+Printing to the terminal should show you that while the CellML :code:`Variable` items for which we specified an initial value have been applied, the constant :code:`c` has not yet been evaluated.
 There's a second helper function :code:`computeComputedConstants(double *variables)` which will do this for you.
 
 .. code-block:: cpp
 
-    // tutorial3_PredatorPrey_generated.cpp
+    // tutorial3_PredatorPrey_generated.cpp:
     void computeComputedConstants(double *variables)
     {
         variables[3] = variables[0] - 2.0;    // c, constant in the rates equation for fish
@@ -236,9 +239,10 @@ Now we're ready to begin solving the model.
 
 Step 4: Iterate through the solution
 ====================================
-A simple solver has been provided for you and is described in the :ref:`Theory of ODE section <theory_ode_solutions>`, or you can easily write your own following the steps below.
+A simple solver has been provided for you already, as outlined in :ref:`<solver>`.
+Please visit that page for details of its operation, or you can easily write your own following the steps below.
 
-This part will make use of a simple routine to step through the solution iterations using the Euler method to update the state variables.
+We now make use of a simple routine to step through the solution iterations using the Euler method to update the state variables.
 Following initialisation of some solution controls (time step, end point) there are three general parts to each iteration:
 
     - Computing the variables at the current timestep;
@@ -251,6 +255,8 @@ Following initialisation of some solution controls (time step, end point) there 
     **4.a** Define some variables to control the total number of steps to take, and the size that those steps should be.
     In this example it's safe to use a step of 0.001 and an end time of 20.
 
+.. container:: dothis
+
     **4.b** Create a file for output and open it.
     We'll simply write the solution directly to the file instead of allocating memory for storage.
     Name your columns with VOI and the state variable names and units.
@@ -258,21 +264,21 @@ Following initialisation of some solution controls (time step, end point) there 
 Specification of the variables
 ++++++++++++++++++++++++++++++
 In each iteration the variables may need to be updated.
-In our example we do not have any dependencies (that is, :math:`a, b, c, d` are constants) so the function which updates them is blank here, but this is not true of the general case.
+In our example we do not have any dependencies (that is, :math:`a, b, c, d` are constants) so the function which updates them is blank here; this is not true of the general case.
 
 .. code-block:: cpp
 
-    // tutorial3_PredatorPrey_generated.cpp
+    // tutorial3_PredatorPrey_generated.cpp:
     void computeVariables(double voi, double *states, double *rates, double *variables)
     {
     }
 
 Specification of states and rates
 +++++++++++++++++++++++++++++++++
-Once a :code:`Variable` has been identified as a *state* variable, it is paired by the :code:`Generator` by its corresponding entry in the :code:`rates` array, which represents its gradient function.
+Once a :code:`Variable` has been identified as a *state* variable, it is paired by the :code:`Generator` to its corresponding entry in the :code:`rates` array, which represents its gradient function.
 
-Because the gradients of each of the integrated variables or :code:`states` could include dependency on time or any variable value, it must be updated throughout the solution process.
-This is done by calling the :code:`computeRates` function to recalculate the rates for each state variable.
+Because the gradients of each of the :code:`states` could include dependency on time or any variable value, the gradients must be updated throughout the solution process.
+This is done by calling the :code:`computeRates` function to recalculate the rate for each state variable.
 
 .. code-block:: cpp
 
@@ -292,13 +298,13 @@ This is done by calling the :code:`computeRates` function to recalculate the rat
 
 .. container:: dothis
 
-    **4.c** Iterate through the time interval :math:`[0, 20]` and update the state variables using the Euler update method: :code:`x[n+1] = x[n] + x'[n]*stepSize`.
+    **4.c** Iterate through the time interval :math:`[0, 20]` and update the state variables using the Euler update method: :code:`x[n+1] = x[n] + r[n]*stepSize`.
     At each step you will need to:
 
-        - Recompute the variables;
-        - Recompute the rates;
-        - Compute the state variables using the update method above; and
-        - Write to the file.
+        - Recompute the variables, :code:`y`;
+        - Recompute the rates, :code:`r`;
+        - Compute the state variables :code:`x`, using the update method above; and
+        - Write the output to a file.
 
 Step 5: Output
 ==============

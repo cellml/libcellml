@@ -2,13 +2,13 @@
  *  TUTORIAL 4: INTERACT WITH GENERATED CODE
  *
  *  By the time you have worked through Tutorial 4 you will be able to:
- *    - investigate and understand the contents of files created by the Generator
- *    - integrate generated code into a simple solver to run a simulation
+ *    - Investigate and understand the contents of files created by the Generator; and
+ *    - Integrate generated code into a simple solver to run a simulation.
  *
  *  This tutorial assumes that you are comfortable with:
- *    - interacting with a model and its entities using the API (see Tutorial 3)
- *    - using the Generator functionality to output files in C or Python (Tutorial 3)
- *    - the basic idea of numerical integration using Euler's method (see ODE Theory)
+ *    - Interacting with a model and its entities using the API (see Tutorial 3);
+ *    - Using the Generator functionality to output files in C or Python (Tutorial 3); and
+ *    - The basic idea of numerical integration using Euler's method (see ODE Theory).
  */
 
 #include <fstream>
@@ -30,16 +30,16 @@ int main()
     //  STEP 1: Include the generated code in this project.  Note that most of these
     //          steps occur in other files.
 
-    //  1.a Enter the path to the generated header/interface *.h file in the #include block above
+    //  1.a Enter the path to the generated header/interface *.h file in the #include block above.
 
-    //  1.b If necessary, change the extension of the implementation *.c file to be *.cpp 
+    //  1.b If necessary, change the extension of the implementation *.c file to be *.cpp.
 
-    //  1.c Add the name and path of the implementation *.cpp file in the CMakeLists.txt file
+    //  1.c Add the name and path of the implementation *.cpp file in the CMakeLists.txt file.
 
     //  1.d Open the implementation file *.cpp file and change the default #include "model.h"
-    //      to be the name of your interface *.h file
+    //      to be the name of your interface *.h file.
 
-    //  1.e Check that the versions match
+    //  1.e Check that the versions match.
     std::cout << "The generated code used libCellML version " << LIBCELLML_VERSION << std::endl;
     std::cout << "The library version of libCellML is " << libcellml::versionString() << std::endl;
 
@@ -56,10 +56,10 @@ int main()
     //      ALGEBRAIC (TODO??) as defined in the VariableType enum.
     //      They are stored in an array of VariableInfoWithType structs called
     //      VARIABLE_INFO which is VARIABLE_COUNT long.  The VariableInfoWithType contains:
-    //          - name
-    //          - units
-    //          - component
-    //          - VariableType
+    //          - name,
+    //          - units,
+    //          - component, and
+    //          - VariableType.
     std::cout << std::endl;
     std::cout << "VARIABLE_COUNT = " << VARIABLE_COUNT << std::endl;
     for (size_t v = 0; v < VARIABLE_COUNT; ++v) {
@@ -74,9 +74,9 @@ int main()
     //      State variables are those which need integration as part of their solution.
     //      They are stored in an array of VariableInfo structs called STATE_INFO which
     //      is STATE_COUNT long.  The VariableInfo struct contains:
-    //          - name
-    //          - units
-    //          - component
+    //          - name,
+    //          - units, and
+    //          - component.
     std::cout << std::endl;
     std::cout << "STATE_COUNT = " << STATE_COUNT << std::endl;
     for (size_t s = 0; s < STATE_COUNT; ++s) {
@@ -87,7 +87,7 @@ int main()
     }
 
     //  2.c Get the integration variable and print the information to the terminal. This
-    //      is stored in a VariableInfo struct called VOI_INFO
+    //      is stored in a VariableInfo struct called VOI_INFO.
     std::cout << std::endl;
     std::cout << "VOI_INFO" << std::endl;
     std::cout << "  name = " << VOI_INFO.name << std::endl;
@@ -95,14 +95,14 @@ int main()
     std::cout << "  component = " << VOI_INFO.component << std::endl;
 
     // ---------------------------------------------------------------------------
-    // STEP 3: Investigate the functions provided in the generated files
+    // STEP 3: Investigate the functions provided in the generated files.
 
     //  3.a Retrieve appropriately allocated arrays which contain the state variables
-    //      and variables
+    //      and variables.
     auto myVariables = createVariablesArray();
     auto myStateVariables = createStatesArray();
 
-    //  3.b Initialise the arrays and print them to the screen for checking
+    //  3.b Initialise the arrays and print them to the screen for checking.
     initializeStatesAndConstants(myStateVariables, myVariables);
     std::cout << std::endl;
     std::cout << "The initial conditions for variables are:" << std::endl;
@@ -124,13 +124,13 @@ int main()
     }
 
     // --------------------------------------------------------------------------
-    //  STEP 4: Iterate through the solution
+    //  STEP 4: Iterate through the solution.
     //  This part will make use of a simple routine to step through the solution
     //  iterations using the Euler method to update the state variables.
 
     //  4.a Set the variables which determine how long the solution will run for:
-    //      - step size
-    //      - number of steps to take
+    //      - Step size; and
+    //      - Number of steps to take.
     double time = 0.0;
     double stepSize = 0.01;
     int stepCount = 2000;
@@ -151,21 +151,21 @@ int main()
     //  4.d Iterate through the time domain and write the solution at each step.
     //      The Euler update method is: x[n+1] = x[n] + x'[n]*stepSize
     //      At each step you will need to:
-    //          - compute the variables
-    //          - compute the rates
-    //          - compute the state variables using the update method above
-    //          - print to a file
+    //          - Compute the variables;
+    //          - Compute the rates;
+    //          - Compute the state variables using the update method above; and
+    //          - Print to a file
     for (size_t step = 0; step < stepCount; ++step) {
         time = step * stepSize;
 
-        // Compute the variables at this step
+        // Compute the variables at this step.
         computeVariables(time, myStateVariables, myRates, myVariables);
 
-        // Computing the rates at this step
+        // Compute the rates at this step.
         computeRates(time, myStateVariables, myRates, myVariables);
 
         outFile << step << "\t " << time;
-        // Computing the solution at the next step using Euler to advance
+        // Compute the solution at the next step using Euler to advance.
         for (size_t s = 0; s < STATE_COUNT; ++s) {
             myStateVariables[s] = myStateVariables[s] + myRates[s] * stepSize;
             outFile << "\t" << myStateVariables[s];
@@ -175,9 +175,9 @@ int main()
     outFile.close();
 
     // --------------------------------------------------------------------------
-    //  STEP 5: Output the results
+    //  STEP 5: Output the results.
 
-    //  5.a Housekeeping - delete the allocated arrays
+    //  5.a Housekeeping - delete the allocated arrays.
     deleteArray(myStateVariables);
     deleteArray(myVariables);
     deleteArray(myRates);

@@ -62,11 +62,11 @@ There are six ways to assign a value to a :code:`variable` element:
     </math>
 
 4. **By solving a differential equation:** This is similar to point 2 above, in that the variable's definition is contained within a mathematical statement.
-   The difference is that when a :code:`variable` element is a variable of integration (ie: the numerator of a differential equation), it *must* have a value which is specified (either locally or somewhere in its equivalent variable set) by an :code:`initial_value` attribute.
+   The difference is that when a :code:`variable` element is a state variable (ie: the numerator of a differential equation), it *must* have a value which is specified (either locally or somewhere in its equivalent variable set) by an :code:`initial_value` attribute.
 
    .. code-block:: xml
 
-      <!-- A variable which is to be integrated must have an initial value specified.
+      <!-- A state variable must have an initial value specified.
            Note that this could be applied to a connected variable in another component. -->
       <variable name="E" units="dimensionless" initial_value="3" />
       <math>
