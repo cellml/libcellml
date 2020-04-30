@@ -236,12 +236,13 @@ int main()
     sharks->setInitialValue(1.0);
     fish->setInitialValue(2.0);
 
+    //  4.d Reprocess the model and check that the generator is now free of errors.
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
-    //  4.d Because we've used the default profile (C) we need to output both the
+    //  4.e Because we've used the default profile (C) we need to output both the
     //      interfaceCode (the header file) and the implementationCode (source file)
-    //      from the generator and write them.
+    //      from the generator and write them to their respective files.
     std::ofstream outFile("tutorial3_PredatorPrey_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
@@ -250,12 +251,12 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    //  4.e Change the generator profile to Python
+    //  4.f Change the generator profile to Python.
     auto profile =
         libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
 
-    //  4.f Retrieve the Python implementation code and write to a file
+    //  4.g Retrieve the Python implementation code and write to a *.py file.
     outFile.open("tutorial3_PredatorPrey_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
@@ -265,5 +266,5 @@ int main()
     //  The next tutorial will take you through the process of running the simulation
     //  described by this model.
 
-    //  4.g Go and have a cuppa, you're done!
+    //  4.h Go and have a cuppa, you're done!
 }
