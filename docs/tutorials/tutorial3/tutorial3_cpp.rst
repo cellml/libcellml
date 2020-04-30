@@ -269,7 +269,9 @@ Some basic units have been defined and built into libCellML, others you can defi
 
         Read more about units
 
-    .. include:: ../asides/aside_units.rst
+    .. container:: infospec
+
+        .. include:: ../asides/aside_units.rst
 
 To create a :code:`Units` item you need will follow the same basic steps as other entities: declare it, name it, define it, and then add it in.
 For example:

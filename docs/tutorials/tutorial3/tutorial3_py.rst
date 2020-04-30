@@ -252,7 +252,9 @@ Some basic units have been defined and built into libCellML, others you can defi
 
         Read more about units
 
-    .. include:: ../asides/aside_units.rst
+    .. container:: infospec
+
+        .. include:: ../asides/aside_units.rst
 
 .. code-block:: python
 
