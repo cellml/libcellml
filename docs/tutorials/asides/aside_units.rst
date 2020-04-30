@@ -1,5 +1,6 @@
-Step 3: Built-in and customised units
-=====================================
+Understanding units
+===================
+
 Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
 Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
