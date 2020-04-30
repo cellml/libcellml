@@ -459,10 +459,11 @@ The generator is instantiated in the same way as the other items:
 
 The :code:`Generator` has to re-interpret all of the maths, including the variables, their interaction with each other in different equations, values, initial conditions and units before it can output your model in your choice of language.
 For the maths to make sense, the definitions in your model's variables, maths blocks and units need to be solvable too.
-There are several requirements that need to be satisfied in order for the code generation functionality to be able to work.  These are:
+There are several requirements that need to be satisfied in order for the code generation functionality to be able to work, *beyond* the CellML syntax requirements.
+These are:
 
 - The mathematical model definition must be appropriately constrained (not over- or under-constrained);
-- Initial conditions must be specified for variables which are integrated;
+- Initial conditions must be specified for variables which are integrated; **TODO** need to elaborate ...
 - Initial conditions must not be specified for variables which are the base of integration;
 - The values of constants must be specified or calculable; and
 - **TODO get full list of stuff here ...**

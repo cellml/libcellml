@@ -146,9 +146,9 @@ int main()
     printErrorsToTerminal(validator);
 
     // ---------------------------------------------------------------------------
-    //  STEP 3: Create the Units and add them to the model
+    //  STEP 3: Create the Units and add them to the model.
 
-    //  3.a Create the day, month, and per_month units
+    //  3.a Create the day, month, and per_month units.
     auto day = libcellml::Units::create("day");
     day->addUnit("second", 0, 1, 86400); // base unit, prefix, exponent, multiplier
     model->addUnits(day);
@@ -157,17 +157,18 @@ int main()
     month->addUnit("day", 0, 1, 30); // base unit, prefix, exponent, multiplier
     model->addUnits(month);
 
+    //  3.b Create the per_month unit based on the month defined in 3.a.
     auto per_month = libcellml::Units::create("per_month");
     per_month->addUnit("month", -1); // base unit, exponent
     model->addUnits(per_month);
 
-    //  3.b Create the sharks and fishes base units
+    //  3.c Create the sharks and fishes base units, "number_of_sharks" and "thousands_of_fish".
     auto number_of_sharks = libcellml::Units::create("number_of_sharks");
     auto thousands_of_fish = libcellml::Units::create("thousands_of_fish");
     model->addUnits(number_of_sharks);
     model->addUnits(thousands_of_fish);
 
-    //  3.c Combined units for the constants
+    //  3.d Create the combined units for the constants, "per_shark_month" and "per_fish_month".
     auto b_units = libcellml::Units::create("per_shark_month");
     b_units->addUnit("per_month");
     b_units->addUnit("number_of_sharks", -1);
@@ -178,7 +179,7 @@ int main()
     d_units->addUnit("thousands_of_fish", -1);
     model->addUnits(d_units);
 
-    //  3.d Add the units to their variables
+    //  3.e Add the units to their variables using the setUnits function.
     time->setUnits(month);
     a->setUnits(per_month);
     b->setUnits(b_units);
@@ -187,11 +188,11 @@ int main()
     sharks->setUnits(number_of_sharks);
     fish->setUnits(thousands_of_fish);
 
-    //  3.e Call the validator to check the model.  We expect one error regarding the missing units in the MathML.
+    //  3.f Call the validator to check the model.  We expect one error regarding the missing units in the MathML.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    //  3.f Units for constants inside the MathML must be specified at the time.  This means we need to adjust
+    //  3.g Units for constants inside the MathML must be specified at the time.  This means we need to adjust
     //      equation1 to include the per_month units.  We have to wipe all the existing MathML and replace it.
     component->removeMath();
     component->setMath(mathHeader);
@@ -209,7 +210,7 @@ int main()
     component->appendMath(equation3);
     component->appendMath(mathFooter);
 
-    //  3.g Expect there to be no errors.
+    //  3.h Revalidate your model and expect there to be no errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
@@ -217,12 +218,14 @@ int main()
     // ---------------------------------------------------------------------------
     //  STEP 4: Code generation
 
-    //  4.a Create a generator instance and pass it the model for processing.  The
-    //      default profile is to generate C code, but we can change this later.
+    //  4.a Create a generator instance and pass it the model using the
+    //      processModel(yourModel) function.  The default profile is to
+    //      generate C code, but we can change this later.
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
 
-    //  4.b Check for errors found in the generator
+    //  4.b Check for errors found in the generator. You should expect 6 errors,
+    //      related to variables whose values are not computed or initalised.
     printErrorsToTerminal(generator);
 
     //  4.c Add initial conditions to all variables except the base variable, time
