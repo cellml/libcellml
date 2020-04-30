@@ -252,7 +252,7 @@ Some basic units have been defined and built into libCellML, others you can defi
 
         Read more about units
 
-    .. include:: aside_units.rst
+    .. include:: ../asides/aside_units.rst
 
 .. code-block:: python
 
