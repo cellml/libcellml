@@ -218,7 +218,7 @@ If you look inside the implementation file (:code:`*.c/cpp`) which was generated
 .. container:: dothis
 
     **3.b** Call the :code:`initializeStatesAndConstants` function to initalise the arrays you created earlier.
-    Print them to the terminal for checking.
+    Print them to the terminal for checking. **TODO** US spelling of functions??
 
 Printing to the terminal should show you that while the CellML :code:`Variable` items for which we specified an initial value have been applied, the constant :code:`c` has not yet been evaluated.
 There's a second helper function :code:`computeComputedConstants(double *variables)` which will do this for you.
