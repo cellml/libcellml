@@ -4,11 +4,8 @@
  *  This tutorial explores the ability of CellML to represent more than one
  *  modelled process at a time using components with connections between them.
  *  By the time you have worked through Tutorial 6 you will be able to:
- *      - Import Component and Units items from an existing CellML file;
- *      - Assemble a multi-component model using the API;
- *      - Inter-connect the components using the equivalent variables
- *        functionality; and
- *      - Validate and debug the constructed model.
+ *      - Assemble a multi-component model using the API; and
+ *      - Inter-connect the components using the equivalent variables functionality.
  *
  *  Tutorial 6 assumes that you are already comfortable with:
  *      - File manipulation and summarising using the utility functions;
@@ -133,9 +130,9 @@ int main()
     model->addUnits(mS_per_cm2);
 
     model->linkUnits();
-
     validator->validateModel(model);
     printErrorsToTerminal(validator);
+    assert(validator->errorCount() == 0);
 
     std::cout << "----------------------------------------------------------" << std::endl;
     std::cout << "   STEP 2: Create the nGate component  " << std::endl;
@@ -269,6 +266,7 @@ int main()
     model->linkUnits();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
+    assert(validator->errorCount() == 0);
 
     std::cout << "----------------------------------------------------------" << std::endl;
     std::cout << "   STEP 3: Connect the components together " << std::endl;
@@ -290,10 +288,11 @@ int main()
     libcellml::Variable::addEquivalence(potassiumChannel->variable("V"), nGate->variable("V"));
     libcellml::Variable::addEquivalence(potassiumChannel->variable("n"), nGate->variable("n"));
 
+    //  3.b Validate the model.  Expect errors related to unspecified interface types.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
-    // ** TODO This should return a validation error saying that the interfaces are not specified **
 
+    //  3.c Set the recommended interface types for all of the variables with connections.
     potassiumChannel->variable("t")->setInterfaceType("public_and_private");
     potassiumChannel->variable("V")->setInterfaceType("public_and_private");
     nGate->variable("t")->setInterfaceType("public");
@@ -301,12 +300,17 @@ int main()
     potassiumChannel->variable("n")->setInterfaceType("private");
     nGate->variable("n")->setInterfaceType("public");
 
+    //  3.d Revalidate the model, and check that it is now free of errors.
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
+    assert(validator->errorCount() == 0);
+
     std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 4: Import the controller " << std::endl;
+    std::cout << "   STEP 4: Create the controller " << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
 
-    //  STEP 4: The controller is a component sitting outside the current model in a separate
-    //      file.  This allows for it to be more easily interchangable between runs and stimulus
+    //  STEP 4: The controller is a component at the top level of this model.
+    //      This allows for it to be more easily interchangable between runs and stimulus
     //      conditions.  We introduce the import functionality here for that purpose.
     //      When a Component (or Units) item is imported it needs:
     //          - to be connected to an ImportSource item
@@ -333,6 +337,11 @@ int main()
 
     //  4.e Add the controller component to the model in the normal way.
     model->addComponent(controller);
+
+    //  4.e Validate the model, expecting it to be free of errors.
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
+    assert(validator->errorCount() == 0);
 
     std::cout << "----------------------------------------------------------" << std::endl;
     std::cout << "   STEP 5: Import the initial conditions " << std::endl;
@@ -380,11 +389,10 @@ int main()
     //      it has worked as expected by checking that Model::hasUnresolvedImports() returns false.
     model->resolveImports("");
     std::cout << "The model has ";
-    if(model->hasUnresolvedImports()) {
-        std::cout << "UNRESOLVED imports :("<<std::endl;
-    }
-    else {
-        std::cout << "resolved all its imports :)"<<std::endl;
+    if (model->hasUnresolvedImports()) {
+        std::cout << "UNRESOLVED imports :(" << std::endl;
+    } else {
+        std::cout << "resolved all its imports :)" << std::endl;
     }
 
     //  5.d Finally it's time to flatten the model.  This operation will create new local instances of all
