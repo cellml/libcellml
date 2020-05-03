@@ -358,17 +358,16 @@ For the Python solver please see :ref:`the Python Tutorial 5 instructions<tutori
 
 .. code-block:: console
 
-  cd ../tutorials/solver
+  cd ../solver
 
 Because the code you've generated needs to be built at the same time as the solver code is built, each different model requires rebuilding a new solver executable which includes the generated code.
 
 .. container:: dothis
 
   **6.b**
-  From inside the :code:`tutorials/solver` directory, use the CMake command
-  line to point to your generated files.  **NB** It's assumed that both of the
-  header and source files have the same base filename (eg: baseFileName.c
-  and baseFileName.h).  The general CMake command is below.
+  From inside the :code:`tutorials/solver` directory, use the CMake command line to point to your generated files.
+  **NB** It's assumed that both of the header and source files have the same base filename (eg: :code:`baseFileName.c` and :code:`baseFileName.h`).
+  The general CMake command is below.
 
 .. code-block:: console
 
@@ -426,9 +425,9 @@ If all has gone well you should see the output similar to:
 
 The parameters read from the file, along with your command line arguments are printed to the terminal for checking, and the results of the simulation written to a tab-delimited file with the extension :code:`_solution.txt` after your base file name.
 
-Running your generated model for 50 steps with a step size of 0.1ms results in the solution shown below in :numref:`tutorial5_image`.
+Running your generated model for 50 steps with a step size of 0.1ms results in the solution shown below in :numref:`<tutorial5_image>`.
 
-.. figure:: /tutorials/images/tutorial5_image.png
+.. figure:: ../images/tutorial5_image.png
    :name: tutorial5_image
    :alt: Parameter behaviour for ion channel gate
    :align: center
