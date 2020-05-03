@@ -262,19 +262,15 @@ This process was covered in :ref:`Tutorial 3<tutorial3_cpp>`.
 
 .. container:: dothis
 
-    **4.b** Check the units related to constants (that is, the :code:`<cn>` blocks) in the maths.
-    These units also need to be defined in the same way and added to the model.
-
-.. container:: dothis
-
-    **4.c** Add all the new units into the model.
+    **4.b** Add all the new units into the model.
     Adding units to the model allows other components (when you have them!) to use them as well.
 
 .. container:: dothis
 
-    **4.d** Validate the final model configuration.
-    There should be no errors at this stage.
-    If you do encounter any, you can compare the code you've created to that provided in the :code:`resources/tutorial5/tutorial5_complete.cpp` file.
+    **4.c** Link units and validate the model configuration.
+    When you encounter errors related to missing units that you've actually added, you need to call the :code:`ModelPtr::linkUnits()` function.
+    This function cleans up the referencing of units which were added (by name) to a variable before their corresponding :code:`Units` item existed in the model.
+    If you still encounter validation errors, you can compare the code you've created to that provided in the :code:`resources/tutorial5/tutorial5_complete.cpp` file.
 
 Step 5: Serialise and generate code
 ===================================

@@ -96,8 +96,7 @@ int main()
 
     //  2.c   Call the validator and print the messages to the terminal.
     //        Expected errors refer to variables referenced in the maths which
-    //        are not (yet) defined in the component, as well as cn element units
-    //        which are not defined yet either.
+    //        are not (yet) defined in the component.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
@@ -105,7 +104,7 @@ int main()
     std::cout << "  STEP 3: Define the variables and their units" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  3.a,b Declare the variables, their names, units, and initial conditions.
+    //  3.a,b Declare the variables, their names, and their units.
     //        Note that the names given to variables must be the same as that used
     //        within the <ci> blocks in the MathML string created in step 2.a.
 
@@ -120,31 +119,24 @@ int main()
 
     auto beta_y = libcellml::Variable::create("beta_y");
     beta_y->setUnits("per_millisecond");
-    beta_y->setInitialValue(2.0);
 
     auto y = libcellml::Variable::create("y");
     y->setName("y");
     y->setUnits("dimensionless");
-    y->setInitialValue(0.0);
 
     auto E_y = libcellml::Variable::create("E_y");
     E_y->setUnits("millivolt");
-    E_y->setInitialValue(-85.0);
 
     libcellml::VariablePtr i_y = libcellml::Variable::create("i_y");
     i_y->setUnits("microA_per_cm2");
-    // Note that no initial value is needed for this variable as its value
-    // is defined by equation2.
 
     libcellml::VariablePtr g_y = libcellml::Variable::create("g_y");
     g_y->setName("g_y");
     g_y->setUnits("milliS_per_cm2");
-    g_y->setInitialValue(36.0);
 
     libcellml::VariablePtr gamma = libcellml::Variable::create();
     gamma->setName("gamma");
     gamma->setUnits("dimensionless");
-    gamma->setInitialValue(4.0);
 
     //  3.c Add the variables to the component.  Note that Variables are
     //      added by their pointer, not their name.
@@ -168,9 +160,9 @@ int main()
     std::cout << "  STEP 4: Define the units and add to the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  4.a Define the units of millisecond, millivolt, and per_millisecond.
-    //      Note that the dimensionless units built-in already, so do not need
-    //      to be redefined here.
+    //  4.a Define the units of millisecond, millivolt, per_millisecond, microA_per_cm2,
+    //      and milliS_per_cm2.  Note that the dimensionless units built-in already, so
+    //      do not need to be redefined here.
     auto ms = libcellml::Units::create("millisecond");
     ms->addUnit("second", "milli");
 
@@ -180,9 +172,6 @@ int main()
     auto per_ms = libcellml::Units::create("per_millisecond");
     per_ms->addUnit("millisecond", -1.0);
 
-    //  4.b Check that the units used by <cn> constants in the MathML exist.
-    //      You will need to create and define microA_per_cm2 and milliS_per_cm2.
-
     auto microA_per_cm2 = libcellml::Units::create("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2.0);
@@ -191,12 +180,19 @@ int main()
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
 
-    //  4.c Add all these units into the model.
+    //  4.b Add all these units into the model.
     model->addUnits(ms);
     model->addUnits(mV);
     model->addUnits(per_ms);
     model->addUnits(microA_per_cm2);
     model->addUnits(mS_per_cm2);
+
+    //  4.c Link the units into the model.
+    //      This step is necessary because at the time the units were specified
+    //      for the variables by name (in step 3.b) those units didn't exist in
+    //      the parent model.  Calling the Model::linkUnits() function will link
+    //      them in properly.
+    model->linkUnits();
 
     //  4.d Validate the final arrangement.  No errors are expected at this stage.
     validator->validateModel(model);
