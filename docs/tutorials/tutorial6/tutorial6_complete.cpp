@@ -4,16 +4,16 @@
  *  This tutorial explores the ability of CellML to represent more than one
  *  modelled process at a time using components with connections between them.
  *  By the time you have worked through Tutorial 6 you will be able to:
- *      - import a Component or Units item from an existing CellML file
- *      - assemble a multi-component model using the API
- *      - inter-connect the components using the equivalent variables
- *        functionality
- *      - validate and debug the constructed model
+ *      - Import Component and Units items from an existing CellML file;
+ *      - Assemble a multi-component model using the API;
+ *      - Inter-connect the components using the equivalent variables
+ *        functionality; and
+ *      - Validate and debug the constructed model.
  *
  *  Tutorial 6 assumes that you are already comfortable with:
- *      - file manipulation and summarising using the utility functions
- *      - model creation through the API
- *      - debugging the model using the Validator functionality
+ *      - File manipulation and summarising using the utility functions;
+ *      - Model creation through the API; and
+ *      - Debugging the model using the Validator functionality
  */
 
 #include <iostream>
@@ -32,7 +32,7 @@ int main()
     std::cout << "   STEP 1: Define the potassiumChannel component " << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
 
-    //  STEP 1: Define the potassiumChannel component
+    //  STEP 1: Define the potassiumChannel component.
     //      As in the previous Tutorial 5, we define an ion channel, but this time make it
     //      specific to potassium.  We also introduce voltage dependence into the alpha and
     //      beta gate rates, and move them into a separate component to make it cleaner.
@@ -108,7 +108,7 @@ int main()
     //  NOTE: If, even after adding the Units the validator continues to return an error, you
     //      need to call the Model::linkUnits() function to link the units.  Unlinked units
     //      can occur when variables call their setUnits() function with
-    //      a string argument of the Units' name, rather than the Units item itself.
+    //      a string argument of the Units item's name, rather than the Units item itself.
     auto mV = libcellml::Units::create("millivolt");
     mV->addUnit("volt", "milli");
 
@@ -146,10 +146,10 @@ int main()
     //      introduced into the opening and closing rates.  This dependence is handled in
     //      a separate component, the nGate component, which you'll define here.
 
-    //  2.a Create an nGate component, and add it to the potassiumChannel component (not the model)
+    //  2.a Create an nGate component, and add it to the potassiumChannel component (NB: not the model!).
     //      Adding it to the component creates an encapsulation hierarchy, which affects which components
     //      have access to each other.  It also means that if the potassiumChannel component is
-    //      moved or imported, the nGate child component will be included too.
+    //      moved or imported somewhere else, then the nGate child component will be included too.
     auto nGate = libcellml::Component::create("nGate");
     potassiumChannel->addComponent(nGate);
 
@@ -256,7 +256,11 @@ int main()
     printErrorsToTerminal(validator);
 
     //  2.d Create the missing units and add them to the model.  Link the model's
-    //      units and validate again.  Expect the model to be free of errros.
+    //      units and validate again.  Expect the model to be free of errors.
+    auto per_ms = libcellml::Units::create("per_millisecond");
+    per_ms->addUnit("second", "milli", -1);
+    model->addUnits(per_ms);
+
     auto per_mV_ms = libcellml::Units::create("per_millivolt_millisecond");
     per_mV_ms->addUnit("per_millisecond");
     per_mV_ms->addUnit("millivolt", -1);
