@@ -123,7 +123,7 @@ Right hand side: :math:`\alpha_y (1-y) ...`
 
 .. code-block:: xml
 
-            <apply>
+            <apply> <!-- Note opening apply block is closed under the left hand side equation. -->
                 <minus/>
                 <apply>
                     <times/>
@@ -144,7 +144,7 @@ Right hand side: :math:`\alpha_y (1-y) ...`
                     <ci>beta_y</ci>
                     <ci>y</ci>
                 </apply>
-            </apply>
+            </apply> <!-- Note that the extra closing apply block matches RHS equation. -->
 
 All of this needs to be wrapped inside the :code:`<math>` tags, which will include a namespace definition, as well as the initial :code:`<apply>` and :code:`<eq/>` tags to assign the left and right-hand sides of the equation:
 
@@ -170,7 +170,7 @@ All of this needs to be wrapped inside the :code:`<math>` tags, which will inclu
 .. math::
     \frac{dn}{dt} = \alpha_y (1-y) - \beta_y y
 
-    i_K = g_K . y^{\gamma} . (V-E_K)
+    i_K = g_K y^{\gamma} (V-E_K)
 
 ... where :math:`\alpha_K` and :math:`\beta_K` are the rate constants for the opening and closing of the gate, :math:`g_K` is the open channel conductance, :math:`y` is the fraction of open gates, and :math:`\gamma` is the number of gates which exist in series in the channel, :math:`V` is the transmembrane voltage, and :math:`i_K` is the current flow through the channel.
 
@@ -220,9 +220,9 @@ the model.
 
     **Note** Remember that the names you give the variables in this step must be the same as the names used between the code:`<ci>` tags inside your MathML string.
 
-As well as a name and a parent component, each variable needs :code:`Units`.
+As well as a name and a parent component, each variable needs units.
 These are specified using the :code:`setUnits` function for a variable, just as you did in :ref:`Tutorial 3<tutorial3_cpp>`.
-The units you'll need here are:
+The units and their relevant variables are:
 
 - time, :math:`t`, has units of :code:`millisecond`;
 - voltage, :math:`V`, has units of :code:`millivolt`;
@@ -254,11 +254,11 @@ Step 4: Define the units and add to the model
 =============================================
 The variables created above referenced unit names of :code:`millisecond`, :code:`millivolt`, :code:`per_millisecond`, and :code:`dimensionless`.
 The :code:`dimensionless` units are already present, so we don't need to take any other action, but the other three need to be created and added.
-This was covered in :ref:`Tutorial 3<tutorial3_cpp>` in case you need a reminder.
+This process was covered in :ref:`Tutorial 3<tutorial3_cpp>`.
 
 .. container:: dothis
 
-    **4.a** Create the three units you need for this component, name, and define them.
+    **4.a** Create the three units you need for this component, name them, and define them.
 
 .. container:: dothis
 
@@ -283,20 +283,16 @@ We will do the code generation step first to take advantage of the additional er
 
 .. container:: dothis
 
-    **5.a** Create a :code:`Generator` item, set the profile (that is, the output language) to your choice of C (the default) or Python (see below), and then submit the model for processing.
-
-.. code-block:: cpp
-
-    // Change the generated language from the default C to Python if need be
-    auto profile =
-        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-    generator->setProfile(profile);
+    **5.a** Create a :code:`Generator` item and submit the model for processing.
 
 .. container:: dothis
 
     **5.b** Check the :code:`Generator` for errors.
     At this stage you can expect errors related to non-initialised variables.
-    Go back and set the following initial conditions:
+
+.. container:: dothis
+
+    **5.c** Go back and set the following initial conditions:
 
     - :math:`V(t=0)=0`
     - :math:`y(t=0)=0`
@@ -308,28 +304,49 @@ We will do the code generation step first to take advantage of the additional er
 
 .. container:: dothis
 
-    **5.c** Retrieve the output code from the :code:`Generator`, remembering that for output in C you will need both the :code:`interfaceCode` (the header file contents) as well as the :code:`implementationCode` (the source file contents), whereas for Python you need only output the :code:`implementationCode`.
-    Write the file(s).
+    **5.d** Reprocess the model and check that it is now free of errors.
+
+Step 6: Output the model
+========================
+
+.. container:: dothis
+
+    **6.a** Retrieve the output code from the :code:`Generator`, remembering that for output in C you will need both the :code:`interfaceCode` (the header file contents) as well as the :code:`implementationCode` (the source file contents).
+    Write the files.
 
 The second step is the same as what was covered at the end of :ref:`Tutorial 2<tutorial2_cpp>` to use the :code:`Printer`; you can refer back to the code and/or instructions there if you need to.
 
 .. container:: dothis
 
-    **5.d** Create a :code:`Printer` item and submit your model for serialisation.
+    **6.b** Change the generator's profile to Python and reprocess the model.
+
+.. code-block:: cpp
+
+    // Change the generated language from the default C to Python if need be
+    auto profile =
+        libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
 
 .. container:: dothis
 
-    **5.e** Write the serialised string output from the printer to a file.
+    **6.c** Output the Python version of the model to a file, remembering that you will only need to retrieve the implementation code for the Python profile.
 
 .. container:: dothis
 
-    **5.f** Check that your files have been written correctly.
-    You should have both the generated files (either :code:`*.c/h` or :code:`*.py`) as well as the :code:`*.cellml` file.
+    **6.d** Create a :code:`Printer` item and submit your model for serialisation.
 
+.. container:: dothis
 
-Step 6: Simulate the behavior of the gate
-=========================================
-At this stage you should have four new files created:
+    **6.e** Write the serialised string output from the printer to a file.
+
+.. container:: dothis
+
+    **6.f** Check that your files have been written correctly.
+    You should have both sets of generated files (:code:`*.c/h` as well as :code:`*.py`) and the :code:`*.cellml` file.
+
+Step 7: Simulate the behaviour of the gate
+==========================================
+At this stage you should have some new files created:
 
 - The CellML file of your model (this will be used in later tutorials as you work toward building the whole Hodgkin-Huxley model);
 - The generated file for the Python profile (an example for changing profiles only); and

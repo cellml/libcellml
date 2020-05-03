@@ -23,10 +23,10 @@ int main()
     std::cout << "  STEP 1: Create the model and component" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  1.a   Create the model instance
+    //  1.a   Create the model instance.
     auto model = libcellml::Model::create("Tutorial5_FirstOrderModel");
 
-    //  1.b   Create a component and add it into the model
+    //  1.b   Create a component and add it into the model.
     auto component = libcellml::Component::create("IonChannel");
     model->addComponent(component);
 
@@ -66,6 +66,7 @@ int main()
         "      </apply>\n"
         "    </apply>\n"
         "  </apply>\n";
+
     // i_y = g_y*power(y,gamma)*(V-E_y)
     std::string equation2 =
         "  <apply><eq/>\n"
@@ -93,7 +94,7 @@ int main()
     component->appendMath(equation2);
     component->appendMath(mathFooter);
 
-    //  2.c:  Call the validator and print the messages to the terminal.
+    //  2.c   Call the validator and print the messages to the terminal.
     //        Expected errors refer to variables referenced in the maths which
     //        are not (yet) defined in the component, as well as cn element units
     //        which are not defined yet either.
@@ -106,7 +107,7 @@ int main()
 
     //  3.a,b Declare the variables, their names, units, and initial conditions.
     //        Note that the names given to variables must be the same as that used
-    //        within the <ci> blocks in the MathML string we created in step 2.a.
+    //        within the <ci> blocks in the MathML string created in step 2.a.
 
     auto t = libcellml::Variable::create("t");
     t->setUnits("millisecond");
@@ -116,7 +117,6 @@ int main()
 
     auto alpha_y = libcellml::Variable::create("alpha_y");
     alpha_y->setUnits("per_millisecond");
-
 
     auto beta_y = libcellml::Variable::create("beta_y");
     beta_y->setUnits("per_millisecond");
@@ -134,7 +134,7 @@ int main()
     libcellml::VariablePtr i_y = libcellml::Variable::create("i_y");
     i_y->setUnits("microA_per_cm2");
     // Note that no initial value is needed for this variable as its value
-    // is defined by equation2
+    // is defined by equation2.
 
     libcellml::VariablePtr g_y = libcellml::Variable::create("g_y");
     g_y->setName("g_y");
@@ -147,7 +147,7 @@ int main()
     gamma->setInitialValue(4.0);
 
     //  3.c Add the variables to the component.  Note that Variables are
-    //      added by their pointer (cf. their name)
+    //      added by their pointer, not their name.
     component->addVariable(t);
     component->addVariable(V);
     component->addVariable(E_y);
@@ -168,10 +168,9 @@ int main()
     std::cout << "  STEP 4: Define the units and add to the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  4.a Define the units of millisecond, millivolt, per_millisecond,
-    //      microA_per_cm2, and milliS_per_cm2. Note that the dimensionless
-    //      units are part of those built-in already, so do not need to be
-    //      defined here.
+    //  4.a Define the units of millisecond, millivolt, and per_millisecond.
+    //      Note that the dimensionless units built-in already, so do not need
+    //      to be redefined here.
     auto ms = libcellml::Units::create("millisecond");
     ms->addUnit("second", "milli");
 
@@ -181,6 +180,9 @@ int main()
     auto per_ms = libcellml::Units::create("per_millisecond");
     per_ms->addUnit("millisecond", -1.0);
 
+    //  4.b Check that the units used by <cn> constants in the MathML exist.
+    //      You will need to create and define microA_per_cm2 and milliS_per_cm2.
+
     auto microA_per_cm2 = libcellml::Units::create("microA_per_cm2");
     microA_per_cm2->addUnit("ampere", "micro");
     microA_per_cm2->addUnit("metre", "centi", -2.0);
@@ -189,20 +191,31 @@ int main()
     mS_per_cm2->addUnit("siemens", "milli");
     mS_per_cm2->addUnit("metre", "centi", -2.0);
 
-    //  4.b Add these units into the model
+    //  4.c Add all these units into the model.
     model->addUnits(ms);
     model->addUnits(mV);
     model->addUnits(per_ms);
     model->addUnits(microA_per_cm2);
     model->addUnits(mS_per_cm2);
 
-    //  4.c Validate the final arrangement.  No errors are expected at this stage.
+    //  4.d Validate the final arrangement.  No errors are expected at this stage.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Set the initial conditions" <<std::endl;
+    std::cout << "  STEP 5: Generate and output the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
+
+    //  5.a Create a Generator item, set the profile (that is, the output
+    //      language) to your choice of C (the default) or Python, and
+    //      submit the model for processing.
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+    generator->processModel(model);
+
+    //  5.b Output the errors from the Generator.  Expect errors related to missing initial conditions.
+    printErrorsToTerminal(generator);
+
+    //  5.c Initialise the variables as required.
 
     V->setInitialValue(0.0);
     alpha_y->setInitialValue(1.0);
@@ -212,21 +225,15 @@ int main()
     gamma->setInitialValue(4);
     y->setInitialValue(0);
 
+    //  5.d Reprocess the model and check that it is now free of errors.
+    generator->processModel(model);
+    assert(generator->errorCount() == 0);
+
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  STEP 6: Output the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
-    //  6.a Create a Generator item, set the profile (that is, the output
-    //      language) to your choice of C (the default) or Python (see below), and
-    //      submit the model for processing.
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-    generator->processModel(model);
-
-    //  6.b Check that the Generator has not encountered any errors.
-    printErrorsToTerminal(generator);
-    assert(generator->errorCount() == 0);
-
-    //  6.c Retrieve the output code from the Generator, remembering
+    //  6.a Retrieve the output code from the Generator, remembering
     //      that for output in C you will need both the interfaceCode (the
     //      header file contents) as well as the implementationCode (the source
     //      file contents), whereas for Python you need only output the
@@ -240,11 +247,14 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
+    //  6.b Change the generator profile to Python and reprocess the model.
+
     libcellml::GeneratorProfilePtr profile =
         libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 
+    //  6.c Write the Python implementation code to a file.
     outFile.open("tutorial5_IonChannelModel_generated.py");
     outFile << generator->implementationCode();
     outFile.close();
@@ -265,5 +275,6 @@ int main()
     std::cout << "The created '" << model->name()
               << "' model has been printed to: " << outFileName << std::endl;
 
-    //  5.f Go and have a cuppa, you're done!
+    //  6.f Go and have a cuppa, you're done creating the model!
+    //      You can now use the simple solver to simulate the operation of the gate.
 }
