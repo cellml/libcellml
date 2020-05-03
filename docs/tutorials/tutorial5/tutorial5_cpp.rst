@@ -272,8 +272,8 @@ This process was covered in :ref:`Tutorial 3<tutorial3_cpp>`.
     This function cleans up the referencing of units which were added (by name) to a variable before their corresponding :code:`Units` item existed in the model.
     If you still encounter validation errors, you can compare the code you've created to that provided in the :code:`resources/tutorial5/tutorial5_complete.cpp` file.
 
-Step 5: Serialise and generate code
-===================================
+Step 5: Generate the model
+==========================
 The final steps are to output our created model to a CellML2 file (which will be used in subsequent tutorials, so be sure to name it something meaningful!) as well as generating the C or Python files which we can use to investigate this component's operation in isolation.
 We will do the code generation step first to take advantage of the additional error checks present inside the :code:`Generator`.
 

@@ -70,7 +70,7 @@ int main()
     // i_y = g_y*power(y,gamma)*(V-E_y)
     std::string equation2 =
         "  <apply><eq/>\n"
-        "    <ci>y</ci>\n"
+        "    <ci>i_y</ci>\n"
         "    <apply><times/>\n"
         "      <ci>g_y</ci>\n"
         "      <apply><minus/>\n"
@@ -199,7 +199,7 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Generate and output the model" << std::endl;
+    std::cout << "  STEP 5: Generate the model" << std::endl;
     std::cout << "-----------------------------------------------" << std::endl;
 
     //  5.a Create a Generator item, set the profile (that is, the output
@@ -212,7 +212,6 @@ int main()
     printErrorsToTerminal(generator);
 
     //  5.c Initialise the variables as required.
-
     V->setInitialValue(0.0);
     alpha_y->setInitialValue(1.0);
     beta_y->setInitialValue(2.0);
@@ -223,7 +222,7 @@ int main()
 
     //  5.d Reprocess the model and check that it is now free of errors.
     generator->processModel(model);
-    assert(generator->errorCount() == 0);
+    printErrorsToTerminal(generator);
 
     std::cout << "-----------------------------------------------" << std::endl;
     std::cout << "  STEP 6: Output the model" << std::endl;
