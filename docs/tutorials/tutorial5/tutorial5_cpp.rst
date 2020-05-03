@@ -206,9 +206,8 @@ Three functions are available for accessing and editing the math block, these ar
 
 Step 3: Define the variables and their units
 ============================================
-Now that the mathematical behaviour is defined, the variables that have been
-used also need to be defined.  Each variable needs a name which is equal to the
-term inside the :code:`<ci>` tags in the MathML, as well as units defined in
+Now that the mathematical behaviour is defined, the variables that have been used also need to be defined.
+Each variable needs a name which is equal to the term inside the :code:`<ci>` tags in the MathML, as well as units defined in
 the model.
 
 .. container:: dothis
