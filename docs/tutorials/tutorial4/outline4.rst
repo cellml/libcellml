@@ -18,7 +18,7 @@ Overview
 --------
 
 During this tutorial you will take the code you generated during :ref:`Tutorial 3<tutorial3>` which represented the population dynamics of two species - a predator, the sharks, and their prey, the fish - and investigate the files' contents.
-Once we understand what the :ref:`Generator` can output, you will use a simple numerical integrator to solve the system of equations which governs the model's behaviour.
+Once the :ref:`Generator` output it understood, you will use a simple numerical integrator to solve the system of equations which governs the model's behaviour.
 
 C++ instructions
 ----------------
