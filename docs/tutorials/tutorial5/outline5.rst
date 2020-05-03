@@ -12,8 +12,7 @@ If not, please see the earlier tutorials which introduce these issues:
 - :ref:`Tutorial 3: Creating a model using the API<tutorial3>`
 
 From this point onwards the tutorials will build on work done in the previous ones.
-If you need to jump in at some intermediate stage you will find all the files created by the earlier tutorials in the
-:code:`resources` folder.
+If you need to jump in at some intermediate stage you will find all the files created by the earlier tutorials in the :code:`resources` folder.
 
 Overview
 --------
@@ -29,8 +28,7 @@ In general we will:
 #.  Because the quantities modelled have units, we will define what these are, and make sure that they are included in the model too.
 
 As always, the steps discussed here are mirrored by the comments in the code files attached.
-You can choose to either create your own code from the structure given in the :code:`tutorial5` file(s), or to simply read the
-finished code given in the :code:`tutorial5_complete` file(s).
+You can choose to either create your own code from the structure given in the :code:`tutorial5` file(s), or to simply read the finished code given in the :code:`tutorial5_complete` file(s).
 
 C++ instructions
 ----------------
@@ -39,7 +37,7 @@ You will need to download the following files:
 
     - :download:`CMakeLists.txt` The CMake file for building this tutorial;
     - :download:`tutorial5.cpp` Either the skeleton code, or :download:`tutorial5_complete.cpp` the completed tutorial code; and
-    - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp`  Utility functions for use in the tutorials.
+    - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp` Utility functions for use in the tutorials.
 
 
 Python instructions
