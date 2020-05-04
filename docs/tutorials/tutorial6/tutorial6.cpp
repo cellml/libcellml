@@ -78,59 +78,61 @@ int main()
     //      units and validate again.  Expect the model to be free of errors.
 
     std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 3: Connect the components together " << std::endl;
+    std::cout << "   STEP 3: Read the controllers " << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
 
-    //  STEP 3: Connect the components together.
+    //  STEP 3: The controller is a component at the top level of this model.
+    //      This allows for it to be more easily interchangable between runs and stimulus
+    //      conditions.  In later tutorials we will move this component into an external file so that the
+    //      model is separate from the running parameters and initial conditions.
+
+    //  3.a Create a Parser, and use it to read a temporary model from the controller file supplied.
+
+    //  3.b From the parsed model, retrieve the component named "controller", remove its parent,
+    //      and add it to the current model at the top level.
+
+    //  3.c Repeat the process to retrieve the "potassiumChannel_initialiser" component and add to
+    //      the potassiumChannel component.
+
+    //  3.d Repeat the process to retrieve the "nGate_initialiser" component and add to
+    //      the nGate component.
+
+    //  3.e Print the model to the terminal and check its component hierarchy matches:
+    //      ─ model:
+    //          ├─ component: controller
+    //          └─ component: potassium channel
+    //              ├─ component: potassium channel initialisation
+    //              └─ component: n-gate
+    //                  └─ component: n-gate initialisation
+
+    //  3.f Link units and revalidate the model.  Check that there are no errors.
+
+    std::cout << "----------------------------------------------------------" << std::endl;
+    std::cout << "   STEP 4: Connect the components together " << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
+
+    //  STEP 4: Connect the components together.
     //      In order for the voltage dependence of the alpha and beta rates within
     //      the nGate component to affect the current in the potassiumChannel component
     //      some of the variables need to share their values between the components.
     //      This is done using variable equivalence and interfaces.
 
-    //  3.a Set the equivalent variable pairs between the nGate and potassiumChannel components.
+    //  4.a Set the equivalent variable pairs between the nGate and potassiumChannel components.
     //      These are:
     //          - voltage, V
     //          - time, t
     //          - gate status, n
     //      Use the Variable::addEquivalence(VariablePtr, VariablePtr) function.
 
-    //  3.b Validate the model.  Expect errors related to unspecified interface types.
+    //  4.b Validate the model.  Expect errors related to unspecified interface types and invalid connections.
 
-    //  3.c Set the recommended interface types for all of the variables with connections.
+    //  4.c (if required) Remove the equivalences between too-distant components using the
+    //  Variable::removeEquivalence(VariablePtr, VariablePtr) function, and connect to the correct
+    //  component variables instead.
 
-    //  3.d Revalidate the model, and check that it is now free of errors.
+    //  4.d Set the recommended interface types for all of the variables with connections.
 
-    std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 4: Read the controller " << std::endl;
-    std::cout << "----------------------------------------------------------" << std::endl;
-
-    //  STEP 4: The controller is a component at the top level of this model.
-    //      This allows for it to be more easily interchangable between runs and stimulus
-    //      conditions.  In later tutorials we will move this component into an external file so that the
-    //      model is separate from the running parameters and initial conditions.
-
-    //  4.a Create a Parser, and use it to read a temporary model from the controller file supplied.
-
-    //  4.b From the parsed model, retrieve the component named "controller", remove its parent,
-    //      and add it to the current model at the top level.
-
-    //  4.c Repeat the process to retrieve the "potassiumChannel_initialiser" component and add to
-    //      the potassiumChannel component.
-
-    //  4.d Repeat the process to retrieve the "nGate_initialiser" component and add to
-    //      the nGate component.
-
-    //  4.e Connect the variables in the nGate and potassiumChannel components to their initialised versions
-    //      in the nGateInit and potassiumChannelInit components.
-    //      Connect the variables in the controller throughout the model.
-
-    //  4.f Validate the model, expecting errors related to unspecified interfaces.
-    //      If you encounter errors related to missing units, you may need to use the ModelPtr::linkUnits()
-    //      function before calling the validator.
-
-    //  4.g Set the recommended interface types on the connected variables.
-
-    //  4.h Revalidate the model, and check that it is now free of errors.
+    //  4.e Revalidate the model, and check that it is now free of errors.
 
     std::cout << "----------------------------------------------------------" << std::endl;
     std::cout << "   STEP 5: Generate the model and output" << std::endl;
@@ -146,12 +148,11 @@ int main()
 
     //  5.d Write the implementation code to a .c file.
 
-    //  5.e Change the profile to Python and reprocess the model
+    //  5.e Change the profile to Python and reprocess the model.
 
-    //  5.f Write the Python implementation code to a .py file
+    //  5.f Write the Python implementation code to a .py file.
 
     //  5.g Please see the instructions in the tutorial for how to run a
     //      simulation of this model using the simple solver provided.
     //      Then go and have a cuppa, you're done!
-
 }
