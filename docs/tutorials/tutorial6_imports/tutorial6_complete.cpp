@@ -269,148 +269,212 @@ int main()
     assert(validator->errorCount() == 0);
 
     std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 3: Read the controllers " << std::endl;
+    std::cout << "   STEP 3: Connect the components together " << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
 
-    //  STEP 3: The controller is a component at the top level of this model.
-    //      This allows for it to be more easily interchangable between runs and stimulus
-    //      conditions.  In later tutorials we will move this component into an external file so that the
-    //      model is separate from the running parameters and initial conditions.
-
-    //  3.a Create a Parser, and use it to read a temporary model from the controller file supplied.
-    std::string inFileName = "../resources/tutorial6_controller.cellml";
-    std::ifstream inFile(inFileName);
-    std::stringstream inFileContents;
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
-    auto parser = libcellml::Parser::create();
-    auto parsed_model = parser->parseModel(inFileContents.str());
-
-    //  3.b From the parsed model, retrieve the component named "controller", remove its parent,
-    //      and add it to the current model at the top level.
-    auto controller = parsed_model->component("controller");
-    controller->removeParent();
-    model->addComponent(controller);
-
-    //  3.c Repeat the process to retrieve the "potassiumChannel_initialiser" component and add to
-    //      the potassiumChannel component.
-    auto potassiumChannelInit = parsed_model->component("potassiumChannel_initialiser");
-    potassiumChannelInit->removeParent();
-    potassiumChannel->addComponent(potassiumChannelInit);
-
-    //  3.d Repeat the process to retrieve the "nGate_initialiser" component and add to
-    //      the nGate component.
-    auto nGateInit = parsed_model->component("nGate_initialiser");
-    nGateInit->removeParent();
-    nGate->addComponent(nGateInit);
-
-    //  3.e Link units and revalidate the model.  Check that there are no errors.
-    model->linkUnits();
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
-
-    std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 4: Connect the components together " << std::endl;
-    std::cout << "----------------------------------------------------------" << std::endl;
-
-    //  STEP 4: Connect the components together.
+    //  STEP 3: Connect the components together.
     //      In order for the voltage dependence of the alpha and beta rates within
     //      the nGate component to affect the current in the potassiumChannel component
     //      some of the variables need to share their values between the components.
     //      This is done using variable equivalence and interfaces.
 
-    //  4.a Print your model to the screen and check that the encapsulation structure of the
-    //      components matches that in the tutorial.
-
-    //  4.b Set the equivalent variable pairs between the nGate and potassiumChannel components.
+    //  3.a Set the equivalent variable pairs between the nGate and potassiumChannel components.
     //      These are:
     //          - voltage, V
     //          - time, t
     //          - gate status, n
     //      Use the Variable::addEquivalence(VariablePtr, VariablePtr) function.
-
+    libcellml::Variable::addEquivalence(potassiumChannel->variable("t"), nGate->variable("t"));
+    libcellml::Variable::addEquivalence(potassiumChannel->variable("V"), nGate->variable("V"));
     libcellml::Variable::addEquivalence(potassiumChannel->variable("n"), nGate->variable("n"));
-    libcellml::Variable::addEquivalence(potassiumChannelInit->variable("E_K"), potassiumChannel->variable("E_K"));
-    libcellml::Variable::addEquivalence(potassiumChannelInit->variable("g_K"), potassiumChannel->variable("g_K"));
-    libcellml::Variable::addEquivalence(nGateInit->variable("n"), nGate->variable("n"));
-    libcellml::Variable::addEquivalence(controller->variable("V"), potassiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(controller->variable("t"), potassiumChannel->variable("t"));
 
-
-    libcellml::Variable::addEquivalence(controller->variable("t"), nGate->variable("t"));
-    libcellml::Variable::addEquivalence(controller->variable("V"), nGate->variable("V"));
-
-    //  4.c Validate the model.  Expect errors related to unspecified interface types and invalid connections.
+    //  3.b Validate the model.  Expect errors related to unspecified interface types.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    //  4.d (if required) Remove the equivalences between too-distant components using the
-    //  Variable::removeEquivalence(VariablePtr, VariablePtr) function, and connect to the correct
-    //  component variables instead.
-
-    libcellml::Variable::removeEquivalence(controller->variable("t"), nGate->variable("t"));
-    libcellml::Variable::removeEquivalence(controller->variable("V"), nGate->variable("V"));
-
-    libcellml::Variable::addEquivalence(potassiumChannel->variable("t"), nGate->variable("t"));
-    libcellml::Variable::addEquivalence(potassiumChannel->variable("V"), nGate->variable("V"));
-
-    //  4.e Set the recommended interface types for all of the variables with connections.
+    //  3.c Set the recommended interface types for all of the variables with connections.
     potassiumChannel->variable("t")->setInterfaceType("public_and_private");
     potassiumChannel->variable("V")->setInterfaceType("public_and_private");
-    potassiumChannel->variable("E_K")->setInterfaceType("public_and_private");
-    potassiumChannel->variable("g_K")->setInterfaceType("public_and_private");
-    potassiumChannel->variable("n")->setInterfaceType("private");
-    nGate->variable("n")->setInterfaceType("public_and_private");
     nGate->variable("t")->setInterfaceType("public");
     nGate->variable("V")->setInterfaceType("public");
+    potassiumChannel->variable("n")->setInterfaceType("private");
+    nGate->variable("n")->setInterfaceType("public");
 
-    //  4.f Revalidate the model, and check that it is now free of errors.
+    //  3.d Revalidate the model, and check that it is now free of errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
 
     std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 5: Generate the model and output" << std::endl;
+    std::cout << "   STEP 4: Create the controller " << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
 
-    //  5.a Create a Generator instance and pass it the model for processing.  Check for errors and
+    //  STEP 4: The controller is a component at the top level of this model.
+    //      This allows for it to be more easily interchangable between runs and stimulus
+    //      conditions.  In later tutorials we will move this component into an external file so that the
+    //      model is separate from the running parameters and initial
+    //      When a Component (or Units) item is imported it needs:
+    //          - to be connected to an ImportSource item
+    //            - which in turn stores the url of the source file to be opened
+    //          - the name of the item in the source file to be retrieved
+    //          - a destination component (or units) item in which to store the
+    //            imported information
+
+    //  4.a Create a pointer to an ImportSource item using the create() idiom.
+    auto importer = libcellml::ImportSource::create();
+
+    //  4.b Use the ImportSource::setUrl() function to pass the file name containing the controller.
+    importer->setUrl("tutorial6_controller.cellml");
+
+    //  4.c Create the destination component into which the imported component
+    //      will be saved, and name it.  This will be the controller component.
+    auto controller = libcellml::Component::create("controller");
+
+    //  4.d Call the Component::setSourceComponent(ImportSource, std::string) function to
+    //      associate the destination controller component with the importer, and
+    //      the importer with the name of the item to retrieve.  If you're using the
+    //      file from the resources folder, the name of the component to import is "potassiumChannel_controller".
+    controller->setSourceComponent(importer, "potassiumChannel_controller");
+
+    //  4.e Add the controller component to the model in the normal way.
+    model->addComponent(controller);
+
+    //  4.e Validate the model, expecting it to be free of errors.
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
+    assert(validator->errorCount() == 0);
+
+    std::cout << "----------------------------------------------------------" << std::endl;
+    std::cout << "   STEP 5: Import the initial conditions " << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
+
+    //  STEP 5: Import the initial conditions
+    //      Similar to the way in which we imported the controller for the independent variables,
+    //      we can also import components to initialise the values within the potassiumChannel
+    //      and nGate components.  This procedure is the same as for the controller in Step 4,
+    //      the only difference being that the initialising components should be siblings or
+    //      children of the components to which they give values.
+    //
+    //      In this example the initialising components exist in the tutorial6_controller.cellml
+    //      file, so we can reuse the importer from Step 4.b, and simply repeat steps 4.c-e to
+    //      initalise the variables in the potassiumChannel and nGate components.  The items
+    //      to retrieve are called "potassiumChannel_initialiser" and "nGate_initialiser" respectively.
+
+    //  5.a Repeat steps 4.c-e for both the potassiumChannel and nGate components, and add the
+    //      new components as children of the components they initialise.
+    auto potassiumChannelInit = libcellml::Component::create("potassiumChannelInit");
+    potassiumChannelInit->setSourceComponent(importer, "potassiumChannel_initialiser");
+    potassiumChannel->addComponent(potassiumChannelInit);
+
+    auto nGateInit = libcellml::Component::create("nGateInit");
+    nGateInit->setSourceComponent(importer, "nGate_initialiser");
+    nGate->addComponent(nGateInit);
+
+    //  5.b (optional)  At this stage our model could be written to a CellML file.  As the model
+    //      contains import statements, the serialised and printed model would also maintain those
+    //      same dependencies, and would need to exist alongside the tutorial6_controller.cellml
+    //      file specified earlier.  In later steps we'll disconnect this dependency to allow for
+    //      the code generation step.
+    //
+    //      Check that the model is valid, then create a Printer, and use it to serialise the model.
+    //      Write the serialised model to a file.
+    auto printer = libcellml::Printer::create();
+    std::ofstream outFile("tutorial6_PotassiumChannelModel.cellml");
+    outFile << printer->printModel(model);
+    outFile.close();
+
+    //  5.c Now that all the imports are specified, we need to first resolve them with respect to a
+    //      directory location.  This location is either specified with an absolute path, or
+    //      relative to the current working directory.
+    //      Call the Model::resolveImports(directoryPath) function to resolve the imports.  Check that
+    //      it has worked as expected by checking that Model::hasUnresolvedImports() returns false.
+    model->resolveImports("");
+    std::cout << "The model has ";
+    if (model->hasUnresolvedImports()) {
+        std::cout << "UNRESOLVED imports :(" << std::endl;
+    } else {
+        std::cout << "resolved all its imports :)" << std::endl;
+    }
+
+    //  5.d Finally it's time to flatten the model.  This operation will create new local instances of all
+    //      of the imported items, thereby removing the model's dependency on imports. Use the Model::flatten()
+    //      function to do this.
+    model->flatten();
+
+    //  5.e After flattening it's important to note that any imported items (such as the components
+    //      potassiumChannelInit, nGateInit, and controller) now exist within the model slightly differently.
+    //      The easiest thing to do is to refresh their pointers by fetching the components from the flattened model.
+    //      You can do this using their "destination" name, eg: controller = model->component("controller"); etc.
+    controller = model->component("controller");
+    nGateInit = nGate->component("nGateInit");
+    potassiumChannelInit = potassiumChannel->component("potassiumChannelInit");
+    model->linkUnits();
+
+    std::cout << "----------------------------------------------------------" << std::endl;
+    std::cout << "   STEP 6: Generate the model " << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
+
+    // TODO It would be better to do the checking currently in the Generator outside it ...
+    //      This is coming (soon?) see https://github.com/cellml/libcellml/issues/499
+
+    //  6.a Create a Generator instance and pass it the model for processing.  Check for errors and
     //      print them to the terminal.  We expect to see errors reporting that some variables are not
     //      computed or not initialised.
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
     printErrorsToTerminal(generator);
 
-    //  5.b Create a Printer instance and use it to serialise the model.  Print this to a *.cellml file.
-    auto printer = libcellml::Printer::create();
-    std::ofstream outFile("tutorial6_PotassiumChannelModel_complete.cellml");
-    outFile << printer->printModel(model);
-    outFile.close();
+    //  6.b The Generator needs variables to have values or to be computed.  The initial values
+    //      for all the variables in the model are stored in the controller and initialisation components, so we
+    //      need to connect these together, just as in step 3.a, using the Variable::addEquivalence function.
+    libcellml::Variable::addEquivalence(potassiumChannelInit->variable("E_K"), potassiumChannel->variable("E_K"));
+    libcellml::Variable::addEquivalence(potassiumChannelInit->variable("g_K"), potassiumChannel->variable("g_K"));
+    libcellml::Variable::addEquivalence(nGateInit->variable("n"), nGate->variable("n"));
+    libcellml::Variable::addEquivalence(controller->variable("V"), potassiumChannel->variable("V"));
+    libcellml::Variable::addEquivalence(controller->variable("t"), potassiumChannel->variable("t"));
 
-    //  5.c Write the interface code to a .h file.
+    //  6.c We also need to specify the interface types for these variable equivalnences.
+    potassiumChannel->variable("E_K")->setInterfaceType("public_and_private");
+    potassiumChannel->variable("g_K")->setInterfaceType("public_and_private");
+    nGate->variable("n")->setInterfaceType("public_and_private");
+
+    //  6.c Pass the model back to the generator for re-processing, and check that now there are no more errors.
+    generator->processModel(model);
+    printErrorsToTerminal(generator);
+
+    std::cout << "----------------------------------------------------------" << std::endl;
+    std::cout << "   STEP 7: Output the final generated model " << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
+
+    //  7.a Write the interface code to a .h file
     outFile.open("tutorial6_PotassiumChannelModel_generated.h");
     outFile << generator->interfaceCode();
     outFile.close();
 
-    //  5.d Write the implementation code to a .c file.
+    //  7.b Write the implementation code to a .c file
     outFile.open("tutorial6_PotassiumChannelModel_generated.c");
     outFile << generator->implementationCode();
     outFile.close();
 
-    //  5.e Change the profile to Python and reprocess the model
+    //  7.c Change the profile to Python and reprocess the model
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 
-    //  5.f Write the Python implementation code to a .py file
+    //  7.d Write the Python implementation code to a .py file
     outFile.open("tutorial6_PotassiumChannelModel_generated.py");
     outFile << generator->implementationCode();
+    outFile.close();
+
+    //  7.e Serialise the model using a Printer and write to a CellML file.
+    outFile.open("tutorial6_PotassiumChannelModel_initialised.cellml");
+    outFile << printer->printModel(model);
     outFile.close();
 
     std::cout << "The created '" << model->name()
               << "' model has been output to tutorial6_PotassiumChannelModel_generated.[cellml,py,c,h]" << std::endl;
 
-    //  5.g Please see the instructions in the tutorial for how to run a
+    //  7.f Please see the instructions in the tutorial for how to run a
     //      simulation of this model using the simple solver provided.
     //      Then go and have a cuppa, you're done!
 }

@@ -13,9 +13,6 @@ If not, please see the earlier tutorials which introduce these issues:
 
 This tutorial is in C++; for the same tutorial in Python please see the :ref:`Tutorial 5 Python<tutorial5_py>` page instead.
 
-From this point onwards the tutorials will build on work done in the previous ones.
-If you need to jump in at some intermediate stage you will find all the files created by the earlier tutorials in the :code:`resources` folder.
-
 .. contents:: Contents
     :local:
 
@@ -73,8 +70,7 @@ Check that you have the output:
 Step 1: Create the model and component items
 ============================================
 Following the same procedures as in previous tutorials, our first step is to create new model and component instances.
-We haven't encountered it yet, but the real power of modelling comes from our ability to use and reuse different items, combining them into more and more complicated situations.
-In this case, we're going to create a component which represents a generic gated ion channel; it will be reused later on to represent channels for sodium and potassium in neuron models, or calcium in a cardiac model.
+In this case, we're going to create a component which represents a generic gated ion channel; variations of this gate will be used later on to represent channels for sodium and potassium in neuron models, or calcium in a cardiac model.
 There's an introduction to the biological and mathematical theory behind this particular model in :ref:`Understanding the Hodgkin-Huxley model<hh_background>`.
 
 .. container:: dothis
