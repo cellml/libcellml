@@ -408,7 +408,7 @@ int main()
     generator->setProfile(profile);
     generator->processModel(model);
 
-    //  5.f Write the Python implementation code to a .py file
+    //  5.f Write the Python implementation code to a .py file.
     outFile.open("tutorial6_PotassiumChannelModel_generated.py");
     outFile << generator->implementationCode();
     outFile.close();

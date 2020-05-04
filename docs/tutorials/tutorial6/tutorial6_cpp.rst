@@ -515,5 +515,127 @@ As you have done previously in :ref:`Tutorial 3<tutorial3_cpp>` and :ref:`Tutori
 
     **5.f** Retrieve and write the implementation code to a :code:`*.py` file.
 
-You should now have four new files created: the generated files in both C and Python, and the CellML model file.
 In the next section we'll run the simulation and look at the results.
+
+Step 6: Running the simulation
+==============================
+Following the same approach as you've used in :ref:`Tutorial 4<tutorial4_cpp>` and :ref:`Tutorial 5<tutorial5_cpp>` it's now time to use the simple solver to run your simulation.
+
+At this stage you should have some new files created:
+
+- The CellML file of your model (this will be used in later tutorials as you work toward building the whole Hodgkin-Huxley model);
+- The generated file for the Python profile (an example for changing profiles only); and
+- the generated files for the C profile, the header and source files.
+
+These last three files can be used in conjuction with a simple solver to model the behaviour of the potassium channel.
+Because this tutorial is in C++ we give instructions for the C++ solver.
+For the Python solver please see :ref:`the Python Tutorial 6 instructions<tutorial6_py>` or :ref:`the general solver instructions<solver>`.
+
+.. container:: dothis
+
+    **6.a** Navigate to the :code:`tutorials/solver` directory.
+
+.. code-block:: console
+
+  cd ../solver
+
+Because the code you've generated needs to be built at the same time as the solver code is built, each different model requires rebuilding a new solver executable which includes the generated code.
+
+.. container:: dothis
+
+  **6.b** From inside the :code:`tutorials/solver` directory, use the CMake command line to point to your generated files.
+  **NB** It's assumed that both of the header and source files have the same base filename (eg: :code:`baseFileName.c` and :code:`baseFileName.h`).
+  The general CMake command is below.
+
+.. code-block:: console
+
+  cmake -DINPUT=../tutorial6/baseFileName .
+
+.. container:: nb
+
+  Note that the fullstop in the cmake command sets both the source and binary directories to the solver directory.
+  This is because even though your generated files are elsewhere, the solver code and CMakeLists.txt file are in *this* directory, and the executable will end up here too.
+
+If all has gone well you should see the output similar to:
+
+.. code-block:: console
+
+    -- The C compiler identification is AppleClang 10.0.1.10010046
+    -- The CXX compiler identification is AppleClang 10.0.1.10010046
+    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc
+    -- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc -- works
+    -- Detecting C compiler ABI info
+    -- Detecting C compiler ABI info - done
+    -- Detecting C compile features
+    -- Detecting C compile features - done
+    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++
+    -- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ -- works
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
+
+    1) First use 'make -j' to build the file for running
+    2) Then solve by running: ./solve_baseFileName with the arguments:
+      -n  step_total
+      -dt step_size
+
+    -- Configuring done
+    -- Generating done
+    -- Build files have been written to: /path/to/your/stuff/tutorials/solver
+
+.. container:: dothis
+
+  **6.c** Following the instructions in the output, next you need to build the executable by entering:
+
+  .. code-block:: console
+
+    make -j
+
+.. container:: dothis
+
+  **6.d** Finally you're ready to solve your model.
+  The executable will have been given the prefix :code:`solve_` and then your :code:`baseFileName`, and can be run using the command line flags :code:`-n` to indicate the number of steps to run, and :code:`-dt` to indicate the step size, for example:
+
+  .. code-block:: console
+
+    ./solve_baseFileName -n 50 -dt 0.1
+
+The parameters read from the file, along with your command line arguments are printed to the terminal for checking, and the results of the simulation written to a tab-delimited file with the extension :code:`_solution.txt` after your base file name.
+Plotting these results will give you behaviour as shown below.
+
+.. figure:: /tutorials/images/tutorial6_voltage.png
+   :name: tutorial6_voltage
+   :alt: voltage step input
+   :align: center
+
+   Voltage clamp stimulus (:code:`V` versus :code:`t`).
+
+
+.. figure:: /tutorials/images/tutorial6_ngate.png
+   :name: tutorial6_ngate
+   :alt: n-gate dynamics
+   :align: center
+
+   n-gate dynamics in response to voltage clamp stimulus (:code:`n` versus :code:`t`).
+
+
+.. figure:: /tutorials/images/tutorial6_K_conductance.png
+   :name: tutorial6_K_conductance
+   :alt: Potassium channel conductance
+   :align: center
+
+   Potassium channel conductance (:code:`g_K` versus :code:`t`).
+
+
+.. figure:: /tutorials/images/tutorial6_current.png
+   :name: tutorial6_current
+   :alt: Potassium channel current
+   :align: center
+
+   Potassium channel current (:code:`i_K` versus :code:`t`).
+
+
+.. container:: dothis
+
+    **6.e** Go and have a cuppa, you're done!
