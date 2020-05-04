@@ -45,19 +45,19 @@ int main()
     {
         std::string equation =
             "  <apply><eq/>\n"
-            "    <ci>i_K</ci>"
-            "    <apply><times/>"
-            "       <apply><power/>"
-            "           <ci>n</ci>"
-            "           <cn cellml:units=\"dimensionless\">4</cn>"
-            "       </apply>"
-            "       <ci>g_K</ci>"
-            "       <apply><minus/>"
-            "           <ci>V</ci>"
-            "           <ci>E_K</ci>"
-            "       </apply>"
-            "    </apply>"
-            "  </apply>";
+            "    <ci>i_K</ci>\n"
+            "    <apply><times/>\n"
+            "       <apply><power/>\n"
+            "           <ci>n</ci>\n"
+            "           <cn cellml:units=\"dimensionless\">4</cn>\n"
+            "       </apply>\n"
+            "       <ci>g_K</ci>\n"
+            "       <apply><minus/>\n"
+            "           <ci>V</ci>\n"
+            "           <ci>E_K</ci>\n"
+            "       </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
 
         potassiumChannel->setMath(mathHeader);
         potassiumChannel->appendMath(equation);
@@ -304,7 +304,16 @@ int main()
     nGateInit->removeParent();
     nGate->addComponent(nGateInit);
 
-    //  3.e Link units and revalidate the model.  Check that there are no errors.
+    //  3.e Print the model to the terminal and check its component hierarchy matches:
+    //      ─ model:
+    //          ├─ component: controller
+    //          └─ component: potassium channel
+    //              ├─ component: potassium channel initialisation
+    //              └─ component: n-gate
+    //                  └─ component: n-gate initialisation
+    printModelToTerminal(model);
+
+    //  3.f Link units and revalidate the model.  Check that there are no errors.
     model->linkUnits();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
@@ -320,10 +329,7 @@ int main()
     //      some of the variables need to share their values between the components.
     //      This is done using variable equivalence and interfaces.
 
-    //  4.a Print your model to the screen and check that the encapsulation structure of the
-    //      components matches that in the tutorial.
-
-    //  4.b Set the equivalent variable pairs between the nGate and potassiumChannel components.
+    //  4.a Set the equivalent variable pairs between the nGate and potassiumChannel components.
     //      These are:
     //          - voltage, V
     //          - time, t
@@ -341,11 +347,11 @@ int main()
     libcellml::Variable::addEquivalence(controller->variable("t"), nGate->variable("t"));
     libcellml::Variable::addEquivalence(controller->variable("V"), nGate->variable("V"));
 
-    //  4.c Validate the model.  Expect errors related to unspecified interface types and invalid connections.
+    //  4.b Validate the model.  Expect errors related to unspecified interface types and invalid connections.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    //  4.d (if required) Remove the equivalences between too-distant components using the
+    //  4.c (if required) Remove the equivalences between too-distant components using the
     //  Variable::removeEquivalence(VariablePtr, VariablePtr) function, and connect to the correct
     //  component variables instead.
 
@@ -355,7 +361,7 @@ int main()
     libcellml::Variable::addEquivalence(potassiumChannel->variable("t"), nGate->variable("t"));
     libcellml::Variable::addEquivalence(potassiumChannel->variable("V"), nGate->variable("V"));
 
-    //  4.e Set the recommended interface types for all of the variables with connections.
+    //  4.d Set the recommended interface types for all of the variables with connections.
     potassiumChannel->variable("t")->setInterfaceType("public_and_private");
     potassiumChannel->variable("V")->setInterfaceType("public_and_private");
     potassiumChannel->variable("E_K")->setInterfaceType("public_and_private");
@@ -365,7 +371,7 @@ int main()
     nGate->variable("t")->setInterfaceType("public");
     nGate->variable("V")->setInterfaceType("public");
 
-    //  4.f Revalidate the model, and check that it is now free of errors.
+    //  4.e Revalidate the model, and check that it is now free of errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
@@ -397,7 +403,7 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    //  5.e Change the profile to Python and reprocess the model
+    //  5.e Change the profile to Python and reprocess the model.
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);

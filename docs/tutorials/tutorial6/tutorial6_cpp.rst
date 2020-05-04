@@ -81,31 +81,31 @@ The governing mathematical equation becomes:
 
     **1.b** Add a MathML string representing this equation to your component.
     Remember that you will need to include the MathML opening and closing tags, and namespace.
-    If you need to, copy the code underneath the "Show MathML" link below.
+    If you need to, copy the code underneath the "Show code" link below.
 
     .. container:: toggle
 
         .. container:: header
 
-            Show MathML
+            Show code
 
         .. code-block:: cpp
 
             std::string equation =
                 "  <apply><eq/>\n"
-                "    <ci>i_K</ci>"
-                "    <apply><times/>"
-                "       <apply><power/>"
-                "           <ci>n</ci>"
-                "           <cn cellml:units=\"dimensionless\">4</cn>"
-                "       </apply>"
-                "       <ci>g_K</ci>"
-                "       <apply><minus/>"
-                "           <ci>V</ci>"
-                "           <ci>E_K</ci>"
-                "       </apply>"
-                "    </apply>"
-                "  </apply>";
+                "    <ci>i_K</ci>\n"
+                "    <apply><times/>\n"
+                "       <apply><power/>\n"
+                "           <ci>n</ci>\n"
+                "           <cn cellml:units=\"dimensionless\">4</cn>\n"
+                "       </apply>\n"
+                "       <ci>g_K</ci>\n"
+                "       <apply><minus/>\n"
+                "           <ci>V</ci>\n"
+                "           <ci>E_K</ci>\n"
+                "       </apply>\n"
+                "    </apply>\n"
+                "  </apply>\n";
 
 .. container:: dothis
 
@@ -301,17 +301,30 @@ Next we need to define this new dependency of the :math:`\alpha` and
 
 Step 3: Load the controller components
 ======================================
+We introduce the idea of controller and initialisation components here to support the idea that the model (that is, the mathematics) is distinct from its parameters (that is, the numerical values of the variables).
+It's a common modelling practice to need to run the same model (mathematics) using different parameters or initial conditions.
+If the numerical values of those parameters and initial conditions are buried inside nested components deep in the encapsulation structure, then it becomes difficult to change them easily.
+In this tutorial we parse and read an external model which contains a controller (for the time and voltage variables) and initialising components (for constant parameters in the potassium channel and n-gate components).
+In :ref:`Tutorial 7<tutorial7_cpp>` we will use the :code:`import` functionality for the same purpose.
 
+.. container:: dothis
 
-Step 4: Connect the components together
-=======================================
-In order for components to be able to relate to one another, we have to define two things.
-Firstly, the hierarchy in which they exist - this is called the *encapsulation* and determines which components are able to access others.
-Each component is only visible to its direct parents, direct children, and siblings (those which share a direct parent).
-Secondly, we need to define the way in which the varaibles within the component relate to those outside it.
-This is done by creating *equivalent variables*.
+    **3.a** Create a parser and use it to read the contents of the :code:`resources/tutorial6_controller.cellml` file into a temporary model.
 
-In this tutorial, we have an arrangement like that shown below.
+.. container:: dothis
+
+    **3.b** From the parsed model, retrieve the component named "controller" and add it to your model (that is, at the top level of the encapuslation hierarchy).
+    Remember that you will need to use the :code:`removeParent()` function to detach it from the parsed model before adding.
+
+.. container:: dothis
+
+    **3.c** Repeat the process to retieve the component named "potassiumChannel_initialiser" and add this as a child of your potassium channel component.
+
+.. container:: dothis
+
+    **3.d** Repeat the process a final time to retieve the component named "nGate_initialiser" and add this as a child of your n-gate component.
+
+At this stage, you should have an arrangement like that shown below.
 
 .. code::
 
@@ -324,9 +337,58 @@ In this tutorial, we have an arrangement like that shown below.
 
 .. container:: dothis
 
-    **4.a** Print the model to the screen to check your component hierarchy.
+    **3.e** Print the model to the screen to check that your component hierarchy matches what is shown above.
+    Next, check the contents of the components that you have imported:
+    - You should see that the controller component contains some mathematics for the voltage step function that we'll use to trigger the channel response.
+    - The other two components contain no maths, and are only there to give values to constants or initial values to variables.
 
-After checking how the components are arranged, we need to define which variables can access each other, and how.
+.. code-block:: console
+
+        ...
+        Component[0] has name: 'nGate_initialiser'
+        Component[0] has 1 variables:
+            Variable[0] has name: 'n'
+            Variable[0] has initial_value: '0.325'
+            Variable[0] has units: 'dimensionless'
+        ...
+        Component[1] has name: 'potassiumChannel_initialiser'
+        Component[1] has 2 variables:
+          Variable[0] has name: 'E_K'
+          Variable[0] has initial_value: '-85'
+          Variable[0] has units: 'millivolt'
+          Variable[1] has name: 'g_K'
+          Variable[1] has initial_value: '36'
+          Variable[1] has units: 'milliS_per_cm2'
+        ...
+        Component[1] has name: 'controller'
+        Component[1] has 2 variables:
+            Variable[0] has name: 't'
+            Variable[0] has units: 'millisecond'
+            Variable[1] has name: 'V'
+            Variable[1] has units: 'millivolt'
+            Maths in the component is: ...
+
+.. container:: nb
+
+    We demonstrate parsing external components here, and in the next tutorial will show importing them instead.
+    The biggest difference between the two methods is that parsing reads *only* the component items and its children, whereas importing will *also* read any units that might be required.
+    It is not visible in this example, but the distinction will become clear in the next tutorial.
+
+.. container:: dothis
+
+    **3.e** Link the model's units and revalidate.
+    There should be no errors now.
+
+Step 4: Connect the components together
+=======================================
+In order for components to be able to relate to one another, we have to define two things.
+Firstly, the hierarchy in which they exist - this is called the *encapsulation* and determines which components are able to access others.
+Each component is only visible to its direct parents, direct children, and siblings (those which share a direct parent).
+Secondly, we need to define the way in which the varaibles within the component relate to those outside it.
+This is done by creating *equivalent variables*.
+
+We have already defined the encapsulation hierarchy by setting our components to be nested within other components in steps 2.a and 3.b-d.
+We now need to define which variables can access each other, and how.
 This is done by making variables in different components *equivalent* to one another:
 
 .. code-block:: cpp
@@ -334,11 +396,11 @@ This is done by making variables in different components *equivalent* to one ano
     // Making the firstVariable and secondVariable equivalent to each other
     libcellml::Variable::addEquivalence(firstVariable, secondVariable);
 
-In our model we have defined an "controller" component which we'll use to control all of the independent variables (time, voltage) during the simulation process.
+In our model we have defined a controller component which is used to control all of the independent variables (time, voltage) during the simulation process.
 
 .. container:: dothis
 
-    **4.b** Use the addEquivalence functionality to match the time and voltage variables in the "controller" component with those in the other two.
+    **4.a** Use the addEquivalence functionality to match the time and voltage variables in the "controller" component with those in the other two.
     Note that if you have used the curly brackets :code:`{ }` to denote a limited scope for your variable definitions earlier, you will need to retrieve the variables from their components using their names, as they don't exist in the general scope of the code:
 
 .. code-block:: cpp
@@ -348,7 +410,7 @@ In our model we have defined an "controller" component which we'll use to contro
 
 .. container:: dothis
 
-    **4.c** Validate your model and print the errors to the terminal.
+    **4.b** Validate your model and print the errors to the terminal.
     You should see errors related to missing specification of interface types, and - if you followed the example above - also about invalid connections between the n-gate component and the controller component.
 
 .. code-block:: console
@@ -378,7 +440,7 @@ Instead, we need to use the :code:`potassiumChannel` component as a go-between: 
 
 .. container:: dothis
 
-    **4.d** Alter the equivalence arrangement you created in step 4.c so that the neighbouring component rule is followed.
+    **4.c** Alter the equivalence arrangement you created in step 4.c so that the neighbouring component rule is followed.
     You will need to do this for the variables representing time :math:`t` and voltage :math:`V` between all components.
     Validate your model again.
     You should now see validation messages only related to interfaces, as shown below.
@@ -414,5 +476,44 @@ The interface types between the variables in these components needs to be specif
 
 .. container:: dothis
 
-    **4.f**  Use the :code:`setInterfaceType` function for each of the shared variables to specify their avaiable interfaces using the recommendation from the error messages.
-    Re-validate your model and confirm that it is now free of errors.
+    **4.d** Use the :code:`setInterfaceType` function for each of the shared variables to specify their avaiable interfaces using the recommendation from the error messages.
+
+.. container:: dothis
+
+    **4.e** Re-validate your model and confirm that it is now free of errors.
+
+Step 5: Generate and output the model
+=====================================
+
+As you have done previously in :ref:`Tutorial 3<tutorial3_cpp>` and :ref:`Tutorial 5<tutorial5_cpp>`, it's now time to use the :code:`Generator` functionality to create a runnable version of your model.
+
+.. container:: dothis
+
+    **5.a** Create a :code:`Generator` instance and pass it the model for processing.
+    Because we have used an equivalent variable relationship to initialise sets of equivalent variables, we should not see any errors relating to un-initialised or un-computed variables.
+    Use the :code:`printErrorsToTerminal()` function with your generator as an argument, and confirm that there are no errors.
+
+.. container:: dothis
+
+    **5.b** Create a :code:`Printer` instance and use it to serialise the model.
+    Write you serialised model to a :code:`*.cellml` file.
+
+.. container:: dothis
+
+    **5.c** Now we'll use the generator to create its default C code.
+    Retrieve and write the interface code to a :code:`*.h` file.
+
+.. container:: dothis
+
+    **5.d** Retrieve and write the implementation code to a :code:`*.c` file.
+
+.. container:: dothis
+
+    **5.e** Change the generator's profile to Python and reprocess the model.
+
+.. container:: dothis
+
+    **5.f** Retrieve and write the implementation code to a :code:`*.py` file.
+
+You should now have four new files created: the generated files in both C and Python, and the CellML model file.
+In the next section we'll run the simulation and look at the results.
