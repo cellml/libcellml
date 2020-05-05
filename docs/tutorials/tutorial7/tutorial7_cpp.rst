@@ -13,100 +13,191 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
     - :download:`CMakeLists.txt` The CMake file for building this tutorial;
     - :download:`tutorial7.cpp` Either the skeleton code, or :download:`tutorial7_complete.cpp` the completed tutorial code;
     - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
-      use in the tutorials.
-    - If you did not complete Tutorial 6 you can download the file created
-      there from :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
+      use in the tutorials; and
+    - :download:`../resources/tutorial7_resources.cellml` An external controller model.
 
 .. contents:: Contents:
     :local:
 
-0: Setup
-========
+
+Step 1: Create the sodium channel component
+===========================================
 
 .. container:: dothis
 
-    **0.a** Create a model instance and name it appropriately.
+    **1.a** Create a model and name it appropriately.
 
 .. container:: dothis
 
-    **0.b** Create a validator for later use.
-
-1: Create the sodium channel component
-======================================
+    **1.b** Create a component instance for the sodium channel and name it appropriately.
+    Add the component to the model.
 
 .. container:: dothis
 
-    **1.a** Create a component instance for the sodium channel and name it
-    appropriately.  Add the component to the model.
-
-.. container:: dothis
-
-    **1.b** Add the mathematics to this component according to:
+    **1.c** Add the mathematics to this component according to the equations shown below (if you need to, you can copy the code from the "Show code" link below).
+    Call the validator, expecting errors related to missing variables.
 
 .. math::
 
-    Na_{conductance} = g_{Na} h m^{3}
+    Na_{conductance} = g_{Na} h m^{3} \\
 
     i_{Na} = Na_{conductance} (V-E_{Na})
 
+.. container:: toggle
+
+    .. container:: header
+
+        Show code
+
+    .. code-block:: cpp
+
+        std::string equation1 =
+            "  <apply><eq/>\n"
+            "    <ci>Na_conductance</ci>\n"
+            "    <apply><times/>\n"
+            "      <ci>g_Na</ci>\n"
+            "      <ci>h</ci>\n"
+            "      <apply><power/>\n"
+            "        <ci>m</ci>\n"
+            "        <cn cellml:units=\"dimensionless\">3</cn>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
+
+        std::string equation2 =
+            "  <apply><eq/>\n"
+            "    <ci>i_Na</ci>\n"
+            "    <apply><times/>\n"
+            "      <ci>Na_conductance</ci>\n"
+            "      <apply><minus/>\n"
+            "        <ci>V</ci>\n"
+            "        <ci>E_Na</ci>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
+
+
 .. container:: dothis
 
-    **1.c** Call the validator and print its debugging information.  This will
-    help to summarise the variables which you need to add:
-
-- :math:`V` voltage, mV
-- :math:`t` time, ms
-- :math:`h` h-gate status, dimensionless
-- :math:`m` m-gate status, dimensionless
-- :math:`g_{Na} \;\; mS/cm^2`, (ie: milli-Siemens per square centimetre),
-  initially 120
-- :math:`E_{Na} \;\; mV`, initially 35
-- :math:`i_{Na} \;\; \mu A/cm^2`, (ie: micro-Amperes per square centimetre)
-- :math:`Na_{conductance}  \;\;  mS/cm^2`
+    **1.d** Add the missing variables as listed by the validator.
+    Validate the model again, expecting errors related to missing units.
 
 .. container:: dothis
 
-    **1.d** Again call the validator to list the units you will need to add to
-    the parent model.  Remember that these will include the units of any constant
-    values present in the MathML block too.
+    **1.e** Add the units are required by the validator.
 
 .. container:: dothis
 
-    **1.e** Validate that the model is now free of errors.
+    **1.f** Link the model's units, and validate that the model is now free of errors.
 
-2: Create the m-gate component
-==============================
+Step 2: Create the m-gate component
+===================================
 
 .. container:: dothis
 
     **2.a** Create a new component for the m-gate and name it appropriately.
+    Add the m-gate component to the sodium channel component.
 
 .. container:: dothis
 
     **2.b** Create the MathML required to represent the mathematics governing
     the m-gate, as in three equations shown below, and add to the component.
-    Remember that you will need to add the appropriate units to the constants to
+    Remember that you will need to deduce the appropriate units to the constants to
     ensure consistency throughout.
+    If needed you can access the code under the "Show code" link.
 
 .. math::
 
-    \alpha_m = \frac {-0.1(V+50)}{e^{-0.1(V+50)}-1}
+    \alpha_m = \frac {-0.1(V+50)}{e^{-0.1(V+50)}-1} \\
 
-    \beta_m = 4 e^{\frac {-(V+75)} {18}}
+    \beta_m = 4 e^{\frac {-(V+75)} {18}} \\
 
-    \dot m = \frac {dm}{dt} = \alpha_m(1-m)-m\beta_m
+    \dot m = \frac {dm}{dt} = \alpha_m(1-m)-m\beta_m \\
 
+.. container:: toggle
+
+    .. container:: header
+
+        Show code
+
+    .. code-block:: cpp
+
+        std::string equation1 =
+            "  <apply><eq/>\n"
+            "    <ci>alpha_m</ci>\n"
+            "    <apply><divide/>\n"
+            "      <apply><times/>\n"
+            "        <apply><minus/>\n"
+            "          <cn cellml:units=\"per_mV_ms\">0.1</cn>\n"
+            "        </apply>\n"
+            "        <apply><plus/>\n"
+            "          <ci>V</ci>\n"
+            "          <cn cellml:units=\"mV\">50</cn>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "      <apply><minus/>\n"
+            "        <apply><exp/>\n"
+            "          <apply><divide/>\n"
+            "            <apply><minus/>\n"
+            "              <apply><plus/>\n"
+            "                <ci>V</ci>\n"
+            "                <cn cellml:units=\"mV\">50</cn>\n"
+            "              </apply>\n"
+            "            </apply>\n"
+            "            <cn cellml:units=\"mV\">10</cn>\n"
+            "          </apply>\n"
+            "        </apply>\n"
+            "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
+
+        std::string equation2 =
+            "  <apply><eq/>\n"
+            "    <ci>beta_m</ci>\n"
+            "    <apply><times/>\n"
+            "      <cn cellml:units=\"per_ms\">4</cn>\n"
+            "      <apply><exp/>\n"
+            "        <apply><divide/>\n"
+            "          <apply><minus/>\n"
+            "            <apply><plus/>\n"
+            "              <ci>V</ci>\n"
+            "              <cn cellml:units=\"mV\">75</cn>\n"
+            "            </apply>\n"
+            "          </apply>\n"
+            "          <cn cellml:units=\"mV\">18</cn>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
+
+        std::string equation3 =
+            "  <apply><eq/>\n"
+            "    <apply><diff/>\n"
+            "      <bvar>\n"
+            "        <ci>t</ci>\n"
+            "      </bvar>\n"
+            "      <ci>m</ci>\n"
+            "    </apply>\n"
+            "    <apply><minus/>\n"
+            "      <apply><times/>\n"
+            "        <ci>alpha_m</ci>\n"
+            "        <apply><minus/>\n"
+            "          <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "          <ci>m</ci>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "      <apply><times/>\n"
+            "        <ci>m</ci>\n"
+            "        <ci>beta_m</ci>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
 
 .. container:: dothis
 
-    **2.c** Call the validator and use it to summarise the variables you need
-    to add into this component, along with their units and initial conditions.
-
-- :math:`V` voltage, mV
-- :math:`t` time, ms
-- :math:`\alpha_m` rate constant, 1/ms
-- :math:`\beta_m` rate constant, 1/ms
-- :math:`m` gate status, dimensionless, initially 0.05
+    **2.c** Call the validator and use it to summarise the variables that are missing.
+    Add these variables to the component.
 
 .. container:: dothis
 
@@ -115,22 +206,22 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
 .. container:: dothis
 
-    **2.e** Validate that the model is now free of errors.
+    **2.e** Link the model's units and validate that the model is now free of errors.
 
-
-3: Create the h-gate component
-==============================
+Step 3: Create the h-gate component
+===================================
 
 .. container:: dothis
 
     **3.a-c** Repeat the procedure above to create the h-gate component and add
-    it to the model.  Its governing equations are:
+    it to the model.
+    Its governing equations are shown below.
 
 .. math::
 
-    \alpha_h = 0.07 e^{-0.05(V+75)}
+    \alpha_h = 0.07 e^{-0.05(V+75)} \\
 
-    \beta_h = \frac {1} {e^{-0.1(V+45)} + 1}
+    \beta_h = \frac {1} {e^{-0.1(V+45)} + 1} \\
 
     \dot {h} = \frac {dh} {dt} = \alpha_h (1-h) - h\beta_h
 
@@ -140,136 +231,250 @@ where:
 - :math:`\beta_h` rate constant, 1/ms
 - :math:`V` voltage, mV
 - :math:`t` time, ms
-- :math:`h` gate status, dimensionless, initially 0.6
+- :math:`h` gate status, dimensionless.
+
+.. container:: toggle
+
+    .. container:: header
+
+        Show code
+
+    .. code-block:: cpp
+
+        std::string equation1 =
+            "  <apply><eq/>\n"
+            "    <ci>alpha_h</ci>\n"
+            "    <apply><times/>\n"
+            "      <cn cellml:units=\"per_ms\">0.07</cn>\n"
+            "      <apply><exp/>\n"
+            "        <apply><divide/>\n"
+            "          <apply><minus/>\n"
+            "            <apply><plus/>\n"
+            "              <ci>V</ci>\n"
+            "              <cn cellml:units=\"mV\">75</cn>\n"
+            "            </apply>\n"
+            "          </apply>\n"
+            "          <cn cellml:units=\"mV\">20</cn>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
+
+        std::string equation2 =
+            "  <apply><eq/>\n"
+            "    <ci>beta_h</ci>\n"
+            "    <apply><divide/>\n"
+            "      <cn cellml:units=\"per_ms\">1</cn>\n"
+            "      <apply><plus/>\n"
+            "        <apply><exp/>\n"
+            "          <apply><divide/>\n"
+            "            <apply><minus/>\n"
+            "              <apply><plus/>\n"
+            "                <ci>V</ci>\n"
+            "                <cn cellml:units=\"mV\">45</cn>\n"
+            "              </apply>\n"
+            "            </apply>\n"
+            "            <cn cellml:units=\"mV\">10</cn>\n"
+            "          </apply>\n"
+            "        </apply>\n"
+            "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
+
+        std::string equation3 =
+            "  <apply><eq/>\n"
+            "    <apply><diff/>\n"
+            "       <bvar>\n"
+            "         <ci>t</ci>\n"
+            "       </bvar>\n"
+            "       <ci>h</ci>\n"
+            "    </apply>\n"
+            "    <apply><minus/>\n"
+            "      <apply><times/>\n"
+            "        <ci>alpha_h</ci>\n"
+            "        <apply><minus/>\n"
+            "          <cn cellml:units=\"dimensionless\">1</cn>\n"
+            "          <ci>h</ci>\n"
+            "        </apply>\n"
+            "      </apply>\n"
+            "      <apply><times/>\n"
+            "        <ci>h</ci>\n"
+            "        <ci>beta_h</ci>\n"
+            "      </apply>\n"
+            "    </apply>\n"
+            "  </apply>\n";
 
 .. container:: dothis
 
-    **3.d** Check that the model is valid to this point.
+    **3.d** Check that the model is free of errors to this point.
 
-4: Create the environment component
-===================================
-As in the previous :ref:`Tutorial 5<tutorial5_cpp>` we need to create an
-environment component which we'll use to control the time and voltage in which
-the channels operate.  As before we define two variables:
+Step 4: Import a controller component
+=====================================
+In :ref:`Tutorial 6<tutorial6_cpp>` we separated the mathematics from the values of the variables, and used the :code:`Parser` to read an external controller model containing the initialisation information.
+In this tutorial, we will introduce the :code:`ImportSource` and importing functionality, which can be used to the same purpose.
 
-- :math:`V` voltage, mV
-- :math:`t` time, ms
+When an item - either :code:`Component` or :code:`Units` - is imported from one model into another, three ingredients are needed:
 
-We will add the driving function later.
-
-.. container:: dothis
-
-    **4.a** Define the environment component, including its variables, and add
-    to the model.  Call the validator to check that the model is still free of
-    errors.
-
-5: Connect the components
-=========================
-At this stage we should have three components in the hierarchy below:
-::
-
-    |--- the model
-       |--- the environment component
-       |--- the sodium channel component
-          |--- the m-gate component
-          |--- the h-gate component
-
-You can use the :code:`printModelToTerminal` utility function to check that
-this is indeed the structure that you have.
-
-Just as we did before, we need to connect the environment variables throughout
-the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_cpp>` that:
-
-- only immediate siblings, children, and parents can be connected
-- the kind of interface depends on the relationship between components.
-
+    - An :code:`ImportSource` instance which does the work;
+    - The name of the item to be retrieved from the source model; and
+    - A destination item (:code:`Component` or :code:`Units`) in which to store the imported item.
 
 .. container:: dothis
 
-    **5.a** This model involves sharing several variables between components.
-    For each of them, create the appriopriate variable equivalence using the
-    :code:`libcellml::Variable::setVariableEquivalence` function.  The shared
-    variables are:
+    **4.a** Create a pointer to an :code:`ImportSource` item using the :code:`create()` idiom.
 
-- :math:`V` voltage
-- :math:`t` time
-- :math:`h` h-gate status
-- :math:`m` m-gate status
+.. code-block:: cpp
+
+    auto importer = libcellml::ImportSource::create();
 
 .. container:: dothis
 
-    **5.b** For each of the variables you connected in 5.a, set their
-    appropriate interface type using the :code:`setInterfaceType` function.
-
-6: Set the driving function
-===========================
-The last step in defining your model behaviour is the driving function.  As in
-the other tutorials, this is a voltage clamp such that the voltage is held at
-a value of -20mV in the interval 5ms < t < 15 ms and -85mV otherwise.
-Recall that this driving function applies to the variables in the environment
-component: the variable connections you have established in 5.a will propagate
-these values throughout the model.
+    **4.b** Use the :code:`ImportSource::setUrl()` function to point the importer to the file containing the controller, :code:`tutorial7_controller.cellml`.
 
 .. container:: dothis
 
-    **6.a** Write the MathML required for the driving function behaviour above.
-    You will need to use the :code:`<piecewise>` function.
+    **4.c** Create the destination component into which the imported component will be saved, and name it as usual.
+    This will be the controller component, and should sit at the top level of the model's encapsulation hierarchy, as a child of the model itself.
+
+Now that we've created a source as well as a destination for the imported controller component, we need to link the two of them together.
+This is done using a function in the destination component called :code:`setSourceComponent` which takes two arguments:
+
+- The :code:`ImportSource` item you created in step 4.a; and
+- A string, which is the name of the item to retrieve from that import source.
 
 .. container:: dothis
 
-    **6.b** Validate the final model and confirm that it is error free.
-
-7: Set the initial conditions
-=============================
+    **4.d** Set the source component for the destination controller component which you created in 4.c using the :code:`setSourceComponent` function.
+    The name of component to retrieve (the second argument) is "sodiumChannel_controller".
 
 .. container:: dothis
 
-    **7.a** Set the initial conditions for the solver.  These are:
+    **4.e** Valiate your model, and expect that there are no errors.
 
-    .. math::
-
-          g_{Na}(t=0) = 120 \\
-          E_{Na}(t=0) = 35 \\
-          h(t=0)=0.6 \\
-          m(t=0)=0.05 \\
-
-
-8: Generate and output the model
-================================
-The last step is to output the model.  As previously, this happens in two ways:
-the generation of code that can be solved here, and the serialisation and
-printing of the model to a CellML file for use in later tutorials.
+Step 5: Import the initial conditions and parameters
+====================================================
+Similar to the way in which we imported the controller for the independent variables, we can also import components to initialise the values within the sodium channel and its gating components.
+This procedure is the same as for the controller in Step 4, the only difference being that the initialising components should be siblings or
+children of the components to which they give values.
+In this example the initialising components exist in the same :code:`tutorial7_controller.cellml` file, so we can reuse the importer from steps 4.a-b, and simply repeat steps 4.c-e to initalise the variables in the sodium channel, m-gate, and h-gate components.
 
 .. container:: dothis
 
-    **8.a** Create a :code:`Generator` instance and submit the model for
-    processing.  Check that there are no errors found during the processing.
+    **5.a** Repeat the process above between steps 4.c-e for new initialisation components for the sodium channel, and two gates.
+    The items to retrieve are called "sodiumChannel_initialiser", "mGate_initialiser", and "hGate_initialiser".
+    Each initialisation component should be a child of the component it addresses.
+
+At this stage our model can be written to a CellML file.
+As the model contains import statements, the serialised and printed model would also maintain those same dependencies, and would need to exist alongside the :code:`tutorial7_controller.cellml` file specified earlier.  In later steps we'll disconnect this dependency ("flattening" the model) to allow for the code generation step.
 
 .. container:: dothis
 
-    **8.b** Write the interface code (.h header) and implementation code
-    (.c source) to files.
+    **5.b** Check that the model is valid.
+    Create a :code:`Printer` item and use it to serialise the model at this point.
+    Write the serialised model to a :code:`.cellml` file.
+
+Once the import sources and destinations are specified, we need to also point the model to the directory in which they sit.
+This is done using the :code:`resolveImports()` function of the model, with the argument of the directory path to the imported file(s).
 
 .. container:: dothis
 
-    **8.c**  Create a :code:`GeneratorProfile` and use it to change to Python.
-    Reprocess the model, and write the implementation code (.py source) to
-    a file.
+    **5.c** Use the :code:`resolveImports()` function to specify the (relative to the current working directory, or absolute) path to the directory in which the :code:`tutorial7_controller.cellml` file is found.
+    If this is the same as your working directory, simply enter an empty string, :code:`""`.
+    Once that is done, use the :code:`model->hasUnresolvedImports()` function to check whether or not the model imports have been found.
+
+Finally it's time to flatten the model so that it can be used to generate runable code.
+This operation will create new local instances of all of the imported items, thereby removing the model's dependency on imports.
 
 .. container:: dothis
 
-    **8.d** Create a :code:`Printer` to serialise your model, and output it
-    to a CellML file.
+    **5.d** Call the :code:`flatten()` function on the model, and then print it to the terminal for checking.
+    You should see a structure similar to that shown below.
 
-9: Run the model
-================
-You can solve the model to simulate the dynamics of the sodium gate using the
-supplied solver.  Instructions for running this are given on the
-:ref:`Simple solver for generated models<solver>` page.  You should see the
-behaviour shown in the figures below by the red line representing a voltage
-step to -20mV.  The theory of this channel's operation
-is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
+.. code-block:: text
 
+    ─ model
+        ├ component: controller
+        └ component: sodium channel
+            ├ component: sodium channel initialiser
+            ├ component: h-gate
+            │   └ component: h-gate initialiser
+            └ component: m-gate
+                └ component: m-gate initialiser
+
+.. container:: nb
+
+    Flattening a model completely over-writes the "import" version with the "flat" version.
+    This means that any imported items which you'd previously assigned to pointers
+    (such as the components defined as destinations for the imports: the controller and initialising components) are obsolete.
+    **TODO** Check if this is true?? all components or only imported ones??
+    The easiest thing to do is to refresh all pointers by re-fetching them from the flattened model:
+
+    .. code-block:: cpp
+
+        auto myModel = libcellml::Model::create("myModel");
+        auto myComponent = libcellml::Component::create("myComponent");
+        myModel->addComponent(myComponent);
+
+        // Flattening the model over-writes all references:
+        myModel->flatten();
+
+        // Re-fetching the pointer after flattening:
+        myComponent = myModel->component("myComponent");
+
+.. container:: dothis
+
+    **5.e** Following the example above, re-fetch the component pointers which you created earlier.
+
+.. container:: dothis
+
+    **5.f** Once the component pointers are up-to-date, we can connect the equivalent variable sets for the shared variables.
+    These are:
+
+        - The independent variables time :code:`t`, and voltage :code:`V` are shared between all components (except initialisation ones);
+        - The gate rates (:code:`m` and :code:`h`) are shared between the gates and the sodium channel component;
+        - The sodium channel initialiser provides :code:`E_Na` and :code:`g_Na` values to the sodium channel component;
+        - The h-gate initialiser provides the initial :code:`h` value to the h-gate component; and
+        - The m-gate initialiser provides the initial :code:`m` value to the m-gate component.
+
+.. container:: dothis
+
+    **5.g** Validate the model, and expect messages related to missing interface types for the shared variables.
+    Add the recommended interface types to each of the variables using the :code:`setInterfaceType()` function.
+
+.. container:: dothis
+
+    **5.h** Link the model's units and validate the model a final time.
+    There should be no errors found.
+
+Step 6: Generate and output the model
+=====================================
+As we've done several times before, it's time to generate the runable model code.
+
+.. container:: dothis
+
+    **6.a** Create a :code:`Generator` instance and submit the model for
+    processing.
+    Check that there are no errors found during this processing.
+
+.. container:: dothis
+
+    **6.b** Retrieve and write the interface :code:`*.h` code and implementation :code:`*.c` code to files.
+
+.. container:: dothis
+
+    **6.c**  Change the generator profile to Python and reprocess the model
+
+.. container:: dothis
+
+    Retrieve and write the implementation code :code:`*.py` to a file.
+
+Step 7: Run the simulation
+==========================
+You can solve the model to simulate the dynamics of the sodium gate using the supplied solver.
+Instructions for running this are given on the :ref:`Simple solver for generated models<solver>` page, as well as in previous tutorials.
+You should see the behaviour shown in the figures below by the red line representing a voltage step to -20mV.
+The theory of this channel's operation is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
 
 .. figure:: ../../theory/images/tut7_Vgraph.png
    :name: tut7_Vgraph

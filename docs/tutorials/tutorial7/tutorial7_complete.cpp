@@ -436,13 +436,14 @@ int main()
     //      the only difference being that the initialising components should be siblings or
     //      children of the components to which they give values.
     //
-    //      In this example the initialising components exist in the tutorial6_controller.cellml
-    //      file, so we can reuse the importer from Step 4.b, and simply repeat steps 4.c-e to
-    //      initalise the variables in the sodiumChannel and nGate components.  The items
-    //      to retrieve are called "potassiumChannel_initialiser" and "nGate_initialiser" respectively.
+    //      In this example the initialising components exist in the tutorial7_controller.cellml
+    //      file, so we can reuse the importer from Step 4.a-b, and simply repeat steps 4.c-e to
+    //      initalise the variables in the sodiumChannel, mGate, and hGate components.  The items
+    //      to retrieve are called "sodiumChannel_initialiser", "mGate_initialiser", and
+    //      "hGate_initialiser" respectively.
 
-    //  5.a Repeat steps 4.c-e for both the potassiumChannel and nGate components, and add the
-    //      new components as children of the components they initialise.
+    //  5.a Repeat steps 4.c-e for both the sodium channel, m-gate and h-gate components.
+    //      Add the new components as children of the components they initialise.
     auto sodiumChannelInit = libcellml::Component::create("sodiumChannelInit");
     sodiumChannelInit->setSourceComponent(importer, "sodiumChannel_initialiser");
     sodiumChannel->addComponent(sodiumChannelInit);
