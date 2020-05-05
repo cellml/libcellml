@@ -11,8 +11,8 @@ one comes with the full 'solutions' which should be able to run out of the box.
 Click the links below to read the outline for each tutorial, access the
 resources needed, and select which language to follow.
 
-Tutorials 0-3 outline the basics of installation and functionality.
-Tutorials 4-8 outline the process of creating a real CellML model.  The
+Tutorials 0-3 outline the basics of instalation and functionality.
+Tutorials 5-8 outline the process of creating a real CellML model.  The
 corresponding biological and modelling theory for these can be found in the
 :ref:`Modelling theory and background<theory_index>` section.
 

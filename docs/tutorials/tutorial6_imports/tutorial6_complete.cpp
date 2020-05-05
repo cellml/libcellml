@@ -339,11 +339,14 @@ int main()
     //  4.e Add the controller component to the model in the normal way.
     model->addComponent(controller);
 
+
+
     //  4.e Validate the model, expecting it to be free of errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
 
+    #if 0
     std::cout << "----------------------------------------------------------" << std::endl;
     std::cout << "   STEP 5: Import the initial conditions " << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
@@ -382,6 +385,8 @@ int main()
     std::ofstream outFile("tutorial6_PotassiumChannelModel.cellml");
     outFile << printer->printModel(model);
     outFile.close();
+
+    #endif
 
     //  5.c Now that all the imports are specified, we need to first resolve them with respect to a
     //      directory location.  This location is either specified with an absolute path, or

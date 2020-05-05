@@ -8,16 +8,18 @@ The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>`
 page. These are the C++ instructions.  For the same tutorial in Python
 please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
-**Resources:**
+Resources:
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
-    - :download:`tutorial7.cpp` Either the skeleton code, or :download:`tutorial7_complete.cpp` the completed tutorial code;
-    - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial
+    - :download:`tutorial7.cpp` Either the skeleton code, or ..
+    - :download:`tutorial7_complete.cpp` the completed tutorial code
+    - :download:`../utilities/tutorial_utilities.h` and
+      :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 6 you can download the file created
-      there from :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
+    - If you did not complete Tutorial 5 you can download the file created
+      there from :download:`../resources/tutorial7_SodiumChannelModel.cellml`
 
-.. contents:: Contents:
+.. contents:: Contents
     :local:
 
 0: Setup

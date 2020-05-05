@@ -1,27 +1,28 @@
-.. _tutorial7_cpp:
+.. _tutorial7_py:
 
-===========================================
-Tutorial 7 C++: Creating the sodium channel
-===========================================
+==============================================
+Tutorial 7 Python: Creating the sodium channel
+==============================================
 
 The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>`
-page. These are the C++ instructions.  For the same tutorial in Python
-please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
+page. These are the Python instructions.  For the same tutorial in C++
+please see the :ref:`Tutorial 7 in C++<tutorial7_py>` page instead.
 
-**Resources:**
+Resources:
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
-    - :download:`tutorial7.cpp` Either the skeleton code, or :download:`tutorial7_complete.cpp` the completed tutorial code;
-    - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp`  Utility functions for
+    - :download:`tutorial7.py` Either the skeleton code, or ..
+    - :download:`tutorial7_complete.py` the completed tutorial code
+    - :download:`../utilities/tutorial_utilities.py`  Utility functions for
       use in the tutorials.
-    - If you did not complete Tutorial 6 you can download the file created
-      there from :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
+    - If you did not complete Tutorial 5 you can download the file created there:
+      :download:`../resources/tutorial7_SodiumChannelModel.cellml`
 
-.. contents:: Contents:
+.. contents:: Contents
     :local:
 
+
 0: Setup
-========
+==============================================
 
 .. container:: dothis
 
@@ -32,7 +33,7 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
     **0.b** Create a validator for later use.
 
 1: Create the sodium channel component
-======================================
+==============================================
 
 .. container:: dothis
 
@@ -45,7 +46,9 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
 .. math::
 
-    Na_{conductance} = g_{Na} h m^{3}
+    E_{Na} = RTF \: \log(\frac{Na_o}{Na_i})
+
+    Na_{conductance} = g_{Na} \: m^{3h}
 
     i_{Na} = Na_{conductance} (V-E_{Na})
 
@@ -54,15 +57,18 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
     **1.c** Call the validator and print its debugging information.  This will
     help to summarise the variables which you need to add:
 
-- :math:`V` voltage, mV
-- :math:`t` time, ms
-- :math:`h` h-gate status, dimensionless
-- :math:`m` m-gate status, dimensionless
-- :math:`g_{Na} \;\; mS/cm^2`, (ie: milli-Siemens per square centimetre),
-  initially 120
-- :math:`E_{Na} \;\; mV`, initially 35
-- :math:`i_{Na} \;\; \mu A/cm^2`, (ie: micro-Amperes per square centimetre)
-- :math:`Na_{conductance}  \;\;  mS/cm^2`
+    - :math:`V` voltage, mV
+    - :math:`t` time, ms
+    - :math:`h` h-gate status, dimensionless
+    - :math:`m` m-gate status, dimensionless
+    - :math:`g_{Na} \;\; mS/cm^2`, (ie: milli-Siemens per square centimetre),
+      initially 120
+    - :math:`E_{Na} \;\; mV`, initially 35
+    - :math:`i_{Na} \;\; \mu A/cm^2`, (ie: micro-Amperes per square centimetre)
+    - :math:`Na_o \;\; mM`, (ie: milli-moles), initially 140
+    - :math:`Na_i \;\; mM`, initially 30
+    - :math:`RTF  \;\; mV`, initially 25
+    - :math:`Na_{conductance}  \;\;  mS/cm^2`
 
 .. container:: dothis
 
@@ -74,8 +80,9 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
     **1.e** Validate that the model is now free of errors.
 
+
 2: Create the m-gate component
-==============================
+==============================================
 
 .. container:: dothis
 
@@ -90,9 +97,9 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
 .. math::
 
-    \alpha_m = \frac {-0.1(V+50)}{e^{-0.1(V+50)}-1}
+    \alpha_m = \frac {0.1(V+25)}{e^{0.1(V+25)}-1}
 
-    \beta_m = 4 e^{\frac {-(V+75)} {18}}
+    \beta_m=e^{\frac {V}{18}}
 
     \dot m = \frac {dm}{dt} = \alpha_m(1-m)-m\beta_m
 
@@ -117,9 +124,8 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
     **2.e** Validate that the model is now free of errors.
 
-
 3: Create the h-gate component
-==============================
+==============================================
 
 .. container:: dothis
 
@@ -128,9 +134,9 @@ please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
 
 .. math::
 
-    \alpha_h = 0.07 e^{-0.05(V+75)}
+    \alpha_h = 0.07 e^{0.05V}
 
-    \beta_h = \frac {1} {e^{-0.1(V+45)} + 1}
+    \beta_h = \frac {1} {e^{0.1(V+30)} + 1}
 
     \dot {h} = \frac {dh} {dt} = \alpha_h (1-h) - h\beta_h
 
@@ -146,9 +152,10 @@ where:
 
     **3.d** Check that the model is valid to this point.
 
+
 4: Create the environment component
-===================================
-As in the previous :ref:`Tutorial 5<tutorial5_cpp>` we need to create an
+==============================================
+As in the previous :ref:`Tutorial 5<tutorial5_py>` we need to create an
 environment component which we'll use to control the time and voltage in which
 the channels operate.  As before we define two variables:
 
@@ -164,7 +171,7 @@ We will add the driving function later.
     errors.
 
 5: Connect the components
-=========================
+==============================================
 At this stage we should have three components in the hierarchy below:
 ::
 
@@ -174,11 +181,11 @@ At this stage we should have three components in the hierarchy below:
           |--- the m-gate component
           |--- the h-gate component
 
-You can use the :code:`printModelToTerminal` utility function to check that
+You can use the :code:`print_model_to_terminal` utility function to check that
 this is indeed the structure that you have.
 
 Just as we did before, we need to connect the environment variables throughout
-the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_cpp>` that:
+the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_py>` that:
 
 - only immediate siblings, children, and parents can be connected
 - the kind of interface depends on the relationship between components.
@@ -188,13 +195,13 @@ the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_cpp>` that:
 
     **5.a** This model involves sharing several variables between components.
     For each of them, create the appriopriate variable equivalence using the
-    :code:`libcellml::Variable::setVariableEquivalence` function.  The shared
+    :code:`libcellml.Variable.setVariableEquivalence` function.  The shared
     variables are:
 
-- :math:`V` voltage
-- :math:`t` time
-- :math:`h` h-gate status
-- :math:`m` m-gate status
+    - :math:`V` voltage
+    - :math:`t` time
+    - :math:`h` h-gate status
+    - :math:`m` m-gate status
 
 .. container:: dothis
 
@@ -202,7 +209,7 @@ the rest of the components.  Recall from :ref:`Tutorial 5<tutorial6_cpp>` that:
     appropriate interface type using the :code:`setInterfaceType` function.
 
 6: Set the driving function
-===========================
+==============================================
 The last step in defining your model behaviour is the driving function.  As in
 the other tutorials, this is a voltage clamp such that the voltage is held at
 a value of -20mV in the interval 5ms < t < 15 ms and -85mV otherwise.
@@ -233,9 +240,8 @@ these values throughout the model.
           h(t=0)=0.6 \\
           m(t=0)=0.05 \\
 
-
 8: Generate and output the model
-================================
+===================================
 The last step is to output the model.  As previously, this happens in two ways:
 the generation of code that can be solved here, and the serialisation and
 printing of the model to a CellML file for use in later tutorials.
@@ -266,12 +272,11 @@ printing of the model to a CellML file for use in later tutorials.
 You can solve the model to simulate the dynamics of the sodium gate using the
 supplied solver.  Instructions for running this are given on the
 :ref:`Simple solver for generated models<solver>` page.  You should see the
-behaviour shown in the figures below by the red line representing a voltage
-step to -20mV.  The theory of this channel's operation
+behaviour shown in the figures below.  The theory of this channel's operation
 is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
 
 
-.. figure:: ../../theory/images/tut7_Vgraph.png
+.. figure:: ../images/tut7_Vgraph.png
    :name: tut7_Vgraph
    :alt: Driving function for the voltage clamp
    :align: center
@@ -279,7 +284,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    Driving function for the voltage clamp
 
 
-.. figure:: ../../theory/images/tut7_mgraph.png
+.. figure:: ../images/tut7_mgraph.png
    :name: tut7_mgraph
    :alt: m-gate dynamics
    :align: center
@@ -287,7 +292,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    m-gate dynamics
 
 
-.. figure:: ../../theory/images/tut7_hgraph.png
+.. figure:: ../images/tut7_hgraph.png
    :name: tut7_hgraph
    :alt: h-gate dynamics
    :align: center
@@ -295,7 +300,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    h-gate dynamics
 
 
-.. figure:: ../../theory/images/tut7_Nacond_graph.png
+.. figure:: ../images/tut7_Nacond_graph.png
    :name: tut7_Nacond_graph
    :alt: Sodium conductance
    :align: center
@@ -303,7 +308,7 @@ is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
    Sodium conductance
 
 
-.. figure:: ../../theory/images/tut7_iNagraph.png
+.. figure:: ../images/tut7_iNagraph.png
    :name: tut7_Naigraph
    :alt: Sodium current
    :align: center
