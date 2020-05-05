@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="controllers">
+  <units name="millisecond">
+    <unit prefix="milli" units="second"/>
+  </units>
+  <units name="millivolt">
+    <unit prefix="milli" units="volt"/>
+  </units>
+  <component name="controller">
+    <variable name="t" units="millisecond" interface="public_and_private"/>
+    <variable name="V" units="millivolt" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <ci>V</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="millivolt">-85</cn>
+            <apply><lt/>
+              <ci>t</ci>
+              <cn cellml:units="millisecond">5</cn>
+            </apply>
+          </piece>
+          <piece>
+            <cn cellml:units="millivolt">-85</cn>
+            <apply><gt/>
+              <ci>t</ci>
+              <cn cellml:units="millisecond">15</cn>
+            </apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="millivolt">-20</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+    </math>
+  </component>
+</model>

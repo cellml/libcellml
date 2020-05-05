@@ -342,8 +342,6 @@ int main()
     libcellml::Variable::addEquivalence(nGateInit->variable("n"), nGate->variable("n"));
     libcellml::Variable::addEquivalence(controller->variable("V"), potassiumChannel->variable("V"));
     libcellml::Variable::addEquivalence(controller->variable("t"), potassiumChannel->variable("t"));
-
-
     libcellml::Variable::addEquivalence(controller->variable("t"), nGate->variable("t"));
     libcellml::Variable::addEquivalence(controller->variable("V"), nGate->variable("V"));
 
@@ -389,7 +387,7 @@ int main()
 
     //  5.b Create a Printer instance and use it to serialise the model.  Print this to a *.cellml file.
     auto printer = libcellml::Printer::create();
-    std::ofstream outFile("tutorial6_PotassiumChannelModel_complete.cellml");
+    std::ofstream outFile("tutorial6_PotassiumChannelModel.cellml");
     outFile << printer->printModel(model);
     outFile.close();
 
