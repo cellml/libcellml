@@ -21,12 +21,11 @@ int main()
 {
     // Setup: Create useful things that are used throughout the code.
     auto validator = libcellml::Validator::create();
-
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
     std::cout << "--------------------------------------------------" << std::endl;
-    std::cout << " STEP 2: Create the sodium channel" << std::endl;
+    std::cout << " STEP 1: Create the sodium channel" << std::endl;
     std::cout << "--------------------------------------------------" << std::endl;
 
     //  1.a Create a model and name it appropriately.
