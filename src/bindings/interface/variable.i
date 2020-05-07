@@ -13,6 +13,12 @@
 "Adds an equivalence relation between this variable and the given one (both
 objects are updated)";
 
+%feature("docstring") libcellml::Variable::traceEquivalentVariableSet
+"Returns a debugging string of the components and variables in the same set."
+
+%feature("docstring") libcellml::Variable::listEquivalentVariables
+"Traces the components and variables in the same equivalent set."
+
 %feature("docstring") libcellml::Variable::equivalentVariable
 "Returns the equivalent variable at the given index.";
 

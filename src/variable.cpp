@@ -229,6 +229,38 @@ bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
     return added;
 }
 
+void Variable::listEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &variableList)
+{
+    if (variable == nullptr) {
+        return;
+    }
+
+    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+        VariablePtr equivalentVariable = variable->equivalentVariable(i);
+
+        if (std::find(variableList.begin(), variableList.end(), equivalentVariable) == variableList.end()) {
+            variableList.push_back(equivalentVariable);
+            listEquivalentVariables(equivalentVariable, variableList);
+        }
+    }
+}
+
+std::string Variable::traceEquivalentVariableSet(const VariablePtr &variable)
+{
+    std::vector<VariablePtr> variableList;
+    variableList.push_back(variable);
+    listEquivalentVariables(variable, variableList);
+
+    std::string output;
+    for (auto &e : variableList) {
+        // ComponentPtr component = std::dynamic_pointer_cast<Component>(e->parent());
+        // auto component = e->parent().get();
+        auto entity = std::dynamic_pointer_cast<Entity>(e->parent());
+        output += "Component: '" + entityName(entity) + "', Variable: '" + e->name() + "'\n";
+    }
+    return output;
+}
+
 bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     bool equivalence_1 = variable1 != nullptr ? variable1->mPimpl->unsetEquivalentTo(variable2) : false;

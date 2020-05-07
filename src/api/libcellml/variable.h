@@ -121,6 +121,21 @@ public:
     static bool addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
 
     /**
+     * @brief Return a vector of VariablePtrs within the equivalent variable set of the @p variable.
+     *
+     * @param variable The variable to track equivalence from.
+     */
+    static std::string traceEquivalentVariableSet(const VariablePtr &variable);
+
+    /**
+     * @brief Recursive function to trace and return the set of variables equivalent to @p variable.
+     *
+     * @param variable The variable to trace.
+     * @param variableList A vector of variables within the equivalent set.
+     */
+    static void listEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &variableList);
+
+    /**
      * @brief Set the equivalent mapping id for this equivalence.
      *
      * Record the given id as the mapping id for the equivalence defined with the given

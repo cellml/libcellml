@@ -1699,3 +1699,26 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("", v3->interfaceType());
     EXPECT_EQ("public", v4->interfaceType());
 }
+
+TEST(Variable, variableEquivalenceSetReturned)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto c3 = libcellml::Component::create("c3");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+    auto v3 = libcellml::Variable::create("v3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addComponent(c3);
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(v1, v2));
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(v2, v3));
+    auto eList = "Component: 'c1', Variable: 'v1'\nComponent: 'c2', Variable: 'v2'\nComponent: 'c3', Variable: 'v3'\n";
+    EXPECT_EQ(eList, libcellml::Variable::traceEquivalentVariableSet(v1));
+}
