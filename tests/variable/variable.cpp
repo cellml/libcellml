@@ -1721,4 +1721,5 @@ TEST(Variable, variableEquivalenceSetReturned)
     EXPECT_TRUE(libcellml::Variable::addEquivalence(v2, v3));
     auto eList = "Component: 'c1', Variable: 'v1'\nComponent: 'c2', Variable: 'v2'\nComponent: 'c3', Variable: 'v3'\n";
     EXPECT_EQ(eList, libcellml::Variable::traceEquivalentVariableSet(v1));
+    EXPECT_EQ("", libcellml::Variable::traceEquivalentVariableSet(nullptr));
 }
