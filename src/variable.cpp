@@ -231,6 +231,10 @@ bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
 
 void Variable::listEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &variableList)
 {
+    if (variable == nullptr) {
+        return;
+    }
+
     for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
         VariablePtr equivalentVariable = variable->equivalentVariable(i);
 
@@ -243,15 +247,14 @@ void Variable::listEquivalentVariables(const VariablePtr &variable, std::vector<
 
 std::string Variable::traceEquivalentVariableSet(const VariablePtr &variable)
 {
-    if (variable == nullptr) {
-        return "";
-    }
     std::vector<VariablePtr> variableList;
     variableList.push_back(variable);
     listEquivalentVariables(variable, variableList);
 
     std::string output;
     for (auto &e : variableList) {
+        // ComponentPtr component = std::dynamic_pointer_cast<Component>(e->parent());
+        // auto component = e->parent().get();
         auto entity = std::dynamic_pointer_cast<Entity>(e->parent());
         output += "Component: '" + entityName(entity) + "', Variable: '" + e->name() + "'\n";
     }
