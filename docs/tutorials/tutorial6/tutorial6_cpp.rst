@@ -175,8 +175,6 @@ This is accomplished by creating a second component, and embedding it within the
 Now it's time to define the mathematical behaviour of the voltage dependence.
 This is give by a differential equation for :math:`n`, the gate status, and by the expressions for voltage control
 
-
-
 Next we need to define this new dependency of the :math:`\alpha` and
 :math:`\beta` rate constants on the voltage.  The mathematics for this is:
 
@@ -318,11 +316,7 @@ In :ref:`Tutorial 7<tutorial7_cpp>` we will use the :code:`import` functionality
 
 .. container:: dothis
 
-    **3.c** Repeat the process to retieve the component named "potassiumChannel_initialiser" and add this as a child of your potassium channel component.
-
-.. container:: dothis
-
-    **3.d** Repeat the process a final time to retieve the component named "nGate_initialiser" and add this as a child of your n-gate component.
+    **3.c** Repeat the process to retieve the component named "parameters" and add this at the top level of the model.
 
 At this stage, you should have an arrangement like that shown below.
 
@@ -330,43 +324,16 @@ At this stage, you should have an arrangement like that shown below.
 
     ─ model:
         ├─ component: controller
+        ├─ component: parameters
         └─ component: potassium channel
-            ├─ component: potassium channel initialisation
             └─ component: n-gate
-                └─ component: n-gate initialisation
 
 .. container:: dothis
 
-    **3.e** Print the model to the screen to check that your component hierarchy matches what is shown above.
+    **3.d** Print the model to the screen to check that your component hierarchy matches what is shown above.
     Next, check the contents of the components that you have imported:
     - You should see that the controller component contains some mathematics for the voltage step function that we'll use to trigger the channel response.
-    - The other two components contain no maths, and are only there to give values to constants or initial values to variables.
-
-.. code-block:: console
-
-        ...
-        Component[0] has name: 'nGate_initialiser'
-        Component[0] has 1 variables:
-            Variable[0] has name: 'n'
-            Variable[0] has initial_value: '0.325'
-            Variable[0] has units: 'dimensionless'
-        ...
-        Component[1] has name: 'potassiumChannel_initialiser'
-        Component[1] has 2 variables:
-          Variable[0] has name: 'E_K'
-          Variable[0] has initial_value: '-85'
-          Variable[0] has units: 'millivolt'
-          Variable[1] has name: 'g_K'
-          Variable[1] has initial_value: '36'
-          Variable[1] has units: 'milliS_per_cm2'
-        ...
-        Component[1] has name: 'controller'
-        Component[1] has 2 variables:
-            Variable[0] has name: 't'
-            Variable[0] has units: 'millisecond'
-            Variable[1] has name: 'V'
-            Variable[1] has units: 'millivolt'
-            Maths in the component is: ...
+    - The other component contains no maths, and is only there to give values to constants or initial values to variables.
 
 .. container:: nb
 
@@ -411,7 +378,7 @@ In our model we have defined a controller component which is used to control all
 .. container:: dothis
 
     **4.b** Validate your model and print the errors to the terminal.
-    You should see errors related to missing specification of interface types, and - if you followed the example above - also about invalid connections between the n-gate component and the controller component.
+    You should see errors related to missing specification of interface types, and - if you followed the example above - also about invalid connections between the n-gate component and the controller and parameters components.
 
 .. code-block:: console
 
@@ -423,8 +390,7 @@ In our model we have defined a controller component which is used to control all
 
 There are some restrictions on which variables can be connected.
 Variables can only be made equivalent if they are in neighbouring components; that is, a direct parent, direct child, or sibling component (one with the same parent).
-We can add these two variables into the potassium channel component
-as they are *sibling* components (their parent is the model):
+We can add these two variables into the potassium channel component as they are *sibling* components (their parent is the model):
 
 .. code-block:: cpp
 
@@ -441,7 +407,7 @@ Instead, we need to use the :code:`potassiumChannel` component as a go-between: 
 .. container:: dothis
 
     **4.c** Alter the equivalence arrangement you created in step 4.c so that the neighbouring component rule is followed.
-    You will need to do this for the variables representing time :math:`t` and voltage :math:`V` between all components.
+    You will need to do this for the variables representing time :math:`t` and voltage :math:`V` between all components, and for the variable representing :math:`n` between the n-gate and parameters components.
     Validate your model again.
     You should now see validation messages only related to interfaces, as shown below.
 

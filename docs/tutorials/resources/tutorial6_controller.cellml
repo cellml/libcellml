@@ -38,11 +38,9 @@
       </apply>
     </math>
   </component>
-  <component name="potassiumChannel_initialiser">
+  <component name="parameters">
     <variable name="E_K" units="millivolt" initial_value="-85" interface="public_and_private"/>
     <variable name="g_K" units="milliS_per_cm2" initial_value="36" interface="public_and_private"/>
-  </component>
-  <component name="nGate_initialiser">
     <variable name="n" units="dimensionless" initial_value="0.325" interface="public_and_private"/>
   </component>
 </model>

@@ -292,28 +292,21 @@ int main()
     controller->removeParent();
     model->addComponent(controller);
 
-    //  3.c Repeat the process to retrieve the "potassiumChannel_initialiser" component and add to
-    //      the potassiumChannel component.
-    auto potassiumChannelInit = parsed_model->component("potassiumChannel_initialiser");
-    potassiumChannelInit->removeParent();
-    potassiumChannel->addComponent(potassiumChannelInit);
+    //  3.c Repeat the process to retrieve the "parameters" component and add to
+    //      the current model at the top level.
+    auto parameters = parsed_model->component("parameters");
+    parameters->removeParent();
+    model->addComponent(parameters);
 
-    //  3.d Repeat the process to retrieve the "nGate_initialiser" component and add to
-    //      the nGate component.
-    auto nGateInit = parsed_model->component("nGate_initialiser");
-    nGateInit->removeParent();
-    nGate->addComponent(nGateInit);
-
-    //  3.e Print the model to the terminal and check its component hierarchy matches:
+    //  3.d Print the model to the terminal and check its component hierarchy matches:
     //      ─ model:
     //          ├─ component: controller
+    //          ├─ component: parameters
     //          └─ component: potassium channel
-    //              ├─ component: potassium channel initialisation
     //              └─ component: n-gate
-    //                  └─ component: n-gate initialisation
     printModelToTerminal(model);
 
-    //  3.f Link units and revalidate the model.  Check that there are no errors.
+    //  3.e Link units and revalidate the model.  Check that there are no errors.
     model->linkUnits();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
@@ -337,13 +330,14 @@ int main()
     //      Use the Variable::addEquivalence(VariablePtr, VariablePtr) function.
 
     libcellml::Variable::addEquivalence(potassiumChannel->variable("n"), nGate->variable("n"));
-    libcellml::Variable::addEquivalence(potassiumChannelInit->variable("E_K"), potassiumChannel->variable("E_K"));
-    libcellml::Variable::addEquivalence(potassiumChannelInit->variable("g_K"), potassiumChannel->variable("g_K"));
-    libcellml::Variable::addEquivalence(nGateInit->variable("n"), nGate->variable("n"));
     libcellml::Variable::addEquivalence(controller->variable("V"), potassiumChannel->variable("V"));
     libcellml::Variable::addEquivalence(controller->variable("t"), potassiumChannel->variable("t"));
     libcellml::Variable::addEquivalence(controller->variable("t"), nGate->variable("t"));
     libcellml::Variable::addEquivalence(controller->variable("V"), nGate->variable("V"));
+
+    libcellml::Variable::addEquivalence(parameters->variable("E_K"), potassiumChannel->variable("E_K"));
+    libcellml::Variable::addEquivalence(parameters->variable("g_K"), potassiumChannel->variable("g_K"));
+    libcellml::Variable::addEquivalence(parameters->variable("n"), nGate->variable("n"));
 
     //  4.b Validate the model.  Expect errors related to unspecified interface types and invalid connections.
     validator->validateModel(model);
@@ -355,16 +349,19 @@ int main()
 
     libcellml::Variable::removeEquivalence(controller->variable("t"), nGate->variable("t"));
     libcellml::Variable::removeEquivalence(controller->variable("V"), nGate->variable("V"));
+    libcellml::Variable::removeEquivalence(parameters->variable("n"), nGate->variable("n"));
 
     libcellml::Variable::addEquivalence(potassiumChannel->variable("t"), nGate->variable("t"));
     libcellml::Variable::addEquivalence(potassiumChannel->variable("V"), nGate->variable("V"));
+    libcellml::Variable::addEquivalence(parameters->variable("n"), potassiumChannel->variable("n"));
+    libcellml::Variable::addEquivalence(nGate->variable("n"), potassiumChannel->variable("n"));
 
     //  4.d Set the recommended interface types for all of the variables with connections.
     potassiumChannel->variable("t")->setInterfaceType("public_and_private");
     potassiumChannel->variable("V")->setInterfaceType("public_and_private");
     potassiumChannel->variable("E_K")->setInterfaceType("public_and_private");
     potassiumChannel->variable("g_K")->setInterfaceType("public_and_private");
-    potassiumChannel->variable("n")->setInterfaceType("private");
+    potassiumChannel->variable("n")->setInterfaceType("public_and_private");
     nGate->variable("n")->setInterfaceType("public_and_private");
     nGate->variable("t")->setInterfaceType("public");
     nGate->variable("V")->setInterfaceType("public");
