@@ -456,6 +456,66 @@ int main()
     hGateInit->setSourceComponent(importer, "hGate_initialiser");
     hGate->addComponent(hGateInit);
 
+    //  5.b Add dummy variables to the imported components so that we can make equivalent variable
+    //      connections before the imports are flattened.  This means that the serialised CellML file
+    //      maintains the import structure.
+    {
+        auto h = libcellml::Variable::create("h");
+        hGateInit->addVariable(h);
+        auto m = libcellml::Variable::create("m");
+        mGateInit->addVariable(m);
+        auto E_Na = libcellml::Variable::create("E_Na");
+        sodiumChannelInit->addVariable(E_Na);
+        auto g_Na = libcellml::Variable::create("g_Na");
+        sodiumChannelInit->addVariable(g_Na);
+        auto t = libcellml::Variable::create("t");
+        controller->addVariable(t);
+        auto V = libcellml::Variable::create("V");
+        controller->addVariable(V);
+    }
+
+    assert(libcellml::Variable::addEquivalence(controller->variable("t"), sodiumChannel->variable("t")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), mGate->variable("t")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), hGate->variable("t")));
+    assert(libcellml::Variable::addEquivalence(controller->variable("V"), sodiumChannel->variable("V")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), mGate->variable("V")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), hGate->variable("V")));
+
+    assert(libcellml::Variable::addEquivalence(mGate->variable("m"), mGateInit->variable("m")));
+    assert(libcellml::Variable::addEquivalence(mGate->variable("m"), sodiumChannel->variable("m")));
+    assert(libcellml::Variable::addEquivalence(hGate->variable("h"), hGateInit->variable("h")));
+    assert(libcellml::Variable::addEquivalence(hGate->variable("h"), sodiumChannel->variable("h")));
+
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("E_Na"), sodiumChannelInit->variable("E_Na")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("g_Na"), sodiumChannelInit->variable("g_Na")));
+
+    //  5.g Validate the model and expect messages related to unspecified interfaces.  Add these to the
+    //      variables according to the recommendations.
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
+
+    sodiumChannel->variable("V")->setInterfaceType("public_and_private");
+    sodiumChannel->variable("t")->setInterfaceType("public_and_private");
+    sodiumChannel->variable("g_Na")->setInterfaceType("private");
+    sodiumChannel->variable("E_Na")->setInterfaceType("private");
+    sodiumChannel->variable("h")->setInterfaceType("private");
+    sodiumChannel->variable("m")->setInterfaceType("private");
+
+    mGate->variable("t")->setInterfaceType("public");
+    mGate->variable("m")->setInterfaceType("public_and_private");
+    mGate->variable("V")->setInterfaceType("public");
+    hGate->variable("t")->setInterfaceType("public");
+    hGate->variable("h")->setInterfaceType("public_and_private");
+    hGate->variable("V")->setInterfaceType("public");
+
+    // 5.?? Even though it won't be used in this tutorial, we need to set the interface types on any variable
+    //      in the sodium channel component that will need to be accessible to other components later.  It's
+    //      worth thinking about these at the time of writing the component, as it increases its reusability
+    //      and usefulness later on.  In this case, we'll only need to set the i_Na sodium current variable
+    //      to have a public interface.
+    sodiumChannel->variable("i_Na")->setInterfaceType("public");
+
+
     //  5.b At this stage our model can be written to a CellML file.  As the model
     //      contains import statements, the serialised and printed model would also maintain those
     //      same dependencies, and would need to exist alongside the tutorial7_controller.cellml
@@ -466,7 +526,7 @@ int main()
     //      Write the serialised model to a file.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
+    // assert(validator->errorCount() == 0);
 
     auto printer = libcellml::Printer::create();
     std::ofstream outFile("tutorial7_SodiumChannelModel.cellml");
@@ -494,7 +554,7 @@ int main()
     //      removing the model's dependency on imports. Use the Model::flatten() function to do this.
     //      Print the model to the terminal and check that it makes sense.
     model->flatten();
-    printModelToTerminal(model);
+    printModelToTerminal(model, false);
 
     //  5.e After flattening a model it's important to note that the model itself has been completely overwritten
     //      with its "flat" version.  This means that any imported items which you'd previously assigned to pointers
@@ -509,40 +569,40 @@ int main()
 
     //  5.f Once you've refreshed the component pointers, add in all of the necessary variable equivalences.
     //      These are listed in the tutorial instructions.
-    libcellml::Variable::addEquivalence(controller->variable("t"), sodiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), mGate->variable("t"));
-    libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), hGate->variable("t"));
-    libcellml::Variable::addEquivalence(controller->variable("V"), sodiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), mGate->variable("V"));
-    libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), hGate->variable("V"));
+    // libcellml::Variable::addEquivalence(controller->variable("t"), sodiumChannel->variable("t"));
+    // libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), mGate->variable("t"));
+    // libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), hGate->variable("t"));
+    // libcellml::Variable::addEquivalence(controller->variable("V"), sodiumChannel->variable("V"));
+    // libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), mGate->variable("V"));
+    // libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), hGate->variable("V"));
 
-    libcellml::Variable::addEquivalence(mGate->variable("m"), mGateInit->variable("m"));
-    libcellml::Variable::addEquivalence(mGate->variable("m"), sodiumChannel->variable("m"));
-    libcellml::Variable::addEquivalence(hGate->variable("h"), hGateInit->variable("h"));
-    libcellml::Variable::addEquivalence(hGate->variable("h"), sodiumChannel->variable("h"));
+    // libcellml::Variable::addEquivalence(mGate->variable("m"), mGateInit->variable("m"));
+    // libcellml::Variable::addEquivalence(mGate->variable("m"), sodiumChannel->variable("m"));
+    // libcellml::Variable::addEquivalence(hGate->variable("h"), hGateInit->variable("h"));
+    // libcellml::Variable::addEquivalence(hGate->variable("h"), sodiumChannel->variable("h"));
 
-    libcellml::Variable::addEquivalence(sodiumChannel->variable("E_Na"), sodiumChannelInit->variable("E_Na"));
-    libcellml::Variable::addEquivalence(sodiumChannel->variable("g_Na"), sodiumChannelInit->variable("g_Na"));
+    // libcellml::Variable::addEquivalence(sodiumChannel->variable("E_Na"), sodiumChannelInit->variable("E_Na"));
+    // libcellml::Variable::addEquivalence(sodiumChannel->variable("g_Na"), sodiumChannelInit->variable("g_Na"));
 
     //  5.g Validate the model and expect messages related to unspecified interfaces.  Add these to the
     //      variables according to the recommendations.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    // validator->validateModel(model);
+    // printErrorsToTerminal(validator);
 
-    sodiumChannel->variable("V")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("t")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("g_Na")->setInterfaceType("private");
-    sodiumChannel->variable("E_Na")->setInterfaceType("private");
-    sodiumChannel->variable("h")->setInterfaceType("private");
-    sodiumChannel->variable("m")->setInterfaceType("private");
+    // sodiumChannel->variable("V")->setInterfaceType("public_and_private");
+    // sodiumChannel->variable("t")->setInterfaceType("public_and_private");
+    // sodiumChannel->variable("g_Na")->setInterfaceType("private");
+    // sodiumChannel->variable("E_Na")->setInterfaceType("private");
+    // sodiumChannel->variable("h")->setInterfaceType("private");
+    // sodiumChannel->variable("m")->setInterfaceType("private");
 
-    mGate->variable("t")->setInterfaceType("public");
-    mGate->variable("m")->setInterfaceType("public_and_private");
-    mGate->variable("V")->setInterfaceType("public");
+    // mGate->variable("t")->setInterfaceType("public");
+    // mGate->variable("m")->setInterfaceType("public_and_private");
+    // mGate->variable("V")->setInterfaceType("public");
 
-    hGate->variable("t")->setInterfaceType("public");
-    hGate->variable("h")->setInterfaceType("public_and_private");
-    hGate->variable("V")->setInterfaceType("public");
+    // hGate->variable("t")->setInterfaceType("public");
+    // hGate->variable("h")->setInterfaceType("public_and_private");
+    // hGate->variable("V")->setInterfaceType("public");
 
     //  5.h Link the units and validate the model a final time.  Expect no errors.
     model->linkUnits();

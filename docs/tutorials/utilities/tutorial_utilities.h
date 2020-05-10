@@ -11,6 +11,7 @@
  * @brief Prints the basic contents of a Model to the terminal
  */
 void printModelToTerminal(libcellml::ModelPtr &model);
+void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths);
 
 /**
  * @brief Prints the validation errors to the terminal
@@ -18,6 +19,7 @@ void printModelToTerminal(libcellml::ModelPtr &model);
 void printErrorsToTerminal(libcellml::ValidatorPtr &item);
 void printErrorsToTerminal(libcellml::GeneratorPtr &item);
 void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer);
+void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths);
 void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model);
 void printComponentOnlyToTerminal(libcellml::ComponentPtr &component, std::string spacer);
 
@@ -30,3 +32,7 @@ std::string getModelTypeFromEnum(libcellml::Generator::ModelType myType);
 std::string getProfileFromEnum(libcellml::GeneratorProfile::Profile myType);
 
 void solveWithEuler(double stepSize, int stepCount, std::string outFileName);
+
+void listEquivalentVariables(const libcellml::VariablePtr &variable, std::vector<libcellml::VariablePtr> &variableList);
+
+std::string traceEquivalentVariableSet(const libcellml::VariablePtr &variable);

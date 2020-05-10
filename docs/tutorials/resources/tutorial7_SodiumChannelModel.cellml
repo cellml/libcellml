@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial7_SodiumChannelModel">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="tutorial7_controller.cellml">
+    <component component_ref="sodiumChannel_initialiser" name="sodiumChannelInit"/>
+    <component component_ref="mGate_initialiser" name="mGateInit"/>
+    <component component_ref="hGate_initialiser" name="hGateInit"/>
+    <component component_ref="sodiumChannel_controller" name="controller"/>
+  </import>
   <units name="mV">
     <unit prefix="milli" units="volt"/>
   </units>
@@ -29,27 +35,34 @@
     <variable name="t" units="ms" interface="public_and_private"/>
     <variable name="h" units="dimensionless" interface="private"/>
     <variable name="m" units="dimensionless" interface="private"/>
-    <variable name="g_Na" units="mS_per_cm2" initial_value="120"/>
-    <variable name="E_Na" units="mV" initial_value="35"/>
-    <variable name="i_Na" units="microA_per_cm2"/>
+    <variable name="g_Na" units="mS_per_cm2" interface="private"/>
+    <variable name="E_Na" units="mV" interface="private"/>
+    <variable name="i_Na" units="microA_per_cm2" interface="public"/>
     <variable name="Na_conductance" units="mS_per_cm2"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply><eq/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
         <ci>Na_conductance</ci>
-        <apply><times/>
+        <apply>
+          <times/>
           <ci>g_Na</ci>
           <ci>h</ci>
-          <apply><power/>
+          <apply>
+            <power/>
             <ci>m</ci>
             <cn cellml:units="dimensionless">3</cn>
           </apply>
         </apply>
       </apply>
-      <apply><eq/>
+      <apply>
+        <eq/>
         <ci>i_Na</ci>
-        <apply><times/>
+        <apply>
+          <times/>
           <ci>Na_conductance</ci>
-          <apply><minus/>
+          <apply>
+            <minus/>
             <ci>V</ci>
             <ci>E_Na</ci>
           </apply>
@@ -62,25 +75,36 @@
     <variable name="t" units="ms" interface="public"/>
     <variable name="alpha_m" units="per_ms"/>
     <variable name="beta_m" units="per_ms"/>
-    <variable name="m" units="dimensionless" initial_value="0.05" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply><eq/>
+    <variable name="m" units="dimensionless" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
         <ci>alpha_m</ci>
-        <apply><divide/>
-          <apply><times/>
-            <apply><minus/>
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
               <cn cellml:units="per_mV_ms">0.1</cn>
             </apply>
-            <apply><plus/>
+            <apply>
+              <plus/>
               <ci>V</ci>
               <cn cellml:units="mV">50</cn>
             </apply>
           </apply>
-          <apply><minus/>
-            <apply><exp/>
-              <apply><divide/>
-                <apply><minus/>
-                  <apply><plus/>
+          <apply>
+            <minus/>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
                     <ci>V</ci>
                     <cn cellml:units="mV">50</cn>
                   </apply>
@@ -92,14 +116,20 @@
           </apply>
         </apply>
       </apply>
-      <apply><eq/>
+      <apply>
+        <eq/>
         <ci>beta_m</ci>
-        <apply><times/>
+        <apply>
+          <times/>
           <cn cellml:units="per_ms">4</cn>
-          <apply><exp/>
-            <apply><divide/>
-              <apply><minus/>
-                <apply><plus/>
+          <apply>
+            <exp/>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
                   <ci>V</ci>
                   <cn cellml:units="mV">75</cn>
                 </apply>
@@ -109,22 +139,28 @@
           </apply>
         </apply>
       </apply>
-      <apply><eq/>
-        <apply><diff/>
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
           <bvar>
             <ci>t</ci>
           </bvar>
           <ci>m</ci>
         </apply>
-        <apply><minus/>
-          <apply><times/>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
             <ci>alpha_m</ci>
-            <apply><minus/>
+            <apply>
+              <minus/>
               <cn cellml:units="dimensionless">1</cn>
               <ci>m</ci>
             </apply>
           </apply>
-          <apply><times/>
+          <apply>
+            <times/>
             <ci>m</ci>
             <ci>beta_m</ci>
           </apply>
@@ -137,16 +173,23 @@
     <variable name="t" units="ms" interface="public"/>
     <variable name="alpha_h" units="per_ms"/>
     <variable name="beta_h" units="per_ms"/>
-    <variable name="h" units="dimensionless" initial_value="0.6" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply><eq/>
+    <variable name="h" units="dimensionless" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
         <ci>alpha_h</ci>
-        <apply><times/>
+        <apply>
+          <times/>
           <cn cellml:units="per_ms">0.07</cn>
-          <apply><exp/>
-            <apply><divide/>
-              <apply><minus/>
-                <apply><plus/>
+          <apply>
+            <exp/>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
                   <ci>V</ci>
                   <cn cellml:units="mV">75</cn>
                 </apply>
@@ -156,15 +199,22 @@
           </apply>
         </apply>
       </apply>
-      <apply><eq/>
+      <apply>
+        <eq/>
         <ci>beta_h</ci>
-        <apply><divide/>
+        <apply>
+          <divide/>
           <cn cellml:units="per_ms">1</cn>
-          <apply><plus/>
-            <apply><exp/>
-              <apply><divide/>
-                <apply><minus/>
-                  <apply><plus/>
+          <apply>
+            <plus/>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
                     <ci>V</ci>
                     <cn cellml:units="mV">45</cn>
                   </apply>
@@ -176,22 +226,28 @@
           </apply>
         </apply>
       </apply>
-      <apply><eq/>
-        <apply><diff/>
-           <bvar>
-             <ci>t</ci>
-           </bvar>
-           <ci>h</ci>
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>h</ci>
         </apply>
-        <apply><minus/>
-          <apply><times/>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
             <ci>alpha_h</ci>
-            <apply><minus/>
+            <apply>
+              <minus/>
               <cn cellml:units="dimensionless">1</cn>
               <ci>h</ci>
             </apply>
           </apply>
-          <apply><times/>
+          <apply>
+            <times/>
             <ci>h</ci>
             <ci>beta_h</ci>
           </apply>
@@ -199,32 +255,6 @@
       </apply>
     </math>
   </component>
-  <component name="environment">
-    <variable name="V" units="mV" interface="public"/>
-    <variable name="t" units="ms" interface="public"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply><eq/>
-        <ci>V</ci>
-        <piecewise>
-          <piece>
-            <cn cellml:units="mV">-85</cn>
-            <apply><lt/><ci>t</ci><cn cellml:units="ms">5</cn></apply>
-          </piece>
-          <piece>
-            <cn cellml:units="mV">-85</cn>
-            <apply><gt/><ci>t</ci><cn cellml:units="ms">15</cn></apply>
-          </piece>
-          <otherwise>
-            <cn cellml:units="mV">-20</cn>
-          </otherwise>
-        </piecewise>
-      </apply>
-    </math>
-  </component>
-  <connection component_1="sodiumChannel" component_2="environment">
-    <map_variables variable_1="V" variable_2="V"/>
-    <map_variables variable_1="t" variable_2="t"/>
-  </connection>
   <connection component_1="sodiumChannel" component_2="mGate">
     <map_variables variable_1="V" variable_2="V"/>
     <map_variables variable_1="t" variable_2="t"/>
@@ -235,10 +265,29 @@
     <map_variables variable_1="t" variable_2="t"/>
     <map_variables variable_1="h" variable_2="h"/>
   </connection>
+  <connection component_1="sodiumChannel" component_2="sodiumChannelInit">
+    <map_variables variable_1="E_Na" variable_2="E_Na"/>
+    <map_variables variable_1="g_Na" variable_2="g_Na"/>
+  </connection>
+  <connection component_1="mGate" component_2="mGateInit">
+    <map_variables variable_1="m" variable_2="m"/>
+  </connection>
+  <connection component_1="hGate" component_2="hGateInit">
+    <map_variables variable_1="h" variable_2="h"/>
+  </connection>
+  <connection component_1="controller" component_2="sodiumChannel">
+    <map_variables variable_1="V" variable_2="V"/>
+    <map_variables variable_1="t" variable_2="t"/>
+  </connection>
   <encapsulation>
     <component_ref component="sodiumChannel">
-      <component_ref component="mGate"/>
-      <component_ref component="hGate"/>
+      <component_ref component="mGate">
+        <component_ref component="mGateInit"/>
+      </component_ref>
+      <component_ref component="hGate">
+        <component_ref component="hGateInit"/>
+      </component_ref>
+      <component_ref component="sodiumChannelInit"/>
     </component_ref>
   </encapsulation>
 </model>

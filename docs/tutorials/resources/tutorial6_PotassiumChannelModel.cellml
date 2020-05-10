@@ -26,7 +26,7 @@
   </units>
   <component name="potassiumChannel">
     <variable name="E_K" units="millivolt"/>
-    <variable name="i_K" units="microA_per_cm2"/>
+    <variable name="i_K" units="microA_per_cm2" interface="public" />
     <variable name="g_K" units="milliS_per_cm2" initial_value="36"/>
     <variable name="V" units="millivolt" interface="public_and_private"/>
     <variable name="t" units="millisecond" interface="public_and_private"/>

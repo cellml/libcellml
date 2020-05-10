@@ -55,7 +55,7 @@ int main()
     }
 
     //  1.e Print the model to the terminal to show that it contains only one empty component at this stage.
-    printModelToTerminal(model);
+    printModelToTerminal(model, false);
 
     //  1.f Use the Model::resolveImports() function of the model to (erm) resolve the imports.  This takes an
     //      argument of a string representing the full absolute path to the directory in which the import
@@ -83,7 +83,7 @@ int main()
     //          - 8 variables
     //          - a mathml block
     //  from the imported file.
-    printModelToTerminal(model);
+    printModelToTerminal(model, false);
 
     std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "  STEP 2: Import the sodium channel component    " << std::endl;
@@ -166,6 +166,7 @@ int main()
 
     model->flatten();
     printEncapsulationStructureToTerminal(model);
+    printModelToTerminal(model, false);
 
     controller = model->component("controller");
     membrane = model->component("membrane");
@@ -174,18 +175,26 @@ int main()
     potassiumChannel = membrane->component("potassium_channel");
 
     // Link all the equivalent variables together:
-    libcellml::Variable::addEquivalence(controller->variable("V"), membrane->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), leakage->variable("V"));
-    libcellml::Variable::addEquivalence(controller->variable("t"), membrane->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("t"), leakage->variable("t"));
+    assert(libcellml::Variable::addEquivalence(controller->variable("V"), membrane->variable("V")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), leakage->variable("V")));
+
+    assert(libcellml::Variable::addEquivalence(controller->variable("t"), membrane->variable("t")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t")));
+
+    assert(libcellml::Variable::addEquivalence(membrane->variable("i_Na"), sodiumChannel->variable("i_Na")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("i_K"), potassiumChannel->variable("i_K")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("i_L"), leakage->variable("i_L")));
 
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
+    printModelToTerminal(model, false);
+
+    auto V = membrane->variable("V");
+    std::cout << traceEquivalentVariableSet(V)<<std::endl;
 
     std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "  STEP 6: Generate the model and output  " << std::endl;
@@ -194,9 +203,7 @@ int main()
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
 
+
+
     printErrorsToTerminal(generator);
-
-
-
-
 }

@@ -8,6 +8,11 @@
 
 void printModelToTerminal(libcellml::ModelPtr &model)
 {
+    printModelToTerminal(model, true);
+}
+
+void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths)
+{
     std::cout << "The model name is: '" << model->name() << "'" << std::endl;
     if (model->id() != "") {
         std::cout << "The model id is: '" << model->id() << "'" << std::endl;
@@ -28,11 +33,16 @@ void printModelToTerminal(libcellml::ModelPtr &model)
         // 2.c  Printing the attributes of the component
         auto component = model->component(c);
         std::string spacer = "  ";
-        printComponentToTerminal(component, c, spacer);
+        printComponentToTerminal(component, c, spacer, includeMaths);
     }
 }
 
 void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
+{
+    printComponentToTerminal(component, c, spacer, true);
+}
+
+void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths)
 {
     std::cout << spacer << "Component[" << c << "] has name: '"
               << component->name() << "'" << std::endl;
@@ -58,12 +68,20 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
             std::cout << spacer << "  Variable[" << v << "] has units: '"
                       << component->variable(v)->units()->name() << "'" << std::endl;
         }
+        std::cout << spacer << "  Variable[" << v << "] has " << component->variable(v)->equivalentVariableCount() << " equivalent variables: " << std::endl;
+        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+            auto ev = component->variable(v)->equivalentVariable(e);
+            libcellml::ComponentPtr ev_parent = std::dynamic_pointer_cast<libcellml::Component>(ev->parent());
+            std::cout << spacer << spacer << ev->name() << " "<<ev_parent->name()<<std::endl;
+        }
     }
 
     // Print the maths within the component
-    if (component->math() != "") {
-        std::cout << spacer << "  Maths in the component is:" << std::endl;
-        std::cout << component->math() << std::endl;
+    if (includeMaths) {
+        if (component->math() != "") {
+            std::cout << spacer << "  Maths in the component is:" << std::endl;
+            std::cout << component->math() << std::endl;
+        }
     }
 
     // Print the encapsulated components
@@ -259,4 +277,36 @@ void printComponentOnlyToTerminal(libcellml::ComponentPtr &component, std::strin
         auto child = component->component(c);
         printComponentOnlyToTerminal(child, anotherSpacer);
     }
+}
+
+void listEquivalentVariables(const libcellml::VariablePtr &variable, std::vector<libcellml::VariablePtr> &variableList)
+{
+    if (variable == nullptr) {
+        return;
+    }
+
+    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+        libcellml::VariablePtr equivalentVariable = variable->equivalentVariable(i);
+
+        if (std::find(variableList.begin(), variableList.end(), equivalentVariable) == variableList.end()) {
+            variableList.push_back(equivalentVariable);
+            listEquivalentVariables(equivalentVariable, variableList);
+        }
+    }
+}
+
+std::string traceEquivalentVariableSet(const libcellml::VariablePtr &variable)
+{
+    std::vector<libcellml::VariablePtr> variableList;
+    variableList.push_back(variable);
+    listEquivalentVariables(variable, variableList);
+
+    std::string output;
+    for (auto &e : variableList) {
+        // ComponentPtr component = std::dynamic_pointer_cast<Component>(e->parent());
+        // auto component = e->parent().get();
+        // auto entity = std::dynamic_pointer_cast<libcellml::Entity>(e->parent());
+        output += "Component: '', Variable: '" + e->name() + "'\n";
+    }
+    return output;
 }
