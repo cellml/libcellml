@@ -55,7 +55,7 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
               << component->variableCount()
               << " variables:" << std::endl;
 
-    // Printing the variables within the component
+    // Printing the variables within the component.
     for (size_t v = 0; v < component->variableCount(); v++) {
         std::cout << spacer << "  Variable[" << v << "] has name: '"
                   << component->variable(v)->name() << "'" << std::endl;
@@ -72,11 +72,11 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
         for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
             auto ev = component->variable(v)->equivalentVariable(e);
             libcellml::ComponentPtr ev_parent = std::dynamic_pointer_cast<libcellml::Component>(ev->parent());
-            std::cout << spacer << spacer << ev->name() << " "<<ev_parent->name()<<std::endl;
+            std::cout << spacer << "      - " << ev_parent->name() << " -> " << ev->name() << " [" << ev->units()->name() << "]" << std::endl;
         }
     }
 
-    // Print the maths within the component
+    // Print the maths within the component.
     if (includeMaths) {
         if (component->math() != "") {
             std::cout << spacer << "  Maths in the component is:" << std::endl;
@@ -93,7 +93,7 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
         for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
             auto child = component->component(c2);
             std::string oneMoreSpacer = spacer + "  ";
-            printComponentToTerminal(child, c2, oneMoreSpacer);
+            printComponentToTerminal(child, c2, oneMoreSpacer, includeMaths);
         }
     }
 }
@@ -303,10 +303,9 @@ std::string traceEquivalentVariableSet(const libcellml::VariablePtr &variable)
 
     std::string output;
     for (auto &e : variableList) {
-        // ComponentPtr component = std::dynamic_pointer_cast<Component>(e->parent());
-        // auto component = e->parent().get();
-        // auto entity = std::dynamic_pointer_cast<libcellml::Entity>(e->parent());
-        output += "Component: '', Variable: '" + e->name() + "'\n";
+        libcellml::ComponentPtr component = std::dynamic_pointer_cast<libcellml::Component>(e->parent());
+        auto entity = std::dynamic_pointer_cast<libcellml::Entity>(e->parent());
+        output += "Component: '" + component->name() + "', Variable: '" + e->name() + "'\n";
     }
     return output;
 }
