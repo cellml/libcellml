@@ -35,4 +35,4 @@ void solveWithEuler(double stepSize, int stepCount, std::string outFileName);
 
 void listEquivalentVariables(const libcellml::VariablePtr &variable, std::vector<libcellml::VariablePtr> &variableList);
 
-std::string traceEquivalentVariableSet(const libcellml::VariablePtr &variable);
+void printEquivalentVariableSet(const libcellml::VariablePtr &variable);

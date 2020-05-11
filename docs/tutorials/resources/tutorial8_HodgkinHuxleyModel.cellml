@@ -64,6 +64,7 @@
           </otherwise>
         </piecewise>
       </apply>
+
       <apply>
         <eq/>
         <ci>i_tot</ci>
@@ -75,6 +76,7 @@
           <ci>i_L</ci>
         </apply>
       </apply>
+
       <apply>
         <eq/>
         <apply>
@@ -93,6 +95,7 @@
           <ci>Cm</ci>
         </apply>
       </apply>
+
       <apply>
         <eq/>
         <ci>i_stim</ci>
@@ -118,6 +121,7 @@
           </otherwise>
         </piecewise>
       </apply>
+
     </math>
   </component>
   <component name="sodiumChannel">
@@ -132,8 +136,7 @@
     <variable name="Nai" units="mM" initial_value="30"/>
     <variable name="RTF" units="mV" initial_value="25"/>
     <variable name="Na_conductance" units="mS_per_cm2"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
         <ci>E_Na</ci>
@@ -150,6 +153,7 @@
           </apply>
         </apply>
       </apply>
+
       <apply>
         <eq/>
         <ci>Na_conductance</ci>
@@ -166,6 +170,7 @@
           </apply>
         </apply>
       </apply>
+
       <apply>
         <eq/>
         <ci>i_Na</ci>
@@ -179,6 +184,7 @@
           </apply>
         </apply>
       </apply>
+
     </math>
   </component>
   <component name="mGate">

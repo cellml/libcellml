@@ -46,4 +46,9 @@
     <map_variables variable_1="E_L" variable_2="E_L"/>
     <map_variables variable_1="g_L" variable_2="g_L"/>
   </connection>
+  <encapsulation>
+    <component_ref component="leakageCurrent">
+      <component_ref component="leakageInit"/>
+    </component_ref>
+  </encapsulation>
 </model>

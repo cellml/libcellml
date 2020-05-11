@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="controllers">
-  <units name="millisecond">
-    <unit prefix="milli" units="second"/>
-  </units>
-  <units name="millivolt">
+  <units name="mV">
     <unit prefix="milli" units="volt"/>
   </units>
-  <component name="controller">
-    <variable name="t" units="millisecond" interface="public_and_private"/>
-    <variable name="V" units="millivolt" interface="public_and_private" initial_value="10"/>
-    </math>
+  <units name="microF_per_cm2">
+    <unit prefix="micro" units="farad"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
+  </units>
+  <component name="parameters">
+    <variable name="V" units="mV" interface="public_and_private" initial_value="-85"/>
+    <variable name="Cm" units="microF_per_cm2" interface="public_and_private" initial_value="1"/>
   </component>
 </model>

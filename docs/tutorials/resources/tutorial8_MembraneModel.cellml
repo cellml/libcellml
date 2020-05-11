@@ -25,9 +25,9 @@
     <variable name="i_Na" units="microA_per_cm2" interface="public_and_private"/>
     <variable name="i_L" units="microA_per_cm2" interface="public_and_private"/>
     <variable name="i_stim" units="microA_per_cm2" interface="public_and_private"/>
-    <variable name="i_tot" units="microA_per_cm2" interface="public_and_private"/>
-    <variable name="Cm" units="microF_per_cm2" initial_value="1"/>
-    <math xmlns="http://www.w3.org/1998/Math/MathML" 
+    <variable name="i_tot" units="microA_per_cm2" />
+    <variable name="Cm" units="microF_per_cm2" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
       xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
@@ -56,6 +56,17 @@
       </apply>
       <apply>
         <eq/>
+        <ci>i_tot</ci>
+        <apply>
+          <plus/>
+          <ci>i_stim</ci>
+          <ci>i_K</ci>
+          <ci>i_Na</ci>
+          <ci>i_L</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
         <apply>
           <diff/>
           <bvar>
@@ -66,11 +77,9 @@
         <apply>
           <divide/>
           <apply>
-            <plus/>
-            <ci>i_stim</ci>
-            <ci>i_K</ci>
-            <ci>i_Na</ci>
-            <ci>i_L</ci>
+            <times/>
+            <cn cellml:units="dimensionless">-1</cn>
+            <ci>i_tot</ci>
           </apply>
           <ci>Cm</ci>
         </apply>

@@ -47,7 +47,6 @@ int main()
     //      imports completely, we still need to resolve the imports and flatten the model before the
     //      imported items will be instantiated here.
     //      Use the Model::hasUnresolvedImports() function to show that the imports have not been resolved yet.
-
     if (model->hasUnresolvedImports()) {
         std::cout << "Imports are UNRESOLVED" << std::endl;
     } else {
@@ -63,11 +62,7 @@ int main()
     model->resolveImports("");
 
     //  1.g Call the Model::hasUnreolvedImports() function again and verify that they are now resolved.
-    if (model->hasUnresolvedImports()) {
-        std::cout << "Imports are UNRESOLVED" << std::endl;
-    } else {
-        std::cout << "Imports are found" << std::endl;
-    }
+    assert(model->hasUnresolvedImports() == false);
 
     //  1.h Call the Model::flatten() function.  This will recursively search through all of the imported items
     //      in the model, and create local instances of them here.
@@ -107,8 +102,32 @@ int main()
     sodiumChannel->setImportSource(sodiumImporter);
     sodiumChannel->setImportReference("sodiumChannel");
 
+    //  2.d Create dummy variables for voltage and time:
+    {
+        auto V = libcellml::Variable::create("V");
+        sodiumChannel->addVariable(V);
+        auto t = libcellml::Variable::create("t");
+        sodiumChannel->addVariable(t);
+        auto i_Na = libcellml::Variable::create("i_Na");
+        sodiumChannel->addVariable(i_Na);
+    }
+
+    // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
+    {
+        sodiumChannel->variable("V")->setUnits("mV");
+        sodiumChannel->variable("t")->setUnits("ms");
+        sodiumChannel->variable("i_Na")->setUnits("mA");
+
+        sodiumChannel->variable("V")->setInterfaceType("public_and_private");
+        sodiumChannel->variable("t")->setInterfaceType("public_and_private");
+        sodiumChannel->variable("i_Na")->setInterfaceType("public_and_private");
+    }
+
+    model->resolveImports("");
+    assert(model->hasUnresolvedImports() == false);
+
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 3: Import the potassium channel component  " << std::endl;
+    std::cout << "  STEP 3: Import the potassium channel component " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
     //  3.a Repeat all the tasks in Step 2, this time for the potassium channel model you created in
@@ -122,6 +141,29 @@ int main()
 
     potassiumChannel->setImportSource(potassiumImporter);
     potassiumChannel->setImportReference("potassiumChannel");
+
+    model->resolveImports("");
+    assert(model->hasUnresolvedImports() == false);
+
+    {
+        auto V = libcellml::Variable::create("V");
+        potassiumChannel->addVariable(V);
+        auto t = libcellml::Variable::create("t");
+        potassiumChannel->addVariable(t);
+        auto i_K = libcellml::Variable::create("i_K");
+        potassiumChannel->addVariable(i_K);
+    }
+
+    // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
+    {
+        potassiumChannel->variable("V")->setUnits("mV");
+        potassiumChannel->variable("t")->setUnits("ms");
+        potassiumChannel->variable("i_K")->setUnits("mA");
+
+        potassiumChannel->variable("V")->setInterfaceType("public_and_private");
+        potassiumChannel->variable("t")->setInterfaceType("public_and_private");
+        potassiumChannel->variable("i_K")->setInterfaceType("public_and_private");
+    }
 
     std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "  STEP 4: Import the leakage component           " << std::endl;
@@ -138,49 +180,79 @@ int main()
     leakage->setImportSource(leakageImporter);
     leakage->setImportReference("leakageCurrent");
 
-    std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Import a controller component          " << std::endl;
-    std::cout << "-------------------------------------------------" << std::endl;
-
-    //  5.a Repeat all the tasks in Step 2, this time for the controller component in
-    //      the model supplied inside resources/tutorial8_controller.cellml.
-    auto controller = libcellml::Component::create("controller");
-    model->addComponent(controller);
-
-    auto controllerImporter = libcellml::ImportSource::create();
-    controllerImporter->setUrl("tutorial8_controller.cellml");
-
-    controller->setImportSource(controllerImporter);
-    controller->setImportReference("membrane_controller");
-
-    std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 6: Resolve imports and flatten the model  " << std::endl;
-    std::cout << "-------------------------------------------------" << std::endl;
-
-    model->resolveImports("");
-    if (model->hasUnresolvedImports()) {
-        std::cout << "Imports are UNRESOLVED :(" << std::endl;
-    } else {
-        std::cout << "Imports are resolved :)" << std::endl;
+    {
+        auto V = libcellml::Variable::create("V");
+        leakage->addVariable(V);
+        auto t = libcellml::Variable::create("t");
+        leakage->addVariable(t);
+        auto i_L = libcellml::Variable::create("i_L");
+        leakage->addVariable(i_L);
     }
 
-    model->flatten();
-    printEncapsulationStructureToTerminal(model);
-    printModelToTerminal(model, false);
+    // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
+    {
+        leakage->variable("V")->setUnits("mV");
+        leakage->variable("t")->setUnits("ms");
+        leakage->variable("i_L")->setUnits("mA");
 
-    controller = model->component("controller");
-    membrane = model->component("membrane");
-    leakage = membrane->component("leakage");
-    sodiumChannel = membrane->component("sodium_channel");
-    potassiumChannel = membrane->component("potassium_channel");
+        leakage->variable("V")->setInterfaceType("public_and_private");
+        leakage->variable("t")->setInterfaceType("public_and_private");
+        leakage->variable("i_L")->setInterfaceType("public_and_private");
+    }
 
-    // Link all the equivalent variables together:
-    assert(libcellml::Variable::addEquivalence(controller->variable("V"), membrane->variable("V")));
+    model->resolveImports("");
+    assert(model->hasUnresolvedImports() == false);
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 5: Import parameters                      " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  5.a Repeat all the tasks in Step 2, this time for the
+    //      parameters components in the model supplied inside
+    //      resources/tutorial8_controller.cellml.
+    auto parameters = libcellml::Component::create("parameters");
+    model->addComponent(parameters);
+
+    auto parametersImporter = libcellml::ImportSource::create();
+    parametersImporter->setUrl("tutorial8_controller.cellml");
+
+    parameters->setImportSource(parametersImporter);
+    parameters->setImportReference("parameters");
+
+    //  5.b Set up a dummy variable for voltage so that the parameters component
+    //      can initialise the ODE in the membrane component.
+    {
+        auto V = libcellml::Variable::create("V");
+        parameters->addVariable(V);
+        auto Cm = libcellml::Variable::create("Cm");
+        parameters->addVariable(Cm);
+    }
+
+    // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
+    {
+        parameters->variable("V")->setUnits("mV");
+        parameters->variable("V")->setInterfaceType("public");
+        parameters->variable("Cm")->setUnits("microF_per_cm2");
+        parameters->variable("Cm")->setInterfaceType("public");
+    }
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 6: Connect variables between components   " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  6.a Now that we've got all the imports done, we need to connect the imported
+    //      components and their dummy variables together.  The variables to connect are:
+    //          - voltage:  parameters -> membrane -> sodium channel, potassium channel, leakage
+    //          - time: membrane -> sodium channel, potassium channel
+    //          - current variables (i_Na, i_K, i_L): membrane -> channels
+    //          - Cm: parameters -> membrane
+    assert(libcellml::Variable::addEquivalence(parameters->variable("V"), membrane->variable("V")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("Cm"), membrane->variable("Cm")));
+
     assert(libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("V"), leakage->variable("V")));
 
-    assert(libcellml::Variable::addEquivalence(controller->variable("t"), membrane->variable("t")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t")));
 
@@ -188,22 +260,66 @@ int main()
     assert(libcellml::Variable::addEquivalence(membrane->variable("i_K"), potassiumChannel->variable("i_K")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("i_L"), leakage->variable("i_L")));
 
+    //  6.b Serialise and write the model to a CellML file.  In the steps below the model will
+    //      be flattened for code generation, but it's good to keep an unflattened copy too.
+    auto printer = libcellml::Printer::create();
+    std::ofstream outFile("tutorial8_HodgkinHuxleyModel.cellml");
+    outFile << printer->printModel(model);
+    outFile.close();
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 7: Resolve imports and flatten the model  " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  7.a Resolve the model's imports to the folder where all of the files are located, and
+    //      check that there are no unresolved imports outstanding.
+    model->resolveImports("");
+    assert(model->hasUnresolvedImports() == false);
+
+    //  7.b Flatten the model, and print the flattened model structure to the terminal for checking.
+    model->flatten();
+    printEncapsulationStructureToTerminal(model);
+    printModelToTerminal(model, false);
+
+    //  7.c Validate the flattened model, expecting that there are no errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
-    printModelToTerminal(model, false);
-
-    auto V = membrane->variable("V");
-    std::cout << traceEquivalentVariableSet(V)<<std::endl;
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 6: Generate the model and output  " << std::endl;
+    std::cout << "  STEP 8: Generate the model and output  " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
+    //  8.a Create a Generator instance and submit the model for processing.
+    //      Expect that there are no errors logged in the generator afterwards.
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
-
-
-
     printErrorsToTerminal(generator);
+    assert(generator->errorCount() == 0);
+
+    //  8.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
+    outFile.open("tutorial8_HodgkinHuxleyModel.h");
+    outFile << generator->interfaceCode();
+    outFile.close();
+
+    outFile.open("tutorial8_HodgkinHuxleyModel.c");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    //  8.c Change the generator profile to Python and reprocess the model.
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+    generator->processModel(model);
+
+    //  8.d Retrieve and write the implementation code (*.py) to a file.
+    outFile.open("tutorial8_HodgkinHuxleyModel.py");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    std::cout << "The model has been output into tutorial8_HodgkinHuxleyModel.[c,h,py,cellml]"
+              << std::endl;
+
+    //  8.e Please seen the tutorial instructions for how to run this simulation using
+    //      the simple solver provided.  Then go and have a cuppa, you're done!
+
 }

@@ -295,17 +295,47 @@ void listEquivalentVariables(const libcellml::VariablePtr &variable, std::vector
     }
 }
 
-std::string traceEquivalentVariableSet(const libcellml::VariablePtr &variable)
+void printEquivalentVariableSet(const libcellml::VariablePtr &variable)
 {
+    if (variable == nullptr) {
+        std::cout << "NULL variable submitted to printEquivalentVariableSet." << std::endl;
+        return;
+    }
     std::vector<libcellml::VariablePtr> variableList;
     variableList.push_back(variable);
     listEquivalentVariables(variable, variableList);
 
-    std::string output;
-    for (auto &e : variableList) {
-        libcellml::ComponentPtr component = std::dynamic_pointer_cast<libcellml::Component>(e->parent());
-        auto entity = std::dynamic_pointer_cast<libcellml::Entity>(e->parent());
-        output += "Component: '" + component->name() + "', Variable: '" + e->name() + "'\n";
+    libcellml::ComponentPtr component = std::dynamic_pointer_cast<libcellml::Component>(variable->parent());
+
+    if (component != nullptr) {
+        std::cout << "Tracing: " << component->name() << " -> "
+                  << variable->name();
+        if (variable->units() != nullptr) {
+            std::cout << " [" << variable->units()->name() << "]";
+        }
+        if (variable->initialValue() != "") {
+            std::cout << ", initial = " << variable->initialValue();
+        }
+        std::cout << std::endl;
     }
-    return output;
+
+    if (variableList.size() > 1) {
+        for (auto &e : variableList) {
+            component = std::dynamic_pointer_cast<libcellml::Component>(e->parent());
+            if (component != nullptr) {
+                std::cout << "    - " << component->name() << " -> " << e->name();
+                if (e->units() != nullptr) {
+                    std::cout << " [" << e->units()->name() << "]";
+                }
+                if (e->initialValue() != "") {
+                    std::cout << ", initial = " << e->initialValue();
+                }
+                std::cout << std::endl;
+            } else {
+                std::cout << "Variable " << e->name() << " does not have a parent component." << std::endl;
+            }
+        }
+    } else {
+        std::cout << "    - Not connected to any equivalent variables." << std::endl;
+    }
 }
