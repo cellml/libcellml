@@ -32,7 +32,7 @@ int main()
     model->addComponent(membrane);
 
     //  1.b Next we need to create an ImportSource item and use its setUrl() function to specify the
-    //      name (without the path) of the file contianing the model to be imported.
+    //      name (without the path) of the file containing the model to be imported.
     auto membraneImporter = libcellml::ImportSource::create();
     membraneImporter->setUrl("tutorial8_MembraneModel.cellml");
 
