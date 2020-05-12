@@ -50,7 +50,7 @@ def create_variables_array():
 
 
 def initialize_states_and_constants(states, variables):
-    states[0] = sin_initial_valu.0e
+    states[0] = 0.0
     variables[0] = 0.75
     variables[1] = 0.0
     variables[3] = 2.0/3.14159265358979
