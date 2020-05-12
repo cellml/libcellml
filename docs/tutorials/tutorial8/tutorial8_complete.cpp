@@ -32,7 +32,7 @@ int main()
     model->addComponent(membrane);
 
     //  1.b Next we need to create an ImportSource item and use its setUrl() function to specify the
-    //      name (without the path) of the file containing the model to be imported.
+    //      name (without the path) of the file contianing the model to be imported.
     auto membraneImporter = libcellml::ImportSource::create();
     membraneImporter->setUrl("tutorial8_MembraneModel.cellml");
 
@@ -102,7 +102,7 @@ int main()
     sodiumChannel->setImportSource(sodiumImporter);
     sodiumChannel->setImportReference("sodiumChannel");
 
-    //  2.d Create dummy variables for voltage and time:
+    //  2.d Create dummy variables for voltage, time, current:
     {
         auto V = libcellml::Variable::create("V");
         sodiumChannel->addVariable(V);
@@ -111,16 +111,32 @@ int main()
         auto i_Na = libcellml::Variable::create("i_Na");
         sodiumChannel->addVariable(i_Na);
     }
+    // Create dummy variables for m and h gate status so that they can be initialised:
+    {
+        auto h = libcellml::Variable::create("h");
+        sodiumChannel->addVariable(h);
+        auto m = libcellml::Variable::create("m");
+        sodiumChannel->addVariable(m);
+
+        auto g_Na = libcellml::Variable::create("g_Na");
+        sodiumChannel->addVariable(g_Na);
+        auto E_Na = libcellml::Variable::create("E_Na");
+        sodiumChannel->addVariable(E_Na);
+    }
 
     // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
     {
         sodiumChannel->variable("V")->setUnits("mV");
         sodiumChannel->variable("t")->setUnits("ms");
         sodiumChannel->variable("i_Na")->setUnits("mA");
+        sodiumChannel->variable("m")->setUnits("dimensionless");
+        sodiumChannel->variable("h")->setUnits("dimensionless");
 
         sodiumChannel->variable("V")->setInterfaceType("public_and_private");
         sodiumChannel->variable("t")->setInterfaceType("public_and_private");
         sodiumChannel->variable("i_Na")->setInterfaceType("public_and_private");
+        sodiumChannel->variable("m")->setInterfaceType("public_and_private");
+        sodiumChannel->variable("h")->setInterfaceType("public_and_private");
     }
 
     model->resolveImports("");
@@ -152,6 +168,13 @@ int main()
         potassiumChannel->addVariable(t);
         auto i_K = libcellml::Variable::create("i_K");
         potassiumChannel->addVariable(i_K);
+
+        auto n = libcellml::Variable::create("n");
+        potassiumChannel->addVariable(n);
+        auto g_K = libcellml::Variable::create("g_K");
+        potassiumChannel->addVariable(g_K);
+        auto E_K = libcellml::Variable::create("E_K");
+        potassiumChannel->addVariable(E_K);
     }
 
     // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
@@ -159,10 +182,15 @@ int main()
         potassiumChannel->variable("V")->setUnits("mV");
         potassiumChannel->variable("t")->setUnits("ms");
         potassiumChannel->variable("i_K")->setUnits("mA");
+        potassiumChannel->variable("n")->setUnits("dimensionless");
 
         potassiumChannel->variable("V")->setInterfaceType("public_and_private");
         potassiumChannel->variable("t")->setInterfaceType("public_and_private");
         potassiumChannel->variable("i_K")->setInterfaceType("public_and_private");
+
+        potassiumChannel->variable("n")->setInterfaceType("public_and_private");
+        potassiumChannel->variable("g_K")->setInterfaceType("public_and_private");
+        potassiumChannel->variable("E_K")->setInterfaceType("public_and_private");
     }
 
     std::cout << "-------------------------------------------------" << std::endl;
@@ -226,6 +254,20 @@ int main()
         parameters->addVariable(V);
         auto Cm = libcellml::Variable::create("Cm");
         parameters->addVariable(Cm);
+        auto h = libcellml::Variable::create("h");
+        parameters->addVariable(h);
+        auto m = libcellml::Variable::create("m");
+        parameters->addVariable(m);
+        auto n = libcellml::Variable::create("n");
+        parameters->addVariable(n);
+        auto E_K = libcellml::Variable::create("E_K");
+        parameters->addVariable(E_K);
+        auto g_K = libcellml::Variable::create("g_K");
+        parameters->addVariable(g_K);
+        auto E_Na = libcellml::Variable::create("E_Na");
+        parameters->addVariable(E_Na);
+        auto g_Na = libcellml::Variable::create("g_Na");
+        parameters->addVariable(g_Na);
     }
 
     // TODO Remove when https://github.com/cellml/libcellml/issues/594 is resolved.
@@ -233,7 +275,15 @@ int main()
         parameters->variable("V")->setUnits("mV");
         parameters->variable("V")->setInterfaceType("public");
         parameters->variable("Cm")->setUnits("microF_per_cm2");
-        parameters->variable("Cm")->setInterfaceType("public");
+        parameters->variable("Cm")->setInterfaceType("public_and_private");
+
+        parameters->variable("h")->setInterfaceType("public_and_private");
+        parameters->variable("m")->setInterfaceType("public_and_private");
+        parameters->variable("n")->setInterfaceType("public_and_private");
+        parameters->variable("g_Na")->setInterfaceType("public_and_private");
+        parameters->variable("g_K")->setInterfaceType("public_and_private");
+        parameters->variable("E_Na")->setInterfaceType("public_and_private");
+        parameters->variable("E_K")->setInterfaceType("public_and_private");
     }
 
     std::cout << "-------------------------------------------------" << std::endl;
@@ -246,18 +296,33 @@ int main()
     //          - time: membrane -> sodium channel, potassium channel
     //          - current variables (i_Na, i_K, i_L): membrane -> channels
     //          - Cm: parameters -> membrane
+
     assert(libcellml::Variable::addEquivalence(parameters->variable("V"), membrane->variable("V")));
     assert(libcellml::Variable::addEquivalence(parameters->variable("Cm"), membrane->variable("Cm")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("h"), membrane->variable("h")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("m"), membrane->variable("m")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("n"), membrane->variable("n")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("g_K"), membrane->variable("g_K")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("g_Na"), membrane->variable("g_Na")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("E_K"), membrane->variable("E_K")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("E_Na"), membrane->variable("E_Na")));
 
     assert(libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), leakage->variable("V")));
-
     assert(libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t")));
-
     assert(libcellml::Variable::addEquivalence(membrane->variable("i_Na"), sodiumChannel->variable("i_Na")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("E_Na"), sodiumChannel->variable("E_Na")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("g_Na"), sodiumChannel->variable("g_Na")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("h"), sodiumChannel->variable("h")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("m"), sodiumChannel->variable("m")));
+
+    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("i_K"), potassiumChannel->variable("i_K")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("E_K"), potassiumChannel->variable("E_K")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("g_K"), potassiumChannel->variable("g_K")));
+    assert(libcellml::Variable::addEquivalence(membrane->variable("n"), potassiumChannel->variable("n")));
+
+    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), leakage->variable("V")));
     assert(libcellml::Variable::addEquivalence(membrane->variable("i_L"), leakage->variable("i_L")));
 
     //  6.b Serialise and write the model to a CellML file.  In the steps below the model will
@@ -295,6 +360,7 @@ int main()
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
     printErrorsToTerminal(generator);
+
     assert(generator->errorCount() == 0);
 
     //  8.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
@@ -321,5 +387,4 @@ int main()
 
     //  8.e Please seen the tutorial instructions for how to run this simulation using
     //      the simple solver provided.  Then go and have a cuppa, you're done!
-
 }

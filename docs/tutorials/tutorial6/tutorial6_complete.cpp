@@ -389,12 +389,12 @@ int main()
     outFile.close();
 
     //  5.c Write the interface code to a .h file.
-    outFile.open("tutorial6_PotassiumChannelModel_generated.h");
+    outFile.open("tutorial6_PotassiumChannelModel.h");
     outFile << generator->interfaceCode();
     outFile.close();
 
     //  5.d Write the implementation code to a .c file.
-    outFile.open("tutorial6_PotassiumChannelModel_generated.c");
+    outFile.open("tutorial6_PotassiumChannelModel.c");
     outFile << generator->implementationCode();
     outFile.close();
 
@@ -404,12 +404,12 @@ int main()
     generator->processModel(model);
 
     //  5.f Write the Python implementation code to a .py file.
-    outFile.open("tutorial6_PotassiumChannelModel_generated.py");
+    outFile.open("tutorial6_PotassiumChannelModel.py");
     outFile << generator->implementationCode();
     outFile.close();
 
     std::cout << "The created '" << model->name()
-              << "' model has been output to tutorial6_PotassiumChannelModel_generated.[cellml,py,c,h]" << std::endl;
+              << "' model has been output to tutorial6_PotassiumChannelModel.[cellml,py,c,h]" << std::endl;
 
     //  5.g Please see the instructions in the tutorial for how to run a
     //      simulation of this model using the simple solver provided.

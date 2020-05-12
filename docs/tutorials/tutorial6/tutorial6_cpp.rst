@@ -565,7 +565,7 @@ If all has gone well you should see the output similar to:
 
   .. code-block:: console
 
-    ./solve_baseFileName -n 50 -dt 0.1
+    ./solve_baseFileName -n 4000 -dt 0.01
 
 The parameters read from the file, along with your command line arguments are printed to the terminal for checking, and the results of the simulation written to a tab-delimited file with the extension :code:`_solution.txt` after your base file name.
 Plotting these results will give you behaviour as shown below.
