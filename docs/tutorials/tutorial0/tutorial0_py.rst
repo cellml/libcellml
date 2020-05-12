@@ -120,6 +120,24 @@ Your directory structure should now look like:
       └─ tutorials
           └─ ( ... a collection of folders explained below )
 
+.. container:: dothis
+
+  **2.c** Instal the Python version of the library using pip.
+  Again, this expects that you are still in the :code:`build` directory.
+
+  .. code-block:: console
+
+    pip install -e src/bindings/python
+
+.. container:: nb
+
+    Note that you will need to use the Python3 verison of pip; you can check your version using :code:`pip -- version`.
+    If your :code:`pip` version refers to an earier Python (2.7 or earlier), then try using :code:`pip3` instead.
+
+      .. code-block:: console
+
+        pip3 install -e src/bindings/python
+
 3: Test the installation by running your first tutorial
 =======================================================
 All the documentation and tutorials are inside the :code:`docs` folder within the initial cloned directory, but in order to keep your source tree clean, the :code:`tutorials` directory has been copied into the directory given by the :code:`-DTUT_PREFIX` argument when you built the library.
@@ -131,7 +149,7 @@ If you've used the same structure as outlined here, this will be the :code:`MyLi
 
   .. code-block:: console
 
-    cd tutorials
+    cd ../tutorials
 
 You should see a list of directories like this:
 
