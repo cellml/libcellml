@@ -595,6 +595,10 @@ struct Generator::GeneratorImpl
 
     static bool compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                        const GeneratorInternalVariablePtr &variable2);
+
+    static bool isStateVariable(const GeneratorInternalVariablePtr &variable);
+    static bool isConstantOrAlgebraicVariable(const GeneratorInternalVariablePtr &variable);
+
     static bool compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
                                                const GeneratorInternalVariablePtr &variable2);
 
@@ -1373,14 +1377,31 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVar
     return realComponent1->name() < realComponent2->name();
 }
 
+bool Generator::GeneratorImpl::isStateVariable(const GeneratorInternalVariablePtr &variable)
+{
+    return variable->mType == GeneratorInternalVariable::Type::STATE;
+}
+
+bool Generator::GeneratorImpl::isConstantOrAlgebraicVariable(const GeneratorInternalVariablePtr &variable)
+{
+    return (variable->mType == GeneratorInternalVariable::Type::CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC);
+}
+
 bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
                                                               const GeneratorInternalVariablePtr &variable2)
 {
-    if (variable1->mType == variable2->mType) {
-        return variable1->mIndex < variable2->mIndex;
+    if (isStateVariable(variable1) && isConstantOrAlgebraicVariable(variable2)) {
+        return true;
     }
 
-    return variable1->mType < variable2->mType;
+    if (isConstantOrAlgebraicVariable(variable1) && isStateVariable(variable2)) {
+        return false;
+    }
+
+    return variable1->mIndex < variable2->mIndex;
 }
 
 bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
