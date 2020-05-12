@@ -8,7 +8,7 @@ For overview, please see the :ref:`Tutorial 1 overview page<tutorial1>`.
 These are the Python instructions.
 For C++ please see the :ref:`Tutorial 1 C++<tutorial1_cpp>` page instead.
 
-**Requirements**
+**Resources:**
 
 - :download:`tutorial1.py` Either the skeleton code; or ...
 - :download:`tutorial1_complete.py` the completed tutorial code; and
@@ -17,8 +17,8 @@ For C++ please see the :ref:`Tutorial 1 C++<tutorial1_cpp>` page instead.
 .. contents:: Contents
     :local:
 
-0: Setup
-========
+Setup
+=====
 
 For each of the tutorials, there is template code provided for you to get started in each of the :code:`tutorial*.py` files.
 
@@ -40,11 +40,10 @@ This should give the output:
         TUTORIAL 1: READING AND WRITING CellML2 FILES
     -----------------------------------------------------
 
-1: Deserialising a CellML file
-==============================
+Step 1: Deserialising a CellML file
+===================================
 CellML is a format in which all the information is stored in a strictly hierarchical  - or *serialised* - way.
-In order for this information to be transformed into a format which can be used for modelling and simulation it needs to be
-*de-serialised* into the internal :code:`Model` format.
+In order for this information to be transformed into a format which can be used for modelling and simulation it needs to be *de-serialised* into the internal :code:`Model` format.
 The hard work of this transformation is done by a :code:`Parser` object which will take a raw CellML string which represents a serialised model and return its corresponding de-serialised :code:`Model` item.
 
 .. container:: dothis
@@ -75,8 +74,8 @@ At this stage our :code:`read_file_contents` contains the raw CellML from the in
 
 Now we have a *deserialsied* CellML model which we can manipulate using the libCellML library.
 
-2: Investigate the contents of the model
-========================================
+Step 2: Investigate the contents of the model
+=============================================
 Now that we have a model, let's see what's inside it.
 All retrieval functions - where you want to read something about any item - are callable from simple functions naming the thing you want.
 For example, to find the name of the model we simply call its :code:`name()` function:
@@ -90,8 +89,7 @@ Obviously, the type of item you're retrieving will determine how you declare it:
 
 .. container:: dothis
 
-    **2.a** Find out the name and id of your model and print it to the
-    terminal.
+    **2.a** Find out the name and id of your model and print it to the terminal.
 
 The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` objects, and a set of :code:`Component` objects.  There are generic :code:`somethingCount` functions which will return the number of :code:`Something` items within that object:
 
@@ -101,8 +99,7 @@ The :code:`Model` itself stores two kinds of objects: a set of :code:`Units` obj
 
 .. container:: dothis
 
-    **2.b**
-    Find out the number of :code:`Component` items in the model, and print it to the terminal.
+    **2.b** Find out the number of :code:`Component` items in the model, and print it to the terminal.
 
 Items like components and units (and later, variables) which are stored in sets can be accessed by their index as well as by their name.
 At this stage, we don't *know* the name of the components, so we'll have to use their index to access them for printing to the terminal.
@@ -140,8 +137,8 @@ In this tutorial we'll only look at the variables and maths, leaving the nested 
 
     **2.f** We will look more at what the MathML string actually *means* in later tutorials, but for now, retrieve the MathML string from your component using the :code:`math()` function, and print it to the screen.
 
-3: Serialise the model and output
-=================================
+Step 3: Serialise the model and output
+======================================
 Now that you've seen how to *deserialise* a CellML file into a model using the :code:`Parser`, it's time to go in the other direction.
 This reverse operation is handled by the :code:`Printer`, which will transform a model into a string for file output.
 

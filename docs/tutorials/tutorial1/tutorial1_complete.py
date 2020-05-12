@@ -72,7 +72,6 @@ if __name__ == "__main__":
     #  STEP 3: Print the model to another CellML file
     #
     #  3.a   Create a Printer and use it to serialise the model to a string.
-
     printer = Printer()
     serialised_model = printer.printModel(model)
 
