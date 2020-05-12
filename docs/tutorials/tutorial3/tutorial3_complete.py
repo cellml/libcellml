@@ -245,12 +245,12 @@ if __name__ == "__main__":
     #      interfaceCode (the header file) and the implementationCode (source file)
     #      from the generator and write them.
     implementation_code_C = generator.implementationCode()
-    write_file = open("tutorial3_PredatorPrey_generated.c", "w")
+    write_file = open("tutorial3_PredatorPrey.c", "w")
     write_file.write(implementation_code_C)
     write_file.close()
 
     interface_code = generator.interfaceCode()
-    write_file = open("tutorial3_PredatorPrey_generated.h", "w")
+    write_file = open("tutorial3_PredatorPrey.h", "w")
     write_file.write(interface_code)
     write_file.close()
 
@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
     #  4.h Create the implementation code and print to a Python file
     implementation_code_python = generator.implementationCode()
-    write_file = open("tutorial3_PredatorPrey_generated.py", "w")
+    write_file = open("tutorial3_PredatorPrey.py", "w")
     write_file.write(implementation_code_python)
 
     print("All the files have been printed.")

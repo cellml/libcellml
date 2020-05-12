@@ -17,21 +17,19 @@ By the end of this tutorial you will be able to:
 .. contents:: Contents
     :local:
 
-1: Include the generated code in this project
-=============================================
-In :ref:`Tutorial 3<tutorial3>` you created a CellML model representing the population dynamics in a predator-prey situation, and used the :code:`Generator` to write files which can be run using a numerical integration solver in either Python or C.
+Step 1: Include the generated code in this project
+==================================================
+In :ref:`Tutorial 3<tutorial3_py>` you created a CellML model representing the population dynamics in a predator-prey situation, and used the :code:`Generator` to write files which can be run using a numerical integration solver in either Python or C.
 
 This tutorial is slightly different from the other ones because you will need to change the way your project is linked in order to include the generated code.
-As always, if you didn't complete the earlier tutorial in which the generated code was created, you can use files from the
-:code:`resources` folder instead.
+As always, if you didn't complete the earlier tutorial in which the generated code was created, you can use files from the :code:`resources` folder instead.
 
 Because this is for generated code in Python we will need the file:
 
-- :download:`../resources/tutorial3_PredatorPrey_generated.py`
+- :download:`../resources/tutorial3_PredatorPrey.py`
 
 The generated code exists in its own module which can be imported directly into your script for manipulation.
-It's best to do this in a general manner, so using the Python :code:`import some_thing as some_alias` idiom you can then
-use :code:`some_alias` throughout the rest of the code.
+It's best to do this in a general manner, so using the Python :code:`import some_thing as some_alias` idiom you can then use :code:`some_alias` throughout the rest of the code.
 
 .. container:: dothis
 
@@ -41,11 +39,10 @@ use :code:`some_alias` throughout the rest of the code.
 .. container:: dothis
 
     **1.b** The version which the generated code was created with is stored in the module in a variable called :code:`some_alias.LIBCELLML_VERSION`.
-    Print this to the terminal and check that it matches the version of libCellML library which you're using, just like in
-    :ref:`Tutorial 0<tutorial0>`.
+    Print this to the terminal and check that it matches the version of libCellML library which you're using, just like in :ref:`Tutorial 0<tutorial0>`.
 
-2: Investigate the information items in the generated files
-===========================================================
+Step 2: Investigate the information items in the generated files
+================================================================
 This step is about figuring out what's contained in the generated file, and demonstrating how you can use it to run your simulation.
 
 The implementation code contains some constants as well as functions which make it simple to switch between models for solution.
@@ -61,15 +58,15 @@ The :code:`Generator` then classifies all the :code:`Variable` items within each
     - :code:`COMPUTED_CONSTANT` variables need calculation but not integration; and
     - :code:`ALGEBRAIC` variables need ...?? **TODO**
 
-  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>`
-    tags in the MathML.  These must not be initialised.
+  - *VOI* variables are the base "variables of integration", specified by the :code:`<bvar>` tags in the MathML.
+    These must not be initialised.
   - *states* are those variables which do need integration by a solver.
 
 We can see the results of this classification process in the generated code:
 
 .. code-block:: python
 
-  # Inside the generated "tutorial3_PredatorPrey_generated.py" file:
+  # Inside the generated "tutorial3_PredatorPrey.py" file:
 
   # Define the VOI variable of integration, its units and the name of its parent component.
   VOI_INFO = {"name": "time", "units": "day", "component": "predator_prey_component"}
@@ -130,8 +127,8 @@ This is stored in :code:`VOI_INFO`, a dictionary with the same keys as the :code
 
     **2.c** Retrieve the information about the VOI and print it to the terminal.
 
-3: Investigate the functions provided in the generated files
-============================================================
+Step 3: Investigate the functions provided in the generated files
+=================================================================
 As well as the information items, the generated module also contains functions which are derived from the governing equations in the MathML blocks in the original CellML model.
 
 In order to perform any kind of numerical integration, a solver needs three things:
@@ -172,7 +169,7 @@ If you look inside the module file which was generated in the last tutorial you'
 
 .. code-block:: python
 
-    # Inside the generated "tutorial3_PredatorPrey_generated.py" file:
+    # Inside the generated "tutorial3_PredatorPrey.py" file:
 
     def initialize_states_and_constants(states, variables):
       states[0] = 2.0
@@ -196,7 +193,7 @@ There's a second helper function :code:`compute_computed_constants(variables)` w
 
 .. code-block:: python
 
-    # Inside the generated "tutorial3_PredatorPrey_generated.py" file:
+    # Inside the generated "tutorial3_PredatorPrey.py" file:
     def compute_computed_constants(variables):
       variables[3] = variables[0]-2.0
 
@@ -206,8 +203,8 @@ There's a second helper function :code:`compute_computed_constants(variables)` w
 
 Now we're ready to begin solving the model.
 
-4: Iterate through the solution
-===============================
+Step 4: Iterate through the solution
+====================================
 You can make use of the :cellsolver:`cellsolver package <>` to solve the generated model, or follow the simple steps below to write your own solver instead.
 
 This part will make use of a simple routine to step through the solution iterations using the Euler method to update the state variables.
@@ -221,9 +218,16 @@ Following initialisation of some solution controls (time step, end point) there 
 .. container:: dothis
 
     **4.a** Define some variables to control the total number of steps to take, and the size that those steps should be.
-    In this example it's safe to use a step of 0.001 and an end time of 20.
+    In this example it's safe to use a step of 0.001 and a step count of 2000.
 
-    **4.b** Create a file for output and open it.
+.. container:: dothis
+
+    **4.b** Create an array in which to store the rates.
+    Because this will always be the same length as the number of states in the model, you can use the create_states_array function.
+
+.. container:: dothis
+
+    **4.c** Create a file for output and open it.
     We'll simply write the solution directly to the file instead of allocating memory for storage.
     Name your columns with VOI and the state variable names and units.
 
@@ -234,7 +238,7 @@ In our example we do not have any dependencies (that is, :math:`a, b, c, d` are 
 
 .. code-block:: python
 
-    # Inside the generated "tutorial3_PredatorPrey_generated.py" file
+    # Inside the generated "tutorial3_PredatorPrey.py" file
     def compute_variables(voi, states, rates, variables):
       pass
 
@@ -247,7 +251,7 @@ This is done by calling the :code:`computeRates` function to recalculate the rat
 
 .. code-block:: python
 
-    # Inside the generated "tutorial3_PredatorPrey_generated.py" file:
+    # Inside the generated "tutorial3_PredatorPrey.py" file:
 
     def compute_rates(voi, states, rates, variables):
       # The "rates" array contains the gradient functions for each of the variables
@@ -263,7 +267,7 @@ This is done by calling the :code:`computeRates` function to recalculate the rat
 
 .. container:: dothis
 
-    **4.c** Iterate through the time interval :math:`[0,20]` and update the state variables using the Euler update method: :code:`y[n+1] = y[n] + y'[n]*stepSize`.
+    **4.d** Iterate through the time interval :math:`[0,20]` and update the state variables using the Euler update method: :code:`y[n+1] = y[n] + y'[n]*stepSize`.
     At each step you will need to:
 
         - Recompute the variables;
@@ -271,8 +275,8 @@ This is done by calling the :code:`computeRates` function to recalculate the rat
         - Compute the state variables using the update method above; and
         - Write to the file.
 
-5: Output
-=========
+Step 5: Output
+==============
 
 .. container:: dothis
 

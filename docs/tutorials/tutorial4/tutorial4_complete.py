@@ -11,7 +11,7 @@
 
 """
 from libcellml import versionString
-import tutorial3_PredatorPrey_generated as model
+import tutorial3_PredatorPrey as model
 
 if __name__ == "__main__":
     print("-----------------------------------------------------")
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     step_size = 0.01
     step_count = 2000
 
-    #  4.b Create an array for the rates.  You can use the createStatesArray function
+    #  4.b Create an array for the rates.  You can use the create_states_array function
     #      to allocate this as they have the same size. TODO rename this function??
     my_rates = model.create_states_array()
 
@@ -161,5 +161,8 @@ if __name__ == "__main__":
     # --------------------------------------------------------------------------
     #  STEP 5: Check the results
 
-    #  5.a Go and have a cuppa, you're done!
+    #  5.a You can retrieve the solution from the file you've just closed and plot
+    #      them in the program of your choice.
+
+    #  5.b Go and have a cuppa, you're done!
     print("The results have been written to 'tutorial4_solution.txt'")

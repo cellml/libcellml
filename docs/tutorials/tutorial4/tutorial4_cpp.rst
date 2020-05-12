@@ -27,8 +27,8 @@ As before, if you didn't complete the earlier tutorial in which the generated co
 
 Because this is for generated code in C you will need the files:
 
-- :download:`../resources/tutorial3_PredatorPrey_generated.cpp`
-- :download:`../resources/tutorial3_PredatorPrey_generated.h`
+- :download:`../resources/tutorial3_PredatorPrey.cpp`
+- :download:`../resources/tutorial3_PredatorPrey.h`
 
 .. container:: dothis
 
