@@ -309,8 +309,8 @@ where:
 
     **3.d** Check that the model is free of errors to this point.
 
-Step 4: Import a controller component
-=====================================
+Step 4: Import the controller and parameters components
+=======================================================
 In :ref:`Tutorial 6<tutorial6_cpp>` we separated the mathematics from the values of the variables, and used the :code:`Parser` to read an external controller model containing the initialisation information.
 In this tutorial, we will introduce the :code:`ImportSource` and importing functionality, which can be used to the same purpose.
 
@@ -346,40 +346,70 @@ This is done using a function in the destination component called :code:`setSour
 .. container:: dothis
 
     **4.d** Set the source component for the destination controller component which you created in 4.c using the :code:`setSourceComponent` function.
-    The name of component to retrieve (the second argument) is "sodiumChannel_controller".
+    The name of component to retrieve (the second argument) is "controller".
 
 .. container:: dothis
 
-    **4.e** Valiate your model, and expect that there are no errors.
+    **4.e** Repeat the above processes to import the component called "parameters" from the same file.
+    Note that since they're in the same file, you can reuse the ImportSource instance, and simply repeat steps 4.c-d.
+
+.. container:: dothis
+
+    **4.f** Validate your model, and expect that there are no errors.
+
 
 Step 5: Import the initial conditions and parameters
 ====================================================
-Similar to the way in which we imported the controller for the independent variables, we can also import components to initialise the values within the sodium channel and its gating components.
-This procedure is the same as for the controller in Step 4, the only difference being that the initialising components should be siblings or
-children of the components to which they give values.
-In this example the initialising components exist in the same :code:`tutorial7_controller.cellml` file, so we can reuse the importer from steps 4.a-b, and simply repeat steps 4.c-e to initalise the variables in the sodium channel, m-gate, and h-gate components.
+
+When you import something, it isn't instantiated in the model properly until the model is flattened.
+Because it's easier to work with unflattened models later on (if you want to vary their ingredients etc), you will probably find that you need to connect imported components to local ones, or to other imported ones before the model is flattened.
+This creates a problem as the variables in those imported components can't yet be referenced.
+The way around this is to create "dummy" variables in the imported component placeholders you created (as in step 4.c, for example).
+Note that these need to have the same name as the variables in the import, and will be over-written by the "real" ones when the model is flattened.
 
 .. container:: dothis
 
-    **5.a** Repeat the process above between steps 4.c-e for new initialisation components for the sodium channel, and two gates.
-    The items to retrieve are called "sodiumChannel_initialiser", "mGate_initialiser", and "hGate_initialiser".
-    Each initialisation component should be a child of the component it addresses.
+    **5.a** Create the dummy variables as you would normally, and add them to the imported components.
+    These are:
+
+    - parameters: h, m, E_Na, g_Na
+    - controller: t, V
+
+.. container:: dothis
+
+    **5.b** Add the equivalent variable connections throughout the model.
+    Recall from :ref:`Tutorial 6<tutorial6_cpp>` that you can only create connections between components which have a sibling or parent/child relationship.
+
+.. container:: dothis
+
+    **5.c** Validate the model, and expect to see errors relating to unspecified interface types.
+    Add the recommended interface types to the variables.
+
+.. container:: dothis
+
+    **5.d** Even though it won't be used in this tutorial, we need to set the interface types on any variable in the sodium channel component that will need to be accessible to other components later.
+    It's worth thinking about these at the time of writing the component, as it increases its reusability and usefulness later on.
+    In this case, we'll only need to set the :code:`i_Na` sodium current variable to have a public interface.
 
 At this stage our model can be written to a CellML file.
-As the model contains import statements, the serialised and printed model would also maintain those same dependencies, and would need to exist alongside the :code:`tutorial7_controller.cellml` file specified earlier.  In later steps we'll disconnect this dependency ("flattening" the model) to allow for the code generation step.
+As the model contains import statements, the serialised and printed model would also maintain those same dependencies, and would need to exist alongside the :code:`tutorial7_controller.cellml` file specified earlier.
+In later steps we'll disconnect this dependency ("flattening" the model) to allow for the code generation step.
 
 .. container:: dothis
 
-    **5.b** Check that the model is valid.
-    Create a :code:`Printer` item and use it to serialise the model at this point.
-    Write the serialised model to a :code:`.cellml` file.
+    **5.e** Check that the model is valid, then create a :code:`Printer`, and use it to serialise the model.
+    Write the serialised model to a file.
+
+
+Step 6: Resolve the imports and flatten the model
+=================================================
 
 Once the import sources and destinations are specified, we need to also point the model to the directory in which they sit.
 This is done using the :code:`resolveImports()` function of the model, with the argument of the directory path to the imported file(s).
 
 .. container:: dothis
 
-    **5.c** Use the :code:`resolveImports()` function to specify the (relative to the current working directory, or absolute) path to the directory in which the :code:`tutorial7_controller.cellml` file is found.
+    **6.a** Use the :code:`resolveImports()` function to specify the (relative to the current working directory, or absolute) path to the directory in which the :code:`tutorial7_controller.cellml` file is found.
     If this is the same as your working directory, simply enter an empty string, :code:`""`.
     Once that is done, use the :code:`model->hasUnresolvedImports()` function to check whether or not the model imports have been found.
 
@@ -388,25 +418,22 @@ This operation will create new local instances of all of the imported items, the
 
 .. container:: dothis
 
-    **5.d** Call the :code:`flatten()` function on the model, and then print it to the terminal for checking.
+    **6.b** Call the :code:`flatten()` function on the model, and then print it to the terminal for checking.
     You should see a structure similar to that shown below.
 
 .. code-block:: text
 
     ─ model
-        ├ component: controller
-        └ component: sodium channel
-            ├ component: sodium channel initialiser
-            ├ component: h-gate
-            │   └ component: h-gate initialiser
-            └ component: m-gate
-                └ component: m-gate initialiser
+        ├─ component: controller
+        ├─ component: parameters
+        └─ component: sodium channel
+            ├─ component: h-gate
+            └─ component: m-gate
 
 .. container:: nb
 
     Flattening a model completely over-writes the "import" version with the "flat" version.
-    This means that any imported items which you'd previously assigned to pointers
-    (such as the components defined as destinations for the imports: the controller and initialising components) are obsolete.
+    This means that any imported items which you'd previously assigned to pointers (such as the components defined as destinations for the imports: the controller and parameters components) are now obsolete.
     **TODO** Check if this is true?? all components or only imported ones??
     The easiest thing to do is to refresh all pointers by re-fetching them from the flattened model:
 
@@ -424,52 +451,35 @@ This operation will create new local instances of all of the imported items, the
 
 .. container:: dothis
 
-    **5.e** Following the example above, re-fetch the component pointers which you created earlier.
+    **6.c** Following the example above, re-fetch the component pointers which you created earlier.
 
 .. container:: dothis
 
-    **5.f** Once the component pointers are up-to-date, we can connect the equivalent variable sets for the shared variables.
-    These are:
+    **6.d** Link the units and validate the model a final time.  Expect no errors.
 
-        - The independent variables time :code:`t`, and voltage :code:`V` are shared between all components (except initialisation ones);
-        - The gate rates (:code:`m` and :code:`h`) are shared between the gates and the sodium channel component;
-        - The sodium channel initialiser provides :code:`E_Na` and :code:`g_Na` values to the sodium channel component;
-        - The h-gate initialiser provides the initial :code:`h` value to the h-gate component; and
-        - The m-gate initialiser provides the initial :code:`m` value to the m-gate component.
-
-.. container:: dothis
-
-    **5.g** Validate the model, and expect messages related to missing interface types for the shared variables.
-    Add the recommended interface types to each of the variables using the :code:`setInterfaceType()` function.
-
-.. container:: dothis
-
-    **5.h** Link the model's units and validate the model a final time.
-    There should be no errors found.
-
-Step 6: Generate and output the model
+Step 7: Generate and output the model
 =====================================
 As we've done several times before, it's time to generate the runable model code.
 
 .. container:: dothis
 
-    **6.a** Create a :code:`Generator` instance and submit the model for
+    **7.a** Create a :code:`Generator` instance and submit the model for
     processing.
     Check that there are no errors found during this processing.
 
 .. container:: dothis
 
-    **6.b** Retrieve and write the interface :code:`*.h` code and implementation :code:`*.c` code to files.
+    **7.b** Retrieve and write the interface :code:`*.h` code and implementation :code:`*.c` code to files.
 
 .. container:: dothis
 
-    **6.c**  Change the generator profile to Python and reprocess the model
+    **7.c**  Change the generator profile to Python and reprocess the model
 
 .. container:: dothis
 
-    Retrieve and write the implementation code :code:`*.py` to a file.
+    **7.d** Retrieve and write the implementation code :code:`*.py` to a file.
 
-Step 7: Run the simulation
+Step 8: Run the simulation
 ==========================
 You can solve the model to simulate the dynamics of the sodium gate using the supplied solver.
 Instructions for running this are given on the :ref:`Simple solver for generated models<solver>` page, as well as in previous tutorials.
