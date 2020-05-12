@@ -48,15 +48,15 @@ Step 1: Create a ``Model`` from the contents of a CellML file
 
     **1.a** As you did in :ref:`Tutorial 1<tutorial1_py>`, use the :code:`Parser` to create a model from the :code:`resources/tutorial2.cellml` file provided.
 
-Step 2: Print the contents of the file to the screen
-====================================================
 Instead of duplicating the work you did throughout the middle steps of :ref:`Tutorial 1<tutorial1_py>`, we've provided you with a set of utility functions in the :code:`tutorial_utilities.py` file which will help with some of the repeated bits of these tutorials.
 
 .. container:: dothis
 
-    **2.a** Use the utility function :code:`print_model_to_terminal(yourModelHere)` to output the contents of the model you just created to the terminal so that you can see it properly.
+    **1.b** Use the utility function :code:`print_model_to_terminal(yourModelHere)` to output the contents of the model you just created to the terminal so that you can see it properly.
     You'll need to first include the utility functions using :code:`from tutorial_utilities import print_model_to_terminal`.
 
+Step 2: Validate the parsed model
+=================================
 Within the libCellML library is the :code:`Validator` class.
 This has one job - to make sure that what you give it is *valid* in terms of its CellML2.0 compliance.
 Does it mean that your simulations will work the way you expect?
@@ -74,7 +74,7 @@ This is really easy:
 
 .. container:: dothis
 
-    **2.b** Create a :code:`Validator` and pass your model to it, as above.
+    **2.a** Create a :code:`Validator` and pass your model to it, as above.
 
 When you've created a :code:`Validator` object and called it to check a model, a record of any errors is stored inside the validator.
 To figure out what's going on, you need to retrieve the pointers to these :code:`Issue` objects.
@@ -83,7 +83,7 @@ As in :ref:`Tutorial 1<tutorial1_py>`, you can call a :code:`count` function (in
 
 .. container:: dothis
 
-    **2.c** Retrieve the number of errors from the validator, and print it to the terminal.
+    **2.b** Retrieve the number of errors from the validator, and print it to the terminal.
 
 Now we need to create an iterative loop to retrieve all (and there should be a few in this particular model!) from the validator.
 Again following the same retrieval idiom as in :ref:`Tutorial 1<tutorial1_py>` for items in sets, we can access the errors
@@ -98,7 +98,7 @@ These are the :code:`description()` (which does what you'd think) and the :code:
 
 .. container:: dothis
 
-    **2.d** Create a loop (up to the number of errors found in 2.c), retrieve each error, and print their description and specification reference to the screen.  This is what we've used:
+    **2.c** Create a loop (up to the number of errors found in 2.b), retrieve each error, and print their description and specification reference to the screen.  This is what we've used:
 
 .. code-block:: python
 
@@ -248,6 +248,11 @@ Since we corrected - or tried to - this earlier by naming the first variable in 
 Step 4: Have a look at the corrected model
 ==========================================
 Let's have a look at our corrected model by calling that same utility function which we used earlier to print it to the screen.
+
+.. container:: dothis
+
+    **4.a** Print the model to the terminal again.
+
 You should see something like this:
 
 .. code-block:: console
@@ -269,6 +274,9 @@ You should see something like this:
                 Variable[3] has name: 'd'
                 Variable[3] has units: 'dimensionless'
 
+.. container:: dothis
+
+    **4.b** Use the Validator to check that the corrected model is now free of errors.
 
 Step 5: Serialise and output the model to a file
 ================================================

@@ -19,41 +19,43 @@ from tutorial_utilities import print_model_to_terminal
 
 if __name__ == "__main__":
     print("-----------------------------------------------------")
-    print("     TUTORIAL 2: ERROR CHECKING AND VALIDATION    ")
+    print("     TUTORIAL 2: Debugging, error checking and validation   ")
     print("-----------------------------------------------------")
 
     # ---------------------------------------------------------------------------
-    #  STEP 1:  Create a CellML Model from the contents of a CellML file
-    #
+    #  STEP 1:  Create the model
+    print("-----------------------------------------------")
+    print("       Step 1: Print the parsed model          ")
+    print("-----------------------------------------------")
+    #  1.a  Create a CellML Model from the contents of a CellML file.  You will
+    #       need to create a Parser and then pass it the file contents to read,
+    #       as you did in Tutorial 1.
     read_file = open("../resources/tutorial2.cellml", "r")
     parser = Parser()
     model = parser.parseModel(read_file.read())
 
-    # ---------------------------------------------------------------------------
-    #  STEP 2:  Print the contents of the model to the terminal so that we can read it more easily. This step makes
-    #           use of the utilities in the 'tutorial_utilities.py' file
-    print("-----------------------------------------------")
-    print("       Printing the parsed model               ")
-    print("-----------------------------------------------")
+    #  1.b  Print the contents of the model to the terminal so that we can read
+    #       it more easily. This step makes use of a function in the
+    #       'tutorial_utilities.py' file called "print_model_to_terminal".
     print_model_to_terminal(model)
 
     # ---------------------------------------------------------------------------
-    #  STEP 3: Check that the model meets the CellML2.0 specifications using the Validator
+    #  STEP 2: Check that the model meets the CellML2.0 specifications using the Validator.
     #
     #  2.a   Create a Validator and pass the model into it
     print("-----------------------------------------------")
-    print("       Validating the parsed model")
+    print("       Step 2: Validate the parsed model")
     print("-----------------------------------------------")
     validator = Validator()
     validator.validateModel(model)
 
-    #  2.b   Check whether there were errors returned from the validator
+    #  2.b  Check whether there were errors returned from the validator.
     number_of_validation_errors = validator.errorCount()
 
     if number_of_validation_errors != 0:
         print("The validator has found {n} errors!".format(n=number_of_validation_errors))
 
-        # 2.c  Retrieve the errors, and print their description and specification reference to the terminal
+        # 2.c  Retrieve the errors, and print their description and specification reference to the terminal.
         for e in range(0, number_of_validation_errors):
             validator_error = validator.error(e)
 
@@ -66,8 +68,11 @@ if __name__ == "__main__":
                 print("    See section {r} in the CellML specification.".format(r=specification_heading))
 
     # ---------------------------------------------------------------------------
-    #  STEP 3:   Fix the errors that were printed in Step 2
+    #  STEP 3:   Fix the errors that were reported in Step 2
     #
+    print("-----------------------------------------------")
+    print("       Step 3: Fix the parsed model")
+    print("-----------------------------------------------")
 
     # 3.a
     #   Validator error[0]:
@@ -98,7 +103,7 @@ if __name__ == "__main__":
     #  user defined units in Tutorial 3, but for now it's enough to see that the
     #  units which are associated with variable 'b' is not valid.  We'll change
     #  it to be 'dimensionless' instead.  NB items can be accessed through their
-    #  name (as here) or their index (as above)
+    #  name (as here) or their index (as above).
     model.component("i_am_a_component").variable("b").setUnits("dimensionless")
 
     # 3.c
@@ -144,28 +149,32 @@ if __name__ == "__main__":
     #  this error will be fixed already.
 
     # ---------------------------------------------------------------------------
-    #  STEP 4:   Check our changes by viewing the model again
+    #  STEP 4:   Check our changes.
+    print("-----------------------------------------------")
+    print("       Step 4: Check the corrected model")
+    print("-----------------------------------------------")
 
-    print("-----------------------------------------------")
-    print("       Printing the corrected model")
-    print("-----------------------------------------------")
+    #   4.a Print the corrected model to the terminal.
     print_model_to_terminal(model)
 
-    # ---------------------------------------------------------------------------
-    #  STEP 5:   Validate the newer model and check for errors
-    print("-----------------------------------------------")
-    print("       Validating the corrected model")
-    print("-----------------------------------------------")
-
+    #   4.b Validate that the corrected model is now free of errors.
     validator.validateModel(model)
     number_of_validation_errors = validator.errorCount()
     print("The validator found {n} errors in the model.".format(n=number_of_validation_errors))
 
     # ---------------------------------------------------------------------------
-    #  STEP 6:   Print corrected model to a file
+    #  STEP 5:   Print the corrected model to a file.
+    print("-----------------------------------------------")
+    print("       Step 5: Output the corrected model")
+    print("-----------------------------------------------")
+
+    #   5.a Create a printer instance, and use it to serialise your model into a string.
     printer = Printer()
     serialised_model = printer.printModel(model)
 
+    #   5.b Write the serialised string to a file.
     write_file = open("tutorial2_printed.cellml", "w")
     write_file.write(serialised_model)
     print("The {} has been printed to tutorial2_printed.cellml".format(model.name()))
+
+    #   5.c Go and have a cuppa, you're done!
