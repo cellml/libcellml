@@ -2,11 +2,11 @@
  *  TUTORIAL 1: READING AND WRITING A CELLML FILE
  *
  *  By the time you have worked through Tutorial 1 you will be able to:
- *    - read the contents of a CellML file
- *    - deserialse its contents using the Parser to create a Model structure
- *    - investigate the hierarchical contents of the Model, including the
- *      Components, Variables, and maths
- *    - serialise the model and write to another file
+ *    - Read the contents of a CellML file;
+ *    - Deserialse its contents using the Parser to create a Model structure;
+ *    - Investigate the hierarchical contents of the Model, including the
+ *      Components, Variables, and maths; and
+ *    - Serialise the model and write to another file.
  */
 
 #include <fstream>
@@ -48,7 +48,7 @@ int main()
     std::cout << "The model id is: " << modelId << std::endl;
 
     //  2.b   Return the number of components contained in the model, and print
-    //        to the screen
+    //        to the screen.
 
     int numberOfComponents = model->componentCount();
     std::cout << "The " << modelName << " model has " << numberOfComponents
@@ -66,7 +66,7 @@ int main()
     std::cout << "  Component[0] has id: " << componentId << std::endl;
 
     //  2.d   Investigate the variables inside the component, and print their
-    //        names to terminal
+    //        names to terminal.
 
     int numberOfVariables = component->variableCount();
     std::cout << "  The " << componentName << " component has "
@@ -83,7 +83,6 @@ int main()
     //  2.e   Investigate the maths which connects the variables in this
     //        component.  Note that maths in libCellML is stored as a
     //        single MathML2 string.
-
     std::string mathsString = component->math();
     std::cout << "  Component " << componentName
               << " has a MathML string of: " << std::endl;
@@ -105,6 +104,5 @@ int main()
     std::cout << "The " << modelName << " has been printed to: " << outFileName
               << std::endl;
 
-    // ---------------------------------------------------------------------------
-    //  STEP 4: Go and have a cuppa, you're done!
+    //  3.c Go and have a cuppa, you're done!
 }
