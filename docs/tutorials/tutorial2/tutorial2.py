@@ -2,44 +2,53 @@
     TUTORIAL 2: ERROR CHECKING AND VALIDATION
 
     By the time you have worked through Tutorial 2 you will be able to:
-        - use the Parser to report errors enountered when reading a file or deserialising a string
-        - use the Validator to check for errors related to a model's description as compared to the CellML2.0
-        specifications
+        - Use the Parser to report errors enountered when reading a file
+          or deserialising a string; and
+        - Use the Validator to check for errors related to a model's
+          description as compared to the CellML2.0 specifications.
 
     This tutorial assumes that you can already:
-    - read and deserialise a CellML model from a file
-    - retrieve the name and id of models, components, and variables,
-    - navigate through the hierarchy of the model (model contains component(s) contain(s) variable(s) and maths)
-    - serialise and print a Model structure to a CellML file.
+    - Read and deserialise a CellML model from a file;
+    - Retrieve the name and id of models, components, and variables;
+    - Navigate through the hierarchy of the model (model contains
+      component(s) contain(s) variable(s) and maths); and
+    - Serialise and print a Model structure to a CellML file.
 """
 
+from libcellml import Parser, Printer, Validator
+
+from tutorial_utilities import print_model_to_terminal
+
 if __name__ == "__main__":
-    print("-----------------------------------------------------")
-    print("     TUTORIAL 2: ERROR CHECKING AND VALIDATION    ")
-    print("-----------------------------------------------------")
+    print("------------------------------------------------------------")
+    print("     TUTORIAL 2: Debugging, error checking and validation   ")
+    print("------------------------------------------------------------")
 
     # ---------------------------------------------------------------------------
-    #  STEP 1:  Create a CellML Model from the contents of a CellML file
-    #
+    #  STEP 1:  Create the model
+
+    #  1.a  Create a CellML Model from the contents of a CellML file.  You will
+    #       need to create a Parser and then pass it the file contents to read,
+    #       as you did in Tutorial 1.
+
+    #  1.b  Print the contents of the model to the terminal so that we can read
+    #       it more easily. This step makes use of a function in the
+    #       'tutorial_utilities.py' file called "print_model_to_terminal".
 
     # ---------------------------------------------------------------------------
-    #  STEP 2:  Print the contents of the model to the terminal so that we can read it more easily. This step makes
-    #           use of the utilities in the 'tutorial_utilities.py' file
-
-    # ---------------------------------------------------------------------------
-    #  STEP 3:  Check that the model meets the CellML2.0 specifications using the Validator
+    #  STEP 2: Check that the model meets the CellML2.0 specifications using the Validator.
     #
     #  2.a   Create a Validator and pass the model into it
 
-    #  2.b   Check whether there were errors returned from the validator
+    #  2.b  Check whether there were errors returned from the validator.
 
-    #  2.c   Retrieve the errors, and print their description and specification reference to the terminal
+    #  2.c  Retrieve the errors, and print their description and specification reference to the terminal.
 
     # ---------------------------------------------------------------------------
-    #  STEP 3:   Fix the errors that were printed in Step 2
+    #  STEP 3:   Fix the errors that were reported in Step 2
     #
 
-    # 3.a
+    #  3.a
     #   Validator error[0]:
     #       Description: CellML identifiers must not begin with a European numeric
     #       character [0-9].
@@ -67,7 +76,7 @@ if __name__ == "__main__":
     #  user defined units in Tutorial 3, but for now it's enough to see that the
     #  units which are associated with variable 'b' is not valid.  We'll change
     #  it to be 'dimensionless' instead.  NB items can be accessed through their
-    #  name (as here) or their index (as above)
+    #  name (as here) or their index (as above).
 
     # 3.c
     #   Validator error[3]:
@@ -106,10 +115,17 @@ if __name__ == "__main__":
     #  this error will be fixed already.
 
     # ---------------------------------------------------------------------------
-    #  STEP 4:   Check your changes by printing out the model again
+    #  STEP 4:   Check our changes.
+
+    #   4.a Print the corrected model to the terminal.
+
+    #   4.b Validate that the corrected model is now free of errors.
 
     # ---------------------------------------------------------------------------
-    #  STEP 5:   Validate the newer model and check for errors
+    #  STEP 5:   Print the corrected model to a file.
 
-    # ---------------------------------------------------------------------------
-    #  STEP 6:   Print corrected model to a file
+    #   5.a Create a printer instance, and use it to serialise your model into a string.
+
+    #   5.b Write the serialised string to a file.
+
+    #   5.c Go and have a cuppa, you're done!

@@ -36,10 +36,9 @@ This should give the output:
 
 .. code-block:: console
 
-     -----------------------------------------------
-       TUTORIAL 2: ERROR CHECKING AND VALIDATION
-     -----------------------------------------------
-
+    ------------------------------------------------------------
+        TUTORIAL 2: Debugging, error checking and validation
+    ------------------------------------------------------------
 
 Step 1: Create a ``Model`` from the contents of a CellML file
 =============================================================

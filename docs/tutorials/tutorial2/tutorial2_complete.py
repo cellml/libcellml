@@ -2,15 +2,17 @@
     TUTORIAL 2: ERROR CHECKING AND VALIDATION
 
     By the time you have worked through Tutorial 2 you will be able to:
-        - use the Parser to report errors enountered when reading a file or deserialising a string
-        - use the Validator to check for errors related to a model's description as compared to the CellML2.0
-        specifications
+        - Use the Parser to report errors enountered when reading a file
+          or deserialising a string; and
+        - Use the Validator to check for errors related to a model's
+          description as compared to the CellML2.0 specifications.
 
     This tutorial assumes that you can already:
-    - read and deserialise a CellML model from a file
-    - retrieve the name and id of models, components, and variables,
-    - navigate through the hierarchy of the model (model contains component(s) contain(s) variable(s) and maths)
-    - serialise and print a Model structure to a CellML file.
+    - Read and deserialise a CellML model from a file;
+    - Retrieve the name and id of models, components, and variables;
+    - Navigate through the hierarchy of the model (model contains
+      component(s) contain(s) variable(s) and maths); and
+    - Serialise and print a Model structure to a CellML file.
 """
 
 from libcellml import Parser, Printer, Validator
@@ -18,9 +20,9 @@ from libcellml import Parser, Printer, Validator
 from tutorial_utilities import print_model_to_terminal
 
 if __name__ == "__main__":
-    print("-----------------------------------------------------")
+    print("------------------------------------------------------------")
     print("     TUTORIAL 2: Debugging, error checking and validation   ")
-    print("-----------------------------------------------------")
+    print("------------------------------------------------------------")
 
     # ---------------------------------------------------------------------------
     #  STEP 1:  Create the model
