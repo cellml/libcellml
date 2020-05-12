@@ -25,9 +25,9 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"kPi_2", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_32", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"sin1", "dimensionless", "actual_sin", ALGEBRAIC},
+    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
     {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
-    {"sin3", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
+    {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
 };
 
 double * createStatesArray()
