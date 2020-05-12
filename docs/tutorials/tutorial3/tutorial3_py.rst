@@ -134,32 +134,62 @@ The right-hand side becomes a collection of nested operations, all bracketed by 
 
 When both sides are defined we need to equate them by :code:`<apply>` -ing the :code:`<eq/>` equals operator, and create a string so that we end up with:
 
-.. code-block:: cpp
+.. code-block:: python
 
-    std::string equation2 =
-        "<apply><eq/>"
-        "   <apply><diff/>"
-        "     <bvar><ci>time</ci></bvar>"
-        "     <ci>y_s</ci>"
-        "   </apply>"
-        "   <apply><plus/>"
-        "       <apply><times/>"
-        "           <ci>a</ci>"
-        "           <ci>y_s</ci>"
-        "      </apply>"
-        "      <apply><times/>"
-        "          <ci>b</ci>"
-        "          <ci>y_s</ci>"
-        "          <ci>y_f</ci>"
-        "      </apply>"
-        "   </apply>"
-        "</apply>";
+    equation2 = \
+        "  <apply><eq/>"\
+        "    <apply><diff/>"\
+        "      <bvar><ci>time</ci></bvar>"\
+        "      <ci>y_s</ci>"\
+        "    </apply>"\
+        "    <apply><plus/>"\
+        "      <apply><times/>"\
+        "        <ci>a</ci>"\
+        "        <ci>y_s</ci>"\
+        "      </apply>"\
+        "      <apply><times/>"\
+        "        <ci>b</ci>"\
+        "        <ci>y_s</ci>"\
+        "        <ci>y_f</ci>"\
+        "      </apply>"\
+        "    </apply>"\
+        "  </apply>"
 
 .. container:: dothis
 
     **1.d** Copy the string above representing equation 2 into your code.
 
+.. container:: dothis
+
     **1.e** Create a third string representing equation 3.
+    The answer is shown under the link below.
+
+    .. container:: toggle
+
+        .. container:: header
+
+            Show MathML string
+
+        .. code-block:: python
+
+                equation3 =\
+                    "  <apply><eq/>"\
+                    "    <apply><diff/>"\
+                    "      <bvar><ci>time</ci></bvar>"\
+                    "      <ci>y_f</ci>"\
+                    "    </apply>"\
+                    "    <apply><plus/>"\
+                    "      <apply><times/>"\
+                    "        <ci>c</ci>"\
+                    "        <ci>y_f</ci>"\
+                    "      </apply>"\
+                    "      <apply><times/>"\
+                    "        <ci>d</ci>"\
+                    "        <ci>y_s</ci>"\
+                    "        <ci>y_f</ci>"\
+                    "      </apply>"\
+                    "    </apply>"\
+                    "  </apply>"
 
 Next you need to define the namespace in which the maths will be applied by enclosing it in the :code:`<math> ... </math>` tags with the two namespaces:
 
@@ -170,9 +200,8 @@ It's simple to do this once in your code using a string to represent the opening
 
 .. code-block:: python
 
-    math_header = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"\
-                                    xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">";
-    math_footer = "</math>";
+    math_header = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">'
+    math_footer = '</math>'
 
 .. container:: dothis
 
@@ -244,7 +273,6 @@ Step 2: Create the variables
 Step 3: Built-in and customised units
 =====================================
 Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
-Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
 .. container:: toggle
 
@@ -272,7 +300,7 @@ Some basic units have been defined and built into libCellML, others you can defi
 
 .. container:: dothis
 
-    **3.a** Create, name and define the units of "month" which will represent your time variable.
+    **3.a** Create, name and define the units of "month" which will represent your time variable following the example above.
     This should be defined as a multiple of the built-in unit :code:`second`.
 
 Units can be defined based on one another as well.

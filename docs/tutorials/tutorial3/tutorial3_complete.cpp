@@ -2,17 +2,17 @@
  *  TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API
  *
  *  By the time you have worked through Tutorial 3 you will be able to:
- *    - create a new model and its child entities from scratch using the API
- *    - define custom combinations of built-in units
- *    - define your own custom units independent from the built-in units
- *    - use the Generator to create C or Python code representing the model
+ *    - Create a new model and its child entities from scratch using the API;
+ *    - Define custom combinations of built-in units;
+ *    - Define your own custom units independent from the built-in units; and
+ *    - Use the Generator to create C or Python code representing the model.
  *
  *  This tutorial assumes that you are comfortable with:
- *    - accessing and adjusting names of items inside a model hierarchy (T2)
- *    - creating a validator and using it to check a model for errors (T2)
- *    - accessing the errors produced by a validator and using them to correct
- *      the model (T2)
- *    - serialising and printing a model to a CellML file (T1)
+ *    - Accessing and adjusting names of items inside a model hierarchy (T2);
+ *    - Creating a validator and using it to check a model for errors (T2);
+ *    - Accessing the errors produced by a validator and using them to correct
+ *      the model (T2); and
+ *    - Serialising and printing a model to a CellML file (T1).
  */
 
 #include <fstream>
@@ -30,22 +30,22 @@ int main()
     std::cout << "-------------------------------------------------------------" << std::endl;
 
     // ---------------------------------------------------------------------------
-    //  STEP 1: Create the model, component and maths
+    //  STEP 1: Create the model, component and maths.
     //
-    //  1.a   Create the ModelPtr
+    //  1.a   Create the ModelPtr.
     auto model = libcellml::Model::create("tutorial_3_model");
     model->setId("tutorial_3_model_id");
 
-    //  Check that it worked
+    //  Check that it worked.
     std::cout << "Model has name: '" << model->name() << "'" << std::endl;
     std::cout << "Model has id: '" << model->id() << "'" << std::endl;
 
     //  1.b   Create a component to use as an integrator, set its attributes and
-    //        add it to the model
+    //        add it to the model.
     auto component = libcellml::Component::create("predator_prey_component");
     model->addComponent(component);
 
-    //  Check that it worked
+    //  Check that it worked.
     std::cout << "Model has " << model->componentCount()
               << " components:" << std::endl;
     for (size_t c = 0; c < model->componentCount(); ++c) {
@@ -55,7 +55,7 @@ int main()
                   << model->component(c)->id() << "'" << std::endl;
     }
 
-    //  1.c,d,e Create the MathML2 strings representing the governing equations
+    //  1.c,d,e Create the MathML2 strings representing the governing equations.
     std::string equation1 =
         "  <apply><eq/>\n"
         "    <ci>c</ci>\n"
@@ -104,7 +104,7 @@ int main()
     std::string mathHeader = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n";
     std::string mathFooter = "</math>";
 
-    //  1.f, g Add the maths strings in to the component.
+    //  1.f,g Add the maths strings in to the component.
     component->setMath(mathHeader);
     component->appendMath(equation1);
     component->appendMath(equation2);
@@ -121,8 +121,7 @@ int main()
     // ---------------------------------------------------------------------------
     //  STEP 2: Create the variables and add them to the component
 
-    //  2.a Create the variables listed by the validator: d, a, b, c, time, y_s, y_f
-
+    //  2.a Create the variables listed by the validator: d, a, b, c, time, y_s, y_f.
     auto sharks = libcellml::Variable::create("y_s");
     auto fish = libcellml::Variable::create("y_f");
     auto time = libcellml::Variable::create("time");
@@ -131,8 +130,7 @@ int main()
     auto c = libcellml::Variable::create("c");
     auto d = libcellml::Variable::create("d");
 
-    //  2.b Add the variables into the component
-
+    //  2.b Add the variables into the component.
     component->addVariable(a);
     component->addVariable(b);
     component->addVariable(c);
@@ -141,20 +139,16 @@ int main()
     component->addVariable(fish);
     component->addVariable(time);
 
-    //  2.c Call the Validator again to check
+    //  2.c Call the Validator again to check.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
     // ---------------------------------------------------------------------------
     //  STEP 3: Create the Units and add them to the model.
 
-    //  3.a Create the day, month, and per_month units.
-    auto day = libcellml::Units::create("day");
-    day->addUnit("second", 0, 1, 86400); // base unit, prefix, exponent, multiplier
-    model->addUnits(day);
-
+    //  3.a Units representing a month, or 2592000 seconds.
     auto month = libcellml::Units::create("month");
-    month->addUnit("day", 0, 1, 30); // base unit, prefix, exponent, multiplier
+    month->addUnit("second", 0, 1, 2592000); // base unit, prefix, exponent, multiplier
     model->addUnits(month);
 
     //  3.b Create the per_month unit based on the month defined in 3.a.

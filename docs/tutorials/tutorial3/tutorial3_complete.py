@@ -2,17 +2,17 @@
     TUTORIAL 3: MODEL CREATION THROUGH THE API
 
     By the time you have worked through Tutorial 3 you will be able to:
-      - create a new model and its child entities from scratch using the API
-      - define custom combinations of built-in units
-      - define your own custom units independent from the built-in units
-      - use the Generator to create C or Python code representing the model
+      - Create a new model and its child entities from scratch using the API;
+      - Define custom combinations of built-in units;
+      - Define your own custom units independent from the built-in units; and
+      - Use the Generator to create C or Python code representing the model.
 
     This tutorial assumes that you are comfortable with:
-      - accessing and adjusting names of items inside a model hierarchy (T2)
-      - creating a validator and using it to check a model for errors (T2)
-      - accessing the errors produced by a validator and using them to correct
-        the model (T2)
-      - serialising and printing a model to a CellML file (T1)
+      - Accessing and adjusting names of items inside a model hierarchy (T2);
+      - Creating a validator and using it to check a model for errors (T2);
+      - Accessing the errors produced by a validator and using them to correct
+        the model (T2); and
+      - Serialising and printing a model to a CellML file (T1).
 """
 
 from libcellml import Component, Generator, GeneratorProfile, Model, Units, Validator, Variable
@@ -21,18 +21,18 @@ from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal
 
 if __name__ == "__main__":
     print("-------------------------------------------------------------")
-    print(" TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API")
+    print(" TUTORIAL 3: MODEL CREATION AND CODE GENERATION WITH THE API ")
     print("-------------------------------------------------------------")
 
     # ---------------------------------------------------------------------------
     #   STEP 1: Create the model instance
     #
-    #   1.a   Allocate the ModelPtr
+    #   1.a   Create a Model and name it.
     model = Model()
     model.setName("tutorial3_model")
 
     #   1.b   Create a component to use as an integrator, set its attributes and
-    #         add it to the model
+    #         add it to the model.
     component = Component()
     component.setName("component")
     model.addComponent(component)
@@ -92,14 +92,14 @@ if __name__ == "__main__":
         "    </apply>"\
         "  </apply>"
 
-    #   1.f   Include the MathML strings in the component
+    #  1.f, g   Include the MathML strings in the component.
     component.setMath(math_header)
     component.appendMath(equation1)
     component.appendMath(equation2)
     component.appendMath(equation3)
     component.appendMath(math_footer)
 
-    #  1.g   Create a validator and use it to check the model so far
+    #  1.h   Create a validator and use it to check the model so far.
     validator = Validator()
     validator.validateModel(model)
     print_errors_to_terminal(validator)
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     #   STEP 2: Create the variables
     #
 
-    #  2.a  Create the variables listed by the validator: d, a, b, c, time, y_s, y_f
+    #  2.a  Create the variables listed by the validator: d, a, b, c, time, y_s, y_f.
     sharks = Variable("y_s")
     fish = Variable("y_f")
     time = Variable("time")
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     c = Variable("c")
     d = Variable("d")
 
-    #  2.b  Add the variables into the component
+    #  2.b  Add the variables into the component.
     component.addVariable(sharks)
     component.addVariable(fish)
     component.addVariable(time)
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     component.addVariable(c)
     component.addVariable(d)
 
-    #  2.c  Call the validator again to check the model
+    #  2.c  Call the validator again to check the model.
     validator.validateModel(model)
     print_errors_to_terminal(validator)
 
@@ -144,27 +144,24 @@ if __name__ == "__main__":
     #  3.a  Define the relationship between our custom units and the built-in
     #       units. There is a list of built-in units and their definitions
     #       available in section 19.2 of the CellML2 specification.
-    #       First we create the "day" and "per_day" units
-    day = Units()
-    day.setName("day")
-    day.addUnit("second", "3", 1, 86.4)
-    model.addUnits(day)
-
-    # "second" is a built-in unit, used inside "day" with the
-    # multiplier 84600.  NB this is equivalent to specifying a prefix
-    # string value of 3, corresponding to the power of 10 by
-    # which the base is multiplied, as well as a multiplier of 86.4, etc
-
+    #       First we create the "month" units, which will be equivalent to
+    #       60*60*24*30 = 2,592,000 seconds.
     month = Units("month")
-    month.addUnit("day", 1, 30)  # Setting a month to be 30 days
+    month.addUnit("second", 1, 2592000)  # Setting a month to be 2592000 seconds.
 
-    # The "per_month" unit is simply the inverse of the "month"
+    #  "second" is a built-in unit, used with a multiplier of 2592000.
+    #  Note that this could have been written:
+    #     month.addUnit("second", "mega", 1, 2.592)
+    #     month.addUnit("second", 5, 25.92)
+
+    #  3.b  Create units which represent "per_month", which
+    #       is simply the inverse of the "month" unit above.
     per_month = Units()
     per_month.setName("per_month")
     per_month.addUnit("month", -1)
     model.addUnits(per_month)
 
-    #  3.b  Create the sharks and fishes base units.
+    #  3.c  Create the sharks and fishes base units.
     number_of_sharks = Units()
     number_of_sharks.setName("number_of_sharks")
     model.addUnits(number_of_sharks)
@@ -172,8 +169,8 @@ if __name__ == "__main__":
     thousands_of_fish.setName("thousands_of_fish")
     model.addUnits(thousands_of_fish)
 
-    #  3.c  Create the combined units for the constants.  Note that each item included
-    #       with the addUnit command is multiplied to create the final Units definition
+    #  3.d  Create the combined units for the constants.  Note that each item included
+    #       with the addUnit command is multiplied to create the final Units definition.
     b_units = Units()
     b_units.setName("per_shark_month")
     b_units.addUnit("per_month")
@@ -186,7 +183,7 @@ if __name__ == "__main__":
     d_units.addUnit("thousands_of_fish", -1)
     model.addUnits(d_units)
 
-    #  3.d  Set the units to their respective variables
+    #  3.e  Set the units to their respective variables.
     time.setUnits(month)
     sharks.setUnits(number_of_sharks)
     fish.setUnits(thousands_of_fish)
@@ -195,11 +192,11 @@ if __name__ == "__main__":
     c.setUnits(per_month)
     d.setUnits(d_units)
 
-    #  3.e  Call the validator again to check the model.
+    #  3.f  Call the validator again to check the model.
     #       Expect one error regarding a missing unit in the MathML.
     validator.validateModel(model)
 
-    #  3.f  Units for constants inside the MathML must be specified at the time.
+    #  3.g  Units for constants inside the MathML must be specified at the time.
     #       This means we need to adjust equation1 to include the per_month units.
     #       We have to wipe all the existing MathML and replace it.
     component.removeMath()
@@ -217,7 +214,7 @@ if __name__ == "__main__":
     component.appendMath(equation3)
     component.appendMath(math_footer)
 
-    #  3.g  Validate once more, and expect there to be no errors this time.
+    #  3.h  Validate once more, and expect there to be no errors this time.
 
     # ---------------------------------------------------------------------------
     #  STEP 4: Code generation
@@ -228,7 +225,7 @@ if __name__ == "__main__":
     generator = Generator()
     generator.processModel(model)
 
-    # 4.b Check for errors found in the generator
+    #  4.b Check for errors found in the generator
     print_errors_to_terminal(generator)
 
     #  4.c Add initial conditions to all variables except the base variable, time
@@ -239,10 +236,12 @@ if __name__ == "__main__":
     sharks.setInitialValue(1.0)
     fish.setInitialValue(2.0)
 
+    #  4.d Reprocess the model and check that the generator is now free of errors.
+
     generator.processModel(model)
     print_errors_to_terminal(generator)
 
-    #  4.d Because we've used the default profile (C) we need to output both the
+    #  4.e Because we've used the default profile (C) we need to output both the
     #      interfaceCode (the header file) and the implementationCode (source file)
     #      from the generator and write them.
     implementation_code_C = generator.implementationCode()
@@ -255,15 +254,15 @@ if __name__ == "__main__":
     write_file.write(interface_code)
     write_file.close()
 
-    #  4.e Change the Generator profile to be Python instead of the default C
+    #  4.f Change the Generator profile to be Python instead of the default C
     profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
     generator.setProfile(profile)
 
-    #  4.f Create the implementation code and print to a Python file
+    #  4.h Create the implementation code and print to a Python file
     implementation_code_python = generator.implementationCode()
     write_file = open("tutorial3_PredatorPrey_generated.py", "w")
     write_file.write(implementation_code_python)
 
     print("All the files have been printed.")
 
-    #  4.g Go have a cuppa, you're done!
+    #  4.h Go have a cuppa, you're done!

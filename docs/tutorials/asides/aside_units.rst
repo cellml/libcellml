@@ -1,7 +1,8 @@
-Understanding units
-===================
+..container:: heading3
 
-Linking variables to the *name* of their units is straightforward, but in order to be able to use them we need to also define what the name actually *means* by creating the units themselves.
+    Understanding units
+
+
 Some basic units have been defined and built into libCellML, others you can define by combining the built-in ones using scaling factors and exponents, or you can define your own from scratch if need be.
 
 There are four different kinds of units used here: irreducible units, built-in units, derived or combination units, and custom irreducible units.
