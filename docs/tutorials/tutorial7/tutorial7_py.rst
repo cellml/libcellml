@@ -48,29 +48,29 @@ Step 1: Create the sodium channel component
 
     .. code-block:: python
 
-        equation1 =
-            '  <apply><eq/>\n'
-            '    <ci>Na_conductance</ci>\n'
-            '    <apply><times/>\n'
-            '      <ci>g_Na</ci>\n'
-            '      <ci>h</ci>\n'
-            '      <apply><power/>\n'
-            '        <ci>m</ci>\n'
-            '        <cn cellml:units="dimensionless">3</cn>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation1 = \
+            '  <apply><eq/>\n'\
+            '    <ci>Na_conductance</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>g_Na</ci>\n'\
+            '      <ci>h</ci>\n'\
+            '      <apply><power/>\n'\
+            '        <ci>m</ci>\n'\
+            '        <cn cellml:units="dimensionless">3</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
-        equation2 =
-            '  <apply><eq/>\n'
-            '    <ci>i_Na</ci>\n'
-            '    <apply><times/>\n'
-            '      <ci>Na_conductance</ci>\n'
-            '      <apply><minus/>\n'
-            '        <ci>V</ci>\n'
-            '        <ci>E_Na</ci>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation2 = \
+            '  <apply><eq/>\n'\
+            '    <ci>i_Na</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>Na_conductance</ci>\n'\
+            '      <apply><minus/>\n'\
+            '        <ci>V</ci>\n'\
+            '        <ci>E_Na</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
 
@@ -119,76 +119,76 @@ Step 2: Create the m-gate component
 
     .. code-block:: python
 
-        equation1 =
-            '  <apply><eq/>\n'
-            '    <ci>alpha_m</ci>\n'
-            '    <apply><divide/>\n'
-            '      <apply><times/>\n'
-            '        <apply><minus/>\n'
-            '          <cn cellml:units="per_mV_ms">0.1</cn>\n'
-            '        </apply>\n'
-            '        <apply><plus/>\n'
-            '          <ci>V</ci>\n'
-            '          <cn cellml:units="mV">50</cn>\n'
-            '        </apply>\n'
-            '      </apply>\n'
-            '      <apply><minus/>\n'
-            '        <apply><exp/>\n'
-            '          <apply><divide/>\n'
-            '            <apply><minus/>\n'
-            '              <apply><plus/>\n'
-            '                <ci>V</ci>\n'
-            '                <cn cellml:units="mV">50</cn>\n'
-            '              </apply>\n'
-            '            </apply>\n'
-            '            <cn cellml:units="mV">10</cn>\n'
-            '          </apply>\n'
-            '        </apply>\n'
-            '        <cn cellml:units="dimensionless">1</cn>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+               equation1 = \
+            '  <apply><eq/>\n'\
+            '    <ci>alpha_m</ci>\n'\
+            '    <apply><divide/>\n'\
+            '      <apply><times/>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="per_mV_ms">0.1</cn>\n'\
+            '        </apply>\n'\
+            '        <apply><plus/>\n'\
+            '          <ci>V</ci>\n'\
+            '          <cn cellml:units="mV">50</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><minus/>\n'\
+            '        <apply><exp/>\n'\
+            '          <apply><divide/>\n'\
+            '            <apply><minus/>\n'\
+            '              <apply><plus/>\n'\
+            '                <ci>V</ci>\n'\
+            '                <cn cellml:units="mV">50</cn>\n'\
+            '              </apply>\n'\
+            '            </apply>\n'\
+            '            <cn cellml:units="mV">10</cn>\n'\
+            '          </apply>\n'\
+            '        </apply>\n'\
+            '        <cn cellml:units="dimensionless">1</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
-        equation2 =
-            '  <apply><eq/>\n'
-            '    <ci>beta_m</ci>\n'
-            '    <apply><times/>\n'
-            '      <cn cellml:units="per_ms">4</cn>\n'
-            '      <apply><exp/>\n'
-            '        <apply><divide/>\n'
-            '          <apply><minus/>\n'
-            '            <apply><plus/>\n'
-            '              <ci>V</ci>\n'
-            '              <cn cellml:units="mV">75</cn>\n'
-            '            </apply>\n'
-            '          </apply>\n'
-            '          <cn cellml:units="mV">18</cn>\n'
-            '        </apply>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation2 = \
+            '  <apply><eq/>\n'\
+            '    <ci>beta_m</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <cn cellml:units="per_ms">4</cn>\n'\
+            '      <apply><exp/>\n'\
+            '        <apply><divide/>\n'\
+            '          <apply><minus/>\n'\
+            '            <apply><plus/>\n'\
+            '              <ci>V</ci>\n'\
+            '              <cn cellml:units="mV">75</cn>\n'\
+            '            </apply>\n'\
+            '          </apply>\n'\
+            '          <cn cellml:units="mV">18</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
-        equation3 =
-            '  <apply><eq/>\n'
-            '    <apply><diff/>\n'
-            '      <bvar>\n'
-            '        <ci>t</ci>\n'
-            '      </bvar>\n'
-            '      <ci>m</ci>\n'
-            '    </apply>\n'
-            '    <apply><minus/>\n'
-            '      <apply><times/>\n'
-            '        <ci>alpha_m</ci>\n'
-            '        <apply><minus/>\n'
-            '          <cn cellml:units="dimensionless">1</cn>\n'
-            '          <ci>m</ci>\n'
-            '        </apply>\n'
-            '      </apply>\n'
-            '      <apply><times/>\n'
-            '        <ci>m</ci>\n'
-            '        <ci>beta_m</ci>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation3 = \
+            '  <apply><eq/>\n'\
+            '    <apply><diff/>\n'\
+            '      <bvar>\n'\
+            '        <ci>t</ci>\n'\
+            '      </bvar>\n'\
+            '      <ci>m</ci>\n'\
+            '    </apply>\n'\
+            '    <apply><minus/>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>alpha_m</ci>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="dimensionless">1</cn>\n'\
+            '          <ci>m</ci>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>m</ci>\n'\
+            '        <ci>beta_m</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
 .. container:: dothis
@@ -319,15 +319,15 @@ When an item - either :code:`Component` or :code:`Units` - is imported from one 
 
 .. container:: dothis
 
-    **4.a** Create a pointer to an :code:`ImportSource` item using the :code:`create()` idiom.
+    **4.a** Create a pointer to an :code:`ImportSource` item.
 
-.. code-block:: py
+.. code-block:: python
 
-    auto importer = libcellml::ImportSource::create();
+   importer = ImportSource()
 
 .. container:: dothis
 
-    **4.b** Use the :code:`ImportSource::setUrl()` function to point the importer to the file containing the controller, :code:`tutorial7_controller.cellml`.
+    **4.b** Use the :code:`ImportSource.setUrl()` function to point the importer to the file containing the controller, :code:`tutorial7_controller.cellml`.
 
 .. container:: dothis
 
@@ -406,7 +406,7 @@ This is done using the :code:`resolveImports()` function of the model, with the 
 
     **6.a** Use the :code:`resolveImports()` function to specify the (relative to the current working directory, or absolute) path to the directory in which the :code:`tutorial7_controller.cellml` file is found.
     If this is the same as your working directory, simply enter an empty string, :code:`""`.
-    Once that is done, use the :code:`model->hasUnresolvedImports()` function to check whether or not the model imports have been found.
+    Once that is done, use the :code:`Model.hasUnresolvedImports()` function to check whether or not the model imports have been found.
 
 Finally it's time to flatten the model so that it can be used to generate runable code.
 This operation will create new local instances of all of the imported items, thereby removing the model's dependency on imports.
@@ -432,17 +432,22 @@ This operation will create new local instances of all of the imported items, the
     **TODO** Check if this is true?? all components or only imported ones??
     The easiest thing to do is to refresh all pointers by re-fetching them from the flattened model:
 
-    .. code-block:: py
+    .. code-block:: python
 
-        auto myModel = libcellml::Model::create("myModel");
-        auto myComponent = libcellml::Component::create("myComponent");
-        myModel->addComponent(myComponent);
+        from libcellml import Component, Model
 
-        // Flattening the model over-writes all references:
-        myModel->flatten();
+        myModel = Model()
+        myModel.setName("myModel")
 
-        // Re-fetching the pointer after flattening:
-        myComponent = myModel->component("myComponent");
+        myComponent = Component()
+        myComponent.setName("myComponent")
+        myModel.addComponent(myComponent)
+
+        #Flattening the model over-writes all references:
+        myModel.flatten()
+
+        # Re-fetching the pointer after flattening:
+        myComponent = myModel.component("myComponent")
 
 .. container:: dothis
 
@@ -450,7 +455,8 @@ This operation will create new local instances of all of the imported items, the
 
 .. container:: dothis
 
-    **6.d** Link the units and validate the model a final time.  Expect no errors.
+    **6.d** Link the units and validate the model a final time.
+    Expect no errors.
 
 Step 7: Generate and output the model
 =====================================
