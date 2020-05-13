@@ -6,7 +6,7 @@ Tutorial 7 Python: Creating the sodium channel
 
 The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>` page.
 These are the Python instructions.
-For the same tutorial in C++ please see the :ref:`Tutorial 7 in Python<tutorial7_cpp>` page instead.
+For the same tutorial in C++ please see the :ref:`Tutorial 7 in C++<tutorial7_cpp>` page instead.
 
 **Resources:**
 

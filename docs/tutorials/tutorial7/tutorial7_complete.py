@@ -14,59 +14,59 @@
 
 from libcellml import Component, Generator, GeneratorProfile, ImportSource, Model, Printer, Units, Validator, Variable
 
-from tutorial_utilities import print_errors_to_terminal
+from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal
 
-if __name__ == '__main__":
+if __name__ == '__main__':
 
     # Setup: Create useful things that are used throughout the code.
-    validator = Validator.create()
+    validator = Validator()
     mathHeader = '<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n'
-    mathFooter = '</math >"
+    mathFooter = '</math>'
 
     print('--------------------------------------------------')
     print(' STEP 1: Create the sodium channel')
     print('--------------------------------------------------')
 
     #  1.a Create a model and name it appropriately.
-    model = Model.create("Tutorial7_SodiumChannelModel")
+    model = Model()
+    model.setName("Tutorial7_SodiumChannelModel")
 
     #  1.b Create a component instance for the sodium channel, name it, and add to the model.
-    sodiumChannel.setName()
+    sodiumChannel = Component()
     sodiumChannel.setName("sodiumChannel")
     model.addComponent(sodiumChannel)
 
     #  1.c Add the MathML representing the governing equations to the component, and validate the model.
-    {
-        equation1 =
-            '  <apply><eq/>\n'
-            '    <ci>Na_conductance</ci>\n'
-            '    <apply><times/>\n'
-            '      <ci>g_Na</ci>\n'
-            '      <ci>h</ci>\n'
-            '      <apply><power/>\n'
-            '        <ci>m</ci>\n'
-            '        <cn cellml:units="dimensionless">3</cn>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+    if True:
+        equation1 = \
+            '  <apply><eq/>\n'\
+            '    <ci>Na_conductance</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>g_Na</ci>\n'\
+            '      <ci>h</ci>\n'\
+            '      <apply><power/>\n'\
+            '        <ci>m</ci>\n'\
+            '        <cn cellml:units="dimensionless">3</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
-        equation2 =
-            '  <apply><eq/>\n'
-            '    <ci>i_Na</ci>\n'
-            '    <apply><times/>\n'
-            '      <ci>Na_conductance</ci>\n'
-            '      <apply><minus/>\n'
-            '        <ci>V</ci>\n'
-            '        <ci>E_Na</ci>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation2 = \
+            '  <apply><eq/>\n'\
+            '    <ci>i_Na</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <ci>Na_conductance</ci>\n'\
+            '      <apply><minus/>\n'\
+            '        <ci>V</ci>\n'\
+            '        <ci>E_Na</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
         sodiumChannel.setMath(mathHeader)
         sodiumChannel.appendMath(equation1)
         sodiumChannel.appendMath(equation2)
         sodiumChannel.appendMath(mathFooter)
-    }
 
     validator.validateModel(model)
     print_errors_to_terminal(validator)
@@ -93,7 +93,7 @@ if __name__ == '__main__":
         m.setUnits("dimensionless")
         sodiumChannel.addVariable(m)
 
-        g_na = Variable()
+        g_Na = Variable()
         g_Na.setName("g_Na")
         g_Na.setUnits("mS_per_cm2")
         sodiumChannel.addVariable(g_Na)
@@ -117,29 +117,29 @@ if __name__ == '__main__":
     if True:
         mV = Units()
         mV.setName("mV")
-        mV.addUnit("volt", 'milli")
+        mV.addUnit("volt", "milli")
         model.addUnits(mV)
 
         ms = Units()
         ms.setName("ms")
-        ms.addUnit("second", 'milli")
+        ms.addUnit("second", "milli")
         model.addUnits(ms)
 
         mS_per_cm2 = Units()
         mS_per_cm2.setName("mS_per_cm2")
-        mS_per_cm2.addUnit("siemens", 'milli")
-        mS_per_cm2.addUnit("metre", 'centi", -2)
+        mS_per_cm2.addUnit("siemens", "milli")
+        mS_per_cm2.addUnit("metre", "centi", -2)
         model.addUnits(mS_per_cm2)
 
-        microA_oer_cm2 = Units()
+        microA_per_cm2 = Units()
         microA_per_cm2.setName("microA_per_cm2")
-        microA_per_cm2.addUnit("ampere", 'micro")
-        microA_per_cm2.addUnit("metre", 'centi", -2)
+        microA_per_cm2.addUnit("ampere", "micro")
+        microA_per_cm2.addUnit("metre", "centi", -2)
         model.addUnits(microA_per_cm2)
 
         mM = Units()
         mM.setName("mM")
-        mM.addUnit("mole", 'milli")
+        mM.addUnit("mole", "milli")
         model.addUnits(mM)
 
     #  1.f Link the model's units and use the validator to make sure that there
@@ -154,81 +154,82 @@ if __name__ == '__main__":
     print('-----------------------------------------------')
 
     #  2.a Create component to represent the m-gate and add it to the sodium channel component.
+    mGate = Component()
     mGate.setName("mGate")
     sodiumChannel.addComponent(mGate)
 
     #  2.b Add the MathML strings which govern the behaviour of this gate.
-    {
-        equation1 =
-            '  <apply><eq/>\n'
-            '    <ci>alpha_m</ci>\n'
-            '    <apply><divide/>\n'
-            '      <apply><times/>\n'
-            '        <apply><minus/>\n'
-            '          <cn cellml:units="per_mV_ms">0.1</cn>\n'
-            '        </apply>\n'
-            '        <apply><plus/>\n'
-            '          <ci>V</ci>\n'
-            '          <cn cellml:units="mV">50</cn>\n'
-            '        </apply>\n'
-            '      </apply>\n'
-            '      <apply><minus/>\n'
-            '        <apply><exp/>\n'
-            '          <apply><divide/>\n'
-            '            <apply><minus/>\n'
-            '              <apply><plus/>\n'
-            '                <ci>V</ci>\n'
-            '                <cn cellml:units="mV">50</cn>\n'
-            '              </apply>\n'
-            '            </apply>\n'
-            '            <cn cellml:units="mV">10</cn>\n'
-            '          </apply>\n'
-            '        </apply>\n'
-            '        <cn cellml:units="dimensionless">1</cn>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+    if True:
+        equation1 = \
+            '  <apply><eq/>\n'\
+            '    <ci>alpha_m</ci>\n'\
+            '    <apply><divide/>\n'\
+            '      <apply><times/>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="per_mV_ms">0.1</cn>\n'\
+            '        </apply>\n'\
+            '        <apply><plus/>\n'\
+            '          <ci>V</ci>\n'\
+            '          <cn cellml:units="mV">50</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><minus/>\n'\
+            '        <apply><exp/>\n'\
+            '          <apply><divide/>\n'\
+            '            <apply><minus/>\n'\
+            '              <apply><plus/>\n'\
+            '                <ci>V</ci>\n'\
+            '                <cn cellml:units="mV">50</cn>\n'\
+            '              </apply>\n'\
+            '            </apply>\n'\
+            '            <cn cellml:units="mV">10</cn>\n'\
+            '          </apply>\n'\
+            '        </apply>\n'\
+            '        <cn cellml:units="dimensionless">1</cn>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
-        equation2 =
-            '  <apply><eq/>\n'
-            '    <ci>beta_m</ci>\n'
-            '    <apply><times/>\n'
-            '      <cn cellml:units="per_ms">4</cn>\n'
-            '      <apply><exp/>\n'
-            '        <apply><divide/>\n'
-            '          <apply><minus/>\n'
-            '            <apply><plus/>\n'
-            '              <ci>V</ci>\n'
-            '              <cn cellml:units="mV">75</cn>\n'
-            '            </apply>\n'
-            '          </apply>\n'
-            '          <cn cellml:units="mV">18</cn>\n'
-            '        </apply>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation2 = \
+            '  <apply><eq/>\n'\
+            '    <ci>beta_m</ci>\n'\
+            '    <apply><times/>\n'\
+            '      <cn cellml:units="per_ms">4</cn>\n'\
+            '      <apply><exp/>\n'\
+            '        <apply><divide/>\n'\
+            '          <apply><minus/>\n'\
+            '            <apply><plus/>\n'\
+            '              <ci>V</ci>\n'\
+            '              <cn cellml:units="mV">75</cn>\n'\
+            '            </apply>\n'\
+            '          </apply>\n'\
+            '          <cn cellml:units="mV">18</cn>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
-        equation3 =
-            '  <apply><eq/>\n'
-            '    <apply><diff/>\n'
-            '      <bvar>\n'
-            '        <ci>t</ci>\n'
-            '      </bvar>\n'
-            '      <ci>m</ci>\n'
-            '    </apply>\n'
-            '    <apply><minus/>\n'
-            '      <apply><times/>\n'
-            '        <ci>alpha_m</ci>\n'
-            '        <apply><minus/>\n'
-            '          <cn cellml:units="dimensionless">1</cn>\n'
-            '          <ci>m</ci>\n'
-            '        </apply>\n'
-            '      </apply>\n'
-            '      <apply><times/>\n'
-            '        <ci>m</ci>\n'
-            '        <ci>beta_m</ci>\n'
-            '      </apply>\n'
-            '    </apply>\n'
+        equation3 = \
+            '  <apply><eq/>\n'\
+            '    <apply><diff/>\n'\
+            '      <bvar>\n'\
+            '        <ci>t</ci>\n'\
+            '      </bvar>\n'\
+            '      <ci>m</ci>\n'\
+            '    </apply>\n'\
+            '    <apply><minus/>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>alpha_m</ci>\n'\
+            '        <apply><minus/>\n'\
+            '          <cn cellml:units="dimensionless">1</cn>\n'\
+            '          <ci>m</ci>\n'\
+            '        </apply>\n'\
+            '      </apply>\n'\
+            '      <apply><times/>\n'\
+            '        <ci>m</ci>\n'\
+            '        <ci>beta_m</ci>\n'\
+            '      </apply>\n'\
+            '    </apply>\n'\
             '  </apply>\n'
 
         mGate.setMath(mathHeader)
@@ -237,7 +238,7 @@ if __name__ == '__main__":
         mGate.appendMath(equation3)
         mGate.appendMath(mathFooter)
 
-    }  # end scope of maths for mGate component
+    # end scope of maths for mGate component
 
     #  2.c Call the validator and expect errors related to missing variables.
     #      Add the variables that are needed.
@@ -276,13 +277,13 @@ if __name__ == '__main__":
 
     per_mV_ms = Units()
     per_mV_ms.setName("per_mV_ms")
-    per_mV_ms.addUnit("second", 'milli", -1)
-    per_mV_ms.addUnit("volt", 'milli", -1)
+    per_mV_ms.addUnit("second", "milli", -1)
+    per_mV_ms.addUnit("volt", "milli", -1)
     model.addUnits(per_mV_ms)
 
     per_ms = Units()
     per_ms.setName("per_ms")
-    per_ms.addUnit("second", 'milli", -1)
+    per_ms.addUnit("second", "milli", -1)
     model.addUnits(per_ms)
 
     #  2.e Link in the units to the model, and check that there are no more
@@ -303,7 +304,7 @@ if __name__ == '__main__":
 
     #  3.b Add the MathML strings that govern the gate behaviour.
     if True:
-        equation1 =
+        equation1 = \
             '  <apply><eq/>\n'\
             '    <ci>alpha_h</ci>\n'\
             '    <apply><times/>\n'\
@@ -322,7 +323,7 @@ if __name__ == '__main__":
             '    </apply>\n'\
             '  </apply>\n'
 
-        equation2 =
+        equation2 = \
             '  <apply><eq/>\n'\
             '    <ci>beta_h</ci>\n'\
             '    <apply><divide/>\n'\
@@ -344,7 +345,7 @@ if __name__ == '__main__":
             '    </apply>\n'\
             '  </apply>\n'
 
-        equation3 =
+        equation3 = \
             '  <apply><eq/>\n'\
             '    <apply><diff/>\n'\
             '       <bvar>\n'\
@@ -420,7 +421,7 @@ if __name__ == '__main__":
     #          - a destination component (or units) item in which to store the
     #            imported information
 
-    #  4.a Create a pointer to an ImportSource item using the create() idiom.
+    #  4.a Create a pointer to an ImportSource item.
     importer = ImportSource()
 
     #  4.b Use the ImportSource.setUrl() function to pass the file name containing the controller.
@@ -438,14 +439,14 @@ if __name__ == '__main__":
     #      associate the destination controller component with the importer, and
     #      the importer with the name of the item to retrieve.  If you're using the
     #      file from the resources folder, the name of the component to import is 'sodiumChannel_controller".
-    controller.setSourceComponent(importer, 'sodiumChannel_controller")
+    controller.setSourceComponent(importer, "sodiumChannel_controller")
 
     #  4.e Repeat the above processes to import the component called 'parameters' from the same file.
     #      Note that since they're in the same file, you can reuse the ImportSource instance, and simply
     #      repeat steps 4.c-d.
     parameters = Component()
     parameters.setName("parameters")
-    parameters.setSourceComponent(importer, 'parameters")
+    parameters.setSourceComponent(importer, "parameters")
     model.addComponent(parameters)
 
     #  4.f Validate the model, expecting it to be free of errors.  Note that the validator does not check
@@ -586,19 +587,19 @@ if __name__ == '__main__":
     #      directory location.  This location is either specified with an absolute path, or
     #      relative to the current working directory.
     #      Call the Model.resolveImports(directoryPath) function to resolve the imports.  Check that
-    #      it has worked as expected by checking that Model.hasUnresolvedImports() returns false.
+    #      it has worked as expected by checking that Model.hasUnresolvedImports() returns False.
     #      Note that:
     #          - The argument of the resolveImports() function is the directory path, ending with a slash.
     #          - For files in the working directory, use a blank string, '".
     model.resolveImports("")
-    assert(model.hasUnresolvedImports() == false)
+    assert(model.hasUnresolvedImports() == False)
 
     #  6.b Finally it's time to flatten the model so that it can be used to generate runable code.
     #      This operation will create new local instances of all of the imported items, thereby
     #      removing the model's dependency on imports. Use the Model.flatten() function to do this.
     #      Print the model to the terminal and check that it makes sense.
     model.flatten()
-    print_model_to_terminal(model, false)
+    print_model_to_terminal(model)
 
     #  6.c After flattening a model it's important to note that the model itself has been completely overwritten
     #      with its 'flat' version.  This means that any imported items which you'd previously assigned to pointers
@@ -621,7 +622,7 @@ if __name__ == '__main__":
 
     #  7.a Create a Generator instance and submit the model for processing.
     #      Expect no errors.
-    generator = Generator.create()
+    generator = Generator()
     generator.processModel(model)
     print_errors_to_terminal(generator)
     assert(generator.errorCount() == 0)
@@ -658,4 +659,3 @@ if __name__ == '__main__":
 
     #  7.e Please seen the tutorial instructions for how to run this simulation using
     #      the simple solver provided.  Then go and have a cuppa, you're done!
-}
