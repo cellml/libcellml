@@ -427,6 +427,15 @@ bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &ode
            || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
+bool sameOrEquivalentVariable(const VariablePtr &variable1,
+                              const VariablePtr &variable2)
+{
+    // Return whether the given variables are the same or are equivalent (be it
+    // directly or indirectly).
+
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
+}
+
 bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
                               size_t &variableIndex)
 {
@@ -601,9 +610,6 @@ struct Generator::GeneratorImpl
     static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
                                            const GeneratorEquationPtr &equation2);
 
-    bool sameOrEquivalentVariable(const VariablePtr &variable1,
-                                  const VariablePtr &variable2);
-
     GeneratorVariablePtr variableFirstOccurrence(const VariablePtr &variable,
                                                  const ComponentPtr &component);
 
@@ -771,15 +777,6 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     mInternalVariables.push_back(internalVariable);
 
     return internalVariable;
-}
-
-bool Generator::GeneratorImpl::sameOrEquivalentVariable(const VariablePtr &variable1,
-                                                        const VariablePtr &variable2)
-{
-    // Return whether the given variables are the same or are equivalent (be it
-    // directly or indirectly).
-
-    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
 GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const VariablePtr &variable,
