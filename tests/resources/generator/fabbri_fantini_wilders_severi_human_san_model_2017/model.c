@@ -90,7 +90,7 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"Ko", "millimolar", "Ionic_values", CONSTANT},
     {"Nao", "millimolar", "Ionic_values", CONSTANT},
     {"C", "microF", "Membrane", CONSTANT},
-    {"F", "coulomb_per_mole", "Nai_concentration", CONSTANT},
+    {"F", "coulomb_per_mole", "Membrane", CONSTANT},
     {"R", "joule_per_kilomole_kelvin", "Membrane", CONSTANT},
     {"T", "kelvin", "Membrane", CONSTANT},
     {"clamp_mode", "dimensionless", "Membrane", CONSTANT},
