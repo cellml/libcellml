@@ -4,9 +4,9 @@
 Tutorial 6 C++: Working with multiple components
 ================================================
 
-The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>`
-page. These are the C++ instructions.  For the same tutorial in Python
-please see the :ref:`Tutorial 6 in Python<tutorial6_py>` page instead.
+The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>` page.
+These are the C++ instructions.
+For the same tutorial in Python please see the :ref:`Tutorial 6 in Python<tutorial6_py>` page instead.
 
 You will need to download these files first:
 
@@ -22,8 +22,7 @@ You will need to download these files first:
 
 Setup
 =====
-Navigate into the :code:`tutorial6` folder and check that you can build the
-template against the libCellML library successfully:
+Navigate into the :code:`tutorial6` folder and check that you can build the template against the libCellML library successfully:
 
 .. code-block:: console
 

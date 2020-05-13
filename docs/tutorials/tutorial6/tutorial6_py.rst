@@ -4,382 +4,551 @@
 Tutorial 6 Python: Working with multiple components
 ===================================================
 
-**TODO** The code doesn't match the instructions - waiting for the variable parent
-issues to be sorted out.
+The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>` page.
+These are the Python instructions.
+For the same tutorial in C++ please see the :ref:`Tutorial 6 in C++<tutorial6_cpp>` page instead.
 
-The outline for this tutorial is shown on the :ref:`Tutorial 6<tutorial6>`
-page. These are the Python instructions.  For the same tutorial in C++
-please see the :ref:`Tutorial 6 in C++<tutorial6_cpp>` page instead.
+You will need to download these files first:
 
-Resources:
-
-    - :download:`tutorial6.py` Either the skeleton code, or ..
-    - :download:`tutorial6_complete.py` the completed tutorial code
-    - :download:`../utilities/tutorial_utilities.py` Utility functions for
-      use in the tutorials.
-    - If you did not complete Tutorial 5 you can download the file created there:
-      :download:`../resources/tutorial6_PotassiumChannelModel.cellml`
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
+    - :download:`tutorial6.py` Either the skeleton code or :download:`tutorial6_complete.py` the completed tutorial code;
+    - :download:`../utilities/tutorial_utilities.py` Utility functions for use in the tutorials; and
+    - :download:`../resources/tutorial6_controller.cellml` A CellML file required for the controller and initialisation components.
 
 .. contents:: Contents
     :local:
 
-1: Create the model
-===================
-By now you should be familiar and comfortable with using the API to create
-the model instance, and normally that's how you'd start ... but not this time.
-If you completed Tutorial 5 you will have created a model representing a
-gated ion channel, serialised the model and written it to a file.  A good
-idea for programming, modelling, and work in general is the DRY principle:
-**Don't Repeat Yourself**.  With this in mind we want to be able to reuse the
-work that's already done, and in particular, that useful ion channel that was
-created in Tutorial 5.  There are four possible options:
+Setup
+=====
+Navigate into the :code:`tutorial6` folder and check that you can run the template against the libCellML library successfully:
 
-- Option 0: Write it all again.  We're not going to do that. It's too WET
-  (Write Every Time).
-- Option 1: Copy the code you wrote in Tutorial 5 to create the component, and
-  simply add it here.  This is not a great solution, because it's not as DRY as
-  it could be, but it beats writing it all from scratch again.
-- Option 2: Use the skills you learned in Tutorial 2 around parsing and
-  deserialising a CellML model to read the model from the file which you
-  created during Tutorial 5.  This option is DRY-er than Option 1, but will
-  involve a tweak or two because the :code:`Parser` will only load the whole
-  model, not just the bits we care about.
-- Option 3: Instead of parsing and loading the entirety of the model from
-  Tutorial 5, just tell libCellML to reference what it needs to.
+Running the template:
 
-Option 3 seems to be the DRYest, and indeed this is how we will do it later on
-when the :code:`ImportSource` functionality is introduced.  For now though,
-we'll just go with Option 2 since there's only one component inside the
-Tutorial 5 model anyway.
+.. code-block:: console
 
-.. container:: dothis
+    python3 tutorial6.py
 
-    **1.a** Create a :code:`Parser` instance and use it to deserialise the
-    model from the file created in Tutorial 5 into a new model instance.
-    This process was described in :ref:`Tutorial 2<tutorial2_py>`. You
-    may like to copy that file into the working directory for this project for
-    ease of access.  If you didn't do Tutorial 5 you can copy this file from
-    the resource folder instead.
+... should give the output of the section headings which you'll complete here:
 
-.. container:: dothis
+.. code-block:: console
 
-    **1.b** Use the :code:`print_model_to_terminal` function to check that you
-    have what you expect.
+    ----------------------------------------------------------
+       STEP 1: Define the potassiumChannel component
+    ----------------------------------------------------------
+    ----------------------------------------------------------
+       STEP 2: Create the nGate component
+    ----------------------------------------------------------
+    ----------------------------------------------------------
+       STEP 3: Connect the components together
+    ----------------------------------------------------------
+    ----------------------------------------------------------
+       STEP 4: Read the controller
+    ----------------------------------------------------------
+    ----------------------------------------------------------
+       STEP 5: Generate the model and output
+    ----------------------------------------------------------
+
+Step 1: Define the potassium channel component
+==============================================
+In :ref:`Tutorial 5<tutorial5_py>` we created a simple ion channel.
+In this tutorial we're going to extend that a little by making its dynamics specific to potassium.
+We also introduce voltage dependence into the alpha and beta gate rates, and move them into a separate component to make it cleaner.
+This will be done in step 2.
 
 .. container:: dothis
 
-    **1.c** Create a :code:`Validator` instance and check that your model is
-    valid so far.
+    **1.a** Create a model, name it appropriately.
+    Create a new model to represent the potassium channel and add it to your model.
 
-Now that we've loaded the model and checked that it's working, we want to
-rename parts of it so that they make more sense going forward.  Use the
-manipulation functionality you learnt in :ref:`Tutorial 3<tutorial3_py>` to
-retrieve the following items from the model and rename them.  Recall that you
-can access the items contained inside a model by index as well as by name.
+The operation of the potassium channel is similar to the generic ion channel in the previous tutorial, except that the gate rates will be calculated in another component.
+The governing mathematical equation becomes:
 
-.. container:: dothis
+.. math::
 
-    **1.d** Retrieve the component from the model and rename it to
-    "potassiumChannel".
+    i_K = n^4 g_K (V - E_K)
 
-2: Include more components in the model
-=======================================
-This tutorial is intended to illustrate the use of more than one component,
-and how they're connected to each other.  Let's get started with creating two
-additional components: one to represent the environment variables which will be
-shared throughout the whole model, and one to represent details of a
-gate.
+... where :math:`i_K` is blah blah.
 
 .. container:: dothis
 
-    **2.a** Create a new component and name it "environment"
+    **1.b** Add a MathML string representing this equation to your component.
+    Remember that you will need to include the MathML opening and closing tags, and namespace.
+    If you need to, copy the code underneath the "Show code" link below.
+
+    .. container:: toggle
+
+        .. container:: header
+
+            Show code
+
+        .. code-block:: python
+
+            equation = \
+                '  <apply><eq/>\n'\
+                '    <ci>i_K</ci>\n'\
+                '    <apply><times/>\n'\
+                '       <apply><power/>\n'\
+                '           <ci>n</ci>\n'\
+                '           <cn cellml:units="dimensionless">4</cn>\n'\
+                '       </apply>\n'\
+                '       <ci>g_K</ci>\n'\
+                '       <apply><minus/>\n'\
+                '           <ci>V</ci>\n'\
+                '           <ci>E_K</ci>\n'\
+                '       </apply>\n'\
+                '    </apply>\n'\
+                '  </apply>\n'
 
 .. container:: dothis
 
-    **2.b** Create two new variables with the units below, and add them to the
-    component.
+    **1.c** Create and call a Validator instance, and use it to check the model so far.
+    At this stage we will expect errors related to missing variables.
 
-    - V (millivolt)
-    - t (millisecond)
+.. code-block:: console
 
-.. container:: dothis
-
-    **2.c** Add both new components to the model.
-
-.. container:: dothis
-
-    **2.d** Check that the model is valid so far using your validator instance.
-
-3: Create a component for the n-gate
-====================================
-The last component that we need to create is an update from our Tutorial 5
-model such that the rate constants :math:`\alpha` and :math:`\beta` become
-functions of voltage.  We have another choice to make.  We could either:
-
-- remove all the mathematics from our existing potassiumChannel component
-  and adjust the equations which are already there to suit, or
-- create another component to handle the voltage dependence, and pass its
-  computed values to our existing component.
-
-In a continuation of the DRY principle, we're going to go with the latter.
+    The validator has found 5 errors!
+    Validator error[0]:
+        Description: MathML ci element has the child text 'i_K' which does not correspond with any variable names present in component 'potassiumChannel'.
+    ...
 
 .. container:: dothis
 
-    **3.a** Create a new component named "nGate", and to it add five
-    new variables, which you'll also need to create:
+    **1.d** Create the variables, specify their units, and add them to the potassium channel component.
+    You may notice that during the process of creating models using the API that you might need to create more than one :code:`Variable` instance with the symbol :code:`V` or :code:`t` (for example).
+    The CellML2 specification says that you need to have variable names which are unique within the scope of the *component* in which they're contained, not the entire model.
+    In Python you can mimic this using the :code:`if True:` idiom block around your :code:`Variable` definitions: this will make your code easier to follow.
 
-    - :math:`V` (millivolt)
-    - :math:`t` (millisecond)
-    - :math:`n` (dimensionless)
-    - :math:`\alpha_n` (per millisecond)
-    - :math:`\beta_n` (per millisecond)
+    .. code-block:: python
 
-You may notice that during this process you've created more than one
-:code:`Variable` instance with the symbol :code:`V` or :code:`t`.  The
-CellML2 specification says that you need to have variable names which are
-unique within the scope of the component in which they're contained.  In Python
-you can mimic this using an :code:`if True:` block surruonding your variables.
+        # Using the if True: block around the code means that your definition of V here is
+        # separate from any others in other components.
+        if True:
+            V = Variable()
+            V.setName("V")
+            V.setUnits("millivolt")
+            potassiumChannel.addVariable(V)
+            # ... etc ...
 
-**TODO Check whether this is a good plan or not ...**
+
+.. container:: dothis
+
+    **1.e** Use the validator to recheck the model again.
+    You can now expect errors related to missing units.
+
+.. code-block:: console
+
+    The validator has found 5 errors!
+    Validator error[0]:
+        Description: Variable 'E_K' in component 'potassiumChannel' has a units reference
+        'millivolt' which is neither standard nor defined in the parent model.
+        See section 11.1.1.2 in the CellML specification.
+
+.. container:: dothis
+
+    **1.f** Create and add the missing units.
+    This was covered in :code:`Tutorial 5<tutorial5_py>` in case you need a recap.
+    Since at the time that the units were specified for the variables, the related :code:`Units` items didn't exist, we also have to link the units in the model properly.
+    Use the :code:`Model.linkUnits()` function to do this.
+
+.. container:: dothis
+
+    **1.g** Revalidate the model and check that it is now free of errors.
+
+Step 2: Create the n-gate component
+===================================
+Here we create the voltage dependency behavior of the potassium component.
+This is accomplished by creating a second component, and embedding it within the one we already have.
+
+.. container:: dothis
+
+    **2.a** Create a new component to represent the n-gate, and add it to the potassium channel component.
+    Adding it to the component instead of the model creates an encapsulation hierarchy, which affects which components have access to each other.
+    It also means that if the potassium channel component is moved or imported somewhere else, then the n-gate child component will be included too.
+
+Now it's time to define the mathematical behaviour of the voltage dependence.
+This is give by a differential equation for :math:`n`, the gate status, and by the expressions for voltage control
 
 Next we need to define this new dependency of the :math:`\alpha` and
 :math:`\beta` rate constants on the voltage.  The mathematics for this is:
 
 .. math::
 
-    \alpha_n = \frac{0.01(V+10)}{\exp(0.1(V+10))-1}
+    \alpha_n = \frac {0.01(V+10)} {\exp(0.1(V+10))-1}
 
-    \beta_n = 0.125 \exp (0.0125 V)
+    \beta_n = 0.125 \exp(0.0125V)
 
     \frac {dn} {dt} = \alpha_n(1-n) - \beta_n n
 
 .. container:: dothis
 
-    **3.b** Create the appropriate MathML to represent the equations above, and
-    add to the nGate component.  As in the previous tutorial, you
-    can copy this from the file provided in the
-    :code:`resources/tutorial6_mathml.py` file if you prefer.
+    **2.b** Create the appropriate MathML to represent the equations above, and
+    add to the n-gate component.
+    If needed, you can copy the equation strings from the "Show MathML" block below.
+    Validate the model.
+    At this stage you can expect errors related to missing variables, and missing errors defined in the constants.
 
-.. container:: dothis
+    .. container:: toggle
 
-    **3.c** Add the nGate component into the model, and validate it.
+        .. container:: header
 
-During step 3.c your validation should have alerted you to a set of missing
-units in the component.  These are not attached to a variable, but to a
-constant inside the MathML, but still need to be present in the parent model.
+            Show MathML
 
-.. container:: dothis
+        .. code-block:: python
 
-    **3.d** Create the missing units and add to the model.  Confirm that the
-    model is now valid.
+            equation1 = \
+                '  <apply><eq/>\n'\
+                '    <apply><diff/>\n'\
+                '      <bvar><ci>t</ci></bvar>\n'\
+                '      <ci>n</ci>\n'\
+                '    </apply>\n'\
+                '    <apply><minus/>\n'\
+                '      <apply><times/>\n'\
+                '        <ci>alpha_n</ci>\n'\
+                '        <apply><minus/>\n'\
+                '          <cn cellml:units="dimensionless">1</cn>\n'\
+                '          <ci>n</ci>\n'\
+                '        </apply>\n'\
+                '      </apply>\n'\
+                '      <apply><times/>\n'\
+                '        <ci>beta_n</ci>\n'\
+                '        <ci>n</ci>\n'\
+                '      </apply>\n'\
+                '    </apply>\n'\
+                '  </apply>\n'
 
-4: Connect the components to one another
-========================================
-In order for components to be able to relate to one another, we have to define
-two things.  Firstly, the hierarchy in which they exist - this is called the
-*encapsulation* and determines which components are able to access others. Each
-component is only visible to its direct parents, direct children, and siblings
-(those which share a direct parent).  Secondly, we need to define the way in
-which the varaibles within the component relate to those outside it.  This is
-done by creating *equivalent variables*.
+            equation2 = \
+                '  <apply><eq/>\n'\
+                '    <ci>alpha_n</ci>\n'\
+                '    <apply><divide/>\n'\
+                '      <apply><times/>\n'\
+                '        <cn cellml:units="per_millivolt_millisecond">0.01</cn>\n'\
+                '        <apply><plus/>\n'\
+                '          <ci>V</ci>\n'\
+                '          <cn cellml:units="millivolt">10</cn>\n'\
+                '        </apply>\n'\
+                '      </apply>\n'\
+                '      <apply><minus/>\n'\
+                '        <apply><exp/>\n'\
+                '          <apply><divide/>\n'\
+                '            <apply><plus/>\n'\
+                '              <ci>V</ci>\n'\
+                '              <cn cellml:units="millivolt">10</cn>\n'\
+                '            </apply>\n'\
+                '            <cn cellml:units="millivolt">10</cn>\n'\
+                '          </apply>\n'\
+                '        </apply>\n'\
+                '        <cn cellml:units="dimensionless">1</cn>\n'\
+                '      </apply>\n'\
+                '    </apply>\n'\
+                '  </apply>\n'
 
-.. container:: dothis
-
-    **4.a** Create an encapsulation hierarchy for our three components.  In
-    this tutorial, we need an arrangement such that:
-
-    - the "environment" component stands alone as a child of the model.  We don't
-      need to change anything there.
-    - the "nGate" should exist entirely inside the
-      "potassiumChannel" gate.  This hierarchy is created by adding the
-      "nGate" component into the "potassiumChannel" component,
-      *instead* of adding it to the model.  Because an item can only have one
-      parent, we can remove the gate component from the model (we added it in step
-      3.c) simply by adding it to the channel component now.  It will have its
-      parent updated, and the model's children will be updated too.
-
-.. code-block:: python
-
-    potassiumChannel->addComponent(nGate);
-
-.. container:: dothis
-
-    **4.b** Print the model to the screen to check your component hierarchy.
-    It should contain the section below where a *child component* is listed.
-
-.. code-block:: console
-
-     ...
-        Component[0] has 1 child components:
-            Component[0] has name: 'nGate'
-            Component[0] has 5 variables:
-            Variable[0] has name: 'V'
-            Variable[0] has units: 'millivolt'
-            Variable[1] has name: 't'
-            Variable[1] has units: 'millisecond'
-            Variable[2] has name: 'alpha_n'
-            Variable[2] has units: 'per_millisecond'
-            Variable[3] has name: 'beta_n'
-            Variable[3] has units: 'per_millisecond'
-            Variable[4] has name: 'n'
-            Variable[4] has units: 'dimensionless'
-     ...
-
-
-After defining how the components are arranged, we need to define which
-variables can access each other, and how.  This is done by making variables
-in different components *equivalent* to one another:
-
-.. code-block:: python
-
-    # Making the first_variable and second_variable equivalent to each other
-    libcellml.Variable.addEquivalence(first_variable, second_variable)
-
-In our model we have defined an "environment" component which we'll use to
-control all of the independent variables (time, voltage) during the simulation
-process.
-
-.. container:: dothis
-
-    **4.c** Use the addEquivalence functionality to match the time and voltage
-    variables in the "environment" component with those in the other two.  You
-    will need to retrieve the variables from their components using their
-    names, as they don't exist in the general scope of the code:
-
-.. code-block:: python
-
-    # Retrieving the pointers to the variables via their names and adding an equivalence
-    libcellml.Variable.addEquivalence(environment.variable("t"), potassiumChannel.variable("t"));
-    libcellml.Variable.addEquivalence(environment.variable("t"), nGate.variable("t"));
-
-.. container:: dothis
-
-    **4.d** Validate your model and print the errors to the terminal using the
-    :code:`print_errors_to_terminal` function.  You should see an error
-    similar to the one below.
+            equation3 = \
+                '  <apply><eq/>\n'\
+                '    <ci>beta_n</ci>\n'\
+                '    <apply><times/>\n'\
+                '      <cn cellml:units="per_millisecond">0.125</cn>\n'\
+                '      <apply><exp/>\n'\
+                '        <apply><divide/>\n'\
+                '          <ci>V</ci>\n'\
+                '          <cn cellml:units="millivolt">80</cn>\n'\
+                '        </apply>\n'\
+                '      </apply>\n'\
+                '    </apply>\n'\
+                '  </apply>\n'
 
 .. code-block:: console
 
-    **TODO** ?? put error here when the validation is working ??
+    The validator has found 13 errors!
+        Validator error[0]:
+            Description: MathML ci element has the child text 't' which does not correspond
+            with any variable names present in component 'nGate'.
 
-There are some restrictions on which variables can be matched like this.
-Variables can only be made equivalent if they are in *neighbouring* components;
-that is, a direct parent, direct child, or sibling component (one with the same
-parent).   We can add these two variables into the "potassiumChannel" component
-as they are *sibling* components (their parent is the model):
+        ...
+
+        Validator error[7]:
+            Description: Math has a cn element with a cellml:units attribute
+            'per_millivolt_millisecond' that is not a valid reference to units in the model
+            'Tutorial6_PotassiumChannelModel' or a standard unit.
+
+.. container:: dothis
+
+    **2.c** Add the missing variables to the n-gate component, and specify their units.
+    Validate your model again, this time expecting only errors relating to units.
+
+.. code-block:: console
+
+    The validator has found 4 errors!
+    Validator error[0]:
+        Description: Variable 'alpha_n' in component 'nGate' has a units reference
+        'per_millisecond' which is neither standard nor defined in the parent model.
+        See section 11.1.1.2 in the CellML specification.
+    ...
+
+.. container:: dothis
+
+    **2.d** Create the missing units and add them to the model.
+    Link the units of the model again, and recheck using the validator.
+    Expect the model to be free of errors.
+
+Step 3: Load the controller components
+======================================
+We introduce the idea of controller and initialisation components here to support the idea that the model (that is, the mathematics) is distinct from its parameters (that is, the numerical values of the variables).
+It's a common modelling practice to need to run the same model (mathematics) using different parameters or initial conditions.
+If the numerical values of those parameters and initial conditions are buried inside nested components deep in the encapsulation structure, then it becomes difficult to change them easily.
+In this tutorial we parse and read an external model which contains a controller (for the time and voltage variables) and initialising components (for constant parameters in the potassium channel and n-gate components).
+In :ref:`Tutorial 7<tutorial7_py>` we will use the :code:`import` functionality for the same purpose.
+
+.. container:: dothis
+
+    **3.a** Create a parser and use it to read the contents of the :code:`resources/tutorial6_controller.cellml` file into a temporary model.
+
+.. container:: dothis
+
+    **3.b** From the parsed model, retrieve the component named "controller" and add it to your model (that is, at the top level of the encapuslation hierarchy).
+    Remember that you will need to use the :code:`removeParent()` function to detach it from the parsed model before adding.
+
+.. container:: dothis
+
+    **3.c** Repeat the process to retieve the component named "parameters" and add this at the top level of the model.
+
+At this stage, you should have an arrangement like that shown below.
+
+.. code::
+
+    ─ model:
+        ├─ component: controller
+        ├─ component: parameters
+        └─ component: potassium channel
+            └─ component: n-gate
+
+.. container:: dothis
+
+    **3.d** Print the model to the screen to check that your component hierarchy matches what is shown above.
+    Next, check the contents of the components that you have imported:
+    - You should see that the controller component contains some mathematics for the voltage step function that we'll use to trigger the channel response.
+    - The other component contains no maths, and is only there to give values to constants or initial values to variables.
+
+.. container:: nb
+
+    We demonstrate parsing external components here, and in the next tutorial will show importing them instead.
+    The biggest difference between the two methods is that parsing reads *only* the component items and its children, whereas importing will *also* read any units that might be required.
+    It is not visible in this example, but the distinction will become clear in the next tutorial.
+
+.. container:: dothis
+
+    **3.e** Link the model's units and revalidate.
+    There should be no errors now.
+
+Step 4: Connect the components together
+=======================================
+In order for components to be able to relate to one another, we have to define two things.
+Firstly, the hierarchy in which they exist - this is called the *encapsulation* and determines which components are able to access others.
+Each component is only visible to its direct parents, direct children, and siblings (those which share a direct parent).
+Secondly, we need to define the way in which the varaibles within the component relate to those outside it.
+This is done by creating *equivalent variables*.
+
+We have already defined the encapsulation hierarchy by setting our components to be nested within other components in steps 2.a and 3.b-d.
+We now need to define which variables can access each other, and how.
+This is done by making variables in different components *equivalent* to one another:
+
+.. code-block:: py
+
+    # Making the firstVariable and secondVariable equivalent to each other
+    Variable.addEquivalence(firstVariable, secondVariable)
+
+In our model we have defined a controller component which is used to control all of the independent variables (time, voltage) during the simulation process.
+
+.. container:: dothis
+
+    **4.a** Use the addEquivalence functionality to match the time and voltage variables in the "controller" component with those in the other two.
+    Note that if you have used the :code:`if True:` idiom to denote a limited scope for your variable definitions earlier, you will need to retrieve the variables from their components using their names, as they don't exist in the general scope of the code:
+
+.. code-block:: cpp
+
+    # Retrieve the pointers to the variables via their names and add an equivalence:
+    Variable.addEquivalence(controller->variable("t"), nGate->variable("t"))
+
+.. container:: dothis
+
+    **4.b** Validate your model and print the errors to the terminal.
+    You should see errors related to missing specification of interface types, and - if you followed the example above - also about invalid connections between the n-gate component and the controller and parameters components.
+
+.. code-block:: console
+
+    The validator has found 8 errors!
+      ...
+      Validator error[5]:
+        Description: The equivalence between 't' in component 'nGate' and 't' in component 'controller' is invalid.
+        Component 'nGate' and 'controller' are neither siblings nor in a parent/child relationship.
+
+There are some restrictions on which variables can be connected.
+Variables can only be made equivalent if they are in neighbouring components; that is, a direct parent, direct child, or sibling component (one with the same parent).
+We can add these two variables into the potassium channel component as they are *sibling* components (their parent is the model):
 
 .. code-block:: python
 
-    libcellml.Variable.addEquivalence(time_in_environment, time_in_channel)
+    # Valid: the potassiumChannel and nGate are parent and child:
+    Variable.addEquivalence(potassiumChannel.variable("t"), nGate.variable("t"))
+
+    # Valid: the controller and potassiumChannel are siblings:
+    Variable.addEquivalence(controller.variable("t"), potassiumChannel.variable("t"))
 
 ... but we *cannot* make an equivalence between the :code:`t` variable in the
-:code:`environment` component and the :code:`t` variable in the :code:`nGate`
-component, because that relationship is too distant.  Instead, we need to use
-the :code:`potassiumChannel` component as a go-between: it is a sibling of the
-:code:`environment` as well as a direct parent of the :code:`nGate`.
+:code:`controller` component and the :code:`t` variable in the :code:`nGate` component, because that relationship is too distant.
+Instead, we need to use the :code:`potassiumChannel` component as a go-between: it is a sibling of the :code:`controller` as well as a direct parent of the :code:`nGate`.
 
 .. container:: dothis
 
-    **4.e** Alter the equivalence arrangement you created in step 4.d so that
-    the neighbouring component rule is followed.  You will need to do this for
-    the variables representing time :math:`t` and voltage :math:`V` between all
-    three components, and the gating variable :math:`n` between the :code:`nGate`
-    and :code:`potassiumChannel` components.  Validate your model again.  You
-    should see a validation message similar to that shown below.
+    **4.c** Alter the equivalence arrangement you created in step 4.c so that the neighbouring component rule is followed.
+    You will need to do this for the variables representing time :math:`t` and voltage :math:`V` between all components, and for the variable representing :math:`n` between the n-gate and parameters components.
+    Validate your model again.
+    You should now see validation messages only related to interfaces, as shown below.
 
 .. code-block:: console
 
-    **TODO Put error messages here when they're working**
+    Validator error[0]:
+      Description: Variable 'E_K' in component 'potassiumChannel' has no
+      interface type set. The interface type required is 'private'.
+      ...
+    Validator error[2]:
+      Description: Variable 'V' in component 'potassiumChannel' has no
+      interface type set. The interface type required is 'public'.
+      ...
+    Validator error[5]:
+      Description: Variable 'n' in component 'nGate' has no interface type set.
+      The interface type required is 'public_and_private'.
 
-The errors above are caused by the need to specify explicitly the kind of
-equivalence relationship which is allowed for each variable.  The default
-is :code:`none`, which prevents any equivalent connections, hence the error
-above.
+The errors above are caused by the need to specify explicitly the kind of equivalence relationship which is allowed for each variable.
+The default is :code:`none`, which prevents any equivalent connections, hence the errors above.
 
-Here's how to think about equivalent variable interface types.  Imagine a
-family of components such that the mother has two children.  The interface
-types between the variables in these components needs to be specified as
-follows:
+Here's how to think about equivalent variable interface types.
+Imagine a family of components such that the mother has two children.
+The interface types between the variables in these components needs to be specified as follows:
 
-- Between the siblings, the :code:`public` interface type.  Siblings know
-  everything about each other.
-- Between the children and their mother, the :code:`public` interface for
-  the children, but the :code:`private` interface for the mother.  Parents
-  can know everything about their children, but children do not know everything
-  about their parents.
-- A third option is included to enable more than one kind of relationship
-  to a variable, the :code:`public_and_private` type.  This is used where
-  successive generations mean that a variable needs to be :code:`private` in
-  one relationship and :code:`public` in another.  An uncle (the mother's
-  brother) and the mother have a sibling-type (ie: :code:`public`) interface,
-  but the mother must keep a :code:`private` interface for her children too.
+- Between the siblings, the :code:`public` interface type.
+  Siblings know everything about each other.
+- Between the children and their mother, the :code:`public` interface for the children, but the :code:`private` interface for the mother.
+  Parents can know everything about their children, but children do not know everything about their parents.
+- A third option is included to enable more than one kind of relationship to a variable, the :code:`public_and_private` type.
+  This is used where successive generations mean that a variable needs to be :code:`private` in one relationship and :code:`public` in another.
+  An uncle (the mother's brother) and the mother have a sibling-type (ie: :code:`public`) interface, but the mother must keep a :code:`private` interface for her children too.
 
 .. container:: dothis
 
-    **4.f**  Use the :code:`setInterfaceType` function for each of the shared
-    variables to specify their avaiable interfaces.  Re-validate your model and
-    confirm that it is now free of errors.
+    **4.d** Use the :code:`setInterfaceType` function for each of the shared variables to specify their avaiable interfaces using the recommendation from the error messages.
 
-5: Define the driving function
+.. container:: dothis
+
+    **4.e** Re-validate your model and confirm that it is now free of errors.
+
+Step 5: Generate and output the model
+=====================================
+
+As you have done previously in :ref:`Tutorial 3<tutorial3_py>` and :ref:`Tutorial 5<tutorial5_py>`, it's now time to use the :code:`Generator` functionality to create a runnable version of your model.
+
+.. container:: dothis
+
+    **5.a** Create a :code:`Generator` instance and pass it the model for processing.
+    Because we have used an equivalent variable relationship to initialise sets of equivalent variables, we should not see any errors relating to un-initialised or un-computed variables.
+    Use the :code:`print_errors_to_terminal()` function with your generator as an argument, and confirm that there are no errors.
+
+.. container:: dothis
+
+    **5.b** Create a :code:`Printer` instance and use it to serialise the model.
+    Write you serialised model to a :code:`*.cellml` file.
+
+.. container:: dothis
+
+    **5.c** Now we'll use the generator to create its default C code.
+    Retrieve and write the interface code to a :code:`*.h` file.
+
+.. container:: dothis
+
+    **5.d** Retrieve and write the implementation code to a :code:`*.c` file.
+
+.. container:: dothis
+
+    **5.e** Change the generator's profile to Python and reprocess the model.
+
+.. container:: dothis
+
+    **5.f** Retrieve and write the implementation code to a :code:`*.py` file.
+
+In the next section we'll run the simulation and look at the results.
+
+Step 6: Running the simulation
 ==============================
-In order to give the simulation something to actually simulate, we need to add
-a driving function as an input.  This simulation replicates a voltage clamp
-experiment wherein the input voltage is given a square wave and the current
-response measured, so we need to define the voltage in the
-:code:`environment` component as a function of time.  (At this stage we'll use
-the MathML markup as in previous tutorials, but in a future tutorial we'll
-introduce the idea of Resets items as an alternative approach.)  The MathML
-below shows how piecewise functions can be used to return the absolute value of
-a given :math:`x` variable. The :code:`<otherwise>` statement is there as a
-default, and can apply to more than one section of the axis.
+Following the same approach as you've used in :ref:`Tutorial 4<tutorial4_py>` and :ref:`Tutorial 5<tutorial5_py>` it's now time to use the simple solver to run your simulation.
 
-.. code-block:: xml
+At this stage you should have some new files created:
 
-    <piecewise>
-        <piece>
-            <apply><minus/><ci>x</ci></apply>
-            <apply><lt/><ci>x</ci><cn>0</cn></apply>
-        </piece>
-        <piece>
-            <cn>0</cn>
-            <apply><eq/><ci>x</ci><cn>0</cn></apply>
-        </piece>
-        <otherwise>
-            <ci>x</ci>
-        </otherwise>
-    </piecewise>
+- The CellML file of your model (this will be used in later tutorials as you work toward building the whole Hodgkin-Huxley model);
+- The generated file for the Python profile; and
+- the generated files for the C profile, the header and source files.
+
+These last three files can be used in conjuction with a simple solver to model the behaviour of the potassium channel.
+Because this tutorial is in Python we give instructions for the Python solver.
+For the C++ solver please see :ref:`the C++ Tutorial 6 instructions<tutorial6_cpp>` or :ref:`the general solver instructions<solver>`.
 
 .. container:: dothis
 
-    **5.a** Create a MathML string representing a step change such that the
-    voltage variable is set to -85 millivolts between times of 5 and 15
-    milliseconds, and 0 otherwise.  Remember that you will need to specify both
-    the units as well as their namespace in each constant
-    :code:`<cn cellml:units="yourUnitsHere">`, and to specify the CellML
-    namespace itself in the maths header:
+    **6.a** Navigate to the :code:`tutorials/solver` directory.
 
-.. code-block:: xml
+.. code-block:: console
 
-    <math xmlns="http://www.w3.org/1998/Math/MathML"
-          xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+  cd ../solver
 
 .. container:: dothis
 
-    **5.b** Use the :code:`setMath` function to add your MathML string from
-    5.a to the :code:`environment` component.
+    **6.b**  Run the :code:`simpleSolver.py` script:.  To do this you'll need to enter:
+
+        - :code:`-m` the path to the generated file to run, relative to the solver directory;
+        - :code:`-dt` the step size for the integration variable to take; and
+        - :code:`-n` the total number of steps to take.
+
+.. code-block:: console
+
+    python3 simplesolver.py -m path_and_filename_to_run -n number_of_steps -dt step_size
+
+  .. code-block:: console
+
+    python3 simplesolver.py -m ../tutorial6/tutorial6_PotassiumChannelModel.py -n 4000 -dt 0.01
+
+The parameters read from the file, along with your command line arguments are printed to the terminal for checking, and the results of the simulation written to a tab-delimited file with the extension :code:`_solution.txt` after your base file name.
+Plotting these results will give you behaviour as shown below.
+
+.. figure:: /tutorials/images/tutorial6_voltage.png
+   :name: tutorial6_voltage
+   :alt: voltage step input
+   :align: center
+
+   Voltage clamp stimulus (:code:`V` versus :code:`t`).
+
+
+.. figure:: /tutorials/images/tutorial6_ngate.png
+   :name: tutorial6_ngate
+   :alt: n-gate dynamics
+   :align: center
+
+   n-gate dynamics in response to voltage clamp stimulus (:code:`n` versus :code:`t`).
+
+
+.. figure:: /tutorials/images/tutorial6_K_conductance.png
+   :name: tutorial6_K_conductance
+   :alt: Potassium channel conductance
+   :align: center
+
+   Potassium channel conductance (:code:`g_K` versus :code:`t`).
+
+
+.. figure:: /tutorials/images/tutorial6_current.png
+   :name: tutorial6_current
+   :alt: Potassium channel current
+   :align: center
+
+   Potassium channel current (:code:`i_K` versus :code:`t`).
+
 
 .. container:: dothis
 
-    **5.c** Call the validator to check that your model is free of errors.
-
-6: Serialise and print the model
-================================
-
-.. container:: dothis
-
-    **6.a** As in :ref:`Tutorial 1<tutorial1_py>`, use the :code:`Printer` module
-    to serialise the model, and then write it to a file.
-
-.. container:: dothis
-
-    **6.b** Go and have a cuppa, you're done!
+    **6.c** Go and have a cuppa, you're done!
