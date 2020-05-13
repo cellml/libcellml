@@ -127,7 +127,8 @@ struct GeneratorInternalVariable
 
     explicit GeneratorInternalVariable(const VariablePtr &variable);
 
-    void setVariable(const VariablePtr &variable);
+    void setVariable(const VariablePtr &variable,
+                     bool checkInitialValue = true);
 
     void makeVoi();
     void makeState();
@@ -140,9 +141,10 @@ GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable
     setVariable(variable);
 }
 
-void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
+void GeneratorInternalVariable::setVariable(const VariablePtr &variable,
+                                            bool checkInitialValue)
 {
-    if (!variable->initialValue().empty()) {
+    if (checkInitialValue && !variable->initialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
         // a state. By default, we consider it to be a constant and, if we find
         // an ODE for that variable, we will know that it was actually a state.
@@ -499,18 +501,26 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
 
-    // If there is one (ODE) variable left then update its component (to be sure
-    // that it's the same as the one in which the equation is), its type (if it
-    // is currently unknown), determine its index and determine the type of our
-    // equation and set its order, if the (ODE) variable is a state, computed
-    // constant or algebraic variable.
+    // If there is one (ODE) variable left then update its viariable (to be the
+    // corresponding one in the component in which the equation is), its type
+    // (if it is currently unknown), determine its index and determine the type
+    // of our equation and set its order, if the (ODE) variable is a state,
+    // computed constant or algebraic variable.
 
     bool relevantCheck = false;
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
-        variable->mComponent = mComponent;
+        for (size_t i = 0; i < mComponent->variableCount(); ++i) {
+            VariablePtr localVariable = mComponent->variable(i);
+
+            if (sameOrEquivalentVariable(variable->mVariable, localVariable)) {
+                variable->setVariable(localVariable, false);
+
+                break;
+            }
+        }
 
         if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
