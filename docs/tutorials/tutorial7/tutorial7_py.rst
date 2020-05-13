@@ -1,8 +1,8 @@
 .. _tutorial7_py:
 
-===========================================
+==============================================
 Tutorial 7 Python: Creating the sodium channel
-===========================================
+==============================================
 
 The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>` page.
 These are the Python instructions.
