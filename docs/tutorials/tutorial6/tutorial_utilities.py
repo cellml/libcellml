@@ -81,9 +81,11 @@ def print_errors_to_terminal(item):
             validation_error = item.error(e)
             specification = validation_error.referenceHeading()
             print("  Validator error[{e}]:".format(e=e))
-            print("    Description: {d}".format(d=validation_error.description()))
+            print("    Description: {d}".format(
+                d=validation_error.description()))
             if specification != "":
-                print("    See section {s} in the CellML specification.".format(s=specification))
+                print("    See section {s} in the CellML specification.".format(
+                    s=specification))
     print()
 
 
@@ -128,7 +130,8 @@ def insert_into_mathml_string(maths, add_me):
 def print_encapsulation_structure_to_terminal(model):
     # Prints the encapsulation structure of the model to the terminal
     spacer = "  - "
-    print("Model '{m}' has {c} components".format(m=model.name(), c=model.componentCount()))
+    print("Model '{m}' has {c} components".format(
+        m=model.name(), c=model.componentCount()))
 
     for c in range(0, model.componentCount()):
         child_component = model.component(c)
