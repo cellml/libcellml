@@ -641,7 +641,7 @@ struct Generator::GeneratorImpl
 
     void addOriginCommentCode(std::string &code);
 
-    void addInterfaceHeaderCode(std::string &code);
+    void addInterfaceHeaderCode(std::string &code) const;
     void addImplementationHeaderCode(std::string &code);
 
     void addVersionAndLibcellmlVersionCode(std::string &code,
@@ -650,7 +650,7 @@ struct Generator::GeneratorImpl
     void addStateAndVariableCountCode(std::string &code,
                                       bool interface = false);
 
-    void addVariableTypeObjectCode(std::string &code);
+    void addVariableTypeObjectCode(std::string &code) const;
 
     std::string generateVariableInfoObjectCode(const std::string &objectString);
 
@@ -661,20 +661,20 @@ struct Generator::GeneratorImpl
                                               const std::string &units,
                                               const std::string &component);
 
-    void addInterfaceVoiStateAndVariableInfoCode(std::string &code);
+    void addInterfaceVoiStateAndVariableInfoCode(std::string &code) const;
     void addImplementationVoiInfoCode(std::string &code);
     void addImplementationStateInfoCode(std::string &code);
     void addImplementationVariableInfoCode(std::string &code);
 
-    void addArithmeticFunctionsCode(std::string &code);
-    void addTrigonometricFunctionsCode(std::string &code);
+    void addArithmeticFunctionsCode(std::string &code) const;
+    void addTrigonometricFunctionsCode(std::string &code) const;
 
-    void addInterfaceCreateDeleteArrayMethodsCode(std::string &code);
-    void addImplementationCreateStatesArrayMethodCode(std::string &code);
-    void addImplementationCreateVariablesArrayMethodCode(std::string &code);
-    void addImplementationDeleteArrayMethodCode(std::string &code);
+    void addInterfaceCreateDeleteArrayMethodsCode(std::string &code) const;
+    void addImplementationCreateStatesArrayMethodCode(std::string &code) const;
+    void addImplementationCreateVariablesArrayMethodCode(std::string &code) const;
+    void addImplementationDeleteArrayMethodCode(std::string &code) const;
 
-    std::string generateMethodBodyCode(const std::string &methodBody);
+    std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleCode(const std::string &value);
     std::string generateVariableNameCode(const VariablePtr &variable,
@@ -697,7 +697,7 @@ struct Generator::GeneratorImpl
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
-    void addInterfaceComputeModelMethodsCode(std::string &code);
+    void addInterfaceComputeModelMethodsCode(std::string &code) const;
     void addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
                                                                  std::vector<GeneratorEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::string &code,
@@ -1987,7 +1987,7 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addInterfaceHeaderCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceHeaderCode(std::string &code) const
 {
     if (!mProfile->interfaceHeaderString().empty()) {
         if (!code.empty()) {
@@ -2073,7 +2073,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
     code += stateAndVariableCountCode;
 }
 
-void Generator::GeneratorImpl::addVariableTypeObjectCode(std::string &code)
+void Generator::GeneratorImpl::addVariableTypeObjectCode(std::string &code) const
 {
     if (!mProfile->variableTypeObjectString().empty()) {
         if (!code.empty()) {
@@ -2140,7 +2140,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                    "<COMPONENT>", component);
 }
 
-void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode(std::string &code) const
 {
     std::string interfaceVoiStateAndVariableInfoCode;
 
@@ -2257,7 +2257,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
     }
 }
 
-void Generator::GeneratorImpl::addArithmeticFunctionsCode(std::string &code)
+void Generator::GeneratorImpl::addArithmeticFunctionsCode(std::string &code) const
 {
     if (mNeedEq && !mProfile->hasEqOperator()
         && !mProfile->eqFunctionString().empty()) {
@@ -2368,7 +2368,7 @@ void Generator::GeneratorImpl::addArithmeticFunctionsCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addTrigonometricFunctionsCode(std::string &code)
+void Generator::GeneratorImpl::addTrigonometricFunctionsCode(std::string &code) const
 {
     if (mNeedSec
         && !mProfile->secFunctionString().empty()) {
@@ -2479,7 +2479,7 @@ void Generator::GeneratorImpl::addTrigonometricFunctionsCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::string &code) const
 {
     std::string interfaceCreateDeleteArraysCode;
 
@@ -2502,7 +2502,7 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::str
     code += interfaceCreateDeleteArraysCode;
 }
 
-void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(std::string &code) const
 {
     if (!mProfile->implementationCreateStatesArrayMethodString().empty()) {
         if (!code.empty()) {
@@ -2513,7 +2513,7 @@ void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(std:
     }
 }
 
-void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode(std::string &code) const
 {
     if (!mProfile->implementationCreateVariablesArrayMethodString().empty()) {
         if (!code.empty()) {
@@ -2524,7 +2524,7 @@ void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode(s
     }
 }
 
-void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode(std::string &code) const
 {
     if (!mProfile->implementationDeleteArrayMethodString().empty()) {
         if (!code.empty()) {
@@ -2535,7 +2535,7 @@ void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode(std::strin
     }
 }
 
-std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody)
+std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody) const
 {
     return methodBody.empty() ?
                mProfile->emptyMethodString().empty() ?
@@ -3327,7 +3327,8 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
 
     return res;
 }
-void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &code)
+
+void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &code) const
 {
     std::string interfaceComputeModelMethodsCode;
 
