@@ -20,12 +20,12 @@ const VariableInfo STATE_INFO[] = {
 const VariableInfoWithType VARIABLE_INFO[] = {
     {"C", "dimensionless", "main", CONSTANT},
     {"deriv_approx_initial_value", "dimensionless", "main", CONSTANT},
+    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
     {"k2_oPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"k2Pi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_2", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
     {"kPi_32", "dimensionless", "parabolic_approx_sin", COMPUTED_CONSTANT},
-    {"sin", "dimensionless", "actual_sin", ALGEBRAIC},
     {"z", "dimensionless", "parabolic_approx_sin", ALGEBRAIC},
     {"sin", "dimensionless", "parabolic_approx_sin", ALGEBRAIC}
 };
