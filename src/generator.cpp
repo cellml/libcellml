@@ -136,15 +136,12 @@ struct GeneratorInternalVariable
 using GeneratorInternalVariablePtr = std::shared_ptr<GeneratorInternalVariable>;
 
 GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable)
-    : mComponent(std::dynamic_pointer_cast<Component>(variable->parent()))
 {
     setVariable(variable);
 }
 
 void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
 {
-    mVariable = variable;
-
     if (!variable->initialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
         // a state. By default, we consider it to be a constant and, if we find
@@ -152,6 +149,9 @@ void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
 
         mType = Type::CONSTANT;
     }
+
+    mVariable = variable;
+    mComponent = std::dynamic_pointer_cast<Component>(variable->parent());
 }
 
 void GeneratorInternalVariable::makeVoi()
@@ -1213,7 +1213,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
             ModelPtr model = owningModel(component);
-            ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
+            ComponentPtr trackedVariableComponent = generatorVariable->mComponent;
             ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
             IssuePtr issue = Issue::create();
 
@@ -1356,21 +1356,11 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                                       const GeneratorInternalVariablePtr &variable2)
 {
-    // TODO: we can't currently instatiate imports, which means that we can't
-    //       have variables in different models. This also means that we can't
-    //       have code to check for the name of a model since this would fail
-    //       coverage test. So, once we can instantiate imports, we will need to
-    //       account for the name of a model.
-    VariablePtr realVariable1 = variable1->mVariable;
-    VariablePtr realVariable2 = variable2->mVariable;
-    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(realVariable1->parent());
-    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(realVariable2->parent());
-
-    if (realComponent1->name() == realComponent2->name()) {
-        return realVariable1->name() < realVariable2->name();
+    if (variable1->mComponent->name() == variable2->mComponent->name()) {
+        return variable1->mVariable->name() < variable2->mVariable->name();
     }
 
-    return realComponent1->name() < realComponent2->name();
+    return variable1->mComponent->name() < variable2->mComponent->name();
 }
 
 bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
@@ -1502,11 +1492,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             if (!issueType.empty()) {
                 IssuePtr issue = Issue::create();
-                VariablePtr realVariable = internalVariable->mVariable;
-                ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
+                ComponentPtr realComponent = internalVariable->mComponent;
                 ModelPtr realModel = owningModel(realComponent);
 
-                issue->setDescription("Variable '" + realVariable->name()
+                issue->setDescription("Variable '" + internalVariable->mVariable->name()
                                       + "' in component '" + realComponent->name()
                                       + "' of model '" + realModel->name() + "' " + issueType + ".");
                 issue->setCause(Issue::Cause::GENERATOR);
