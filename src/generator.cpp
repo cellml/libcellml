@@ -120,6 +120,8 @@ struct GeneratorInternalVariable
     size_t mIndex = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
+    VariablePtr mInitialValueVariable;
+
     VariablePtr mVariable;
     ComponentPtr mComponent;
 
@@ -150,6 +152,8 @@ void GeneratorInternalVariable::setVariable(const VariablePtr &variable,
         // an ODE for that variable, we will know that it was actually a state.
 
         mType = Type::CONSTANT;
+
+        mInitialValueVariable = variable;
     }
 
     mVariable = variable;
@@ -3296,7 +3300,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
-    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mInitialValueVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
