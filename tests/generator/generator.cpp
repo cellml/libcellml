@@ -1136,6 +1136,48 @@ TEST(Generator, nobleModel1962)
     EXPECT_EQ(fileContents("generator/noble_model_1962/model.py"), generator->implementationCode());
 }
 
+TEST(Generator, sineImports)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("sine_approximations_import.xml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    model->resolveImports(resourcePath());
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    generator->processModel(model);
+
+    EXPECT_EQ(size_t(0), generator->issueCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator->modelType());
+
+    EXPECT_EQ(size_t(1), generator->stateCount());
+    EXPECT_EQ(size_t(10), generator->variableCount());
+
+    EXPECT_NE(nullptr, generator->voi());
+    EXPECT_NE(nullptr, generator->state(0));
+    EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
+    EXPECT_NE(nullptr, generator->variable(0));
+    EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+
+    EXPECT_EQ(fileContents("generator/sine_model_imports/model.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/sine_model_imports/model.c"), generator->implementationCode());
+
+    libcellml::GeneratorProfilePtr profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/sine_model_imports/model.py"), generator->implementationCode());
+}
+
 TEST(Generator, coverage)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
