@@ -451,7 +451,7 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     }
 
     // Determine, from the (new) known (ODE) variables, whether the equation is
-    // truly constant or variable-based constant.
+    // truly a constant or a variable-based constant.
 
     mComputedTrueConstant = mComputedTrueConstant
                             && !containsNonUnknownVariables(mVariables)
