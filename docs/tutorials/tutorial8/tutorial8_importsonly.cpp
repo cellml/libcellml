@@ -338,7 +338,9 @@ int main()
     assert(libcellml::Variable::addEquivalence(membrane->variable("i_L"), leakage->variable("i_L")));
 
     //  6.b Serialise and write the model to a CellML file.  In the steps below the model will
-    //      be flattened for code generation, but it's good to keep an unflattened copy too.
+    //      be flattened for code generation, but it's good to keep an unflattened copy too because this
+    //      unflattened copy allows for easy changes to the controller and parameters components, simply
+    //      by providing different files to read from.
     auto printer = libcellml::Printer::create();
     std::ofstream outFile("tutorial8_HodgkinHuxleyModel.cellml");
     outFile << printer->printModel(model);

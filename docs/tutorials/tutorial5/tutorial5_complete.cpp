@@ -234,11 +234,11 @@ int main()
     //      file contents), whereas for Python you need only output the
     //      implementationCode.  Write the file(s).
 
-    std::ofstream outFile("tutorial5_IonChannelModel_generated.h");
+    std::ofstream outFile("tutorial5_IonChannelModel.h");
     outFile << generator->interfaceCode();
     outFile.close();
 
-    outFile.open("tutorial5_IonChannelModel_generated.c");
+    outFile.open("tutorial5_IonChannelModel.c");
     outFile << generator->implementationCode();
     outFile.close();
 
@@ -250,12 +250,12 @@ int main()
     generator->processModel(model);
 
     //  6.c Write the Python implementation code to a file.
-    outFile.open("tutorial5_IonChannelModel_generated.py");
+    outFile.open("tutorial5_IonChannelModel.py");
     outFile << generator->implementationCode();
     outFile.close();
 
     std::cout << "The generated '" << model->name()
-              << "' model has been writen to: tutorial5_IonChannelModel_generated.[c,h,py]" << std::endl;
+              << "' model has been writen to: tutorial5_IonChannelModel.[c,h,py]" << std::endl;
 
     //  6.d Create a Printer item and submit your model for serialisation.
     libcellml::PrinterPtr printer = libcellml::Printer::create();
