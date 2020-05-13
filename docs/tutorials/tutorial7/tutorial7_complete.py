@@ -12,7 +12,7 @@
       - Model generation and simulation (Tutorial 3, 4).
 '''
 
-from libcellml import Component, Generator, GeneratorProfile, Model, Printer, Units, Validator, Variable
+from libcellml import Component, Generator, GeneratorProfile, ImportSource, Model, Printer, Units, Validator, Variable
 
 from tutorial_utilities import print_errors_to_terminal
 
@@ -243,45 +243,50 @@ if __name__ == '__main__":
     #      Add the variables that are needed.
     validator.validateModel(model)
     print_errors_to_terminal(validator)
-    {
+    if True:
+        V = Variable()
         V.setName("V")
         V.setUnits("mV")
         mGate.addVariable(V)
 
+        t = Variable()
         t.setName("t")
         t.setUnits("ms")
         mGate.addVariable(t)
 
+        alpha_m = Variable()
         alpha_m.setName("alpha_m")
         alpha_m.setUnits("per_ms")
         mGate.addVariable(alpha_m)
 
+        beta_m = Variable()
         beta_m.setName("beta_m")
         beta_m.setUnits("per_ms")
         mGate.addVariable(beta_m)
 
+        m = Variable()
         m.setName("m")
         m.setUnits("dimensionless")
         mGate.addVariable(m)
-    }
 
     #  2.d Call the validator to check the model - expect errors related to
     #      units missing from the model. Add the units that are required.
     validator.validateModel(model)
     print_errors_to_terminal(validator)
 
+    per_mV_ms = Units()
     per_mV_ms.setName("per_mV_ms")
     per_mV_ms.addUnit("second", 'milli", -1)
     per_mV_ms.addUnit("volt", 'milli", -1)
     model.addUnits(per_mV_ms)
 
+    per_ms = Units()
     per_ms.setName("per_ms")
     per_ms.addUnit("second", 'milli", -1)
     model.addUnits(per_ms)
 
     #  2.e Link in the units to the model, and check that there are no more
     #      validation errors in the model.
-
     model.linkUnits()
     validator.validateModel(model)
     print_errors_to_terminal(validator)
@@ -315,7 +320,7 @@ if __name__ == '__main__":
             '        </apply>\n'\
             '      </apply>\n'\
             '    </apply>\n'\
-            '  </apply>\n'\
+            '  </apply>\n'
 
         equation2 =
             '  <apply><eq/>\n'\
@@ -337,7 +342,7 @@ if __name__ == '__main__":
             '        <cn cellml:units="dimensionless">1</cn>\n'\
             '      </apply>\n'\
             '    </apply>\n'\
-            '  </apply>\n'\
+            '  </apply>\n'
 
         equation3 =
             '  <apply><eq/>\n'\
@@ -360,7 +365,7 @@ if __name__ == '__main__":
             '        <ci>beta_h</ci>\n'\
             '      </apply>\n'\
             '    </apply>\n'\
-            '  </apply>\n'\
+            '  </apply>\n'
 
         hGate.setMath(mathHeader)
         hGate.appendMath(equation1)
@@ -373,22 +378,27 @@ if __name__ == '__main__":
     validator.validateModel(model)
     print_errors_to_terminal(validator)
     if True:
+        V = Variable()
         V.setName("V")
         V.setUnits("mV")
         hGate.addVariable(V)
 
+        t = Variable()
         t.setName("t")
         t.setUnits("ms")
         hGate.addVariable(t)
 
+        alpha_h = Variable()
         alpha_h.setName("alpha_h")
         alpha_h.setUnits("per_ms")
         hGate.addVariable(alpha_h)
 
+        beta_h = Variable()
         beta_h.setName("beta_h")
         beta_h.setUnits("per_ms")
         hGate.addVariable(beta_h)
 
+        h = Variable()
         h.setName("h")
         h.setUnits("dimensionless")
         hGate.addVariable(h)
@@ -510,32 +520,20 @@ if __name__ == '__main__":
     #  5.b Add the equivalences between variables throughout the model.  Recall that only variables with
     #      a sibling or parent/child relationship can be connected.
 
-    assert(Variable.addEquivalence(
-        controller.variable("t"), sodiumChannel.variable("t")))
-    assert(Variable.addEquivalence(
-        sodiumChannel.variable("t"), mGate.variable("t")))
-    assert(Variable.addEquivalence(
-        sodiumChannel.variable("t"), hGate.variable("t")))
-    assert(Variable.addEquivalence(
-        controller.variable("V"), sodiumChannel.variable("V")))
-    assert(Variable.addEquivalence(
-        sodiumChannel.variable("V"), mGate.variable("V")))
-    assert(Variable.addEquivalence(
-        sodiumChannel.variable("V"), hGate.variable("V")))
+    assert(Variable.addEquivalence(controller.variable("t"), sodiumChannel.variable("t")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("t"), mGate.variable("t")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("t"), hGate.variable("t")))
+    assert(Variable.addEquivalence(controller.variable("V"), sodiumChannel.variable("V")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("V"), mGate.variable("V")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("V"), hGate.variable("V")))
 
-    assert(Variable.addEquivalence(
-        sodiumChannel.variable("m"), parameters.variable("m")))
-    assert(Variable.addEquivalence(
-        mGate.variable("m"), sodiumChannel.variable("m")))
-    assert(Variable.addEquivalence(
-        sodiumChannel.variable("h"), parameters.variable("h")))
-    assert(Variable.addEquivalence(
-        hGate.variable("h"), sodiumChannel.variable("h")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("m"), parameters.variable("m")))
+    assert(Variable.addEquivalence(mGate.variable("m"), sodiumChannel.variable("m")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("h"), parameters.variable("h")))
+    assert(Variable.addEquivalence(hGate.variable("h"), sodiumChannel.variable("h")))
 
-    assert(Variable.addEquivalence(sodiumChannel.variable(
-        "E_Na"), parameters.variable("E_Na")))
-    assert(Variable.addEquivalence(sodiumChannel.variable(
-        "g_Na"), parameters.variable("g_Na")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("E_Na"), parameters.variable("E_Na")))
+    assert(Variable.addEquivalence(sodiumChannel.variable("g_Na"), parameters.variable("g_Na")))
 
     #  5.c Validate the model and expect messages related to unspecified interfaces.  Add these to the
     #      variables according to the recommendations.
@@ -575,7 +573,7 @@ if __name__ == '__main__":
     print_errors_to_terminal(validator)
     assert(validator.errorCount() == 0)
 
-    printer = Printer.create()
+    printer = Printer()
     write_file = open("tutorial7_SodiumChannelModel.cellml", "w")
     write_file.write(printer.printModel(model))
     write_file.close()
