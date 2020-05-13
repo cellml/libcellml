@@ -140,6 +140,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -cert-err58-cpp
       cppcoreguidelines-*
       -cppcoreguidelines-avoid-magic-numbers
+      -cppcoreguidelines-init-variables
       -cppcoreguidelines-owning-memory
       -cppcoreguidelines-pro-type-reinterpret-cast
       ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
@@ -159,6 +160,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -hicpp-special-member-functions
       ${_NO_HICPP_VARARG}
       llvm-*
+      -llvm-qualified-auto
       -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
@@ -172,6 +174,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       readability-*
       -readability-convert-member-functions-to-static
       -readability-magic-numbers
+      -readability-qualified-auto
     )
     string(REPLACE ";" ","
            _CLANG_TIDY_CHECKS "${_CLANG_TIDY_CHECKS}")
