@@ -96,7 +96,7 @@ VARIABLE_INFO = [
     {"name": "Ko", "units": "millimolar", "component": "Ionic_values", "type": VariableType.CONSTANT},
     {"name": "Nao", "units": "millimolar", "component": "Ionic_values", "type": VariableType.CONSTANT},
     {"name": "C", "units": "microF", "component": "Membrane", "type": VariableType.CONSTANT},
-    {"name": "F", "units": "coulomb_per_mole", "component": "Nai_concentration", "type": VariableType.CONSTANT},
+    {"name": "F", "units": "coulomb_per_mole", "component": "Membrane", "type": VariableType.CONSTANT},
     {"name": "R", "units": "joule_per_kilomole_kelvin", "component": "Membrane", "type": VariableType.CONSTANT},
     {"name": "T", "units": "kelvin", "component": "Membrane", "type": VariableType.CONSTANT},
     {"name": "clamp_mode", "units": "dimensionless", "component": "Membrane", "type": VariableType.CONSTANT},

@@ -120,6 +120,8 @@ struct GeneratorInternalVariable
     size_t mIndex = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
+    VariablePtr mInitialValueVariable;
+
     VariablePtr mVariable;
     ComponentPtr mComponent;
 
@@ -127,7 +129,8 @@ struct GeneratorInternalVariable
 
     explicit GeneratorInternalVariable(const VariablePtr &variable);
 
-    void setVariable(const VariablePtr &variable);
+    void setVariable(const VariablePtr &variable,
+                     bool checkInitialValue = true);
 
     void makeVoi();
     void makeState();
@@ -136,22 +139,25 @@ struct GeneratorInternalVariable
 using GeneratorInternalVariablePtr = std::shared_ptr<GeneratorInternalVariable>;
 
 GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable)
-    : mComponent(std::dynamic_pointer_cast<Component>(variable->parent()))
 {
     setVariable(variable);
 }
 
-void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
+void GeneratorInternalVariable::setVariable(const VariablePtr &variable,
+                                            bool checkInitialValue)
 {
-    mVariable = variable;
-
-    if (!variable->initialValue().empty()) {
+    if (checkInitialValue && !variable->initialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
         // a state. By default, we consider it to be a constant and, if we find
         // an ODE for that variable, we will know that it was actually a state.
 
         mType = Type::CONSTANT;
+
+        mInitialValueVariable = variable;
     }
+
+    mVariable = variable;
+    mComponent = std::dynamic_pointer_cast<Component>(variable->parent());
 }
 
 void GeneratorInternalVariable::makeVoi()
@@ -427,6 +433,15 @@ bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &ode
            || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
+bool sameOrEquivalentVariable(const VariablePtr &variable1,
+                              const VariablePtr &variable2)
+{
+    // Return whether the given variables are the same or are equivalent (be it
+    // directly or indirectly).
+
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
+}
+
 bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
                               size_t &variableIndex)
 {
@@ -451,7 +466,7 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     }
 
     // Determine, from the (new) known (ODE) variables, whether the equation is
-    // truly constant or variable-based constant.
+    // truly a constant or a variable-based constant.
 
     mComputedTrueConstant = mComputedTrueConstant
                             && !containsNonUnknownVariables(mVariables)
@@ -490,18 +505,26 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
 
-    // If there is one (ODE) variable left then update its component (to be sure
-    // that it's the same as the one in which the equation is), its type (if it
-    // is currently unknown), determine its index and determine the type of our
-    // equation and set its order, if the (ODE) variable is a state, computed
-    // constant or algebraic variable.
+    // If there is one (ODE) variable left then update its viariable (to be the
+    // corresponding one in the component in which the equation is), its type
+    // (if it is currently unknown), determine its index and determine the type
+    // of our equation and set its order, if the (ODE) variable is a state,
+    // computed constant or algebraic variable.
 
     bool relevantCheck = false;
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
-        variable->mComponent = mComponent;
+        for (size_t i = 0; i < mComponent->variableCount(); ++i) {
+            VariablePtr localVariable = mComponent->variable(i);
+
+            if (sameOrEquivalentVariable(variable->mVariable, localVariable)) {
+                variable->setVariable(localVariable, false);
+
+                break;
+            }
+        }
 
         if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
@@ -600,9 +623,6 @@ struct Generator::GeneratorImpl
 
     static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
                                            const GeneratorEquationPtr &equation2);
-
-    bool sameOrEquivalentVariable(const VariablePtr &variable1,
-                                  const VariablePtr &variable2);
 
     GeneratorVariablePtr variableFirstOccurrence(const VariablePtr &variable,
                                                  const ComponentPtr &component);
@@ -771,15 +791,6 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     mInternalVariables.push_back(internalVariable);
 
     return internalVariable;
-}
-
-bool Generator::GeneratorImpl::sameOrEquivalentVariable(const VariablePtr &variable1,
-                                                        const VariablePtr &variable2)
-{
-    // Return whether the given variables are the same or are equivalent (be it
-    // directly or indirectly).
-
-    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
 GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const VariablePtr &variable,
@@ -1213,7 +1224,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
             ModelPtr model = owningModel(component);
-            ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
+            ComponentPtr trackedVariableComponent = generatorVariable->mComponent;
             ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
             IssuePtr issue = Issue::create();
 
@@ -1356,21 +1367,11 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                                       const GeneratorInternalVariablePtr &variable2)
 {
-    // TODO: we can't currently instatiate imports, which means that we can't
-    //       have variables in different models. This also means that we can't
-    //       have code to check for the name of a model since this would fail
-    //       coverage test. So, once we can instantiate imports, we will need to
-    //       account for the name of a model.
-    VariablePtr realVariable1 = variable1->mVariable;
-    VariablePtr realVariable2 = variable2->mVariable;
-    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(realVariable1->parent());
-    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(realVariable2->parent());
-
-    if (realComponent1->name() == realComponent2->name()) {
-        return realVariable1->name() < realVariable2->name();
+    if (variable1->mComponent->name() == variable2->mComponent->name()) {
+        return variable1->mVariable->name() < variable2->mVariable->name();
     }
 
-    return realComponent1->name() < realComponent2->name();
+    return variable1->mComponent->name() < variable2->mComponent->name();
 }
 
 bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
@@ -1502,11 +1503,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             if (!issueType.empty()) {
                 IssuePtr issue = Issue::create();
-                VariablePtr realVariable = internalVariable->mVariable;
-                ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
+                ComponentPtr realComponent = internalVariable->mComponent;
                 ModelPtr realModel = owningModel(realComponent);
 
-                issue->setDescription("Variable '" + realVariable->name()
+                issue->setDescription("Variable '" + internalVariable->mVariable->name()
                                       + "' in component '" + realComponent->name()
                                       + "' of model '" + realModel->name() + "' " + issueType + ".");
                 issue->setCause(Issue::Cause::GENERATOR);
@@ -3300,7 +3300,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
-    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mInitialValueVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
