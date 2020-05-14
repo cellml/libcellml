@@ -102,7 +102,7 @@ TEST(Generator, twoVariablesOfIntegration)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
+        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be the variable of integration.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
@@ -135,9 +135,9 @@ TEST(Generator, nonFirstOrderOdes)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The differential equation for variable 'x' in component 'main' must be of the first order.",
-        "The differential equation for variable 'y' in component 'sub' must be of the first order.",
-        "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
+        "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
+        "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
+        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
@@ -172,8 +172,8 @@ TEST(Generator, undefinedVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'a' in component 'my_component' is referenced in an equation, but it is not defined anywhere.",
-        "Variable 'b' in component 'my_component' is referenced in an equation, but it is not defined anywhere.",
+        "Variable 'a' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere.",
+        "Variable 'b' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere.",
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
@@ -203,7 +203,7 @@ TEST(Generator, variableInitializedTwice)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
+        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised.",
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
@@ -299,7 +299,7 @@ TEST(Generator, nonInitializedState)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
+        "Variable 'x' in component 'my_component' of model 'non_initialized_state' is used in an ODE, but it is not initialised.",
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
@@ -329,7 +329,7 @@ TEST(Generator, underconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is not computed.",
+        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
@@ -359,7 +359,7 @@ TEST(Generator, overconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' of model 'my_model' is computed more than once.",
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
@@ -389,8 +389,8 @@ TEST(Generator, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' is not computed.",
-        "Variable 'y' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
+        "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once.",
     };
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
