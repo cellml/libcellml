@@ -1168,6 +1168,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
+                                      + "' of model '" + owningModel(component)->name()
                                       + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
                                       + "', but it is not defined anywhere.");
                 issue->setCause(Issue::Cause::GENERATOR);
@@ -1181,6 +1182,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
                     issue->setDescription("Variable '" + variable->name()
                                           + "' in component '" + component->name()
+                                          + "' of model '" + owningModel(component)->name()
                                           + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
                                           + "', but it is not a constant.");
                     issue->setCause(Issue::Cause::GENERATOR);
@@ -1228,6 +1230,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + owningComponent(variable)->name()
+                                      + "' of model '" + owningModel(variable)->name()
                                       + "' cannot be both a variable of integration and initialised.");
                 issue->setCause(Issue::Cause::GENERATOR);
 
