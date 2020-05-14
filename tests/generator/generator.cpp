@@ -44,23 +44,6 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
 }
 
-TEST(Generator, generatorIssues)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr invalidModel = parser->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(invalidModel);
-
-    EXPECT_EQ(size_t(1), generator->issueCount());
-
-    libcellml::ModelPtr emptyModel = libcellml::Model::create();
-
-    generator->processModel(emptyModel);
-
-    EXPECT_EQ(size_t(0), generator->issueCount());
-}
-
 TEST(Generator, initializedVariableOfIntegration)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
