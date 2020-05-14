@@ -66,18 +66,19 @@ public:
      * @brief Get the initialising @c Variable for this @c GeneratorVariable.
      *
      * Return the initialising @c Variable of this @c GeneratorVariable. It is
-     * used to retrieve the initial value of the @c Variable, if any. It may or
-     * may not be the same @c Variable as the one returned by @sa variable. If
-     * it is not the same then the initial value retrieved from this variable
-     * may have to be scaled to account for the variables' units not being
-     * equivalent (e.g., one variable is expressed in millivolts while the other
-     * is expressed in volts, so the initial value will have to be multiplied or
-     * divided by 1000).
+     * used to retrieve the initial value of the @c Variable, if there is one.
+     * It may or may not be the same @c Variable as the one returned by
+     * @sa variable. If it is not the same (e.g., a state variable is
+     * initialised in one component and computed in another) then the initial
+     * value retrieved from this variable may have to be scaled to account for
+     * the variables' units not being equivalent (e.g., a variable is expressed
+     * in millivolts and its connected variable is expressed in volts, so the
+     * initial value will have to be multiplied or divided by 1000).
      *
      * @sa variable
      * @sa scalingFactor
      *
-     * @return The @c Variable.
+     * @return The initialising @c Variable, if there is one, or @c nullptr.
      */
     VariablePtr initialisingVariable() const;
 
@@ -85,12 +86,12 @@ public:
      * @brief Get the @c Variable for this @c GeneratorVariable.
      *
      * Return the @c Variable of this @c GeneratorVariable. Its @c Component is
-     * the one in which the @c Variable is first defined (in the
-     * case of the variable of integration), initialised (in the case of a
-     * constant) or computed (in the case of a state, computed constant or
-     * algebraic variable). It may or may not be the same @c Variable as the one
-     * returned by @sa initialisingVariable (e.g., a state variable may be
-     * initialised in one component and computed in another).
+     * the one in which the @c Variable is first defined (in the case of the
+     * variable of integration), initialised (in the case of a constant) or
+     * computed (in the case of a state, computed constant or algebraic
+     * variable). It may or may not be the same @c Variable as the one returned
+     * by @sa initialisingVariable (e.g., a state variable is initialised in one
+     * component and computed in another).
      *
      * @sa initialisingVariable
      *

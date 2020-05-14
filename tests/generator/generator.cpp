@@ -1394,11 +1394,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_NE(nullptr, generator->variable(0));
     EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
 
-    for (size_t i = 0; i < generator->variableCount(); ++i) {
-        EXPECT_NE(nullptr, generator->variable(i)->initialisingVariable());
-        EXPECT_NE(nullptr, generator->variable(i)->variable());
-    }
-
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
 
@@ -1510,6 +1505,16 @@ TEST(Generator, coverage)
     EXPECT_EQ(nullptr, generator->state(generator->stateCount()));
     EXPECT_NE(nullptr, generator->variable(0));
     EXPECT_EQ(nullptr, generator->variable(generator->variableCount()));
+
+    EXPECT_EQ(nullptr, generator->voi()->initialisingVariable());
+
+    for (size_t i = 0; i < generator->stateCount(); ++i) {
+        EXPECT_NE(nullptr, generator->state(i)->initialisingVariable());
+    }
+
+    for (size_t i = 0; i < generator->variableCount(); ++i) {
+        EXPECT_EQ(i < 7, generator->variable(i)->initialisingVariable() != nullptr);
+    }
 
     EXPECT_EQ(fileContents("generator/coverage/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.c"), generator->implementationCode());
