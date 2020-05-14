@@ -69,7 +69,7 @@ TEST(Generator, initializedVariableOfIntegration)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
+        "Variable 'time' in component 'my_component' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
@@ -233,7 +233,7 @@ TEST(Generator, nonConstantInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
+        "Variable 'x' in component 'main' of model 'my_model' is initialised using variable 'k2', but it is not a constant.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
@@ -266,7 +266,7 @@ TEST(Generator, nonExistingInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' is initialised using variable 'k', but it is not defined anywhere.",
+        "Variable 'x' in component 'main' of model 'my_model' is initialised using variable 'k', but it is not defined anywhere.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::GENERATOR,
