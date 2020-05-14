@@ -1269,8 +1269,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         double value;
         if (!convertToDouble(ast->mValue, value) || !areEqual(value, 1.0)) {
-            VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             IssuePtr issue = Issue::create();
+            VariablePtr variable = astGreatGrandParent->mRight->mVariable;
 
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
