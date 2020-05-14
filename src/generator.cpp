@@ -1030,6 +1030,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
             issue->setDescription("Variable '" + variableName
                                   + "' in component '" + component->name()
+                                  + "' of model '" + owningModel(component)->name()
                                   + "' is referenced in an equation, but it is not defined anywhere.");
             issue->setCause(Issue::Cause::GENERATOR);
 
@@ -1140,11 +1141,14 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
             IssuePtr issue = Issue::create();
+            ComponentPtr trackedVariableComponent = owningComponent(generatorVariable->mVariable);
 
             issue->setDescription("Variable '" + variable->name()
                                   + "' in component '" + component->name()
+                                  + "' of model '" + owningModel(component)->name()
                                   + "' and variable '" + generatorVariable->mVariable->name()
-                                  + "' in component '" + owningComponent(generatorVariable->mVariable)->name()
+                                  + "' in component '" + trackedVariableComponent->name()
+                                  + "' of model '" + owningModel(trackedVariableComponent)->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
             issue->setCause(Issue::Cause::GENERATOR);
 
@@ -1252,8 +1256,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             issue->setDescription("Variable '" + mVoi->variable()->name()
                                   + "' in component '" + owningComponent(mVoi->variable())->name()
+                                  + "' of model '" + owningModel(mVoi->variable())->name()
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
+                                  + "' of model '" + owningModel(variable)->name()
                                   + "' cannot both be the variable of integration.");
             issue->setCause(Issue::Cause::GENERATOR);
 
@@ -1274,6 +1280,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
+                                  + "' of model '" + owningModel(variable)->name()
                                   + "' must be of the first order.");
             issue->setCause(Issue::Cause::GENERATOR);
 
@@ -1511,6 +1518,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
+                                      + "' of model '" + owningModel(realVariable)->name()
                                       + "' " + issueType + ".");
                 issue->setCause(Issue::Cause::GENERATOR);
 
