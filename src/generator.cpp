@@ -1181,8 +1181,8 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             // The initial value is not a double, so it has to be an existing
             // variable of constant type.
 
-            ComponentPtr initialValueComponent = owningComponent(generatorVariable->mVariable);
-            VariablePtr initialisingVariable = initialValueComponent->variable(generatorVariable->mVariable->initialValue());
+            ComponentPtr initialisingComponent = owningComponent(generatorVariable->mVariable);
+            VariablePtr initialisingVariable = initialisingComponent->variable(generatorVariable->mVariable->initialValue());
 
             if (initialisingVariable == nullptr) {
                 IssuePtr issue = Issue::create();
