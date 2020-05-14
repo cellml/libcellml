@@ -1235,7 +1235,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                 // integration to be defined), so go through our components and
                 // look for the first occurrence of our variable of integration.
 
-                ModelPtr model = owningModel(variable->parent());
+                ModelPtr model = owningModel(variable);
 
                 for (size_t i = 0; i < model->componentCount(); ++i) {
                     GeneratorVariablePtr voi = variableFirstOccurrence(variable, model->component(i));
@@ -1695,7 +1695,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const GeneratorVariablePtr &variable)
 {
-    auto variableComponentSize = entityName(variable->variable()->parent()).length() + 1;
+    auto variableComponentSize = owningComponent(variable->variable())->name().length() + 1;
     auto variableNameSize = variable->variable()->name().length() + 1;
     auto variableUnitsSize = variable->variable()->units()->name().length() + 1;
     // Note: +1 to account for the end of string termination.
@@ -2185,7 +2185,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
 
         std::string name = (mVoi != nullptr) ? mVoi->variable()->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->variable()->units()->name() : "";
-        std::string component = (mVoi != nullptr) ? entityName(mVoi->variable()->parent()) : "";
+        std::string component = (mVoi != nullptr) ? owningComponent(mVoi->variable())->name() : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -2211,7 +2211,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->variable()->name(),
                                                                 state->variable()->units()->name(),
-                                                                entityName(state->variable()->parent()));
+                                                                owningComponent(state->variable())->name());
         }
 
         if (!infoElementsCode.empty()) {
@@ -2256,7 +2256,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
                                                           "<UNITS>", variable->variable()->units()->name()),
-                                                  "<COMPONENT>", entityName(variable->variable()->parent())),
+                                                  "<COMPONENT>", owningComponent(variable->variable())->name()),
                                           "<TYPE>", variableType);
         }
 
