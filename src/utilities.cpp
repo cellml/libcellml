@@ -431,6 +431,11 @@ ModelPtr owningModel(const EntityPtr &entity)
     return model;
 }
 
+ComponentPtr owningComponent(const VariablePtr &variable)
+{
+    return std::dynamic_pointer_cast<Component>(variable->parent());
+}
+
 bool isStandardUnitName(const std::string &name)
 {
     return standardUnitsList.count(name) != 0;
