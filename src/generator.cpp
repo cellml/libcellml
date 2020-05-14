@@ -504,8 +504,8 @@ struct Generator::GeneratorImpl
 
     GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
 
-    GeneratorVariablePtr voiFirstOccurrence(const VariablePtr &variable,
-                                            const ComponentPtr &component);
+    VariablePtr voiFirstOccurrence(const VariablePtr &variable,
+                                   const ComponentPtr &component);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
@@ -728,24 +728,21 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     return internalVariable;
 }
 
-GeneratorVariablePtr Generator::GeneratorImpl::voiFirstOccurrence(const VariablePtr &variable,
-                                                                  const ComponentPtr &component)
+VariablePtr Generator::GeneratorImpl::voiFirstOccurrence(const VariablePtr &variable,
+                                                         const ComponentPtr &component)
 {
     // Recursively look for the first occurrence of the given variable in the
     // given component.
 
-    GeneratorVariablePtr voi = nullptr;
-
-    for (size_t i = 0; i < component->variableCount() && voi == nullptr; ++i) {
+    for (size_t i = 0; i < component->variableCount(); ++i) {
         VariablePtr localVariable = component->variable(i);
 
         if (sameOrEquivalentVariable(variable, localVariable)) {
-            voi = GeneratorVariable::create();
-
-            voi->mPimpl->populate(nullptr, localVariable,
-                                  GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
+            return localVariable;
         }
     }
+
+    VariablePtr voi = nullptr;
 
     for (size_t i = 0; i < component->componentCount() && voi == nullptr; ++i) {
         voi = voiFirstOccurrence(variable, component->component(i));
@@ -1265,13 +1262,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
                 ModelPtr model = owningModel(variable);
 
-                for (size_t i = 0; i < model->componentCount(); ++i) {
-                    GeneratorVariablePtr voi = voiFirstOccurrence(variable, model->component(i));
+                for (size_t i = 0; i < model->componentCount() && mVoi == nullptr; ++i) {
+                    VariablePtr voi = voiFirstOccurrence(variable, model->component(i));
 
                     if (voi != nullptr) {
-                        mVoi = voi;
+                        mVoi = GeneratorVariable::create();
 
-                        break;
+                        mVoi->mPimpl->populate(nullptr, voi,
+                                               GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
                     }
                 }
             }
