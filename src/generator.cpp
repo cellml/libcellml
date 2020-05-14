@@ -342,7 +342,7 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     }
 
     // Determine, from the (new) known (ODE) variables, whether the equation is
-    // truly constant or variable-based constant.
+    // truly a constant or a variable-based constant.
 
     mComputedTrueConstant = mComputedTrueConstant
                             && !containsNonUnknownVariables(mVariables)
@@ -381,11 +381,11 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
 
-    // If there is one (ODE) variable left then update its component (to be sure
-    // that it's the same as the one in which the equation is), its type (if it
-    // is currently unknown), determine its index and determine the type of our
-    // equation and set its order, if the (ODE) variable is a state, computed
-    // constant or algebraic variable.
+    // If there is one (ODE) variable left then update its viariable (to be the
+    // corresponding one in the component in which the equation is), its type
+    // (if it is currently unknown), determine its index and determine the type
+    // of our equation and set its order, if the (ODE) variable is a state,
+    // computed constant or algebraic variable.
 
     bool relevantCheck = false;
 
