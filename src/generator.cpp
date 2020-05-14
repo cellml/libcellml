@@ -128,7 +128,8 @@ struct GeneratorInternalVariable
 
     explicit GeneratorInternalVariable(const VariablePtr &variable);
 
-    void setVariable(const VariablePtr &variable);
+    void setVariable(const VariablePtr &variable,
+                     bool checkInitialValue = true);
 
     void makeVoi();
     void makeState();
@@ -141,17 +142,20 @@ GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable
     setVariable(variable);
 }
 
-void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
+void GeneratorInternalVariable::setVariable(const VariablePtr &variable,
+                                            bool checkInitialValue)
 {
-    mInitialValueVariable = mVariable = variable;
-
-    if (!variable->initialValue().empty()) {
+    if (checkInitialValue && !variable->initialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
         // a state. By default, we consider it to be a constant and, if we find
         // an ODE for that variable, we will know that it was actually a state.
 
         mType = Type::CONSTANT;
+
+        mInitialValueVariable = variable;
     }
+
+    mVariable = variable;
 }
 
 void GeneratorInternalVariable::makeVoi()
@@ -387,17 +391,16 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
-        VariablePtr realVariable = nullptr;
 
-        for (size_t i = 0; i < mComponent->variableCount() && realVariable == nullptr; ++i) {
-            VariablePtr testVariable = mComponent->variable(i);
+        for (size_t i = 0; i < mComponent->variableCount(); ++i) {
+            VariablePtr localVariable = mComponent->variable(i);
 
-            if (sameOrEquivalentVariable(variable->mVariable, testVariable)) {
-                realVariable = testVariable;
+            if (sameOrEquivalentVariable(variable->mVariable, localVariable)) {
+                variable->setVariable(localVariable, false);
+
+                break;
             }
         }
-
-        variable->mVariable = realVariable;
 
         if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
             variable->mType = mComputedTrueConstant ?
@@ -613,13 +616,11 @@ struct Generator::GeneratorImpl
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                                       const GeneratorInternalVariablePtr &variable2)
 {
-    VariablePtr realVariable1 = variable1->mInitialValueVariable;
-    VariablePtr realVariable2 = variable2->mInitialValueVariable;
-    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(realVariable1->parent());
-    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(realVariable2->parent());
+    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(variable1->mVariable->parent());
+    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(variable2->mVariable->parent());
 
     if (realComponent1->name() == realComponent2->name()) {
-        return realVariable1->name() < realVariable2->name();
+        return variable1->mVariable->name() < variable2->mVariable->name();
     }
 
     return realComponent1->name() < realComponent2->name();
@@ -715,12 +716,13 @@ GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const Var
     GeneratorVariablePtr voi = nullptr;
 
     for (size_t i = 0; i < component->variableCount() && voi == nullptr; ++i) {
-        VariablePtr testVariable = component->variable(i);
+        VariablePtr localVariable = component->variable(i);
 
-        if (sameOrEquivalentVariable(variable, testVariable)) {
+        if (sameOrEquivalentVariable(variable, localVariable)) {
             voi = GeneratorVariable::create();
 
-            voi->mPimpl->populate(testVariable, testVariable, GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
+            voi->mPimpl->populate(localVariable, localVariable,
+                                  GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
         }
     }
 
