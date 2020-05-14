@@ -381,6 +381,16 @@ std::string entityName(const EntityPtr &entity);
 ModelPtr owningModel(const EntityPtr &entity);
 
 /**
+ * @brief Get the @c Component that the variable is owned by.
+ *
+ * Return the owning component for this variable.
+ *
+ * @param entity The variable to get the owning component for.
+ * @return The owning @c Component of this variable.
+ */
+ComponentPtr owningComponent(const VariablePtr &variable);
+
+/**
  * @brief Remove the given component from the given entity.
  *
  * The entity given can be either a @c Model or @c Component and as such is
