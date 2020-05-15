@@ -514,6 +514,11 @@ struct Generator::GeneratorImpl
     GeneratorEquationPtr processNode(const XmlNodePtr &node,
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
+
+    void doEquivalentVariables(const VariablePtr &variable,
+                               std::vector<VariablePtr> &equivalentVariables) const;
+    std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
+
     void processEquationAst(const GeneratorEquationAstPtr &ast);
 
     double scalingFactor(const VariablePtr &variable);
@@ -1218,6 +1223,29 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     }
 }
 
+void Generator::GeneratorImpl::doEquivalentVariables(const VariablePtr &variable,
+                                                     std::vector<VariablePtr> &equivalentVariables) const
+{
+    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+        VariablePtr equivalentVariable = variable->equivalentVariable(i);
+
+        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
+            equivalentVariables.push_back(equivalentVariable);
+
+            doEquivalentVariables(equivalentVariable, equivalentVariables);
+        }
+    }
+}
+
+std::vector<VariablePtr> Generator::GeneratorImpl::equivalentVariables(const VariablePtr &variable) const
+{
+    std::vector<VariablePtr> res = {variable};
+
+    doEquivalentVariables(variable, res);
+
+    return res;
+}
+
 void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)
 {
     // Look for the definition of a variable of integration and make sure that
@@ -1240,37 +1268,48 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         //       unknown).
 
         if (mVoi == nullptr) {
-            // Before keeping track of the variable of integration, make sure
-            // that it is not initialised.
+            // We have found our variable of integration, but this may not be
+            // the one defined in our first component (i.e. the component under
+            // which we are likely to expect to see the variable of integration
+            // to be defined), so go through our components and look for the
+            // first occurrence of our variable of integration.
 
-            if (!variable->initialValue().empty()) {
-                IssuePtr issue = Issue::create();
+            ModelPtr model = owningModel(variable);
 
-                issue->setDescription("Variable '" + variable->name()
-                                      + "' in component '" + owningComponent(variable)->name()
-                                      + "' of model '" + owningModel(variable)->name()
-                                      + "' cannot be both a variable of integration and initialised.");
-                issue->setCause(Issue::Cause::GENERATOR);
+            for (size_t i = 0; i < model->componentCount(); ++i) {
+                VariablePtr voi = voiFirstOccurrence(variable, model->component(i));
 
-                mGenerator->addIssue(issue);
-            } else {
-                // We have found our variable of integration, but this may not
-                // be the one defined in our first component (i.e. the component
-                // under which we are likely to expect to see the variable of
-                // integration to be defined), so go through our components and
-                // look for the first occurrence of our variable of integration.
+                if (voi != nullptr) {
+                    // We have found the first occurrence of our variable of
+                    // integration, but now we must ensure that it (or one of
+                    // its equivalent variables) is not initialised.
 
-                ModelPtr model = owningModel(variable);
+                    bool isVoiInitialized = false;
 
-                for (size_t i = 0; i < model->componentCount() && mVoi == nullptr; ++i) {
-                    VariablePtr voi = voiFirstOccurrence(variable, model->component(i));
+                    for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
+                        if (!voiEquivalentVariable->initialValue().empty()) {
+                            IssuePtr issue = Issue::create();
 
-                    if (voi != nullptr) {
+                            issue->setDescription("Variable '" + voiEquivalentVariable->name()
+                                                  + "' in component '" + owningComponent(voiEquivalentVariable)->name()
+                                                  + "' of model '" + owningModel(voiEquivalentVariable)->name()
+                                                  + "' cannot be both a variable of integration and initialised.");
+                            issue->setCause(Issue::Cause::GENERATOR);
+
+                            mGenerator->addIssue(issue);
+
+                            isVoiInitialized = true;
+                        }
+                    }
+
+                    if (!isVoiInitialized) {
                         mVoi = GeneratorVariable::create();
 
                         mVoi->mPimpl->populate(nullptr, voi,
                                                GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
                     }
+
+                    break;
                 }
             }
         } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
