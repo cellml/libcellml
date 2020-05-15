@@ -77,6 +77,39 @@ TEST(Generator, initializedVariableOfIntegration)
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
 }
 
+TEST(Generator, initializedVariableOfIntegrationInNonFirstComponent)
+{
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/initialized_variable_of_integration_in_non_first_component.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'environment' of model 'initialized_variable_of_integration_in_non_first_component' cannot be both a variable of integration and initialised.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::GENERATOR,
+    };
+
+    libcellml::GeneratorPtr generator = libcellml::Generator::create();
+
+    generator->processModel(model);
+
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
+
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
+
+    EXPECT_EQ(size_t(0), generator->stateCount());
+    EXPECT_EQ(size_t(0), generator->variableCount());
+
+    EXPECT_EQ(nullptr, generator->voi());
+    EXPECT_EQ(nullptr, generator->state(0));
+    EXPECT_EQ(nullptr, generator->variable(0));
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
+}
+
 TEST(Generator, twoVariablesOfIntegration)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
