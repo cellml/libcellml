@@ -607,6 +607,8 @@ if __name__ == '__main__':
     #  7.a Create a Generator instance and submit the model for processing.
     #      Expect no errors.
     generator = Generator()
+    profile = GeneratorProfile(GeneratorProfile.Profile.C)
+    generator.setProfile(profile)
     generator.processModel(model)
     print_errors_to_terminal(generator)
     assert(generator.errorCount() == 0)
