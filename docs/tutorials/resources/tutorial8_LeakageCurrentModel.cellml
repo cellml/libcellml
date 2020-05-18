@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial8_LeakageCurrentModel">
-  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="tutorial8_leakageInit.cellml">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="tutorial8_leakage_parameters.cellml">
     <component component_ref="leakage_initialiser" name="leakageInit"/>
   </import>
   <units name="mV">
