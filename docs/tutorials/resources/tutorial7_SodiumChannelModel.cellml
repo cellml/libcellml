@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial7_SodiumChannelModel">
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="tutorial7_controller.cellml">
-    <component component_ref="sodiumChannel_initialiser" name="sodiumChannelInit"/>
-    <component component_ref="mGate_initialiser" name="mGateInit"/>
-    <component component_ref="hGate_initialiser" name="hGateInit"/>
     <component component_ref="sodiumChannel_controller" name="controller"/>
+    <component component_ref="parameters" name="parameters"/>
   </import>
   <units name="mV">
     <unit prefix="milli" units="volt"/>
@@ -33,34 +31,25 @@
   <component name="sodiumChannel">
     <variable name="V" units="mV" interface="public_and_private"/>
     <variable name="t" units="ms" interface="public_and_private"/>
-    <variable name="h" units="dimensionless" interface="private"/>
-    <variable name="m" units="dimensionless" interface="private"/>
-    <variable name="g_Na" units="mS_per_cm2" interface="private"/>
-    <variable name="E_Na" units="mV" interface="private"/>
+    <variable name="h" units="dimensionless" interface="public_and_private"/>
+    <variable name="m" units="dimensionless" interface="public_and_private"/>
+    <variable name="g_Na" units="mS_per_cm2" interface="public_and_private"/>
+    <variable name="E_Na" units="mV" interface="public_and_private"/>
     <variable name="i_Na" units="microA_per_cm2" interface="public"/>
-    <variable name="Na_conductance" units="mS_per_cm2"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML"
       xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-      <apply>
-        <eq/>
-        <ci>Na_conductance</ci>
-        <apply>
-          <times/>
-          <ci>g_Na</ci>
-          <ci>h</ci>
-          <apply>
-            <power/>
-            <ci>m</ci>
-            <cn cellml:units="dimensionless">3</cn>
-          </apply>
-        </apply>
-      </apply>
       <apply>
         <eq/>
         <ci>i_Na</ci>
         <apply>
           <times/>
-          <ci>Na_conductance</ci>
+          <ci>g_Na</ci>
+          <apply>
+            <power/>
+            <ci>m</ci>
+            <cn cellml:units="dimensionless">3</cn>
+          </apply>
+          <ci>h</ci>
           <apply>
             <minus/>
             <ci>V</ci>
@@ -85,14 +74,11 @@
           <divide/>
           <apply>
             <times/>
-            <apply>
-              <minus/>
-              <cn cellml:units="per_mV_ms">0.1</cn>
-            </apply>
+            <cn cellml:units="per_millivolt_millisecond">0.1</cn>
             <apply>
               <plus/>
               <ci>V</ci>
-              <cn cellml:units="mV">50</cn>
+              <cn cellml:units="millivolt">25</cn>
             </apply>
           </apply>
           <apply>
@@ -102,14 +88,11 @@
               <apply>
                 <divide/>
                 <apply>
-                  <minus/>
-                  <apply>
-                    <plus/>
-                    <ci>V</ci>
-                    <cn cellml:units="mV">50</cn>
-                  </apply>
+                  <plus/>
+                  <ci>V</ci>
+                  <cn cellml:units="millivolt">25</cn>
                 </apply>
-                <cn cellml:units="mV">10</cn>
+                <cn cellml:units="millivolt">10</cn>
               </apply>
             </apply>
             <cn cellml:units="dimensionless">1</cn>
@@ -121,20 +104,13 @@
         <ci>beta_m</ci>
         <apply>
           <times/>
-          <cn cellml:units="per_ms">4</cn>
+          <cn cellml:units="per_millisecond">4</cn>
           <apply>
             <exp/>
             <apply>
               <divide/>
-              <apply>
-                <minus/>
-                <apply>
-                  <plus/>
-                  <ci>V</ci>
-                  <cn cellml:units="mV">75</cn>
-                </apply>
-              </apply>
-              <cn cellml:units="mV">18</cn>
+              <ci>V</ci>
+              <cn cellml:units="millivolt">18</cn>
             </apply>
           </apply>
         </apply>
@@ -161,8 +137,8 @@
           </apply>
           <apply>
             <times/>
-            <ci>m</ci>
             <ci>beta_m</ci>
+            <ci>m</ci>
           </apply>
         </apply>
       </apply>
@@ -181,20 +157,13 @@
         <ci>alpha_h</ci>
         <apply>
           <times/>
-          <cn cellml:units="per_ms">0.07</cn>
+          <cn cellml:units="per_millisecond">0.07</cn>
           <apply>
             <exp/>
             <apply>
               <divide/>
-              <apply>
-                <minus/>
-                <apply>
-                  <plus/>
-                  <ci>V</ci>
-                  <cn cellml:units="mV">75</cn>
-                </apply>
-              </apply>
-              <cn cellml:units="mV">20</cn>
+              <ci>V</ci>
+              <cn cellml:units="millivolt">20</cn>
             </apply>
           </apply>
         </apply>
@@ -204,7 +173,7 @@
         <ci>beta_h</ci>
         <apply>
           <divide/>
-          <cn cellml:units="per_ms">1</cn>
+          <cn cellml:units="per_millisecond">1</cn>
           <apply>
             <plus/>
             <apply>
@@ -212,14 +181,11 @@
               <apply>
                 <divide/>
                 <apply>
-                  <minus/>
-                  <apply>
-                    <plus/>
-                    <ci>V</ci>
-                    <cn cellml:units="mV">45</cn>
-                  </apply>
+                  <plus/>
+                  <ci>V</ci>
+                  <cn cellml:units="millivolt">30</cn>
                 </apply>
-                <cn cellml:units="mV">10</cn>
+                <cn cellml:units="millivolt">10</cn>
               </apply>
             </apply>
             <cn cellml:units="dimensionless">1</cn>
@@ -248,13 +214,17 @@
           </apply>
           <apply>
             <times/>
-            <ci>h</ci>
             <ci>beta_h</ci>
+            <ci>h</ci>
           </apply>
         </apply>
       </apply>
     </math>
   </component>
+  <connection component_1="sodiumChannel" component_2="controller">
+    <map_variables variable_1="V" variable_2="V"/>
+    <map_variables variable_1="t" variable_2="t"/>
+  </connection>
   <connection component_1="sodiumChannel" component_2="mGate">
     <map_variables variable_1="V" variable_2="V"/>
     <map_variables variable_1="t" variable_2="t"/>
@@ -265,29 +235,16 @@
     <map_variables variable_1="t" variable_2="t"/>
     <map_variables variable_1="h" variable_2="h"/>
   </connection>
-  <connection component_1="sodiumChannel" component_2="sodiumChannelInit">
-    <map_variables variable_1="E_Na" variable_2="E_Na"/>
-    <map_variables variable_1="g_Na" variable_2="g_Na"/>
-  </connection>
-  <connection component_1="mGate" component_2="mGateInit">
-    <map_variables variable_1="m" variable_2="m"/>
-  </connection>
-  <connection component_1="hGate" component_2="hGateInit">
+  <connection component_1="sodiumChannel" component_2="parameters">
     <map_variables variable_1="h" variable_2="h"/>
-  </connection>
-  <connection component_1="controller" component_2="sodiumChannel">
-    <map_variables variable_1="V" variable_2="V"/>
-    <map_variables variable_1="t" variable_2="t"/>
+    <map_variables variable_1="m" variable_2="m"/>
+    <map_variables variable_1="g_Na" variable_2="g_Na"/>
+    <map_variables variable_1="E_Na" variable_2="E_Na"/>
   </connection>
   <encapsulation>
     <component_ref component="sodiumChannel">
-      <component_ref component="mGate">
-        <component_ref component="mGateInit"/>
-      </component_ref>
-      <component_ref component="hGate">
-        <component_ref component="hGateInit"/>
-      </component_ref>
-      <component_ref component="sodiumChannelInit"/>
+      <component_ref component="mGate"/>
+      <component_ref component="hGate"/>
     </component_ref>
   </encapsulation>
 </model>
