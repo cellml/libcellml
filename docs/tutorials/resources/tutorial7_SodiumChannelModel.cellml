@@ -36,20 +36,29 @@
     <variable name="g_Na" units="mS_per_cm2" interface="public_and_private"/>
     <variable name="E_Na" units="mV" interface="public_and_private"/>
     <variable name="i_Na" units="microA_per_cm2" interface="public"/>
+    <variable name="Na_conductance" units="mS_per_cm2"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML"
       xmlns:cellml="http://www.cellml.org/cellml/2.0#">
       <apply>
         <eq/>
-        <ci>i_Na</ci>
+        <ci>Na_conductance</ci>
         <apply>
           <times/>
           <ci>g_Na</ci>
+          <ci>h</ci>
           <apply>
             <power/>
             <ci>m</ci>
             <cn cellml:units="dimensionless">3</cn>
           </apply>
-          <ci>h</ci>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>i_Na</ci>
+        <apply>
+          <times/>
+          <ci>Na_conductance</ci>
           <apply>
             <minus/>
             <ci>V</ci>
@@ -74,11 +83,14 @@
           <divide/>
           <apply>
             <times/>
-            <cn cellml:units="per_millivolt_millisecond">0.1</cn>
+            <apply>
+              <minus/>
+              <cn cellml:units="per_millivolt_millisecond">0.1</cn>
+            </apply>
             <apply>
               <plus/>
               <ci>V</ci>
-              <cn cellml:units="millivolt">25</cn>
+              <cn cellml:units="millivolt">50</cn>
             </apply>
           </apply>
           <apply>
@@ -88,9 +100,12 @@
               <apply>
                 <divide/>
                 <apply>
-                  <plus/>
-                  <ci>V</ci>
-                  <cn cellml:units="millivolt">25</cn>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <ci>V</ci>
+                    <cn cellml:units="millivolt">50</cn>
+                  </apply>
                 </apply>
                 <cn cellml:units="millivolt">10</cn>
               </apply>
@@ -109,7 +124,14 @@
             <exp/>
             <apply>
               <divide/>
-              <ci>V</ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci>V</ci>
+                  <cn cellml:units="millivolt">75</cn>
+                </apply>
+              </apply>
               <cn cellml:units="millivolt">18</cn>
             </apply>
           </apply>
@@ -162,7 +184,14 @@
             <exp/>
             <apply>
               <divide/>
-              <ci>V</ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci>V</ci>
+                  <cn cellml:units="millivolt">75</cn>
+                </apply>
+              </apply>
               <cn cellml:units="millivolt">20</cn>
             </apply>
           </apply>
@@ -181,9 +210,12 @@
               <apply>
                 <divide/>
                 <apply>
-                  <plus/>
-                  <ci>V</ci>
-                  <cn cellml:units="millivolt">30</cn>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <ci>V</ci>
+                    <cn cellml:units="millivolt">45</cn>
+                  </apply>
                 </apply>
                 <cn cellml:units="millivolt">10</cn>
               </apply>

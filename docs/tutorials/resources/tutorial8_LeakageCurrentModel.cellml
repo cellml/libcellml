@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial8_LeakageCurrentModel">
-  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="tutorial8_leakage_parameters.cellml">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="tutorial8_LeakageCurrentModel_parameters.cellml">
     <component component_ref="leakage_initialiser" name="leakageInit"/>
   </import>
   <units name="mV">
@@ -22,8 +22,8 @@
   </units>
   <component name="leakageCurrent">
     <variable name="i_L" units="microA_per_cm2" interface="public" />
-    <variable name="g_L" units="mS_per_cm2" interface="private"/>
-    <variable name="E_L" units="mV" interface="private"/>
+    <variable name="g_L" units="mS_per_cm2" interface="public"/>
+    <variable name="E_L" units="mV" interface="public"/>
     <variable name="V" units="mV" interface="public" />
     <math xmlns="http://www.w3.org/1998/Math/MathML"
       xmlns:cellml="http://www.cellml.org/cellml/2.0#">
@@ -46,9 +46,4 @@
     <map_variables variable_1="E_L" variable_2="E_L"/>
     <map_variables variable_1="g_L" variable_2="g_L"/>
   </connection>
-  <encapsulation>
-    <component_ref component="leakageCurrent">
-      <component_ref component="leakageInit"/>
-    </component_ref>
-  </encapsulation>
 </model>
