@@ -165,23 +165,19 @@ if __name__ == '__main__':
             '    <ci>alpha_m</ci>\n'\
             '    <apply><divide/>\n'\
             '      <apply><times/>\n'\
-            '        <apply><minus/>\n'\
-            '          <cn cellml:units="per_mV_ms">0.1</cn>\n'\
-            '        </apply>\n'\
+            '        <cn cellml:units="per_mV_ms">0.1</cn>\n'\
             '        <apply><plus/>\n'\
             '          <ci>V</ci>\n'\
-            '          <cn cellml:units="mV">50</cn>\n'\
+            '          <cn cellml:units="mV">25</cn>\n'\
             '        </apply>\n'\
             '      </apply>\n'\
             '      <apply><minus/>\n'\
             '        <apply><exp/>\n'\
             '          <apply><divide/>\n'\
-            '            <apply><minus/>\n'\
             '              <apply><plus/>\n'\
             '                <ci>V</ci>\n'\
-            '                <cn cellml:units="mV">50</cn>\n'\
+            '                <cn cellml:units="mV">25</cn>\n'\
             '              </apply>\n'\
-            '            </apply>\n'\
             '            <cn cellml:units="mV">10</cn>\n'\
             '          </apply>\n'\
             '        </apply>\n'\
@@ -197,12 +193,7 @@ if __name__ == '__main__':
             '      <cn cellml:units="per_ms">4</cn>\n'\
             '      <apply><exp/>\n'\
             '        <apply><divide/>\n'\
-            '          <apply><minus/>\n'\
-            '            <apply><plus/>\n'\
-            '              <ci>V</ci>\n'\
-            '              <cn cellml:units="mV">75</cn>\n'\
-            '            </apply>\n'\
-            '          </apply>\n'\
+            '          <ci>V</ci>\n'\
             '          <cn cellml:units="mV">18</cn>\n'\
             '        </apply>\n'\
             '      </apply>\n'\
@@ -311,12 +302,7 @@ if __name__ == '__main__':
             '      <cn cellml:units="per_ms">0.07</cn>\n'\
             '      <apply><exp/>\n'\
             '        <apply><divide/>\n'\
-            '          <apply><minus/>\n'\
-            '            <apply><plus/>\n'\
-            '              <ci>V</ci>\n'\
-            '              <cn cellml:units="mV">75</cn>\n'\
-            '            </apply>\n'\
-            '          </apply>\n'\
+            '          <ci>V</ci>\n'\
             '          <cn cellml:units="mV">20</cn>\n'\
             '        </apply>\n'\
             '      </apply>\n'\
@@ -331,11 +317,9 @@ if __name__ == '__main__':
             '      <apply><plus/>\n'\
             '        <apply><exp/>\n'\
             '          <apply><divide/>\n'\
-            '            <apply><minus/>\n'\
-            '              <apply><plus/>\n'\
-            '                <ci>V</ci>\n'\
-            '                <cn cellml:units="mV">45</cn>\n'\
-            '              </apply>\n'\
+            '            <apply><plus/>\n'\
+            '              <ci>V</ci>\n'\
+            '              <cn cellml:units="mV">30</cn>\n'\
             '            </apply>\n'\
             '            <cn cellml:units="mV">10</cn>\n'\
             '          </apply>\n'\
