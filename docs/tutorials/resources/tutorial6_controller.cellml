@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="controllers">
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="Tutorial6_PotassiumChannelModel">
   <units name="millisecond">
     <unit prefix="milli" units="second"/>
   </units>
   <units name="millivolt">
     <unit prefix="milli" units="volt"/>
+  </units>
+  <units name="milliS_per_cm2">
+    <unit prefix="milli" units="siemens"/>
+    <unit exponent="-2" prefix="centi" units="metre"/>
   </units>
   <component name="controller">
     <variable name="t" units="millisecond" interface="public_and_private"/>
