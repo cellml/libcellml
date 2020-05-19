@@ -10,33 +10,6 @@
 
 #include "../utilities/tutorial_utilities.h"
 
-#if 0
-int main() {
-    std::ifstream inFile("hodgkin_huxley_squid_axon_model_1952_modified.cellml");
-    std::stringstream inFileContents;
-    inFileContents << inFile.rdbuf();
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(inFileContents.str());
-
-    printModelToTerminal(model, true);
-
-    auto generator = libcellml::Generator::create();
-    generator->processModel(model);
-
-    printErrorsToTerminal(generator);
-
-    std::ofstream outFile;
-    outFile.open("hodgkin_huxley_squid_axon_model_1952_modified.h");
-    outFile << generator->interfaceCode();
-    outFile.close();
-
-    outFile.open("hodgkin_huxley_squid_axon_model_1952_modified.c");
-    outFile << generator->implementationCode();
-    outFile.close();
-}
-
-#endif
-
 int main()
 {
     //  0.a Create a new model instance representing the combined model and name it.
