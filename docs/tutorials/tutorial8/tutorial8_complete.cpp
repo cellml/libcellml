@@ -12,82 +12,38 @@
 
 int main()
 {
-    //  0.a Create a new model instance representing the combined model and name it.
-    auto model = libcellml::Model::create("Tutorial8_HHModel");
     auto validator = libcellml::Validator::create();
 
-    // Create a new controller model, containing the controller component and a parameters component.
-    //    This will be written separately to the main model so that its values can be changed easily.
+    // 0.a  Create a new controller model, containing the controller component and a parameters component.
+    //      This will be written separately to the main model so that its values can be changed easily.
     auto controllerModel = libcellml::Model::create("Tutorial8_parameters");
     auto parameters = libcellml::Component::create("parameters");
     controllerModel->addComponent(parameters);
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 1: Import the membrane component          " << std::endl;
+    std::cout << "  STEP 1: Parse the membrane model               " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  In order to use the import functionality we need to know three things:
-    //      - the import destination (the component/unit to which the imported item will be assigned)
-    //      - the file we're importing it from (the url to the model containing the item to be imported)
-    //      - which item within the file should be imported (the name of the component/units inside the import model file)
-    //  We'll address these now.
+    //  1.a Create a Parser and use it to read in the contents of the resources/tutorial8_MembraneModel.cellml
+    //      file provided.  Use this to create a new model instance.
+    //      Note that the only reason to *parse* and not *import* this model is because we need to change it.
+    //      The changes will involve:
+    //          - Adding encapsulated components (in steps 2-4);
+    //          - Adding intermediate variables to allow for initialisation of those components (steps 2-4);
+    //          - Creating connections to external parameters components (step 5); and
+    //          - Creating connections to the encapsulated components' variables (step 7).
 
-    //  1.a As previously, create a component to represent the membrane in the HH model,
-    //      and add it to the model.  This deals with the first point above: the import destination
-    auto membrane = libcellml::Component::create("membrane");
-    model->addComponent(membrane);
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("tutorial8_MembraneModel.cellml"));
 
-    //  1.b Next we need to create an ImportSource item and use its setUrl() function to specify the
-    //      name (without the path) of the file contianing the model to be imported.
-    auto membraneImporter = libcellml::ImportSource::create();
-    membraneImporter->setUrl("tutorial8_MembraneModel.cellml");
-
-    //  1.c Thirdly we need to link our import source to the import destination using the
-    //      Component::setImportSource() function on the membrane component, and to use the
-    //      Component::setImportReference() function to specify the name of the component inside
-    //      the import model to retrieve.
-    membrane->setImportSource(membraneImporter);
-    membrane->setImportReference("membrane");
-
-    //  1.d At this stage, our model has only one component in it, and even though we've specified the
-    //      imports completely, we still need to resolve the imports and flatten the model before the
-    //      imported items will be instantiated here.
-    //      Use the Model::hasUnresolvedImports() function to show that the imports have not been resolved yet.
-    if (model->hasUnresolvedImports()) {
-        std::cout << "Imports are UNRESOLVED" << std::endl;
-    } else {
-        std::cout << "Imports are found" << std::endl;
-    }
-
-    //  1.e Print the model to the terminal to show that it contains only one empty component at this stage.
-    printModelToTerminal(model, false);
-
-    //  1.f Use the Model::resolveImports() function of the model to (erm) resolve the imports.  This takes an
-    //      argument of a string representing the full absolute path to the directory in which the import
-    //      file specified in 1.b is stored, and must end with a slash.
-    model->resolveImports("");
-
-    //  1.g Call the Model::hasUnreolvedImports() function again and verify that they are now resolved.
-    assert(model->hasUnresolvedImports() == false);
-    std::cout << "Imports are RESOLVED" << std::endl;
-
-    //  1.h Call the Model::flatten() function.  This will recursively search through all of the imported items
-    //      in the model, and create local instances of them here.
-    //      Note that:
-    //          - if you call the flatten() function without first resolving the imports, nothing will change.
-    //          - flattening a model fundamentally changes it ... and cannot be undone.
-    model->flatten();
-    membrane = model->component("membrane");
-
-    //  1.i Print the flattened model to the terminal and verify that it now contains:
+    //  1.b Print the parsed model to the terminal and verify that it contains:
     //      - 4 units
     //      - 1 component with
     //          - 8 variables
     //          - a mathml block
-    //  from the imported file.
     printModelToTerminal(model, false);
 
-    //  1.j Because we want to be able to initialise the variables in this component, we need to
+    //  1.c Because we want to be able to initialise the variables in this component, we need to
     //      add the corresponding variables into the parameters component.  These will be variables:
     //      - Cm [micro Farads per square centimetre]
     //      - V [millivolts].
@@ -99,7 +55,7 @@ int main()
         auto Cm = libcellml::Variable::create("Cm");
         parameters->addVariable(Cm);
         parameters->variable("Cm")->setUnits("microF_per_cm2");
-        parameters->variable("Cm")->setInterfaceType("public_and_private");
+        parameters->variable("Cm")->setInterfaceType("public");
 
         auto microF_per_cm2 = libcellml::Units::create("microF_per_cm2");
         microF_per_cm2->addUnit("farad", "micro");
@@ -109,7 +65,7 @@ int main()
         auto V = libcellml::Variable::create("V");
         parameters->addVariable(V);
         parameters->variable("V")->setUnits("mV");
-        parameters->variable("V")->setInterfaceType("public_and_private");
+        parameters->variable("V")->setInterfaceType("public");
 
         auto mV = libcellml::Units::create("mV");
         mV->addUnit("volt", "milli");
@@ -120,25 +76,43 @@ int main()
     std::cout << "  STEP 2: Import the sodium channel component    " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  2.a Create a component representing the sodium channel.  This will be encapsulated inside the membrane
+    //  In order to use the import functionality we need to know three things:
+    //      - the import destination (the component/unit to which the imported item will be assigned)
+    //      - the file we're importing it from (the url to the model containing the item to be imported)
+    //      - which item within the file should be imported (the name of the component/units inside the import model file)
+    //  We'll address these now.
+    std::string sodiumChannelFile = "tutorial7_SodiumChannelModel.cellml";
+
+    //  2.a First we need to know the contents of the component we're importing.  This step is necessary
+    //      so that we can create dummy variables with the same name and units in step 2.e.
+    //      If you don't happen to know the contents of the components, simply parse the models
+    //      and print them to the terminal for viewing.
+    {
+        auto temp = parser->parseModel(fileContents(sodiumChannelFile));
+        temp->resolveImports("");
+        temp->flatten();
+        printModelToTerminal(temp, false);
+    }
+
+    //  2.b Create a component representing the sodium channel.  This will be encapsulated inside the membrane
     //      component, so add it there instead of adding it to the model.
     auto sodiumChannel = libcellml::Component::create("sodium_channel");
-    membrane->addComponent(sodiumChannel);
+    model->component("membrane")->addComponent(sodiumChannel);
 
-    //  2.b Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
+    //  2.c Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
     //      Note that you will need to make sure it exists in the same path as the earlier files.
     //      If you did not complete Tutorial 7 you can use the tutorial7_SodiumChannelModel.cellml
     //      file in the resources folder.
     auto sodiumImporter = libcellml::ImportSource::create();
-    sodiumImporter->setUrl("tutorial7_SodiumChannelModel.cellml");
+    sodiumImporter->setUrl(sodiumChannelFile);
 
-    //  2.c Link the sodium channel component to the importer and set the reference to import.
+    //  2.d Link the sodium channel component to the importer and set the reference to import.
     //      In the file provided this is named "sodiumChannel".  You will need to change this to
     //      whatever you named the component in Tutorial 7.
     sodiumChannel->setImportSource(sodiumImporter);
     sodiumChannel->setImportReference("sodiumChannel");
 
-    //  2.d Create dummy variables in the sodium channel for voltage, time, and current.
+    //  2.e Create dummy variables in the sodium channel for voltage, time, and current.
     //      Dummy variables are those which already exist in the component to be imported, but must be
     //      added here manually so that we can create the connections between equivalent variables before
     //      flattening the model.
@@ -151,7 +125,7 @@ int main()
         auto i_Na = libcellml::Variable::create("i_Na");
         sodiumChannel->addVariable(i_Na);
     }
-    //  2.e Create dummy variables for m and h gate status here so that their initial values can be passed to the
+    //  2.f Create dummy variables for m and h gate status here so that their initial values can be passed to the
     //      gate components, which are child components of the sodium channel.  Even though this component doesn't
     //      use them, the gate components cannot connect directly to the parameters component at the top level,
     //      so these intermediate variables are needed.
@@ -168,38 +142,38 @@ int main()
         sodiumChannel->addVariable(E_Na);
     }
 
-    //  2.f Because any values for initialisation must also be passed through the membrane component, we have to
+    //  2.g Because any values for initialisation must also be passed through the membrane component, we have to
     //      add intermediate variables for h, m, g_Na, and E_Na there too.
     //      Because these are concrete variables (ie: they will not be overwritten by an import), you will need
     //      to specify units and interfaces.  Note that because these variables will need to connect to child
     //      components as well as sibling components, they should have the interface type "public_and_private".
     {
         auto h = libcellml::Variable::create("h");
-        membrane->addVariable(h);
         h->setInterfaceType("public_and_private");
         h->setUnits("dimensionless");
+        model->component("membrane")->addVariable(h);
 
         auto m = libcellml::Variable::create("m");
-        membrane->addVariable(m);
         m->setInterfaceType("public_and_private");
         m->setUnits("dimensionless");
+        model->component("membrane")->addVariable(m);
 
         auto g_Na = libcellml::Variable::create("g_Na");
-        membrane->addVariable(g_Na);
         g_Na->setInterfaceType("public_and_private");
         g_Na->setUnits("mS_per_cm2");
+        model->component("membrane")->addVariable(g_Na);
 
         auto E_Na = libcellml::Variable::create("E_Na");
-        membrane->addVariable(E_Na);
         E_Na->setInterfaceType("public_and_private");
         E_Na->setUnits("mV");
+        model->component("membrane")->addVariable(E_Na);
     }
 
-    //  2.g Create concrete variables in the external parameters component, where their inital values will
-    //      be set (eventually).  As you did in step 1.j you'll need to also add any units that these variables
+    //  2.h Create concrete variables in the external parameters component, where their initial values will
+    //      be set (eventually).  As you did in step 1.c you'll need to also add any units that these variables
     //      need into the controller model too.
     //      Create variables for h, m, E_Na, g_Na.
-    //      Create the units for the g_Na term of milli Siemens per cm^2 and add them to the model.
+    //      Create the units for the g_Na term of milli Siemens per cm^2 and add them to the controller model.
     {
         auto h = libcellml::Variable::create("h");
         parameters->addVariable(h);
@@ -231,18 +205,30 @@ int main()
     model->resolveImports("");
     assert(model->hasUnresolvedImports() == false);
 
+    validator->validateModel(controllerModel);
+    printErrorsToTerminal(validator);
+
     std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "  STEP 3: Import the potassium channel component " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
     //  3.a Repeat all the tasks in Step 2, this time for the potassium channel model you created in
     //      Tutorial 6.  If you did not complete Tutorial 6 you can use the tutorial6_PotassiumChannelModel.cellml
-    //      from the resources folder, importing the component called "potassiumChannel"
+    //      from the resources folder, importing the component called "potassiumChannel".
+    //      The dummy variables involved are: V, t, i_K, n, g_K, and E_K.
+    std::string potassiumChannelFile = "tutorial6_PotassiumChannelModel.cellml";
+    {
+        auto temp = parser->parseModel(fileContents(potassiumChannelFile));
+        temp->resolveImports("");
+        temp->flatten();
+        printModelToTerminal(temp, false);
+    }
+
     auto potassiumChannel = libcellml::Component::create("potassium_channel");
-    membrane->addComponent(potassiumChannel);
+    model->component("membrane")->addComponent(potassiumChannel);
 
     auto potassiumImporter = libcellml::ImportSource::create();
-    potassiumImporter->setUrl("tutorial6_PotassiumChannelModel.cellml");
+    potassiumImporter->setUrl(potassiumChannelFile);
 
     potassiumChannel->setImportSource(potassiumImporter);
     potassiumChannel->setImportReference("potassiumChannel");
@@ -270,18 +256,19 @@ int main()
     // Intermediate concrete variables in the membrane component:
     {
         auto n = libcellml::Variable::create("n");
-        membrane->addVariable(n);
-        auto g_K = libcellml::Variable::create("g_K");
-        membrane->addVariable(g_K);
-        auto E_K = libcellml::Variable::create("E_K");
-        membrane->addVariable(E_K);
-
         n->setInterfaceType("public_and_private");
-        g_K->setInterfaceType("public_and_private");
-        E_K->setInterfaceType("public_and_private");
         n->setUnits("dimensionless");
+        model->component("membrane")->addVariable(n);
+
+        auto g_K = libcellml::Variable::create("g_K");
+        g_K->setInterfaceType("public_and_private");
         g_K->setUnits("milliS_per_cm2");
+        model->component("membrane")->addVariable(g_K);
+
+        auto E_K = libcellml::Variable::create("E_K");
+        E_K->setInterfaceType("public_and_private");
         E_K->setUnits("millivolt");
+        model->component("membrane")->addVariable(E_K);
     }
 
     // Concrete variables in the external parameters component:
@@ -305,17 +292,29 @@ int main()
     model->resolveImports("");
     assert(model->hasUnresolvedImports() == false);
 
+    validator->validateModel(controllerModel);
+    printErrorsToTerminal(validator);
+
     std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "  STEP 4: Import the leakage component           " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
     //  4.a Repeat all the tasks in Step 2, this time for the leakageCurrent component in
     //      the model supplied inside resources/tutorial8_LeakageModel.cellml.
+
+    std::string leakageFile = "tutorial8_LeakageCurrentModel.cellml";
+    {
+        auto temp = parser->parseModel(fileContents(leakageFile));
+        temp->resolveImports("");
+        temp->flatten();
+        printModelToTerminal(temp, false);
+    }
+
     auto leakage = libcellml::Component::create("leakage");
-    membrane->addComponent(leakage);
+    model->component("membrane")->addComponent(leakage);
 
     auto leakageImporter = libcellml::ImportSource::create();
-    leakageImporter->setUrl("tutorial8_LeakageCurrentModel.cellml");
+    leakageImporter->setUrl(leakageFile);
 
     leakage->setImportSource(leakageImporter);
     leakage->setImportReference("leakageCurrent");
@@ -339,12 +338,12 @@ int main()
         auto g_L = libcellml::Variable::create("g_L");
         g_L->setInterfaceType("public_and_private");
         g_L->setUnits("mS_per_cm2");
-        membrane->addVariable(g_L);
+        model->component("membrane")->addVariable(g_L);
 
         auto E_L = libcellml::Variable::create("E_L");
         E_L->setUnits("mV");
         E_L->setInterfaceType("public_and_private");
-        membrane->addVariable(E_L);
+        model->component("membrane")->addVariable(E_L);
     }
 
     // Concrete variables in the external parameters component:
@@ -362,6 +361,9 @@ int main()
 
     model->resolveImports("");
     assert(model->hasUnresolvedImports() == false);
+
+    validator->validateModel(controllerModel);
+    printErrorsToTerminal(validator);
 
     std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "  STEP 5: Export the parameters                  " << std::endl;
@@ -497,37 +499,37 @@ int main()
     //          - gating variables (h, m, n): membrane -> channels
     //          - Cm: parameters -> membrane
 
-    assert(libcellml::Variable::addEquivalence(parameters->variable("V"), membrane->variable("V")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("Cm"), membrane->variable("Cm")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("h"), membrane->variable("h")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("m"), membrane->variable("m")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("n"), membrane->variable("n")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("g_K"), membrane->variable("g_K")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("g_Na"), membrane->variable("g_Na")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("g_L"), membrane->variable("g_L")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("E_K"), membrane->variable("E_K")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("E_Na"), membrane->variable("E_Na")));
-    assert(libcellml::Variable::addEquivalence(parameters->variable("E_L"), membrane->variable("E_L")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("V"), model->component("membrane")->variable("V")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("Cm"), model->component("membrane")->variable("Cm")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("h"), model->component("membrane")->variable("h")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("m"), model->component("membrane")->variable("m")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("n"), model->component("membrane")->variable("n")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("g_K"), model->component("membrane")->variable("g_K")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("g_Na"), model->component("membrane")->variable("g_Na")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("g_L"), model->component("membrane")->variable("g_L")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("E_K"), model->component("membrane")->variable("E_K")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("E_Na"), model->component("membrane")->variable("E_Na")));
+    assert(libcellml::Variable::addEquivalence(parameters->variable("E_L"), model->component("membrane")->variable("E_L")));
 
-    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("i_Na"), sodiumChannel->variable("i_Na")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("E_Na"), sodiumChannel->variable("E_Na")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("g_Na"), sodiumChannel->variable("g_Na")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("h"), sodiumChannel->variable("h")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("m"), sodiumChannel->variable("m")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("V"), sodiumChannel->variable("V")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("t"), sodiumChannel->variable("t")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("i_Na"), sodiumChannel->variable("i_Na")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("E_Na"), sodiumChannel->variable("E_Na")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("g_Na"), sodiumChannel->variable("g_Na")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("h"), sodiumChannel->variable("h")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("m"), sodiumChannel->variable("m")));
 
-    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("i_K"), potassiumChannel->variable("i_K")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("E_K"), potassiumChannel->variable("E_K")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("g_K"), potassiumChannel->variable("g_K")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("n"), potassiumChannel->variable("n")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("V"), potassiumChannel->variable("V")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("t"), potassiumChannel->variable("t")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("i_K"), potassiumChannel->variable("i_K")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("E_K"), potassiumChannel->variable("E_K")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("g_K"), potassiumChannel->variable("g_K")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("n"), potassiumChannel->variable("n")));
 
-    assert(libcellml::Variable::addEquivalence(membrane->variable("V"), leakage->variable("V")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("i_L"), leakage->variable("i_L")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("g_L"), leakage->variable("g_L")));
-    assert(libcellml::Variable::addEquivalence(membrane->variable("E_L"), leakage->variable("E_L")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("V"), leakage->variable("V")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("i_L"), leakage->variable("i_L")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("g_L"), leakage->variable("g_L")));
+    assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("E_L"), leakage->variable("E_L")));
 
     //  7.b Serialise and write the model to a CellML file.  In the steps below the model will
     //      be flattened for code generation, but we need to keep an unflattened copy too.
