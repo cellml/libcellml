@@ -13,27 +13,23 @@ void printModelToTerminal(libcellml::ModelPtr &model)
 
 void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths)
 {
-    std::cout << "The model name is: '" << model->name() << "'" << std::endl;
+    std::string spacer = "    ";
+
+    std::cout << " MODEL: '" << model->name() << "'";
     if (model->id() != "") {
-        std::cout << "The model id is: '" << model->id() << "'" << std::endl;
+        std::cout << ", id: '" << model->id() << "'";
     }
+    std::cout << std::endl;
 
-    // 2.a    Print any custom units of the model
-    std::cout << "The model defines " << model->unitsCount()
-              << " custom units:" << std::endl;
+    std::cout << spacer << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
     for (size_t u = 0; u < model->unitsCount(); ++u) {
-        std::cout << "  Units[" << u << "] is '" << model->units(u)->name() << "'"
-                  << std::endl;
+        std::cout << spacer << spacer << "[" << u << "]: " << model->units(u)->name() << std::endl;
     }
 
-    // 2.b    Print the components of the model
-    std::cout << "The model has " << model->componentCount()
-              << " components:" << std::endl;
+    std::cout << spacer << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
     for (size_t c = 0; c < model->componentCount(); ++c) {
-        // 2.c  Printing the attributes of the component
         auto component = model->component(c);
-        std::string spacer = "  ";
-        printComponentToTerminal(component, c, spacer, includeMaths);
+        printComponentToTerminal(component, c, spacer + spacer, includeMaths);
     }
 }
 
@@ -44,35 +40,48 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
 
 void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths)
 {
-    std::cout << spacer << "Component[" << c << "] has name: '"
-              << component->name() << "'" << std::endl;
-    if (component->id() != "") {
-        std::cout << spacer << "Component[" << c << "] has id: '"
-                  << component->id() << "'" << std::endl;
-    }
+    std::string local = "    ";
 
-    std::cout << spacer << "Component[" << c << "] has "
-              << component->variableCount()
-              << " variables:" << std::endl;
+    std::cout << spacer << "[" << c << "]: " << component->name();
+    if (component->id() != "") {
+        std::cout << " id: " << component->id();
+    }
+    std::cout << std::endl;
+
+    std::cout << spacer << local << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
 
     // Printing the variables within the component.
     for (size_t v = 0; v < component->variableCount(); v++) {
-        std::cout << spacer << "  Variable[" << v << "] has name: '"
-                  << component->variable(v)->name() << "'" << std::endl;
-        if (component->variable(v)->initialValue() != "") {
-            std::cout << spacer << "  Variable[" << v << "] has initial_value: '"
-                      << component->variable(v)->initialValue() << "'"
-                      << std::endl;
-        }
+        std::cout << spacer << local << local;
+        std::cout << "[" << v << "]: " << component->variable(v)->name();
         if (component->variable(v)->units() != nullptr) {
-            std::cout << spacer << "  Variable[" << v << "] has units: '"
-                      << component->variable(v)->units()->name() << "'" << std::endl;
+            std::cout << " [" << component->variable(v)->units()->name() << "]";
         }
-        std::cout << spacer << "  Variable[" << v << "] has " << component->variable(v)->equivalentVariableCount() << " equivalent variables: " << std::endl;
-        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
-            auto ev = component->variable(v)->equivalentVariable(e);
-            libcellml::ComponentPtr ev_parent = std::dynamic_pointer_cast<libcellml::Component>(ev->parent());
-            std::cout << spacer << "      - " << ev_parent->name() << " -> " << ev->name() << " [" << ev->units()->name() << "]" << std::endl;
+        if (component->variable(v)->initialValue() != "") {
+            std::cout << ", initial = " << component->variable(v)->initialValue();
+        }
+        std::cout << std::endl;
+        if (component->variable(v)->equivalentVariableCount() > 0) {
+            std::cout << spacer << local << local << local;
+            std::string con = "  └──> ";
+            for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+                auto ev = component->variable(v)->equivalentVariable(e);
+                if (ev == nullptr) {
+                    std::cout << "WHOOPS! Null equivalent variable!";
+                    continue;
+                }
+                libcellml::ComponentPtr ev_parent = std::dynamic_pointer_cast<libcellml::Component>(ev->parent());
+                if (ev_parent == nullptr) {
+                    std::cout << "WHOOPS! Null parent component for equivalent variable!";
+                    continue;
+                }
+                std::cout << con << ev_parent->name() << ":" << ev->name();
+                if (ev->units() != nullptr) {
+                    std::cout << " [" << ev->units()->name() << "]";
+                }
+                con = ", ";
+            }
+            std::cout << std::endl;
         }
     }
 
@@ -86,13 +95,13 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
 
     // Print the encapsulated components
     if (component->componentCount() > 0) {
-        std::cout << spacer << "Component[" << c << "] has "
+        std::cout << spacer << local << "COMPONENT " << component->name() << " has "
                   << component->componentCount()
                   << " child components:" << std::endl;
 
         for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
             auto child = component->component(c2);
-            std::string oneMoreSpacer = spacer + "  ";
+            std::string oneMoreSpacer = spacer + local + local;
             printComponentToTerminal(child, c2, oneMoreSpacer, includeMaths);
         }
     }

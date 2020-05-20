@@ -14,17 +14,21 @@ int main()
 {
     auto validator = libcellml::Validator::create();
 
-    // 0.a  Create a new controller model, containing the controller component and a parameters component.
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 1: Create the external parameters model   " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    // 1.a  Create a new controller model, containing the controller component and a parameters component.
     //      This will be written separately to the main model so that its values can be changed easily.
     auto controllerModel = libcellml::Model::create("Tutorial8_parameters");
     auto parameters = libcellml::Component::create("parameters");
     controllerModel->addComponent(parameters);
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 1: Parse the membrane model               " << std::endl;
+    std::cout << "  STEP 2: Parse the membrane model               " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  1.a Create a Parser and use it to read in the contents of the resources/tutorial8_MembraneModel.cellml
+    //  2.a Create a Parser and use it to read in the contents of the resources/tutorial8_MembraneModel.cellml
     //      file provided.  Use this to create a new model instance.
     //      Note that the only reason to *parse* and not *import* this model is because we need to change it.
     //      The changes will involve:
@@ -36,17 +40,30 @@ int main()
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("tutorial8_MembraneModel.cellml"));
 
-    //  1.b Print the parsed model to the terminal and verify that it contains:
-    //      - 4 units
-    //      - 1 component with
-    //          - 8 variables
-    //          - a mathml block
+    //  2.b Print the parsed model to the terminal and verify it contains:
+    //  MODEL: 'Tutorial8_MembraneModel'
+    //     UNITS: 5 custom units
+    //         [0]: mV
+    //         [1]: ms
+    //         [2]: mS_per_cm2
+    //         [3]: microA_per_cm2
+    //         [4]: microF_per_cm2
+    //     COMPONENTS: 1 components
+    //         [0]: membrane
+    //             VARIABLES: 7 variables
+    //                 [0]: V [mV]                  integrated variable, initialised by parameters component
+    //                 [1]: t [ms]                  base variable of integration
+    //                 [2]: i_K [microA_per_cm2]    potassium current, calculated by imported component
+    //                 [3]: i_Na [microA_per_cm2]   sodium current, calculated by imported componnet
+    //                 [4]: i_L [microA_per_cm2]    leakage current, calculated by imported component
+    //                 [5]: i_stim [microA_per_cm2] stimulus current, specified locally in the membrane
+    //                 [6]: Cm [microF_per_cm2]     constant, membrane capacitance, initialised by parameters component
     printModelToTerminal(model, false);
 
-    //  1.c Because we want to be able to initialise the variables in this component, we need to
-    //      add the corresponding variables into the parameters component.  These will be variables:
-    //      - Cm [micro Farads per square centimetre]
-    //      - V [millivolts].
+    //  2.c Because we want to be able to initialise the variables in this component, we need to
+    //      add the corresponding variables into the parameters component.  Looking at your print out
+    //      of the component above, any variables which need to be initialised will need to be added
+    //      in to the external parameters component too.  Here, they are Cm and V.
     //      Add two variables to the parameters component, with an interface type of "public".
     //      You will need to keep track of the units which you add to this component as you go, and
     //      add in any new ones.  In this case, both are new and will need to be created and added
@@ -73,7 +90,7 @@ int main()
     }
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 2: Import the sodium channel component    " << std::endl;
+    std::cout << "  STEP 3: Import the sodium channel component    " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
     //  In order to use the import functionality we need to know three things:
@@ -83,7 +100,7 @@ int main()
     //  We'll address these now.
     std::string sodiumChannelFile = "tutorial7_SodiumChannelModel.cellml";
 
-    //  2.a First we need to know the contents of the component we're importing.  This step is necessary
+    //  3.a First we need to know the contents of the component we're importing.  This step is necessary
     //      so that we can create dummy variables with the same name and units in step 2.e.
     //      If you don't happen to know the contents of the components, simply parse the models
     //      and print them to the terminal for viewing.
@@ -94,25 +111,27 @@ int main()
         printModelToTerminal(temp, false);
     }
 
-    //  2.b Create a component representing the sodium channel.  This will be encapsulated inside the membrane
+    //  3.b Create a component representing the sodium channel.  This will be encapsulated inside the membrane
     //      component, so add it there instead of adding it to the model.
     auto sodiumChannel = libcellml::Component::create("sodium_channel");
     model->component("membrane")->addComponent(sodiumChannel);
 
-    //  2.c Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
+    //  3.c Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
     //      Note that you will need to make sure it exists in the same path as the earlier files.
     //      If you did not complete Tutorial 7 you can use the tutorial7_SodiumChannelModel.cellml
     //      file in the resources folder.
     auto sodiumImporter = libcellml::ImportSource::create();
     sodiumImporter->setUrl(sodiumChannelFile);
 
-    //  2.d Link the sodium channel component to the importer and set the reference to import.
+    //  3.d Link the sodium channel component to the importer and set the reference to import.
     //      In the file provided this is named "sodiumChannel".  You will need to change this to
     //      whatever you named the component in Tutorial 7.
     sodiumChannel->setImportSource(sodiumImporter);
     sodiumChannel->setImportReference("sodiumChannel");
 
-    //  2.e Create dummy variables in the sodium channel for voltage, time, and current.
+    //  3.e Looking at your printout in step 3.a, any variables in the imported model which were
+    //      connected to its local parameters or controller components will now need to be connected
+    //      to its new membrane component parent instead.
     //      Dummy variables are those which already exist in the component to be imported, but must be
     //      added here manually so that we can create the connections between equivalent variables before
     //      flattening the model.
@@ -124,14 +143,6 @@ int main()
         sodiumChannel->addVariable(t);
         auto i_Na = libcellml::Variable::create("i_Na");
         sodiumChannel->addVariable(i_Na);
-    }
-    //  2.f Create dummy variables for m and h gate status here so that their initial values can be passed to the
-    //      gate components, which are child components of the sodium channel.  Even though this component doesn't
-    //      use them, the gate components cannot connect directly to the parameters component at the top level,
-    //      so these intermediate variables are needed.
-    //      Add variables for h, m, g_Na, and E_Na to the sodium channel component.
-    //      Because these are dummy variables will be overwritten, you do not need to specify units or interfaces.
-    {
         auto h = libcellml::Variable::create("h");
         sodiumChannel->addVariable(h);
         auto m = libcellml::Variable::create("m");
@@ -142,7 +153,7 @@ int main()
         sodiumChannel->addVariable(E_Na);
     }
 
-    //  2.g Because any values for initialisation must also be passed through the membrane component, we have to
+    //  3.g Because any values for initialisation must also be passed through the membrane component, we have to
     //      add intermediate variables for h, m, g_Na, and E_Na there too.
     //      Because these are concrete variables (ie: they will not be overwritten by an import), you will need
     //      to specify units and interfaces.  Note that because these variables will need to connect to child
@@ -169,8 +180,8 @@ int main()
         model->component("membrane")->addVariable(E_Na);
     }
 
-    //  2.h Create concrete variables in the external parameters component, where their initial values will
-    //      be set (eventually).  As you did in step 1.c you'll need to also add any units that these variables
+    //  3.h Create concrete variables in the external parameters component, where their initial values will
+    //      be set (eventually).  As you did in step 2.c you'll need to also add any units that these variables
     //      need into the controller model too.
     //      Create variables for h, m, E_Na, g_Na.
     //      Create the units for the g_Na term of milli Siemens per cm^2 and add them to the controller model.
@@ -205,14 +216,11 @@ int main()
     model->resolveImports("");
     assert(model->hasUnresolvedImports() == false);
 
-    validator->validateModel(controllerModel);
-    printErrorsToTerminal(validator);
-
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 3: Import the potassium channel component " << std::endl;
+    std::cout << "  STEP 4: Import the potassium channel component " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  3.a Repeat all the tasks in Step 2, this time for the potassium channel model you created in
+    //  4.a Repeat all the tasks in Step 3, this time for the potassium channel model you created in
     //      Tutorial 6.  If you did not complete Tutorial 6 you can use the tutorial6_PotassiumChannelModel.cellml
     //      from the resources folder, importing the component called "potassiumChannel".
     //      The dummy variables involved are: V, t, i_K, n, g_K, and E_K.
@@ -292,14 +300,11 @@ int main()
     model->resolveImports("");
     assert(model->hasUnresolvedImports() == false);
 
-    validator->validateModel(controllerModel);
-    printErrorsToTerminal(validator);
-
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 4: Import the leakage component           " << std::endl;
+    std::cout << "  STEP 5: Import the leakage component           " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  4.a Repeat all the tasks in Step 2, this time for the leakageCurrent component in
+    //  5.a Repeat all the tasks in Step 3, this time for the leakageCurrent component in
     //      the model supplied inside resources/tutorial8_LeakageModel.cellml.
 
     std::string leakageFile = "tutorial8_LeakageCurrentModel.cellml";
@@ -366,10 +371,10 @@ int main()
     printErrorsToTerminal(validator);
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 5: Export the parameters                  " << std::endl;
+    std::cout << "  STEP 6: Export the parameters                  " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  5.a Now that we've imported all the components and added the variables which
+    //  6.a Now that we've imported all the components and added the variables which
     //      need initial values into the parameters component, we can write the controller
     //      model (which contains that parameters component) to a separate file.
     //      This makes it easier to locate the parameters of interest and change them later.
@@ -418,26 +423,26 @@ int main()
         parameters->variable("Cm")->setInitialValue(1);
     }
 
-    //  5.b Validate the controller model and expect there to be no errors.  You may need to
+    //  6.b Validate the controller model and expect there to be no errors.  You may need to
     //      link the units if you find errors related to missing units.
     controllerModel->linkUnits();
     validator->validateModel(controllerModel);
     printErrorsToTerminal(validator);
 
-    //  5.c Create a Printer instance, and serialise the controller model for output to a
+    //  6.c Create a Printer instance, and serialise the controller model for output to a
     //      file.  Name your file appropriately - you will need to use its name to import
-    //      it in step 6.
+    //      it in step 7.
     auto printer = libcellml::Printer::create();
     std::ofstream outFile("tutorial8_HodgkinHuxley_controller.cellml");
     outFile << printer->printModel(controllerModel);
     outFile.close();
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 6: Import the parameters                  " << std::endl;
+    std::cout << "  STEP 7: Import the parameters                  " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  6.a Repeat the tasks in Step 2.a-c, this time for the parameters component
-    //      in the model which you wrote in step 5.c.
+    //  7.a Repeat the tasks in Step 3.a-c, this time for the parameters component
+    //      in the model which you wrote in step 6.c.
     //      You will need to use the same names for the file and the parameter
     //      component as you wrote earlier.
     parameters = libcellml::Component::create("parameters");
@@ -449,7 +454,7 @@ int main()
     parameters->setImportSource(parametersImporter);
     parameters->setImportReference("parameters");
 
-    //  6.b Set up dummy variables for all of the variables in the parameters component
+    //  7.b Set up dummy variables for all of the variables in the parameters component
     //      so that they can be connected before flattening the model.
     //      Because these dummy variables will be overwritten, you do not need to specify
     //      the interface types, initial values, or units.
@@ -486,10 +491,10 @@ int main()
     }
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 7: Connect variables between components   " << std::endl;
+    std::cout << "  STEP 8: Connect variables between components   " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  7.a Now that we've got all the imports done, we need to connect the imported
+    //  8.a Now that we've got all the imports done, we need to connect the imported
     //      components and their dummy variables together.  The variables to connect are:
     //          - voltage:  parameters -> membrane -> sodium channel, potassium channel, leakage
     //          - time: membrane -> sodium channel, potassium channel
@@ -531,36 +536,36 @@ int main()
     assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("g_L"), leakage->variable("g_L")));
     assert(libcellml::Variable::addEquivalence(model->component("membrane")->variable("E_L"), leakage->variable("E_L")));
 
-    //  7.b Serialise and write the model to a CellML file.  In the steps below the model will
+    //  8.b Serialise and write the model to a CellML file.  In the steps below the model will
     //      be flattened for code generation, but we need to keep an unflattened copy too.
     outFile.open("tutorial8_HodgkinHuxleyModel.cellml");
     outFile << printer->printModel(model);
     outFile.close();
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 8: Resolve imports and flatten the model  " << std::endl;
+    std::cout << "  STEP 9: Resolve imports and flatten the model  " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  8.a Resolve the model's imports to the folder where all of the files are located, and
+    //  9.a Resolve the model's imports to the folder where all of the files are located, and
     //      check that there are no unresolved imports outstanding.
     model->resolveImports("");
     assert(model->hasUnresolvedImports() == false);
 
-    //  8.b Flatten the model, and print the flattened model structure to the terminal for checking.
+    //  9.b Flatten the model, and print the flattened model structure to the terminal for checking.
     model->flatten();
     printEncapsulationStructureToTerminal(model);
     printModelToTerminal(model, false);
 
-    //  8.c Validate the flattened model, expecting that there are no errors.
+    //  9.c Validate the flattened model, expecting that there are no errors.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
     assert(validator->errorCount() == 0);
 
     std::cout << "-------------------------------------------------" << std::endl;
-    std::cout << "  STEP 9: Generate the model and output          " << std::endl;
+    std::cout << "  STEP 10: Generate the model and output          " << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    //  9.a Create a Generator instance and submit the model for processing.
+    //  10.a Create a Generator instance and submit the model for processing.
     //      Expect that there are no errors logged in the generator afterwards.
     auto generator = libcellml::Generator::create();
     generator->processModel(model);
@@ -568,7 +573,7 @@ int main()
 
     assert(generator->errorCount() == 0);
 
-    //  9.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
+    //  10.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
     outFile.open("tutorial8_HodgkinHuxleyModel.h");
     outFile << generator->interfaceCode();
     outFile.close();
@@ -577,12 +582,12 @@ int main()
     outFile << generator->implementationCode();
     outFile.close();
 
-    //  9.c Change the generator profile to Python and reprocess the model.
+    //  10.c Change the generator profile to Python and reprocess the model.
     auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
     generator->setProfile(profile);
     generator->processModel(model);
 
-    //  9.d Retrieve and write the implementation code (*.py) to a file.
+    //  10.d Retrieve and write the implementation code (*.py) to a file.
     outFile.open("tutorial8_HodgkinHuxleyModel.py");
     outFile << generator->implementationCode();
     outFile.close();
@@ -590,6 +595,6 @@ int main()
     std::cout << "The model has been output into tutorial8_HodgkinHuxleyModel.[c,h,py,cellml]"
               << std::endl;
 
-    //  9.e Please seen the tutorial instructions for how to run this simulation using
+    //  10.e Please seen the tutorial instructions for how to run this simulation using
     //      the simple solver provided.  Then go and have a cuppa, you're done!
 }
