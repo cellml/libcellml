@@ -216,8 +216,8 @@ Sodium channel parameters:
 
 .. math::
 
-   E_Na(t=0) = 40 \\
-   g_Na(t=0) = 120 \\
+   E_{Na}(t=0) = 40 \\
+   g_{Na}(t=0) = 120 \\
    h(t=0) = 0.6 \\
    m(t=0) = 0.05
 
