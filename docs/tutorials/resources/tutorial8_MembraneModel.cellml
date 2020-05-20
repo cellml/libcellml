@@ -18,7 +18,7 @@
     <unit prefix="micro" units="farad"/>
     <unit exponent="-2" prefix="centi" units="metre"/>
   </units>
-  <component name="membrane_for_importing">
+  <component name="membrane">
     <variable name="V" units="mV" interface="public_and_private"/>
     <variable name="t" units="ms" interface="public_and_private"/>
     <variable name="i_K" units="microA_per_cm2" interface="public_and_private"/>

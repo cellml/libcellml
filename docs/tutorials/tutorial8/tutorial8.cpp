@@ -1,14 +1,6 @@
 /**
- *      TUTORIAL 6: CODE GENERATION
+ *      TUTORIAL 8: IMPORTS and FLATTENING
  *
- *  This tutorial explores the ability of libCellML to generate files representing
- *  the model which can be solved in Python or C.  By the time you have worked
- *  through Tutorial 6 you will be able to:
- *      - use the Generator functionality to create models in Python or C format
- *      - use the simple solver provided to run the created models.
- *
- *  Tutorial 6 assumes that you are already comfortable with:
- *      - file manipulation and summarising using the utility functions
  *
  */
 
@@ -20,314 +12,210 @@
 
 int main()
 {
-    //  0.a Create a new model instance representing the combined model and name it.
-    auto model = libcellml::Model::create("Tutorial8_HHModel");
     auto validator = libcellml::Validator::create();
-    auto parser = libcellml::Parser::create();
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 1: Read the membrane component" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 1: Create the external parameters model   " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    //  1.a Read the model provided for you in the "tutorial8_MembraneModel.cellml"
+    // 1.a  Create a new controller model, containing the controller component and a parameters component.
+    //      This will be written separately to the main model so that its values can be changed easily.
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 2: Parse the membrane model               " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  2.a Create a Parser and use it to read in the contents of the resources/tutorial8_MembraneModel.cellml
+    //      file provided.  Use this to create a new model instance.
+    //      Note that the only reason to *parse* and not *import* this model is because we need to change it.
+    //      The changes will involve:
+    //          - Adding encapsulated components (in steps 2-4);
+    //          - Adding intermediate variables to allow for initialisation of those components (steps 2-4);
+    //          - Creating connections to external parameters components (step 5); and
+    //          - Creating connections to the encapsulated components' variables (step 7).
+
+    //  2.b Print the parsed model to the terminal and verify it contains:
+    //  MODEL: 'Tutorial8_MembraneModel'
+    //     UNITS: 5 custom units
+    //         [0]: mV
+    //         [1]: ms
+    //         [2]: mS_per_cm2
+    //         [3]: microA_per_cm2
+    //         [4]: microF_per_cm2
+    //     COMPONENTS: 1 components
+    //         [0]: membrane
+    //             VARIABLES: 7 variables
+    //                 [0]: V [mV]                  integrated variable, initialised by parameters component
+    //                 [1]: t [ms]                  base variable of integration
+    //                 [2]: i_K [microA_per_cm2]    potassium current, calculated by imported component
+    //                 [3]: i_Na [microA_per_cm2]   sodium current, calculated by imported componnet
+    //                 [4]: i_L [microA_per_cm2]    leakage current, calculated by imported component
+    //                 [5]: i_stim [microA_per_cm2] stimulus current, specified locally in the membrane
+    //                 [6]: Cm [microF_per_cm2]     constant, membrane capacitance, initialised by parameters component
+
+    //  2.c Because we want to be able to initialise the variables in this component, we need to
+    //      add the corresponding variables into the parameters component.  Looking at your print out
+    //      of the component above, any variables which need to be initialised will need to be added
+    //      in to the external parameters component too.  Here, they are Cm and V.
+    //      Add two variables to the parameters component, with an interface type of "public".
+    //      You will need to keep track of the units which you add to this component as you go, and
+    //      add in any new ones.  In this case, both are new and will need to be created and added
+    //      to the controller model as normal.
+
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 3: Import the sodium channel component    " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+
+    //  In order to use the import functionality we need to know three things:
+    //      - the import destination (the component/unit to which the imported item will be assigned)
+    //      - the file we're importing it from (the url to the model containing the item to be imported)
+    //      - which item within the file should be imported (the name of the component/units inside the import model file)
+    //  We'll address these now.
+
+    //  3.a First we need to know the contents of the component we're importing.  This step is necessary
+    //      so that we can create dummy variables with the same name and units in step 2.e.
+    //      If you don't happen to know the contents of the components, simply parse the models
+    //      and print them to the terminal for viewing.
+
+    //  3.b Create a component representing the sodium channel.  This will be encapsulated inside the membrane
+    //      component, so add it there instead of adding it to the model.
+
+    //  3.c Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
+    //      Note that you will need to make sure it exists in the same path as the earlier files.
+    //      If you did not complete Tutorial 7 you can use the tutorial7_SodiumChannelModel.cellml
     //      file in the resources folder.
-    std::string inFileName = "../resources/tutorial8_MembraneModel.cellml";
-    std::ifstream inFile(inFileName);
-    std::stringstream inFileContents;
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
 
-    // 1.b  Create a temporary model for the membrane
-    auto membraneModel = parser->parseModel(inFileContents.str());
-    membraneModel->setName("membraneModel");
+    //  3.d Link the sodium channel component to the importer and set the reference to import.
+    //      In the file provided this is named "sodiumChannel".  You will need to change this to
+    //      whatever you named the component in Tutorial 7.
 
-    //  1.b Extract the membrane component from the parsed model and add it
-    //      to the combined model.  Note that the membrane component's parent
-    //      must be cleared before adding it to the model.
-    auto membrane = membraneModel->component("membrane");
-    membrane->removeParent();
-    model->addComponent(membrane);
+    //  3.e Looking at your printout in step 3.a, any variables in the imported model which were
+    //      connected to its local parameters or controller components will now need to be connected
+    //      to its new membrane component parent instead.
+    //      Dummy variables are those which already exist in the component to be imported, but must be
+    //      added here manually so that we can create the connections between equivalent variables before
+    //      flattening the model.
+    //      Because these are dummy variables will be overwritten, you do not need to specify units or interfaces.
 
-    //  1.c Validate the combined model.  We expect to see errors from:
-    //      - missing units, as we have only added the component so far
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    //  3.g Because any values for initialisation must also be passed through the membrane component, we have to
+    //      add intermediate variables for h, m, g_Na, and E_Na there too.
+    //      Because these are concrete variables (ie: they will not be overwritten by an import), you will need
+    //      to specify units and interfaces.  Note that because these variables will need to connect to child
+    //      components as well as sibling components, they should have the interface type "public_and_private".
 
-    //  1.d Import the units from the membraneModel into the combined model
-    for (size_t u = 0; u < membraneModel->unitsCount(); ++u) {
-        model->addUnits(membraneModel->units(u));
-    }
+    //  3.h Create concrete variables in the external parameters component, where their initial values will
+    //      be set (eventually).  As you did in step 2.c you'll need to also add any units that these variables
+    //      need into the controller model too.
+    //      Create variables for h, m, E_Na, g_Na.
+    //      Create the units for the g_Na term of milli Siemens per cm^2 and add them to the controller model.
 
-    //  1.e No errors expected this time :)
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 4: Import the potassium channel component " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "      STEP 2: Read the sodium channel" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    //  4.a Repeat all the tasks in Step 3, this time for the potassium channel model you created in
+    //      Tutorial 6.  If you did not complete Tutorial 6 you can use the tutorial6_PotassiumChannelModel.cellml
+    //      from the resources folder, importing the component called "potassiumChannel".
+    //      The dummy variables involved are: V, t, i_K, n, g_K, and E_K.
 
-    //  2.a Read the model created in Tutorial 7 representing the sodium channel.
-    //      Note that if you didn't do that tutorial you can simply copy the CellML file
-    //      from tutorial7_SodiumChannelModel.cellml in the resources folder.
-    inFileName = "../resources/tutorial7_SodiumChannelModel.cellml";
-    inFile.close();
-    inFile.open(inFileName);
-    std::stringstream().swap(inFileContents);
-    inFileContents << inFile.rdbuf();
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 5: Import the leakage component           " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
+    //  5.a Repeat all the tasks in Step 3, this time for the leakageCurrent component in
+    //      the model supplied inside resources/tutorial8_LeakageModel.cellml.
 
-    auto sodiumChannelModel = parser->parseModel(inFileContents.str());
-    sodiumChannelModel->setName("sodiumChannelModel");
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 6: Export the parameters                  " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    //  2.b Extract the sodiumChannel component from the parsed model and add it
-    //      to the one created at the beginning, and check the structure of the
-    //      encapsulation using the utility function printEncapsulationStructureToTerminal(model)
-    auto sodiumChannel = sodiumChannelModel->component("sodiumChannel");
-    sodiumChannel->removeParent();
-    membrane->addComponent(sodiumChannel);
-    printEncapsulationStructureToTerminal(model);
+    //  6.a Now that we've imported all the components and added the variables which
+    //      need initial values into the parameters component, we can write the controller
+    //      model (which contains that parameters component) to a separate file.
+    //      This makes it easier to locate the parameters of interest and change them later.
 
-    //  2.c Validate the combined model.  We expect to see errors from:
-    //      - missing units, as we have only added the component so far,
-    //      - illegal connections between equivalent varaibles, as now the environment
-    //        component and the sodiumChannel component are no longer siblings.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    //      Set the initial conditions in the parameters component of:
+    //      sodium channel
+    //          E_Na(t=0) = 40
+    //          g_Na(t=0) = 120
+    //      h-gate
+    //          h(t=0) = 0.6
+    //      m-gate
+    //          m(t=0) = 0.05
+    //      potassium channel
+    //          E_K(t=0) = -87
+    //          g_K(t=0) = 36
+    //      n-gate
+    //          n(t=0) = 0.325
+    //      leakage current
+    //          g_L(t=0) = 0.3
+    //          E_L(t=0) = -64.387
+    //      membrane
+    //          V(t=0) = -75
+    //          Cm(t=0) = 1
 
-    //  2.d Add all of the units from the sodium channel model which are not already
-    //        present into the combined model.
-    for (size_t u = 0; u < sodiumChannelModel->unitsCount(); ++u) {
-        std::string unitName = sodiumChannelModel->units(u)->name();
-        if (!model->hasUnits(unitName)) {
-            std::cout << "Adding units called " << unitName << std::endl;
-            model->addUnits(sodiumChannelModel->units(u));
-        }
-    }
+    //  6.b Validate the controller model and expect there to be no errors.  You may need to
+    //      link the units if you find errors related to missing units.
 
-    //  2.e Disconnect the sodiumChannel from its old environment component
-    libcellml::Variable::removeEquivalence(
-        sodiumChannel->variable("t"),
-        sodiumChannelModel->component("environment")->variable("t"));
-    libcellml::Variable::removeEquivalence(
-        sodiumChannel->variable("V"),
-        sodiumChannelModel->component("environment")->variable("V"));
+    //  6.c Create a Printer instance, and serialise the controller model for output to a
+    //      file.  Name your file appropriately - you will need to use its name to import
+    //      it in step 7.
 
-    //  2.f Validate that there are no more errors in the combined model
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 7: Import the parameters                  " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "       STEP 3: Read the potassium channel" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    //  7.a Repeat the tasks in Step 3.a-c, this time for the parameters component
+    //      in the model which you wrote in step 6.c.
+    //      You will need to use the same names for the file and the parameter
+    //      component as you wrote earlier.
 
-    inFileName = "../resources/tutorial5_PotassiumChannelModel.cellml";
-    inFile.close();
-    inFile.open(inFileName);
-    std::stringstream().swap(inFileContents);
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
+    //  7.b Set up dummy variables for all of the variables in the parameters component
+    //      so that they can be connected before flattening the model.
+    //      Because these dummy variables will be overwritten, you do not need to specify
+    //      the interface types, initial values, or units.
 
-    //  3.a Deserialising the file and reading into the potassiumChannelModel
-    auto potassiumChannelModel = parser->parseModel(inFileContents.str());
-    potassiumChannelModel->setName("potassiumChannelModel");
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 8: Connect variables between components   " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    //  3.b Extract the potassiumChannel component from the parsed model and add it
-    //      to the combined model, and check the contents
-    auto potassiumChannel = potassiumChannelModel->component("potassiumChannel");
-    potassiumChannel->removeParent();
-    membrane->addComponent(potassiumChannel);
+    //  8.a Now that we've got all the imports done, we need to connect the imported
+    //      components and their dummy variables together.  The variables to connect are:
+    //          - voltage:  parameters -> membrane -> sodium channel, potassium channel, leakage
+    //          - time: membrane -> sodium channel, potassium channel
+    //          - current variables (i_Na, i_K, i_L): membrane -> channels
+    //          - conductance variables (g_Na, g_K, g_L): membrane -> channels
+    //          - potential variables (E_Na, E_K, E_L): membrane -> channels
+    //          - gating variables (h, m, n): membrane -> channels
+    //          - Cm: parameters -> membrane
 
-    //  3.c Validate the combined model.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    //  8.b Serialise and write the model to a CellML file.  In the steps below the model will
+    //      be flattened for code generation, but we need to keep an unflattened copy too.
 
-    //  If you have used the files provided in the Resources folder, you can expect
-    //  to see errors at this point relating to missing units.
-    //  This is because even though both components require the same set of units,
-    //  each of them has used different names for them.  At this stage you have a
-    //  choice: either import all the units under their original names from the
-    //  potassium channel as well, or rename the units throughout the potassiumChannel
-    //  variables and maths.  Here we'll go with the former to illustrate the
-    //  process, and to create a more compact model description.
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 9: Resolve imports and flatten the model  " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    //  3.d Rename the units referred to by the variables in the potassiumChannel and nGate components
-    potassiumChannel->variable("t")->setUnits("ms");
-    potassiumChannel->variable("V")->setUnits("mV");
-    potassiumChannel->variable("E_K")->setUnits("mV");
-    potassiumChannel->variable("g_K")->setUnits("mS_per_cm2");
-    potassiumChannel->variable("alpha_n")->setUnits("per_ms");
-    potassiumChannel->variable("beta_n")->setUnits("per_ms");
+    //  9.a Resolve the model's imports to the folder where all of the files are located, and
+    //      check that there are no unresolved imports outstanding.
 
-    potassiumChannel->component("nGate")->variable("t")->setUnits("ms");
-    potassiumChannel->component("nGate")->variable("V")->setUnits("mV");
-    potassiumChannel->component("nGate")->variable("alpha_n")->setUnits("per_ms");
-    potassiumChannel->component("nGate")->variable("beta_n")->setUnits("per_ms");
+    //  9.b Flatten the model, and print the flattened model structure to the terminal for checking.
 
-    //  3.e Replacing units in the MathML string in the nGate component.
-    //      Note: There are no constants in the potassiumChannel maths, so we don't need to
-    //      search and replace the maths there.  In the general case, you'd need to do the
-    //      same in that component too.
-    std::string nGateMaths = potassiumChannel->component("nGate")->math();
-    switchUnitsInMaths(nGateMaths, "millivolt", "mV");
-    switchUnitsInMaths(nGateMaths, "millisecond", "ms");
-    switchUnitsInMaths(nGateMaths, "per_millisecond", "per_ms");
-    switchUnitsInMaths(nGateMaths, "per_millivolt_millisecond", "per_mV_ms");
-    switchUnitsInMaths(nGateMaths, "milliS_per_cm2", "mS_per_cm2");
-    potassiumChannel->component("nGate")->setMath(nGateMaths);
+    //  9.c Validate the flattened model, expecting that there are no errors.
 
-    //  3.f Validating the model again.  This time we expect errors related to a mismatch in errors
-    //      between equivalent variables ... which is a misleading error message because in the
-    //      source model - PotassiumChannelModel, they *were* equivalent!  We haven't imported
-    //      the environment component into our combined model yet, and that is the origin of this
-    //      error.  We can solve the problem by creating the local environment component, and adding
-    //      the equivalence to that instead.
-    libcellml::Variable::removeEquivalence(
-        potassiumChannel->variable("t"),
-        potassiumChannelModel->component("environment")->variable("t"));
-    libcellml::Variable::removeEquivalence(
-        potassiumChannel->variable("V"),
-        potassiumChannelModel->component("environment")->variable("V"));
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "  STEP 10: Generate the model and output          " << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 
-    //  3.g Calling the validator again.  We do not expect errors here.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
+    //  10.a Create a Generator instance and submit the model for processing.
+    //      Expect that there are no errors logged in the generator afterwards.
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 4: Read the leakage component" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    //  10.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
 
-    inFileName = "../resources/tutorial8_LeakageCurrentModel.cellml";
-    inFile.close();
-    inFile.open(inFileName);
-    std::stringstream().swap(inFileContents);
-    inFileContents << inFile.rdbuf();
-    std::cout << "Opening the CellML file: '" << inFileName << "'" << std::endl;
+    //  10.c Change the generator profile to Python and reprocess the model.
 
-    //  4.a Deserialising the file and reading into the leakageCurrentModel
-    auto leakageCurrentModel = parser->parseModel(inFileContents.str());
-    leakageCurrentModel->setName("leakageCurrentModel");
+    //  10.d Retrieve and write the implementation code (*.py) to a file.
 
-    //  4.b Extract the leakageCurrent component from the parsed model and add it
-    //      to the combined model, and check the contents
-    auto leakageCurrent = leakageCurrentModel->component("leakageCurrent");
-    leakageCurrent->removeParent();
-    membrane->addComponent(leakageCurrent);
-
-    //  4.c Validate the combined model.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 5: Create the environment component" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    printEncapsulationStructureToTerminal(model);
-
-    //  5.a Creating the environment component and adding it to the model
-    auto environment = libcellml::Component::create("environment");
-    model->addComponent(environment);
-
-    //  5.b Add variables to the environment component.
-    {
-        auto V = libcellml::Variable::create("V");
-        V->setUnits("mV");
-        environment->addVariable(V);
-
-        auto t = libcellml::Variable::create("t");
-        t->setUnits("ms");
-        environment->addVariable(t);
-    } // end of the environment scope for variables
-
-    //  5.c Add the new component to the model and validate
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 6: Connect the equivalent variables" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  6.a Connecting the membrane to its sibling environment, and the channels to their
-    //      parent membrane component.
-    libcellml::Variable::addEquivalence(membrane->variable("t"), sodiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("t"), potassiumChannel->variable("t"));
-    libcellml::Variable::addEquivalence(environment->variable("t"), membrane->variable("t"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), sodiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), potassiumChannel->variable("V"));
-    libcellml::Variable::addEquivalence(membrane->variable("V"), leakageCurrent->variable("V"));
-    libcellml::Variable::addEquivalence(environment->variable("V"), membrane->variable("V"));
-
-    //  6.b Setting the interface types for those which haven't been inherited already
-    environment->variable("t")->setInterfaceType("public");
-    membrane->variable("t")->setInterfaceType("public_and_private");
-    environment->variable("V")->setInterfaceType("public");
-    membrane->variable("V")->setInterfaceType("public_and_private");
-
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 7: Add the driving function" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  7.a Create a MathML string to represent the stimulus current i_stim, which
-    //      is set to 100 microA/cm^2 between t=1ms < t < t=1.2ms.
-    std::string stimulusEquation =
-            "<apply><eq/>\n"
-            "    <ci>i_stim</ci>\n"
-            "    <piecewise>\n"
-            "        <piece>\n"
-            "            <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
-            "            <apply><lt/><ci>t</ci><cn cellml:units=\"ms\">1</cn></apply>\n"
-            "        </piece>\n"
-            "            <piece>\n"
-            "            <cn cellml:units=\"microA_per_cm2\">0</cn>\n"
-            "            <apply><gt/><ci>t</ci><cn cellml:units=\"ms\">1.2</cn></apply>\n"
-            "        </piece>\n"
-            "        <otherwise>\n"
-            "            <cn cellml:units=\"microA_per_cm2\">100</cn>\n"
-            "        </otherwise>\n"
-            "    </piecewise>\n"
-            "</apply>\n";
-
-    //  7.b Add before the closing </math> tag in the membrane component
-    std::string membraneMathML = membrane->math();
-    insertIntoMathMLString(membraneMathML, stimulusEquation);
-    membrane->setMath(membraneMathML);
-
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 8: Generate the model and initialise" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  8.a Create a Generator and submit the model for processing.  Expect errors
-    //      related to missing initial conditions.
-    auto generator = libcellml::Generator::create();
-    generator->processModel(model);
-    printErrorsToTerminal(generator);
-
-    //  8.b Initialise the values required.
-    environment->variables("V")->setInitialValue(-85);
-
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "   STEP 9: Output the final model" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-
-
-
-
-
-    auto printer=libcellml::Printer::create();
-    std::string serialisedModelString = printer->printModel(model);
-    std::string outFileName = "tutorial8_HodgkinHuxleyModel.cellml";
-    std::ofstream outFile(outFileName);
-    outFile << serialisedModelString;
-    outFile.close();
-
-    std::cout << "The created '" << model->name()
-              << "' model has been printed to: " << outFileName << std::endl;
+    //  10.e Please seen the tutorial instructions for how to run this simulation using
+    //      the simple solver provided.  Then go and have a cuppa, you're done!
 }
