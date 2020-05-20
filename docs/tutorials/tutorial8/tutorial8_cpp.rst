@@ -89,6 +89,7 @@ Our first job is to parse the membrane model so that we can edit it accordingly.
         [3]: i_Na [microA_per_cm2]   # sodium current, calculated by imported componnet
         [4]: i_L [microA_per_cm2]    # leakage current, calculated by imported component
         [5]: i_stim [microA_per_cm2] # stimulus current, specified locally in the membrane
+        [6]: Cm [microF_per_cm2]     # constant, membrane capacitance, initialised by the parameters component
 
 We want to be able to initialise the variables in this membrane component, so we need to add the corresponding variables into the parameters component, where their values will be stored.
 Looking at the print-out of the component above, the variables which need to have values set are :code:`Cm` and :code:`V`.
