@@ -215,29 +215,32 @@ This makes it easier to locate the parameters of interest and change them later.
 Sodium channel parameters:
 .. math::
 
-    E_Na(t=0) = 40 \\
-    g_Na(t=0) = 120 \\
-    h(t=0) = 0.6 \\
-    m(t=0) = 0.05
+   E_Na(t=0) = 40 \\
+   g_Na(t=0) = 120 \\
+   h(t=0) = 0.6 \\
+   m(t=0) = 0.05
 
 Potassium channel parameters:
+
 .. math::
 
-    E_K(t=0) = -87 \\
-    g_K(t=0) = 36 \\
-    n(t=0) = 0.325
+   E_K(t=0) = -87 \\
+   g_K(t=0) = 36 \\
+   n(t=0) = 0.325
 
 Leakage parameters:
+
 .. math::
 
-    g_L(t=0) = 0.3 \\
-    E_L(t=0) = -64.387
+   g_L(t=0) = 0.3 \\
+   E_L(t=0) = -64.387
 
 Membrane parameters:
+
 .. math::
 
-        V(t=0) = -75 \\
-        Cm(t=0) = 1
+   V(t=0) = -75 \\
+   Cm(t=0) = 1
 
 .. container:: dothis
 
