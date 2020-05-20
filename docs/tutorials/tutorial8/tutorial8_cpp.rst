@@ -26,6 +26,97 @@ please see the :ref:`Tutorial 8 in Python<tutorial8_py>` page instead.
 .. contents:: Contents
     :local:
 
+This tutorial combines four existing models into one: two are the ion channel models for potassium and sodium which were created in :ref:`Tutorial 6<tutorial6_cpp>` and :ref:`Tutorial 7<tutorial7>` respectively, plus two new ones provided here.
+The goal of the tutorial is to combine the coponents of these models such that the three currents - potassium, sodium, and a new leakage current - are children of the membrane component.
+
+Step 0: Set the stage
+=====================
+Before you begin it's a good idea to collect everything into one place.
+Later in the tutorial you'll be using imports, and these need to have one common root location per model in order to resolve them.
+We suggest putting all the file listed above into a single directory, whether you use the files from the resources directory or ones that you have created yourself in earlier tutorials.
+
+.. container:: dothis
+
+    **0.a** Move all of the required :code:`.cellml` files into a single directory location.
+
+It's also a good idea to understand what it is that you're doing here.
+For a full description of the biological theory, please see the :ref:`Hodgkin-Huxley background<hh_background>` document.
+You should be able to see the variables and maths inside the components as you go by simply printing them to the screen.
+
+Step 1: Create an external parameters model
+===========================================
+The goal of this tutorial is to create a model in which import functionality is used to give flexibility to the way in which the model can be simulated.
+This means that parameters for simulation - constant values, initial conditions, variables, driving functions - can be set in an external file without needing to change the model proper.
+For this reason, this tutorial will involve creating two CellML files: one containing the model, and one containing the controller and parameters.
+
+.. container:: dothis
+
+    **1.a** Create a new model instance to be the controller model, name it appropriately, and add to it a component for the parameters.
+
+As we go through the rest of the tutorial, you will be adding variables to this external parameters component.
+
+Step 2: Parse the membrane model
+================================
+Parsing and importing can - in certain cases - result in the same situtation (an instantiated model), but the have very different philisophies behind them.
+You can read more about that under the link below.
+
+.. include:: asides/import_vs_parse.rst
+
+Even though the membrane model is supplied, it will need to be changed to accommodate the new connections to the ion channel components.
+Each of these channels calculates a current (:code:`i_K`, :code:`i_Na`, and :code:`i_L`) which they supply to the membrane.
+The membrane can then integrate an ordinary differential equation for voltage based on these current values.
+
+Our first job is to parse the membrane model so that we can edit it accordingly.
+
+.. container:: dothis
+
+    **2.a** Create a :code:`Parser` and use it to deserialse the contents of the :code:`tutorial8_MembraneModel.cellml` file supplied into a new model instance.
+    This will be referred to as the "model", and the one you created in step 1.a as the "controller model" or "parameters component".
+
+.. container:: dothis
+
+    **2.b** Print the model to the screen.
+    You should see seven variables listed as below (annotation added).
+
+.. code-block:: console
+
+    ...
+    VARIABLES: 7 variables
+        [0]: V [mV]                  # integrated variable, initialised by parameters component
+        [1]: t [ms]                  # base variable of integration
+        [2]: i_K [microA_per_cm2]    # potassium current, calculated by imported component
+        [3]: i_Na [microA_per_cm2]   # sodium current, calculated by imported componnet
+        [4]: i_L [microA_per_cm2]    # leakage current, calculated by imported component
+        [5]: i_stim [microA_per_cm2] # stimulus current, specified locally in the membrane
+        [6]: Cm [microF_per_cm2]     # constant, membrane capacitance, initialised by parameters component
+
+We want to be able to initialise the variables in this membrane component, so we need to add the corresponding variables into the parameters component, where their values will be stored.
+Looking at the print-out of the component above, the variables which need to have values set are :code:`Cm` and :code:`V`.
+Create two new variables in the parameters component to represent these, and give each an interface type of "public".
+You will need to keep track of the units needed as you go, and add in any new ones.
+In this case, both are new and will need to be created and added to the controller model as normal.
+
+.. container:: dothis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Step 0: Set the stage
 =====================
 Before going much further it's probably a good idea to understand what it is that you're doing here.
@@ -62,7 +153,7 @@ Step 1: Import the membrane component
 .. container:: dothis
 
     **1.c** Thirdly we need to link our import source to the import destination using the :code:`Component::setImportSource()` function on the membrane component, and to use the :code:`Component::setImportReference()` function to specify the name of the component inside the import model to retrieve.
-    In this case, the component is named "membrane_for_importing".
+    In this case, the component is named "membrane".
 
 .. container:: dothis
 

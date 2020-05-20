@@ -10,7 +10,7 @@ available in the libCellML library.
 
 By the end of this tutorial you will be able to:
 
-- create complicated encapsulation structures to allow interdependency between
+- Create complicated encapsulation structures to allow interdependency between
   modelling components,
 - design and create files which allow easy reuse of components,
 - appreciate the consistency needed throughout the imports to avoid renaming
@@ -18,7 +18,6 @@ By the end of this tutorial you will be able to:
 
 Background
 ----------
-
 **TODO** Add the references to the cable equation and leakage stuff here ...
 
 C++ instructions
