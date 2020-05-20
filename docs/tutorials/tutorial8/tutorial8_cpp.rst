@@ -213,6 +213,7 @@ This makes it easier to locate the parameters of interest and change them later.
     **6.a** Set the initial conditions of variables in the parameters according to the values specified below.
 
 Sodium channel parameters:
+
 .. math::
 
    E_Na(t=0) = 40 \\
