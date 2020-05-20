@@ -10,21 +10,18 @@ please see the :ref:`Tutorial 8 in Python<tutorial8_py>` page instead.
 
 **Resources:**
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial
-    - :download:`tutorial8.cpp` Either the skeleton code, or ..
-    - :download:`tutorial8_complete.cpp` the completed tutorial code
+    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
+    - :download:`tutorial8.cpp` Either the skeleton code, or :download:`tutorial8_complete.cpp` the completed tutorial code;
     - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp` Utility functions for use in the tutorials.
-    - The following files are needed as inputs for this tutorial:
+
+   - The following files are needed as inputs for this tutorial.
+     If you did not complete the relevant tutorials you can copy these files from the resources folder:
 
         - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model;
-        - :download:`../resources/tutorial8_LeakageInitialisation.cellml` Its initialisation;
+        - :download:`../resources/tutorial8_LeakageCurrentModel_parameters.cellml` Leakage parameters;
         - :download:`../resources/tutorial8_MembraneModel.cellml` The membrane model;
-        - :download:`../resources/tutorial8_controller.cellml` Initialisation parameters;
-
-    - If you did not complete Tutorial 6 you can download the file created there from:
-      :download:`../resources/tutorial8_PotassiumChannelModel.cellml`
-    - If you did not complete Tutorial 7 you can download the file created there from:
-      :download:`../resources/tutorial8_SodiumChannelModel.cellml`
+        - :download:`../resources/tutorial6_PotassiumChannelModel.cellml` The potassium channel (or use your own) and its controller :download:`../resources/tutorial6_controller.cellml`; and
+        - :download:`../resources/tutorial7_SodiumChannelModel.cellml` The sodium channel (or use your own) and its controller model :download:`/resources/tutorial7_controller.cellml`.
 
 .. contents:: Contents
     :local:
@@ -48,6 +45,7 @@ If you didn't complete the tutorials, you can use the files provided in the :cod
 
     Because you will be importing several different files into this one, please note that these will need to be in the same folder location.
     This is necessary because the :code:`Model::resolveImports()` function will only store one folder path per model.
+    Before you proceed, please copy the files listed above into your working directory, whether they are ones you have created in previous tutorials or those provided in the resources directory.
 
 Step 1: Import the membrane component
 =====================================
