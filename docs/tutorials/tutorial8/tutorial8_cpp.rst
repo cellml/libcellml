@@ -321,3 +321,42 @@ Now that the model has been created an output, it's time to submit it to the sol
 Step 11: Run the simulation
 ===========================
 Running the simulation using the :ref:`simple solver<solver>` with a timestep of 0.001 for 2000 iterations will give you the results shown below.
+
+.. figure:: ../images/tut8_stimulus.png
+   :name: tut8_stimulus
+   :alt: Stimulus current in the membrane
+   :align: center
+
+   Stimulus current in the membrane (:code:`i_stim` vs. :code:`t`).
+
+
+.. figure:: ../images/tut8_potassium.png
+   :name: tut8_potassium
+   :alt: Potassium current
+   :align: center
+
+   Potassium current (:code:`i_K` vs. :code:`t`).
+
+
+.. figure:: ../images/tut8_sodium.png
+   :name: tut8_sodium
+   :alt: Sodium current
+   :align: center
+
+   Sodium current (:code:`i_Na` vs. :code:`t`).
+
+
+.. figure:: ../images/tut8_leakage.png
+   :name: tut8_leakage
+   :alt: Leakage current
+   :align: center
+
+   Leakage current (:code:`i_L` vs. :code:`t`).
+
+
+.. figure:: ../images/tut8_voltage.png
+   :name: tut8_voltage
+   :alt: Voltage in the membrane resulting from integrating the combined currents.
+   :align: center
+
+   Voltage in the membrane resulting from integrating the combined currents (:code:`V` vs. :code:`t`).
