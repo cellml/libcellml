@@ -1,433 +1,361 @@
-.. _tutorial8_py:
+.. _tutorial8_cpp:
 
-====================================================================
-Tutorial 8 Python: Encapsulating components and working with parents
-====================================================================
+==================================================
+Tutorial 8 Python: Importing and flattening models
+==================================================
 
-The outline for this tutorial is shown on the :ref:`Tutorial 8<tutorial8>`
-page. These are the Python instructions.  For the same tutorial in C++
-please see the :ref:`Tutorial 8 in C++<tutorial8_cpp>` page instead.
+The outline for this tutorial is shown on the :ref:`Tutorial 8<tutorial8>` page.
+These are the Python instructions.
+For the same tutorial in C++ please see the :ref:`Tutorial 8 in C++<tutorial8_cpp>` page instead.
 
-Resources:
+**Resources:**
 
-    - :download:`tutorial8.py` Either the skeleton code, or ..
-    - :download:`tutorial8_complete.cpp` the completed tutorial code
-    - :download:`../utilities/tutorial_utilities.py`  Utility functions for
-      use in the tutorials.
-    - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model
-    - If you did not complete Tutorial 7 you can download the file created there:
-      :download:`../resources/tutorial8_MembraneModel.cellml`
+    - :download:`tutorial8.py` Either the skeleton code, or :download:`tutorial8_complete.py` the completed tutorial code;
+    - :download:`../utilities/tutorial_utilities.py` utility functions for use in the tutorials.
+
+   - The following files are needed as inputs for this tutorial.
+     If you did not complete the relevant tutorials you can copy these files from the resources folder:
+
+        - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model;
+        - :download:`../resources/tutorial8_LeakageCurrentModel_parameters.cellml` Leakage parameters;
+        - :download:`../resources/tutorial8_MembraneModel.cellml` The membrane model;
+        - :download:`../resources/tutorial6_PotassiumChannelModel.cellml` The potassium channel (or use your own) and its controller :download:`../resources/tutorial6_controller.cellml`; and
+        - :download:`../resources/tutorial7_SodiumChannelModel.cellml` The sodium channel (or use your own) and its controller model :download:`/resources/tutorial7_controller.cellml`.
 
 .. contents:: Contents
     :local:
 
+This tutorial combines four existing models into one: two are the ion channel models for potassium and sodium which were created in :ref:`Tutorial 6<tutorial6_cpp>` and :ref:`Tutorial 7<tutorial7>` respectively, plus two new ones provided here.
+The goal of the tutorial is to combine the coponents of these models such that the three currents - potassium, sodium, and a new leakage current - are children of the membrane component.
 
-0: Setup
-====================================================================
-We'll start by creating the utilities that we'll use later on.
-
-.. container:: dothis
-
-    **0.a** As previously, create:
-
-    - a :code:`Parser` instance to deserialise the models
-    - a :code:`Validator` instance for debugging purposes
-    - a :code:`Model` model to attach everything into
-
-1: Read the membrane component
-====================================================================
+Step 0: Set the stage
+=====================
+Before you begin it's a good idea to collect everything into one place.
+Later in the tutorial you'll be using imports, and these need to have one common root location per model in order to resolve them.
+We suggest putting all the file listed above into a single directory, whether you use the files from the resources directory or ones that you have created yourself in earlier tutorials.
 
 .. container:: dothis
 
-    **1.a** Just as you did in :ref:`Tutorial 6<tutorial6_py>` TODO CHECK for the potassium
-    channel, parse the :code:`tutorial8_MembraneModel.cellml` file and save the
-    deserialised model to a new model instance (*not* the one you've already
-    created above - a new one). If you'd like, use the
-    :code:`print_model_to_terminal` utility function to check it has been read
-    correctly, and the validator to make sure that it is valid on its own.
+    **0.a** Move all of the required :code:`.cellml` files into a single directory location.
 
-At this stage you will have two :code:`Model` items - an empty one you
-created in earlier which will become the combined model,
-and the one you've just read from the file.
+It's also a good idea to understand what it is that you're doing here.
+For a full description of the biological theory, please see the :ref:`Hodgkin-Huxley background<hh_background>` document.
+You should be able to see the variables and maths inside the components as you go by simply printing them to the screen.
 
-.. container:: dothis
-
-    **1.b** Since you'll want to reuse the membrane component from the imported
-    potassium channel model within your combined model, you need to retrieve it
-    from the imported model and add it to the combined one.  Note that you will
-    need to retrieve the membrane component from the model and use the
-    :code:`clearParent()` function to detach it from
-    the membrane model *before* you add it to your combined model.
-
-.. container:: nb
-
-    **Note** that the :code:`addComponent` and :code:`addVariable` functions
-    have a built-in check which will prevent them from having one parent:
-
-        - if a :code:`Variable` or :code:`Component` has a :code:`nullptr`
-          parent, then calling an :code:`addComponent` or :code:`addVariable`
-          function will insert that item into the parent component.
-        - if a :code:`Variable` or :code:`Component` already has a
-          :code:`parent()` component, then nothing will be changed.
-        - if you need to move parent ownership of a variable or a component
-          you need to first call the :code:`clearParent()` function **before**
-          adding it to the new parent.
-
-Before going much further it's probably a good idea to understand what it is
-that you've just imported.  For a full description of the biological theory,
-please see the :ref:`Hodgkin-Huxley background<hh_background>` document. You
-should be able to see the variables and maths inside the imported component
-by simply printing the combined model to the screen.
+Step 1: Create an external parameters model
+===========================================
+The goal of this tutorial is to create a model in which import functionality is used to give flexibility to the way in which the model can be simulated.
+This means that parameters for simulation - constant values, initial conditions, variables, driving functions - can be set in an external file without needing to change the model proper.
+For this reason, this tutorial will involve creating two CellML files: one containing the model, and one containing the controller and parameters.
 
 .. container:: dothis
 
-    **1.c** Print the MathML2 string from the :code:`membrane`
-    component in your combined model and check it represents the equations
-    below.  You can check back to the earlier
-    :ref:`Tutorial 5, step 2<tutorial5_py>` if need be.
+    **1.a** Create a new model instance to be the controller model, name it appropriately, and add to it a component for the parameters.
+
+As we go through the rest of the tutorial, you will be adding variables to this external parameters component.
+
+Step 2: Parse the membrane model
+================================
+Parsing and importing can - in certain cases - result in the same situtation (an instantiated model), but the have very different philisophies behind them.
+You can read more about that under the link below.
+
+.. include:: asides/import_vs_parse.rst
+
+Even though the membrane model is supplied, it will need to be changed to accommodate the new connections to the ion channel components.
+Each of these channels calculates a current (:code:`i_K`, :code:`i_Na`, and :code:`i_L`) which they supply to the membrane.
+The membrane can then integrate an ordinary differential equation for voltage based on these current values.
+
+Our first job is to parse the membrane model so that we can edit it accordingly.
+
+.. container:: dothis
+
+    **2.a** Create a :code:`Parser` and use it to deserialse the contents of the :code:`tutorial8_MembraneModel.cellml` file supplied into a new model instance.
+    This will be referred to as the "model", and the one you created in step 1.a as the "controller model" or "parameters component".
+    This model will - after modification - represent the Hodgkin-Huxley model, so rename it appropriately.
+
+.. container:: dothis
+
+    **2.b** Print the model to the screen.
+    You should see seven variables listed as below (annotation added).
+
+.. code-block:: console
+
+    ...
+    VARIABLES: 7 variables
+        [0]: V [mV]                  # integrated variable, initialised by parameters component
+        [1]: t [ms]                  # base variable of integration
+        [2]: i_K [microA_per_cm2]    # potassium current, calculated by imported component
+        [3]: i_Na [microA_per_cm2]   # sodium current, calculated by imported componnet
+        [4]: i_L [microA_per_cm2]    # leakage current, calculated by imported component
+        [5]: i_stim [microA_per_cm2] # stimulus current, specified locally in the membrane
+        [6]: Cm [microF_per_cm2]     # constant, membrane capacitance, initialised by the parameters component
+
+We want to be able to initialise the variables in this membrane component, so we need to add the corresponding variables into the parameters component, where their values will be stored.
+Looking at the print-out of the component above, the variables which need to have values set are :code:`Cm` and :code:`V`.
+You will need to keep track of the units needed as you go, and add in any new ones.
+In this case, both are new and will need to be created and added to the controller model as normal.
+
+.. container:: dothis
+
+    **2.c** Create two new variables in the parameters component to represent these, giving each an interface type of "public", and units as listed above.
+    Create and add the appropriate units to the controller model.
+
+Step 3: Import the sodium channel component
+===========================================
+In order to use the import functionality we need to know three things:
+
+  1. The import destination (the component/unit to which the imported item will be assigned);
+  2. The file we're importing it from (the url to the model containing the item to be imported); and
+  3. Which item within the file should be imported (the name of the component/units inside the import model file).
+
+Imports were introduced in :ref:`Tutorial 7<tutorial7_cpp>`, so you can refer there for more information.
+
+First we need to know the contents of the component we're importing.
+This step is necessary so that we can create dummy variables with the same name and units in step 2.e.
+If you don't happen to know the contents of the components, you can parse the models and print them to the terminal for viewing:
+
+.. code-block:: py
+
+    # Parsing a model before importing it so that its contents can be viewed.
+    # Note that this is a temporary model and is *only* parsed for viewing
+    # purposes, *not* for interaction.
+    if True:
+        temp = parser.parseModel(fileContents(sodiumChannelFile))
+        print_model_to_terminal(temp)
+
+
+.. container:: dothis
+
+    **3.a** Parse the sodium channel model and print it to the terminal.
+
+
+.. container:: dothis
+
+    **3.b** Create a component representing the sodium channel.
+    This will be encapsulated inside the membrane component, so add it there instead of adding it to the model.
+
+.. container:: dothis
+
+    **3.c** Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
+    Note that you will need to make sure it exists in the same path as the earlier files.
+    If you did not complete :ref:`Tutorial 7<tutorial7_cpp>` you can copy the :code:`tutorial7_SodiumChannelModel.cellml` file from the resources folder.
+    This takes care of (2) above.
+
+.. container:: dothis
+
+    **3.d** Thirdly we need to link our import source to the import destination using the :code:`Component::setImportSource()` function on the sodium channel component, and to use the :code:`Component::setImportReference()` function to specify the name of the component inside the import model to retrieve.
+    Use your print-out to identify the correct component name.
+    This takes care of (3) above.
+
+At this stage our model has two components in it.
+Even though we've specified the imports completely, they still need to be resolved and the model flattened before the imported items will be instantiated here.
+
+Looking at your printout in step 3.a, any variables in the imported model which were connected to its local parameters or controller components will now need to be connected to the membrane component here instead ... but until the imports are resolved and the model flattened, those variables are not instantiated here.
+This is where *dummy variables* come in.
+
+Dummy variables are those which already exist in the component to be imported, but must be added manually before the import is resolved so that we can create the connections between equivalent variables *before* flattening the model.
+Because these are dummy variables will be overwritten, you do not need to specify units or interfaces, just names that mirror the variables that will be imported.
+
+.. container:: dothis
+
+    **3.e** Refer to your printout from 3.a and use it to find the names of variables which will need to have dummies created in the local sodium channel component.
+    These are all those variables currently listed in the :code:`controller` and :code:`parameters` components in the imported model.
+    Create a dummy variable for each of these, and add it to your sodium channel component as normal.
+    Make sure that the names of each of your variables are the same as those listed in the print-out.
+
+Because any values for initialisation must also be passed through the membrane component, we have to add *intermediate variables* to hold them.
+
+In contrast to dummy variables, *intermediate variables* are those which are not needed by a component, but rather by its children.
+They provide a way for values in a top-level component (the parameters component that you'll create soon in step 7) to be connected into a component to which it does not have direct access.
+There is more information of encapsulations and connections **TODO**.
+
+Because these are real variables (ie: not dummies, they will not be overwritten by an import), you *will* need to specify units and interfaces.
+They should have the interface type :code:`public_and_private`.
+
+.. container:: dothis
+
+    **3.g** Create intermediate variables for all those which are listed in the sodium channel component, but not present in the membrane component.
+    You will need to give them appropriate units, as well as an interface type of :code:`public_and_private`.
+    Add them to the membrane component.
+
+Finally, all variables for initialisation need to be present in the parameters component too.
+As above, these are real (not dummy) variables, so will require units and interfaces.
+
+.. container:: dothis
+
+    **3.h**
+    Create the variables and add them to the parameters component in the controller model.
+    Create and add any units that they require to the controller model.
+
+Step 4: Import the potassium channel component
+==============================================
+
+.. container:: dothis
+
+    **4.a** Repeat all the tasks in Step 3, this time for the potassium channel model you created in :ref:`Tutorial 6<tutorial6_cpp>`.
+    If you did not complete Tutorial 6 you can copy the file :download:`../resources/tutorial6_PotassiumChannelModel.cellml` into your working directory.
+
+Step 5: Import the leakage component
+====================================
+
+.. container:: dothis
+
+    **5.a** Repeat all the tasks in Step 3, this time for the leakage component in the model supplied inside :download:`../resources/tutorial8_LeakageModel.cellml`.
+
+Step 6: Export the parameters
+=============================
+Now that we've imported all the components and added the variables which need initial values into the parameters component, we can write the controller model (which contains that parameters component) to a separate file.
+This makes it easier to locate the parameters of interest and change them later.
+
+.. container:: dothis
+
+    **6.a** Set the initial conditions of variables in the parameters according to the values specified below.
+
+Sodium channel parameters:
 
 .. math::
 
-    i_{tot} = i_{stim} + i_{Na} + i_{K} + i_{L}
+   E_{Na}(t=0) = 40 \\
+   g_{Na}(t=0) = 120 \\
+   h(t=0) = 0.6 \\
+   m(t=0) = 0.05
 
-    \frac {dV} {dt} = \frac {-i_{tot}} {Cm}
+Potassium channel parameters:
 
-.. container:: dothis
+.. math::
 
-    **1.d** Call the validator to check the combined model.  At this stage we
-    expect to see errors related to missing units: we have imported a component
-    containing maths and variables, both of which reference units that we haven't
-    yet included in the combined model:
+   E_K(t=0) = -87 \\
+   g_K(t=0) = 36 \\
+   n(t=0) = 0.325
 
-.. code-block:: console
+Leakage parameters:
 
-     The validator has found 13 errors!
-     Validator error[0]:
-       Description: Variable 'V' has an invalid units reference 'mV' that does not correspond
-       with a standard unit or units in the variable's parent component or model.
-       See section 11.1.1.2 in the CellML specification.
+.. math::
 
-      ...
+   g_L(t=0) = 0.3 \\
+   E_L(t=0) = -64.387
 
-     Validator error[8]:
-       Description: Math has a cn element with a cellml:units attribute 'microA_per_cm2' that
-       is not a valid reference to units in the model 'Tutorial8_HHModel' or a standard unit.
+Membrane parameters:
 
-.. container:: dothis
+.. math::
 
-    **1.e** Use a loop to import all of the units from the the potassium
-    channel model into the combined model.
+   V(t=0) = -75 \\
+   Cm(t=0) = 1
 
 .. container:: dothis
 
-    **1.f** Validate the combined model once more and check that it is now free
-    of errors.
+    **6.b** Link the units of the controller model, and use the validator to check that it contains no errors.
 
-2: Read the sodium channel component
-====================================================================
-In :ref:`Tutorial 7<tutorial7_py>` you created a component to represent the
-behaviour of a gated sodium gate and stored it inside a model.
+.. contianer:: dothis
 
-.. container:: dothis
+    **6.c** Create a printer, and use it to serialise your controller model.
+    Write it to a file named appropriately: you will need to use its name in the next step.
 
-    **2.a** As in step 1.a, retrieve the sodium channel *model* from the
-    file you created in Tutorial 7, or use the
-    :code:`resources/tutorial7_SodiumChannelModel.cellml` file.
+Step 7: Import parameters
+=========================
 
 .. container:: dothis
 
-    **2.b** As in step 1.b, retrieve the sodium channel *component* and add it to
-    the membrane component created in step 1.  Remember to clear its parent first!
-    Print the combined model to the terminal using the condensed function
-    :code:`print_encapsulation_structure_to_terminal` and notice that the "child"
-    components encapsulated by the sodium channel component - the :code:`mGate`
-    and :code:`hGate` components - are imported as well.
+    **7.a** Repeat all the tasks in Step 2, this time for the parameters component in the model you have just written in step 6.c.
+    You will need to create dummies for all of its variables.
 
-.. code-block:: console
-
-     Model 'Tutorial8_HHModel' has 1 components
-      - Component 'membrane' has 1 child components
-         - Component 'sodiumChannel' has 2 child components
-            - Component 'mGate' has 0 child components
-            - Component 'hGate' has 0 child components
-
+Step 8: Connect variables between components
+============================================
 
 .. container:: dothis
 
-    **2.c** Call the validator to check the combined model so far.  At this
-    stage we expect to see two kinds of errors:
+    **8.a** Now that we've got all the imports done, we need to connect the imported components and their dummy variables together.
+    The variables to connect are:
 
-    - errors related to units missing from the combined model, as before.
-    - **TODO** errors related to the equivalent variables connections between the
-      sodium channel component (which is now in the combined model) and the
-      environment component (which is still in the sodium channel *model*).  Since
-      the components are no longer adjacent in the encapsulation hierarchy, they
-      cannot be connected.
+      - voltage (V):  parameters -> membrane -> sodium channel, potassium channel, leakage
+      - time (t): membrane -> sodium channel, potassium channel
+      - current variables (i_Na, i_K, i_L): membrane -> their respective channels
+      - capacitance (Cm): parameters -> membrane
+      - gating variables (n, h, m): parameters -> membrane -> their respective channels
 
-.. container:: dothis
-
-    **2.d** Import the missing units into the combined model from the sodium
-    channel model.  Revalidate the combined model and pay attention to errors
-    related to the units.
-
-.. container:: nb
-
-    **Note** that you cannot have units with duplicate names in a model: if
-    you have simply imported *all* of the units from the
-    sodium channel model, then there will be double-ups.  You can use
-    the :code:`model.hasUnits` function to check whether a :code:`Units` item
-    with the same name already exists in a model before importing it.
-
-After validation you should see that there are no more errors
-related to units, but you will still need to address the illegal connections
-between variables in the newly-moved sodium channel *component* and the old
-environment component in the sodium channel *model*.
-
-.. code-block:: console
-
-    **PUT ERRORS HERE WHEN VALIDATOR IS WORKING**
-
-Recall the idiom you used in :ref:`Tutorial 5<tutorial6_py>` to create the
-connections between equivalent variables; the same can be done in reverse
-here to *remove* the equivalence between two variables:
-
-.. code-block:: python
-
-    # Retrieving the pointers to the variables via their names and removing an equivalence
-    libcellml.Variable.removeEquivalence(
-        sodium_channel_model.component("environment").variable("t"),
-        sodium_channel.variable("t")
-    )
+In the steps below the model will be flattened for code generation, but the power of imports is lost by flattening.
+That's why we'll write the CellML file before flattening.
 
 .. container:: dothis
 
-    **2.e** Disconnect any equivalences between variables in the
-    environment component of the
-    sodium channel *model*, from those inside the newly-moved
-    sodium channel *component* in the combined model.
+    **8.b** Serialise the model and print it to a CellML file.
+
+Step 9: Resolve imports and flatten the model
+=============================================
 
 .. container:: dothis
 
-    **2.f** Validate the combined model to see that it is now free of errors.
-
-3: Import the potassium channel component
-====================================================================
-Now we simply need to repeat the same process for our potassium channel
-component and add it to the combined model.
+    **9.a** Resolve the model's imports to the folder where all of the files are located, and check that there are no unresolved imports outstanding.
 
 .. container:: dothis
 
-    **3.a-b** Repeat the process above to import the potassium channel
-    component that was created in :ref:`Tutorial 5<tutorial6_py>` into the
-    membrane component.  Note that if you did not complete that tutorial
-    you can simply copy the
-    :code:`resources/tutorial6_PotassiumComponentModel.cellml` file.
+    **9.b** Flatten the model, and print the flattened model structure to the terminal for checking.
 
 .. container:: dothis
 
-    **3.c** Use the validator to alert you to the errors at this stage.
+    **9.c** Validate the flattened model, expecting that there are no errors.
 
-If you have used the files provided in the :code:`resources` folder, you
-can expect to see errors at this point relating to missing units.
-This is because even though both the sodium and potassium channel components
-require the same set of units, each of them has used different names for them;
-for example, "millivolt" and "mV".  At this stage you have a choice:
-
-- either import all the units under their original names from the
-  potassium channel as well,
-- or rename the units throughout the potassium channel component's
-  variables and maths.
-
-Here we'll go with the latter to illustrate the process, and to create a more
-compact model description.
+Step 10: Generate the model and output
+======================================
 
 .. container:: dothis
 
-    **3.d**  Use the examples below to rename the units referenced by variables
-    inside this component.  This is straightforward:
-
-.. code-block:: python
-
-    # Setting the names of units to be consistent with those in the combined model
-    potassium_channel.variable("t").setUnits("ms")
-    potassium_channel.component("nGate").variable("t").setUnits("ms")
-    ... etc ...
-
-You'll also need to replace the units of any constants in the
-MathML blocks of the components as well.  This is not quite as
-straightforward, but we've provided a utility function
-:code:`switch_units_in_maths` which does a string replacement for
-the unit names.  The function can be used like this:
-
-.. code-block:: python
-
-    # The switch_units_in_maths function's definition in tutorial_utilities.py:
-    new_maths = switch_units_in_maths(old_maths, old_units, new_units)
-
-    # Switch the name of the units referred to in a MathML string
-    # Retrieve the MathML string from the component
-    n_gate_maths = potassium_channel.component("nGate").math()
-
-    # Switch the unit names in the string
-    n_gate_maths = switch_units_in_maths(n_gate_maths, "millivolt", "mV")
-
-    # Repeat for all units ...
-    # Remember to add the corrected string back into the component when you're done
-
-.. container:: nb
-
-    **Note** that a simple string replacement for any and all occurrences of the :code:`in`
-    string within the :code:`maths` string with the :code:`out` string could cause problems
-    when the :code:`in` string is a substring of another unit name.  In order to be
-    sure that **only** full name matches for units are replaced, we exploit
-    the fact that the units names in the MathML string will be in quotation marks, and include
-    :code:`"` blocks on either side of the :code:`in` and :code:`out`
-    strings for safety.  **You will therefore need to substitute whole names only for this
-    function to work.**
+    **10.a** Create a :code:`Generator` instance and submit the model for processing.
+    Expect that there are no errors logged in the generator afterwards, but if there are, your experience with the possible issues in previous tutorials should be enough to resolve them.
 
 .. container:: dothis
 
-    **3.e** Rename the units in the MathML strings as needed.  Remember
-    that you'll need to re-add the corrected MathML string to the
-    component when you're done:
-
-.. code-block:: python
-
-    potassium_channel.component("nGate").setMath(n_gate_maths)
-
-.. code-block:: console
-
-     Switched units 'millivolt' for units 'mV'
-     Switched units 'millisecond' for units 'ms'
-     Switched units 'per_millisecond' for units 'per_ms'
-     Switched units 'per_millivolt_millisecond' for units 'per_mV_ms'
-     Switched units 'milliS_per_cm2' for units 'mS_per_cm2'
+    **10.b** Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
 
 .. container:: dothis
 
-    **3.f** As you did in step 2.e, disconnect the variable equivalences which
-    link the imported component to the old environment in the
-    potassium channel model, and validate that the combined model
-    is now free of errors.
-
-4: Read the current leakage component
-====================================================================
+    **10.c** Change the generator profile to Python and reprocess the model.
 
 .. container:: dothis
 
-    **4.a** If you know the tune, sing along!  Import the leakage component
-    from the model in :code:`resources/tutorial8_LeakageModel.cellml`
-    and add it to the :code:`membrane` component.  Use the validator to debug
-    and make any adjustments you need to until your combined model is free of
-    errors.
+    **10.d** Retrieve and write the implementation code (*.py) to a file.
 
-5: Create the environment component
-====================================================================
-Now your model should have the encapsulation structure shown below.  You can
-check this in the same way as you did in step 2.b.
+Now that the model has been created an output, it's time to submit it to the solver for simulation.
 
-.. code-block:: console
+Step 11: Run the simulation
+===========================
+Running the simulation using the :ref:`simple solver<solver>` with a timestep of 0.001 for 2000 iterations will give you the results shown below.
 
-     Model 'Tutorial8_HHModel' has 1 components
-     - Component 'membrane' has 3 child components
-      - Component 'sodiumChannel' has 2 child components
-          - Component 'mGate' has 0 child components
-          - Component 'hGate' has 0 child components
-      - Component 'potassiumChannel' has 1 child components
-          - Component 'nGate' has 0 child components
-      - Component 'leakageCurrent' has 0 child components
+.. figure:: ../images/tut8_stimulus.png
+   :name: tut8_stimulus
+   :alt: Stimulus current in the membrane
+   :align: center
+
+   Stimulus current in the membrane (:code:`i_stim` vs. :code:`t`).
 
 
-The final component you need to add is an :code:`environment` component for
-this combined model.  This contains the time :math:`t` of
-the simulation as well as the membrane voltage :math:`V`.
+.. figure:: ../images/tut8_potassium.png
+   :name: tut8_potassium
+   :alt: Potassium current
+   :align: center
 
-.. container:: dothis
-
-    **5.a** Create a new :code:`Component` to represent the environment,
-    and add it to your combined model as a top-level component.
-
-    **5.b** Include the local environment variables that you'll need, including
-    their units, and validate that your model is free of errors.
-
-6: Connect the equivalent variables
-====================================================================
-The encapsulation structure for this model has several tiers, as shown in the
-diagram below:
-
-.. code-block:: text
-
-    ____ HodgkinHuxleyModel
-            |
-            |____ environment (V, t)
-            |
-            |____ membrane (V, t)
-                    |
-                    |____ sodiumChannel (V, t, h, m)
-                    |       |
-                    |       |____ hGate (h, V, t)
-                    |       |
-                    |       |____ mGate (m, V, t)
-                    |
-                    |____ potassiumChannel (n, V, t)
-                    |       |
-                    |       |____ nGate (n, V, t)
-                    |
-                    |____ leakageCurrent (V)
+   Potassium current (:code:`i_K` vs. :code:`t`).
 
 
-The encapsulation structure above includes the variables in each component
-which are shared with an adjacent component.
+.. figure:: ../images/tut8_sodium.png
+   :name: tut8_sodium
+   :alt: Sodium current
+   :align: center
 
-.. container:: dothis
+   Sodium current (:code:`i_Na` vs. :code:`t`).
 
-    **6.a** Set the equivalent variables according to the diagram above.  Note
-    that the gates remain connected to the sodium and potassium channels and don't
-    need to be added again.
 
-.. container:: dothis
+.. figure:: ../images/tut8_leakage.png
+   :name: tut8_leakage
+   :alt: Leakage current
+   :align: center
 
-    **6.b** Using the same interface type rules as in :ref:`Tutorial 7<tutorial7_py>`,
-    set the interface type for the missing interfaces.
+   Leakage current (:code:`i_L` vs. :code:`t`).
 
-.. container:: dothis
 
-    **6.c** Validate that the final model is free of errors.
+.. figure:: ../images/tut8_voltage.png
+   :name: tut8_voltage
+   :alt: Voltage in the membrane resulting from integrating the combined currents.
+   :align: center
 
-7: Define the driving function
-====================================================================
-In contrast to earlier tutorials, this simulation will not be a voltage clamp
-experiment, but will model instead the response to a stimulus current in the
-membrane. You've already got some maths inside the :code:`membrane`
-component which you imported in step 1.b which defined the influence of the
-total membrane current :math:`i_{tot}` on the voltage, :math:`V`.  It also
-defined the total current as the sum of currents in the potassium channel
-:math:`i_K`, the sodium channel :math:`i_{Na}`, the leakage current
-:math:`i_L`, as well as an as-yet unused variable, the stimulus current
-:math:`i_{stim}`.  To constrain the mathematics completely, you'll need to
-add a definition for this stimulus current.
-
-.. container:: dothis
-
-    **7.a** Create a :mathml2help:`MathML2 <>` equation to represent the stimulus
-    current having a value of 100 mA/cm^2 between 1ms < t < 1.2ms and zero
-    otherwise.
-
-    **7.b** Because there is already a maths block (with
-    :code:`<math>...</math>` tags at both ends) you can't just add new equation
-    on the end of what's there - it needs to be added before the final
-    :code:`</math>` tag.  There's a utility function to help with this which
-    can be called using
-    :code:`new_maths = insert_into_mathml_string(old_maths, maths_to_include)`
-
-.. code-block:: python
-
-    # Insert the new MathML string before the closing </math> tag
-    membrane_math = membrane.math()
-    membrane_math = insert_into_mathml_string(membrane_math, stimulus_math)
-    # Remember to add the new maths back into your component as well ...
-
-8: Output the model
-====================================================================
-Finally you're ready to write the model ready for simulation.  You know the
-drill!
+   Voltage in the membrane resulting from integrating the combined currents (:code:`V` vs. :code:`t`).
