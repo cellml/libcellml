@@ -1,4 +1,4 @@
-.. _tutorial8_cpp:
+.. _tutorial8_py:
 
 ==================================================
 Tutorial 8 Python: Importing and flattening models
@@ -25,7 +25,7 @@ For the same tutorial in C++ please see the :ref:`Tutorial 8 in C++<tutorial8_cp
 .. contents:: Contents
     :local:
 
-This tutorial combines four existing models into one: two are the ion channel models for potassium and sodium which were created in :ref:`Tutorial 6<tutorial6_cpp>` and :ref:`Tutorial 7<tutorial7>` respectively, plus two new ones provided here.
+This tutorial combines four existing models into one: two are the ion channel models for potassium and sodium which were created in :ref:`Tutorial 6<tutorial6_py>` and :ref:`Tutorial 7<tutorial7>` respectively, plus two new ones provided here.
 The goal of the tutorial is to combine the coponents of these models such that the three currents - potassium, sodium, and a new leakage current - are children of the membrane component.
 
 Step 0: Set the stage
@@ -108,7 +108,7 @@ In order to use the import functionality we need to know three things:
   2. The file we're importing it from (the url to the model containing the item to be imported); and
   3. Which item within the file should be imported (the name of the component/units inside the import model file).
 
-Imports were introduced in :ref:`Tutorial 7<tutorial7_cpp>`, so you can refer there for more information.
+Imports were introduced in :ref:`Tutorial 7<tutorial7_py>`, so you can refer there for more information.
 
 First we need to know the contents of the component we're importing.
 This step is necessary so that we can create dummy variables with the same name and units in step 2.e.
@@ -138,7 +138,7 @@ If you don't happen to know the contents of the components, you can parse the mo
 
     **3.c** Create an importer for the sodium channel, and point it to the file you created in Tutorial 7.
     Note that you will need to make sure it exists in the same path as the earlier files.
-    If you did not complete :ref:`Tutorial 7<tutorial7_cpp>` you can copy the :code:`tutorial7_SodiumChannelModel.cellml` file from the resources folder.
+    If you did not complete :ref:`Tutorial 7<tutorial7_py>` you can copy the :code:`tutorial7_SodiumChannelModel.cellml` file from the resources folder.
     This takes care of (2) above.
 
 .. container:: dothis
@@ -192,7 +192,7 @@ Step 4: Import the potassium channel component
 
 .. container:: dothis
 
-    **4.a** Repeat all the tasks in Step 3, this time for the potassium channel model you created in :ref:`Tutorial 6<tutorial6_cpp>`.
+    **4.a** Repeat all the tasks in Step 3, this time for the potassium channel model you created in :ref:`Tutorial 6<tutorial6_py>`.
     If you did not complete Tutorial 6 you can copy the file :download:`../resources/tutorial6_PotassiumChannelModel.cellml` into your working directory.
 
 Step 5: Import the leakage component
