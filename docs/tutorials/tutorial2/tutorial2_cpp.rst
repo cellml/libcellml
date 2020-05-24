@@ -86,7 +86,7 @@ As in :ref:`Tutorial 1<tutorial1_cpp>`, we can call a :code:`count` function (in
 
     **2.c** Retrieve the number of errors from the validator, and print it to the terminal.
 
-Now we need to create an iterative loop to retrieve all (and there should be a few in this particular model!) from the validator.
+Now we need to create an iterative loop to retrieve all the errors (and there should be a few in this particular model!) from the validator.
 Again following the same retrieval idiom as in Tutorial 1 for items in sets, we can access the errors using an index:
 
 .. code-block:: cpp

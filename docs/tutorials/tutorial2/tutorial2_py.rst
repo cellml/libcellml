@@ -85,8 +85,7 @@ As in :ref:`Tutorial 1<tutorial1_py>`, you can call a :code:`count` function (in
     **2.b** Retrieve the number of errors from the validator, and print it to the terminal.
 
 Now we need to create an iterative loop to retrieve all (and there should be a few in this particular model!) from the validator.
-Again following the same retrieval idiom as in :ref:`Tutorial 1<tutorial1_py>` for items in sets, we can access the errors
-using an index:
+Again following the same retrieval idiom as in :ref:`Tutorial 1<tutorial1_py>` for items in sets, we can access the errors using an index:
 
 .. code-block:: python
 
@@ -97,7 +96,8 @@ These are the :code:`description()` (which does what you'd think) and the :code:
 
 .. container:: dothis
 
-    **2.c** Create a loop (up to the number of errors found in 2.b), retrieve each error, and print their description and specification reference to the screen.  This is what we've used:
+    **2.c** Create a loop (up to the number of errors found in 2.b), retrieve each error, and print its description and specification reference to the screen.
+    This is what we've used:
 
 .. code-block:: python
 
@@ -133,8 +133,7 @@ This section works through each of the errors found and shows you how to fix the
 
 These errors refer to the same thing, but are better read in reverse order.
 Variables (and everything else in CellML which specifies a name attribute) must have the correct format.
-Comparing the error to the names of entities printed in the terminal we can see that :code:`variable[0]` in
-:code:`component[0]` doesn't have a valid name (because it starts with a European numeric character).
+Comparing the error to the names of entities printed in the terminal we can see that :code:`variable[0]` in :code:`component[0]` doesn't have a valid name (because it starts with a European numeric character).
 Let's fix that.
 
 Remembering from the last tutorial that we can access items through their indices, now we can use the :code:`setSomething(someValue)` idiom to fix the variable name:
@@ -162,8 +161,7 @@ On to the next error.
 
 Variables must have units defined.
 These can be either something from the built-in list within libCellML (which you can read in the specifications document), or something you define yourself.
-We'll look at user defined units in :ref:`Tutorial 3<tutorial3_py>`, but for now it's enough to see that the
-units which are associated with variable :code:`b` are not valid.
+We'll look at user defined units in :ref:`Tutorial 3<tutorial3_py>`, but for now it's enough to see that the units which are associated with variable :code:`b` are not valid.
 We'll change it to be :code:`"dimensionless"` instead.
 
 .. container:: nb
@@ -220,8 +218,7 @@ Initial values (if set) must be a valid variable name in the same component, or 
 
 
 These two errors go together too.
-Because we haven't defined a :code:`units` attribute for variable :code:`d`, it effectively has a blank name, which is not
-allowed.
+Because we haven't defined a :code:`units` attribute for variable :code:`d`, it effectively has a blank name, which is not allowed.
 Simply assigning units to the variable will fix both errors.
 
 .. container:: dothis
