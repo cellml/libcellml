@@ -164,7 +164,7 @@ This reverse operation is handled by the :code:`Printer`, which will transform a
 
 .. container:: dothis
 
-    **3.a** Create a printer and use it to deserialise your model.
+    **3.a** Create a printer and use it to serialise your model.
 
 .. container:: dothis
 

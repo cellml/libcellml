@@ -53,16 +53,17 @@ if __name__ == "__main__":
     print("  Component[0] has name: ", component_name)
     print("  Component[0] has id: ", component_id)
 
-    #  2.d   Investigate the variables inside the component, and print their names to terminal.
+    #  2.d   Retrieve the number of variables in the component, and print to the screen.
     number_of_variables = component.variableCount()
     print("  The '{c}' component has {n} variable(s):".format(
         c=component_name,
         n=number_of_variables)
     )
+    #  2.e   Loop through the variables in the component, and print their names to the terminal.
     for v in range(0, number_of_variables):
         print("    Variable[{v}] has name: {n}".format(v=v, n=component.variable(v).name()))
 
-    #  2.e   Investigate the maths which connects the variables in this component.  Note that
+    #  2.f   Investigate the maths which connects the variables in this component.  Note that
     #        maths in libCellML is stored as a single MathML2 string.
     maths_string = component.math()
     print("  Component '{c}' has a MathML string of: ".format(c=component_name))
