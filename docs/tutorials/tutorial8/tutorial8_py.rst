@@ -10,17 +10,17 @@ For the same tutorial in C++ please see the :ref:`Tutorial 8 in C++<tutorial8_cp
 
 **Resources:**
 
-    - :download:`tutorial8.py` Either the skeleton code, or :download:`tutorial8_complete.py` the completed tutorial code;
-    - :download:`../utilities/tutorial_utilities.py` utility functions for use in the tutorials.
+- :download:`tutorial8.py` Either the skeleton code, or :download:`tutorial8_complete.py` the completed tutorial code;
+- :download:`../utilities/tutorial_utilities.py` utility functions for use in the tutorials.
 
-   - The following files are needed as inputs for this tutorial.
-     If you did not complete the relevant tutorials you can copy these files from the resources folder:
+The following files are needed as inputs for this tutorial.
+If you did not complete the relevant tutorials you can copy these files from the resources folder:
 
-        - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model;
-        - :download:`../resources/tutorial8_LeakageCurrentModel_parameters.cellml` Leakage parameters;
-        - :download:`../resources/tutorial8_MembraneModel.cellml` The membrane model;
-        - :download:`../resources/tutorial6_PotassiumChannelModel.cellml` The potassium channel (or use your own) and its controller :download:`../resources/tutorial6_controller.cellml`; and
-        - :download:`../resources/tutorial7_SodiumChannelModel.cellml` The sodium channel (or use your own) and its controller model :download:`/resources/tutorial7_controller.cellml`.
+- :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model;
+- :download:`../resources/tutorial8_LeakageCurrentModel_parameters.cellml` Leakage parameters;
+- :download:`../resources/tutorial8_MembraneModel.cellml` The membrane model;
+- :download:`../resources/tutorial6_PotassiumChannelModel.cellml` The potassium channel model (or use your own); and
+- :download:`../resources/tutorial7_SodiumChannelModel.cellml` The sodium channel model (or use your own).
 
 .. contents:: Contents
     :local:

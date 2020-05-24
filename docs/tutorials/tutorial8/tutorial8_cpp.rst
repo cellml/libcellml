@@ -10,20 +10,20 @@ For the same tutorial in Python please see the :ref:`Tutorial 8 in Python<tutori
 
 **Resources:**
 
-    - :download:`CMakeLists.txt` The CMake file for building this tutorial;
-    - :download:`tutorial8.cpp` Either the skeleton code, or :download:`tutorial8_complete.cpp` the completed tutorial code;
-    - :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp` Utility functions for use in the tutorials.
+- :download:`CMakeLists.txt` The CMake file for building this tutorial;
+- :download:`tutorial8.cpp` Either the skeleton code, or :download:`tutorial8_complete.cpp` the completed tutorial code;
+- :download:`../utilities/tutorial_utilities.h` and :download:`../utilities/tutorial_utilities.cpp` Utility functions for use in the tutorials.
 
-   - The following files are needed as inputs for this tutorial.
-     If you did not complete the relevant tutorials you can copy these files from the resources folder:
+The following files are needed as inputs for this tutorial.
+If you did not complete the relevant tutorials you can copy these files from the resources folder:
 
-        - :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model;
-        - :download:`../resources/tutorial8_LeakageCurrentModel_parameters.cellml` Leakage parameters;
-        - :download:`../resources/tutorial8_MembraneModel.cellml` The membrane model;
-        - :download:`../resources/tutorial6_PotassiumChannelModel.cellml` The potassium channel (or use your own) and its controller :download:`../resources/tutorial6_controller.cellml`; and
-        - :download:`../resources/tutorial7_SodiumChannelModel.cellml` The sodium channel (or use your own) and its controller model :download:`/resources/tutorial7_controller.cellml`.
+- :download:`../resources/tutorial8_LeakageCurrentModel.cellml` The leakage current model;
+- :download:`../resources/tutorial8_LeakageCurrentModel_parameters.cellml` Leakage parameters;
+- :download:`../resources/tutorial8_MembraneModel.cellml` The membrane model;
+- :download:`../resources/tutorial6_PotassiumChannelModel.cellml` The potassium channel model (or use your own); and
+- :download:`../resources/tutorial7_SodiumChannelModel.cellml` The sodium channel model (or use your own).
 
-.. contents:: Contents
+.. contents:: Contents:
     :local:
 
 This tutorial combines four existing models into one: two are the ion channel models for potassium and sodium which were created in :ref:`Tutorial 6<tutorial6_cpp>` and :ref:`Tutorial 7<tutorial7>` respectively, plus two new ones provided here.
