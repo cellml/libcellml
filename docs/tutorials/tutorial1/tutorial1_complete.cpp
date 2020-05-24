@@ -65,13 +65,14 @@ int main()
     std::cout << "  Component[0] has name: " << componentName << std::endl;
     std::cout << "  Component[0] has id: " << componentId << std::endl;
 
-    //  2.d   Investigate the variables inside the component, and print their
-    //        names to terminal.
+    //  2.d   Retrieve the number of variables in this component, and print
+    //        to the screen.
 
     int numberOfVariables = component->variableCount();
     std::cout << "  The " << componentName << " component has "
               << numberOfVariables << " variable(s):" << std::endl;
 
+    //  2.e   Loop through the variables and print their names to the terminal.
     for (size_t v = 0; v < numberOfVariables; ++v) {
         auto variable = component->variable(v);
         std::string variableName = variable->name();
@@ -80,7 +81,7 @@ int main()
                   << std::endl;
     }
 
-    //  2.e   Investigate the maths which connects the variables in this
+    //  2.f   Investigate the maths which connects the variables in this
     //        component.  Note that maths in libCellML is stored as a
     //        single MathML2 string.
     std::string mathsString = component->math();
