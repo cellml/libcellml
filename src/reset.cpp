@@ -30,13 +30,14 @@ namespace libcellml {
  */
 struct Reset::ResetImpl
 {
-    int mOrder = 0; /**< An integer for determining relative order.*/
+    int mOrder = 0; /**< The relative order of the reset.*/
+    bool mOrderSet = false; /**< Whether the relative order of the reset has been set.*/
     VariablePtr mVariable; /**< The associated variable for the reset.*/
     VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
-    std::string mTestValue = ""; /**< The MathML string for the test_value.*/
-    std::string mTestValueId = ""; /**< The id of the test_value block */
-    std::string mResetValue = ""; /**< The MathML string for the reset_value.*/
-    std::string mResetValueId = ""; /**< The id of the reset_value block */
+    std::string mTestValue; /**< The MathML string for the test_value.*/
+    std::string mTestValueId; /**< The id of the test_value block */
+    std::string mResetValue; /**< The MathML string for the reset_value.*/
+    std::string mResetValueId; /**< The id of the reset_value block */
 };
 
 Reset::Reset()
@@ -63,6 +64,27 @@ ResetPtr Reset::create(int order) noexcept
 Reset::~Reset()
 {
     delete mPimpl;
+}
+
+void Reset::setOrder(int order)
+{
+    mPimpl->mOrder = order;
+    mPimpl->mOrderSet = true;
+}
+
+int Reset::order() const
+{
+    return mPimpl->mOrder;
+}
+
+void Reset::unsetOrder()
+{
+    mPimpl->mOrderSet = false;
+}
+
+bool Reset::isOrderSet()
+{
+    return mPimpl->mOrderSet;
 }
 
 void Reset::setVariable(const VariablePtr &variable)

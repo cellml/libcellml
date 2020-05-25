@@ -16,9 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
-
 #include <string>
+
+#include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
 

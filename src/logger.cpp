@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
 #include "libcellml/logger.h"
-#include "libcellml/types.h"
 
+#include <algorithm>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -31,7 +33,10 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    std::vector<ErrorPtr> mErrors;
+    std::vector<size_t> mErrors;
+    std::vector<size_t> mWarnings;
+    std::vector<size_t> mHints;
+    std::vector<IssuePtr> mIssues;
 };
 
 Logger::Logger()
@@ -44,28 +49,87 @@ Logger::~Logger()
     delete mPimpl;
 }
 
-void Logger::removeAllErrors()
-{
-    mPimpl->mErrors.clear();
-}
-
-void Logger::addError(const ErrorPtr &error)
-{
-    mPimpl->mErrors.push_back(error);
-}
-
 size_t Logger::errorCount() const
 {
     return mPimpl->mErrors.size();
 }
 
-ErrorPtr Logger::error(size_t index) const
+IssuePtr Logger::error(size_t index) const
 {
-    ErrorPtr err = nullptr;
+    IssuePtr issue = nullptr;
     if (index < mPimpl->mErrors.size()) {
-        err = mPimpl->mErrors.at(index);
+        issue = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
     }
-    return err;
+    return issue;
+}
+
+size_t Logger::warningCount() const
+{
+    return mPimpl->mWarnings.size();
+}
+
+IssuePtr Logger::warning(size_t index) const
+{
+    IssuePtr issue = nullptr;
+    if (index < mPimpl->mWarnings.size()) {
+        issue = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
+    }
+    return issue;
+}
+
+size_t Logger::hintCount() const
+{
+    return mPimpl->mHints.size();
+}
+
+IssuePtr Logger::hint(size_t index) const
+{
+    IssuePtr issue = nullptr;
+    if (index < mPimpl->mHints.size()) {
+        issue = mPimpl->mIssues.at(mPimpl->mHints.at(index));
+    }
+    return issue;
+}
+
+void Logger::removeAllIssues()
+{
+    mPimpl->mIssues.clear();
+    mPimpl->mErrors.clear();
+    mPimpl->mWarnings.clear();
+    mPimpl->mHints.clear();
+}
+
+void Logger::addIssue(const IssuePtr &issue)
+{
+    // When an issue is added, update the appropriate array based on its level.
+    size_t index = mPimpl->mIssues.size();
+    mPimpl->mIssues.push_back(issue);
+    libcellml::Issue::Level level = issue->level();
+    switch (level) {
+    case libcellml::Issue::Level::ERROR:
+        mPimpl->mErrors.push_back(index);
+        break;
+    case libcellml::Issue::Level::WARNING:
+        mPimpl->mWarnings.push_back(index);
+        break;
+    case libcellml::Issue::Level::HINT:
+        mPimpl->mHints.push_back(index);
+        break;
+    }
+}
+
+size_t Logger::issueCount() const
+{
+    return mPimpl->mIssues.size();
+}
+
+IssuePtr Logger::issue(size_t index) const
+{
+    IssuePtr issue = nullptr;
+    if (index < mPimpl->mIssues.size()) {
+        issue = mPimpl->mIssues.at(index);
+    }
+    return issue;
 }
 
 } // namespace libcellml

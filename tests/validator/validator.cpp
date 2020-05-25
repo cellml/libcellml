@@ -31,12 +31,12 @@ TEST(Validator, namedModel)
     libcellml::ModelPtr model = libcellml::Model::create();
     model->setName("awesomeName");
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unnamedModel)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
     };
@@ -47,12 +47,12 @@ TEST(Validator, unnamedModel)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
     validator->validateModel(model);
-    EXPECT_EQ_ERRORS_SPECIFICATION_HEADINGS(expectedErrors, expectedSpecificationHeadings, validator);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, validator);
 }
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Model does not have a valid name attribute.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
@@ -99,12 +99,12 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 
     v->validateModel(model);
 
-    EXPECT_EQ_ERRORS_SPECIFICATION_HEADINGS(expectedErrors, expectedSpecificationHeadings, v);
+    EXPECT_EQ_ISSUES_SPECIFICATION_HEADINGS(expectedIssues, expectedSpecificationHeadings, v);
 }
 
 TEST(Validator, namedModelWithUnnamedComponent)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Component does not have a valid name attribute.",
     };
@@ -114,12 +114,12 @@ TEST(Validator, namedModelWithUnnamedComponent)
     model->setName("awesomeName");
     model->addComponent(component);
     validator->validateModel(model);
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -136,12 +136,12 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
     model->addUnits(units);
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, modelWithDuplicateComponentsAndUnits)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Model 'multiplicity' contains multiple components with the name 'michael'. Valid component names must be unique to their model.",
         "Model 'multiplicity' contains multiple units with the name 'keaton'. Valid units names must be unique to their model.",
     };
@@ -164,12 +164,12 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
     u2->setName("keaton");
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Variable does not have a valid name attribute.",
@@ -202,12 +202,12 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v4->setUnits("dollars");
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, invalidVariableInitialValuesAndInterfaces)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'candidate' has an invalid interface attribute value 'orange'.",
         "Variable 'candidate' has an invalid initial value 'trump'. Initial values must be a real number string or a variable reference.",
     };
@@ -228,12 +228,12 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, importUnits)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
@@ -254,7 +254,7 @@ TEST(Validator, importUnits)
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Invalid units import- missing refs
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
@@ -263,7 +263,7 @@ TEST(Validator, importUnits)
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
     v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->errorCount());
+    EXPECT_EQ(size_t(3), v->issueCount());
 
     // Invalid units import - duplicate refs
     libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
@@ -273,7 +273,7 @@ TEST(Validator, importUnits)
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
     v->validateModel(m);
-    EXPECT_EQ(size_t(4), v->errorCount());
+    EXPECT_EQ(size_t(4), v->issueCount());
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
@@ -284,12 +284,12 @@ TEST(Validator, importUnits)
     v->validateModel(m);
 
     // Check for expected error messages
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, importComponents)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
@@ -310,7 +310,7 @@ TEST(Validator, importComponents)
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Another valid component import
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
@@ -320,7 +320,7 @@ TEST(Validator, importComponents)
     importedComponent2->setSourceComponent(imp2, "new_shiny_component_ref");
     m->addComponent(importedComponent2);
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Invalid component import - missing ref to source component
     libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
@@ -329,7 +329,7 @@ TEST(Validator, importComponents)
     importedComponent3->setSourceComponent(imp3, "");
     m->addComponent(importedComponent3);
     v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->errorCount());
+    EXPECT_EQ(size_t(3), v->issueCount());
 
     // Valid component import - two components imported from the same place is allowed
     libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
@@ -339,7 +339,7 @@ TEST(Validator, importComponents)
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
     v->validateModel(m);
-    EXPECT_EQ(size_t(3), v->errorCount());
+    EXPECT_EQ(size_t(3), v->issueCount());
 
     // Invalid - name missing from component
     libcellml::ImportSourcePtr imp5 = libcellml::ImportSource::create();
@@ -348,7 +348,7 @@ TEST(Validator, importComponents)
     importedComponent5->setSourceComponent(imp5, "component_in_that_model");
     m->addComponent(importedComponent5);
     v->validateModel(m);
-    EXPECT_EQ(size_t(5), v->errorCount());
+    EXPECT_EQ(size_t(5), v->issueCount());
 
     // Valid - two components from the same source is allowed
     libcellml::ImportSourcePtr imp7 = libcellml::ImportSource::create();
@@ -358,7 +358,7 @@ TEST(Validator, importComponents)
     importedComponent7->setSourceComponent(imp7, "new_shiny_component_ref");
     m->addComponent(importedComponent7);
     v->validateModel(m);
-    EXPECT_EQ(size_t(5), v->errorCount());
+    EXPECT_EQ(size_t(5), v->issueCount());
 
     // Valid - duplicate component_ref from a different source
     libcellml::ImportSourcePtr imp8 = libcellml::ImportSource::create();
@@ -368,7 +368,7 @@ TEST(Validator, importComponents)
     importedComponent8->setSourceComponent(imp8, "component_in_that_model");
     m->addComponent(importedComponent8);
     v->validateModel(m);
-    EXPECT_EQ(size_t(5), v->errorCount());
+    EXPECT_EQ(size_t(5), v->issueCount());
 
     // Invalid: component_ref url is not valid html
     libcellml::ImportSourcePtr imp9 = libcellml::ImportSource::create();
@@ -380,7 +380,7 @@ TEST(Validator, importComponents)
     v->validateModel(m);
 
     // Check for expected error messages
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, validMath)
@@ -423,7 +423,7 @@ TEST(Validator, validMath)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
 TEST(Validator, validMathInMultipleMathMLBlocks)
@@ -477,7 +477,7 @@ TEST(Validator, invalidMath)
         "  <invalid_xml></not_valid>\n"
         "</math>\n";
     const std::string math2 = "<invalid_math/>\n";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "LibXml2 error: Opening and ending tag mismatch: invalid_xml line 2 and not_valid.",
         "Could not get a valid XML root node from the math on component 'componentName1'.",
         "Math root node is of invalid type 'invalid_math' on component 'componentName2'. A valid math root node should be of type 'math'.",
@@ -499,7 +499,7 @@ TEST(Validator, invalidMath)
 
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, invalidMathMLElements)
@@ -516,14 +516,14 @@ TEST(Validator, invalidMathMLElements)
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Math has a 'equals' element that is not a supported MathML element.",
         "Math has a 'addition' element that is not a supported MathML element.",
         "No declaration for element equals.",
         "No declaration for element addition.",
     };
-    // Note: the MathML DTD also gives errors that list every possible operator when an
-    //       invalid option is given. We'll just explicitly check the less verbose errors here.
+    // Note: the MathML DTD also gives issues that list every possible operator when an
+    //       invalid option is given. We'll just explicitly check the less verbose issues here.
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -553,7 +553,7 @@ TEST(Validator, invalidMathMLElements)
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v->error(i)->description());
+        EXPECT_EQ(expectedIssues.at(i), v->issue(i)->description());
     }
 }
 
@@ -595,7 +595,7 @@ TEST(Validator, invalidMathMLVariables)
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "MathML ci element has the child text 'answer' which does not correspond with any variable names present in component 'componentName'.",
@@ -630,7 +630,7 @@ TEST(Validator, invalidMathMLVariables)
 
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, invalidSimpleMathmlCellMLUnits)
@@ -643,7 +643,7 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
         "    </bvar>\n"
         "  </apply>\n"
         "</math>";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -660,14 +660,14 @@ TEST(Validator, invalidSimpleMathmlCellMLUnits)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, invalidMathmlCellMLNsOnNode)
 {
     const std::string math =
         "<math  xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\"><apply><cellml:bvar><ci cellml:units=\"dimensionless\">B</ci></cellml:bvar></apply></math>";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -684,7 +684,7 @@ TEST(Validator, invalidMathmlCellMLNsOnNode)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
@@ -725,7 +725,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Math cn element has an invalid attribute type 'value' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in the model 'modelName' or a standard unit.",
         "MathML ci element has the child text 'new_bvar' which does not correspond with any variable names present in component 'componentName'.",
@@ -762,7 +762,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
 
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
@@ -810,10 +810,10 @@ TEST(Validator, validMathMLCiAndCnElementsWithCellMLUnits)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
-TEST(Validator, parseAndValidateInvalidUnitErrors)
+TEST(Validator, parseAndValidateInvalidUnitIssues)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -828,7 +828,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "    <unit prefix=\"wolf\" units=\"metre\"/>\n"
         "  </units>\n"
         "</model>\n";
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Units is named 'ampere' which is a protected standard unit name.",
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
@@ -838,16 +838,16 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr m = p->parseModel(in);
-    EXPECT_EQ(size_t(0), p->errorCount());
+    EXPECT_EQ(size_t(0), p->issueCount());
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, validateInvalidConnectionsVariableWithoutParentComponent)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'variable2' is an equivalent variable to 'variable1' but 'variable2' has no parent component.",
     };
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -877,7 +877,7 @@ TEST(Validator, validateInvalidConnectionsVariableWithoutParentComponent)
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, integerStrings)
@@ -938,6 +938,16 @@ TEST(Validator, integerStrings)
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
+        "    <reset variable=\"variable\" test_variable=\"other_variable\" order=\"12345678901\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
         "  </component>\n"
         "</model>\n";
 
@@ -946,9 +956,11 @@ TEST(Validator, integerStrings)
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
+        "Reset in component 'component' referencing variable 'variable' has an out of range integer order value '12345678901'.",
     };
 
     const std::vector<std::string> expectedValidationErrors = {
+        "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
         "Reset in component 'component' with variable 'variable', with test_variable 'other_variable', does not have an order set.",
@@ -958,12 +970,12 @@ TEST(Validator, integerStrings)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr m = p->parseModel(in);
 
-    EXPECT_EQ_ERRORS(expectedParsingErrors, p);
+    EXPECT_EQ_ISSUES(expectedParsingErrors, p);
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedValidationErrors, v);
+    EXPECT_EQ_ISSUES(expectedValidationErrors, v);
 }
 
 TEST(Validator, resetValid)
@@ -997,7 +1009,7 @@ TEST(Validator, resetValid)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, resetNoVariable)
@@ -1034,8 +1046,8 @@ TEST(Validator, resetNoVariable)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoTestVariable)
@@ -1072,8 +1084,8 @@ TEST(Validator, resetNoTestVariable)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoOrder)
@@ -1109,8 +1121,8 @@ TEST(Validator, resetNoOrder)
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetNoResetValue)
@@ -1146,8 +1158,8 @@ TEST(Validator, resetNoResetValue)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(expectedError, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(expectedError, validator->issue(0)->description());
 }
 
 TEST(Validator, resetMultipleMathMLInResetValue)
@@ -1186,7 +1198,7 @@ TEST(Validator, resetMultipleMathMLInResetValue)
 
 TEST(Validator, resetNoTestValue)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Reset in component 'comp' with order '7', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
     };
 
@@ -1219,7 +1231,7 @@ TEST(Validator, resetNoTestValue)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, resetMultipleMathMLInTestValue)
@@ -1258,7 +1270,7 @@ TEST(Validator, resetMultipleMathMLInTestValue)
 
 TEST(Validator, resetWhitespaceAsMaths)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
         "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a reset_value specified.",
     };
@@ -1293,7 +1305,7 @@ TEST(Validator, resetWhitespaceAsMaths)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, resetEmptyMathML)
@@ -1305,7 +1317,7 @@ TEST(Validator, resetEmptyMathML)
     libcellml::ResetPtr r = libcellml::Reset::create();
 
     // Empty test_value and reset_value math block
-    // TODO: For now, empty maths blocks are valid. Issue #365
+    // TODO: For now, empty maths blocks are valid. Issue #365.
     r->setVariable(v1);
     r->setTestVariable(v2);
     r->setOrder(9);
@@ -1329,7 +1341,7 @@ TEST(Validator, resetEmptyMathML)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, resetNegativeOrder)
@@ -1364,14 +1376,15 @@ TEST(Validator, resetNegativeOrder)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, resetVariableOutsideComponent)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Reset in component 'c1' with order '1', with variable 'v2', with test_variable 'v1', refers to a variable 'v2' in a different component 'c2'.",
-        "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'."};
+        "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'.",
+    };
 
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c1 = libcellml::Component::create();
@@ -1414,7 +1427,7 @@ TEST(Validator, resetVariableOutsideComponent)
 
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, validMathCnElements)
@@ -1448,7 +1461,7 @@ TEST(Validator, validMathCnElements)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 }
 
 TEST(Validator, validMathCnElementsMissingCellMLNamespace)
@@ -1466,7 +1479,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
         "  </apply>\n"
         "</math>\n";
 
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues {
         "LibXml2 error: Namespace prefix cellml for units on cn is not defined.",
         "LibXml2 error: Namespace prefix cellml for units on cn is not defined.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -1495,7 +1508,7 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
     m->addComponent(c);
 
     v->validateModel(m);
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
@@ -1539,11 +1552,17 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     m->addUnits(u1);
     m->addUnits(u2);
 
-    // This one is now an error.
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
+        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
+        "Variable 'tomayto' in component 'comp1' has units of 'testunit1' and an equivalent variable 'tomahto' in component 'comp2' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+    };
+
+    // This one is now an issue.
     libcellml::Variable::addEquivalence(v1, v2);
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
@@ -1614,7 +1633,7 @@ TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
             base->addUnit(baseUnits.first, 0, baseUnits.second, 1.0);
         }
         validator->validateModel(m);
-        EXPECT_EQ(size_t(0), validator->errorCount());
+        EXPECT_EQ(size_t(0), validator->issueCount());
     }
 }
 
@@ -1659,7 +1678,7 @@ TEST(Validator, unitEquivalenceBasicDimensionlessUnits)
     libcellml::Variable::addEquivalence(v1, v2);
 
     validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceDimensionlessUnits)
@@ -1715,7 +1734,7 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     m->fixVariableInterfaces();
 
     validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceMultiplierPrefix)
@@ -1765,13 +1784,13 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
     libcellml::Variable::addEquivalence(v2, v3);
 
     validator->validateModel(m);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'pjs' in component 'yousay' has units of 'testunit13' and an equivalent variable 'pajamas' in component 'wesay' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1856,86 +1875,13 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
-}
-
-TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
-{
-    // This test is intended to demonstrate that the effect of different multiplicator sources (prefix, multiplier term)
-    // does not affect the equivalence of the underlying base variables.
-    // TODO: when warnings are implemented then the multiplier testing can be reinstated.
-
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ModelPtr model = libcellml::Model::create();
-
-    libcellml::ComponentPtr comp1 = libcellml::Component::create();
-    libcellml::ComponentPtr comp2 = libcellml::Component::create();
-
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-
-    v1->setName("v1");
-    v1->setInterfaceType("public");
-    v2->setName("v2");
-    v2->setInterfaceType("public");
-
-    // millimetres
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    u1->setName("u1");
-    u1->addUnit("metre", "milli"); // standard, prefix.
-
-    // mm^3
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-    u2->setName("u2");
-    u2->addUnit("u1", 3.0); // standard, exponent.
-
-    // mm^6
-    libcellml::UnitsPtr u3 = libcellml::Units::create();
-    u3->setName("u3");
-    u3->addUnit("u2", 2.0); // standard, exponent.
-
-    // m^6
-    libcellml::UnitsPtr u4 = libcellml::Units::create();
-    u4->setName("u4");
-    u4->addUnit("u3", 15, 1.0); // standard, prefix, exponent.
-
-    libcellml::UnitsPtr u5 = libcellml::Units::create();
-    u5->setName("u5");
-    u5->addUnit("metre", 6.0); // standard, exponent.
-
-    // u4 ~= u5: Units will be equivalent, testing that prefix, multiplier, and exponent validation is correct.
-    // Note: there is a factor of 1000 between u4 and u5 since u4 = 10^15*u3 (rather than 10^18*u3), which is
-    //       fine since we only need units to be equivalent.
-    // TODO: see issue in specification: https://github.com/cellml/cellml-specification/issues/19.
-    v1->setUnits(u4);
-    v2->setUnits(u5);
-
-    comp1->setName("component1");
-    comp1->addVariable(v1);
-
-    comp2->setName("component2");
-    comp2->addVariable(v2);
-
-    model->setName("model");
-    model->addComponent(comp1);
-    model->addComponent(comp2);
-
-    model->addUnits(u1);
-    model->addUnits(u2);
-    model->addUnits(u3);
-    model->addUnits(u4);
-    model->addUnits(u5);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'bushell_of_apples' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1971,17 +1917,17 @@ TEST(Validator, unitUserCreatedUnitsBananasAndApples)
 
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitIllDefinedEquivalentUnits)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v1' does not have a valid units attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Variable 'v2' does not have a valid units attribute.",
-        "Variable 'v1' has units of '' and an equivalent variable 'v2' with non-matching units of ''. The mismatch is: ",
+        "Variable 'v1' in component 'c1' has units of '' and an equivalent variable 'v2' in component 'c2' with non-matching units of ''. The mismatch is: ",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1995,13 +1941,13 @@ TEST(Validator, unitIllDefinedEquivalentUnits)
 
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'metre' and an equivalent variable 'v2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'metre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2018,13 +1964,13 @@ TEST(Validator, unitStandardUnitsWhichAreBaseUnits)
 
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'v1' in component 'c1' has units of 'litre' and an equivalent variable 'v2' in component 'c2' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -2041,33 +1987,7 @@ TEST(Validator, unitStandardUnitsWhichAreNotBaseUnits)
 
     validator->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
-}
-
-TEST(Validator, unitMultiplierFactorDifference)
-{
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ModelPtr m = createModelTwoComponentsWithOneVariableEach("m", "c1", "c2", "v1", "v2");
-    auto c1 = m->component(0);
-    auto c2 = m->component(1);
-    auto v1 = c1->variable(0);
-    auto v2 = c2->variable(0);
-
-    v1->setUnits("litre");
-
-    libcellml::UnitsPtr u = libcellml::Units::create();
-    u->setName("big_barrel");
-    u->addUnit("metre", 3.0);
-    m->addUnits(u);
-
-    v2->setUnits("big_barrel");
-
-    libcellml::Variable::addEquivalence(v1, v2); // litre ~= metre^3.
-
-    m->linkUnits();
-    validator->validateModel(m);
-
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, unitSimpleCycle)
@@ -2078,7 +1998,7 @@ TEST(Validator, unitSimpleCycle)
     //           |                                        |
     //           +----------------------------------------+
 
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'",
     };
 
@@ -2105,13 +2025,13 @@ TEST(Validator, unitSimpleCycle)
 
     // Network valid at this stage.
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1.
     u1->addUnit("child");
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, unitComplexCycle)
@@ -2167,7 +2087,7 @@ TEST(Validator, unitComplexCycle)
     u6->addUnit("mother");
 
     v->validateModel(m);
-    EXPECT_EQ(size_t(0), v->errorCount());
+    EXPECT_EQ(size_t(0), v->issueCount());
 
     // As soon as a dependency of the grandfather on the brotherFromAnotherMother is added, then a
     // _directed_ loop (u1->u2->u4->u1) is created and the network is no longer valid:
@@ -2180,7 +2100,7 @@ TEST(Validator, unitComplexCycle)
     //                  <- mother (u3)  <-+
     //                             <- sisterFromAnotherFather (u6)
 
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
     };
 
@@ -2188,7 +2108,7 @@ TEST(Validator, unitComplexCycle)
     u1->addUnit("brotherFromAnotherMother");
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, duplicatedCellMLUnitsOnCiElement)
@@ -2198,7 +2118,7 @@ TEST(Validator, duplicatedCellMLUnitsOnCiElement)
         "  <ci cellml:units=\"dimensionless\" cellml:units=\"second\">B</ci>\n"
         "</math>\n";
 
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "LibXml2 error: Attribute cellml:units redefined.",
         "Could not get a valid XML root node from the math on component 'componentName'.",
     };
@@ -2219,7 +2139,7 @@ TEST(Validator, duplicatedCellMLUnitsOnCiElement)
 
     v->validateModel(m);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, multipleDefinitionsOfCellMLNamespace)
@@ -2230,7 +2150,7 @@ TEST(Validator, multipleDefinitionsOfCellMLNamespace)
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, validateModelWithoutAndWithMath)
@@ -2257,7 +2177,7 @@ TEST(Validator, validateModelWithoutAndWithMath)
     c3->addVariable(v);
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 
     const std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -2271,54 +2191,12 @@ TEST(Validator, validateModelWithoutAndWithMath)
     c3->setMath(math);
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-}
-
-TEST(Validator, unitEquivalenceMultiplier)
-{
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    libcellml::ModelPtr m = libcellml::Model::create();
-    libcellml::ComponentPtr comp1 = libcellml::Component::create();
-    libcellml::ComponentPtr comp2 = libcellml::Component::create();
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
-
-    v1->setName("v1");
-    v1->setInterfaceType("public");
-    v2->setName("v2");
-    v2->setInterfaceType("public");
-    m->setName("model");
-    comp1->setName("comp1");
-    comp2->setName("comp2");
-    comp1->addVariable(v1);
-    comp2->addVariable(v2);
-    m->addComponent(comp1);
-    m->addComponent(comp2);
-
-    // u1 = 10*u2
-    libcellml::UnitsPtr u1 = libcellml::Units::create();
-    u1->setName("u1");
-    u1->addUnit("metre", 1, 1.0, 10.0);
-    libcellml::UnitsPtr u2 = libcellml::Units::create();
-    u2->setName("u2");
-    u2->addUnit("metre", 1, 1.0, 1.0);
-
-    v1->setUnits(u1);
-    v2->setUnits(u2);
-
-    m->addUnits(u1);
-    m->addUnits(u2);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-
-    validator->validateModel(m);
-
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, unfoundUnitsInEncapsulatedComponents)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'v' in component 'c3' has a units reference 'non_existent_deep' which is neither standard nor defined in the parent model.",
         "Variable 'v' in component 'c2' has a units reference 'non_existent_shallow' which is neither standard nor defined in the parent model.",
     };
@@ -2348,7 +2226,7 @@ TEST(Validator, unfoundUnitsInEncapsulatedComponents)
     model->linkUnits();
     v->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, v);
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, variableEquivalenceValidNetwork)
@@ -2398,7 +2276,7 @@ TEST(Validator, variableEquivalenceValidNetwork)
 
 TEST(Validator, variableEquivalenceUnreachable)
 {
-    const std::vector<std::string> expectedErrors {
+    const std::vector<std::string> expectedIssues {
         "The equivalence between 'v1' in component 'c1'  and 'v3' in component 'c3' is invalid. Component 'c1' and 'c3' are neither siblings nor in a parent/child relationship.",
     };
 
@@ -2438,12 +2316,12 @@ TEST(Validator, variableEquivalenceUnreachable)
     libcellml::Variable::addEquivalence(v1, v3);
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'v1' in component 'c1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
         "The equivalence between 'v2' in component 'c2'  and 'v4' in component 'c4' is invalid. Component 'c2' and 'c4' are neither siblings nor in a parent/child relationship.",
     };
@@ -2507,12 +2385,12 @@ TEST(Validator, variableEquivalenceUnreachableAndReachableTogether)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, variableInterfaceShouldBePublic)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'v1' in component 'c1' has no interface type set. The interface type required is 'public'.",
         "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public'.",
     };
@@ -2547,12 +2425,12 @@ TEST(Validator, variableInterfaceShouldBePublic)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, variableInterfaceShouldBePrivate)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'v1' in component 'c1' has an interface type set to 'public' which is not the correct interface type for this variable. The interface type required is 'private'.",
     };
 
@@ -2587,7 +2465,7 @@ TEST(Validator, variableInterfaceShouldBePrivate)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, variableInterfaceCouldBePrivateButSetToPublicAndPrivate)
@@ -2623,12 +2501,12 @@ TEST(Validator, variableInterfaceCouldBePrivateButSetToPublicAndPrivate)
 
     validator->validateModel(model);
 
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
 {
-    const std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedIssues = {
         "Variable 'v2' in component 'c2' has an interface type set to 'private' which is not the correct interface type for this variable. The interface type required is 'public_and_private'.",
     };
 
@@ -2673,7 +2551,7 @@ TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
 
     validator->validateModel(model);
 
-    EXPECT_EQ_ERRORS(expectedErrors, validator);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
 TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
@@ -2693,7 +2571,7 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
 
     auto model = parser->parseModel(in);
     validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), validator->issueCount());
 
     auto nGate = libcellml::Component::create("nGate");
     model->addComponent(nGate);

@@ -16,11 +16,11 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
 #include "libcellml/types.h"
-
-#include <string>
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
