@@ -333,10 +333,6 @@ std::string Issue::referenceHeading() const
 
 std::string Issue::url() const
 {
-    // {Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, {"x.y.z", baseExampleUrl, "tbc"}},
-    // std::vector<std::string> parts = ruleToInformation.find(referenceRule());
-    // std::string url = parts.at(1) + parts.at(2) + ".html?issue="+referenceRule;
-
     std::string issueUrl = "X.Y.Z";
     auto search = ruleToInformation.find(referenceRule());
     if (search != ruleToInformation.end()) {
