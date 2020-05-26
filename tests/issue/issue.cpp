@@ -69,6 +69,9 @@ TEST(Issue, createResetIssue)
 void testReferenceRule(const libcellml::IssuePtr &e)
 {
     switch (e->referenceRule()) {
+    case libcellml::Issue::ReferenceRule::UNDEFINED:
+        EXPECT_EQ("", e->referenceHeading());
+        break;
     case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE:
         EXPECT_EQ("1.3.1.1", e->referenceHeading());
         break;
