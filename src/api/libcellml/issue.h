@@ -288,15 +288,14 @@ public:
      */
     ReferenceRule referenceRule() const;
 
-    // /**
-    //  * @brief Get the @c url of this issue.
-    //  *
-    //  * Get the @c url to which the user should refer for more information on this issue.
-    //  *
-    //  * @return The @c url for this issue.
-    //  */
-    // TODO Removed until the base URL and CellML 2.0 specification has been finalised.
-    // std::string url() const;
+    /**
+     * @brief Get the @c url of this issue.
+     *
+     * Get the @c url to which the user should refer for more information on this issue.
+     *
+     * @return The @c url for this issue.
+     */
+    std::string url() const;
 
     /**
      * @brief Get the @c std::string heading associated with the @c enum ReferenceRule for this issue.
