@@ -582,7 +582,7 @@ TEST(Issue, isHint)
 
 TEST(Issue, url)
 {
-    auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME";
+    auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=2.1.1";
 
     auto issue = libcellml::Issue::create();
     issue->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
