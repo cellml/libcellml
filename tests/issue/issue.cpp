@@ -580,11 +580,11 @@ TEST(Issue, isHint)
     EXPECT_EQ(e->level(), libcellml::Issue::Level::HINT);
 }
 
-TEST(Issue, url) {
+TEST(Issue, url)
+{
     auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=MODEL_NAME";
 
     auto issue = libcellml::Issue::create();
     issue->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
     EXPECT_EQ(expectedUrl, issue->url());
-
 }
