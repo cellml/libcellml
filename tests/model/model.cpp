@@ -375,7 +375,7 @@ struct structure
     }
 
 private:
-    big_and_complicated *m_data;
+    big_and_complicated *m_data = nullptr;
 };
 
 TEST(Model, replaceComponent)
