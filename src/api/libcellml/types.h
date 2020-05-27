@@ -21,14 +21,16 @@ limitations under the License.
 namespace libcellml {
 
 // General classes.
-class Issue; /**< Forward declaration of Issue class. */
-using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
 using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
 class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */
 using GeneratorVariablePtr = std::shared_ptr<GeneratorVariable>; /**< Type definition for shared generator variable pointer. */
+class Importer; /**< Forward declaration of Importer class. */
+using ImporterPtr = std::shared_ptr<Importer>; /**< Type definition for shared importer pointer. */
+class Issue; /**< Forward declaration of Issue class. */
+using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Logger; /**< Forward declaration of Parser class. */
 using LoggerPtr = std::shared_ptr<Logger>; /**< Type definition for shared parser pointer. */
 class Parser; /**< Forward declaration of Parser class. */
