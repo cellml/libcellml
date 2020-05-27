@@ -1121,9 +1121,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
 
     for (const VariablePtr &variable : variables) {
         auto parentComponent = std::dynamic_pointer_cast<Component>(variable->parent());
-        if (parentComponent == nullptr) {
-            continue;
-        }
         if (parentComponent->isImport()) {
             continue;
         }
