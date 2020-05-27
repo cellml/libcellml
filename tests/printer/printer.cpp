@@ -254,18 +254,3 @@ TEST(Printer, printModelWithStandardUnitsAdded)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     EXPECT_EQ(e, printer->printModel(model));
 }
-
-TEST(Printer, printModelWithEquivVariables)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importingModel.cellml"));
-
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-
-    auto printer = libcellml::Printer::create();
-    auto serialisedModel = printer->printModel(model);
-
-    EXPECT_EQ(serialisedModel, fileContents("importingModel.cellml"));
-}

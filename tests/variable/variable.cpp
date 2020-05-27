@@ -1699,3 +1699,112 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("", v3->interfaceType());
     EXPECT_EQ("public", v4->interfaceType());
 }
+
+TEST(Variable, connectionsPersistAfterImporting)
+{
+    auto model = libcellml::Model::create("model");
+    auto importedComponent = libcellml::Component::create("importedComponent");
+    model->addComponent(importedComponent);
+
+    auto importer = libcellml::ImportSource::create();
+    importer->setUrl("importedModelWithMaps.cellml");
+    importedComponent->setImportSource(importer);
+    importedComponent->setImportReference("importMe");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath(""));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+    EXPECT_NE(nullptr, model->component("importedComponent"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child1"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child2"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child1")->variable("x"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child2")->variable("x"));
+
+    auto x1 = model->component("importedComponent")->component("child1")->variable("x");
+    auto x2 = model->component("importedComponent")->component("child2")->variable("x");
+    EXPECT_EQ(size_t(1), x1->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), x2->equivalentVariableCount());
+    EXPECT_EQ(x1, x2->equivalentVariable(0));
+    EXPECT_EQ(x2, x1->equivalentVariable(0));
+}
+
+TEST(Variable, connectionsAsymmetricWithRepeatedUnits)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+
+    auto importer = libcellml::ImportSource::create();
+    importer->setUrl("importedModelWithCustomUnits1.cellml");
+
+    c1->setImportSource(importer);
+    c1->setImportReference("importMe");
+
+    c2->setImportSource(importer);
+    c2->setImportReference("importMe");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath(""));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+
+    EXPECT_NE(nullptr, model->component("c1"));
+    EXPECT_NE(nullptr, model->component("c1")->variable("x"));
+    EXPECT_NE(nullptr, model->component("c2")->variable("x"));
+
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(model->component("c1")->variable("x"), model->component("c2")->variable("x")));
+
+    auto x1 = model->component("c1")->variable("x");
+    auto x2 = model->component("c2")->variable("x");
+    EXPECT_EQ(size_t(1), x1->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), x2->equivalentVariableCount());
+    EXPECT_EQ(x1, x2->equivalentVariable(0));
+    EXPECT_EQ(x2, x1->equivalentVariable(0));
+}
+
+TEST(Variable, connectionsSymmetricWithMismatchedUnits)
+{
+    auto model = libcellml::Model::create("model");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+
+    auto importer1 = libcellml::ImportSource::create();
+    importer1->setUrl("importedModelWithCustomUnits1.cellml");
+
+    c1->setImportSource(importer1);
+    c1->setImportReference("importMe");
+
+    auto importer2 = libcellml::ImportSource::create();
+    importer2->setUrl("importedModelWithCustomUnits2.cellml");
+
+    c2->setImportSource(importer2);
+    c2->setImportReference("importMe");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(resourcePath(""));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model->flatten();
+
+    EXPECT_NE(nullptr, model->component("c1"));
+    EXPECT_NE(nullptr, model->component("c1")->variable("x"));
+    EXPECT_NE(nullptr, model->component("c2")->variable("x"));
+
+    EXPECT_TRUE(libcellml::Variable::addEquivalence(model->component("c1")->variable("x"), model->component("c2")->variable("x")));
+
+    auto x1 = model->component("c1")->variable("x");
+    auto x2 = model->component("c2")->variable("x");
+    EXPECT_EQ(size_t(1), x1->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), x2->equivalentVariableCount());
+    EXPECT_EQ(x1, x2->equivalentVariable(0));
+    EXPECT_EQ(x2, x1->equivalentVariable(0));
+}
