@@ -25,7 +25,6 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
-#if 0
 TEST(Validator, namedModel)
 {
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -383,7 +382,6 @@ TEST(Validator, importComponents)
     // Check for expected error messages
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
-#endif
 
 TEST(Validator, importsDummyVariablesNotCheckedForUnitsInterfaces)
 {
