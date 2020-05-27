@@ -1699,38 +1699,3 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("", v3->interfaceType());
     EXPECT_EQ("public", v4->interfaceType());
 }
-
-TEST(Variable, addEquivalenceToImportedVariable)
-{
-    // This won't work ... but it's what I'd want to be able to do ...
-    auto model = libcellml::Model::create("importing_model");
-
-    // Set up the local component
-    auto localComponent = libcellml::Component::create("localComponent");
-    auto x = libcellml::Variable::create("x");
-    x->setUnits("dimensionless");
-    x->setInterfaceType("public_and_private");
-
-    // Set up the imported component
-    auto importedComponent = libcellml::Component::create("importedComponent");
-    model->addComponent(importedComponent);
-
-    auto importer = libcellml::ImportSource::create();
-    importer->setUrl("importedModel.cellml");
-    importedComponent->setImportSource(importer);
-    importedComponent->setImportReference("importMe");
-
-    // Create equivalent variables: THIS BIT I DON'T KNOW HOW TO DO!
-    // The importedComponent is not instantiated, so can't point to any of its variables...
-    // libcellml::Variable::addEquivalence(x, importedComponent->variable("x"));
-    libcellml::Variable::addEquivalence(localComponent, "x", importedComponent, "x");
-
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(model);
-
-    auto printer = libcellml::Printer::create();
-    auto serialisedModel = printer->printModel(model);
-
-    EXPECT_EQ(serialisedModel, fileContents("importingModel.cellml"));
-
-}
