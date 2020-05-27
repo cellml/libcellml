@@ -1063,7 +1063,6 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
         // If the parent component of the variable is imported, don't check it.
         auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
         if (equivalentComponent == nullptr) {
-            // TODO Should an orphaned variable be reported here or somewhere else?
             continue;
         }
         if (equivalentComponent->isImport()) {
@@ -1075,13 +1074,12 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                ComponentPtr parentComponent = std::dynamic_pointer_cast<Component>(variable->parent());
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
