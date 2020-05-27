@@ -646,6 +646,7 @@ TEST(Parser, emptyEncapsulation)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
     EXPECT_EQ_ISSUES(expectedIssues, p);
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, p->issue(0)->level());
 }
 
 TEST(Parser, validEncapsulation)
@@ -984,11 +985,12 @@ TEST(Parser, emptyConnections)
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
         "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
-        "Connection in model 'model_name' must contain one or more 'map_variables' elements.",
+        "Connection in model 'model_name' does not contain any 'map_variables' elements.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
+    printIssues(p);
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 
@@ -1104,8 +1106,8 @@ TEST(Parser, connectionErrorNoMapVariables)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid connection attribute 'component_3'.",
-        "Connection in model '' must contain one or more 'map_variables' elements.",
-        "Connection in model '' must contain one or more 'map_variables' elements.",
+        "Connection in model '' does not contain any 'map_variables' elements.",
+        "Connection in model '' does not contain any 'map_variables' elements.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1377,7 +1379,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
-        "Connection in model 'starwars' must contain one or more 'map_variables' elements.",
+        "Connection in model 'starwars' does not contain any 'map_variables' elements.",
     };
 
     // Parse and check for CellML issues.
