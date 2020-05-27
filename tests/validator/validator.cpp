@@ -383,6 +383,41 @@ TEST(Validator, importComponents)
     EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
+TEST(Validator, importsDummyVariablesNotCheckedForUnitsInterfaces)
+{
+    auto validator = libcellml::Validator::create();
+    auto model = libcellml::Model::create("model");
+
+    // Create a concrete component and variable.
+    // This should be checked for variable validity: units, interface.
+    auto component = libcellml::Component::create("component");
+    auto variable = libcellml::Variable::create("variable");
+    variable->setUnits("dimensionless");
+    variable->setInterfaceType("public");
+    component->addVariable(variable);
+    model->addComponent(component);
+
+    // Create an imported component and dummy variable.
+    // This should *not* be checked for variable validity.
+    auto importer = libcellml::ImportSource::create();
+    importer->setUrl("some-other-model.xml");
+    auto dummyComponent = libcellml::Component::create("dummy_component");
+    dummyComponent->setSourceComponent(importer, "component_in_that_model");
+    auto dummyVariable = libcellml::Variable::create("dummy");
+    dummyComponent->addVariable(dummyVariable); // Don't set any units or interface type here.
+    model->addComponent(dummyComponent);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    // As soon as a connection is made between the dummyVariable and the variable, the validator
+    // checks the dummyVariable and fails the model.
+    libcellml::Variable::addEquivalence(variable, dummyVariable);
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+}
+
 TEST(Validator, validMath)
 {
     const std::string math =
