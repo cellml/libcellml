@@ -342,12 +342,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 // and issue-checked in loadEncapsulation().
                 encapsulationNodes.push_back(componentRefNode);
             } else {
-                // TODO Should this be removed?
+                // Empty encapsulations are valid, but may not be intended.  This issue has been downgraded to a warning.
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Encapsulation in model '" + model->name() + "' does not contain any child elements.");
                 issue->setModel(model);
                 issue->setCause(Issue::Cause::ENCAPSULATION);
                 issue->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_COMPONENT_REF);
+                issue->setLevel(libcellml::Issue::Level::WARNING);
                 mParser->addIssue(issue);
             }
         } else if (childNode->isCellmlElement("connection")) {
@@ -782,12 +783,12 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     XmlNodePtr childNode = node->firstChild();
 
     if (!childNode) {
-        // TODO Should this be removed too?
         IssuePtr issue = Issue::create();
-        issue->setDescription("Connection in model '" + model->name() + "' must contain one or more 'map_variables' elements.");
+        issue->setDescription("Connection in model '" + model->name() + "' does not contain any 'map_variables' elements.");
         issue->setModel(model);
         issue->setCause(Issue::Cause::CONNECTION);
         issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_MAP_VARIABLES);
+        issue->setLevel(libcellml::Issue::Level::WARNING);
         mParser->addIssue(issue);
         return;
     }
