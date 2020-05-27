@@ -990,7 +990,6 @@ TEST(Parser, emptyConnections)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
-    printIssues(p);
     EXPECT_EQ_ISSUES(expectedIssues, p);
 }
 

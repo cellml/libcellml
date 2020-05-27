@@ -342,7 +342,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 // and issue-checked in loadEncapsulation().
                 encapsulationNodes.push_back(componentRefNode);
             } else {
-                // Empty encapsulations are valid, but may not be intended.  This issue has been downgraded to a warning.
+                // Empty encapsulations are valid, but may not be intended.
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Encapsulation in model '" + model->name() + "' does not contain any child elements.");
                 issue->setModel(model);
