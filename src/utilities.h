@@ -212,37 +212,38 @@ static const std::map<Variable::InterfaceType, const std::string> interfaceTypeT
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 /**
- * @brief Convert the @p candidate @c std::string to a @c double.
+ * @brief Convert the @p in @c std::string to the @p out @c double.
  *
- * Convert the @p candidate @c std::string to a @c double. If @p candidate
- * cannot be converted using @c std::stod an exception will be raised.  To
- * avoid raising an exception the candidate string must be known to be convertible
- * to a double before calling this function.
+ * Convert the @p in @c std::string to a @c double. If @p in can be converted
+ * using @c std::stod, return @c true and update @p out, otherwise return
+ * @c false. To avoid returning @c false, @p in must be known to be convertible
+ * to a @c double before calling this function.
  *
  * @sa isCellMLReal
  *
- * @param candidate The @c std::string value to convert to a @c double.
+ * @param in The @c std::string value to convert to a @c double.
+ * @param out The @c double value resulting in the conversion.
  *
- * @return The @c double value of the candidate.
- *
+ * @return @c true if @in represents a @c double, @c false otherwise.
  */
-double convertToDouble(const std::string &candidate);
+bool convertToDouble(const std::string &in, double &out);
 
 /**
- * @brief Convert the @p candidate @c std::string to an @c int.
+ * @brief Convert the @p in @c std::string to the @p out @c int.
  *
- * Convert the @p candidate @c std::string to an @c int. If @p candidate
- * cannot be converted using @c std::stoi an exception will be raised.  To
- * avoid raising an exception the candidate string must be known to be convertible
- * to an int before calling this function.
+ * Convert the @p in @c std::string to an @c int. If @p in can be converted
+ * using @c std::stoi, return @c true and update @p out, otherwise return
+ * @c false. To avoid returning @c false, @p in must be known to be convertible
+ * to an @c int before calling this function.
  *
  * @sa isCellMLInteger
  *
- * @param candidate The @c std::string value to convert to an @c int.
+ * @param in The @c std::string value to convert to an @c int.
+ * @param out The @c int value resulting in the conversion.
  *
- * @return The @c int value of the candidate.
+ * @return @c true if @in represents an @c int, @c false otherwise.
  */
-int convertToInt(const std::string &candidate);
+bool convertToInt(const std::string &in, int &out);
 
 /**
  * @brief Convert a @c int to @c std::string format.

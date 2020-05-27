@@ -16,9 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/logger.h"
-
 #include <string>
+
+#include "libcellml/logger.h"
 
 namespace libcellml {
 
@@ -78,8 +78,7 @@ public:
      * @c Component in which the @c Variable is first defined (in the case of
      * the variable of integration), initialised (in the case of a constant) or
      * actually computed (in the case of a state, computed constant or algebraic
-     * variable). It may or may not be the same @c Component as the parent
-     * component of the @c Variable.
+     * variable).
      *
      * @return The @c Component.
      */

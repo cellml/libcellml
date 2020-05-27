@@ -375,7 +375,7 @@ struct structure
     }
 
 private:
-    big_and_complicated *m_data;
+    big_and_complicated *m_data = nullptr;
 };
 
 TEST(Model, replaceComponent)
@@ -555,6 +555,31 @@ TEST(Model, setAndCheckIdsAllEntities)
     EXPECT_EQ(a, e);
 }
 
+TEST(Model, equivalentVariableCountReportsCorrectlyAfterUsingRemoveComponent)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"c1\">\n"
+        "    <variable name=\"v1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"c2\">\n"
+        "    <variable name=\"v2\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"c1\" component_2=\"c2\">\n"
+        "    <map_variables variable_1=\"v1\" variable_2=\"v2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(e);
+
+    model->removeComponent("c1");
+
+    EXPECT_EQ(size_t(0), model->component(0)->variable(0)->equivalentVariableCount());
+    EXPECT_EQ(nullptr, model->component(0)->variable(0)->equivalentVariable(0));
+}
+
 TEST(Model, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
@@ -721,4 +746,49 @@ TEST(Model, importUnitsDuplicated)
 
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(e, printer->printModel(model));
+}
+
+TEST(Model, removeComponentInsensitiveToOrder)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"parsed_model\">\n"
+        "  <component name=\"c1\">\n"
+        "    <variable name=\"v1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"c2\">\n"
+        "    <variable name=\"v2\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto modelParsed = parser->parseModel(e);
+    auto modelApi = libcellml::Model::create("api_model");
+
+    // I want to move a component from modelParsed to modelApi
+    auto c1Parsed = modelParsed->component("c1");
+    modelApi->addComponent(c1Parsed);
+    // Expect one component each
+    EXPECT_EQ(size_t(1), modelParsed->componentCount());
+    EXPECT_EQ(size_t(1), modelApi->componentCount());
+
+    // Remove it from the parsed model: this does nothing because the parent pointer
+    // has already been changed when it was added to the modelApi
+    modelParsed->removeComponent(c1Parsed);
+
+    // Still expect one component each
+    EXPECT_EQ(size_t(1), modelParsed->componentCount());
+    EXPECT_EQ(size_t(1), modelApi->componentCount());
+
+    // If the order of operations is switched the behaviour is the same:
+
+    // Get a pointer to the second componet in the parsed model
+    auto c2Parsed = modelParsed->component("c2");
+    // Remove it from the parsed model
+    modelParsed->removeComponent(c2Parsed);
+    // Add it to the api model
+    modelApi->addComponent(c2Parsed);
+
+    EXPECT_EQ(size_t(0), modelParsed->componentCount());
+    EXPECT_EQ(size_t(2), modelApi->componentCount());
 }

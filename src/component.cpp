@@ -148,7 +148,9 @@ void Component::addVariable(const VariablePtr &variable)
 bool Component::removeVariable(size_t index)
 {
     if (index < mPimpl->mVariables.size()) {
+        auto variable = mPimpl->mVariables[index];
         mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
+        variable->removeParent();
         return true;
     }
 
@@ -159,6 +161,7 @@ bool Component::removeVariable(const std::string &name)
 {
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
+        (*result)->removeParent();
         mPimpl->mVariables.erase(result);
         return true;
     }

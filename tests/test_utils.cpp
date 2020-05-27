@@ -40,25 +40,25 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void printErrors(const libcellml::LoggerPtr &l, bool headings, bool kinds, bool rule)
+void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
 {
-    for (size_t i = 0; i < l->errorCount(); ++i) {
-        std::cout << "Error " << std::setw(3) << i + 1 << ": ";
-        std::cout << l->error(i)->description();
+    for (size_t i = 0; i < l->issueCount(); ++i) {
+        std::cout << "Issue " << std::setw(3) << i + 1 << ": ";
+        std::cout << l->issue(i)->description();
         if (headings) {
-            std::cout << ", " << l->error(i)->specificationHeading();
+            std::cout << ", " << l->issue(i)->referenceHeading();
         }
-        if (kinds) {
-            std::cout << ", " << static_cast<int>(l->error(i)->kind());
+        if (causes) {
+            std::cout << ", " << static_cast<int>(l->issue(i)->cause());
         }
         if (rule) {
-            std::cout << ", " << static_cast<int>(l->error(i)->rule());
+            std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
         }
         std::cout << std::endl;
     }
 }
 
-void printModel(libcellml::ModelPtr &model)
+void printModel(const libcellml::ModelPtr &model)
 {
     std::cout << "The model name is: '" << model->name() << "'" << std::endl;
     if (model->id() != "") {
@@ -98,18 +98,25 @@ void printComponent(const libcellml::ComponentPtr &component, size_t const c, st
               << " variables:" << std::endl;
 
     // Printing the variables within the component
-    for (size_t v = 0; v < component->variableCount(); v++) {
-        std::cout << spacer << "  Variable[" << v << "] has name: '"
-                  << component->variable(v)->name() << "'" << std::endl;
-        if (component->variable(v)->initialValue() != "") {
-            std::cout << spacer << "  Variable[" << v << "] has initial_value: '"
-                      << component->variable(v)->initialValue() << "'"
+    for (size_t vIndex = 0; vIndex < component->variableCount(); vIndex++) {
+        auto v = component->variable(vIndex);
+        std::cout << spacer << "  Variable[" << vIndex << "] has name: '"
+                  << v->name() << "'" << std::endl;
+        if (v->initialValue() != "") {
+            std::cout << spacer << "  Variable[" << vIndex << "] has initial_value: '"
+                      << v->initialValue() << "'"
                       << std::endl;
         }
-        if (component->variable(v)->units() != nullptr) {
-            std::cout << spacer << "  Variable[" << v << "] has units: '"
-                      << component->variable(v)->units()->name() << "'" << std::endl;
+        if (v->units() != nullptr) {
+            std::cout << spacer << "  Variable[" << vIndex << "] has units: '"
+                      << v->units()->name() << "'" << std::endl;
         }
+        std::cout << spacer << "  Variable[" << vIndex << "] has " << v->equivalentVariableCount() << " equivalent variable(s): ";
+        for (size_t eIndex = 0; eIndex < v->equivalentVariableCount(); ++eIndex) {
+            auto equivVariable = v->equivalentVariable(eIndex);
+            std::cout << equivVariable->name() << ", ";
+        }
+        std::cout << std::endl;
     }
 
     // Print the maths within the component
@@ -132,35 +139,36 @@ void printComponent(const libcellml::ComponentPtr &component, size_t const c, st
     }
 }
 
-void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::LoggerPtr &logger)
+void expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger)
+
 {
-    EXPECT_EQ(errors.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < errors.size(); ++i) {
-        EXPECT_EQ(errors.at(i), logger->error(i)->description());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
     }
 }
 
-void expectEqualErrorsSpecificationHeadings(const std::vector<std::string> &errors,
+void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
                                             const std::vector<std::string> &specificationHeadings,
                                             const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(errors.size(), logger->errorCount());
-    EXPECT_EQ(specificationHeadings.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < errors.size(); ++i) {
-        EXPECT_EQ(errors.at(i), logger->error(i)->description());
-        EXPECT_EQ(specificationHeadings.at(i), logger->error(i)->specificationHeading());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(specificationHeadings.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(specificationHeadings.at(i), logger->issue(i)->referenceHeading());
     }
 }
 
-void expectEqualErrorsKinds(const std::vector<std::string> &errors,
-                            const std::vector<libcellml::Error::Kind> &kinds,
-                            const libcellml::LoggerPtr &logger)
+void expectEqualIssuesCauses(const std::vector<std::string> &issues,
+                             const std::vector<libcellml::Issue::Cause> &causes,
+                             const libcellml::LoggerPtr &logger)
 {
-    EXPECT_EQ(errors.size(), logger->errorCount());
-    EXPECT_EQ(kinds.size(), logger->errorCount());
-    for (size_t i = 0; i < logger->errorCount() && i < errors.size(); ++i) {
-        EXPECT_EQ(errors.at(i), logger->error(i)->description());
-        EXPECT_EQ(kinds.at(i), logger->error(i)->kind());
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(causes.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(causes.at(i), logger->issue(i)->cause());
     }
 }
 

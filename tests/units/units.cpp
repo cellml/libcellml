@@ -846,9 +846,9 @@ TEST(Units, multipleAndParse)
 
 TEST(Units, unitsWithPrefixOutOfRange)
 {
-    // int limit is 18,446,744,073,709,551,615
+    // int limit is 2,147,483,647
 
-    const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
+    const std::string e = "Prefix '2147483648' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -860,7 +860,7 @@ TEST(Units, unitsWithPrefixOutOfRange)
     libcellml::UnitsPtr u = libcellml::Units::create();
 
     u->setName("myUnits");
-    u->addUnit("second", "18446744073709551616");
+    u->addUnit("second", "2147483648");
     v->setUnits(u);
     c->addVariable(v);
     m->addComponent(c);
@@ -870,8 +870,8 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     validator->validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(e, validator->error(0)->description());
+    EXPECT_EQ(size_t(1), validator->issueCount());
+    EXPECT_EQ(e, validator->issue(0)->description());
 }
 
 TEST(Units, parentOfUnits)
@@ -1890,23 +1890,30 @@ TEST(Units, compareCompatibleUnitsWhichAreDimensionless)
 
     // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians, etc.
     libcellml::UnitsPtr u1 = libcellml::Units::create();
-    u1->setName("testunit5");
-    u1->addUnit("metre", -2.0);
-    u1->addUnit("metre", 2.0);
+    u1->setName("dimensionless");
     libcellml::UnitsPtr u2 = libcellml::Units::create();
-    u2->setName("testunit6");
-    u2->addUnit("dimensionless");
+    u2->setName("testunit2");
+    u2->addUnit("metre", -2.0);
+    u2->addUnit("metre", 2.0);
     libcellml::UnitsPtr u3 = libcellml::Units::create();
-    u3->setName("testunit7");
+    u3->setName("testunit3");
     u3->addUnit("steradian");
+    libcellml::UnitsPtr u4 = libcellml::Units::create();
+    u4->setName("testunit4");
+    u4->addUnit("metre", 1.0);
+    u4->addUnit("metre", -1.0);
+    libcellml::UnitsPtr u5 = libcellml::Units::create();
+    u5->setName("testunit5");
+    u5->addUnit("radian");
 
     model->addUnits(u1);
     model->addUnits(u2);
     model->addUnits(u3);
 
     EXPECT_TRUE(libcellml::Units::compatible(u1, u2));
-    EXPECT_TRUE(libcellml::Units::compatible(u2, u3));
     EXPECT_TRUE(libcellml::Units::compatible(u1, u3));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u4));
+    EXPECT_TRUE(libcellml::Units::compatible(u1, u5));
 }
 
 TEST(Units, compareCompatibleUnitsWhichAreNested)
@@ -2003,6 +2010,133 @@ TEST(Units, isBaseUnitsNoImport)
 
     EXPECT_FALSE(u->isImport());
     EXPECT_TRUE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitSecond)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("second");
+
+    EXPECT_TRUE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitDimensionless)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("dimensionless");
+
+    EXPECT_TRUE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitSecondRedefined)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("second");
+    u->addUnit("volt");
+
+    EXPECT_FALSE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitSecondRedefinedPrinted)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <units name=\"second\">\n"
+        "    <unit units=\"volt\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+
+    libcellml::PrinterPtr p = libcellml::Printer::create();
+    libcellml::ModelPtr m = libcellml::Model::create("model");
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("second");
+    u->addUnit("volt");
+
+    m->addUnits(u);
+
+    EXPECT_FALSE(u->isBaseUnit());
+
+    EXPECT_EQ(e, p->printModel(m));
+}
+
+TEST(Units, isBaseUnitVolt)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+
+    u->setName("volt");
+
+    EXPECT_FALSE(u->isBaseUnit());
+}
+
+TEST(Units, isBaseUnitAllStandardUnits)
+{
+    const std::vector<libcellml::Units::StandardUnit> standardUnits = {
+        libcellml::Units::StandardUnit::AMPERE,
+        libcellml::Units::StandardUnit::BECQUEREL,
+        libcellml::Units::StandardUnit::CANDELA,
+        libcellml::Units::StandardUnit::COULOMB,
+        libcellml::Units::StandardUnit::DIMENSIONLESS,
+        libcellml::Units::StandardUnit::FARAD,
+        libcellml::Units::StandardUnit::GRAM,
+        libcellml::Units::StandardUnit::GRAY,
+        libcellml::Units::StandardUnit::HENRY,
+        libcellml::Units::StandardUnit::HERTZ,
+        libcellml::Units::StandardUnit::JOULE,
+        libcellml::Units::StandardUnit::KATAL,
+        libcellml::Units::StandardUnit::KELVIN,
+        libcellml::Units::StandardUnit::KILOGRAM,
+        libcellml::Units::StandardUnit::LITRE,
+        libcellml::Units::StandardUnit::LUMEN,
+        libcellml::Units::StandardUnit::LUX,
+        libcellml::Units::StandardUnit::METRE,
+        libcellml::Units::StandardUnit::MOLE,
+        libcellml::Units::StandardUnit::NEWTON,
+        libcellml::Units::StandardUnit::OHM,
+        libcellml::Units::StandardUnit::PASCAL,
+        libcellml::Units::StandardUnit::RADIAN,
+        libcellml::Units::StandardUnit::SECOND,
+        libcellml::Units::StandardUnit::SIEMENS,
+        libcellml::Units::StandardUnit::SIEVERT,
+        libcellml::Units::StandardUnit::STERADIAN,
+        libcellml::Units::StandardUnit::TESLA,
+        libcellml::Units::StandardUnit::VOLT,
+        libcellml::Units::StandardUnit::WATT,
+        libcellml::Units::StandardUnit::WEBER,
+    };
+
+    const std::vector<size_t> baseUnitIndices = {0, 2, 4, 12, 13, 17, 18, 23};
+
+    EXPECT_EQ(size_t(31), standardUnits.size());
+    EXPECT_EQ(size_t(8), baseUnitIndices.size());
+
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    std::string ref;
+    std::string pre;
+    std::string id;
+    double expMult;
+    double uExp;
+
+    size_t index = 0;
+    for (auto standardUnit : standardUnits) {
+        u->addUnit(standardUnit);
+        u->unitAttributes(0, ref, pre, uExp, expMult, id);
+
+        libcellml::UnitsPtr testUnit = libcellml::Units::create(ref);
+        auto found = std::find(baseUnitIndices.begin(), baseUnitIndices.end(), index);
+        if (found != baseUnitIndices.end()) {
+            EXPECT_TRUE(testUnit->isBaseUnit());
+        } else {
+            EXPECT_FALSE(testUnit->isBaseUnit());
+        }
+
+        u->removeUnit(standardUnit);
+        index++;
+    }
 }
 
 TEST(Units, isBaseUnitsImportModelUnresolved)
@@ -2284,4 +2418,38 @@ TEST(Units, scalingFactorIncompatibleUnitsNoChecking)
     model->addUnits(lemons);
 
     EXPECT_EQ(1.0E+6, libcellml::Units::scalingFactor(oranges, lemons, false));
+}
+
+TEST(Units, scalingFactorSelfReferencingUnits1)
+{
+    auto model = libcellml::Model::create();
+    auto X = libcellml::Units::create("X");
+    X->addUnit("mole");
+    auto mX = libcellml::Units::create("mX");
+    mX->addUnit("X", "milli");
+    model->addUnits(X);
+    model->addUnits(mX);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+
+    X->addUnit("litre", -1.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+}
+
+TEST(Units, scalingFactorSelfReferencingUnits2)
+{
+    auto model = libcellml::Model::create();
+    auto X = libcellml::Units::create("X");
+    X->addUnit("mole");
+    auto mX = libcellml::Units::create("mX");
+    mX->addUnit("X", "milli");
+    model->addUnits(X);
+    model->addUnits(mX);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
+
+    X->addUnit("litre", -3.0);
+
+    EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
 }
