@@ -1060,6 +1060,15 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
+        // If the parent component of the variable is imported, don't check it.
+        auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+        if (equivalentComponent == nullptr) {
+            // TODO Should an orphaned variable be reported here or somewhere else?
+            continue;
+        }
+        if (equivalentComponent->isImport()) {
+            continue;
+        }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             VariablePair reversePair = std::make_pair(equivalentVariable, variable);
@@ -1111,6 +1120,13 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
     }
 
     for (const VariablePtr &variable : variables) {
+        auto parentComponent = std::dynamic_pointer_cast<Component>(variable->parent());
+        if (parentComponent == nullptr) {
+            continue;
+        }
+        if (parentComponent->isImport()) {
+            continue;
+        }
         validateVariableInterface(variable, interfaceErrorsAlreadyReported);
         validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
         validateEquivalenceStructure(variable);
