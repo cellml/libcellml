@@ -16,15 +16,15 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 #include "libcellml/types.h"
 
-#include <string>
-#include <vector>
-
 // MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in
-// some compilation issues for our StandardUnit enum class below. However, that
+// some compilation errors for our StandardUnit enum class below. However, that
 // macro gets defined for backward compatibility, so we can safely undefine it.
 // (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
 // information.)
@@ -360,7 +360,7 @@ public:
      *
      * @param index The index of the unit to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return @c true if the units were replaced, false otherwise.
      */
     bool removeUnit(size_t index);
 
@@ -373,7 +373,7 @@ public:
      *
      * @param reference The @c std::string unit reference of the unit to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return @c true if the units were replaced, @c false otherwise.
      */
     bool removeUnit(const std::string &reference);
 
@@ -386,7 +386,7 @@ public:
      *
      * @param standardRef The @c StandardUnit enum unit reference of the unit to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return @c true if the units were replaced, @c false otherwise.
      */
     bool removeUnit(StandardUnit standardRef);
 
@@ -418,46 +418,57 @@ public:
     size_t unitCount() const;
 
     /**
+     * @brief Check whether there are any imported child @c Units.
+     *
+     * @return @c true when these @c Units rely on @c Units which are imported,
+     * or @c false otherwise.
+     */
+    bool requiresImports() const;
+
+    /**
      * @brief Return the scaling factor difference between two @c Units.
      *
-     * This can be interpreted as factor, where units2 = (factor)*units1.  This method
-     * does not check to see if the units are compatible.
+     * This can be interpreted as `factor`, where units2 = factor*units1.  If compatibility checking is
+     * turned on and the units are not compatible the factor returned is 0.0.
      *
      * @param units1 The first units to compare.
      * @param units2 The second units to compare.
+     * @param checkCompatibility Set @c true for compatibility checking, or @c false to ignore base units.
+     * The default is @c true.
      *
-     * @return The factor units1/units2.
+     * @return The factor units2/units1.  Where the units are incompatible and @p checkCompatibility
+     * is @c true then the factor returned is 0.0.
      */
-    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2);
+    static double scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility = true);
 
     /**
-     * @brief Test to determine whether two @c Units are equivalent or not.
+     * @brief Test to determine whether two @c Units are compatible or not.
      *
-     * Two @c Units are considered to be equivalent if they share the same units,
-     * independently of their dimension (e.g. volt and volt are equivalent as are
+     * Two @c Units are considered to be compatible if they share the same units,
+     * independently of their scaling (e.g. volt and volt are compatible as are
      * volt and millivolt).
      *
      * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
-     * @return @c true if the two @c Units are equivalent, @c false otherwise.
+     * @return @c true if the two @c Units are compatible, @c false otherwise.
      */
-    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+    static bool compatible(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
-     * @brief Test to determine whether two @c Units are dimensionally equivalent or not.
+     * @brief Test to determine whether two @c Units are equivalent or not.
      *
-     * Two @c Units are considered to be dimensionally equivalent if they share the
-     * exact same units (e.g. volt and volt are dimensionally equivalent but
+     * Two @c Units are considered to be equivalent if they share the
+     * same unit base as well as a scaling factor of 1.0 (e.g. volt and volt are equivalent but
      * volt and millivolt are not).
      *
      * @param1 units1 The first units to compare.
      * @param2 units2 The second units to compare.
      *
-     * @return @c true if the two @c Units are dimensionally equivalent, @c false
+     * @return @c true if the two @c Units are equivalent, @c false
      * otherwise.
      */
-    static bool dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2);
+    static bool equivalent(const UnitsPtr &units1, const UnitsPtr &units2);
 
     /**
      * @brief Create a clone of this units.

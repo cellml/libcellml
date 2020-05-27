@@ -10440,7 +10440,7 @@ GTEST_API_ void PrintBytesInObjectTo(const unsigned char* obj_bytes,
 
 // For selecting which printer to use when a given type has neither <<
 // nor PrintTo().
-enum TypeCause {
+enum TypeKind {
   kProtobuf,              // a protobuf type
   kConvertibleToInteger,  // a type implicitly convertible to BiggestInt
                           // (e.g. a named or unnamed enum type)
@@ -10451,14 +10451,14 @@ enum TypeCause {
   kOtherType  // anything else
 };
 
-// TypeWithoutFormatter<T, kTypeCause>::PrintValue(value, os) is called
+// TypeWithoutFormatter<T, kTypeKind>::PrintValue(value, os) is called
 // by the universal printer to print a value of type T when neither
-// operator<< nor PrintTo() is defined for T, where kTypeCause is the
-// "kind" of T as defined by enum TypeCause.
-template <typename T, TypeCause kTypeCause>
+// operator<< nor PrintTo() is defined for T, where kTypeKind is the
+// "kind" of T as defined by enum TypeKind.
+template <typename T, TypeKind kTypeKind>
 class TypeWithoutFormatter {
  public:
-  // This default version is called when kTypeCause is kOtherType.
+  // This default version is called when kTypeKind is kOtherType.
   static void PrintValue(const T& value, ::std::ostream* os) {
     PrintBytesInObjectTo(static_cast<const unsigned char*>(
                              reinterpret_cast<const void*>(&value)),

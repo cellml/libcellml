@@ -16,11 +16,10 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
-#include "libcellml/referencerules.h"
-#include "libcellml/types.h"
-
 #include <string>
+
+#include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -53,6 +52,12 @@ public:
      *   - libcellml::ResetPtr
      *   - libcellml::UnitsPtr
      *   - libcellml::VariablePtr
+     *
+     * The default values for the enumerations are::
+     *
+     *   - libcellml::Issue::Cause::UNDEFINED;
+     *   - libcellml::Issue::Level::ERROR;
+     *   - libcellml::Issue::ReferenceRule::UNDEFINED;
      *
      * @return A smart pointer to an @c Issue object.
      */
@@ -118,7 +123,75 @@ public:
     {
         ERROR,
         WARNING,
-        HINT,
+        HINT
+    };
+
+    /**
+     * @brief The issue Reference enum class.
+     *
+     * Enum to describe the rule which the issue addresses.
+     */
+    enum class ReferenceRule
+    {
+        UNDEFINED,
+        // Specification errors.
+        DATA_REPR_IDENTIFIER_UNICODE,
+        DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
+        DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM,
+        DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM,
+        DATA_REPR_IDENTIFIER_IDENTICAL,
+        DATA_REPR_NNEG_INT_BASE10,
+        DATA_REPR_NNEG_INT_EURO_NUM,
+        MODEL_ELEMENT,
+        MODEL_NAME,
+        MODEL_CHILD,
+        MODEL_MORE_THAN_ONE_ENCAPSULATION,
+        IMPORT_HREF,
+        IMPORT_CHILD,
+        IMPORT_CIRCULAR,
+        IMPORT_UNITS_NAME,
+        IMPORT_UNITS_REF,
+        IMPORT_COMPONENT_NAME,
+        IMPORT_COMPONENT_REF,
+        UNITS_NAME,
+        UNITS_NAME_UNIQUE,
+        UNITS_STANDARD,
+        UNITS_CHILD,
+        UNIT_UNITS_REF,
+        UNIT_DIGRAPH,
+        UNIT_CIRCULAR_REF,
+        UNIT_OPTIONAL_ATTRIBUTE,
+        UNIT_PREFIX,
+        UNIT_MULTIPLIER,
+        UNIT_EXPONENT,
+        COMPONENT_NAME,
+        COMPONENT_CHILD,
+        VARIABLE_NAME,
+        VARIABLE_UNITS,
+        VARIABLE_INTERFACE,
+        VARIABLE_INITIAL_VALUE,
+        RESET_CHILD,
+        RESET_ORDER,
+        RESET_VARIABLE_REFERENCE,
+        RESET_TEST_VARIABLE_REFERENCE,
+        RESET_TEST_VALUE,
+        RESET_RESET_VALUE,
+        MATH_MATHML,
+        MATH_CHILD,
+        MATH_CI_VARIABLE_REFERENCE,
+        MATH_CN_UNITS_ATTRIBUTE,
+        ENCAPSULATION_COMPONENT_REF,
+        COMPONENT_REF_COMPONENT_ATTRIBUTE,
+        COMPONENT_REF_CHILD,
+        COMPONENT_REF_ENCAPSULATION,
+        CONNECTION_COMPONENT1,
+        CONNECTION_COMPONENT2,
+        CONNECTION_UNIQUE_TRANSITIVE,
+        CONNECTION_MAP_VARIABLES,
+        MAP_VARIABLES_VARIABLE1,
+        MAP_VARIABLES_VARIABLE2,
+        MAP_VARIABLES_UNIQUE,
+        MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION
     };
 
     /**
@@ -160,17 +233,6 @@ public:
     Cause cause() const;
 
     /**
-     * @brief Check whether the cause of this issue matches the argument cause.
-     *
-     * Return @c true if the @p cause matches the the @c Issue::Cause for this
-     * issue and @c false otherwise.
-     *
-     * @return @c true if the @p cause matches the the @c Issue::Cause for this
-     * issue and @c false otherwise.
-     */
-    bool isCause(Cause cause) const;
-
-    /**
      * @brief Set the level of this issue.
      *
      * Set the @p level of this issue from the options available in
@@ -191,65 +253,42 @@ public:
     Level level() const;
 
     /**
-     * @brief Check whether the level of this issue matches the argument level.
-     *
-     * Return @c true if the @p level matches the the @c Issue::Level for this
-     * issue and @c false otherwise.
-     *
-     * @return @c true if the @p level matches the the @c Issue::Level for this
-     * issue and @c false otherwise.
-     */
-    bool isLevel(Level level) const;
-
-    /**
      * @brief Set the @c enum ReferenceRule of this issue.
      *
-     * Set the @p rule of this issue from the options available in
+     * Set the @p referenceRule of this issue from the options available in
      * the @c ReferenceRule @c enum.
      *
-     * @param rule The @c ReferenceRule to set.
+     * @param referenceRule The @c ReferenceRule to set.
      */
-    void setRule(ReferenceRule rule);
+    void setReferenceRule(ReferenceRule referenceRule);
 
     /**
      * @brief Get the @c enum ReferenceRule of this issue.
      *
-     * Get the @c enum @c ReferenceRule value @p rule of this issue. If
-     * no rule has been set for this issue, will return ReferenceRule::UNDEFINED.
+     * Get the @c enum @c ReferenceRule value of this issue. If no reference
+     * rule has been set for this issue, return ReferenceRule::UNDEFINED.
      *
      * @return The @c ReferenceRule for this issue.
      */
-    ReferenceRule rule() const;
+    ReferenceRule referenceRule() const;
 
-    /**
-     * @brief Set the @c url of this issue.
-     *
-     * Manually set the @c url to which the user should refer for more information on the
-     * specification rule which has been broken or guidelines that haven't been followed.
-     * If this has not been set manually by use of this function, the default root url
-     * will be used (specified in baseIssueUrl) in conjunction with the referenceHeading
-     * string.
-     *
-     * @param rule The @c url to set manually.
-     */
-    void setUrl(std::string &url) const;
-
-    /**
-     * @brief Get the @c url of this issue.
-     *
-     * Get the @c url to which the user should refer for more information on this issue.
-     *
-     * @return The @c url for this issue.
-     */
-    std::string url() const;
+    // /**
+    //  * @brief Get the @c url of this issue.
+    //  *
+    //  * Get the @c url to which the user should refer for more information on this issue.
+    //  *
+    //  * @return The @c url for this issue.
+    //  */
+    // TODO Removed until the base URL and CellML 2.0 specification has been finalised.
+    // std::string url() const;
 
     /**
      * @brief Get the @c std::string heading associated with the @c enum ReferenceRule for this issue.
      *
-     * Get the @c std::string CellML 2.0 Specification heading associated with the @c enum ReferenceRule
+     * Get the @c std::string libCellML Reference heading associated with the @c enum ReferenceRule
      * for this issue. If no rule has been set for this issue, will return an empty string.
      *
-     * @return The @c std::string referencing the CellML 2.0 Specification heading relevant to this issue.
+     * @return The @c std::string libCellML Reference heading relevant to this issue.
      */
     std::string referenceHeading() const;
 

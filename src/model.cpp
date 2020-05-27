@@ -62,7 +62,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &n
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::dimensionallyEquivalent(u, units); });
+                        [=](const UnitsPtr &u) -> bool { return units->name().empty() ? false : u->name() == units->name() && Units::equivalent(u, units); });
 }
 
 Model::Model()
@@ -511,7 +511,7 @@ ModelPtr Model::clone() const
 }
 
 #if 0
-  // This section has been removed to the new importer class, but leaving it here for now to get rid of conflicts and 
+  // This section has been removed to the new importer class, but leaving it here for now to get rid of conflicts and
   // make it easier to fix later.
 IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
 {
@@ -783,5 +783,25 @@ void Model::flatten()
     linkUnits();
 }
 
-#endif
+bool Model::fixVariableInterfaces()
+{
+    VariablePtrs variables;
+
+    for (size_t index = 0; index < componentCount(); ++index) {
+        findAllVariablesWithEquivalences(component(index), variables);
+    }
+
+    bool allOk = true;
+    for (const auto &variable : variables) {
+        Variable::InterfaceType interfaceType = determineInterfaceType(variable);
+        if (interfaceType == Variable::InterfaceType::NONE) {
+            allOk = false;
+        } else if (!variable->hasInterfaceType(interfaceType)) {
+            variable->setInterfaceType(interfaceType);
+        }
+    }
+
+    return allOk;
+}
+
 } // namespace libcellml

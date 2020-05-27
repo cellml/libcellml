@@ -16,12 +16,12 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/issue.h"
 #include "libcellml/types.h"
-
-#include <string>
-#include <vector>
 
 namespace libcellml {
 
@@ -75,36 +75,6 @@ public:
      * @return A reference to the issue at the given index on success, @c nullptr otherwise.
      */
     IssuePtr issue(size_t index) const;
-
-    /**
-     * @brief Get issue of specified @p level at the specified @p index.
-     *
-     * Returns an issue at the @p index of specified @p level.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#issues_of_level).
-     *
-     * @param index The index of the issue to return.
-     * @param level The level of issue to return.
-     *
-     * @return A reference to the issue from the list of issues at the given level,
-     * at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr issue(size_t index, libcellml::Issue::Level level) const;
-
-    /**
-     * @brief Get issue of one of the specified @p levels at the specified @p index.
-     *
-     * Returns an issue at the @p index of one of the specified @p levels.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#issues_of_levels).
-     *
-     * @param index The index of the issue to return.
-     * @param levels The levels of issue to return.
-     *
-     * @return A reference to the issue from the list of issues at one of the given levels,
-     * at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const;
 
     /**
      * @brief Get the number of issues with level of ERROR.

@@ -23,15 +23,11 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/types.h"
+#include "libcellml/variable.h"
+
+#include "internaltypes.h"
 
 namespace libcellml {
-
-/**
- * Base URL from which the user guidelines used in the Issue class can be derived.
- * Adding the issue's rule number to the end will search the documentation for that section.
- * KRM This is clumsy and should be given a static address via formal bookmarks, but will do for proof of concept.
- */
-const std::string baseIssueUrl = "https://libcellml-tutorials.readthedocs.io/en/pr344_documentation/search.html?q=";
 
 /**
  * Vector of base units.
@@ -205,37 +201,49 @@ const std::vector<std::string> supportedMathMLElements = {
     "notanumber", "infinity", "true", "false"};
 
 /**
- * @brief Convert the @p candidate @c std::string to a @c double.
+ * @brief Map to convert an interface type into its string form.
  *
- * Convert the @p candidate @c std::string to a @c double. If @p candidate
- * cannot be converted using @c std::stod an exception will be raised.  To
- * avoid raising an exception the candidate string must be known to be convertible
- * to a double before calling this function.
+ * An internal map used to convert a Variable InterfaceType enum class member into its string form.
+ */
+static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
+    {Variable::InterfaceType::NONE, "none"},
+    {Variable::InterfaceType::PRIVATE, "private"},
+    {Variable::InterfaceType::PUBLIC, "public"},
+    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
+
+/**
+ * @brief Convert the @p in @c std::string to the @p out @c double.
+ *
+ * Convert the @p in @c std::string to a @c double. If @p in can be converted
+ * using @c std::stod, return @c true and update @p out, otherwise return
+ * @c false. To avoid returning @c false, @p in must be known to be convertible
+ * to a @c double before calling this function.
  *
  * @sa isCellMLReal
  *
- * @param candidate The @c std::string value to convert to a @c double.
+ * @param in The @c std::string value to convert to a @c double.
+ * @param out The @c double value resulting in the conversion.
  *
- * @return The @c double value of the candidate.
- *
+ * @return @c true if @in represents a @c double, @c false otherwise.
  */
-double convertToDouble(const std::string &candidate);
+bool convertToDouble(const std::string &in, double &out);
 
 /**
- * @brief Convert the @p candidate @c std::string to an @c int.
+ * @brief Convert the @p in @c std::string to the @p out @c int.
  *
- * Convert the @p candidate @c std::string to an @c int. If @p candidate
- * cannot be converted using @c std::stoi an exception will be raised.  To
- * avoid raising an exception the candidate string must be known to be convertible
- * to an int before calling this function.
+ * Convert the @p in @c std::string to an @c int. If @p in can be converted
+ * using @c std::stoi, return @c true and update @p out, otherwise return
+ * @c false. To avoid returning @c false, @p in must be known to be convertible
+ * to an @c int before calling this function.
  *
  * @sa isCellMLInteger
  *
- * @param candidate The @c std::string value to convert to an @c int.
+ * @param in The @c std::string value to convert to an @c int.
+ * @param out The @c int value resulting in the conversion.
  *
- * @return The @c int value of the candidate.
+ * @return @c true if @in represents an @c int, @c false otherwise.
  */
-int convertToInt(const std::string &candidate);
+bool convertToInt(const std::string &in, int &out);
 
 /**
  * @brief Convert a @c int to @c std::string format.
@@ -438,6 +446,57 @@ bool isStandardPrefixName(const std::string &name);
  * number of variables in the component if the variable was not found.
  */
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
+
+/**
+ * @brief Test to determine if @p entity1 is a child of @p entity2.
+ *
+ * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
+ * @p entity1 is a child of @p entity2 and @c false otherwise.
+ *
+ * @param entity1 The @c Entity to test if it is a child of @p entity2.
+ * @param entity2 The @c Entity that is potentially the parent of @p entity1.
+ *
+ * @return @c true if @p entity1 is a child of @p entity2 and @c false otherwise.
+ */
+bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2);
+
+/**
+ * @brief Test to determine if @p entity1 and @p entity2 are siblings.
+ *
+ * Test to determine if @p entity1 and @p entity2 are siblings.  Returns
+ * @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
+ *
+ * @param entity1 An @c Entity to test if it is a sibling to @p entity2.
+ * @param entity2 An @c Entity to test if it is a sibling to @p entity1.
+ *
+ * @return @c true if @p entity1 and @p entity2 are siblings, @c false otherwise.
+ */
+bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2);
+
+/**
+ * @brief Determine the interface type of the @p variable.
+ *
+ * Determine the interface type of the given @p variable. For variables with
+ * at least one equivalent variable, returning an interface type of
+ * Variable::InterfaceType::NONE indicates an error.
+ *
+ * @param variable The variable to determine the interface type for.
+ *
+ * @return The @p variable's interface type.
+ */
+Variable::InterfaceType determineInterfaceType(const VariablePtr &variable);
+
+/**
+ * @brief Traverse the component tree looking for variables with equivalences.
+ *
+ * Search through the component tree starting at @p component looking for variables
+ * with equivalences.  Variables found in the component tree with equivalences are added
+ * to the @p variables list.
+ *
+ * @param component The @c Component to search.
+ * @param variables The list of equivalent variables found.
+ */
+void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables);
 
 /**
  * @brief Trim whitespace from the front of a string (in place).

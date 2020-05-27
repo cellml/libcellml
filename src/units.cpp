@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "utilities.h"
+#include "libcellml/units.h"
 
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/units.h"
 
 #include <algorithm>
 #include <cassert>
@@ -27,6 +26,8 @@ limitations under the License.
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -121,12 +122,31 @@ struct Units::UnitsImpl
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 
     std::vector<Unit>::iterator findUnit(const std::string &reference);
+
+    /**
+     * @brief Test if this units is a standard unit that is a base unit.
+     *
+     * Only tests if the name of the units matches a standard unit name
+     * that is a base units.  Returns @c true if the unit name does match
+     * a base units name and @c false otherwise.
+     *
+     * @param name The name of the units.
+     *
+     * @return @c true if the name of the units is one of: "ampere",
+     * "candela", "dimensionless", "kelvin", "kilogram", "metre", "mole" , "second".
+     */
+    bool isBaseUnit(const std::string &name) const;
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
+}
+
+bool Units::UnitsImpl::isBaseUnit(const std::string &name) const
+{
+    return name == "ampere" || name == "candela" || name == "dimensionless" || name == "kelvin" || name == "kilogram" || name == "metre" || name == "mole" || name == "second";
 }
 
 /**
@@ -136,24 +156,18 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
  * If the units are not base units, we travel up the model hierarchy to find
  * the base units.
  *
- * @param multiplier The multiplier to find.
  * @param units The units to find the multiplier for.
- * @param uExp The exponential of the units.
- * @param logMult The log multiplier of the units.
  * @param direction The direction to update multiplier. Either 1 or -1.
+ * @param multiplier The multiplier to find.
  *
  * @return Either @c true or @c false, depending if the units were successfully updated.
  */
-bool updateUnitMultiplier(double &multiplier,
-                          const UnitsPtr &units,
-                          double uExp, double logMult,
-                          int direction)
+bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multiplier)
 {
+    double localMultiplier = 0;
     bool updated = false;
-    auto unitsName = units->name();
 
-    if (units->isBaseUnit()) {
-        multiplier += direction * logMult;
+    if (units->unitCount() == 0) {
         updated = true;
     } else {
         std::string ref;
@@ -162,28 +176,38 @@ bool updateUnitMultiplier(double &multiplier,
         double exp;
         double mult;
         double expMult;
+        double standardMult = 0.0;
+        double prefixMult = 0.0;
         for (size_t i = 0; i < units->unitCount(); ++i) {
             units->unitAttributes(i, ref, pre, exp, expMult, id);
             mult = std::log10(expMult);
+
+            if (isStandardPrefixName(pre)) {
+                prefixMult = standardPrefixList.at(pre);
+            } else {
+                return false;
+            }
+
             if (isStandardUnitName(ref)) {
-                if (!isStandardPrefixName(pre)) {
-                    return false;
-                }
-                multiplier += direction * (logMult + (standardMultiplierList.at(ref) + mult + standardPrefixList.at(pre)) * exp);
-                updated = true;
+                standardMult = standardMultiplierList.at(ref);
+                // Combine the information into a single local multiplier: exponent only applies to standard multiplier.
+                localMultiplier += mult + standardMult * exp + prefixMult;
             } else {
                 auto model = owningModel(units);
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
-                    if ((refUnits == nullptr) || refUnits->isImport()) {
-                        return false;
-                    }
-                    updated = updateUnitMultiplier(multiplier, refUnits, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                    double branchMult = 0.0;
+                    updated = updateUnitMultiplier(refUnits, 1, branchMult);
+                    // Make the direction positive on all branches, direction is only applied at the end.
+                    localMultiplier += mult + branchMult * exp + prefixMult;
+                } else {
+                    return false;
                 }
             }
         }
+        multiplier += localMultiplier * direction;
+        updated = true;
     }
-
     return updated;
 }
 
@@ -227,7 +251,12 @@ bool Units::isBaseUnit() const
         return false;
     }
 
-    return unitCount() == 0;
+    auto unitsName = name();
+    bool standardUnitCheck = true;
+    if (isStandardUnitName(unitsName)) {
+        standardUnitCheck = mPimpl->isBaseUnit(unitsName);
+    }
+    return unitCount() == 0 && standardUnitCheck;
 }
 
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
@@ -341,14 +370,10 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
     }
     reference = u.mReference;
     prefix = u.mPrefix;
-    if (!u.mExponent.empty()) {
-        exponent = std::stod(u.mExponent);
-    } else {
+    if (u.mExponent.empty() || !convertToDouble(u.mExponent, exponent)) {
         exponent = 1.0;
     }
-    if (!u.mMultiplier.empty()) {
-        multiplier = std::stod(u.mMultiplier);
-    } else {
+    if (u.mMultiplier.empty() || !convertToDouble(u.mMultiplier, multiplier)) {
         multiplier = 1.0;
     }
     id = u.mId;
@@ -399,21 +424,23 @@ size_t Units::unitCount() const
     return mPimpl->mUnits.size();
 }
 
-double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
+double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool checkCompatibility)
 {
+    if (checkCompatibility && !Units::compatible(units1, units2)) {
+        return 0.0;
+    }
+
     bool updateUnits1 = false;
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        if (((units1->unitCount() != 0) || isStandardUnit(units1)) && ((units2->unitCount() != 0) || isStandardUnit(units2))) {
-            double multiplier = 0.0;
+        double multiplier = 0.0;
 
-            updateUnits1 = updateUnitMultiplier(multiplier, units2, 1, 0, 1);
-            updateUnits2 = updateUnitMultiplier(multiplier, units1, 1, 0, -1);
+        updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
+        updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
 
-            if (updateUnits1 && updateUnits2) {
-                return std::pow(10, multiplier);
-            }
+        if (updateUnits1 && updateUnits2) {
+            return std::pow(10, multiplier);
         }
 
         if (units1->name() == units2->name()) {
@@ -426,15 +453,30 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2)
 
 using UnitsMap = std::map<std::string, double>;
 
-void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
+void updateUnitsMapWithStandardUnit(const std::string &name, UnitsMap &unitsMap, double exp)
+{
+    auto unitsListIter = standardUnitsList.find(name);
+    for (const auto &baseUnitsComponent : unitsListIter->second) {
+        auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
+        if (unitsMapIter == unitsMap.end()) {
+            unitsMap[baseUnitsComponent.first] = 0.0;
+        }
+        unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * exp;
+    }
+}
+
+bool updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
 {
     if (units->isBaseUnit()) {
-        auto found = unitsMap.find(units->name());
+        auto unitsName = units->name();
+        auto found = unitsMap.find(unitsName);
         if (found == unitsMap.end()) {
-            unitsMap.emplace(units->name(), exp);
+            unitsMap.emplace(unitsName, exp);
         } else {
             found->second += exp;
         }
+    } else if (isStandardUnit(units)) {
+        updateUnitsMapWithStandardUnit(units->name(), unitsMap, exp);
     } else {
         for (size_t i = 0; i < units->unitCount(); ++i) {
             std::string ref;
@@ -444,14 +486,7 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
             double uExp;
             units->unitAttributes(i, ref, pre, uExp, expMult, id);
             if (isStandardUnitName(ref)) {
-                auto unitsListIter = standardUnitsList.find(ref);
-                for (const auto &baseUnitsComponent : unitsListIter->second) {
-                    auto unitsMapIter = unitsMap.find(baseUnitsComponent.first);
-                    if (unitsMapIter == unitsMap.end()) {
-                        unitsMap[baseUnitsComponent.first] = 0.0;
-                    }
-                    unitsMap[baseUnitsComponent.first] += baseUnitsComponent.second * uExp * exp;
-                }
+                updateUnitsMapWithStandardUnit(ref, unitsMap, uExp * exp);
             } else {
                 auto model = owningModel(units);
                 if (model == nullptr) {
@@ -461,43 +496,68 @@ void updateUnitsMap(const UnitsPtr &units, UnitsMap &unitsMap, double exp = 1.0)
                 } else {
                     auto refUnits = model->units(ref);
                     if ((refUnits == nullptr) || refUnits->isImport()) {
-                        unitsMap.clear();
-                        break;
+                        return false;
                     }
-                    updateUnitsMap(refUnits, unitsMap, uExp * exp);
+                    if (!updateUnitsMap(refUnits, unitsMap, uExp * exp)) {
+                        return false;
+                    }
                 }
             }
         }
     }
+    return true;
 }
 
-UnitsMap createUnitsMap(const UnitsPtr &units)
+UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
 {
     UnitsMap unitsMap;
-    updateUnitsMap(units, unitsMap);
+    isValid = true;
+    if (!updateUnitsMap(units, unitsMap)) {
+        isValid = false;
+        return unitsMap;
+    }
 
     // Checking for exponents of zero in the map, which can be removed.
-    bool requireDimensionless = false;
     auto it = unitsMap.begin();
     while (it != unitsMap.end()) {
         if (it->second == 0.0) {
             it = unitsMap.erase(it);
-            requireDimensionless = true;
         } else if (it->first == "dimensionless") {
-            it->second = 0.0;
-            ++it;
+            it = unitsMap.erase(it);
         } else {
             ++it;
         }
     }
-    if (requireDimensionless) {
-        unitsMap.emplace(std::make_pair("dimensionless", 0.0));
-    }
-
     return unitsMap;
 }
 
-bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
+bool Units::requiresImports() const
+{
+    // Function to check child unit dependencies for imports.
+
+    auto model = std::dynamic_pointer_cast<Model>(parent());
+    if (model != nullptr) {
+        std::string ref;
+        std::string prefix;
+        double exponent;
+        double multiplier;
+        std::string id;
+
+        for (size_t u = 0; u < unitCount(); ++u) {
+            unitAttributes(u, ref, prefix, exponent, multiplier, id);
+            auto child = model->units(ref);
+            if (child == nullptr) {
+                continue;
+            }
+            if (child->isImport() || child->requiresImports()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Units::compatible(const UnitsPtr &units1, const UnitsPtr &units2)
 {
     // Initial checks.
     if ((units1 == nullptr) || (units2 == nullptr)) {
@@ -506,9 +566,18 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
     if ((units1->isImport()) || (units2->isImport())) {
         return false;
     }
-
-    UnitsMap units1Map = createUnitsMap(units1);
-    UnitsMap units2Map = createUnitsMap(units2);
+    if ((units1->requiresImports()) || (units2->requiresImports())) {
+        return false;
+    }
+    bool isValid;
+    auto units1Map = createUnitsMap(units1, isValid);
+    if (!isValid) {
+        return false;
+    }
+    auto units2Map = createUnitsMap(units2, isValid);
+    if (!isValid) {
+        return false;
+    }
 
     if (units1Map.size() == units2Map.size()) {
         for (const auto &units : units1Map) {
@@ -527,9 +596,10 @@ bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
     return false;
 }
 
-bool Units::dimensionallyEquivalent(const UnitsPtr &units1, const UnitsPtr &units2)
+bool Units::equivalent(const UnitsPtr &units1, const UnitsPtr &units2)
 {
-    return Units::equivalent(units1, units2) && (Units::scalingFactor(units1, units2) == 1.0);
+    // Units must be compatible and return a scaling factor of 1.0.
+    return Units::scalingFactor(units1, units2) == 1.0;
 }
 
 UnitsPtr Units::clone() const

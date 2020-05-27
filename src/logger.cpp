@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
 #include "libcellml/logger.h"
-#include "libcellml/types.h"
 
 #include <algorithm>
 #include <vector>
+
+#include "libcellml/component.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -56,7 +57,7 @@ size_t Logger::errorCount() const
 IssuePtr Logger::error(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if ((index < mPimpl->mErrors.size()) && (mPimpl->mErrors.at(index) < mPimpl->mIssues.size())) {
+    if (index < mPimpl->mErrors.size()) {
         issue = mPimpl->mIssues.at(mPimpl->mErrors.at(index));
     }
     return issue;
@@ -70,7 +71,7 @@ size_t Logger::warningCount() const
 IssuePtr Logger::warning(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if ((index < mPimpl->mWarnings.size()) && (mPimpl->mWarnings.at(index) < mPimpl->mIssues.size())) {
+    if (index < mPimpl->mWarnings.size()) {
         issue = mPimpl->mIssues.at(mPimpl->mWarnings.at(index));
     }
     return issue;
@@ -84,7 +85,7 @@ size_t Logger::hintCount() const
 IssuePtr Logger::hint(size_t index) const
 {
     IssuePtr issue = nullptr;
-    if ((index < mPimpl->mHints.size()) && (mPimpl->mHints.at(index) < mPimpl->mIssues.size())) {
+    if (index < mPimpl->mHints.size()) {
         issue = mPimpl->mIssues.at(mPimpl->mHints.at(index));
     }
     return issue;
@@ -100,11 +101,9 @@ void Logger::removeAllIssues()
 
 void Logger::addIssue(const IssuePtr &issue)
 {
-    // When an issue is added
+    // When an issue is added, update the appropriate array based on its level.
+    size_t index = mPimpl->mIssues.size();
     mPimpl->mIssues.push_back(issue);
-    size_t index = mPimpl->mIssues.size() - 1;
-    // Update the appropriate array based on its level
-
     libcellml::Issue::Level level = issue->level();
     switch (level) {
     case libcellml::Issue::Level::ERROR:
@@ -131,40 +130,6 @@ IssuePtr Logger::issue(size_t index) const
         issue = mPimpl->mIssues.at(index);
     }
     return issue;
-}
-
-IssuePtr Logger::issue(size_t index, libcellml::Issue::Level level) const
-{
-    IssuePtr e = nullptr;
-    switch (level) {
-    case libcellml::Issue::Level::ERROR:
-        e = error(index);
-        break;
-    case libcellml::Issue::Level::WARNING:
-        e = warning(index);
-        break;
-    case libcellml::Issue::Level::HINT:
-        e = hint(index);
-        break;
-    }
-    return e;
-}
-
-IssuePtr Logger::issue(size_t index, std::vector<libcellml::Issue::Level> &levels) const
-{
-    size_t i = 0;
-    index++;
-    while (i < mPimpl->mIssues.size()) {
-        for (auto issue : mPimpl->mIssues) {
-            if (std::find(levels.begin(), levels.end(), issue->level()) != levels.end()) {
-                i++;
-            }
-            if (i == index) {
-                return issue;
-            }
-        }
-    }
-    return nullptr;
 }
 
 } // namespace libcellml

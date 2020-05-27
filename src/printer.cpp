@@ -30,19 +30,11 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "internaltypes.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
 namespace libcellml {
-
-// VariableMap
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
-using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
-using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
-// ComponentMap
-using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
-using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
-using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
 /**
  * @brief The Printer::PrinterImpl struct.
@@ -160,13 +152,6 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
                     // Get parent components.
                     ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
                     ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-                    // Do not serialise a variable's parent component in a connection if that variable no longer
-                    // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
-                    if (component2 != nullptr) {
-                        if (!component2->hasVariable(equivalentVariable)) {
-                            component2 = nullptr;
-                        }
-                    }
                     // Add new unique variable equivalence pair to the VariableMap.
                     variableMap.push_back(variablePair);
                     // Also create a component map pair corresponding with the variable map pair.

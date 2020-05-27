@@ -429,6 +429,30 @@ TEST(Variable, setGetInterfaceType)
     EXPECT_EQ(interfaceTypeString4, v4->interfaceType());
 }
 
+TEST(Variable, hasInterfaceType)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    EXPECT_TRUE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    EXPECT_FALSE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+    EXPECT_TRUE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::NONE);
+    EXPECT_FALSE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+    EXPECT_TRUE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::NONE));
+
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    EXPECT_FALSE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::NONE));
+    EXPECT_TRUE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+
+    v1->removeInterfaceType();
+    EXPECT_FALSE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+    EXPECT_TRUE(v1->hasInterfaceType(libcellml::Variable::InterfaceType::NONE));
+}
+
 TEST(Variable, addVariable)
 {
     const std::string in = "valid_name";
@@ -1404,4 +1428,274 @@ TEST(Variable, hasEquivalentVariableWithNullptr)
     m->addComponent(c1);
 
     EXPECT_FALSE(v1->hasEquivalentVariable(nullptr));
+}
+
+TEST(Variable, variableEquivalenceInterface)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    EXPECT_TRUE(model->fixVariableInterfaces());
+
+    EXPECT_EQ("public", v1->interfaceType());
+    EXPECT_EQ("public_and_private", v2->interfaceType());
+    EXPECT_EQ("public", v3->interfaceType());
+}
+
+TEST(Variable, variableEquivalencePublicInterface)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    EXPECT_TRUE(model->fixVariableInterfaces());
+
+    EXPECT_EQ("public", v1->interfaceType());
+    EXPECT_EQ("public", v2->interfaceType());
+}
+
+TEST(Variable, variableEquivalencePrivateInterface)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    EXPECT_TRUE(model->fixVariableInterfaces());
+
+    EXPECT_EQ("private", v1->interfaceType());
+    EXPECT_EQ("public", v2->interfaceType());
+}
+
+TEST(Variable, variableEquivalencePublicAndPrivateInterface)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v2);
+
+    EXPECT_TRUE(model->fixVariableInterfaces());
+
+    EXPECT_EQ("private", v1->interfaceType());
+    EXPECT_EQ("public_and_private", v2->interfaceType());
+    EXPECT_EQ("public", v3->interfaceType());
+}
+
+TEST(Variable, distantVariableEquivalence)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    libcellml::Variable::addEquivalence(v1, v3);
+
+    EXPECT_FALSE(model->fixVariableInterfaces());
+
+    // Couldn't determine interface types for variables that are
+    // too distant from each other in the component hierarchy.
+    EXPECT_EQ("", v1->interfaceType());
+    EXPECT_EQ("", v3->interfaceType());
+}
+
+TEST(Variable, variableEquivalencePromoteFromPrivate)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+
+    model->addComponent(c1);
+    c1->addComponent(c2);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    v2->setInterfaceType("private");
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    EXPECT_TRUE(model->fixVariableInterfaces());
+
+    EXPECT_EQ("private", v1->interfaceType());
+    EXPECT_EQ("public", v2->interfaceType());
+}
+
+TEST(Variable, variableInterfaceDontDowngrade)
+{
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ComponentPtr c1 = libcellml::Component::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create();
+    libcellml::ComponentPtr c3 = libcellml::Component::create();
+    libcellml::ComponentPtr c4 = libcellml::Component::create();
+
+    model->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+    c4->setName("c4");
+
+    model->addComponent(c1);
+    model->addComponent(c4);
+    c1->addComponent(c2);
+    c2->addComponent(c3);
+
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+    v1->setInterfaceType("public");
+
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    v3->setName("v3");
+    v3->setUnits("dimensionless");
+
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    v4->setName("v4");
+    v4->setUnits("dimensionless");
+
+    c1->addVariable(v1);
+    c3->addVariable(v3);
+    c4->addVariable(v4);
+
+    libcellml::Variable::addEquivalence(v1, v4);
+    libcellml::Variable::addEquivalence(v1, v3);
+
+    EXPECT_FALSE(model->fixVariableInterfaces());
+
+    EXPECT_EQ("public", v1->interfaceType());
+    EXPECT_EQ("", v3->interfaceType());
+    EXPECT_EQ("public", v4->interfaceType());
 }

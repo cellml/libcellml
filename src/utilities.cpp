@@ -32,15 +32,14 @@ limitations under the License.
 
 namespace libcellml {
 
-double convertToDouble(const std::string &candidate)
+bool convertToDouble(const std::string &in, double &out)
 {
-    double value = 0.0;
     try {
-        value = std::stod(candidate);
+        out = std::stod(in);
     } catch (...) {
-        value = std::numeric_limits<double>::infinity();
+        return false;
     }
-    return value;
+    return true;
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -55,9 +54,14 @@ std::string convertToString(double value)
     return strs.str();
 }
 
-int convertToInt(const std::string &candidate)
+bool convertToInt(const std::string &in, int &out)
 {
-    return std::stoi(candidate);
+    try {
+        out = std::stoi(in);
+    } catch (...) {
+        return false;
+    }
+    return true;
 }
 
 std::string convertToString(size_t value)
@@ -434,7 +438,7 @@ bool isStandardUnitName(const std::string &name)
 
 bool isStandardUnit(const UnitsPtr &units)
 {
-    return (units != nullptr) && units->isBaseUnit() && isStandardUnitName(units->name());
+    return (units != nullptr) && units->unitCount() == 0 && isStandardUnitName(units->name());
 }
 
 bool isStandardPrefixName(const std::string &name)
@@ -461,6 +465,100 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     }
 
     return index;
+}
+
+bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
+{
+    return entity1->parent() == entity2;
+}
+
+bool areEntitiesSiblings(const EntityPtr &entity1, const EntityPtr &entity2)
+{
+    auto entity1Parent = entity1->parent();
+    return entity1Parent != nullptr && entity1Parent == entity2->parent();
+}
+
+using PublicPrivateRequiredPair = std::pair<bool, bool>;
+
+/**
+ * @brief Determine whether a public and/or private interface is required for the given @p variable.
+ *
+ * Determine whether a public and/or private interface is required for the given @p variable.  Returns
+ * a pair of booleans where the first item in the pair indicates whether a public interface is required,
+ * the second item in the pair indicates whether a private interface is required, and if both items
+ * in the pair are @c false then this indicates an error has occured and the interface type cannot be
+ * determined.
+ *
+ * @param variable The variable to detect the interface type required.
+ *
+ * @return A pair of booleans.
+ */
+PublicPrivateRequiredPair publicAndOrPrivateInterfaceTypeRequired(const VariablePtr &variable)
+{
+    PublicPrivateRequiredPair pair = std::make_pair(false, false);
+    for (size_t index = 0; index < variable->equivalentVariableCount() && !(pair.first && pair.second); ++index) {
+        auto equivalentVariable = variable->equivalentVariable(index);
+        auto componentOfVariable = variable->parent();
+        auto componentOfEquivalentVariable = equivalentVariable->parent();
+        if (componentOfVariable == nullptr || componentOfEquivalentVariable == nullptr) {
+            return std::make_pair(false, false);
+        }
+        if (areEntitiesSiblings(componentOfVariable, componentOfEquivalentVariable)
+            || isEntityChildOf(componentOfVariable, componentOfEquivalentVariable)) {
+            pair.first = true;
+        } else if (isEntityChildOf(componentOfEquivalentVariable, componentOfVariable)) {
+            pair.second = true;
+        } else {
+            return std::make_pair(false, false);
+        }
+    }
+    return pair;
+}
+
+/**
+ * @brief Get the interface type for the given public private pair.
+ *
+ * Get the interface type for the @p pair.  The default return type is
+ * Variable::InterfaceType::NONE.
+ *
+ * @param pair The pair for which the interface type is determined.
+ *
+ * @return The interface type as specified in the @p pair.
+ */
+Variable::InterfaceType interfaceTypeFor(const PublicPrivateRequiredPair &pair)
+{
+    Variable::InterfaceType interfaceType = Variable::InterfaceType::NONE;
+    if (pair.first && pair.second) {
+        interfaceType = Variable::InterfaceType::PUBLIC_AND_PRIVATE;
+    } else if (pair.first) {
+        interfaceType = Variable::InterfaceType::PUBLIC;
+    } else if (pair.second) {
+        interfaceType = Variable::InterfaceType::PRIVATE;
+    }
+
+    return interfaceType;
+}
+
+Variable::InterfaceType determineInterfaceType(const VariablePtr &variable)
+{
+    auto publicAndOrPrivatePair = publicAndOrPrivateInterfaceTypeRequired(variable);
+
+    return interfaceTypeFor(publicAndOrPrivatePair);
+}
+
+void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtrs &variables)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto variable = component->variable(index);
+        if (variable->equivalentVariableCount() > 0) {
+            if (std::find(variables.begin(), variables.end(), variable) == variables.end()) {
+                variables.push_back(variable);
+            }
+        }
+    }
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        findAllVariablesWithEquivalences(component->component(index), variables);
+    }
 }
 
 } // namespace libcellml

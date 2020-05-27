@@ -6,6 +6,7 @@ import unittest
 
 class IssueTestCase(unittest.TestCase):
 
+
     def test_create_destroy(self):
         from libcellml import Component
         from libcellml import Issue
@@ -62,75 +63,73 @@ class IssueTestCase(unittest.TestCase):
         self.assertRaises(RuntimeError, e.setCause, Issue.Cause.COMPONENT - 1)
         self.assertRaises(RuntimeError, e.setCause, Issue.Cause.XML + 1)
 
-    def test_specification_rule_enum(self):
-        from libcellml import Issue, ReferenceRule
+    def test_reference_rule_enum(self):
+        from libcellml import Issue
 
-        self.assertIsInstance(ReferenceRule.UNDEFINED, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_IDENTIFIER_UNICODE, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_IDENTIFIER_IDENTICAL, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_NNEG_INT_BASE10, int)
-        self.assertIsInstance(ReferenceRule.DATA_REPR_NNEG_INT_EURO_NUM, int)
-        self.assertIsInstance(ReferenceRule.MODEL_ELEMENT, int)
-        self.assertIsInstance(ReferenceRule.MODEL_NAME, int)
-        self.assertIsInstance(ReferenceRule.MODEL_CHILD, int)
-        self.assertIsInstance(ReferenceRule.MODEL_MORE_THAN_ONE_ENCAPSULATION, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_HREF, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_CHILD, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_CIRCULAR, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_UNITS_NAME, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_UNITS_REF, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_COMPONENT_NAME, int)
-        self.assertIsInstance(ReferenceRule.IMPORT_COMPONENT_REF, int)
-        self.assertIsInstance(ReferenceRule.UNITS_NAME, int)
-        self.assertIsInstance(ReferenceRule.UNITS_NAME_UNIQUE, int)
-        self.assertIsInstance(ReferenceRule.UNITS_STANDARD, int)
-        self.assertIsInstance(ReferenceRule.UNITS_CHILD, int)
-        self.assertIsInstance(ReferenceRule.UNIT_UNITS_REF, int)
-        self.assertIsInstance(ReferenceRule.UNIT_DIGRAPH, int)
-        self.assertIsInstance(ReferenceRule.UNIT_CIRCULAR_REF, int)
-        self.assertIsInstance(ReferenceRule.UNIT_OPTIONAL_ATTRIBUTE, int)
-        self.assertIsInstance(ReferenceRule.UNIT_PREFIX, int)
-        self.assertIsInstance(ReferenceRule.UNIT_MULTIPLIER, int)
-        self.assertIsInstance(ReferenceRule.UNIT_EXPONENT, int)
-        self.assertIsInstance(ReferenceRule.COMPONENT_NAME, int)
-        self.assertIsInstance(ReferenceRule.COMPONENT_CHILD, int)
-        self.assertIsInstance(ReferenceRule.VARIABLE_NAME, int)
-        self.assertIsInstance(ReferenceRule.VARIABLE_UNITS, int)
-        self.assertIsInstance(ReferenceRule.VARIABLE_INTERFACE, int)
-        self.assertIsInstance(ReferenceRule.VARIABLE_INITIAL_VALUE, int)
-        self.assertIsInstance(ReferenceRule.RESET_VARIABLE_REFERENCE, int)
-        self.assertIsInstance(ReferenceRule.RESET_TEST_VARIABLE_REFERENCE, int)
-        self.assertIsInstance(ReferenceRule.RESET_ORDER, int)
-        self.assertIsInstance(ReferenceRule.RESET_CHILD, int)
-        self.assertIsInstance(ReferenceRule.RESET_RESET_VALUE, int)
-        self.assertIsInstance(ReferenceRule.RESET_TEST_VALUE, int)
-        self.assertIsInstance(ReferenceRule.MATH_MATHML, int)
-        self.assertIsInstance(ReferenceRule.MATH_CHILD, int)
-        self.assertIsInstance(ReferenceRule.MATH_CI_VARIABLE_REFERENCE, int)
-        self.assertIsInstance(ReferenceRule.MATH_CN_UNITS_ATTRIBUTE, int)
-        self.assertIsInstance(ReferenceRule.ENCAPSULATION_COMPONENT_REF, int)
-        self.assertIsInstance(ReferenceRule.COMPONENT_REF_COMPONENT_ATTRIBUTE, int)
-        self.assertIsInstance(ReferenceRule.COMPONENT_REF_CHILD, int)
-        self.assertIsInstance(ReferenceRule.COMPONENT_REF_ENCAPSULATION, int)
-        self.assertIsInstance(ReferenceRule.CONNECTION_COMPONENT1, int)
-        self.assertIsInstance(ReferenceRule.CONNECTION_COMPONENT2, int)
-        self.assertIsInstance(ReferenceRule.CONNECTION_UNIQUE_TRANSITIVE, int)
-        self.assertIsInstance(ReferenceRule.CONNECTION_MAP_VARIABLES, int)
-        self.assertIsInstance(ReferenceRule.MAP_VARIABLES_VARIABLE1, int)
-        self.assertIsInstance(ReferenceRule.MAP_VARIABLES_VARIABLE2, int)
-        self.assertIsInstance(ReferenceRule.MAP_VARIABLES_UNIQUE, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNDEFINED, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_IDENTIFIER_UNICODE, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_IDENTIFIER_IDENTICAL, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_NNEG_INT_BASE10, int)
+        self.assertIsInstance(Issue.ReferenceRule.DATA_REPR_NNEG_INT_EURO_NUM, int)
+        self.assertIsInstance(Issue.ReferenceRule.MODEL_ELEMENT, int)
+        self.assertIsInstance(Issue.ReferenceRule.MODEL_NAME, int)
+        self.assertIsInstance(Issue.ReferenceRule.MODEL_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.MODEL_MORE_THAN_ONE_ENCAPSULATION, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_HREF, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_CIRCULAR, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_UNITS_NAME, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_UNITS_REF, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_COMPONENT_NAME, int)
+        self.assertIsInstance(Issue.ReferenceRule.IMPORT_COMPONENT_REF, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNITS_NAME, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNITS_NAME_UNIQUE, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNITS_STANDARD, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNITS_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_UNITS_REF, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_DIGRAPH, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_CIRCULAR_REF, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_OPTIONAL_ATTRIBUTE, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_PREFIX, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_MULTIPLIER, int)
+        self.assertIsInstance(Issue.ReferenceRule.UNIT_EXPONENT, int)
+        self.assertIsInstance(Issue.ReferenceRule.COMPONENT_NAME, int)
+        self.assertIsInstance(Issue.ReferenceRule.COMPONENT_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.VARIABLE_NAME, int)
+        self.assertIsInstance(Issue.ReferenceRule.VARIABLE_UNITS, int)
+        self.assertIsInstance(Issue.ReferenceRule.VARIABLE_INTERFACE, int)
+        self.assertIsInstance(Issue.ReferenceRule.VARIABLE_INITIAL_VALUE, int)
+        self.assertIsInstance(Issue.ReferenceRule.RESET_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.RESET_ORDER, int)
+        self.assertIsInstance(Issue.ReferenceRule.RESET_VARIABLE_REFERENCE, int)
+        self.assertIsInstance(Issue.ReferenceRule.RESET_TEST_VARIABLE_REFERENCE, int)
+        self.assertIsInstance(Issue.ReferenceRule.RESET_TEST_VALUE, int)
+        self.assertIsInstance(Issue.ReferenceRule.RESET_RESET_VALUE, int)
+        self.assertIsInstance(Issue.ReferenceRule.MATH_MATHML, int)
+        self.assertIsInstance(Issue.ReferenceRule.MATH_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.MATH_CI_VARIABLE_REFERENCE, int)
+        self.assertIsInstance(Issue.ReferenceRule.MATH_CN_UNITS_ATTRIBUTE, int)
+        self.assertIsInstance(Issue.ReferenceRule.ENCAPSULATION_COMPONENT_REF, int)
+        self.assertIsInstance(Issue.ReferenceRule.COMPONENT_REF_COMPONENT_ATTRIBUTE, int)
+        self.assertIsInstance(Issue.ReferenceRule.COMPONENT_REF_CHILD, int)
+        self.assertIsInstance(Issue.ReferenceRule.COMPONENT_REF_ENCAPSULATION, int)
+        self.assertIsInstance(Issue.ReferenceRule.CONNECTION_COMPONENT1, int)
+        self.assertIsInstance(Issue.ReferenceRule.CONNECTION_COMPONENT2, int)
+        self.assertIsInstance(Issue.ReferenceRule.CONNECTION_UNIQUE_TRANSITIVE, int)
+        self.assertIsInstance(Issue.ReferenceRule.CONNECTION_MAP_VARIABLES, int)
+        self.assertIsInstance(Issue.ReferenceRule.MAP_VARIABLES_VARIABLE1, int)
+        self.assertIsInstance(Issue.ReferenceRule.MAP_VARIABLES_VARIABLE2, int)
+        self.assertIsInstance(Issue.ReferenceRule.MAP_VARIABLES_UNIQUE, int)
+        self.assertIsInstance(Issue.ReferenceRule.MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, int)
 
-        # Test conversion to enum
+        # Test conversion to enum #KRM not sure why this is failing?
         e = Issue()
-        e.setRule(ReferenceRule.UNDEFINED)
-        self.assertRaises(
-            RuntimeError, e.setRule, ReferenceRule.UNDEFINED - 1)
-        self.assertRaises(
-            RuntimeError, e.setRule,
-            ReferenceRule.MAP_VARIABLES_UNIQUE + 1)
+        e.setReferenceRule(Issue.ReferenceRule.UNDEFINED)
+        self.assertRaises(RuntimeError, e.setReferenceRule, Issue.ReferenceRule.UNDEFINED - 1)
+        self.assertRaises(RuntimeError, e.setReferenceRule, Issue.ReferenceRule.MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION + 1)
         del(e)
 
     def test_set_description(self):
@@ -168,29 +167,21 @@ class IssueTestCase(unittest.TestCase):
         e.setCause(Issue.Cause.MATHML)
         self.assertEqual(e.cause(), Issue.Cause.MATHML)
 
-    def test_is_cause(self):
+    def test_set_rule(self):
         from libcellml import Issue
 
-        # bool isCause(const Cause &cause)
+        # void setReferenceRule(ReferenceRule rule)
         e = Issue()
-        self.assertTrue(e.isCause(Issue.Cause.UNDEFINED))
-        self.assertFalse(e.isCause(Issue.Cause.MODEL))
-
-    def test_set_rule(self):
-        from libcellml import Issue, ReferenceRule
-
-        # void setRule(ReferenceRule rule)
-        e = Issue()
-        e.setRule(ReferenceRule.MAP_VARIABLES_VARIABLE2)
+        e.setReferenceRule(Issue.ReferenceRule.MAP_VARIABLES_VARIABLE2)
 
     def test_rule(self):
-        from libcellml import Issue, ReferenceRule
+        from libcellml import Issue
 
-        # ReferenceRule rule()
+        # ReferenceRule referenceRule()
         e = Issue()
-        self.assertEqual(e.rule(), ReferenceRule.UNDEFINED)
+        self.assertEqual(e.referenceRule(), Issue.ReferenceRule.UNDEFINED)
 
-    def test_specification_heading(self):
+    def test_reference_heading(self):
         from libcellml import Issue
 
         # std::string referenceHeading()

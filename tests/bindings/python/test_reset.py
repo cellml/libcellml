@@ -1,6 +1,5 @@
 #
-# Tests the bindings for OrderedEntity, which is the base class for all
-# entities that can be ordered relative to one another.
+# Tests the Reset class bindings
 #
 import unittest
 
