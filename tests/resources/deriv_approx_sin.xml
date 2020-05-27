@@ -3,7 +3,7 @@
 
   <component name="sin" id="sin">
     <variable id="x" units="dimensionless" name="x" interface="public_and_private"/>
-    <variable id="sin" units="dimensionless" name="sin" initial_value="sin_initial_value" interface="public_and_private"/>
+    <variable id="sin" units="dimensionless" name="sin" initial_value="0.0" interface="public_and_private"/>
     <variable units="dimensionless" name="sin_initial_value" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply><eq/>
