@@ -80,7 +80,7 @@ struct Parser::ParserImpl
      * @param component The @c ComponentPtr to update.
      * @param node The @c XmlNodePtr to parse and update the @p component with.
      */
-    void loadComponent(const ComponentPtr &component, const XmlNodePtr &node);
+    void loadComponent(const ComponentPtr &component, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p model with a connection parsed from @p node.
@@ -92,7 +92,7 @@ struct Parser::ParserImpl
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
      */
-    void loadConnection(const ModelPtr &model, const XmlNodePtr &node);
+    void loadConnection(const ModelPtr &model, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p model with an encapsulation parsed from @p node.
@@ -132,7 +132,7 @@ struct Parser::ParserImpl
      * @param model The @c ModelPtr to add imported components/units to.
      * @param node The @c XmlNodePtr to parse and update the @p import source with.
      */
-    void loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node);
+    void loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p units with attributes parsed from @p node.
@@ -144,7 +144,7 @@ struct Parser::ParserImpl
      * @param units The @c UnitsPtr to update.
      * @param node The @c XmlNodePtr to parse and update the @p units with.
      */
-    void loadUnits(const UnitsPtr &units, const XmlNodePtr &node);
+    void loadUnits(const UnitsPtr &units, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p units with a unit parsed from @p node.
@@ -156,7 +156,7 @@ struct Parser::ParserImpl
      * @param units The @c UnitsPtr to update.
      * @param node The unit @c XmlNodePtr to parse and update the @p units with.
      */
-    void loadUnit(const UnitsPtr &units, const XmlNodePtr &node);
+    void loadUnit(const UnitsPtr &units, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p variable with attributes parsed from @p node.
@@ -168,7 +168,7 @@ struct Parser::ParserImpl
      * @param variable The @c VariablePtr to update.
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
-    void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
+    void loadVariable(const VariablePtr &variable, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p reset with attributes parsed from the @p node.
@@ -181,7 +181,7 @@ struct Parser::ParserImpl
      * @param component The @c ComponentPtr the reset belongs to.
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
-    void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+    void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p reset with the child parsed from the @p node.
@@ -195,7 +195,7 @@ struct Parser::ParserImpl
      * @param component The @c ComponentPtr the reset belongs to.
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
-    void loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+    void loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node) const;
 
     /**
      * @brief Checks the multiplicity of the @p childType.
@@ -209,7 +209,7 @@ struct Parser::ParserImpl
      * @param reset The @c ResetPtr to update.
      * @param component The @c ComponentPtr the reset belongs to.
      */
-    void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component);
+    void checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component) const;
 };
 
 Parser::Parser()
@@ -481,7 +481,7 @@ std::string cleanMath(const std::string &math)
     return cleanMath;
 }
 
-void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node)
+void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
@@ -544,7 +544,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     }
 }
 
-void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
+void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
@@ -587,7 +587,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     }
 }
 
-void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
+void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node) const
 {
     std::string reference;
     std::string prefix;
@@ -674,7 +674,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     units->addUnit(reference, prefix, exponent, multiplier, id);
 }
 
-void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
+void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node) const
 {
     // A variable should not have any children.
     XmlNodePtr childNode = node->firstChild();
@@ -720,7 +720,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     }
 }
 
-void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
+void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node) const
 {
     // Define types for variable and component pairs.
     using NamePair = std::pair<std::string, std::string>;
@@ -1128,7 +1128,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
     }
 }
 
-void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node)
+void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
@@ -1217,7 +1217,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     }
 }
 
-void Parser::ParserImpl::loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
+void Parser::ParserImpl::loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node) const
 {
     // TODO The spec. has not yet defined the test_value and reset_value specification elements.
     std::string variableName;
@@ -1275,7 +1275,7 @@ void Parser::ParserImpl::loadResetChild(const std::string &childType, const Rese
     }
 }
 
-void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component)
+void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::string &childType, const ResetPtr &reset, const ComponentPtr &component) const
 {
     std::string variableName;
     std::string testVariableName;
@@ -1306,7 +1306,7 @@ void Parser::ParserImpl::checkResetChildMultiplicity(size_t count, const std::st
     }
 }
 
-void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
+void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node) const
 {
     int order = 0;
     bool orderValid = false;
