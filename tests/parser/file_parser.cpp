@@ -155,3 +155,57 @@ TEST(Parser, simpleGeneratorModel)
     std::string a = model->component("my_component")->math();
     EXPECT_EQ(e, a);
 }
+
+TEST(Parser, parseModelWithImportedEquivVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importingModel.cellml"));
+
+    printModelToTerminal(model);
+    printIssues(parser);
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(serialisedModel, fileContents("importingModel.cellml"));
+}
+
+TEST(Parser, parseModelImportingModelParentComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importingModelParentComponent.cellml"));
+
+    printModelToTerminal(model);
+    printIssues(parser);
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(serialisedModel, fileContents("importingModelParentComponent.cellml"));
+}
+
+TEST(Parser, parseModelWithImportedEncapsulation2)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importingModelChildComponent.cellml"));
+
+    printModelToTerminal(model);
+    printIssues(parser);
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(serialisedModel, fileContents("importingModelChildComponent.cellml"));
+}
