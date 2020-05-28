@@ -48,6 +48,17 @@ public:
      */
     static ImporterPtr create() noexcept;
 
+    /**
+     * @brief Flatten the @p model.
+     *
+     * Instantiates all imports and removes them from the @p model.
+     * The result is a self-contained model requiring no external
+     * resources and having no imports.
+     *
+     * @sa clone
+     */
+    ModelPtr flatten(const ModelPtr &inModel);
+
 private:
     Importer(); /**< Constructor */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/

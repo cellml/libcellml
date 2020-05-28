@@ -330,18 +330,18 @@ public:
      */
     ModelPtr clone() const;
 
-    /**
-     * @brief Flatten this model.
-     *
-     * Instantiates all imports and removes them from this model.
-     * The result is a self-contained model requiring no external
-     * resources and having no imports.
-     *
-     * The effects of this method cannot be undone.
-     *
-     * @sa clone
-     */
-    void flatten();
+    // /**
+    //  * @brief Flatten this model.
+    //  *
+    //  * Instantiates all imports and removes them from this model.
+    //  * The result is a self-contained model requiring no external
+    //  * resources and having no imports.
+    //  *
+    //  * The effects of this method cannot be undone.
+    //  *
+    //  * @sa clone
+    //  */
+    // void flatten();
 
     /**
      * @brief Fix @c Variable interfaces throughout the model.
