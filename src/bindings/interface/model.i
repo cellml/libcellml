@@ -70,9 +70,6 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::hasImports
 "Determine if any Component or Units is an import.";
 
-// %feature("docstring") libcellml::Model::flatten
-// "Instantiate all imported Components and Units to make this model self-contained.";
-
 %feature("docstring") libcellml::Model::fixVariableInterfaces
 "Fix variable interfaces throughout the model.";
 

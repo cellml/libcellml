@@ -9,7 +9,7 @@
 %feature("docstring") libcellml::Importer
 "Imports CellML objects.";
 
-%feature("docstring") libcellml::Model::flatten
+%feature("docstring") libcellml::Importer::flatten
 "Instantiate all imported Components and Units and return a self-contained model.";
 
 %{
