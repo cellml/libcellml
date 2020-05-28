@@ -559,7 +559,6 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
-
 // **************************
 
 NameList findCnUnitsNames(const XmlNodePtr &node);
@@ -601,14 +600,5 @@ ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
 
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
-
-
-
-
-
-
-
-
-
 
 } // namespace libcellml
