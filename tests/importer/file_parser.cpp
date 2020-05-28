@@ -26,7 +26,7 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
-TEST(ResolveImports, resolveSineModelFromFile)
+TEST(Importer, resolveSineModelFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations.xml"));
@@ -35,7 +35,7 @@ TEST(ResolveImports, resolveSineModelFromFile)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
-TEST(ResolveImports, resolveSineImportsModelFromFile)
+TEST(Importer, resolveSineImportsModelFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("sine_approximations_import.xml"));
@@ -46,7 +46,7 @@ TEST(ResolveImports, resolveSineImportsModelFromFile)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
-TEST(ResolveImports, resolveComplexImportsModelFromFile)
+TEST(Importer, resolveComplexImportsModelFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("complex_imports.xml"));
@@ -57,7 +57,7 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
-TEST(ResolveImports, resolveUnitsImportFromFile)
+TEST(Importer, resolveUnitsImportFromFile)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("import_units_model.cellml"));
@@ -69,7 +69,7 @@ TEST(ResolveImports, resolveUnitsImportFromFile)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
-TEST(ResolveImports, resolveImportsFromFileLevel0)
+TEST(Importer, resolveImportsFromFileLevel0)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("level0.xml"));
@@ -81,7 +81,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0)
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
-TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
+TEST(Importer, resolveImportsFromFileLevel0Unresolvable)
 {
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(fileContents("level0-broken-imports.xml"));
@@ -93,7 +93,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
 
-TEST(ResolveImports, componentNotInResolvingModel)
+TEST(Importer, componentNotInResolvingModel)
 {
     const std::string modelImportingComponent =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
