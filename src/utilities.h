@@ -26,6 +26,8 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "internaltypes.h"
+#include "xmldoc.h"
+#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -556,5 +558,57 @@ static inline std::string trimCopy(std::string s)
     trim(s);
     return s;
 }
+
+
+// **************************
+
+NameList findCnUnitsNames(const XmlNodePtr &node);
+
+NameList findComponentCnUnitsNames(const ComponentPtr &component);
+
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
+
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
+
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable);
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
+
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
+
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
+
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
+
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
+
+IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
+
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
+
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
+
+void componentNames(const ComponentPtr &component, NameList &names);
+
+NameList componentNames(const ModelPtr &model);
+
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
+
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
+
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+
+
+
+
+
+
+
+
+
 
 } // namespace libcellml
