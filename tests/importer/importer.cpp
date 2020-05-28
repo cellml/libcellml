@@ -27,6 +27,94 @@ TEST(Importer, create)
     auto importer = libcellml::Importer::create();
 }
 
+TEST(Importer, noWarningForkedImport)
+{
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("resolveimports/forkedImport.cellml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    printIssues(importer);
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, noWarningDiamondImport)
+{
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    libcellml::ImporterPtr importer = libcellml::Importer::create();
+    libcellml::ModelPtr model = p->parseModel(fileContents("resolveimports/diamond.cellml"));
+
+    EXPECT_EQ(size_t(0), p->errorCount());
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    printIssues(importer);
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, warningCircularImportReferencesComponent)
+{
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml',\n"
+                                 "    component 'c2' imports 'c3' from 'circularImport_3.cellml',\n"
+                                 "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("resolveimports/circularImport_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(size_t(1), importer->warningCount());
+    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+}
+
+TEST(Importer, warningCircularImportReferencesUnits)
+{
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve units in model 'circularImport1'. The dependency loop is:\n"
+                                 "    units 'i_am_cyclic' imports 'u2' from 'circularUnits_2.cellml',\n"
+                                 "    units 'u2' imports 'u3' from 'circularUnits_3.cellml',\n"
+                                 "    units 'u3' imports 'i_am_cyclic' from 'circularUnits_1.cellml',\n"
+                                 "    units 'i_am_cyclic' imports 'u2' from 'circularUnits_2.cellml'.";
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("resolveimports/circularUnits_1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(size_t(1), importer->warningCount());
+    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+}
+
+TEST(Importer, warningUnrequiredCircularDependencyComponent)
+{
+    // This test in intended to show what happens when one model attempts to import a concrete component from a
+    // second model, where the second model has unrelated circular dependencies:
+    //   - model1 imports component1 from model2
+    //   - model2 defines component1
+    //   - model2 also defines a circular dependency unrelated to component1
+
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
+                                 "    component 'c' imports 'i_am_ok_but_my_sibling_is_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml',\n"
+                                 "    component 'c2' imports 'c3' from 'circularImport_3.cellml',\n"
+                                 "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("resolveimports/master1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(size_t(1), importer->warningCount());
+    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+}
+
 TEST(Importer, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
@@ -36,7 +124,7 @@ TEST(Importer, missingUnitsFromImportOfCnTerms)
     auto validator = libcellml::Validator::create();
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
-        auto importer = libcellml::Importer::create();
+    auto importer = libcellml::Importer::create();
 
     auto imp = libcellml::ImportSource::create();
     imp->setUrl("units_in_cn.cellml");
@@ -48,7 +136,6 @@ TEST(Importer, missingUnitsFromImportOfCnTerms)
     EXPECT_TRUE(model->hasUnresolvedImports());
     importer->resolveImports(model, resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
-
 
     model = importer->flatten(model);
 
@@ -104,7 +191,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     auto importedModel = parser->parseModel(in);
 
     auto validator = libcellml::Validator::create();
-     auto importer = libcellml::Importer::create();
+    auto importer = libcellml::Importer::create();
 
     // No problems with the imported model.
     validator->validateModel(importedModel);

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<model name="forked_import"
+	xmlns="http://www.cellml.org/cellml/2.0#"
+	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+	<import xlink:href="diamond_left.cellml">
+		<component name="left" component_ref="left" />
+	</import>
+	<import xlink:href="diamond_right.cellml">
+		<component name="right" component_ref="right" />
+	</import>
+</model>
