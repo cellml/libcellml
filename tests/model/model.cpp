@@ -580,6 +580,7 @@ TEST(Model, equivalentVariableCountReportsCorrectlyAfterUsingRemoveComponent)
     EXPECT_EQ(nullptr, model->component(0)->variable(0)->equivalentVariable(0));
 }
 
+#if 0
 TEST(Model, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
@@ -747,6 +748,7 @@ TEST(Model, importUnitsDuplicated)
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(e, printer->printModel(model));
 }
+#endif
 
 TEST(Model, removeComponentInsensitiveToOrder)
 {

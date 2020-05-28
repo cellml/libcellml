@@ -1111,6 +1111,7 @@ TEST(Generator, nobleModel1962)
     EXPECT_EQ(fileContents("generator/noble_model_1962/model.py"), generator->implementationCode());
 }
 
+#if 0
 TEST(Generator, sineImports)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
@@ -1152,6 +1153,7 @@ TEST(Generator, sineImports)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/sine_model_imports/model.py"), generator->implementationCode());
 }
+#endif
 
 TEST(Generator, coverage)
 {
