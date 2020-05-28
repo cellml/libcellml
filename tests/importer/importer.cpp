@@ -36,6 +36,7 @@ TEST(Importer, missingUnitsFromImportOfCnTerms)
     auto validator = libcellml::Validator::create();
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
+        auto importer = libcellml::Importer::create();
 
     auto imp = libcellml::ImportSource::create();
     imp->setUrl("units_in_cn.cellml");
@@ -45,10 +46,10 @@ TEST(Importer, missingUnitsFromImportOfCnTerms)
     model->addComponent(c);
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(model, resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 
-    auto importer = libcellml::Importer::create();
+
     model = importer->flatten(model);
 
     // Confirm that the bug reported in #519 wherein units used solely by <cn> items
@@ -103,6 +104,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     auto importedModel = parser->parseModel(in);
 
     auto validator = libcellml::Validator::create();
+     auto importer = libcellml::Importer::create();
 
     // No problems with the imported model.
     validator->validateModel(importedModel);
@@ -125,7 +127,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-    auto importer = libcellml::Importer::create();
+
     model = importer->flatten(model);
 
     validator->validateModel(model);
@@ -171,6 +173,7 @@ TEST(Model, importUnitsDuplicated)
 
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
     auto importedModel = parser->parseModel(in);
 
     auto validator = libcellml::Validator::create();
@@ -189,7 +192,7 @@ TEST(Model, importUnitsDuplicated)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-    auto importer = libcellml::Importer::create();
+
     model = importer->flatten(model);
 
     validator->validateModel(model);

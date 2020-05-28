@@ -1115,15 +1115,15 @@ TEST(Generator, sineImports)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
     libcellml::ModelPtr model = parser->parseModel(fileContents("sine_approximations_import.xml"));
+    auto importer = libcellml::Importer::create();
 
     EXPECT_EQ(size_t(0), parser->issueCount());
     EXPECT_TRUE(model->hasUnresolvedImports());
 
-    model->resolveImports(resourcePath());
+    importer->resolveImports(model, resourcePath());
 
     EXPECT_FALSE(model->hasUnresolvedImports());
 
-    auto importer = libcellml::Importer::create();
     model = importer->flatten(model);
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();

@@ -299,16 +299,16 @@ public:
      */
     bool hasImports() const;
 
-    /**
-     * @brief Resolve all imports in this model.
-     *
-     * Resolve all @c Component and @c Units imports by loading the models
-     * from local disk through relative URLs.  The @p baseFile is used to determine
-     * the full path to the source model relative to this one.
-     *
-     * @param baseFile The @c std::string location on local disk of the source @c Model.
-     */
-    void resolveImports(const std::string &baseFile);
+    // /**
+    //  * @brief Resolve all imports in this model.
+    //  *
+    //  * Resolve all @c Component and @c Units imports by loading the models
+    //  * from local disk through relative URLs.  The @p baseFile is used to determine
+    //  * the full path to the source model relative to this one.
+    //  *
+    //  * @param baseFile The @c std::string location on local disk of the source @c Model.
+    //  */
+    // void resolveImports(const std::string &baseFile);
 
     /**
      * @brief Test if this model has unresolved imports.

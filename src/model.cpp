@@ -397,53 +397,53 @@ bool Model::hasUnlinkedUnits()
  *
  * @return The full path from the @p base location to the @p filename
  */
-std::string resolvePath(const std::string &filename, const std::string &base)
-{
-    // We can be naive here as we know what we are dealing with
-    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
-    return path;
-}
+// std::string resolvePath(const std::string &filename, const std::string &base)
+// {
+//     // We can be naive here as we know what we are dealing with
+//     std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
+//     return path;
+// }
 
-void resolveImport(const ImportedEntityPtr &importedEntity,
-                   const std::string &baseFile)
-{
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importSource = importedEntity->importSource();
-        if (!importSource->hasModel()) {
-            std::string url = resolvePath(importSource->url(), baseFile);
-            std::ifstream file(url);
-            if (file.good()) {
-                std::stringstream buffer;
-                buffer << file.rdbuf();
-                ParserPtr parser = Parser::create();
-                ModelPtr model = parser->parseModel(buffer.str());
-                importSource->setModel(model);
-                model->resolveImports(url);
-            }
-        }
-    }
-}
+// void resolveImport(const ImportedEntityPtr &importedEntity,
+//                    const std::string &baseFile)
+// {
+//     if (importedEntity->isImport()) {
+//         ImportSourcePtr importSource = importedEntity->importSource();
+//         if (!importSource->hasModel()) {
+//             std::string url = resolvePath(importSource->url(), baseFile);
+//             std::ifstream file(url);
+//             if (file.good()) {
+//                 std::stringstream buffer;
+//                 buffer << file.rdbuf();
+//                 ParserPtr parser = Parser::create();
+//                 ModelPtr model = parser->parseModel(buffer.str());
+//                 importSource->setModel(model);
+//                 model->resolveImports(url);
+//             }
+//         }
+//     }
+// }
 
-void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
-                             const std::string &baseFile)
-{
-    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        if (component->isImport()) {
-            resolveImport(component, baseFile);
-        }
-        resolveComponentImports(component, baseFile);
-    }
-}
+// void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
+//                              const std::string &baseFile)
+// {
+//     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
+//         libcellml::ComponentPtr component = parentComponentEntity->component(n);
+//         if (component->isImport()) {
+//             resolveImport(component, baseFile);
+//         }
+//         resolveComponentImports(component, baseFile);
+//     }
+// }
 
-void Model::resolveImports(const std::string &baseFile)
-{
-    for (size_t n = 0; n < unitsCount(); ++n) {
-        libcellml::UnitsPtr units = Model::units(n);
-        resolveImport(units, baseFile);
-    }
-    resolveComponentImports(shared_from_this(), baseFile);
-}
+// void Model::resolveImports(const std::string &baseFile)
+// {
+//     for (size_t n = 0; n < unitsCount(); ++n) {
+//         libcellml::UnitsPtr units = Model::units(n);
+//         resolveImport(units, baseFile);
+//     }
+//     resolveComponentImports(shared_from_this(), baseFile);
+// }
 
 bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
 {

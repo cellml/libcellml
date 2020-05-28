@@ -18,12 +18,15 @@ limitations under the License.
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <libxml/uri.h>
+#include <sstream>
 #include <stdexcept>
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
+#include "libcellml/parser.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -60,6 +63,72 @@ Importer::~Importer()
 {
     delete mPimpl;
 }
+
+// ******************************* RESOLVING FUNCTIONS *******************************
+
+/**
+ * @brief Resolve the path of the given filename using the given base.
+ *
+ * Resolves the full path to the given @p filename using the @p base.
+ *
+ * This function is only intended to work with local files.  It may not
+ * work with bases that use the 'file://' prefix.
+ *
+ * @param filename The @c std::string relative path from the base path.
+ * @param base The @c std::string location on local disk for determining the full path from.
+ *
+ * @return The full path from the @p base location to the @p filename
+ */
+std::string resolvePath(const std::string &filename, const std::string &base)
+{
+    // We can be naive here as we know what we are dealing with
+    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
+    return path;
+}
+
+void resolveImport(const ImportedEntityPtr &importedEntity,
+                   const std::string &baseFile)
+{
+    if (importedEntity->isImport()) {
+        ImportSourcePtr importSource = importedEntity->importSource();
+        if (!importSource->hasModel()) {
+            std::string url = resolvePath(importSource->url(), baseFile);
+            std::ifstream file(url);
+            if (file.good()) {
+                std::stringstream buffer;
+                buffer << file.rdbuf();
+                auto parser = Parser::create();
+                auto model = parser->parseModel(buffer.str());
+                auto importer = Importer::create();
+                importSource->setModel(model);
+                importer->resolveImports(model, url);
+            }
+        }
+    }
+}
+
+void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
+                             const std::string &baseFile)
+{
+    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
+        libcellml::ComponentPtr component = parentComponentEntity->component(n);
+        if (component->isImport()) {
+            resolveImport(component, baseFile);
+        }
+        resolveComponentImports(component, baseFile);
+    }
+}
+
+void Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
+{
+    for (size_t n = 0; n < model->unitsCount(); ++n) {
+        libcellml::UnitsPtr units = model->units(n);
+        resolveImport(units, baseFile);
+    }
+    resolveComponentImports(model, baseFile);
+}
+
+// ******************************* FLATTENING FUNCTIONS *******************************
 
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {

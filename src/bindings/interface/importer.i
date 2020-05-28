@@ -9,6 +9,13 @@
 %feature("docstring") libcellml::Importer
 "Imports CellML objects.";
 
+%feature("docstring") libcellml::Importer::resolveImports
+"Resolves all imports in this model.
+
+Resolves all :class:`Component` and :class:`Units` imports by loading the
+models from local disk through relative urls. The ``baseFile`` is used to
+determine the full path to the source model relative to this one.";
+
 %feature("docstring") libcellml::Importer::flatten
 "Instantiate all imported Components and Units and return a self-contained model.";
 
