@@ -166,7 +166,8 @@ void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &
 ModelPtr Importer::flatten(const ModelPtr &inModel)
 {
     if (inModel->hasUnresolvedImports()) {
-        return nullptr;
+        // Mimicking behaviour of previous flatten() function... not sure this is the way to go?
+        return inModel;
     }
     auto model = inModel->clone();
 
