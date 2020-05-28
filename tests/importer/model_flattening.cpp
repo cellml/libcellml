@@ -623,7 +623,7 @@ TEST(ModelFlattening, importingComponentThatAlsoHasAnImportedComponentAsAChild)
         "</model>\n";
 
     auto model = libcellml::Model::create("a_model");
-        auto importer = libcellml::Importer::create();
+    auto importer = libcellml::Importer::create();
 
     // Import the membrane component from a file.
     auto membrane = libcellml::Component::create("membrane");
