@@ -59,6 +59,17 @@ public:
      */
     ModelPtr flatten(const ModelPtr &inModel);
 
+    /**
+     * @brief Resolve all imports in the @p model.
+     *
+     * Resolve all @c Component and @c Units imports by loading the models
+     * from local disk through relative URLs.  The @p baseFile is used to determine
+     * the full path to the source model relative to this one.
+     * @param model The @c Model whose imports need resolution.
+     * @param baseFile The @c std::string location on local disk of the source @c Model.
+     */
+    void resolveImports(ModelPtr &model, const std::string &baseFile);
+
 private:
     Importer(); /**< Constructor */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/
