@@ -178,9 +178,7 @@ TEST(Parser, parseModelImportingModelParentComponent)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importingModelParentComponent.cellml"));
-
-    printModelToTerminal(model);
-    printIssues(parser);
+    EXPECT_EQ(size_t(0), parser->errorCount());
 
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
@@ -192,7 +190,7 @@ TEST(Parser, parseModelImportingModelParentComponent)
     EXPECT_EQ(serialisedModel, fileContents("importingModelParentComponent.cellml"));
 }
 
-TEST(Parser, parseModelWithImportedEncapsulation2)
+TEST(Parser, parseModelImportingModelChildComponent)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importingModelChildComponent.cellml"));
@@ -202,10 +200,12 @@ TEST(Parser, parseModelWithImportedEncapsulation2)
 
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
+    printIssues(validator);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
+    printIssues(printer);
 
     EXPECT_EQ(serialisedModel, fileContents("importingModelChildComponent.cellml"));
 }
