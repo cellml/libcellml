@@ -161,10 +161,6 @@ TEST(Parser, parseModelWithImportedEquivVariables)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importingModel.cellml"));
 
-    auto validator = libcellml::Validator::create();
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
