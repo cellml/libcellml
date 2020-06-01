@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#" name="import_example">
   <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="importedModel.cellml">
-    <component component_ref="importedComponent" name="importMe"/>
+    <component component_ref="importMe" name="importedComponent"/>
   </import>
   <component name="localComponent">
     <variable name="x" units="dimensionless" interface="public_and_private"/>
