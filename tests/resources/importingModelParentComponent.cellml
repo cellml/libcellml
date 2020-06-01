@@ -8,7 +8,7 @@
   </component>
   <encapsulation>
     <component_ref component="localComponent">
-      <component_ref component="importedComponent" />
+      <component_ref component="importedComponent"/>
     </component_ref>
   </encapsulation>
 </model>
