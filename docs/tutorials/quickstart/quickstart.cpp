@@ -39,7 +39,27 @@ int main()
 
     //  2.b   Retrieve the errors from the validator and access their
     //        specificiation reference and description
-    printErrorsToTerminal(validator);
+    // printErrorsToTerminal(validator);
+
+    for (size_t e = 0; e < validator->issueCount(); ++e) {
+        libcellml::IssuePtr issue = validator->issue(e);
+
+        // Retrieve and print the description of the issue.
+        std::cout << issue->description() << std::endl;
+
+        // Retrieve and print the reference heading number, if related to CellML2.0 specification and format.
+        std::cout << issue->referenceHeading() << std::endl;
+
+        // Retrieve and print the URL for more help and information about the issue.
+        std::cout << issue->url() << std::endl;
+
+        // Retrieve and print the cause - a libcellml::Issue::CAUSE enum - for the issue.
+        std::cout << getCauseFromEnum(issue->cause()) << std::endl;
+
+        // Retrieve and print the level - a libcellml::Issue::LEVEL enum - for the issue.
+        std::cout << getIssueLevelFromEnum(issue->level()) << std::endl;
+
+    }
 
     // ---------------------------------------------------------------------------
     //  STEP 3:   Fix errors thrown by the validator

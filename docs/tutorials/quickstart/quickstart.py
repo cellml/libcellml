@@ -6,7 +6,8 @@
 
 from libcellml import Generator, GeneratorProfile, Parser, Printer, Validator
 
-from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal
+from tutorial_utilities import print_errors_to_terminal, print_model_to_terminal, get_issue_level_from_enum, \
+    get_issue_cause_from_enum
 
 if __name__ == "__main__":
 
@@ -14,7 +15,7 @@ if __name__ == "__main__":
     #  STEP 1:   Deserialise a CellML Model from the contents of a CellML file
 
     #  1.a   Open the file and read its contents into a buffer stream
-    read_file1 = open("../resources/quickstart.cellml", "r")
+    read_file1 = open("../resources/tutorial2.cellml", "r")
 
     #  1.b   Create a libCellML Parser, and use it to parse the inFileContents
     #        stream and return it as a ModelPtr instance
@@ -36,137 +37,155 @@ if __name__ == "__main__":
     #        specificiation reference and description
     print_errors_to_terminal(validator)
 
-    # ---------------------------------------------------------------------------
-    #  STEP 3:   Fix errors thrown by the validator
+    for e in range(0, validator.issueCount()):
+        issue = validator.issue(e)
 
-    # 3.a
-    #  Validator error[0]:
-    #    Description: CellML identifiers must not begin with a European numeric
-    #    character [0-9].
-    #    See section 3.1.4 in the CellML specification.
-    #  Validator error[1]:
-    #    Description: Variable does not have a valid name attribute.
-    #    See section 11.1.1.1 in the CellML specification.
+        # Retrieve and print the description of the issue.
+        print(issue.description())
 
-    # These errors refer to the same thing, but are better read in reverse order.
-    # Variables (and everything else in CellML) which specify a name attribute
-    # can must have the correct format.  Comparing the error to the names of
-    # entities printed in the terminal we can see that variable[0] in
-    # component[0] doesn't have a valid name, so let's fix it.
-    model.component(0).variable(0).setName("a")
+        # Retrieve and print the reference heading number, if related to CellML2.0 specification and format.
+        print(issue.referenceHeading())
 
-    # 3.b
-    #  Validator error[2]:
-    #    Description: Variable 'b' has an invalid units reference
-    #    'i_am_not_a_unit' that does not correspond with a standard unit or units
-    #    in the variable's parent component or model.
-    #    See section 11.1.1.2 in the CellML specification.
+        # Retrieve and print the URL for more help and information about the issue.
+        # print(issue.url())
 
-    #  Variables must have a unit defined.  These can be either something from
-    #  the built-in list within libCellML (which you can read in the
-    #  specifications document), or something you define yourself.  We'll look at
-    #  user defined units in Tutorial 3, but for now it's enough to see that the
-    #  units which are associated with variable 'b' is not valid.  We'll change
-    #  it to be 'dimensionless' instead.  NB items can be accessed through their
-    #  name (as here) or their index (as above)
-    model.component("i_am_a_component").variable("b").setUnits("dimensionless")
+        # Retrieve and print the cause - a libcellml::Issue::CAUSE enum - for the issue.
+        print(get_issue_cause_from_enum(issue.cause()))
 
-    # 3.c
-    # Validator error[3]:
-    #    Description: Variable 'c' has an invalid initial value
-    #    'this_variable_doesnt_exist'. Initial values must be a real number
-    #    string or a variable reference.
-    #    See section 11.1.2.2 in the CellML specification.
+        # Retrieve and print the level - a libcellml::Issue::LEVEL enum - for the issue.
+        print(get_issue_level_from_enum(issue.level()))
 
-    #  We can either access members by their index or their name, as shown above,
-    #  or we can create a pointer to them instead.
-    #  Initial values (if set) must be a valid variable name in the same
-    #  component, or a real number.
-    variableC = model.component(0).variable("c")
-    variableC.setInitialValue(20.0)
+    # # ---------------------------------------------------------------------------
+    # #  STEP 3:   Fix errors thrown by the validator
 
-    # 3.d
-    # Validator error[4]:
-    #    Description: CellML identifiers must contain one or more basic Latin
-    #    alphabetic characters.
-    #    See section 3.1.3 in the CellML specification.
-    # Validator error[5]:
-    #    Description: Variable 'd' does not have a valid units attribute.
-    #    See section 11.1.1.2 in the CellML specification.
+    # # 3.a
+    # #  Validator error[0]:
+    # #    Description: CellML identifiers must not begin with a European numeric
+    # #    character [0-9].
+    # #    See section 3.1.4 in the CellML specification.
+    # #  Validator error[1]:
+    # #    Description: Variable does not have a valid name attribute.
+    # #    See section 11.1.1.1 in the CellML specification.
 
-    #  These two errors go together too.  Because we haven't defined a units
-    #  attribute for variable 'd', it effectively has a blank name, which is not
-    #  allowed.  Of course we could simply assign a unit to the variable which
-    #  would suppress both errors, but because variable 'd' is
-    #  not actually needed, we should really just remove it.
-    model.component(0).removeVariable("d")
+    # # These errors refer to the same thing, but are better read in reverse order.
+    # # Variables (and everything else in CellML) which specify a name attribute
+    # # can must have the correct format.  Comparing the error to the names of
+    # # entities printed in the terminal we can see that variable[0] in
+    # # component[0] doesn't have a valid name, so let's fix it.
+    # model.component(0).variable(0).setName("a")
 
-    # 3.e
-    # Validator error[6]:
-    #    Description: MathML ci element has the child text 'a' which does not
-    #    correspond with any variable names present in component
-    #    'i_am_a_component' and is not a variable defined within a bvar element.
-    #  The maths block is complaining that it is being asked to compute:
-    #    a = b + c
-    #  but in the component there was no variable called 'a'.  Since we
-    #  corrected this earlier by naming the first variable in component[0] as 'a'
-    #  this error will be fixed already.
+    # # 3.b
+    # #  Validator error[2]:
+    # #    Description: Variable 'b' has an invalid units reference
+    # #    'i_am_not_a_unit' that does not correspond with a standard unit or units
+    # #    in the variable's parent component or model.
+    # #    See section 11.1.1.2 in the CellML specification.
 
-    validator.validateModel(model)
-    print_model_to_terminal(model)
-    print_errors_to_terminal(validator)
+    # #  Variables must have a unit defined.  These can be either something from
+    # #  the built-in list within libCellML (which you can read in the
+    # #  specifications document), or something you define yourself.  We'll look at
+    # #  user defined units in Tutorial 3, but for now it's enough to see that the
+    # #  units which are associated with variable 'b' is not valid.  We'll change
+    # #  it to be 'dimensionless' instead.  NB items can be accessed through their
+    # #  name (as here) or their index (as above)
+    # model.component("i_am_a_component").variable("b").setUnits("dimensionless")
 
-    # ---------------------------------------------------------------------------
-    #  STEP 4: Call the Generator to process the model to a C or Python format
+    # # 3.c
+    # # Validator error[3]:
+    # #    Description: Variable 'c' has an invalid initial value
+    # #    'this_variable_doesnt_exist'. Initial values must be a real number
+    # #    string or a variable reference.
+    # #    See section 11.1.2.2 in the CellML specification.
 
-    #  4.a  Create a Generator instance and call it to process the model, and
-    #       check for errors
-    generator = Generator()
-    generator.processModel(model)
-    print_errors_to_terminal(generator)
+    # #  We can either access members by their index or their name, as shown above,
+    # #  or we can create a pointer to them instead.
+    # #  Initial values (if set) must be a valid variable name in the same
+    # #  component, or a real number.
+    # variableC = model.component(0).variable("c")
+    # variableC.setInitialValue(20.0)
 
-    #  4.b  Fix the errors thrown by the generator by giving variable 'b' an intitial value
-    model.component(0).variable("b").setInitialValue(20.0)
-    generator.processModel(model)
-    print_errors_to_terminal(generator)
+    # # 3.d
+    # # Validator error[4]:
+    # #    Description: CellML identifiers must contain one or more basic Latin
+    # #    alphabetic characters.
+    # #    See section 3.1.3 in the CellML specification.
+    # # Validator error[5]:
+    # #    Description: Variable 'd' does not have a valid units attribute.
+    # #    See section 11.1.1.2 in the CellML specification.
 
-    #  4.d  Retrieve the generated strings for output.  In Python you need only
-    #       retrieve the implementationCode (suitable for a single *.py file), but
-    #       in C you will need both the "implementation code" (the contents of the *.c)
-    #       file and the "interface code" (the contents of the *.h file).
-    #       Both are returned from the generator as strings which can be written to
-    #       suitably named files as normal.
-    header_code = generator.interfaceCode()
-    source_code = generator.implementationCode()
+    # #  These two errors go together too.  Because we haven't defined a units
+    # #  attribute for variable 'd', it effectively has a blank name, which is not
+    # #  allowed.  Of course we could simply assign a unit to the variable which
+    # #  would suppress both errors, but because variable 'd' is
+    # #  not actually needed, we should really just remove it.
+    # model.component(0).removeVariable("d")
 
-    out_file_name = "quickstart_fixed.c"
-    write_file = open(out_file_name, "w")
-    write_file.write(source_code)
-    print("The {} file has been written".format(out_file_name))
+    # # 3.e
+    # # Validator error[6]:
+    # #    Description: MathML ci element has the child text 'a' which does not
+    # #    correspond with any variable names present in component
+    # #    'i_am_a_component' and is not a variable defined within a bvar element.
+    # #  The maths block is complaining that it is being asked to compute:
+    # #    a = b + c
+    # #  but in the component there was no variable called 'a'.  Since we
+    # #  corrected this earlier by naming the first variable in component[0] as 'a'
+    # #  this error will be fixed already.
 
-    out_file_name = "quickstart_fixed.h"
-    write_file = open(out_file_name, "w")
-    write_file.write(header_code)
-    print("The {} file has been written".format(out_file_name))
+    # validator.validateModel(model)
+    # print_model_to_terminal(model)
+    # print_errors_to_terminal(validator)
 
-    #  4.e  Change the generator profile from C to Python and reprocess
-    profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
-    generator.setProfile(profile)
-    generator.processModel(model)
+    # # ---------------------------------------------------------------------------
+    # #  STEP 4: Call the Generator to process the model to a C or Python format
 
-    python_code = generator.implementationCode()
-    out_file_name = "quickstart_fixed.py"
-    write_file = open(out_file_name, "w")
-    write_file.write(python_code)
-    print("The {} file has been written".format(out_file_name))
+    # #  4.a  Create a Generator instance and call it to process the model, and
+    # #       check for errors
+    # generator = Generator()
+    # generator.processModel(model)
+    # print_errors_to_terminal(generator)
 
-    # ---------------------------------------------------------------------------
-    #  STEP 5 Print the model to another CellML file
-    #  5.a   Create a Printer and use it to serialise the model to a string
-    printer = Printer()
-    serialised_model = printer.printModel(model)
+    # #  4.b  Fix the errors thrown by the generator by giving variable 'b' an intitial value
+    # model.component(0).variable("b").setInitialValue(20.0)
+    # generator.processModel(model)
+    # print_errors_to_terminal(generator)
 
-    #  5.b   Write the serialised string to a file
-    write_file = open("quickstart_fixed.cellml", "w")
-    write_file.write(serialised_model)
-    print("The {} has been printed to quickstart_fixed.cellml".format(model.name()))
+    # #  4.d  Retrieve the generated strings for output.  In Python you need only
+    # #       retrieve the implementationCode (suitable for a single *.py file), but
+    # #       in C you will need both the "implementation code" (the contents of the *.c)
+    # #       file and the "interface code" (the contents of the *.h file).
+    # #       Both are returned from the generator as strings which can be written to
+    # #       suitably named files as normal.
+    # header_code = generator.interfaceCode()
+    # source_code = generator.implementationCode()
+
+    # out_file_name = "quickstart_fixed.c"
+    # write_file = open(out_file_name, "w")
+    # write_file.write(source_code)
+    # print("The {} file has been written".format(out_file_name))
+
+    # out_file_name = "quickstart_fixed.h"
+    # write_file = open(out_file_name, "w")
+    # write_file.write(header_code)
+    # print("The {} file has been written".format(out_file_name))
+
+    # #  4.e  Change the generator profile from C to Python and reprocess
+    # profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
+    # generator.setProfile(profile)
+    # generator.processModel(model)
+
+    # python_code = generator.implementationCode()
+    # out_file_name = "quickstart_fixed.py"
+    # write_file = open(out_file_name, "w")
+    # write_file.write(python_code)
+    # print("The {} file has been written".format(out_file_name))
+
+    # # ---------------------------------------------------------------------------
+    # #  STEP 5 Print the model to another CellML file
+    # #  5.a   Create a Printer and use it to serialise the model to a string
+    # printer = Printer()
+    # serialised_model = printer.printModel(model)
+
+    # #  5.b   Write the serialised string to a file
+    # write_file = open("quickstart_fixed.cellml", "w")
+    # write_file.write(serialised_model)
+    # print("The {} has been printed to quickstart_fixed.cellml".format(model.name()))

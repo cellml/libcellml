@@ -5,6 +5,8 @@
  */
 
 #include "tutorial_utilities.h"
+#include "libcellml/types.h"
+#include <libcellml>
 
 void printModelToTerminal(libcellml::ModelPtr &model)
 {
@@ -262,6 +264,88 @@ std::string getProfileFromEnum(libcellml::GeneratorProfile::Profile myType)
         break;
     }
     return myTypeAsString;
+}
+
+std::string getIssueLevelFromEnum(libcellml::Issue::Level myLevel)
+{
+    std::string myTypeAsString = "dunno";
+
+    switch (myLevel) {
+    case libcellml::Issue::Level::ERROR:
+        myTypeAsString = "ERROR";
+        break;
+    case libcellml::Issue::Level::WARNING:
+        myTypeAsString = "WARNING";
+        break;
+    case libcellml::Issue::Level::HINT:
+        myTypeAsString = "HINT";
+        break;
+    }
+    return myTypeAsString;
+}
+
+std::string getIssueCauseFromEnum(libcellml::Issue::Cause myCause)
+{
+    std::string myTypeAsString = "dunno";
+
+    switch (myCause) {
+    case libcellml::Issue::Cause::COMPONENT:
+        myTypeAsString = "COMPONENT";
+        break;
+    case libcellml::Issue::Cause::CONNECTION:
+        myTypeAsString = "CONNECTION";
+        break;
+    case libcellml::Issue::Cause::ENCAPSULATION:
+        myTypeAsString = "ENCAPSULATION";
+        break;
+    case libcellml::Issue::Cause::IMPORT:
+        myTypeAsString = "IMPORT";
+        break;
+    case libcellml::Issue::Cause::MATHML:
+        myTypeAsString = "MATHML";
+        break;
+    case libcellml::Issue::Cause::MODEL:
+        myTypeAsString = "MODEL";
+        break;
+    case libcellml::Issue::Cause::RESET:
+        myTypeAsString = "RESET";
+        break;
+    case libcellml::Issue::Cause::UNDEFINED:
+        myTypeAsString = "UNDEFINED";
+        break;
+    case libcellml::Issue::Cause::UNITS:
+        myTypeAsString = "UNITS";
+        break;
+    case libcellml::Issue::Cause::VARIABLE:
+        myTypeAsString = "VARIABLE";
+        break;
+    case libcellml::Issue::Cause::XML:
+        myTypeAsString = "XML";
+        break;
+    case libcellml::Issue::Cause::GENERATOR:
+        myTypeAsString = "GENERATOR";
+        break;
+    }
+    return myTypeAsString;
+}
+
+libcellml::EntityPtr getItemFromIssue(libcellml::IssuePtr &issue)
+{
+    switch (issue->cause()) {
+    case libcellml::Issue::Cause::COMPONENT:
+        return issue->component();
+    case libcellml::Issue::Cause::IMPORT:
+        return issue->importSource();
+    case libcellml::Issue::Cause::MODEL:
+        return issue->model();
+    case libcellml::Issue::Cause::RESET:
+        return issue->reset();
+    case libcellml::Issue::Cause::UNITS:
+        return issue->units();
+    case libcellml::Issue::Cause::VARIABLE:
+        return issue->variable();
+    }
+    return nullptr;
 }
 
 void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model)

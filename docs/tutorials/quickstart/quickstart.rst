@@ -21,107 +21,8 @@ This process is repeated until all the components needed have been created or im
 Model output takes one of two forms - either serialisation by writing to a CellML2.0 file using the Printer functionality, or code generation into C or Python using the Generator functionality.
 Of course you are welcome to use the API in a top-down or bottom-up manner as you see fit.
 
-.. _include_libcellml_library:
-Include the libCellML library in your project
-+++++++++++++++++++++++++++++++++++++++++++++
-If you've followed :ref:`the instructions for installing libCellML<tutorial0>` then the library is available for use as shown below.
-Note that this doesn't invoke the libCellML namespace, so classes are accessed using the :code:`libcellml::` prefix.
-
-.. code-block:: cpp
-
-  // main.cpp
-  #include <libcellml>
-
-  auto model = libcellml::Model::create();
-
-In Python classes can be imported individually as required, or the whole library imported at once.
-
-.. code-block:: python
-
-  # main.py
-  import libcellml                       # import the entire library, or
-  from libcellml import Model, Variable  # import specific classes as needed
-
-Parse an existing ``Model`` from a file
-+++++++++++++++++++++++++++++++++++++++
-The following code will read a file called :code:`quickstart.cellml` and deserialise its contents into a :code:`ModelPtr` instance:
-
-In C++:
-
-.. code-block:: cpp
-
-    std::ifstream inFile("../resources/quickstart.cellml");
-    std::stringstream inFileContents;
-    inFileContents << inFile.rdbuf();
-
-    // Creating a Parser instance
-    auto parser = libcellml::Parser::create();
-
-    // Deserialising the CellML contents of the parsed file into a Model pointer
-    libcellml::ModelPtr model = parser->parseModel(inFileContents.str());
-
-    // Checking the Parser for errors
-    for(size_t e = 0; e < parser->errorCount(); ++e) {
-      std::cout<<parser->error(e)->description()<<std::endl;
-      std::cout<<parser->error(e)->referenceHeading()<<std::endl;
-    }
-
-In Python:
-
-.. code-block:: python
-
-    from libcellml import Parser
-
-    #  Open the CellML file for reading
-    read_file = open("../resources/quickstart.cellml", "r")
-
-    #  Create a libCellML Parser, and use it to parse the file string contents
-    #  and convert it into a CellML Model structure
-    parser = Parser()
-    model = parser.parseModel(read_file.read())
-
-    # Check the parser for errors
-    for e in range(0, parser.errorCount()):
-        print(parser.error(e).description())
-        print(parser.error(e).referenceHeading())
 
 
-Debug and validate a Model
-++++++++++++++++++++++++++
-The :code:`Validator` class is used to check your final model for errors before export or code generation, but it can also be used as a debugger during the process of your model creation or editing.
-The error descriptions should give enough information to allow you to find and fix the problem, and the specification heading refers to the section within the :ref:`formal CellML2.0 description<formal_specification>` which is affected by the error.
-
-In C++:
-
-.. code-block:: cpp
-
-    // Create a Validator instance and pass the model to it for checking
-    libcellml::ValidatorPtr validator = libcellml::Validator::create();
-    validator->validateModel(model);
-
-    // Retrieve the errors from the validator and print their specificiation
-    // reference and description
-    for (size_t e = 0; e < validator->errorCount(); ++e) {
-        libcellml::IssuePtr error = validator->error(e);
-        std::cout << error->description() << std::endl;
-        std::cout << error->specificationReference() << std::endl
-                  << std::endl;
-    }
-
-In Python:
-
-.. code-block:: python
-
-    from libcellml import Validator
-
-    # Create a Validator instance and pass it the model for checking
-    validator = Validator()
-    validator.validateModel(model)
-
-    # Check the validator for errors
-    for e in range(0, validator.errorCount()):
-        print(validator.error(e).description())
-        print(validator.error(e).referenceHeading())
 
 Serialise a ``Model`` into CellML2 for printing to a file
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -133,13 +34,13 @@ In C++:
 
 .. code-block:: cpp
 
-    // Create a Printer instance and pass the model into it
+    // Create a Printer instance and pass the model into it.
     libcellml::PrinterPtr printer = libcellml::Printer::create();
 
-    // The output of the printModel function is a string representing the serialised model
+    // The output of the printModel function is a string representing the serialised model.
     std::string serialisedModelString = printer->printModel(model);
 
-    // Check the printer for errors
+    // Check the printer for errors.
     for (size_t e = 0; e < printer->errorCount(); ++e) {
         libcellml::IssuePtr error = printer->error(e);
         std::cout << error->description() << std::endl;
@@ -147,7 +48,7 @@ In C++:
                   << std::endl;
     }
 
-    // Write the serialised string to a file
+    // Write the serialised string to a file.
     std::string outFileName = "my_printed_file.cellml";
     std::ofstream outFile(outFileName);
     outFile << serialisedModelString;
@@ -159,18 +60,18 @@ In Python:
 
     from libcellml import Printer
 
-    # Create a Printer instance and pass the model into it
+    # Create a Printer instance and pass the model into it.
     printer = Printer()
 
-    # The output of the printModel function is a string representing the serialised model
+    # The output of the printModel function is a string representing the serialised model.
     serialised_model = printer.printModel(model)
 
-    # Check the printer for errors
+    # Check the printer for errors.
     for e in range(0, printer.errorCount()):
         print(printer.error(e).description())
         print(printer.error(e).referenceHeading())
 
-    # Write the string to a file
+    # Write the string to a file.
     write_file = open("my_printed_file.cellml", "w")
     write_file.write(serialised_model)
     write_file.close()

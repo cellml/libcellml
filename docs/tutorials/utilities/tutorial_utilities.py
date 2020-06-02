@@ -84,7 +84,6 @@ def print_errors_to_terminal(item):
             print("    Description: {d}".format(d=validation_error.description()))
             if specification != "":
                 print("    See section {s} in the CellML specification.".format(s=specification))
-    print()
 
 
 def switch_units_in_maths(maths, units_in, units_out):
@@ -133,7 +132,6 @@ def print_encapsulation_structure_to_terminal(model):
     for c in range(0, model.componentCount()):
         child_component = model.component(c)
         print_component_only_to_terminal(child_component, spacer)
-    print()
 
 
 def print_component_only_to_terminal(component, spacer):
@@ -146,4 +144,95 @@ def print_component_only_to_terminal(component, spacer):
         another_spacer = "    " + spacer
         child_component = component.component(c)
         print_component_only_to_terminal(child_component, another_spacer)
-    print()
+
+
+
+def get_model_type_from_enum(my_type):
+
+    my_type_as_string = "dunno"
+
+    if my_type == Generator.ModelType.UNKNOWN:
+        my_type_as_string = "UNKNOWN"
+    elif my_type == Generator.ModelType.ALGEBRAIC:
+        my_type_as_string = "ALGEBRAIC"
+    elif my_type == Generator.ModelType.ODE:
+        my_type_as_string = "ODE"
+    elif my_type == Generator.ModelType.INVALID:
+        my_type_as_string = "INVALID"
+    elif my_type == Generator.ModelType.UNDERCONSTRAINED:
+        my_type_as_string = "UNDERCONSTRAINED"
+    elif my_type == Generator.ModelType.OVERCONSTRAINED:
+        my_type_as_string = "OVERCONSTRAINED"
+    elif my_type == Generator.ModelType.UNSUITABLY_CONSTRAINED:
+        my_type_as_string = "UNSUITABLY_CONSTRAINED"
+
+    return my_type_as_string
+
+
+def get_profile_from_enum(my_type):
+
+    my_type_as_string = "dunno"
+
+    if my_type == GeneratorProfile.Profile.C:
+        my_type_as_string = "C"
+    elif my_type == GeneratorProfile.Profile.PYTHON:
+        my_type_as_string = "PYTHON"
+
+    return my_type_as_string
+
+
+def get_issue_level_from_enum(my_level):
+
+    my_type_as_string = "dunno"
+
+    if my_level == Issue.Level.ERROR:
+        my_type_as_string = "ERROR"
+    elif my_level == Issue.Level.WARNING:
+        my_type_as_string = "WARNING"
+    elif my_level == Issue.Level.HINT:
+        my_type_as_string = "HINT"
+
+    return my_type_as_string
+
+
+def get_issue_cause_from_enum(my_cause):
+
+    my_type_as_string = "dunno"
+
+    if my_cause == Issue.Cause.COMPONENT:
+        my_type_as_string = "COMPONENT"
+
+    elif my_cause == Issue.Cause.CONNECTION:
+        my_type_as_string = "CONNECTION"
+
+    elif my_cause == Issue.Cause.ENCAPSULATION:
+        my_type_as_string = "ENCAPSULATION"
+
+    elif my_cause == Issue.Cause.IMPORT:
+        my_type_as_string = "IMPORT"
+
+    elif my_cause == Issue.Cause.MATHML:
+        my_type_as_string = "MATHML"
+
+    elif my_cause == Issue.Cause.MODEL:
+        my_type_as_string = "MODEL"
+
+    elif my_cause == Issue.Cause.RESET:
+        my_type_as_string = "RESET"
+
+    elif my_cause == Issue.Cause.UNDEFINED:
+        my_type_as_string = "UNDEFINED"
+
+    elif my_cause == Issue.Cause.UNITS:
+        my_type_as_string = "UNITS"
+
+    elif my_cause == Issue.Cause.VARIABLE:
+        my_type_as_string = "VARIABLE"
+
+    elif my_cause == Issue.Cause.XML:
+        my_type_as_string = "XML"
+
+    elif my_cause == Issue.Cause.GENERATOR:
+        my_type_as_string = "GENERATOR"
+
+    return my_type_as_string
