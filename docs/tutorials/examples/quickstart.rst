@@ -14,3 +14,6 @@ This section is divided into chapters based on tasks that we anticipate the most
     :titlesonly:
 
     user_profiles/examples_package_dev.rst
+    user_profiles/examples_simulation_tool_dev.rst
+    user_profiles/examples_model_debugger.rst
+    user_profiles/examples_annotation_tool_dev.rst
