@@ -63,6 +63,11 @@ convert(Issue, 'Cause', [
     'VARIABLE',
     'XML',
 ])
+convert(Issue, 'Level', [
+    'ERROR',
+    'WARNING',
+    'HINT',
+])
 convert(Generator, 'ModelType', [
     'UNKNOWN',
     'ALGEBRAIC',
