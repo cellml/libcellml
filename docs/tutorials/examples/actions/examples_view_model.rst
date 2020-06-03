@@ -5,7 +5,7 @@ View the contents of a ``Model``
 
 All CellML entities exist in an hierarchical structure as shown below.
 
-.. container:: shortlist
+.. container:: dashlist
 
   - :code:`Model` is the top level item.
 

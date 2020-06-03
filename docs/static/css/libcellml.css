@@ -141,3 +141,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
     font-family: 'Consolas', 'Deja Vu Sans Mono','Bitstream Vera Sans Mono', monospace;
     font-size: 0.85em;
 }
+
+.dashlist > ul {
+    list-style-type: '- ';
+}
