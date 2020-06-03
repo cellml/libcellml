@@ -142,6 +142,6 @@ div[class^="issue"], div[class*=" issue"] > ol {
     font-size: 0.85em;
 }
 
-.dashlist > ul {
+.dashlist > * {
     list-style-type: '- ';
 }
