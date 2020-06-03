@@ -275,17 +275,13 @@ TEST(Printer, printModelImportingModelChildComponent)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importingModelChildComponent.cellml"));
 
-    printModelToTerminal(model);
-    printIssues(parser);
-
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
-    printIssues(validator);
+
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
-    printIssues(printer);
 
     EXPECT_EQ(serialisedModel, fileContents("importingModelChildComponent.cellml"));
 }
