@@ -318,7 +318,6 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
     // Issues outside the specification.
     {Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, {"X.Y.Z", baseExampleUrl, "tbc"}},
-
 };
 
 std::string Issue::referenceHeading() const
