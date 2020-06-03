@@ -438,12 +438,11 @@ std::string Printer::printModel(const ModelPtr &model) const
                     importOrder.push_back(importSource);
                 }
                 importMap[importSource].push_back(pair);
-            } // else { // KRM check this? Local children of imported components should be checked too?
+            }
             for (size_t j = 0; j < comp->componentCount(); ++j) {
                 auto childComponent = comp->component(j);
                 componentStack.push_back(childComponent);
             }
-            //}
 
             if (componentStack.empty()) {
                 comp = nullptr;
