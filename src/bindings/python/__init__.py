@@ -53,13 +53,20 @@ convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',
     'ENCAPSULATION',
+    'GENERATOR',
     'IMPORT',
     'MATHML',
     'MODEL',
+    'RESET',
     'UNDEFINED',
     'UNITS',
     'VARIABLE',
     'XML',
+])
+convert(Issue, 'Level', [
+    'ERROR',
+    'WARNING',
+    'HINT',
 ])
 convert(Generator, 'ModelType', [
     'UNKNOWN',
