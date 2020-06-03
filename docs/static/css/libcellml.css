@@ -71,11 +71,28 @@ div[class^="issue"], div[class*=" issue"] > ol {
     margin-bottom: 15px;
 }
 
+.toggle .leftheader {
+    display: block;
+    clear: both;
+    color: darkslategray;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
 .toggle .header:after {
     content: " +";
 }
 
 .toggle .header.open:after {
+    content: " -";
+}
+
+.toggle .leftheader:after {
+    content: " +";
+}
+
+.toggle .leftheader.open:after {
     content: " -";
 }
 
