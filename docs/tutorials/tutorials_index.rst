@@ -17,7 +17,7 @@ corresponding biological and modelling theory for these can be found in the
 :ref:`Modelling theory and background<theory_index>` section.
 
 If you are already familiar with CellML and just want to jump in, please see
-the :ref:`Quickstart guide<quickstart>` instead.
+the :ref:`Examples guide<examples>` instead.
 
 Tutorials for users
 -------------------
@@ -26,7 +26,7 @@ Tutorials for users
     :maxdepth: 2
     :titlesonly:
 
-    quickstart/quickstart
+    examples/examples
     tutorial0/outline0
     tutorial1/outline1
     tutorial2/outline2

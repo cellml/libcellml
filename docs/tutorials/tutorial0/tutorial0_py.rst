@@ -145,7 +145,7 @@ If you've used the same structure as outlined here, this will be the :code:`MyLi
 You should see a list of directories like this:
 
   - images: (ignore this one)
-  - quickstart: (ignore this one too)
+  - examples: (ignore this one too)
   - resources: this directory contains input files for tutorials which you'll need later on.
     These tutorials have been designed so that they will build from one to another, but if you've missed an earlier tutorial you can always copy the required files from this folder instead.
   - solver: the solver directory has simple scripts to run a numerical integration on your model.
