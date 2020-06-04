@@ -251,7 +251,11 @@ TEST(Component, removeComponentMethods)
     c->addComponent(c1);
     c->addComponent(c2);
 
-    EXPECT_TRUE(c->removeComponent(0));
+    EXPECT_TRUE(c->removeComponent(0)); // Removes c1 from c, but c1 still exists.
+
+    EXPECT_EQ("child1",c1->name());
+    EXPECT_FALSE(c1->hasParent());
+
     EXPECT_EQ(size_t(1), c->componentCount());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
