@@ -1,32 +1,14 @@
-.. _examples_edit_model:
+.. _examples_understand_collections:
 
-Edit aspects of a ``Model``
-===========================
+Understand collections of items
+===============================
 
-Every aspect of a model can be edited and changed through the libCellML API.
-The most complicated part is editing the MathML, which is discussed separately in **TODO**.
+Where an item can contain more than one child item (for example, more than one :code:`Variable` in a :code:`Component`, more than one :code:`Units` item in a :code:`Model`, etc) the processes for curating that collection follow the patterns outlined below.
 
-Edit direct attributes
-----------------------
-Where an item can contain only one version of an attribute (name, id, maths for a component, units for a variable, etc) then the standard :code:`set` prefix to the attribute is used:
+**NB:** All of this explanation uses "thing" in place of the specific type of item (component, variable etc).
 
-- Get the attribute :code:`xyz` using the camelCase function :code:`xyx()` without arguments;
-- Set its attribute using the camelCase function :code:`setXyz(arg)` with an appropriate argument.
-
-For example:
-
-- :code:`name()` and :code:`setName("myNewName")` to retrieve and set the item's name to :code:`"myNewName"`;
-- :code:`id()` and :code:`setId("myNewID")` to retrieve and set the item's ID to :code:`"myNewID"`;
-
-Edit collections of items
--------------------------
-Where an item can contain more than one child item (for example, more than one :code:`Variable` in a :code:`Component`, more than one :code:`Units` item in a :code:`Model`, etc) the editing process for the collection follows the patterns outlined below.
-NB: All of this explanation uses "thing" in place of the specific type of item (component, variable etc).
-
-.. container:: nb
-
-  Each of the collections is really a set of smart pointers, which keeps track of the number of references to any of its items.
-  This means that the behaviour of some of the functions (in particular, the :code:`removeThing` and :code:`takeThing` functions) will depend on whether that :code:`thing` has other references to it in your code.
+**NB:** This section explains the basic rationale of the collections.
+For practical information about how they are used, please see the :ref:`Viewing a model<examples_view_model>` and :ref:`Editing a model<examples_edit_model>` pages.
 
 Count things
 ~~~~~~~~~~~~
@@ -76,6 +58,7 @@ Take a thing
 ~~~~~~~~~~~~
 The :code:`takeThing` functions combine a little of the *remove* and a little of the *get* functionality.
 It will return a pointer to the item (like the *get* :code:`thing` functionality above), but it will also remove the item from the collection (like :code:`removeThing`), updating both the collection as well as the item's parent.
+The item is thus detached from its parent, and "taken" by the returned pointer.
 
 Examples are shown for C++ and Python below.
 
@@ -151,3 +134,13 @@ Examples are shown for C++ and Python below.
 
 Replace a thing
 ~~~~~~~~~~~~~~~
+Within the :code:`Model` and :code:`Component` items are :code:`replaceUnits` and :code:`replaceComponent` functions respectively.
+Their operation is straightforward: a position within the collection is specified (either using an index, or the name of an existing item in the collection), and a replacement item is supplied.
+The replacement item overwrites what was previously stored at the position in the collection.
+In addition, the :code:`replaceComponent` takes an optional boolean argument indicating whether to search the encapsulated children for the item, if specified by name.
+By default this is set to :code:`true`.
+For more information about replacement, please see the API documentation for :api:`Model<Model>` and :api:`Component<Component>` items directly.
+
+.. container:: nb
+
+    Note that these **only** operate on collections of items ; that is, the collections of :code:`Units` and :code:`Component` items in a :code:`Model`, and encapsulated child :code:`Component` items in a parent :code:`Component`.

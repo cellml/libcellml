@@ -8,6 +8,7 @@ Software developer for a package
    :local:
 
 .. include:: ../actions/examples_parse_model.rst
+.. include:: ../actions/examples_understand_collections.rst
 .. include:: ../actions/examples_view_model.rst
 .. include:: ../actions/examples_edit_model.rst
 .. include:: ../actions/examples_annotate_model.rst
