@@ -1,7 +1,7 @@
 .. _examples_parse_model:
 
 Parse an existing ``Model`` from a file
-+++++++++++++++++++++++++++++++++++++++
+=======================================
 The following code will read a file called :code:`quickstart.cellml` and deserialise its contents into a :code:`ModelPtr` instance.
 
 In C++:
