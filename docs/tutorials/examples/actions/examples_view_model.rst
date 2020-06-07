@@ -8,6 +8,7 @@ In some circumstances additional links are made between items (equivalent variab
 but on the whole it follows a basic tree structure.
 
 Within the structure each item has two parts:
+
 - A set of *attributes* specific to itself.
   Some of these attribute exist for many items (for example, the :code:`name` attribute), and others are specific to the item type (for example, the :code:`initialValue` attribute on a :code:`Variable` item).
 - A set of *collections* which this - the parent item - curates.
@@ -172,13 +173,6 @@ This can be confusing if the simple :code:`componentCount()` function on a model
     #    Note that the uncle component is the 0th child of the grandfather model.
     uncle_has_no_kids = grandfather.component(0).componentCount()          # returns 0
     mother_has_two_kids = grandfather.component("Mother").componentCount() # returns 2
-
-
-
-
-
-
-
 
 
 

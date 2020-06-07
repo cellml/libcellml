@@ -11,13 +11,13 @@ Where an item can contain more than one child item (for example, more than one :
 For practical information about how they are used, please see the :ref:`Viewing a model<examples_view_model>` and :ref:`Editing a model<examples_edit_model>` pages.
 
 Count things
-~~~~~~~~~~~~
+------------
 Generic counting functions will return the number of child items using the :code:`thingCount()` function to get the number of :code:`thing` children.
 For example, :code:`unitsCount()` returns the number of :code:`Units` items in a :code:`Model`.
 This is useful when iterating through a collection or before using an index to access one of its members.
 
 Get a thing
-~~~~~~~~~~~
+-----------
 Pointers to items within a collection can be retrieved in two ways: by *getting* or by *taking*.
 The first does not affect the collection, and returns a pointer to the item: this is accomplished using the :code:`thing` function.
 
@@ -29,7 +29,7 @@ There are two overloaded arguments for the get functionality:
 Note that in this case the retrieval of the thing does not alter it, and neither does it alter the parent which owns it.
 
 Add a thing
-~~~~~~~~~~~
+-----------
 To add to a collection use the :code:`addThing` functionality.
 The basic form of adding is by symbol: :code:`addThing(thingToAdd)` which will append the pointer to :code:`thingToAdd` to the collection.
 Special cases of this are:
@@ -41,7 +41,7 @@ Special cases of this are:
   Please refer to the full :api:`API addUnit<Units>` reference for details.
 
 Remove a thing
-~~~~~~~~~~~~~~
+--------------
 To remove an item from the collection and detach its parent without returning a pointer to that item, use the :code:`removeThing` functions.
 
 .. container:: nb
@@ -51,11 +51,11 @@ To remove an item from the collection and detach its parent without returning a 
 If other references do exist, the parent pointer will be detached, but they won't otherwise be affected.
 
 Remove everything
-~~~~~~~~~~~~~~~~~
+-----------------
 In addition to the removal of specific items from a collection as above, you can also clear the entire collection using the :code:`removeAllThings` functions.
 
 Take a thing
-~~~~~~~~~~~~
+------------
 The :code:`takeThing` functions combine a little of the *remove* and a little of the *get* functionality.
 It will return a pointer to the item (like the *get* :code:`thing` functionality above), but it will also remove the item from the collection (like :code:`removeThing`), updating both the collection as well as the item's parent.
 The item is thus detached from its parent, and "taken" by the returned pointer.
@@ -133,7 +133,7 @@ Examples are shown for C++ and Python below.
     # will be permanently deleted.
 
 Replace a thing
-~~~~~~~~~~~~~~~
+---------------
 Within the :code:`Model` and :code:`Component` items are :code:`replaceUnits` and :code:`replaceComponent` functions respectively.
 Their operation is straightforward: a position within the collection is specified (either using an index, or the name of an existing item in the collection), and a replacement item is supplied.
 The replacement item overwrites what was previously stored at the position in the collection.
