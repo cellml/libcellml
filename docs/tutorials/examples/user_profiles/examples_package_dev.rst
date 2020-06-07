@@ -1,5 +1,6 @@
 .. _examples_package_dev:
 
+================================
 Software developer for a package
 ================================
 

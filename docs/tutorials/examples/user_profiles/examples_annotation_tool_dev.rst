@@ -1,5 +1,6 @@
 .. _examples_annotation_tool_dev:
 
+=========================
 Annotation tool developer
 =========================
 
