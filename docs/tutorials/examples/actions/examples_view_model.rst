@@ -106,6 +106,80 @@ The following example shows how all variables in a component can be listed.
     my_missing_name = my_missing_variable.name()
 
 
+Some Gotchas
+------------
+The ownership of some collections can be a little counter-intuitive.
+One example is that :code:`Units` items are referenced by :code:`Variable` items, but are owned by the :code:`Model`; this is so that units can be reused across more than one component.
+Another example involving encapsulation and :code:`Component` item ownership is shown below.
+
+Consider the following model:
+
+.. code::
+
+    model: Grandfather
+      component: Uncle
+      component: Mother
+        component: Daughter
+        component: Son
+
+The raw CellML syntax stores each component individually as children of the model, and separately stores the encapsulation structure of the nested components.
+
+.. container:: toggle
+
+  .. container:: header
+
+    See CellML syntax
+
+  .. code-block:: xml
+
+    <model>
+
+      <!-- The components are listed individually as children of the model block. -->
+      <component name="Uncle"/>
+      <component name="Mother"/>
+      <component name="Daughter"/>
+      <component name="Son"/>
+
+      <!-- The encapsulation structure is stored separate from the components. -->
+      <encapsulation>
+        <component_ref component="Mother">
+          <component_ref component="Daughter"/>
+          <component_ref component="Son"/>
+        </component_ref>
+      </encapsulation>
+    </model>
+
+
+In libCellML, the encapsulation structure is embedded in the ownership of the components, so that one component can be a parent of another.
+This can be confusing if the simple :code:`componentCount()` function on a model is called naively, as shown below.
+
+.. code-block:: cpp
+
+    // The number of components owned by the grandfather model refers *only* to its direct children:
+    auto grandfatherHasTwoKids = grandfather->componentCount(); // returns 2
+
+    // Each component must be interrogated individually to determine its children.
+    //    Note that the uncle component is the 0th child of the grandfather model.
+    auto uncleHasNoKids = grandfather->component(0)->componentCount();          // returns 0
+    auto motherHasTwoKids = grandfather->component("Mother")->componentCount(); // returns 2
+
+.. code-block:: python
+
+    # The number of components owned by the grandfather model refers *only* to its direct children:
+    grandfather_has_two_kids = grandfather->componentCount() # returns 2
+
+    # Each component must be interrogated individually to determine its children.
+    #    Note that the uncle component is the 0th child of the grandfather model.
+    uncle_has_no_kids = grandfather.component(0).componentCount()          # returns 0
+    mother_has_two_kids = grandfather.component("Mother").componentCount() # returns 2
+
+
+
+
+
+
+
+
 
 
 
