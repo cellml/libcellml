@@ -155,7 +155,7 @@ All of this needs to be wrapped inside the :code:`<math>` tags, which will inclu
     </math>
 
 
-.. container:: nb
+.. container:: NB
 
     **libCellML will only take MathML2 format**, and **not** the more recent MathML3 or MathML4 formats, which are targetted at presentation rather than content alone.
 
@@ -176,7 +176,7 @@ Three functions are available for accessing and editing the math block, these ar
 - :code:`appendMath(input)` adds the :code:`input` string to the existing Math string; and
 - :code:`math()` returns the stored Math string.
 
-.. container:: nb
+.. container:: NB
 
     **Note** that there is only one MathML block stored per component.
     Even if there is more than one equation, they're all stored as one single concatenated string.
@@ -212,7 +212,7 @@ the model.
     These must be created, named, and added to the component.
     Need help? See :ref:`Tutorial 2<tutorial2_cpp>`.
 
-.. container:: nb
+.. container:: NB
 
     **Note** Remember that the names you give the variables in this step must be the same as the names used between the code:`<ci>` tags inside your MathML string.
 
@@ -369,7 +369,7 @@ Because the code you've generated needs to be built at the same time as the solv
 
   cmake -DINPUT=../tutorial5/baseFileName .
 
-.. container:: nb
+.. container:: NB
 
   Note that the fullstop in the cmake command sets both the source and binary directories to the solver directory.
   This is because even though your generated files are elsewhere, the solver code and CMakeLists.txt file are in *this* directory, and the executable will end up here too.

@@ -334,7 +334,7 @@ At this stage, you should have an arrangement like that shown below.
     - You should see that the controller component contains some mathematics for the voltage step function that we'll use to trigger the channel response.
     - The other component contains no maths, and is only there to give values to constants or initial values to variables.
 
-.. container:: nb
+.. container:: NB
 
     We demonstrate parsing external components here, and in the next tutorial will show importing them instead.
     The biggest difference between the two methods is that parsing reads *only* the component items and its children, whereas importing will *also* read any units that might be required.
@@ -516,7 +516,7 @@ Because the code you've generated needs to be built at the same time as the solv
 
   cmake -DINPUT=../tutorial6/baseFileName .
 
-.. container:: nb
+.. container:: NB
 
   Note that the fullstop in the cmake command sets both the source and binary directories to the solver directory.
   This is because even though your generated files are elsewhere, the solver code and CMakeLists.txt file are in *this* directory, and the executable will end up here too.

@@ -66,7 +66,7 @@ The hard work of this transformation is done by the :code:`Parser` object which 
 At this stage our :code:`inFileContents` contains the raw CellML from the input file provided, :code:`tutorial1.cellml`.
 You can either copy the :code:`tutorial1.cellml` file to this folder, or use a relative file path to access it.
 
-.. container:: nb
+.. container:: NB
 
     All the files for each tutorial are provided for you in the :code:`resources` folder: though they are designed to build from one to the next, you're able to use the ready-made ones if you want to jump in at any point.
 

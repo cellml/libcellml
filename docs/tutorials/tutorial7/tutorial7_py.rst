@@ -409,7 +409,7 @@ This operation will create new local instances of all of the imported items, the
             ├─ component: h-gate
             └─ component: m-gate
 
-.. container:: nb
+.. container:: NB
 
     Flattening a model completely over-writes the "import" version with the "flat" version.
     This means that any imported items which you'd previously assigned to pointers (such as the components defined as destinations for the imports: the controller and parameters components) are now obsolete.

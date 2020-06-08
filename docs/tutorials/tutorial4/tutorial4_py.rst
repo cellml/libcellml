@@ -184,7 +184,7 @@ From here we can see the correlation with the initial conditions we specified in
 
     **3.b** Call the :code:`initialize_states_and_constants` function to initalise some of the arrays you created earlier.  Print them to the terminal for checking.
 
-.. container:: nb
+.. container:: NB
 
     Calling the :code:`initialize_states_and_constants` function does not set the initial value of the other :code:`Variable` objects.
 

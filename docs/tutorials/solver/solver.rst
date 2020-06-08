@@ -42,7 +42,7 @@ Because the code you've generated needs to be built at the same time as the solv
 
   cmake -DINPUT=/path/to/your/files/baseFileName .
 
-.. container:: nb
+.. container:: NB
 
   Note that the fullstop in the cmake command sets both the source and binary directories to the solver directory.
   This is because even though your generated files are elsewhere, the solver code and CMakeLists.txt file are in *this* directory.
