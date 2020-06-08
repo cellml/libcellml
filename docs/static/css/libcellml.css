@@ -71,7 +71,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
     margin-bottom: 15px;
 }
 
-.toggle .leftheader {
+.toggle .header-left {
     display: block;
     clear: both;
     color: darkslategray;
@@ -88,11 +88,11 @@ div[class^="issue"], div[class*=" issue"] > ol {
     content: " -";
 }
 
-.toggle .leftheader:after {
+.toggle .header-left:after {
     content: " +";
 }
 
-.toggle .leftheader.open:after {
+.toggle .header-left.open:after {
     content: " -";
 }
 

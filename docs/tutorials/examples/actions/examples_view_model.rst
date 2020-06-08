@@ -182,7 +182,7 @@ Some useful snippets for viewing parts of your model are shown below.
 
 .. container:: toggle
 
-  .. container:: header
+  .. container:: header-left
 
     Print a list of units required by a component
 

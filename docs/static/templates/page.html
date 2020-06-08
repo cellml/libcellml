@@ -9,6 +9,13 @@
             $(this).parent().children().not(".header").toggle(400);
             $(this).parent().children(".header").toggleClass("open");
         });
+
+        $(".toggle .header-left").show();
+        $(".toggle .header-left").click(function () {
+            $(this).parent().children().not(".header-left").toggle(400);
+            $(this).parent().children(".headerleft").toggleClass("open");
+        });
+
         const url_object = new URL(window.location.href);
         const code = url_object.searchParams.get("issue");
         if (code!=null) {
