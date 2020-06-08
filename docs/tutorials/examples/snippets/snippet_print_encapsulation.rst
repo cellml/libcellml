@@ -4,7 +4,7 @@
 
   .. container:: header-left
 
-    Show example code
+    Print encapsulation structure
 
   Because components may be nested to any depth within an encapsulation hierarchy, we need to use recursive functions to be sure of reaching the bottom level.
   The examples below define two functions - one to initiate the recursion, and one to carry it out.

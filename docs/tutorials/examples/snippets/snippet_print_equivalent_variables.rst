@@ -4,7 +4,7 @@
 
   .. container:: header-left
 
-    Show example code
+    Trace equivalent variables
 
   This example traces variable equivalences throughout the model using recursion.
   The first function :code:`printEquivalentVaribleSet` initiates the recursion, and the second :code:`listEquivalentVariables` performs it.

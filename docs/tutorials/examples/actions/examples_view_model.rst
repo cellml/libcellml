@@ -4,8 +4,7 @@ View the contents of a ``Model``
 ================================
 
 All CellML entities exist in an hierarchical structure as shown below.
-In some circumstances additional links are made between items (equivalent variables, for example),
-but on the whole it follows a basic tree structure.
+In some circumstances additional links are made between items (equivalent variables, for example), but on the whole it follows a basic tree structure.
 
 Within the structure each item has two parts:
 
@@ -182,22 +181,10 @@ Useful snippets
 
 Some useful snippets for viewing parts of your model are shown below.
 
-Print unit names for a component
---------------------------------
-
 .. include:: ../snippets/snippet_print_units.rst
-
-Edit MathML in a component
---------------------------
 
 .. include:: ../snippets/snippet_edit_mathml.rst
 
-Print encapsulation structure
------------------------------
-
 .. include:: ../snippets/snippet_print_encapsulation.rst
-
-Trace equivalent variables
---------------------------
 
 .. include:: ../snippets/snippet_print_equivalent_variables.rst

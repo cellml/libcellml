@@ -78,6 +78,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
     text-align: left;
     margin-top: 0;
     margin-bottom: 15px;
+    font-weight: 700;
 }
 
 .toggle .header:after {

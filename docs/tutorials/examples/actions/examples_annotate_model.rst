@@ -16,5 +16,6 @@ Item types that may have an ID are:
 - :code:`ImportSource` items.
 
 Each item of the above types can be retrieved using the :code:`id()` function, or set through the :code:`setId()` function.
+The ID attribute must be set according to the specification rules: please see :cellml2:`1.2.5 XML ID attributes<specA2.html?issue=1.2.5>` for details.
 
 **TODO** Update when there are other utility functions?

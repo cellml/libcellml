@@ -4,7 +4,7 @@
 
   .. container:: header-left
 
-     Show example code
+     Retrieve units needed by a component: variables and mathematics
 
   There are two places that need a reference to :code:`Units` items.
   The first is the set of :code:`Variable` items stored in the :code:`Component`: the units name for each of these is accessible in the :code:`name()` attribute of its :code:`units()` item.
