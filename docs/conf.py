@@ -36,7 +36,6 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
     'hoverxref.extension',          # Enables tooltips and previews on hover
-    'sphinxcontrib.osexample',      # Testing out multiple language tabs on code-blocks
 ]
 
 # Add any paths that contain templates here, relative to this directory.
