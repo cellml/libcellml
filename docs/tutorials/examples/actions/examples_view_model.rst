@@ -180,10 +180,22 @@ Useful snippets
 
 Some useful snippets for viewing parts of your model are shown below.
 
+Print unit names for a component
+--------------------------------
+
 .. include:: ../snippets/snippet_print_units.rst
+
+Edit MathML in a component
+--------------------------
 
 .. include:: ../snippets/snippet_edit_mathml.rst
 
+Print encapsulation structure
+-----------------------------
+
 .. include:: ../snippets/snippet_print_encapsulation.rst
 
-.. include:: ../snippets/snippet_print_equivalent_varibles.rst
+Trace equivalent variables
+--------------------------
+
+.. include:: ../snippets/snippet_print_equivalent_variables.rst

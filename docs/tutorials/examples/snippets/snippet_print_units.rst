@@ -4,11 +4,7 @@
 
   .. container:: header-left
 
-    Print a list of units required by a component
-
-  .. container:: heading
-
-    Print a list of units required by a component
+     Show example code
 
   There are two places that need a reference to :code:`Units` items.
   The first is the set of :code:`Variable` items stored in the :code:`Component`: the units name for each of these is accessible in the :code:`name()` attribute of its :code:`units()` item.

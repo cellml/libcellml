@@ -4,11 +4,7 @@
 
   .. container:: header-left
 
-    Print the set of variables equivalent to a given variable
-
-  .. container:: heading
-
-    Print the set of variables equivalent to a given variable
+    Show example code
 
   This example traces variable equivalences throughout the model using recursion.
   The first function :code:`printEquivalentVaribleSet` initiates the recursion, and the second :code:`listEquivalentVariables` performs it.
