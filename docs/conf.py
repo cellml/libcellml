@@ -35,9 +35,8 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
-    'hoverxref.extension',
-    # 'sphinxcontrib.contentui',    # For the toggle-class headers, not installed
-    # 'sphinxcontrib.bibtex',       # Removing as not installed
+    'hoverxref.extension',          # Enables tooltips and previews on hover
+    'sphinxcontrib.osexample',      # Testing out multiple language tabs on code-blocks
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -59,7 +58,7 @@ autosectionlabel_prefix_document = True
 # Declare below as:
 #   'shortcut': ('http://linkhere/%s',''), NB have to put the string insertion %s to make it work
 extlinks = {
-    'api': ('https://libcellml.github.io/apidocs/classlibcellml_1_1%s',''),
+    'api': ('https://libcellml.github.io/apidocs/classlibcellml_1_1%s', ''),
     'buildbot': ('https://buildbot.net%s', ''),
     'cellml1to2': ('https://github.com/hsorby/cellml1to2%s', ''),
     'cellml2': ('https://cellml-specification.readthedocs.io/en/latest/%s', ''),
@@ -85,9 +84,9 @@ extlinks = {
     'unicode': ('http://www.fileformat.info/info/unicode/char/%s/index.htm', 'U+'),
     'xlink': ('http://www.w3.org/TR/2001/REC-xlink-20010627/%s', ''),
     'xml_help': ('https://www.w3.org/XML/%s', ''),
-    'xml_1_1': ('http://www.w3.org/TR/xml11/%s',''),
-    'xml_infoset': ('http://www.w3.org/TR/2004/REC-xml-infoset-20040204/%s',''),
-    'xml_namespace_1_1': ('https://www.w3.org/TR/2006/REC-xml-names11-20060816/%s',''),
+    'xml_1_1': ('http://www.w3.org/TR/xml11/%s', ''),
+    'xml_infoset': ('http://www.w3.org/TR/2004/REC-xml-infoset-20040204/%s', ''),
+    'xml_namespace_1_1': ('https://www.w3.org/TR/2006/REC-xml-names11-20060816/%s', ''),
 }
 
 # Mapping to get references in the specification document repo into this one
