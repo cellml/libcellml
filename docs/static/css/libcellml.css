@@ -126,7 +126,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
     font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
 }
 
-.nb {
+.NB {
     border-left: 5px solid sandybrown;
     background:rgb(255, 243, 206);
     padding: 3px 3px 3px 8px;
