@@ -289,11 +289,55 @@ Some useful snippets for viewing parts of your model are shown below.
 
       .. code-tab:: c++
 
-        // C++ example
+        // This function is called to initiate the recursion:
+        void printEncapsulationStructureToTerminal(libcellml::ModelPtr &model)
+          {
+              // Prints the encapsulation structure of the model to the terminal
+              std::string spacer = "  - ";
+              std::cout << "Model '" << model->name() << "' has " << model->componentCount()
+                        << " components" << std::endl;
+              for (size_t c = 0; c < model->componentCount(); ++c) {
+                  auto child = model->component(c);
+                  printComponentOnlyToTerminal(child, spacer);
+              }
+          }
+
+          // This function performs the recursion to the full depth of the encapsulation:
+          void printComponentOnlyToTerminal(libcellml::ComponentPtr &component, std::string spacer)
+          {
+              std::cout << spacer << "Component '" << component->name() << "' has " << component->componentCount() << " child components" << std::endl;
+              for (size_t c = 0; c < component->componentCount(); c++) {
+                  std::string anotherSpacer = "    " + spacer;
+                  auto child = component->component(c);
+                  printComponentOnlyToTerminal(child, anotherSpacer);
+              }
+          }
 
       .. code-tab:: py
 
-        # Python example
+        # Prints the encapsulation structure of the model to the terminal.  This
+        # function intitiates the recursion through the encapsulation structure.
+        def print_encapsulation_structure_to_terminal(model):
+          spacer = "  - "
+          print("Model '{m}' has {c} components".format(m=model.name(), c=model.componentCount()))
+
+          for c in range(0, model.componentCount()):
+              child_component = model.component(c)
+              print_component_only_to_terminal(child_component, spacer)
+          print()
+
+        # This function performs the recursion, and explores all child components.
+        def print_component_only_to_terminal(component, spacer):
+            print("{s}Component '{c}' has {n} child components".format(
+                s=spacer,
+                c=component.name(),
+                n=component.componentCount()))
+
+            for c in range(0, component.componentCount()):
+                another_spacer = "    " + spacer
+                child_component = component.component(c)
+                print_component_only_to_terminal(child_component, another_spacer)
+            print()
 
 
 .. container:: toggle
@@ -304,29 +348,143 @@ Some useful snippets for viewing parts of your model are shown below.
 
   .. container:: infospec
 
-    Because components may be nested to any depth within an encapsulation hierarchy, we need to use recursive functions in order to be sure of reaching the bottom level.
-    The examples below define two functions - one to initiate the recursion, and one to carry it out.
+    This example traces variable equivalences throughout the model using recursion.
+    The first function :code:`printEquivalentVaribleSet` initiates the recursion, and the second :code:`listEquivalentVariables` performs it.
 
     .. tabs::
 
       .. code-tab:: c++
 
-        // C++ example
+        // Function to initiate a list of variables in the connected set, to start the recursion, and to print
+        // the list to the terminal.
+        void printEquivalentVariableSet(const libcellml::VariablePtr &variable)
+        {
+            if (variable == nullptr) {
+                std::cout << "NULL variable submitted to printEquivalentVariableSet." << std::endl;
+                return;
+            }
+            std::vector<libcellml::VariablePtr> variableList;
+            variableList.push_back(variable);
+            listEquivalentVariables(variable, variableList);
+
+            // The parent() function returns an EntityPtr, which must be cast to a Component before its name()
+            // function can be called.
+            libcellml::ComponentPtr component = std::dynamic_pointer_cast<libcellml::Component>(variable->parent());
+
+            if (component != nullptr) {
+                std::cout << "Tracing: " << component->name() << " -> "
+                          << variable->name();
+                if (variable->units() != nullptr) {
+                    std::cout << " [" << variable->units()->name() << "]";
+                }
+                if (variable->initialValue() != "") {
+                    std::cout << ", initial = " << variable->initialValue();
+                }
+                std::cout << std::endl;
+            }
+
+            // The variableList contains the variable that was submitted for testing originally, so
+            // if it's connected to other variables, it must have a length greater than 1.
+            if (variableList.size() > 1) {
+                for (auto &e : variableList) {
+                    component = std::dynamic_pointer_cast<libcellml::Component>(e->parent());
+                    if (component != nullptr) {
+                        std::cout << "    - " << component->name() << " -> " << e->name();
+                        if (e->units() != nullptr) {
+                            std::cout << " [" << e->units()->name() << "]";
+                        }
+                        if (e->initialValue() != "") {
+                            std::cout << ", initial = " << e->initialValue();
+                        }
+                        std::cout << std::endl;
+                    } else {
+                        std::cout << "Variable " << e->name() << " does not have a parent component." << std::endl;
+                    }
+                }
+            } else {
+                std::cout << "    - Not connected to any equivalent variables." << std::endl;
+            }
+        }
+
+        // This function performs the recursive search through all connections until the set
+        // has been completely covered.
+        void listEquivalentVariables(const libcellml::VariablePtr &variable,
+                                     std::vector<libcellml::VariablePtr> &variableList) {
+            if (variable == nullptr) {
+                return;
+            }
+
+            for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+                libcellml::VariablePtr equivalentVariable = variable->equivalentVariable(i);
+                if (std::find(variableList.begin(), variableList.end(), equivalentVariable) == variableList.end()) {
+                    variableList.push_back(equivalentVariable);
+                    listEquivalentVariables(equivalentVariable, variableList);
+                }
+            }
+        }
 
       .. code-tab:: py
 
-        # Python example
+        def print_equivalent_variable_set(variable):
 
+          if variable is None:
+            print("None variable submitted to print_equivalent_variable_set.")
+            return
+
+          variable_set = set()
+          variable_set.add(variable)
+          list_equivalent_variables(variable, variable_set)
+
+          component = variable.parent()
+          print_me = ''
+          if component != None:
+            print_me += "Tracing: {c}.{v}".format(c=component.name(), v=variable.name())
+            if variable.units() is not None:
+              print_me += " [{u}]".format(u=variable.units().name())
+            if variable.initialValue() != "":
+                print_me += ", initial = {i}".format(i=variable.initialValue())
+
+            print(print_me)
+
+          # The variable_set contains the variable that was submitted for testing originally, so
+          # if it's connected to other variables, it must have a length greater than 1.
+          if len(variable_set) > 1:
+            for e in variable_set:
+              print_me = ''
+              component = e.parent()
+              if component is not None:
+                print_me += "    - {c}.{v}".format(c=component.name(), v=e.name())
+                if e.units() is not None:
+                  print_me += " [{u}]".format(u=e.units().name())
+                if e.initialValue() != "":
+                  print_me += ", initial = {i}".format(i=e.initialValue())
+                print(print_me)
+              else:
+                print("Variable {v} does not have a parent component.".format(v=e.name()))
+          else:
+            print("    - Not connected to any equivalent variables.")
+
+        # This function performs the recursive search through all connections until the set
+        # has been completely covered.
+        def list_equivalent_variables(variable, variable_set):
+          if variable is None:
+            return
+          for i in range(0, variable.equivalentVariableCount()):
+            equivalent_variable = variable.equivalentVariable(i)
+            if equivalent_variable not in variable_set:
+              variable_set.push_back(equivalent_variable)
+              list_equivalent_variables(equivalent_variable, variable_set)
 
 .. container:: toggle
 
   .. container:: header-left
 
     Print the MathML block of a component
+
   .. container:: infospec
 
-    Because components may be nested to any depth within an encapsulation hierarchy, we need to use recursive functions in order to be sure of reaching the bottom level.
-    The examples below define two functions - one to initiate the recursion, and one to carry it out.
+    MathML is stored as a single string within a component.
+    Retrieving it is simple enough using the :code:`math()` function, but any manipulation (change units used, changing variable names, adding additional relationships, etc) are a little more complicated.
 
     .. tabs::
 

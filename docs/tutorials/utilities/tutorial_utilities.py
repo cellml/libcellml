@@ -81,9 +81,11 @@ def print_errors_to_terminal(item):
             validation_error = item.error(e)
             specification = validation_error.referenceHeading()
             print("  Validator error[{e}]:".format(e=e))
-            print("    Description: {d}".format(d=validation_error.description()))
+            print("    Description: {d}".format(
+                d=validation_error.description()))
             if specification != "":
-                print("    See section {s} in the CellML specification.".format(s=specification))
+                print("    See section {s} in the CellML specification.".format(
+                    s=specification))
 
 
 def switch_units_in_maths(maths, units_in, units_out):
@@ -127,7 +129,8 @@ def insert_into_mathml_string(maths, add_me):
 def print_encapsulation_structure_to_terminal(model):
     # Prints the encapsulation structure of the model to the terminal
     spacer = "  - "
-    print("Model '{m}' has {c} components".format(m=model.name(), c=model.componentCount()))
+    print("Model '{m}' has {c} components".format(
+        m=model.name(), c=model.componentCount()))
 
     for c in range(0, model.componentCount()):
         child_component = model.component(c)
@@ -144,7 +147,6 @@ def print_component_only_to_terminal(component, spacer):
         another_spacer = "    " + spacer
         child_component = component.component(c)
         print_component_only_to_terminal(child_component, another_spacer)
-
 
 
 def get_model_type_from_enum(my_type):
@@ -236,3 +238,55 @@ def get_issue_cause_from_enum(my_cause):
         my_type_as_string = "GENERATOR"
 
     return my_type_as_string
+
+
+def print_equivalent_variable_set(variable):
+
+    if variable is None:
+        print("None variable submitted to print_equivalent_variable_set.")
+        return
+
+    variable_set = set()
+    variable_set.add(variable)
+    list_equivalent_variables(variable, variable_set)
+
+    component = variable.parent()
+    print_me = ''
+    if component != None:
+        print_me += "Tracing: {c}.{v}".format(
+            c=component.name(), v=variable.name())
+        if variable.units() is not None:
+            print_me += " [{u}]".format(u=variable.units().name())
+
+        if variable.initialValue() != "":
+            print_me += ", initial = {i}".format(i=variable.initialValue())
+
+        print(print_me)
+
+    if len(variable_set) > 1:
+        for e in variable_set:
+            print_me = ''
+            component = e.parent()
+            if component is not None:
+                print_me += "    - {c}.{v}".format(
+                    c=component.name(), v=e.name())
+                if e.units() is not None:
+                    print_me += " [{u}]".format(u=e.units().name())
+                if e.initialValue() != "":
+                    print_me += ", initial = {i}".format(i=e.initialValue())
+                print(print_me)
+            else:
+                print(
+                    "Variable {v} does not have a parent component.".format(v=e.name()))
+        else:
+            print("    - Not connected to any equivalent variables.")
+
+
+def list_equivalent_variables(variable, variable_set):
+    if variable is None:
+        return
+    for i in range(0, variable.equivalentVariableCount()):
+        equivalent_variable = variable.equivalentVariable(i)
+        if equivalent_variable not in variable_set:
+            variable_set.push_back(equivalent_variable)
+            list_equivalent_variables(equivalent_variable, variable_set)
