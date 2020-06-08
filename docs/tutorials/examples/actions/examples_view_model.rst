@@ -186,150 +186,154 @@ Some useful snippets for viewing parts of your model are shown below.
 
     Print a list of units required by a component
 
+  .. container:: infospec
+
+    There are two places that need a reference to :code:`Units` items.
+    The first is the set of :code:`Variable` items stored in the :code:`Component`: the units name for each of these is accessible in the :code:`name()` attribute of its :code:`units()` item.
+
+    .. tabs::
+
+      .. code-tab:: c++
+
+        // This example assumes you already have a component defined.
+        // You will need to include <unordered_set> in your #include statements.
+        std::unordered_set<std::string> unitsNames;
+
+        // Iterate through the variables in this component, and add their units' names to the set.
+        for (size_t v = 0; v < component->variableCount(); ++v) {
+            // Get the units for this variable:
+            auto myUnits = component->variable(v)->units();
+            // Check that this is not the nullptr, otherwise skip.
+            if (myUnits != nullptr) {
+                // Add name to set if not already there.
+                unitsNames.insert(myUnits->name());
+            }
+        }
+
+        // Parse the MathML string to find any units used by <cn> constants:
+        std::string delimiter = "cellml:units=";
+        std::string maths = component->math();
+        size_t pos = maths.find(delimiter); // Start looking for the name after the first delimiter.
+        size_t pos2;
+        std::string segment;
+        std::string name;
+        while ((pos = maths.find(delimiter)) != std::string::npos) {
+            segment = maths.substr(0, pos);
+            segment.erase(0, segment.find("\"")); // Remove the first quote mark after the delimiter.
+            pos2 = segment.find("\""); // Find the second quote mark.
+            name = segment.substr(0, pos2); // Units name is between the two quotes.
+            if (name.length()) { // Sanity check that the string is not empty.
+                unitsNames.insert(name);
+            }
+            maths.erase(0, pos + delimiter.length()); // Remove this segment from the main string.
+        }
+        // Search the final remaining segment.
+        segment = maths;
+        segment.erase(0, 1);
+        pos2 = segment.find("\"");
+        name = segment.substr(0, pos2);
+        if (name.length()) {
+            unitsNames.insert(name);
+        }
+
+        // Print the unique units for this component to the terminal.
+        for (const auto &name : unitsNames) {
+            std::cout << "  - " << name << std::endl;
+        }
+
+      .. code-tab:: py
+
+          # This example assumes that you have a component already, containing variables and MathML.
+
+          # Initialise an empty set to save the units names.
+          units_names = set()
+
+          # Iterate through the variables in this component, and add their units' names to the set.
+          for v in range(0, component.variableCount()):
+              # Get the units for this variable:
+              my_units = component.variable(v).units()
+              # Check that this is not the nullptr, otherwise skip.
+              if my_units is not None:
+                  # Add name to set if not already there.
+                  units_names.add(my_units.name())
+
+          # Parse the MathML string to find any units used by <cn> constants:
+          delimiter = "cellml:units="
+          maths_string = component.math()
+          segments = maths_string.split(delimiter)
+          # Start looking for the name after the first delimiter.
+          for segment in segments[1:]:
+              # Split the segment at quotation marks, and take the one at index 1
+              name = segment.split('"')[1]
+              if (len(name)):  # Sanity check that the string is not empty.
+                  units_names.add(name)
+
+          # Print the unique units for this component to the terminal.
+          print("The units needed by component {c} are:".format(c=component.name()))
+          for name in units_names:
+              print("  - {n}".format(n=name))
 
 
-  There are two places that need a reference to :code:`Units` items.
-  The first is the set of :code:`Variable` items stored in the :code:`Component`: the units name for each of these is accessible in the :code:`name()` attribute of its :code:`units()` item.
+.. container:: toggle
 
-  .. tabs::
+  .. container:: header-left
 
-    .. code-tab:: c++
+    Print the encapsulation structure of a model
 
-      // This example assumes you already have a component defined.
-      // You will need to include <unordered_set> in your #include statements.
-      std::unordered_set<std::string> unitsNames;
+  .. container:: infospec
 
-      // Iterate through the variables in this component, and add their units' names to the set.
-      for (size_t v = 0; v < component->variableCount(); ++v) {
-          // Get the units for this variable:
-          auto myUnits = component->variable(v)->units();
-          // Check that this is not the nullptr, otherwise skip.
-          if (myUnits != nullptr) {
-              // Add name to set if not already there.
-              unitsNames.insert(myUnits->name());
-          }
-      }
+    Because components may be nested to any depth within an encapsulation hierarchy, we need to use recursive functions in order to be sure of reaching the bottom level.
+    The examples below define two functions - one to initiate the recursion, and one to carry it out.
 
-      // Parse the MathML string to find any units used by <cn> constants:
-      std::string delimiter = "cellml:units=";
-      std::string maths = component->math();
-      size_t pos = maths.find(delimiter); // Start looking for the name after the first delimiter.
-      size_t pos2;
-      std::string segment;
-      std::string name;
-      while ((pos = maths.find(delimiter)) != std::string::npos) {
-          segment = maths.substr(0, pos);
-          segment.erase(0, segment.find("\"")); // Remove the first quote mark after the delimiter.
-          pos2 = segment.find("\""); // Find the second quote mark.
-          name = segment.substr(0, pos2); // Units name is between the two quotes.
-          if (name.length()) { // Sanity check that the string is not empty.
-              unitsNames.insert(name);
-          }
-          maths.erase(0, pos + delimiter.length()); // Remove this segment from the main string.
-      }
-      // Search the final remaining segment.
-      segment = maths;
-      segment.erase(0, 1);
-      pos2 = segment.find("\"");
-      name = segment.substr(0, pos2);
-      if (name.length()) {
-          unitsNames.insert(name);
-      }
+    .. tabs::
 
-      // Print the unique units for this component to the terminal.
-      for (const auto &name : unitsNames) {
-          std::cout << "  - " << name << std::endl;
-      }
+      .. code-tab:: c++
 
-    .. code-tab:: py
+        // C++ example
 
-        # Retrieve the component as a pointer.
-        component = model.component("component")
+      .. code-tab:: py
 
-        # Initialise an empty set to save the units names.
-        units_names = set()
-
-        # Iterate through the variables in this component, and add their units' names to the set.
-        for v in range(0, component.variableCount()):
-            # Get the units for this variable:
-            my_units = component.variable(v).units()
-            # Check that this is not the nullptr, otherwise skip.
-            if my_units is not None:
-                # Add name to set if not already there.
-                units_names.add(my_units.name())
-
-        # Parse the MathML string to find any units used by <cn> constants:
-        delimiter = "cellml:units="
-        maths_string = component.math()
-        segments = maths_string.split(delimiter)
-        # Start looking for the name after the first delimiter.
-        for segment in segments[1:]:
-            # Split the segment at quotation marks, and take the one at index 1
-            name = segment.split('"')[1]
-            if (len(name)):  # Sanity check that the string is not empty.
-                units_names.add(name)
-
-        # Print the unique units for this component to the terminal.
-        print("The units needed by component {c} are:".format(c=component.name()))
-        for name in units_names:
-            print("  - {n}".format(n=name))
+        # Python example
 
 
+.. container:: toggle
+
+  .. container:: header-left
+
+    Print the set of variables equivalent to a given variable
+
+  .. container:: infospec
+
+    Because components may be nested to any depth within an encapsulation hierarchy, we need to use recursive functions in order to be sure of reaching the bottom level.
+    The examples below define two functions - one to initiate the recursion, and one to carry it out.
+
+    .. tabs::
+
+      .. code-tab:: c++
+
+        // C++ example
+
+      .. code-tab:: py
+
+        # Python example
 
 
+.. container:: toggle
 
+  .. container:: header-left
 
+    Print the MathML block of a component
+  .. container:: infospec
 
+    Because components may be nested to any depth within an encapsulation hierarchy, we need to use recursive functions in order to be sure of reaching the bottom level.
+    The examples below define two functions - one to initiate the recursion, and one to carry it out.
 
+    .. tabs::
 
+      .. code-tab:: c++
 
-Print the encapsulation structure of a model
+        // C++ example
 
-Print the set of variables equivalent to a given variable
+      .. code-tab:: py
 
-Print the MathML block of a component
-
-
-
-
-
-
-
-.. container:: dashlist
-
-  - :code:`Model` is the top level item.
-
-    - :code:`unitsCount()` returns the number of :code:`Units` items in the :code:`Model`.
-    - :code:`units(u)` returns a pointer to the :code:`Units` item at index :code:`u`.
-    - :code:`units("unitsName")` returns a pointer to the :code:`Units` item with name :code:`"unitsName"`.
-
-      - :code:`name()` returns the name of the :code:`Units` item.
-      - :code:`unitCount()` returns the number of :code:`Unit` items in this Units item.
-
-    - :code:`componentCount()` returns the number of :code:`Component` items which are direct children of the :code:`Model`.
-    - :code:`component = model->component(c)` returns a pointer to the :code:`Component` item at index :code:`c`.
-    - :code:`component = model->component("componentName")` returns a pointer to the :code:`Component` item with name :code:`"componentName"`.
-
-      - :code:`name()` returns the name of the component.
-
-      - :code:`component->variableCount()` returns the number of :code:`Variable` items in the component.
-      ─ :code:`component->variable(v)` returns a pointer to the :code:`Variable` at index :code:`v`.
-      - :code:`component->variable(variableName)` returns a pointer to the :code:`Variable` with name :code:`variableName`.
-
-        - :code:`name()` returns the name of the variable.
-        - :code:`initialValue()` returns the value to which this variable is initialised.
-        - :code:`interfaceType()` returns an enum of the interface type.
-        - :code:`units()` returns the name of the associated :code:`Units` item or built in units.
-
-        - :code:`equivalentVariablesCount()` returns the number of :code:`Variable` items connected to this one.
-        - :code:`equivalentVariable(e)` returns a pointer to the connected :code:`Variable` at index :code:`e`.
-
-        - :code:`math()` returns the MathML string for this :code:`Component`.
-
-        - :code:`resetCount()` returns the number of :code:`Reset` items in this :code:`Component`.
-
-          - :code:`testVariable()` returns a pointer to the test variable for this :code:`Reset`.
-          - :code:`variable()` returns a pointer to the reset variable for this :code:`Reset`.
-          - :code:`testValue()` returns the MathML string which will determine whether this :code:`Reset` is active.
-          - :code:`resetValue()` returns the MathML string which will determine the value given when this reset is active.
-          - :code:`order()` returns the order of this reset.
+        # Python example
