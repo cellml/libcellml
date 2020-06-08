@@ -107,7 +107,7 @@ The following example shows how all variables in a component can be listed.
     my_missing_name = my_missing_variable.name()
 
 
-Some Gotchas
+Some gotchas
 ------------
 The ownership of some collections can be a little counter-intuitive.
 One example is that :code:`Units` items are referenced by :code:`Variable` items, but are owned by the :code:`Model`; this is so that units can be reused across more than one component.
@@ -179,7 +179,7 @@ Some useful snippets for viewing parts of your model are shown below.
 
 .. container:: toggle
 
-  .. container:: leftheader
+  .. container:: header
 
     Print a list of units required by a component
 
@@ -190,7 +190,7 @@ Some useful snippets for viewing parts of your model are shown below.
 
     .. container:: toggle
 
-      .. container:: leftheader
+      .. container:: header
 
         See C++ code example
 
@@ -244,7 +244,7 @@ Some useful snippets for viewing parts of your model are shown below.
 
     .. container:: toggle
 
-      .. container:: leftheader
+      .. container:: header
 
         See Python code example
 

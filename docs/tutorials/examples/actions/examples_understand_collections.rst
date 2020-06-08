@@ -64,7 +64,7 @@ Examples are shown for C++ and Python below.
 
 .. container:: toggle
 
-  .. container:: leftheader
+  .. container:: header
 
     Show C++ examples
 
@@ -99,7 +99,7 @@ Examples are shown for C++ and Python below.
 
 .. container:: toggle
 
-  .. container:: leftheader
+  .. container:: header
 
     Show Python examples
 
