@@ -1,7 +1,7 @@
 .. _examples_include_libcellml:
 
 Include the libCellML library in your project
-+++++++++++++++++++++++++++++++++++++++++++++
+=============================================
 If you've followed :ref:`the instructions for installing libCellML<tutorial0>` then the library is available for use as shown below.
 Note that this doesn't invoke the libCellML namespace, so classes are accessed using the :code:`libcellml::` prefix.
 

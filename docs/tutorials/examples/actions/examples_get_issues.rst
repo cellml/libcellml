@@ -1,7 +1,7 @@
 .. _examples_get_issues:
 
 Retrieve ``Issue`` items
-++++++++++++++++++++++++
+========================
 Selected libCellML classes contain a :code:`Logger` whose job it is to curate any issues encountered within the class, and return them to the user when asked.
 The classes are:
 

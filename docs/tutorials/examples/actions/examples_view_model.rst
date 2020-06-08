@@ -61,50 +61,52 @@ In other words, get the child item of type :code:`xyz` using the camelCase funct
 
 The following example shows how all variables in a component can be listed.
 
-.. code-block:: cpp
+.. tabs::
 
-    // Looping through variables in the component myComponent and retrieve their names.
-    //    NOTE that indexing starts from zero.
-    for(size_t v = 0; v < myComponent->variableCount(); ++v) {
+  .. code-tab:: c++
 
-      // Retrieve the Variable item at index v:
-      auto myVariable = myComponent->variable(v);
+      // Looping through variables in the component myComponent and retrieve their names.
+      //    NOTE that indexing starts from zero.
+      for(size_t v = 0; v < myComponent->variableCount(); ++v) {
 
-      // Retrieve the name of the myVariable item:
-      auto myVariableName = myVariable->name();
-    }
+        // Retrieve the Variable item at index v:
+        auto myVariable = myComponent->variable(v);
 
-    // Retrieve a variable called "helloThere" by name.
-    //    NOTE that a nullptr will be returned if no variable of that name is found.
-    auto myHelloThereVariable = myComponent->variable("helloThere");
+        // Retrieve the name of the myVariable item:
+        auto myVariableName = myVariable->name();
+      }
 
-    // In this case, the myMissingVariable will be a nullptr:
-    auto myMissingVariable = myComponent->variable("nameThatDoesntExist");
+      // Retrieve a variable called "helloThere" by name.
+      //    NOTE that a nullptr will be returned if no variable of that name is found.
+      auto myHelloThereVariable = myComponent->variable("helloThere");
 
-    // This will cause a segfault as myMissingVariable is null:
-    auto myMissingName = myMissingVariable->name();
+      // In this case, the myMissingVariable will be a nullptr:
+      auto myMissingVariable = myComponent->variable("nameThatDoesntExist");
 
-.. code-block:: py
+      // This will cause a segfault as myMissingVariable is null:
+      auto myMissingName = myMissingVariable->name();
 
-    # Looping through variables in the component myComponent and retrieve their names.
-    #    NOTE that indexing starts from zero:
-    for v in range(0, my_component.variableCount()):
+  .. code-tab:: python
 
-      # Retrieve the Variable item at index v:
-      my_variable = my_component.variable(v)
+      # Looping through variables in the component myComponent and retrieve their names.
+      #    NOTE that indexing starts from zero:
+      for v in range(0, my_component.variableCount()):
 
-      # Retrieve the name of the myVariable item:
-      my_variable_name = my_variable.name()
+        # Retrieve the Variable item at index v:
+        my_variable = my_component.variable(v)
 
-    # Retrieve a variable called "helloThere" by name.
-    #    NOTE that None will be returned if no variable of that name is found.
-    my_hello_there_variable = my_component.variable("helloThere")
+        # Retrieve the name of the myVariable item:
+        my_variable_name = my_variable.name()
 
-    # In this case, the my_missing_variable will be None:
-    my_missing_variable = myComponent.variable("nameThatDoesntExist")
+      # Retrieve a variable called "helloThere" by name.
+      #    NOTE that None will be returned if no variable of that name is found.
+      my_hello_there_variable = my_component.variable("helloThere")
 
-    # This will cause a segfault as my_missing_variable is None:
-    my_missing_name = my_missing_variable.name()
+      # In this case, the my_missing_variable will be None:
+      my_missing_variable = myComponent.variable("nameThatDoesntExist")
+
+      # This will cause a segfault as my_missing_variable is None:
+      my_missing_name = my_missing_variable.name()
 
 
 Some gotchas

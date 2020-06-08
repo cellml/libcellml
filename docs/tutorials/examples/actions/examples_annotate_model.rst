@@ -1,7 +1,7 @@
 .. _examples_annotate_model:
 
 Annotate a ``Model``
-++++++++++++++++++++
+====================
 
 libCellML does not provide annotation functionality directly, but it can help with some of the things that you might need to know in order to implement your own.
 Each annotation is attached to an unique ID locator which can be retrieved and edited.

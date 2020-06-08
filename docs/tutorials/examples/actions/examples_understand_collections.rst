@@ -66,71 +66,67 @@ Examples are shown for C++ and Python below.
 
   .. container:: header
 
-    Show C++ examples
+    Show code examples
 
-  .. code-block:: cpp
+  .. tabs::
 
-    // Consider the case where we already have a model containing a component named "myComponent" at index 0.
+    .. code-tab:: c++
 
-    // Case 1: Use the get and remove functionality together.
-    auto component = model->component(0);               // Get either by index,
-    auto component = model->component("componentName"); // or by name.
+      // Consider the case where we already have a model containing a component named "myComponent" at index 0.
 
-    bool componentWasRemoved = model->removeComponent(0);               // Remove either by index,
-    bool componentWasRemoved = model->removeComponent("componentName"); // by name,
-    bool componentWasRemoved = model->removeComponent(component);       // or by symbol.
+      // Case 1: Use the get and remove functionality together.
+      auto component = model->component(0);               // Get either by index,
+      auto component = model->component("componentName"); // or by name.
 
-    // At this point, the model's components collection no longer contains the component, and the component
-    // pointer has no parent.
+      bool componentWasRemoved = model->removeComponent(0);               // Remove either by index,
+      bool componentWasRemoved = model->removeComponent("componentName"); // by name,
+      bool componentWasRemoved = model->removeComponent(component);       // or by symbol.
 
-    // Case 2: Use the take functionality.
-    auto component = model->takeComponent(0);             // Take either by index,
-    auto component = model->takeComponent("myComponent"); // or by name.
+      // At this point, the model's components collection no longer contains the component, and the component
+      // pointer has no parent.
 
-    // At this point, we have the same outcome as in Case 1 above.  The model's component collection no
-    // longer contains the component, and the component itself has no parent.
+      // Case 2: Use the take functionality.
+      auto component = model->takeComponent(0);             // Take either by index,
+      auto component = model->takeComponent("myComponent"); // or by name.
 
-    // Case 3: A cautionary tale using remove without get.
-    auto iAmABooleanNotAComponent = model->removeComponent(0); // Remove either by index, name or symbol as above.
+      // At this point, we have the same outcome as in Case 1 above.  The model's component collection no
+      // longer contains the component, and the component itself has no parent.
 
-    // In the situation where no other reference to the component exists (ie: we did not "get" it as in Case 1),
-    // the model's collection will no longer contain the component AND the entire contents of that component
-    // will be permanently deleted.
+      // Case 3: A cautionary tale using remove without get.
+      auto iAmABooleanNotAComponent = model->removeComponent(0); // Remove either by index, name or symbol as above.
 
-.. container:: toggle
+      // In the situation where no other reference to the component exists (ie: we did not "get" it as in Case 1),
+      // the model's collection will no longer contain the component AND the entire contents of that component
+      // will be permanently deleted.
 
-  .. container:: header
+    .. code-tab:: python
 
-    Show Python examples
+      # Consider the case where we already have a model containing a component named "myComponent" at index 0.
 
-  .. code-block:: py
+      # Case 1: Use the get and remove functionality together.
+      component = model.component(0)                    # Get either by index,
+      component = model.component("componentName") # or by name.
 
-    # Consider the case where we already have a model containing a component named "myComponent" at index 0.
+      was_removed = model.removeComponent(0)               # Remove either by index,
+      was_removed = model.removeComponent("componentName") # by name,
+      was_removed = model.removeComponent(component)       # or by symbol.
 
-    # Case 1: Use the get and remove functionality together.
-    component = model.component(0)                    # Get either by index,
-    component = model.component("componentName") # or by name.
+      # At this point, the model's components collection no longer contains the component, and the component
+      # pointer has no parent.
 
-    was_removed = model.removeComponent(0)               # Remove either by index,
-    was_removed = model.removeComponent("componentName") # by name,
-    was_removed = model.removeComponent(component)       # or by symbol.
+      # Case 2: Use the take functionality.
+      component = model.takeComponent(0)             # Take either by index,
+      component = model.takeComponent("myComponent") # or by name.
 
-    # At this point, the model's components collection no longer contains the component, and the component
-    # pointer has no parent.
+      # At this point, we have the same outcome as in Case 1 above.  The model's component collection no
+      # longer contains the component, and the component itself has no parent.
 
-    # Case 2: Use the take functionality.
-    component = model.takeComponent(0)             # Take either by index,
-    component = model.takeComponent("myComponent") # or by name.
+      # Case 3: A cautionary tale using remove without get.
+      i_am_a_bool_not_a_component = model.removeComponent(0) # Remove either by index, name or symbol as above.
 
-    # At this point, we have the same outcome as in Case 1 above.  The model's component collection no
-    # longer contains the component, and the component itself has no parent.
-
-    # Case 3: A cautionary tale using remove without get.
-    i_am_a_bool_not_a_component = model.removeComponent(0) # Remove either by index, name or symbol as above.
-
-    # In the situation where no other reference to the component exists (ie: we did not "get" it as in Case 1),
-    # the model's collection will no longer contain the component AND the entire contents of that component
-    # will be permanently deleted.
+      # In the situation where no other reference to the component exists (ie: we did not "get" it as in Case 1),
+      # the model's collection will no longer contain the component AND the entire contents of that component
+      # will be permanently deleted.
 
 Replace a thing
 ---------------
