@@ -162,3 +162,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
 .dashlist > * {
     list-style-type: '- ';
 }
+
+.sphinx-tab {
+    border: none !important;
+}
