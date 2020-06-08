@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
     'hoverxref.extension',          # Enables tooltips and previews on hover
+    'sphinx_tabs.tabs'              # Tabs (esp for code blocks)
 ]
 
 # Add any paths that contain templates here, relative to this directory.
