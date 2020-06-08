@@ -88,11 +88,11 @@ div[class^="issue"], div[class*=" issue"] > ol {
     content: " -";
 }
 
-.toggle .header-left:after {
+.toggle .header-left:before {
     content: " +";
 }
 
-.toggle .header-left.open:after {
+.toggle .header-left.open:before {
     content: " -";
 }
 

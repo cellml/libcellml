@@ -191,13 +191,9 @@ Some useful snippets for viewing parts of your model are shown below.
   There are two places that need a reference to :code:`Units` items.
   The first is the set of :code:`Variable` items stored in the :code:`Component`: the units name for each of these is accessible in the :code:`name()` attribute of its :code:`units()` item.
 
-  .. container:: toggle
+  .. tabs::
 
-    .. container:: header
-
-      See C++ code example
-
-    .. code-block:: cpp
+    .. code-tab:: c++
 
       // This example assumes you already have a component defined.
       // You will need to include <unordered_set> in your #include statements.
@@ -245,13 +241,7 @@ Some useful snippets for viewing parts of your model are shown below.
           std::cout << "  - " << name << std::endl;
       }
 
-  .. container:: toggle
-
-    .. container:: header
-
-      See Python code example
-
-    .. code-block:: py
+    .. code-tab:: py
 
         # Retrieve the component as a pointer.
         component = model.component("component")
