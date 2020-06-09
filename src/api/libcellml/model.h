@@ -72,7 +72,7 @@ public:
      *
      * @param units The units to add.
      */
-    void addUnits(const UnitsPtr &units);
+    bool addUnits(const UnitsPtr &units);
 
     /**
      * @brief Remove the units at the given @p index.

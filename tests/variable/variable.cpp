@@ -1711,16 +1711,16 @@ TEST(Variable, addEquivalenceReturnsFalseFalse)
     EXPECT_TRUE(model->addComponent(apple));
 
     // Adding a pip to the tomato: It would be nice to have a boolean return from all addSomething functions!
-    tomato->addVariable(pip);
+    EXPECT_TRUE(tomato->addVariable(pip));
 
     // Add some more ... (this shouldn't be allowed, but I can do it!)
-    tomato->addVariable(pip);
-    tomato->addVariable(pip);
-    tomato->addVariable(pip);
+    EXPECT_FALSE(tomato->addVariable(pip));
+    EXPECT_FALSE(tomato->addVariable(pip));
+    EXPECT_FALSE(tomato->addVariable(pip));
 
     // Add a pip to the apple as well (I'd expect this to move the variable out
     // of the tomato component, but it just adds it here too):
-    apple->addVariable(pip);
+    EXPECT_TRUE(apple->addVariable(pip));
 
     // Push it further ... create a connection between pip variables
     // (how does it even get one from all those ones in the tomato?)

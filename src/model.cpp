@@ -100,10 +100,26 @@ bool Model::doAddComponent(const ComponentPtr &component)
     return ComponentEntity::doAddComponent(component);
 }
 
-void Model::addUnits(const UnitsPtr &units)
+bool Model::addUnits(const UnitsPtr &units)
 {
-    mPimpl->mUnits.push_back(units);
-    units->setParent(shared_from_this());
+    // Prevent adding multiple times to list.
+    auto model = shared_from_this();
+    if (model->hasUnits(units)) {
+        return false;
+    }
+
+    // Prevent adding to multiple models: create copy otherwise.
+    bool hasOtherParent = units->hasParent();
+    if (hasOtherParent) {
+        auto copyUnits = units->clone();
+        mPimpl->mUnits.push_back(copyUnits);
+        copyUnits->setParent(model);
+    } else {
+        mPimpl->mUnits.push_back(units);
+        units->setParent(model);
+    }
+
+    return true;
 }
 
 bool Model::removeUnits(size_t index)
