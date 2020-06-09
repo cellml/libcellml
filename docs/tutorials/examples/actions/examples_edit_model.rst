@@ -24,7 +24,7 @@ Some example snippets are shown below:
 
   include:: ../snippets/snippet_edit_names.rst
 
-  include:: ../snippets/snippets_edit_mathml.rst
+  include:: ../snippets/snippet_edit_mathml.rst
 
 Editing collections
 -------------------
