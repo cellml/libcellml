@@ -328,7 +328,7 @@ At this stage, you should have an arrangement like that shown below.
     - You should see that the controller component contains some mathematics for the voltage step function that we'll use to trigger the channel response.
     - The other component contains no maths, and is only there to give values to constants or initial values to variables.
 
-.. container:: NB
+.. container:: gotcha
 
     We demonstrate parsing external components here, and in the next tutorial will show importing them instead.
     The biggest difference between the two methods is that parsing reads *only* the component items and its children, whereas importing will *also* read any units that might be required.

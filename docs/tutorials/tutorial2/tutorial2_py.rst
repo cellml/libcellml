@@ -164,7 +164,7 @@ These can be either something from the built-in list within libCellML (which you
 We'll look at user defined units in :ref:`Tutorial 3<tutorial3_py>`, but for now it's enough to see that the units which are associated with variable :code:`b` are not valid.
 We'll change it to be :code:`"dimensionless"` instead.
 
-.. container:: NB
+.. container:: gotcha
 
     **Remember** that items can be accessed through their name (as below) or their index (as above).
 

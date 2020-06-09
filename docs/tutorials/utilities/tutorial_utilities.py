@@ -12,12 +12,12 @@ def print_model_to_terminal(model):
 
         print("The model has {n} components:".format(n=model.componentCount()))
 
-        for c in range(0, model.componentCount()):
-            component = model.component(c)
-            spacer = "  "
-            print_component_to_terminal(component, c, spacer)
+    for c in range(0, model.componentCount()):
+        component = model.component(c)
+        spacer = "  "
+        print_component_to_terminal(component, c, spacer)
 
-        return
+    return
 
 
 def print_component_to_terminal(component, c, spacer):
@@ -31,10 +31,6 @@ def print_component_to_terminal(component, c, spacer):
             s=spacer,
             c=c,
             n=component.id()))
-    print("{s}Component[{c}] has id: '{n}'".format(
-        s=spacer,
-        c=c,
-        n=component.id()))
 
     # Print variables in this component
     for v in range(0, component.variableCount()):
@@ -49,11 +45,12 @@ def print_component_to_terminal(component, c, spacer):
                 v=v,
                 n=component.variable(v).initialValue()
             ))
-        print("{s}  Variable[{v}] has units: '{n}'".format(
-            s=spacer,
-            v=v,
-            n=component.variable(v).units().name()
-        ))
+        if component.variable(v).units() is not None:
+            print("{s}  Variable[{v}] has units: '{n}'".format(
+                s=spacer,
+                v=v,
+                n=component.variable(v).units().name()
+            ))
 
     # Print the encapsulated components inside this one
     if component.componentCount() > 0:

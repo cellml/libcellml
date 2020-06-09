@@ -71,7 +71,7 @@ to better illustrate the operation of the :code:`Generator` later on.
 In order to use this in our model we need to write it as a MathML2 string.
 The basic structure for these is described in the :mathml2help:`W3 resource pages regarding MathML2 <>`.
 
-.. container:: NB
+.. container:: gotcha
 
     **Note** that libCellML will **only** accept MathML2 markup, even though later versions (3 and 4) are now available.
 
@@ -329,7 +329,7 @@ These will be combinations of those which we've already created, as defined by t
 
 The final two steps are to associate each variable with its appropriate units, and to include the units in the model.
 
-.. container:: NB
+.. container:: gotcha
 
     - When you add different sub-unit parts into a :code:`Units` item, the function is :code:`addUnit` (singular), and it takes as argument the *name* of the sub-unit as a string (eg: :code:`"second"` used above).
     - When you add the final created combination into the :code:`Model` item, the function is :code:`addUnits` (plural), and it takes as argument the *reference* of the combined units (eg: :code:`ms`).
@@ -339,7 +339,7 @@ The final two steps are to associate each variable with its appropriate units, a
     **3.e** Add the units to their variables using :code:`my_variable.setUnits(myUnits)`.
     Add the units to the model using :code:`my_model.addUnits(myUnits)`.
 
-.. container:: NB
+.. container:: gotcha
 
     **Gotcha!**  When you specify the :code:`Units` for a :code:`Variable` using its name then you may need to call the :code:`Model::linkUnits()` function before validating the model.
     If you see errors related to missing units which do in fact exist, then a call to the :code:`Model::linkUnits()` function is needed.

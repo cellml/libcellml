@@ -72,7 +72,8 @@
           # Print the current encapsulation structure to the terminal.
           print_encapsulation_structure_to_terminal(model)
 
-          # Retrieve the "tomato" component from the "vegetable" component
+          # Retrieve the components.  Note that the "tomatoes" component starts
+          # out as a child of the "vegetables" component.
           vegetables = model.component("vegetables")
           fruit = model.component("fruit")
           tomatoes = model.component("tomatoes")

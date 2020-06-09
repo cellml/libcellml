@@ -44,7 +44,7 @@ Remove a thing
 --------------
 To remove an item from the collection and detach its parent without returning a pointer to that item, use the :code:`removeThing` functions.
 
-.. container:: NB
+.. container:: gotcha
 
   Because the collections are stored as a group of smart pointers, if no references exist to the item then its contents will also be deleted.
 
@@ -137,6 +137,6 @@ In addition, the :code:`replaceComponent` takes an optional boolean argument ind
 By default this is set to :code:`true`.
 For more information about replacement, please see the API documentation for :api:`Model<Model>` and :api:`Component<Component>` items directly.
 
-.. container:: NB
+.. container:: gotcha
 
     Note that these **only** operate on collections of items ; that is, the collections of :code:`Units` and :code:`Component` items in a :code:`Model`, and encapsulated child :code:`Component` items in a parent :code:`Component`.

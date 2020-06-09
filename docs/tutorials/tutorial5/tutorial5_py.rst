@@ -124,7 +124,7 @@ All of this needs to be wrapped inside the :code:`<math>` tags, which will inclu
     </math>
 
 
-.. container:: NB
+.. container:: gotcha
 
     **Note**:
     **libCellML will only take MathML2 format**, and **not** the more recent MathML3 or MathML4 formats, which are targetted at presentation rather than content alone.
@@ -195,7 +195,7 @@ Three functions are available for accessing and editing the math block, these ar
 - :code:`appendMath(input)` adds the :code:`input` string to the existing MathML string; and
 - :code:`math()` returns the stored MathML string.
 
-.. container:: NB
+.. container:: gotcha
 
     **Note** that there is only one MathML block stored per component.
     Even if there is more than one equation, they're all stored as one single concatenated string.
@@ -230,7 +230,7 @@ Each variable needs a name which is equal to the term inside the :code:`<ci>` ta
     For each you will need to create, name, and add it to the component.
     Need help? See :ref:`Tutorial 2<tutorial2_py>`.
 
-.. container:: NB
+.. container:: gotcha
 
     **Note** Remember that the names you give the variables in this step must be the same as the names used between the :code:`<ci>` tags inside your MathML string.
 
