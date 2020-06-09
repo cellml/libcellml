@@ -20,9 +20,11 @@ Note that this is distinct from editing collections of items, which is discussed
 
 Some example snippets are shown below:
 
-.. include:: ../snippets/snippet_edit_names.rst
+..
 
-.. include:: ../snippets/snippets_edit_mathml.rst
+  include:: ../snippets/snippet_edit_names.rst
+
+  include:: ../snippets/snippets_edit_mathml.rst
 
 Editing collections
 -------------------
