@@ -30,13 +30,15 @@ General families of functions are avaiable for editing collections, but take the
 
 Some example snippets are shown below:
 
-.. include:: ../snippets/snippet_add_thing.rst
+..
 
-.. include:: ../snippets/snippet_remove_thing.rst
+  include:: ../snippets/snippet_add_thing.rst
 
-.. include:: ../snippets/snippet_take_thing.rst
+  include:: ../snippets/snippet_remove_thing.rst
 
-.. include:: ../snippets/snippet_replace_thing.rst
+  include:: ../snippets/snippet_take_thing.rst
+
+  include:: ../snippets/snippet_replace_thing.rst
 
 Editing special relationships
 -----------------------------
