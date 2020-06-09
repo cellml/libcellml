@@ -542,3 +542,30 @@ TEST(Component, onlyOneParentAtAnyGivenTime)
     EXPECT_EQ(size_t(2), parent->componentCount());
     EXPECT_EQ(size_t(1), child2->componentCount());
 }
+
+TEST(Component, addVariableMultipleTimes)
+{
+    auto model = libcellml::Model::create("model");
+    auto tomato = libcellml::Component::create("tomato");
+    auto apple = libcellml::Component::create("apple");
+    auto pip = libcellml::Variable::create("pip");
+
+    EXPECT_TRUE(model->addComponent(tomato));
+    EXPECT_TRUE(model->addComponent(apple));
+
+    // Adding a pip to the tomato: It would be nice to have a boolean return from all addSomething functions!
+    tomato->addVariable(pip);
+
+    // Add some more ... (this shouldn't be allowed, but I can do it!)
+    tomato->addVariable(pip);
+    tomato->addVariable(pip);
+    tomato->addVariable(pip);
+
+    EXPECT_EQ(size_t(1), tomato->variableCount());
+
+    // Add a pip to the apple as well (I'd expect this to move the variable out
+    // of the tomato component, but it just adds it here too):
+    apple->addVariable(pip);
+    EXPECT_EQ(size_t(0), tomato->variableCount());
+    EXPECT_EQ(size_t(1), apple->variableCount());
+}
