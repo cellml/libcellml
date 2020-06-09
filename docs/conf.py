@@ -34,7 +34,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.extlinks',
     'sphinx.ext.autosectionlabel',
-    'sphinx.ext.intersphinx',
+    # 'sphinx.ext.intersphinx',     # not working so turning off
     'hoverxref.extension',          # Enables tooltips and previews on hover
     'sphinx_tabs.tabs'              # Tabs (esp for code blocks)
 ]
@@ -91,9 +91,9 @@ extlinks = {
 
 # Mapping to get references in the specification document repo into this one
 # See: https://docs.readthedocs.io/en/stable/guides/intersphinx.html
-intersphinx_mapping = {
-    'spec': ('https://cellml-specification-dev.readthedocs.io/', None),
-}
+# intersphinx_mapping = {
+#     'spec': ('https://cellml-specification-dev.readthedocs.io/', None),
+# }
 
 # rst_epilog to define formatted, clickable code substitutions throughout.  It's included
 # at the bottom of every file in the project.
