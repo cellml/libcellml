@@ -44,7 +44,7 @@ Some parts of the CellML model require different treatment to those listed above
 
 Editing variable equivalences
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In that situation, there is no clear "ownership" of the equivalence as an attribute of any one variable, and neither is there a central parent item with curation ability over the set of variables.
+In the situation of equivalent variable collections there is no clear "ownership" of the equivalence as an attribute of any one variable, and neither is there a central parent item with curation ability over the set of variables.
 A different approach is required.
 
 Adding and removing variable equivalence is accomplished using the :code:`addEquivalence` and :code:`removeEquivalence` functions as shown below.
