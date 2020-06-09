@@ -112,3 +112,9 @@ This is shown in the code example below.
 .. tabs::
 
   .. code-tab:: c++
+
+    // TODO
+
+  .. code-tab:: python
+
+    # TODO
