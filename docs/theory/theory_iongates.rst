@@ -17,7 +17,7 @@ The theory here is the basis for the practical modelling tutorial in
 Chemical theory and entropy
 ---------------------------
 A good example of a model based on a first order equation is the one
-used by Hodgkin and Huxley :cite:`10` to describe the gating behaviour of an
+used by Hodgkin and Huxley cite ``10`` to describe the gating behaviour of an
 ion channel. Before we describe the
 gating behaviour of an ion channel, however, we need to explain the
 concepts of the 'Nernst potential' and channel conductance.
@@ -37,7 +37,7 @@ driving an ion through the pore is calculated from the change in
     :align: center
     :width: 50%
 
-    Distribution of microstates in a system :cite:`11`. The 16 particles in a
+    Distribution of microstates in a system cite ``11``. The 16 particles in a
     confined region (left) have only one possible arrangement (:math:`W=1`) and
     therefore zero entropy (:math:`k_{B}\ln W=0`). When the barrier is
     removed and the number of possible locations for each particle increases

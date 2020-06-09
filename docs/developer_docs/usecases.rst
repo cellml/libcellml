@@ -4,9 +4,7 @@
 Use-cases for libCellML
 =======================
 
-1. **Create:** create a model from scratch and serialise it to :xml_help:`XML <>`
-  (in each case the test is that the serialised model matches the
-  manually-validated XML documents)
+1. **Create:** create a model from scratch and serialise it to :xml_help:`XML <>` (in each case the test is that the serialised model matches the manually-validated XML documents)
 
    i. an empty model
    #. a model with a valid name

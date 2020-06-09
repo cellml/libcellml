@@ -7,7 +7,7 @@ A model of the nerve action potential
 Here we describe the first (and most famous) model of nerve fibre
 electrophysiology based on the membrane ion channels that we have
 discussed in the last two sections. This is the work by Alan Hodgkin and
-Andrew Huxley in 1952 :cite:`10` that won them (together with John Eccles) the
+Andrew Huxley in 1952 cite ``10`` that won them (together with John Eccles) the
 1963 Noble prize in Physiology or Medicine for *"their discoveries
 concerning the ionic mechanisms involved in excitation and inhibition in
 the peripheral and central portions of the nerve cell membrane"*.

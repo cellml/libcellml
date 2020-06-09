@@ -20,11 +20,9 @@ Note that this is distinct from editing collections of items, which is discussed
 
 Some example snippets are shown below:
 
-..
+.. include:: ../snippets/snippet_edit_names.rst
 
-  include:: ../snippets/snippet_edit_names.rst
-
-  include:: ../snippets/snippet_edit_mathml.rst
+.. include:: ../snippets/snippet_edit_mathml.rst
 
 Editing collections
 -------------------
@@ -32,15 +30,13 @@ General families of functions are avaiable for editing collections, but take the
 
 Some example snippets are shown below:
 
-..
+.. include:: ../snippets/snippet_add_thing.rst
 
-  include:: ../snippets/snippet_add_thing.rst
+.. include:: ../snippets/snippet_remove_thing.rst
 
-  include:: ../snippets/snippet_remove_thing.rst
+.. include:: ../snippets/snippet_take_thing.rst
 
-  include:: ../snippets/snippet_take_thing.rst
-
-  include:: ../snippets/snippet_replace_thing.rst
+.. include:: ../snippets/snippet_replace_thing.rst
 
 Editing special relationships
 -----------------------------
