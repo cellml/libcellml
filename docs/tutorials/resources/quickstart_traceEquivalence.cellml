@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" 
+  xmlns:cellml="http://www.cellml.org/cellml/2.0#" name="quickstart_traceEquivalence">
+  <component name="componentA">
+    <variable units="dimensionless" name="A" interface="public" />
+  </component>
+  <component name="componentB">
+    <variable units="dimensionless" name="B" interface="public" />
+  </component>
+  <component name="componentC">
+    <variable units="dimensionless" name="C" interface="public" />
+  </component>
+  <connection component_1="componentA" component_2="componentB">
+    <map_variables variable_1="A" variable_2="B"/>
+  </connection>
+  <connection component_1="componentB" component_2="componentC">
+    <map_variables variable_1="B" variable_2="C"/>
+  </connection>
+</model>

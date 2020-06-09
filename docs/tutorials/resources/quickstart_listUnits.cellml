@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" 
+  xmlns:cellml="http://www.cellml.org/cellml/2.0#" name="quickstart_listUnits">
+  <component name="component">
+    <variable units="dimensionless" name="a"/>
+    <variable units="i_am_not_a_unit" name="b" />
+    <variable units="metre" name="c" />
+    <variable name="d"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <apply>
+        <eq/>
+        <ci>a</ci>
+        <apply>
+          <plus/>
+          <ci>b</ci>
+          <ci>c</ci>
+          <cn cellml:units="myCNUnits">1</cn>
+          <cn cellml:units="someOtherCNUnits">1</cn>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>

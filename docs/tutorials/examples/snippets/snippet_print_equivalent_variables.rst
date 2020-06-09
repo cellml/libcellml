@@ -7,7 +7,57 @@
     Trace equivalent variables
 
   This example traces variable equivalences throughout the model using recursion.
-  The first function :code:`printEquivalentVaribleSet` initiates the recursion, and the second :code:`listEquivalentVariables` performs it.
+  The CellML file read contains a model as shown below, where two pairs of equivalent variables (:code:`A` to :code:`B`, and :code:`B` to :code:`C`) connect three variables together.
+
+  .. code:: text
+
+    model:
+        ├─ component: componentA
+        │   └─ variable: A [dimensionless] <╴╴╴╮
+        │                                      ╷
+        │                                  equivalent
+        ├─ component: componentB               ╵
+        │   └─ variable: B [dimensionless] <╴╴╴╯<╴╴╴╮
+        │                                           ╷
+        │                                       equivalent
+        └─ component: componentC                    ╵
+            └─ variable: C [dimensionless] <╴╴╴╴╴╴╴╴╯
+
+  .. container:: toggle
+
+    .. container:: header
+
+      Show CellML syntax
+
+    .. code-block:: xml
+
+      <?xml version="1.0" encoding="UTF-8"?>
+        <model xmlns="http://www.cellml.org/cellml/2.0#"
+          xmlns:cellml="http://www.cellml.org/cellml/2.0#" name="quickstart_traceEquivalence">
+          <component name="componentA">
+            <variable units="dimensionless" name="A" interface="public" />
+          </component>
+          <component name="componentB">
+            <variable units="dimensionless" name="B" interface="public" />
+          </component>
+          <component name="componentC">
+            <variable units="dimensionless" name="C" interface="public" />
+          </component>
+          <connection component_1="componentA" component_2="componentB">
+            <map_variables variable_1="A" variable_2="B"/>
+          </connection>
+          <connection component_1="componentB" component_2="componentC">
+            <map_variables variable_1="B" variable_2="C"/>
+          </connection>
+        </model>
+
+  The example should output the connections between the variables, including discerning that :code:`A` is connected to :code:`C`, even though no direct relationship is specified in the model.
+
+  .. code-block:: console
+
+    Variable 'A' in component 'componentA' is connected to:
+     - variable 'B' [dimensionless] in component 'componentB'
+     - variable 'C' [dimensionless] in component 'componentC'
 
   .. tabs::
 
@@ -81,54 +131,67 @@
           }
       }
 
-    .. code-tab:: py
+    .. code-tab:: python
 
+      from libcellml import Parser
+
+      # This function will initialise the information strings to test, start
+      # the search, and print the results.
       def print_equivalent_variable_set(variable):
 
-        if variable is None:
-          print("None variable submitted to print_equivalent_variable_set.")
-          return
+          if variable is None:
+              print("None variable submitted to print_equivalent_variable_set.")
+              return
 
-        variable_set = set()
-        variable_set.add(variable)
-        list_equivalent_variables(variable, variable_set)
+          variable_list = list()
+          variable_list.append([variable.name(),
+                               variable.parent().name(),
+                               variable.units().name(),
+                               variable.initialValue()])
+          list_equivalent_variables(variable, variable_list)
 
-        component = variable.parent()
-        print_me = ''
-        if component != None:
-          print_me += "Tracing: {c}.{v}".format(c=component.name(), v=variable.name())
-          if variable.units() is not None:
-            print_me += " [{u}]".format(u=variable.units().name())
-          if variable.initialValue() != "":
-              print_me += ", initial = {i}".format(i=variable.initialValue())
-
-          print(print_me)
-
-        # The variable_set contains the variable that was submitted for testing originally, so
-        # if it's connected to other variables, it must have a length greater than 1.
-        if len(variable_set) > 1:
-          for e in variable_set:
-            print_me = ''
-            component = e.parent()
-            if component is not None:
-              print_me += "    - {c}.{v}".format(c=component.name(), v=e.name())
-              if e.units() is not None:
-                print_me += " [{u}]".format(u=e.units().name())
-              if e.initialValue() != "":
-                print_me += ", initial = {i}".format(i=e.initialValue())
-              print(print_me)
-            else:
-              print("Variable {v} does not have a parent component.".format(v=e.name()))
-        else:
-          print("    - Not connected to any equivalent variables.")
+          if len(variable_list) > 1:
+              print("Variable '{v}' in component '{c}' is connected to:".format(
+                  v=variable.name(), c=variable.parent().name()))
+              for e in variable_list[1:]:
+                  if e[3] != '':
+                      print(" - variable '{v}'(t=0)={i} [{u}] in component '{c}'".format(
+                          v=e[0], i=e[3], u=e[2], c=e[1]))
+                  else:
+                      print(" - variable '{v}' [{u}] in component '{c}'".format(
+                          v=e[0], u=e[2], c=e[1]))
+          else:
+              print("Variable '{v}' is not connected to other variables.".format(
+                  v=variable.name()))
 
       # This function performs the recursive search through all connections until the set
       # has been completely covered.
-      def list_equivalent_variables(variable, variable_set):
-        if variable is None:
-          return
-        for i in range(0, variable.equivalentVariableCount()):
-          equivalent_variable = variable.equivalentVariable(i)
-          if equivalent_variable not in variable_set:
-            variable_set.push_back(equivalent_variable)
-            list_equivalent_variables(equivalent_variable, variable_set)
+      def list_equivalent_variables(variable, variable_list):
+          if variable is None:
+              return
+          for i in range(0, variable.equivalentVariableCount()):
+              equivalent_variable = variable.equivalentVariable(i)
+              # Form a list of strings that describe the equivalent variable.
+              test = [equivalent_variable.name(),
+                      equivalent_variable.parent().name(),
+                      equivalent_variable.units().name(),
+                      equivalent_variable.initialValue()]
+              # If the equivalent variable has not already been checked, then start another recursion.
+              if test not in variable_list:
+                  variable_list.append(test)
+                  list_equivalent_variables(equivalent_variable, variable_list)
+
+
+      if __name__ == "__main__":
+
+          read_file = open("../resources/quickstart_traceEquivalence.cellml", "r")
+
+          #  Create a parser and read the file.
+          parser = Parser()
+          model = parser.parseModel(read_file.read())
+
+          # Retrieve a variable from the parsed model
+          A = model.component("componentA").variable("A")
+
+          # Initiate the tracing for equivalent variables of variable "A"
+          print_equivalent_variable_set(A)
