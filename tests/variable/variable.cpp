@@ -1700,7 +1700,7 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("public", v4->interfaceType());
 }
 
-TEST(Variable, addEquivalenceReturnsFalseFalse)
+TEST(Variable, addVariableDuplicates)
 {
     auto model = libcellml::Model::create("model");
     auto tomato = libcellml::Component::create("tomato");
@@ -1710,29 +1710,41 @@ TEST(Variable, addEquivalenceReturnsFalseFalse)
     EXPECT_TRUE(model->addComponent(tomato));
     EXPECT_TRUE(model->addComponent(apple));
 
-    // Adding a pip to the tomato: It would be nice to have a boolean return from all addSomething functions!
+    // Adding a pip to the tomato
     EXPECT_TRUE(tomato->addVariable(pip));
 
-    // Add some more ... (this shouldn't be allowed, but I can do it!)
-    EXPECT_FALSE(tomato->addVariable(pip));
-    EXPECT_FALSE(tomato->addVariable(pip));
+    // Add some more ... (this shouldn't be allowed!)
     EXPECT_FALSE(tomato->addVariable(pip));
 
     // Add a pip to the apple as well (I'd expect this to move the variable out
     // of the tomato component, but it just adds it here too):
     EXPECT_TRUE(apple->addVariable(pip));
 
-    // Push it further ... create a connection between pip variables
-    // (how does it even get one from all those ones in the tomato?)
-    auto iShouldFail = libcellml::Variable::addEquivalence(tomato->variable("pip"), apple->variable("pip"));
-    // Expect the line above to return false ...
-    EXPECT_FALSE(iShouldFail);
-    // ... but the equivalence is added anyway, and shows the apple pip equivalent to itself ... ?!
-    EXPECT_EQ(size_t(0), pip->equivalentVariableCount());
-
     // I would expect the last addVariable (which was in to the apple component) to move the
     // pip variable there.
     EXPECT_EQ(size_t(1), apple->variableCount());
     // ... and out of the tomato:
     EXPECT_EQ(size_t(0), tomato->variableCount());
+}
+
+TEST(Variable, addEquivalenceReturnsFalseFalse)
+{
+    auto m = libcellml::Model::create("m");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    EXPECT_TRUE(m->addComponent(c1));
+    EXPECT_TRUE(m->addComponent(c2));
+    EXPECT_TRUE(c1->addVariable(v1));
+    EXPECT_TRUE(c2->addVariable(v2));
+
+    // Create a connection with self variable, expect no connections have been created:
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, v1));
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+
+    // Create a connection with one nullptr, expect no connections have been created:
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v2, nullptr));
+    EXPECT_EQ(size_t(0), v2->equivalentVariableCount());
 }
