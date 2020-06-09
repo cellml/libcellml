@@ -139,10 +139,24 @@ void Component::removeMath()
     mPimpl->mMath.clear();
 }
 
-void Component::addVariable(const VariablePtr &variable)
+bool Component::addVariable(const VariablePtr &variable)
 {
+    // Prevent adding multiple times to list.
+    auto component = shared_from_this();
+    if (component->hasVariable(variable)) {
+        return false;
+    }
+
+    // Prevent adding to multiple components.
+    bool hasOtherParent = variable->hasParent();
+    if (hasOtherParent) {
+        auto otherParent = std::dynamic_pointer_cast<Component>(variable->parent());
+        otherParent->removeVariable(variable);
+    }
+
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(shared_from_this());
+    variable->setParent(component);
+    return true;
 }
 
 bool Component::removeVariable(size_t index)
