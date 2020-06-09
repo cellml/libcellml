@@ -1699,3 +1699,40 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("", v3->interfaceType());
     EXPECT_EQ("public", v4->interfaceType());
 }
+
+TEST(Variable, addEquivalenceReturnsFalseFalse)
+{
+    auto model = libcellml::Model::create("model");
+    auto tomato = libcellml::Component::create("tomato");
+    auto apple = libcellml::Component::create("apple");
+    auto pip = libcellml::Variable::create("pip");
+
+    EXPECT_TRUE(model->addComponent(tomato));
+    EXPECT_TRUE(model->addComponent(apple));
+
+    // Adding a pip to the tomato: It would be nice to have a boolean return from all addSomething functions!
+    tomato->addVariable(pip);
+
+    // Add some more ... (this shouldn't be allowed, but I can do it!)
+    tomato->addVariable(pip);
+    tomato->addVariable(pip);
+    tomato->addVariable(pip);
+
+    // Add a pip to the apple as well (I'd expect this to move the variable out
+    // of the tomato component, but it just adds it here too):
+    apple->addVariable(pip);
+
+    // Push it further ... create a connection between pip variables
+    // (how does it even get one from all those ones in the tomato?)
+    auto iShouldFail = libcellml::Variable::addEquivalence(tomato->variable("pip"), apple->variable("pip"));
+    // Expect the line above to return false ...
+    EXPECT_FALSE(iShouldFail);
+    // ... but the equivalence is added anyway, and shows the apple pip equivalent to itself ... ?!
+    EXPECT_EQ(size_t(0), pip->equivalentVariableCount());
+
+    // I would expect the last addVariable (which was in to the apple component) to move the
+    // pip variable there.
+    EXPECT_EQ(size_t(1), apple->variableCount());
+    // ... and out of the tomato:
+    EXPECT_EQ(size_t(0), tomato->variableCount());
+}

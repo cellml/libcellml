@@ -2453,3 +2453,21 @@ TEST(Units, scalingFactorSelfReferencingUnits2)
 
     EXPECT_EQ(1000.0, libcellml::Units::scalingFactor(mX, X));
 }
+
+TEST(Units, addUnitsMultipleTimes)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+
+    // Add the units once:
+    model->addUnits(units);
+    EXPECT_EQ(size_t(1), model->unitsCount());
+
+    // Add the same units many times:
+    model->addUnits(units);
+    model->addUnits(units);
+    model->addUnits(units);
+    model->addUnits(units);
+    // ... but expect it to be actually included only once (as with components):
+    EXPECT_EQ(size_t(1), model->unitsCount());
+}
