@@ -719,7 +719,7 @@ TEST(Model, importUnitsDuplicated)
         "  </component>\n"
         "</model>";
 
-    // Create the model by parsing the "in" string above.
+    // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
     auto importedModel = parser->parseModel(in);
 
@@ -741,7 +741,7 @@ TEST(Model, importUnitsDuplicated)
     EXPECT_FALSE(model->hasUnresolvedImports());
     model->flatten();
 
-    EXPECT_EQ(size_t(2), model->unitsCount()); // KRM
+    EXPECT_EQ(size_t(2), model->unitsCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
