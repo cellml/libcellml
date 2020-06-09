@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" 
+  xmlns:cellml="http://www.cellml.org/cellml/2.0#" name="quickstart_editEncapsulation">
+  <component name="vegetables"/>
+  <component name="fruit"/>
+  <component name="tomatoes"/>
+  <encapsulation>
+    <component_ref component="vegetables">
+      <component_ref component="tomatoes"/>
+    </component_ref>
+  </encapsulation>
+</model>

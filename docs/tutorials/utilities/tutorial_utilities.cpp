@@ -344,6 +344,13 @@ libcellml::EntityPtr getItemFromIssue(libcellml::IssuePtr &issue)
         return issue->units();
     case libcellml::Issue::Cause::VARIABLE:
         return issue->variable();
+    case libcellml::Issue::Cause::CONNECTION:
+    case libcellml::Issue::Cause::ENCAPSULATION:
+    case libcellml::Issue::Cause::MATHML:
+    case libcellml::Issue::Cause::GENERATOR:
+    case libcellml::Issue::Cause::XML:
+    case libcellml::Issue::Cause::UNDEFINED:
+        return nullptr;
     }
     return nullptr;
 }
