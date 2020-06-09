@@ -131,7 +131,7 @@ public:
      *
      * @param variable The variable to add.
      */
-    void addVariable(const VariablePtr &variable);
+    bool addVariable(const VariablePtr &variable);
 
     /**
      * @brief Remove the variable at the given @p index from this component.
