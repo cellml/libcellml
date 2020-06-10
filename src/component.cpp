@@ -142,20 +142,18 @@ void Component::removeMath()
 bool Component::addVariable(const VariablePtr &variable)
 {
     // Prevent adding multiple times to list.
-    auto component = shared_from_this();
-    if (component->hasVariable(variable)) {
+    if (hasVariable(variable)) {
         return false;
     }
 
     // Prevent adding to multiple components.
-    bool hasOtherParent = variable->hasParent();
-    if (hasOtherParent) {
+    if (variable->hasParent()) {
         auto otherParent = std::dynamic_pointer_cast<Component>(variable->parent());
         otherParent->removeVariable(variable);
     }
 
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(component);
+    variable->setParent(shared_from_this());
     return true;
 }
 

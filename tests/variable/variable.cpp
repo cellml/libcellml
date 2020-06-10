@@ -1713,11 +1713,11 @@ TEST(Variable, addVariableDuplicates)
     // Adding a pip to the tomato
     EXPECT_TRUE(tomato->addVariable(pip));
 
-    // Add some more ... (this shouldn't be allowed!)
+    // Add some more ... expect false return.
     EXPECT_FALSE(tomato->addVariable(pip));
 
     // Add a pip to the apple as well (I'd expect this to move the variable out
-    // of the tomato component, but it just adds it here too):
+    // of the tomato component):
     EXPECT_TRUE(apple->addVariable(pip));
 
     // I would expect the last addVariable (which was in to the apple component) to move the
@@ -1727,7 +1727,7 @@ TEST(Variable, addVariableDuplicates)
     EXPECT_EQ(size_t(0), tomato->variableCount());
 }
 
-TEST(Variable, addEquivalenceReturnsFalseFalse)
+TEST(Variable, addEquivalenceReturnsFalseProperly)
 {
     auto m = libcellml::Model::create("m");
     auto c1 = libcellml::Component::create("c1");
