@@ -130,6 +130,7 @@ public:
      * @sa removeVariable
      *
      * @param variable The variable to add.
+     * @return @c true if the variable is added or @c false otherwise.
      */
     bool addVariable(const VariablePtr &variable);
 
