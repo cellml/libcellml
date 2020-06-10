@@ -141,6 +141,11 @@ void Component::removeMath()
 
 bool Component::addVariable(const VariablePtr &variable)
 {
+    // Prevent adding null pointer.
+    if (variable == nullptr) {
+        return false;
+    }
+
     // Prevent adding multiple times to list.
     if (hasVariable(variable)) {
         return false;
@@ -251,9 +256,13 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
-void Component::addReset(const ResetPtr &reset)
+bool Component::addReset(const ResetPtr &reset)
 {
+    if (reset == nullptr) {
+        return false;
+    }
     mPimpl->mResets.push_back(reset);
+    return true;
 }
 
 bool Component::removeReset(size_t index)
@@ -262,7 +271,6 @@ bool Component::removeReset(size_t index)
         mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
         return true;
     }
-
     return false;
 }
 
@@ -273,7 +281,6 @@ bool Component::removeReset(const ResetPtr &reset)
         mPimpl->mResets.erase(result);
         return true;
     }
-
     return false;
 }
 
