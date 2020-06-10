@@ -410,8 +410,6 @@ TEST(Validator, importsDummyVariablesNotCheckedForUnitsInterfaces)
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    // As soon as a connection is made between the dummyVariable and the variable, the validator
-    // checks the dummyVariable and fails the model.
     libcellml::Variable::addEquivalence(variable, dummyVariable);
     validator->validateModel(model);
 

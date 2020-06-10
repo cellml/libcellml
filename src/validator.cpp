@@ -1060,12 +1060,9 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
-        // If the parent component of the variable is imported, don't check it.
+        // If the parent component of the variable is nonexistent or imported, don't check it.
         auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
-        if (equivalentComponent == nullptr) {
-            continue;
-        }
-        if (equivalentComponent->isImport()) {
+        if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
             continue;
         }
         double multiplier = 0.0;
