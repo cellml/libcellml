@@ -58,11 +58,6 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-void printModelToTerminal(libcellml::ModelPtr &model)
-{
-    printModelToTerminal(model, true);
-}
-
 void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths)
 {
     std::string spacer = "    ";
@@ -83,11 +78,6 @@ void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths)
         auto component = model->component(c);
         printComponentToTerminal(component, c, spacer + spacer, includeMaths);
     }
-}
-
-void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
-{
-    printComponentToTerminal(component, c, spacer, true);
 }
 
 void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths)
