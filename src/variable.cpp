@@ -222,7 +222,7 @@ bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
             // Remove connection from variable1, since it can't be added to variable2:
             variable1->mPimpl->unsetEquivalentTo(variable2);
         }
-        return (canAdd1 && canAdd2);
+        return canAdd1 && canAdd2;
     }
     return false;
 }

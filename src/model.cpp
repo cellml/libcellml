@@ -103,20 +103,18 @@ bool Model::doAddComponent(const ComponentPtr &component)
 bool Model::addUnits(const UnitsPtr &units)
 {
     // Prevent adding multiple times to list.
-    auto model = shared_from_this();
-    if (model->hasUnits(units)) {
+    if (hasUnits(units)) {
         return false;
     }
 
     // Prevent adding to multiple models: create copy otherwise.
-    bool hasOtherParent = units->hasParent();
-    if (hasOtherParent) {
+    if (units->hasParent()) {
         auto copyUnits = units->clone();
         mPimpl->mUnits.push_back(copyUnits);
-        copyUnits->setParent(model);
+        copyUnits->setParent(shared_from_this());
     } else {
         mPimpl->mUnits.push_back(units);
-        units->setParent(model);
+        units->setParent(shared_from_this());
     }
 
     return true;
