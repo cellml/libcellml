@@ -242,6 +242,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     libcellml::ResetPtr r2 = libcellml::Reset::create();
     libcellml::ResetPtr r3 = libcellml::Reset::create();
     libcellml::PrinterPtr printer = libcellml::Printer::create();
+    libcellml::ComponentPtr c2 = libcellml::Component::create("c2");
 
     c->setName(in);
     v1->setName("variable1");
@@ -303,6 +304,10 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     auto taken_r1 = c->takeReset(0);
     EXPECT_EQ(r1, taken_r1);
     EXPECT_EQ(size_t(0), c->resetCount());
+
+    // Coverage for the addReset function
+    EXPECT_TRUE(c->addReset(r2));
+    EXPECT_TRUE(c2->addReset(r2));
 }
 
 TEST(Reset, resetFromComponentMethod)
