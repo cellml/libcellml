@@ -125,7 +125,13 @@ public:
     /**
      * @brief Add a variable by reference as part of this component.
      *
-     * Add a variable by reference as part of the given component.
+     * Add a variable by reference as part of the given component. If the variable
+     * already belongs to another component, it is moved to this one, and the
+     * previous component's variable list is updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p variable reference already exists in this component; and
+     *  - The @p variable is the @c nullptr.
      *
      * @sa removeVariable
      *
@@ -292,7 +298,13 @@ public:
     /**
      * @brief Add a reset by reference as part of this component.
      *
-     * Add a reset by reference as part of the given component.
+     * Add a reset by reference as part of the given component. If the reset
+     * was previously in another component, it is removed and that component's
+     * reset list is updated.
+     *
+     * The function will return @c false with no action taken if:
+     *  - the @p reset already exists in this component; and
+     *  - the supplied @param reset pointer is @c nullptr.
      *
      * @sa removeReset
      *

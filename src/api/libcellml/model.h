@@ -68,10 +68,17 @@ public:
     /**
      * @brief Add a child units to this model.
      *
-     * Add a copy of the given units as a child units of this model.
+     * Add the given units as a child units of this model. If the units
+     * already belong to another model, they are moved to this one, and
+     * the previous model's units list updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p units pointer already exists in this model; and
+     *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
-     * @return @c true if the reset is added or @c false otherwise.
+     *
+     * @return @c true if the units item is added or @c false otherwise.
      */
     bool addUnits(const UnitsPtr &units);
 
