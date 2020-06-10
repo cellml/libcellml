@@ -1061,7 +1061,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
         // If the parent component of the variable is nonexistent or imported, don't check it.
-        auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+        auto equivalentComponent = owningComponent(equivalentVariable);
         if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
             continue;
         }
@@ -1071,7 +1071,7 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parentComponent = std::dynamic_pointer_cast<Component>(variable->parent());
+                ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
