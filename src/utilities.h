@@ -360,18 +360,6 @@ bool areEqual(double value1, double value2);
 std::string sha1(const std::string &string);
 
 /**
- * @brief Get the name of the entity.
- *
- * If the entity is a @c NamedEntity then the name of the entity will
- * be returned (which could be the empty string).  If the entity is not
- * a @c NamedEntity then the empty string will be returned.
- *
- * @param entity The entity to get the name for.
- * @return The @c std::string name of the entity.
- */
-std::string entityName(const EntityPtr &entity);
-
-/**
  * @brief Get the @c Model that the entity is owned by.
  *
  * Travel up the entities hierarchy to find the owning model. If
@@ -381,6 +369,16 @@ std::string entityName(const EntityPtr &entity);
  * @return The owning @c Model or the @c nullptr if no model owns this entity.
  */
 ModelPtr owningModel(const EntityPtr &entity);
+
+/**
+ * @brief Get the @c Component that the variable is owned by.
+ *
+ * Return the owning component for this variable.
+ *
+ * @param entity The entity to get the owning component for.
+ * @return The owning @c Component of this entity.
+ */
+ComponentPtr owningComponent(const EntityPtr &entity);
 
 /**
  * @brief Remove the given component from the given entity.
