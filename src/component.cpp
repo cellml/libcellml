@@ -258,9 +258,22 @@ bool Component::hasVariable(const std::string &name) const
 
 bool Component::addReset(const ResetPtr &reset)
 {
+    // Prevent adding null pointer.
     if (reset == nullptr) {
         return false;
     }
+
+    // Prevent adding multiple times to list.
+    if (hasReset(reset)) {
+        return false;
+    }
+
+    // Prevent adding to multiple components.
+    if (reset->hasParent()) {
+        auto otherParent = std::dynamic_pointer_cast<Component>(reset->parent());
+        otherParent->removeReset(reset);
+    }
+    reset->setParent(shared_from_this());
     mPimpl->mResets.push_back(reset);
     return true;
 }
