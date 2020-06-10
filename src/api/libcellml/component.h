@@ -314,6 +314,20 @@ public:
     bool addReset(const ResetPtr &reset);
 
     /**
+     * @brief Take a reset at index.
+     *
+     * Remove the reset at the given index from this component and
+     * returns a reference to a reset at the index @p index for this
+     * component. If the index is not valid a @c nullptr is returned, the valid
+     * range for the index is [0, \#resets).
+     *
+     * @param index The index of the reset to return.
+     *
+     * @return A reference to the reset at the given index on success, @c nullptr otherwise.
+     */
+    ResetPtr takeReset(size_t index);
+
+    /**
      * @brief Remove the reset at the given @p index from this component.
      *
      * Remove the reset at the given index from this component.
