@@ -19,7 +19,6 @@ limitations under the License.
 #include <map>
 #include <vector>
 
-#include "libcellml/types.h"
 #include "libcellml/variable.h"
 
 namespace libcellml {

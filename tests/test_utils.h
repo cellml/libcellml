@@ -100,6 +100,6 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ISSUES_KINDS(issues, causes, logger) \
+#define EXPECT_EQ_ISSUES_CAUSES(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesCauses(issues, causes, logger)

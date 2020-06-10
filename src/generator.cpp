@@ -30,10 +30,10 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
+
+#include "generatorequationast.h"
 #include "utilities.h"
 #include "xmldoc.h"
-
-#undef NAN
 
 #ifdef __linux__
 #    undef TRUE
@@ -51,20 +51,21 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
  */
 struct GeneratorVariable::GeneratorVariableImpl
 {
+    VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    ComponentPtr mComponent;
     GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
 
-    void populate(const VariablePtr &variable, const ComponentPtr &component,
+    void populate(const VariablePtr &initialisingVariable,
+                  const VariablePtr &variable,
                   GeneratorVariable::Type type);
 };
 
-void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &variable,
-                                                        const ComponentPtr &component,
+void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &initialisingVariable,
+                                                        const VariablePtr &variable,
                                                         GeneratorVariable::Type type)
 {
+    mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mComponent = component;
     mType = type;
 }
 
@@ -83,14 +84,14 @@ GeneratorVariablePtr GeneratorVariable::create() noexcept
     return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {}};
 }
 
+VariablePtr GeneratorVariable::initialisingVariable() const
+{
+    return mPimpl->mInitialisingVariable;
+}
+
 VariablePtr GeneratorVariable::variable() const
 {
     return mPimpl->mVariable;
-}
-
-ComponentPtr GeneratorVariable::component() const
-{
-    return mPimpl->mComponent;
 }
 
 GeneratorVariable::Type GeneratorVariable::type() const
@@ -120,10 +121,8 @@ struct GeneratorInternalVariable
     size_t mIndex = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
-    VariablePtr mInitialValueVariable;
-
+    VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    ComponentPtr mComponent;
 
     GeneratorEquationWeakPtr mEquation;
 
@@ -153,11 +152,10 @@ void GeneratorInternalVariable::setVariable(const VariablePtr &variable,
 
         mType = Type::CONSTANT;
 
-        mInitialValueVariable = variable;
+        mInitialisingVariable = variable;
     }
 
     mVariable = variable;
-    mComponent = std::dynamic_pointer_cast<Component>(variable->parent());
 }
 
 void GeneratorInternalVariable::makeVoi()
@@ -173,128 +171,6 @@ void GeneratorInternalVariable::makeState()
         mType = Type::STATE;
     }
 }
-
-struct GeneratorEquationAst;
-using GeneratorEquationAstPtr = std::shared_ptr<GeneratorEquationAst>;
-using GeneratorEquationAstWeakPtr = std::weak_ptr<GeneratorEquationAst>;
-
-struct GeneratorEquationAst
-{
-    enum struct Type
-    {
-        // Assignment.
-
-        ASSIGNMENT,
-
-        // Relational and logical operators.
-
-        EQ,
-        NEQ,
-        LT,
-        LEQ,
-        GT,
-        GEQ,
-        AND,
-        OR,
-        XOR,
-        NOT,
-
-        // Arithmetic operators.
-
-        PLUS,
-        MINUS,
-        TIMES,
-        DIVIDE,
-        POWER,
-        ROOT,
-        ABS,
-        EXP,
-        LN,
-        LOG,
-        CEILING,
-        FLOOR,
-        MIN,
-        MAX,
-        REM,
-
-        // Calculus elements.
-
-        DIFF,
-
-        // Trigonometric operators.
-
-        SIN,
-        COS,
-        TAN,
-        SEC,
-        CSC,
-        COT,
-        SINH,
-        COSH,
-        TANH,
-        SECH,
-        CSCH,
-        COTH,
-        ASIN,
-        ACOS,
-        ATAN,
-        ASEC,
-        ACSC,
-        ACOT,
-        ASINH,
-        ACOSH,
-        ATANH,
-        ASECH,
-        ACSCH,
-        ACOTH,
-
-        // Piecewise statement.
-
-        PIECEWISE,
-        PIECE,
-        OTHERWISE,
-
-        // Token elements.
-
-        CI,
-        CN,
-
-        // Qualifier elements.
-
-        DEGREE,
-        LOGBASE,
-        BVAR,
-
-        // Constants.
-
-        TRUE,
-        FALSE,
-        E,
-        PI,
-        INF,
-        NAN
-    };
-
-    Type mType = Type::ASSIGNMENT;
-
-    std::string mValue;
-    VariablePtr mVariable = nullptr;
-
-    GeneratorEquationAstWeakPtr mParent;
-
-    GeneratorEquationAstPtr mLeft = nullptr;
-    GeneratorEquationAstPtr mRight = nullptr;
-
-    explicit GeneratorEquationAst();
-    explicit GeneratorEquationAst(Type type,
-                                  const GeneratorEquationAstPtr &parent);
-    explicit GeneratorEquationAst(Type type, const std::string &value,
-                                  const GeneratorEquationAstPtr &parent);
-    explicit GeneratorEquationAst(Type type, const VariablePtr &variable,
-                                  const GeneratorEquationAstPtr &parent);
-    explicit GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
-                                  const GeneratorEquationAstPtr &parent);
-};
 
 GeneratorEquationAst::GeneratorEquationAst() = default;
 
@@ -609,13 +485,6 @@ struct Generator::GeneratorImpl
     bool mNeedAcsch = false;
     bool mNeedAcoth = false;
 
-    bool hasValidModel() const;
-
-    size_t mathmlChildCount(const XmlNodePtr &node) const;
-    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
-
-    GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
-
     static bool compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
                                        const GeneratorInternalVariablePtr &variable2);
 
@@ -628,8 +497,15 @@ struct Generator::GeneratorImpl
     static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
                                            const GeneratorEquationPtr &equation2);
 
-    GeneratorVariablePtr variableFirstOccurrence(const VariablePtr &variable,
-                                                 const ComponentPtr &component);
+    bool hasValidModel() const;
+
+    size_t mathmlChildCount(const XmlNodePtr &node) const;
+    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
+
+    GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
+
+    VariablePtr voiFirstOccurrence(const VariablePtr &variable,
+                                   const ComponentPtr &component);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
@@ -638,7 +514,20 @@ struct Generator::GeneratorImpl
     GeneratorEquationPtr processNode(const XmlNodePtr &node,
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
+
+    void doEquivalentVariables(const VariablePtr &variable,
+                               std::vector<VariablePtr> &equivalentVariables) const;
+    std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
+
     void processEquationAst(const GeneratorEquationAstPtr &ast);
+
+    double scalingFactor(const VariablePtr &variable);
+
+    void scaleAst(const GeneratorEquationAstPtr &ast,
+                  const GeneratorEquationAstPtr &astParent,
+                  double scalingFactor);
+    void scaleEquationAst(const GeneratorEquationAstPtr &ast);
+
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
@@ -701,6 +590,7 @@ struct Generator::GeneratorImpl
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleCode(const std::string &value);
+    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable);
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          const GeneratorEquationAstPtr &ast = nullptr);
 
@@ -731,6 +621,52 @@ struct Generator::GeneratorImpl
     void addImplementationComputeVariablesMethodCode(std::string &code,
                                                      std::vector<GeneratorEquationPtr> &remainingEquations);
 };
+
+bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
+                                                      const GeneratorInternalVariablePtr &variable2)
+{
+    ComponentPtr realComponent1 = owningComponent(variable1->mVariable);
+    ComponentPtr realComponent2 = owningComponent(variable2->mVariable);
+
+    if (realComponent1->name() == realComponent2->name()) {
+        return variable1->mVariable->name() < variable2->mVariable->name();
+    }
+
+    return realComponent1->name() < realComponent2->name();
+}
+
+bool Generator::GeneratorImpl::isStateVariable(const GeneratorInternalVariablePtr &variable)
+{
+    return variable->mType == GeneratorInternalVariable::Type::STATE;
+}
+
+bool Generator::GeneratorImpl::isConstantOrAlgebraicVariable(const GeneratorInternalVariablePtr &variable)
+{
+    return (variable->mType == GeneratorInternalVariable::Type::CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC);
+}
+
+bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
+                                                              const GeneratorInternalVariablePtr &variable2)
+{
+    if (isStateVariable(variable1) && isConstantOrAlgebraicVariable(variable2)) {
+        return true;
+    }
+
+    if (isConstantOrAlgebraicVariable(variable1) && isStateVariable(variable2)) {
+        return false;
+    }
+
+    return variable1->mIndex < variable2->mIndex;
+}
+
+bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
+                                                          const GeneratorEquationPtr &equation2)
+{
+    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
+}
 
 bool Generator::GeneratorImpl::hasValidModel() const
 {
@@ -797,26 +733,24 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const V
     return internalVariable;
 }
 
-GeneratorVariablePtr Generator::GeneratorImpl::variableFirstOccurrence(const VariablePtr &variable,
-                                                                       const ComponentPtr &component)
+VariablePtr Generator::GeneratorImpl::voiFirstOccurrence(const VariablePtr &variable,
+                                                         const ComponentPtr &component)
 {
     // Recursively look for the first occurrence of the given variable in the
     // given component.
 
-    GeneratorVariablePtr voi = nullptr;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        VariablePtr localVariable = component->variable(i);
 
-    for (size_t j = 0; j < component->variableCount() && voi == nullptr; ++j) {
-        VariablePtr testVariable = component->variable(j);
-
-        if (sameOrEquivalentVariable(variable, testVariable)) {
-            voi = GeneratorVariable::create();
-
-            voi->mPimpl->populate(testVariable, component, GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
+        if (sameOrEquivalentVariable(variable, localVariable)) {
+            return localVariable;
         }
     }
 
+    VariablePtr voi = nullptr;
+
     for (size_t i = 0; i < component->componentCount() && voi == nullptr; ++i) {
-        voi = variableFirstOccurrence(variable, component->component(i));
+        voi = voiFirstOccurrence(variable, component->component(i));
     }
 
     return voi;
@@ -1101,8 +1035,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         VariablePtr variable = component->variable(variableName);
 
         if (variable != nullptr) {
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
-
             // Have our equation track the (ODE) variable (by ODE variable, we
             // mean a variable that is used in a "diff" element).
 
@@ -1112,13 +1044,16 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                          && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
                 equation->addVariable(generatorVariable(variable));
             }
+
+            // Add the variable to our AST.
+
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
         } else {
-            std::string modelName = entityName(owningModel(component));
             IssuePtr issue = Issue::create();
 
             issue->setDescription("Variable '" + variableName
                                   + "' in component '" + component->name()
-                                  + "' of model '" + modelName
+                                  + "' of model '" + owningModel(component)->name()
                                   + "' is referenced in an equation, but it is not defined anywhere.");
             issue->setCause(Issue::Cause::GENERATOR);
 
@@ -1217,9 +1152,10 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
         // Replace the variable held by `generatorVariable`, in case the
-        // existing one has no initial value while `variable` does. Otherwise,
-        // generate an issue if the variable held by `generatorVariable` and
-        // `variable` are both initialised.
+        // existing one has no initial value while `variable` does and after
+        // insuring that the initial value is either a double or an existing
+        // variable. Otherwise, generate an error if the variable held by
+        // `generatorVariable` and `variable` are both initialised.
 
         if (!variable->initialValue().empty()
             && generatorVariable->mVariable->initialValue().empty()) {
@@ -1227,21 +1163,56 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         } else if ((variable != generatorVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
-            ModelPtr model = owningModel(component);
-            ComponentPtr trackedVariableComponent = generatorVariable->mComponent;
-            ModelPtr trackedVariableModel = owningModel(trackedVariableComponent);
             IssuePtr issue = Issue::create();
+            ComponentPtr trackedVariableComponent = owningComponent(generatorVariable->mVariable);
 
             issue->setDescription("Variable '" + variable->name()
                                   + "' in component '" + component->name()
-                                  + "' of model '" + model->name()
+                                  + "' of model '" + owningModel(component)->name()
                                   + "' and variable '" + generatorVariable->mVariable->name()
                                   + "' in component '" + trackedVariableComponent->name()
-                                  + "' of model '" + trackedVariableModel->name()
+                                  + "' of model '" + owningModel(trackedVariableComponent)->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
             issue->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(issue);
+        }
+
+        if (!generatorVariable->mVariable->initialValue().empty()
+            && !isCellMLReal(generatorVariable->mVariable->initialValue())) {
+            // The initial value is not a double, so it has to be an existing
+            // variable of constant type.
+
+            ComponentPtr initialisingComponent = owningComponent(generatorVariable->mVariable);
+            VariablePtr initialisingVariable = initialisingComponent->variable(generatorVariable->mVariable->initialValue());
+
+            if (initialisingVariable == nullptr) {
+                IssuePtr issue = Issue::create();
+
+                issue->setDescription("Variable '" + variable->name()
+                                      + "' in component '" + component->name()
+                                      + "' of model '" + owningModel(component)->name()
+                                      + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
+                                      + "', but it is not defined anywhere.");
+                issue->setCause(Issue::Cause::GENERATOR);
+
+                mGenerator->addIssue(issue);
+            } else {
+                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initialisingVariable);
+
+                if (generatorInitialValueVariable->mType != GeneratorInternalVariable::Type::CONSTANT) {
+                    IssuePtr issue = Issue::create();
+
+                    issue->setDescription("Variable '" + variable->name()
+                                          + "' in component '" + component->name()
+                                          + "' of model '" + owningModel(component)->name()
+                                          + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
+                                          + "', but it is not a constant.");
+                    issue->setCause(Issue::Cause::GENERATOR);
+
+                    mGenerator->addIssue(issue);
+                }
+            }
         }
     }
 
@@ -1250,6 +1221,29 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->component(i));
     }
+}
+
+void Generator::GeneratorImpl::doEquivalentVariables(const VariablePtr &variable,
+                                                     std::vector<VariablePtr> &equivalentVariables) const
+{
+    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+        VariablePtr equivalentVariable = variable->equivalentVariable(i);
+
+        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
+            equivalentVariables.push_back(equivalentVariable);
+
+            doEquivalentVariables(equivalentVariable, equivalentVariables);
+        }
+    }
+}
+
+std::vector<VariablePtr> Generator::GeneratorImpl::equivalentVariables(const VariablePtr &variable) const
+{
+    std::vector<VariablePtr> res = {variable};
+
+    doEquivalentVariables(variable, res);
+
+    return res;
 }
 
 void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)
@@ -1274,53 +1268,60 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         //       unknown).
 
         if (mVoi == nullptr) {
-            // Before keeping track of the variable of integration, make sure
-            // that it is not initialised.
+            // We have found our variable of integration, but this may not be
+            // the one defined in our first component (i.e. the component under
+            // which we are likely to expect to see the variable of integration
+            // to be defined), so go through our components and look for the
+            // first occurrence of our variable of integration.
 
-            if (!variable->initialValue().empty()) {
-                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-                std::string modelName = entityName(owningModel(component));
-                IssuePtr issue = Issue::create();
+            ModelPtr model = owningModel(variable);
 
-                issue->setDescription("Variable '" + variable->name()
-                                      + "' in component '" + component->name()
-                                      + "' of model '" + modelName
-                                      + "' cannot be both a variable of integration and initialised.");
-                issue->setCause(Issue::Cause::GENERATOR);
+            for (size_t i = 0; i < model->componentCount(); ++i) {
+                VariablePtr voi = voiFirstOccurrence(variable, model->component(i));
 
-                mGenerator->addIssue(issue);
-            } else {
-                // We have found our variable of integration, but this may not
-                // be the one defined in our first component (i.e. the component
-                // under which we are likely to expect to see the variable of
-                // integration to be defined), so go through our components and
-                // look for the first occurrence of our variable of integration.
+                if (voi != nullptr) {
+                    // We have found the first occurrence of our variable of
+                    // integration, but now we must ensure that it (or one of
+                    // its equivalent variables) is not initialised.
 
-                ModelPtr model = owningModel(variable->parent());
+                    bool isVoiInitialized = false;
 
-                for (size_t i = 0; i < model->componentCount(); ++i) {
-                    GeneratorVariablePtr voi = variableFirstOccurrence(variable, model->component(i));
+                    for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
+                        if (!voiEquivalentVariable->initialValue().empty()) {
+                            IssuePtr issue = Issue::create();
 
-                    if (voi != nullptr) {
-                        mVoi = voi;
+                            issue->setDescription("Variable '" + voiEquivalentVariable->name()
+                                                  + "' in component '" + owningComponent(voiEquivalentVariable)->name()
+                                                  + "' of model '" + owningModel(voiEquivalentVariable)->name()
+                                                  + "' cannot be both a variable of integration and initialised.");
+                            issue->setCause(Issue::Cause::GENERATOR);
 
-                        break;
+                            mGenerator->addIssue(issue);
+
+                            isVoiInitialized = true;
+                        }
                     }
+
+                    if (!isVoiInitialized) {
+                        mVoi = GeneratorVariable::create();
+
+                        mVoi->mPimpl->populate(nullptr, voi,
+                                               GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
+                    }
+
+                    break;
                 }
             }
         } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
-            ModelPtr voiModel = owningModel(mVoi->component());
-            ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ModelPtr model = owningModel(component);
             IssuePtr issue = Issue::create();
 
             issue->setDescription("Variable '" + mVoi->variable()->name()
-                                  + "' in component '" + mVoi->component()->name()
-                                  + "' of model '" + voiModel->name()
+                                  + "' in component '" + owningComponent(mVoi->variable())->name()
+                                  + "' of model '" + owningModel(mVoi->variable())->name()
                                   + "' and variable '" + variable->name()
-                                  + "' in component '" + component->name()
-                                  + "' of model '" + model->name()
-                                  + "' cannot both be a variable of integration.");
+                                  + "' in component '" + owningComponent(variable)->name()
+                                  + "' of model '" + owningModel(variable)->name()
+                                  + "' cannot both be the variable of integration.");
             issue->setCause(Issue::Cause::GENERATOR);
 
             mGenerator->addIssue(issue);
@@ -1335,14 +1336,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         double value;
         if (!convertToDouble(ast->mValue, value) || !areEqual(value, 1.0)) {
-            VariablePtr variable = astGreatGrandParent->mRight->mVariable;
-            ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-            ModelPtr model = owningModel(component);
             IssuePtr issue = Issue::create();
+            VariablePtr variable = astGreatGrandParent->mRight->mVariable;
 
             issue->setDescription("The differential equation for variable '" + variable->name()
-                                  + "' in component '" + component->name()
-                                  + "' of model '" + model->name()
+                                  + "' in component '" + owningComponent(variable)->name()
+                                  + "' of model '" + owningModel(variable)->name()
                                   + "' must be of the first order.");
             issue->setCause(Issue::Cause::GENERATOR);
 
@@ -1368,47 +1367,97 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
-bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
-                                                      const GeneratorInternalVariablePtr &variable2)
+double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
 {
-    if (variable1->mComponent->name() == variable2->mComponent->name()) {
-        return variable1->mVariable->name() < variable2->mVariable->name();
+    // Return the scaling factor for the given variable.
+
+    return Units::scalingFactor(variable->units(),
+                                generatorVariable(variable)->mVariable->units());
+}
+
+void Generator::GeneratorImpl::scaleAst(const GeneratorEquationAstPtr &ast,
+                                        const GeneratorEquationAstPtr &astParent,
+                                        double scalingFactor)
+{
+    // Scale the given AST using the given scaling factor
+
+    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
+
+    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mRight = ast;
+
+    ast->mParent = scaledAst;
+
+    if (astParent->mLeft == ast) {
+        astParent->mLeft = scaledAst;
+    } else {
+        astParent->mRight = scaledAst;
+    }
+}
+
+void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast)
+{
+    // Recursively scale the given AST's children.
+
+    if (ast->mLeft != nullptr) {
+        scaleEquationAst(ast->mLeft);
     }
 
-    return variable1->mComponent->name() < variable2->mComponent->name();
-}
-
-bool Generator::GeneratorImpl::isStateVariable(const GeneratorInternalVariablePtr &variable)
-{
-    return variable->mType == GeneratorInternalVariable::Type::STATE;
-}
-
-bool Generator::GeneratorImpl::isConstantOrAlgebraicVariable(const GeneratorInternalVariablePtr &variable)
-{
-    return (variable->mType == GeneratorInternalVariable::Type::CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC);
-}
-
-bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
-                                                              const GeneratorInternalVariablePtr &variable2)
-{
-    if (isStateVariable(variable1) && isConstantOrAlgebraicVariable(variable2)) {
-        return true;
+    if (ast->mRight != nullptr) {
+        scaleEquationAst(ast->mRight);
     }
 
-    if (isConstantOrAlgebraicVariable(variable1) && isStateVariable(variable2)) {
-        return false;
+    // If the given AST node is a variabe (i.e. a CI node) then we may need to
+    // do some scaling.
+
+    if (ast->mType == GeneratorEquationAst::Type::CI) {
+        // The kind of scaling we may end up doing depends on whether we are
+        // dealing with a rate or some other variable, i.e. whether or not it
+        // has a DIFF node as a parent.
+
+        GeneratorEquationAstPtr astParent = ast->mParent.lock();
+        if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
+            // We are dealing with a rate, so retrieve the scaling factor for
+            // its corresponding variable of integration and apply it, if
+            // needed.
+
+            double scalingFactor = Generator::GeneratorImpl::scalingFactor(astParent->mLeft->mLeft->mVariable);
+
+            if (!areEqual(scalingFactor, 1.0)) {
+                // We need to scale using the inverse of the scaling factor, but
+                // how we do it depends on whether the rate is to be computed or
+                // used.
+
+                GeneratorEquationAstPtr astGrandParent = astParent->mParent.lock();
+
+                if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
+                    && (astGrandParent->mLeft == astParent)) {
+                    scaleAst(astGrandParent->mRight, astGrandParent, 1.0 / scalingFactor);
+                } else {
+                    scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
+                }
+            }
+        }
+
+        if (((astParent->mType != GeneratorEquationAst::Type::ASSIGNMENT)
+             || (astParent->mLeft != ast))
+            && (astParent->mType != GeneratorEquationAst::Type::BVAR)) {
+            // We are dealing with a variable which is neither a computed
+            // variable nor our variable of integration, so retrieve its scaling
+            // factor and apply it, if needed, distinguishing between a rate
+            // variable and an algebraic variable.
+
+            double scalingFactor = Generator::GeneratorImpl::scalingFactor(ast->mVariable);
+
+            if (!areEqual(scalingFactor, 1.0)) {
+                if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
+                    scaleAst(astParent, astParent->mParent.lock(), scalingFactor);
+                } else {
+                    scaleAst(ast, astParent, scalingFactor);
+                }
+            }
+        }
     }
-
-    return variable1->mIndex < variable2->mIndex;
-}
-
-bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
-                                                          const GeneratorEquationPtr &equation2)
-{
-    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1451,20 +1500,26 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->component(i));
     }
 
-    // Process our different equations' AST to determine the type of our
-    // variables.
+    // Some more processing is needed, but it can only be done if we didn't come
+    // across any errors during the processing of our components.
 
-    if (mGenerator->issueCount() == 0) {
+    if (mGenerator->errorCount() == 0) {
+        // Process our different equations' AST to determine the type of our
+        // variables.
+
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
         }
     }
 
-    // Sort our variables, determine the index of our constant variables and
-    // then loop over our equations, checking which variables, if any, can be
-    // determined using a given equation.
+    // Some post-processing is now needed, but it can only be done if we didn't
+    // come across any errors during the processing of our equations' AST.
 
-    if (mGenerator->issueCount() == 0) {
+    if (mGenerator->errorCount() == 0) {
+        // Sort our variables, determine the index of our constant variables and
+        // then loop over our equations, checking which variables, if any, can
+        // be determined using a given equation.
+
         mInternalVariables.sort(compareVariablesByName);
 
         size_t variableIndex = MAX_SIZE_T;
@@ -1490,13 +1545,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 break;
             }
         }
-    } else {
-        mModelType = Generator::ModelType::INVALID;
-    }
 
-    // Make sure that our variables are valid.
+        // Make sure that our variables are valid.
 
-    if (mGenerator->issueCount() == 0) {
         for (const auto &internalVariable : mInternalVariables) {
             std::string issueType;
 
@@ -1524,23 +1575,20 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             if (!issueType.empty()) {
                 IssuePtr issue = Issue::create();
-                ComponentPtr realComponent = internalVariable->mComponent;
-                ModelPtr realModel = owningModel(realComponent);
+                VariablePtr realVariable = internalVariable->mVariable;
 
-                issue->setDescription("Variable '" + internalVariable->mVariable->name()
-                                      + "' in component '" + realComponent->name()
-                                      + "' of model '" + realModel->name() + "' " + issueType + ".");
+                issue->setDescription("Variable '" + realVariable->name()
+                                      + "' in component '" + owningComponent(realVariable)->name()
+                                      + "' of model '" + owningModel(realVariable)->name()
+                                      + "' " + issueType + ".");
                 issue->setCause(Issue::Cause::GENERATOR);
 
                 mGenerator->addIssue(issue);
             }
         }
-    }
 
-    // Determine the type of our model, if it hasn't already been categorised as
-    // being invalid.
+        // Determine the type of our model.
 
-    if (mModelType != Generator::ModelType::INVALID) {
         bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
                                                 return (variable->mType == GeneratorInternalVariable::Type::UNKNOWN)
                                                        || (variable->mType == GeneratorInternalVariable::Type::SHOULD_BE_STATE);
@@ -1564,13 +1612,25 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         } else if (!mInternalVariables.empty()) {
             mModelType = Generator::ModelType::ALGEBRAIC;
         }
+    } else {
+        mModelType = Generator::ModelType::INVALID;
     }
 
-    // Sort our variables and equations, should we have a valid model, and make
-    // our internal variables available through our API.
+    // Some final post-processing is now needed, if we have a valid model.
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
+        // Scale our equations' AST, i.e. take into account the fact that we may
+        // have mapped variables that use compatible units rather than
+        // equivalent ones.
+
+        for (const auto &equation : mEquations) {
+            scaleEquationAst(equation->mAst);
+        }
+
+        // Sort our variables and equations and make our internal variables
+        // available through our API.
+
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mEquations.sort(compareEquationsByVariable);
 
@@ -1594,8 +1654,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             GeneratorVariablePtr stateOrVariable = GeneratorVariable::create();
 
-            stateOrVariable->mPimpl->populate(internalVariable->mVariable,
-                                              internalVariable->mComponent,
+            stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
+                                              internalVariable->mVariable,
                                               type);
 
             if (type == GeneratorVariable::Type::STATE) {
@@ -1704,7 +1764,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const GeneratorVariablePtr &variable)
 {
-    auto variableComponentSize = variable->component()->name().length() + 1;
+    auto variableComponentSize = owningComponent(variable->variable())->name().length() + 1;
     auto variableNameSize = variable->variable()->name().length() + 1;
     auto variableUnitsSize = variable->variable()->units()->name().length() + 1;
     // Note: +1 to account for the end of string termination.
@@ -2194,7 +2254,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
 
         std::string name = (mVoi != nullptr) ? mVoi->variable()->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->variable()->units()->name() : "";
-        std::string component = (mVoi != nullptr) ? mVoi->component()->name() : "";
+        std::string component = (mVoi != nullptr) ? owningComponent(mVoi->variable())->name() : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -2220,7 +2280,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->variable()->name(),
                                                                 state->variable()->units()->name(),
-                                                                state->component()->name());
+                                                                owningComponent(state->variable())->name());
         }
 
         if (!infoElementsCode.empty()) {
@@ -2265,7 +2325,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
                                                           "<UNITS>", variable->variable()->units()->name()),
-                                                  "<COMPONENT>", variable->component()->name()),
+                                                  "<COMPONENT>", owningComponent(variable->variable())->name()),
                                           "<TYPE>", variableType);
         }
 
@@ -2578,6 +2638,21 @@ std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &valu
     }
 
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
+}
+
+std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable)
+{
+    if (isCellMLReal(variable->initialValue())) {
+        return generateDoubleCode(variable->initialValue());
+    }
+
+    VariablePtr initValueVariable = owningComponent(variable)->variable(variable->initialValue());
+    GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initValueVariable);
+    std::ostringstream index;
+
+    index << generatorInitialValueVariable->mIndex;
+
+    return mProfile->variablesArrayString() + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
@@ -3321,7 +3396,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
-    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mInitialValueVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    std::string scalingFactorCode;
+    double scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->mInitialisingVariable);
+
+    if (!areEqual(scalingFactor, 1.0)) {
+        scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
+    }
+
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->mInitialisingVariable) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
@@ -3387,8 +3469,7 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
         std::string methodBody;
 
         for (const auto &internalVariable : mInternalVariables) {
-            if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
-                || (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)) {
+            if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
                 methodBody += generateInitializationCode(internalVariable);
             }
         }
@@ -3396,6 +3477,12 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
         for (const auto &equation : mEquations) {
             if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
+            }
+        }
+
+        for (const auto &internalVariable : mInternalVariables) {
+            if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
+                methodBody += generateInitializationCode(internalVariable);
             }
         }
 
