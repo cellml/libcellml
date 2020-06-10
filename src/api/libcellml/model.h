@@ -71,6 +71,7 @@ public:
      * Add a copy of the given units as a child units of this model.
      *
      * @param units The units to add.
+     * @return @c true if the reset is added or @c false otherwise.
      */
     bool addUnits(const UnitsPtr &units);
 
