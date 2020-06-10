@@ -47,7 +47,6 @@ void deleteArray(double *array)
 
 void initializeStatesAndConstants(double *states, double *variables)
 {
-    states[0] = 0.0;
     variables[0] = 0.75;
     variables[1] = 0.0;
     variables[3] = 2.0/3.14159265358979;
@@ -55,6 +54,7 @@ void initializeStatesAndConstants(double *states, double *variables)
     variables[5] = 3.14159265358979/2.0;
     variables[6] = 3.14159265358979;
     variables[7] = 3.0*3.14159265358979/2.0;
+    states[0] = variables[1];
 }
 
 void computeComputedConstants(double *variables)

@@ -37,8 +37,8 @@ def create_variables_array():
 
 
 def initialize_states_and_constants(states, variables):
-    states[0] = 1.0
     variables[0] = 1.0
+    states[0] = 1.0
 
 
 def compute_computed_constants(variables):
