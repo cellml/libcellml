@@ -421,9 +421,9 @@ ModelPtr owningModel(const EntityPtr &entity)
     return model;
 }
 
-ComponentPtr owningComponent(const VariablePtr &variable)
+ComponentPtr owningComponent(const EntityPtr &entity)
 {
-    return std::dynamic_pointer_cast<Component>(variable->parent());
+    return std::dynamic_pointer_cast<Component>(entity->parent());
 }
 
 bool isStandardUnitName(const std::string &name)

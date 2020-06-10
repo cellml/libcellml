@@ -373,10 +373,10 @@ ModelPtr owningModel(const EntityPtr &entity);
  *
  * Return the owning component for this variable.
  *
- * @param entity The variable to get the owning component for.
- * @return The owning @c Component of this variable.
+ * @param entity The entity to get the owning component for.
+ * @return The owning @c Component of this entity.
  */
-ComponentPtr owningComponent(const VariablePtr &variable);
+ComponentPtr owningComponent(const EntityPtr &entity);
 
 /**
  * @brief Remove the given component from the given entity.
