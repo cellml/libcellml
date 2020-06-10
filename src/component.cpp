@@ -281,6 +281,7 @@ bool Component::addReset(const ResetPtr &reset)
 bool Component::removeReset(size_t index)
 {
     if (index < mPimpl->mResets.size()) {
+        mPimpl->mResets.at(index)->removeParent();
         mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
         return true;
     }
@@ -291,6 +292,7 @@ bool Component::removeReset(const ResetPtr &reset)
 {
     auto result = mPimpl->findReset(reset);
     if (result != mPimpl->mResets.end()) {
+        (*result)->removeParent();
         mPimpl->mResets.erase(result);
         return true;
     }
@@ -299,6 +301,9 @@ bool Component::removeReset(const ResetPtr &reset)
 
 void Component::removeAllResets()
 {
+    for(auto const &reset: mPimpl->mResets){
+        reset->removeParent();
+    }
     mPimpl->mResets.clear();
 }
 

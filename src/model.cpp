@@ -162,6 +162,9 @@ bool Model::removeUnits(const UnitsPtr &units)
 
 void Model::removeAllUnits()
 {
+    for (auto const &u : mPimpl->mUnits) {
+        u->removeParent();
+    }
     mPimpl->mUnits.clear();
 }
 
