@@ -296,6 +296,13 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     // Try and remove the ones which don't exist so we trigger the 'false' return statement
     EXPECT_FALSE(c->removeReset(1));
     EXPECT_FALSE(c->removeReset(r1));
+
+    // Coverage for the takeReset function
+    c->addReset(r1);
+    EXPECT_EQ(size_t(1), c->resetCount());
+    auto taken_r1 = c->takeReset(0);
+    EXPECT_EQ(r1, taken_r1);
+    EXPECT_EQ(size_t(0), c->resetCount());
 }
 
 TEST(Reset, resetFromComponentMethod)

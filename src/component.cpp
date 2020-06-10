@@ -227,10 +227,14 @@ VariablePtr Component::variable(const std::string &name) const
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr res = variable(index);
-    removeVariable(index);
+    VariablePtr variable = nullptr;
+    if (index < mPimpl->mVariables.size()) {
+        variable = mPimpl->mVariables.at(index);
+        removeVariable(index);
+        variable->removeParent();
+    }
 
-    return res;
+    return variable;
 }
 
 VariablePtr Component::takeVariable(const std::string &name)
@@ -301,10 +305,22 @@ bool Component::removeReset(const ResetPtr &reset)
 
 void Component::removeAllResets()
 {
-    for(auto const &reset: mPimpl->mResets){
+    for (const auto &reset : mPimpl->mResets) {
         reset->removeParent();
     }
     mPimpl->mResets.clear();
+}
+
+ResetPtr Component::takeReset(size_t index)
+{
+    ResetPtr reset = nullptr;
+    if (index < mPimpl->mResets.size()) {
+        reset = mPimpl->mResets.at(index);
+        removeReset(index);
+        reset->removeParent();
+    }
+
+    return reset;
 }
 
 ResetPtr Component::reset(size_t index) const
