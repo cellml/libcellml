@@ -268,6 +268,12 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     r2->setTestValue(EMPTY_MATH);
     c->addReset(r2);
 
+    // Try and add an existing reset to trigger 'false' return
+    EXPECT_FALSE(c->addReset(r1));
+
+    // Try and add a nullprt to trigger 'false' return
+    EXPECT_FALSE(c->addReset(nullptr));
+
     // Remove the first one and print the model
     c->removeReset(r1);
     a = printer->printModel(m);
