@@ -188,7 +188,7 @@ TEST(Printer, printModelWithImports)
         "    <component component_ref=\"sin\" name=\"parabolic_approx_sin\"/>\n"
         "  </import>\n"
         "  <component name=\"main\" id=\"main\">\n"
-        "    <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\" interface=\"public_and_private\" id=\"x\"/>\n"
+        "    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\" id=\"x\"/>\n"
         "    <variable name=\"sin1\" units=\"dimensionless\" interface=\"public_and_private\" id=\"sin\"/>\n"
         "    <variable name=\"sin2\" units=\"dimensionless\" interface=\"public_and_private\" id=\"deriv_approx\"/>\n"
         "    <variable name=\"deriv_approx_initial_value\" units=\"dimensionless\" initial_value=\"0\" interface=\"public_and_private\" id=\"deriv_approx_initial_value\"/>\n"

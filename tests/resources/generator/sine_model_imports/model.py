@@ -50,7 +50,6 @@ def create_variables_array():
 
 
 def initialize_states_and_constants(states, variables):
-    states[0] = 0.0
     variables[0] = 0.75
     variables[1] = 0.0
     variables[3] = 2.0/3.14159265358979
@@ -58,6 +57,7 @@ def initialize_states_and_constants(states, variables):
     variables[5] = 3.14159265358979/2.0
     variables[6] = 3.14159265358979
     variables[7] = 3.0*3.14159265358979/2.0
+    states[0] = variables[1]
 
 
 def compute_computed_constants(variables):
