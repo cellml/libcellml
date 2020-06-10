@@ -33,7 +33,6 @@ namespace libcellml {
  * Base URLs of specification and example sites from which the Issue::url() will be constructed.
  */
 static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
-static const std::string baseExampleUrl = "TODO";
 
 /**
  * Vector of base units.
