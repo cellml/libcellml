@@ -296,8 +296,9 @@ public:
      * @sa removeReset
      *
      * @param reset The reset to add.
+     * @return @c true if the reset is added or @c false otherwise.
      */
-    void addReset(const ResetPtr &reset);
+    bool addReset(const ResetPtr &reset);
 
     /**
      * @brief Remove the reset at the given @p index from this component.
@@ -310,7 +311,7 @@ public:
      *
      * @param index The index of the reset to remove.
      *
-     * @return True if the reset was removed, false otherwise.
+     * @return @c true if the reset was removed, @c false otherwise.
      */
     bool removeReset(size_t index);
 

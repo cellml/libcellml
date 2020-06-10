@@ -569,3 +569,17 @@ TEST(Component, addVariableMultipleTimes)
     EXPECT_EQ(size_t(0), tomato->variableCount());
     EXPECT_EQ(size_t(1), apple->variableCount());
 }
+
+TEST(Component, preventSegfaultInAddSomething)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+
+    // Tests to show segfaults fixed when dodgy things are added to other things,
+    // now they return false instead of segfault.
+    EXPECT_FALSE(component->addVariable(nullptr));
+    EXPECT_FALSE(component->addReset(nullptr));
+    EXPECT_FALSE(component->addComponent(nullptr));
+    EXPECT_FALSE(model->addComponent(nullptr));
+    EXPECT_FALSE(model->addUnits(nullptr));
+}

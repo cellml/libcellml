@@ -102,6 +102,10 @@ bool Model::doAddComponent(const ComponentPtr &component)
 
 bool Model::addUnits(const UnitsPtr &units)
 {
+    if (units == nullptr) {
+        return false;
+    }
+
     // Prevent adding multiple times to list.
     if (hasUnits(units)) {
         return false;
