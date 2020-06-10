@@ -111,16 +111,13 @@ bool Model::addUnits(const UnitsPtr &units)
         return false;
     }
 
-    // Prevent adding to multiple models: create copy otherwise.
+    // Prevent adding to multiple models: move units to this model.
     if (units->hasParent()) {
-        auto copyUnits = units->clone();
-        mPimpl->mUnits.push_back(copyUnits);
-        copyUnits->setParent(shared_from_this());
-    } else {
-        mPimpl->mUnits.push_back(units);
-        units->setParent(shared_from_this());
+        auto otherParent = std::dynamic_pointer_cast<Model>(units->parent());
+        otherParent->removeUnits(units);
     }
-
+    mPimpl->mUnits.push_back(units);
+    units->setParent(shared_from_this());
     return true;
 }
 
@@ -861,7 +858,13 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Add all required units to a model so referenced units can be resolved.
         auto requiredUnitsModel = Model::create();
         for (const auto &units : requiredUnits) {
-            requiredUnitsModel->addUnits(units);
+            // Cloning units present elsewhere so that they don't get moved by the addUnits function:
+            if (units->parent() == nullptr) {
+                requiredUnitsModel->addUnits(units);
+            } else {
+                auto cloned = units->clone();
+                requiredUnitsModel->addUnits(cloned);
+            }
         }
 
         // Make a map of component name to component pointer.
