@@ -324,7 +324,6 @@ def create_variables_array():
 
 
 def initialize_states_and_constants(states, variables):
-    states[0] = 0.0
     variables[0] = 1.0
     variables[1] = 2.0
     variables[2] = 3.0
@@ -342,6 +341,7 @@ def initialize_states_and_constants(states, variables):
     variables[183] = 3.14159265358979
     variables[184] = inf
     variables[185] = nan
+    states[0] = 0.0
 
 
 def compute_computed_constants(variables):
