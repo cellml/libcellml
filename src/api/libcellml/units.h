@@ -30,6 +30,10 @@ limitations under the License.
 // information.)
 #undef PASCAL
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
+#endif
+
 namespace libcellml {
 
 /**
