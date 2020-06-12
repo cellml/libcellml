@@ -15,11 +15,11 @@
 %feature("docstring") libcellml::GeneratorVariable
 "Defines a variable created by processing a :class:`Model` with the :class:`Generator`.";
 
+%feature("docstring") libcellml::GeneratorVariable::initialisingVariable
+"Return the initialising :class:`Variable`.";
+
 %feature("docstring") libcellml::GeneratorVariable::variable
 "Return the :class:`Variable`.";
-
-%feature("docstring") libcellml::GeneratorVariable::component
-"Return the :class:`Component`.";
 
 %feature("docstring") libcellml::GeneratorVariable::type
 "Return the :enum:`GeneratorVariable::Type`.";
