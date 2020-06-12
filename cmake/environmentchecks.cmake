@@ -16,44 +16,48 @@ include(CheckCXXCompilerFlag)
 
 get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
-find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
-
-find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
-find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
-find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
-find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
 find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
-find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
-find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
-find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
-find_package(Doxygen)
-find_package(Sphinx)
-find_package(SWIG 3)
+# Need to change a lot of what we would normally do as it doesn't apply to Emscripten.
+if (NOT EMSCRIPTEN)
+  find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
-set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+  find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
+  find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
+  find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
+  find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
+  find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
+  find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
+  find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
-set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
-check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS_OK)
+  find_package(Doxygen)
+  find_package(Sphinx)
+  find_package(SWIG 3)
 
-set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
-check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS_OK)
+  set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
-set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
+  set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
+  check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS_OK)
 
-mark_as_advanced(
-  CLANG_TIDY_EXE
-  CLANG_FORMAT_EXE
-  FIND_EXE
-  GCC_COVERAGE_COMPILER_FLAGS_OK
-  GCOV_EXE
-  GIT_EXE
-  LLVM_COV_EXE
-  LLVM_COVERAGE_COMPILER_FLAGS_OK
-  LLVM_PROFDATA_EXE
-  SWIG_EXECUTABLE
-  VALGRIND_EXE
-)
+  set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
+  check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS_OK)
+
+  set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
+
+  mark_as_advanced(
+    CLANG_TIDY_EXE
+    CLANG_FORMAT_EXE
+    FIND_EXE
+    GCC_COVERAGE_COMPILER_FLAGS_OK
+    GCOV_EXE
+    GIT_EXE
+    LLVM_COV_EXE
+    LLVM_COVERAGE_COMPILER_FLAGS_OK
+    LLVM_PROFDATA_EXE
+    SWIG_EXECUTABLE
+    VALGRIND_EXE
+  )
+endif()
 
 # Find libxml2
 set(HAVE_LIBXML2_CONFIG FALSE)
@@ -102,7 +106,7 @@ if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FL
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
 endif()
 
-if(WIN32)
+if(WIN32 AND NOT EMSCRIPTEN)
   find_program(MAKENSIS_EXE NAMES ${PREFERRED_NSIS_NAMES} makensis
     HINTS "C:/Program\ Files/NSIS/" "C:/Program\ Files\ (x86)/NSIS/")
   mark_as_advanced(MAKENSIS_EXE)

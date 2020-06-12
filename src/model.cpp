@@ -110,9 +110,9 @@ bool Model::removeUnits(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        auto units = *(mPimpl->mUnits.begin() + int64_t(index));
+        auto units = *(mPimpl->mUnits.begin() + ssize_t(index));
         units->removeParent();
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ssize_t(index));
         status = true;
     }
 
@@ -202,7 +202,7 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
     if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + int64_t(index), units);
+        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + ssize_t(index), units);
         status = true;
     }
 
@@ -682,7 +682,7 @@ IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originSta
     rebasedStack.resize(originStack.size(), SIZE_MAX);
     if (rebasedStack == originStack) {
         rebasedStack = destinationStack;
-        auto offsetIt = stack.begin() + static_cast<int64_t>(originStack.size());
+        auto offsetIt = stack.begin() + static_cast<ssize_t>(originStack.size());
         rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
     } else {
         rebasedStack.clear();

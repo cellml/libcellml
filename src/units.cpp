@@ -395,7 +395,7 @@ bool Units::removeUnit(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + ssize_t(index));
         status = true;
     }
 

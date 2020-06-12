@@ -149,7 +149,7 @@ bool Component::removeVariable(size_t index)
 {
     if (index < mPimpl->mVariables.size()) {
         auto variable = mPimpl->mVariables[index];
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + ssize_t(index));
         variable->removeParent();
         return true;
     }
@@ -242,12 +242,13 @@ bool Component::hasVariable(const std::string &name) const
 void Component::addReset(const ResetPtr &reset)
 {
     mPimpl->mResets.push_back(reset);
+    reset->setParent(shared_from_this());
 }
 
 bool Component::removeReset(size_t index)
 {
     if (index < mPimpl->mResets.size()) {
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + ssize_t(index));
         return true;
     }
 
@@ -277,6 +278,18 @@ ResetPtr Component::reset(size_t index) const
     }
 
     return nullptr;
+}
+
+ResetPtr Component::takeReset(size_t index)
+{
+    ResetPtr reset = nullptr;
+    if (index < mPimpl->mResets.size()) {
+        reset = mPimpl->mResets.at(index);
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + ssize_t(index));
+        reset->removeParent();
+    }
+
+    return reset;
 }
 
 size_t Component::resetCount() const

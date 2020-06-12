@@ -356,7 +356,7 @@ std::string sha1(const std::string &string)
     while (true) {
         std::array<char, BLOCK_BYTES> sbuf = {};
 
-        is.read(sbuf.data(), int64_t(BLOCK_BYTES - buffer.size()));
+        is.read(sbuf.data(), ssize_t(BLOCK_BYTES - buffer.size()));
 
         buffer.append(sbuf.data(), size_t(is.gcount()));
 
