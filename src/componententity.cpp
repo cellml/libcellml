@@ -97,7 +97,7 @@ bool ComponentEntity::removeComponent(size_t index)
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
         auto component = mPimpl->mComponents[index];
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + ssize_t(index));
         component->removeParent();
         status = true;
     }
@@ -195,7 +195,7 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + ssize_t(index));
         component->removeParent();
     }
 
@@ -228,7 +228,7 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &compone
         parent = oldComponent->parent();
     }
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + ssize_t(index), component);
         component->setParent(parent);
         status = true;
     }

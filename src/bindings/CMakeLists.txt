@@ -13,15 +13,14 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings that use SWIG.
-    find_package(SWIG 3 REQUIRED)
-    include(${SWIG_USE_FILE})
+  find_package(SWIG 3 REQUIRED)
+  include(${SWIG_USE_FILE})
 endif()
 
 if(LIBCELLML_BINDINGS_PYTHON)
-    add_subdirectory(python)
+  add_subdirectory(python)
 endif()
 
-#if (EMSCRIPTEN)
-if (TRUE)
-    add_subdirectory(javascript)
+if (EMSCRIPTEN)
+  add_subdirectory(javascript)
 endif ()

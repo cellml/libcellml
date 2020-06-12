@@ -7,8 +7,8 @@ using namespace emscripten;
 
 
 EMSCRIPTEN_BINDINGS(libcellml_componententity) {
+
     class_<libcellml::ComponentEntity, base<libcellml::NamedEntity>>("ComponentEntity")
-//        .smart_ptr_constructor("ComponentEntity", &std::make_shared<libcellml::ComponentEntity>)
         .function("addComponent", &libcellml::ComponentEntity::addComponent)
         .function("componentCount", &libcellml::ComponentEntity::componentCount)
         .function("containsComponentByName", select_overload<bool(const std::string &, bool) const>(&libcellml::ComponentEntity::containsComponent))

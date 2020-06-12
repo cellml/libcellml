@@ -10,8 +10,6 @@ EMSCRIPTEN_BINDINGS(libcellml_model) {
 
     class_<libcellml::Model, base<libcellml::ComponentEntity>>("Model")
         .smart_ptr_constructor("Model", select_overload<libcellml::ModelPtr()>(&libcellml::Model::create))
-//        .smart_ptr_constructor("ModelSetName", select_overload<libcellml::ModelPtr(const std::string &)>(&libcellml::Model::create))
-//        .smart_ptr_constructor("Model", &std::make_shared<libcellml::Model>)
         .function("addUnits", &libcellml::Model::addUnits)
         .function("removeUnitsByIndex", select_overload<bool(size_t)>(&libcellml::Model::removeUnits))
         .function("removeUnitsByName", select_overload<bool(const std::string &)>(&libcellml::Model::removeUnits))
@@ -29,6 +27,6 @@ EMSCRIPTEN_BINDINGS(libcellml_model) {
         .function("unitsCount", &libcellml::Model::unitsCount)
         .function("resolveImports", &libcellml::Model::resolveImports)
         .function("hasUnresolvedImports", &libcellml::Model::hasUnresolvedImports)
-            .function("clone", &libcellml::Model::clone)
+        .function("clone", &libcellml::Model::clone)
     ;
 }
