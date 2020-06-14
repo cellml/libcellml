@@ -215,7 +215,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "  <component name=\"valid_name\">\n"
         "    <variable name=\"variable1\"/>\n"
         "    <variable name=\"variable2\"/>\n"
-        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"2\">\n" // only difference is order of reset
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"2\">\n" // only difference is order of reset.
         "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "      </test_value>\n"
@@ -261,7 +261,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     a = printer->printModel(m);
     EXPECT_EQ(e1, a);
 
-    // Add another reset
+    // Add another reset.
     r2->setVariable(v1);
     r2->setTestVariable(v2);
     r2->setOrder(2);
@@ -269,23 +269,23 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     r2->setTestValue(EMPTY_MATH);
     c->addReset(r2);
 
-    // Try and add an existing reset to trigger 'false' return
+    // Try and add an existing reset to trigger 'false' return.
     EXPECT_FALSE(c->addReset(r1));
 
-    // Try and add a nullprt to trigger 'false' return
+    // Try and add a nullprt to trigger 'false' return.
     EXPECT_FALSE(c->addReset(nullptr));
 
-    // Remove the first one and print the model
+    // Remove the first one and print the model.
     c->removeReset(r1);
     a = printer->printModel(m);
     EXPECT_EQ(e2, a);
 
-    // Remove the second one and print the model
+    // Remove the second one and print the model.
     c->removeReset(0);
     a = printer->printModel(m);
     EXPECT_EQ(e3, a);
 
-    // Add them both back in and use removeAllResets to remove them
+    // Add them both back in and use removeAllResets to remove them.
     c->addReset(r1);
     c->addReset(r2);
     EXPECT_EQ(size_t(2), c->resetCount());
@@ -294,18 +294,18 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     a = printer->printModel(m);
     EXPECT_EQ(e3, a);
 
-    // Try and remove the ones which don't exist so we trigger the 'false' return statement
+    // Try and remove the ones which don't exist so we trigger the 'false' return statement.
     EXPECT_FALSE(c->removeReset(1));
     EXPECT_FALSE(c->removeReset(r1));
 
-    // Coverage for the takeReset function
+    // Coverage for the takeReset function.
     c->addReset(r1);
     EXPECT_EQ(size_t(1), c->resetCount());
     auto taken_r1 = c->takeReset(0);
     EXPECT_EQ(r1, taken_r1);
     EXPECT_EQ(size_t(0), c->resetCount());
 
-    // Coverage for the addReset function
+    // Coverage for the addReset function.
     EXPECT_TRUE(c->addReset(r2));
     EXPECT_TRUE(c2->addReset(r2));
 }
@@ -327,15 +327,15 @@ TEST(Reset, resetFromComponentMethod)
 
     EXPECT_EQ(size_t(4), c->resetCount());
 
-    // Get by index
+    // Get by index.
     libcellml::ResetPtr rMethod1 = c->reset(1);
     EXPECT_EQ(r2.get(), rMethod1.get());
 
-    // Get const by index
+    // Get const by index.
     const libcellml::ResetPtr vMethod2 = c->reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
-    // Get invalid index
+    // Get invalid index.
     EXPECT_EQ(nullptr, c->reset(7));
 }
 
@@ -426,12 +426,12 @@ TEST(Reset, testValueSetClear)
     const std::string out1 = p->printModel(m);
     EXPECT_EQ(test1, out1);
 
-    // Test setting of test_value block
+    // Test setting of test_value block.
     r->setTestValue(EMPTY_MATH);
     const std::string out2 = p->printModel(m);
     EXPECT_EQ(test2, out2);
 
-    // Test clearing of test_value block
+    // Test clearing of test_value block.
     r->removeTestValue();
     const std::string out3 = p->printModel(m);
     EXPECT_EQ(test1, out3);
@@ -477,7 +477,7 @@ TEST(Reset, testValueAppend)
     r->setOrder(1);
     c->addReset(r);
 
-    // Test appending of test_value block
+    // Test appending of test_value block.
     r->appendTestValue(firstMaths);
     r->appendTestValue(secondMaths);
 
@@ -525,12 +525,12 @@ TEST(Reset, resetValueSetClear)
     const std::string out1 = p->printModel(m);
     EXPECT_EQ(test1, out1);
 
-    // Test setting of reset_value block
+    // Test setting of reset_value block.
     r->setResetValue(EMPTY_MATH);
     const std::string out2 = p->printModel(m);
     EXPECT_EQ(test2, out2);
 
-    // Test clearing of reset_value block
+    // Test clearing of reset_value block.
     r->removeResetValue();
     const std::string out3 = p->printModel(m);
     EXPECT_EQ(test1, out3);
@@ -568,7 +568,7 @@ TEST(Reset, resetValueAppend)
     r->setOrder(1);
     c->addReset(r);
 
-    // Test appending of reset_value block
+    // Test appending of reset_value block.
     r->appendResetValue(firstMaths);
     r->appendResetValue(secondMaths);
 
