@@ -66,11 +66,11 @@ public:
     static ModelPtr create(const std::string &name) noexcept;
 
     /**
-     * @brief Add a child units to this model.
+     * @brief Add a child units item to this model.
      *
-     * Add the given units as a child units of this model. If the units
-     * already belong to another model, they are moved to this one, and
-     * the previous model's units list updated.
+     * Add units by reference to the model. If the units item was
+     * previously in a different model, it is moved to this one,
+     * and the previous model's units list is updated.
      *
      * The function will return @c false and no action is taken if:
      *  - The @p units pointer already exists in this model; and
