@@ -329,7 +329,7 @@ std::string Issue::referenceHeading() const
 
 std::string Issue::url() const
 {
-    std::string issueUrl = "X.Y.Z";
+    std::string issueUrl;
     auto search = ruleToInformation.find(referenceRule());
     if (search != ruleToInformation.end()) {
         issueUrl = search->second.at(1) + search->second.at(2) + ".html?issue=" + search->second.at(0);
