@@ -1621,6 +1621,29 @@ TEST(Parser, parseIdsOnEverythingButMath)
     EXPECT_EQ(in, printer->printModel(model));
 }
 
+TEST(Parser, parseIdOnMath)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"component\" id=\"c1\">\n"
+        "    <variable name=\"variable\" units=\"dimensionless\" id=\"v1\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math_id\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>variable</ci>\n"
+        "        <cn cellml:units=\"dimensionless\">1</cn>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(in, printer->printModel(model));
+}
+
 TEST(Parser, parseResets)
 {
     const std::string in =
