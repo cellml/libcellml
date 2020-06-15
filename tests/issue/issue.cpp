@@ -280,7 +280,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("2.16.3", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
-        EXPECT_EQ("X.Y.Z", e->referenceHeading());
+        EXPECT_EQ("", e->referenceHeading());
         break;
     }
 }
@@ -587,4 +587,13 @@ TEST(Issue, url)
     auto issue = libcellml::Issue::create();
     issue->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
     EXPECT_EQ(expectedUrl, issue->url());
+}
+
+TEST(Issue, undefinedIssueUrl)
+{
+    std::string e;
+    e = "";
+    auto issue = libcellml::Issue::create();
+    EXPECT_EQ(e, issue->url());
+    EXPECT_EQ(e, issue->referenceHeading());
 }
