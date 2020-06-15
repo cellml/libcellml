@@ -319,7 +319,7 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
 std::string Issue::referenceHeading() const
 {
-    std::string heading = "X.Y.Z";
+    std::string heading;
     auto search = ruleToInformation.find(referenceRule());
     if (search != ruleToInformation.end()) {
         heading = search->second.at(0);
@@ -329,6 +329,9 @@ std::string Issue::referenceHeading() const
 
 std::string Issue::url() const
 {
+    if (referenceRule() == Issue::ReferenceRule::UNDEFINED) {
+        return "";
+    }
     std::string issueUrl;
     auto search = ruleToInformation.find(referenceRule());
     if (search != ruleToInformation.end()) {
