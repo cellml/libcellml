@@ -2615,7 +2615,7 @@ TEST(Validator, duplicateIdSimple)
     EXPECT_EQ_ISSUES(e, validator);
 }
 
-TEST(Validator, duplicateIdAllExceptMathBlocks)
+TEST(Validator, duplicateIdAll)
 {
     std::vector<std::string> expectedIssues;
     expectedIssues.emplace_back(
@@ -2629,6 +2629,7 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
         "Duplicated id attribute 'id2' has been found in:\n"
         "  - unit in units 'units2' in model 'everything'\n"
         "  - import source for component 'component1'\n"
+        "  - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable4' in component 'component3'\n"
         "  - reset at index 0 in component 'component2'\n"
         "  - encapsulation component_ref to component 'component2'\n"
         "  - component 'component3' in component 'component2'\n");
@@ -2651,7 +2652,8 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
         "  - imported units 'units1' in model 'everything'\n"
         "  - variable 'variable1' in component 'component2'\n"
         "  - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable2' in component 'component3'\n"
-        "  - reset_value in reset at index 0 in component 'component2'\n");
+        "  - reset_value in reset at index 0 in component 'component2'\n"
+        "  - variable 'variable4' in component 'component3'\n");
 
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" id=\"id1\">\n"
