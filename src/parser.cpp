@@ -724,12 +724,12 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node) const
 {
     // Define types for variable and component pairs.
-    using NamePair = std::pair<std::string, std::string>;
+    using NamePair = std::vector<std::string>;
     using NamePairMap = std::vector<NamePair>;
 
     // Initialise name pairs and flags.
     NamePair componentNamePair;
-    NamePair variableNamePair;
+    NamePair variableNameInfo;
     NamePairMap variableNameMap;
     bool mapVariablesFound = false;
     bool component1Missing = false;
@@ -778,7 +778,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         mParser->addIssue(issue);
         component2Missing = true;
     }
-    componentNamePair = std::make_pair(component1Name, component2Name);
+    componentNamePair = {component1Name, component2Name};
 
     XmlNodePtr childNode = node->firstChild();
 
@@ -824,6 +824,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             std::string variable1Name;
             std::string variable2Name;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
+            mappingId = "";
             while (childAttribute) {
                 if (childAttribute->isType("variable_1")) {
                     variable1Name = childAttribute->value();
@@ -860,8 +861,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 variable2Missing = true;
             }
             // We can have multiple map_variables per connection.
-            variableNamePair = std::make_pair(variable1Name, variable2Name);
-            variableNameMap.push_back(variableNamePair);
+            variableNameInfo = {variable1Name, variable2Name, mappingId};
+            variableNameMap.push_back(variableNameInfo);
             mapVariablesFound = true;
 
         } else if (childNode->isText()) {
@@ -891,24 +892,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     ComponentPtr component1 = nullptr;
     ComponentPtr component2 = nullptr;
     // Now check the objects exist in the model. TODO Remove as is validation?
-    if (model->containsComponent(componentNamePair.first)) {
-        component1 = model->component(componentNamePair.first);
+    if (model->containsComponent(componentNamePair.at(0))) {
+        component1 = model->component(componentNamePair.at(0));
     } else {
         if (!component1Missing) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
+            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.at(0) + "' as component_1 but it does not exist in the model.");
             issue->setModel(model);
             issue->setCause(Issue::Cause::CONNECTION);
             issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT1);
             mParser->addIssue(issue);
         }
     }
-    if (model->containsComponent(componentNamePair.second)) {
-        component2 = model->component(componentNamePair.second);
+    if (model->containsComponent(componentNamePair.at(1))) {
+        component2 = model->component(componentNamePair.at(1));
     } else {
         if (!component2Missing) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
+            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.at(1) + "' as component_2 but it does not exist in the model.");
             issue->setModel(model);
             issue->setCause(Issue::Cause::CONNECTION);
             issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT2);
@@ -922,17 +923,17 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             VariablePtr variable1 = nullptr;
             VariablePtr variable2 = nullptr;
             if (component1) {
-                if (component1->hasVariable(iterPair.first)) {
-                    variable1 = component1->variable(iterPair.first);
+                if (component1->hasVariable(iterPair.at(0))) {
+                    variable1 = component1->variable(iterPair.at(0));
                 } else if (component1->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
                     variable1 = Variable::create();
-                    variable1->setName(iterPair.first);
+                    variable1->setName(iterPair.at(0));
                     component1->addVariable(variable1);
                 } else {
                     if (!variable1Missing) {
                         IssuePtr issue = Issue::create();
-                        issue->setDescription("Variable '" + iterPair.first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
+                        issue->setDescription("Variable '" + iterPair.at(0) + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
                         issue->setComponent(component1);
                         issue->setCause(Issue::Cause::CONNECTION);
                         issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
@@ -941,24 +942,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 }
             } else {
                 IssuePtr issue = Issue::create();
-                issue->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.first + "' as variable_1 but the corresponding component_1 is invalid.");
+                issue->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.at(0) + "' as variable_1 but the corresponding component_1 is invalid.");
                 issue->setModel(model);
                 issue->setCause(Issue::Cause::CONNECTION);
                 issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addIssue(issue);
             }
             if (component2) {
-                if (component2->hasVariable(iterPair.second)) {
-                    variable2 = component2->variable(iterPair.second);
+                if (component2->hasVariable(iterPair.at(1))) {
+                    variable2 = component2->variable(iterPair.at(1));
                 } else if (component2->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
                     variable2 = Variable::create();
-                    variable2->setName(iterPair.second);
+                    variable2->setName(iterPair.at(1));
                     component2->addVariable(variable2);
                 } else {
                     if (!variable2Missing) {
                         IssuePtr issue = Issue::create();
-                        issue->setDescription("Variable '" + iterPair.second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
+                        issue->setDescription("Variable '" + iterPair.at(1) + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
                         issue->setComponent(component1);
                         issue->setCause(Issue::Cause::CONNECTION);
                         issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
@@ -967,7 +968,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 }
             } else {
                 IssuePtr issue = Issue::create();
-                issue->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.second + "' as variable_2 but the corresponding component_2 is invalid.");
+                issue->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.at(1) + "' as variable_2 but the corresponding component_2 is invalid.");
                 issue->setModel(model);
                 issue->setCause(Issue::Cause::CONNECTION);
                 issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
@@ -975,7 +976,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
             // Set the variable equivalence relationship for this variable pair.
             if ((variable1) && (variable2)) {
-                Variable::addEquivalence(variable1, variable2, mappingId, connectionId);
+                Variable::addEquivalence(variable1, variable2, iterPair.at(2), connectionId);
             }
         }
     } else {
