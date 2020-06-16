@@ -132,11 +132,13 @@ std::string Component::math() const
 void Component::setMath(const std::string &math)
 {
     mPimpl->mMath = math;
+    // KRM: Interrogate the string provided and see if it contains an ID to update?
 }
 
 void Component::removeMath()
 {
     mPimpl->mMath.clear();
+    // KRM: Also clear the ID string?
 }
 
 void Component::addVariable(const VariablePtr &variable)

@@ -135,6 +135,7 @@ std::string Reset::testValueId() const
 void Reset::setTestValue(const std::string &math)
 {
     mPimpl->mTestValue = math;
+    // KRM Should this try and update the ID too?
 }
 
 void Reset::removeTestValue()

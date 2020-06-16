@@ -44,4 +44,5 @@ using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::Interface
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
+using IdMap = std::map<std::string, std::pair<int, std::string>>; /**< Type definition for map of IDs in Validator. **/
 } // namespace libcellml
