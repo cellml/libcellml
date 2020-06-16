@@ -1537,13 +1537,25 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
             info = "  - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
             addIdMapItem(item->testValueId(), info, idMap);
         }
+        if (!item->testValueMathId().empty()) {
+            info = "  - MathML child of test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+            addIdMapItem(item->testValueMathId(), info, idMap);
+        }
         if (!item->resetValueId().empty()) {
             info = "  - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
             addIdMapItem(item->resetValueId(), info, idMap);
         }
+        if (!item->resetValueMathId().empty()) {
+            info = "  - MathML child of reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+            addIdMapItem(item->resetValueMathId(), info, idMap);
+        }
     }
 
-    // Maths. KRM TODO: Maths IDs are not available at the moment.
+    // Maths.
+    if (!component->mathId().empty()) {
+        info = "  - math in component '" + component->name() + "'\n";
+        addIdMapItem(component->mathId(), info, idMap);
+    }
 
     // Imports.
     if (component->isImport() && component->importSource() != nullptr && !component->importSource()->id().empty()) {
