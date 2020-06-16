@@ -2617,7 +2617,6 @@ TEST(Validator, duplicateIdSimple)
 
 TEST(Validator, duplicateIdAllExceptMathBlocks)
 {
-    // KRM: NB that the reset maths strings aren't fit for purpose ... copied from parser test for ids.
     std::vector<std::string> expectedIssues;
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id1' has been found in:\n"
@@ -2626,7 +2625,6 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
         "  - encapsulation in model 'everything'\n"
         "  - variable 'variable2' in component 'component2'\n"
         "  - MathML child of reset_value in reset at index 0 in component 'component2'\n");
-    // Missing math block in reset_value id1.
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id2' has been found in:\n"
         "  - unit in units 'units2' in model 'everything'\n"
@@ -2646,7 +2644,8 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
         "  - import source for units 'units1'\n"
         "  - component 'component2' in model 'everything'\n"
         "  - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2'\n"
-        "  - MathML child of test_value in reset at index 0 in component 'component2'\n");
+        "  - MathML child of test_value in reset at index 0 in component 'component2'\n"
+        "  - math in component 'component3'\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id5' has been found in:\n"
         "  - imported units 'units1' in model 'everything'\n"
@@ -2694,6 +2693,13 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
                            "  <component name=\"component3\" id=\"id2\">\n"
                            "    <variable name=\"variable4\" units=\"units2\" interface=\"public\" id=\"id5\"/>\n"
                            "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"id3\"/>\n"
+                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"id4\">\n"
+                           "      <apply>\n"
+                           "        <eq/>\n"
+                           "        <ci>variable4</ci>\n"
+                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                           "      </apply>\n"
+                           "    </math>\n"
                            "  </component>\n"
                            "  <connection component_1=\"component2\" component_2=\"component3\" id=\"id4\">\n"
                            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"id5\"/>\n"
@@ -2708,10 +2714,7 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
-
-    auto component = model->component("component2");
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
-    printIssues(validator);
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
