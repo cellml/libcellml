@@ -75,6 +75,12 @@
 %feature("docstring") libcellml::Reset::resetValueId
 "Returns the :class: reset_value id string of this reset.";
 
+%feature("docstring") libcellml::Reset::testValueMathId
+"Return the string from the test value math block's id attribute, if present.";
+
+%feature("docstring") libcellml::Reset::resetValueMathId
+"Return the string from the reset value math block's id attribute, if present.";
+
 %feature("docstring") libcellml::Reset::clone
 "Create a copy of this reset.";
 
@@ -92,4 +98,3 @@
 
 %include "libcellml/types.h"
 %include "libcellml/reset.h"
-
