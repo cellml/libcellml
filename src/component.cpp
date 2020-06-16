@@ -139,7 +139,7 @@ void Component::removeMath()
     mPimpl->mMath.clear();
 }
 
-std::string Component::mathId()
+std::string Component::mathId() const
 {
     // Parse a MathML string and return the id attribute, if present.
     return idFromMathML(math());
