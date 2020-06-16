@@ -1190,7 +1190,7 @@ TEST(Connection, mappingId)
     EXPECT_EQ("id12a",
               libcellml::Variable::equivalenceMappingId(
                   model->component("c1")->variable("v1"),
-                  model->component("c2")->variable("v2a")));  // <<< Fails because id is "id12b"
+                  model->component("c2")->variable("v2a")));
     EXPECT_EQ("id12b",
               libcellml::Variable::equivalenceMappingId(
                   model->component("c1")->variable("v1"),
