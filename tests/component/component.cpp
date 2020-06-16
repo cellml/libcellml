@@ -542,3 +542,17 @@ TEST(Component, onlyOneParentAtAnyGivenTime)
     EXPECT_EQ(size_t(2), parent->componentCount());
     EXPECT_EQ(size_t(1), child2->componentCount());
 }
+
+TEST(Component, idFromMathML)
+{
+    // KRM: Test to demonstrate expected functionality to get id from MathML string.
+    auto component = libcellml::Component::create("component");
+    auto mathNoId = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+    auto mathId = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId\"/>\n";
+
+    component->setMath(mathNoId);
+    EXPECT_EQ('',component->mathId());
+
+    component->setMath(mathId);
+    EXPECT_EQ("myID",component->mathId());
+}
