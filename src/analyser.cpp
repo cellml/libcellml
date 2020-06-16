@@ -30,7 +30,7 @@ struct Analyser::AnalyserImpl
 
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 {
-    (void) model;
+    (void)model;
 }
 
 Analyser::Analyser()
