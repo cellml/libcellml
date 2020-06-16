@@ -16,6 +16,14 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
-TEST(Analyser, empty)
+#include <libcellml>
+
+TEST(Analyser, emptyModel)
 {
+    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+
+    analyser->processModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
 }

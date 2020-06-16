@@ -25,7 +25,13 @@ namespace libcellml {
  */
 struct Analyser::AnalyserImpl
 {
+    void processModel(const ModelPtr &model);
 };
+
+void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
+{
+    (void) model;
+}
 
 Analyser::Analyser()
     : mPimpl(new AnalyserImpl())
@@ -40,6 +46,13 @@ Analyser::~Analyser()
 AnalyserPtr Analyser::create() noexcept
 {
     return AnalyserPtr {new Analyser {}};
+}
+
+void Analyser::processModel(const ModelPtr &model)
+{
+    // Process the model.
+
+    mPimpl->processModel(model);
 }
 
 } // namespace libcellml
