@@ -545,14 +545,39 @@ TEST(Component, onlyOneParentAtAnyGivenTime)
 
 TEST(Component, idFromMathML)
 {
-    // KRM: Test to demonstrate expected functionality to get id from MathML string.
-    auto component = libcellml::Component::create("component");
-    auto mathNoId = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
-    auto mathId = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId\"/>\n";
-
-    component->setMath(mathNoId);
-    EXPECT_EQ('',component->mathId());
-
+    // Test to demonstrate expected functionality to get id from MathML string.
+    auto component = libcellml::Component::create();
+    std::string mathId = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId\"/> and some other stuff\n";
     component->setMath(mathId);
-    EXPECT_EQ("myID",component->mathId());
+    EXPECT_EQ("myId", component->mathId());
+}
+
+TEST(Component, coverageMathMLId)
+{
+    std::string noId = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+    std::string lotsOfWhitespace = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"      id   = \"myId\"   />\n";
+    std::string noClosingBrackets = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId\"   ";
+    std::string emptyString;
+    std::string noOpeningQuotes = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id= myId\"/> and some other stuff\n";
+    std::string noClosingQuotes = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId /> and some other stuff\n";
+
+    auto component = libcellml::Component::create();
+
+    component->setMath(noId);
+    EXPECT_TRUE(component->mathId().empty());
+
+    component->setMath(noClosingBrackets);
+    EXPECT_TRUE(component->mathId().empty());
+
+    component->setMath(noOpeningQuotes);
+    EXPECT_TRUE(component->mathId().empty());
+
+    component->setMath(noClosingQuotes);
+    EXPECT_TRUE(component->mathId().empty());
+
+    component->setMath(emptyString);
+    EXPECT_TRUE(component->mathId().empty());
+
+    component->setMath(lotsOfWhitespace);
+    EXPECT_EQ("myId", component->mathId());
 }

@@ -21,6 +21,8 @@ limitations under the License.
 
 #include "libcellml/variable.h"
 
+#include "utilities.h"
+
 namespace libcellml {
 
 /**
@@ -135,12 +137,16 @@ std::string Reset::testValueId() const
 void Reset::setTestValue(const std::string &math)
 {
     mPimpl->mTestValue = math;
-    // KRM Should this try and update the ID too?
 }
 
 void Reset::removeTestValue()
 {
     mPimpl->mTestValue = "";
+}
+
+std::string Reset::testValueMathId() const
+{
+    return idFromMathML(mPimpl->mTestValue);
 }
 
 void Reset::appendResetValue(const std::string &math)
@@ -176,6 +182,11 @@ void Reset::removeResetValueId()
 std::string Reset::resetValueId() const
 {
     return mPimpl->mResetValueId;
+}
+
+std::string Reset::resetValueMathId() const
+{
+    return idFromMathML(mPimpl->mResetValue);
 }
 
 ResetPtr Reset::clone() const

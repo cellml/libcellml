@@ -194,6 +194,13 @@ public:
     std::string testValueId() const;
 
     /**
+     * @brief Return the id attribute within the MathML test value for this reset.
+     *
+     * @return @c std::string The id attribute within the test value MathML string of this reset.
+     */
+    std::string testValueMathId() const;
+
+    /**
      * @brief Append the argument to the reset value for this reset.
      *
      * Append @p math to the existing reset value for this reset.
@@ -257,6 +264,13 @@ public:
      * @return @c std::string The identifier of the reset value for this reset.
      */
     std::string resetValueId() const;
+
+    /**
+     * @brief Return the id attribute within the MathML reset value for this reset.
+     *
+     * @return @c std::string The id attribute within the reset value MathML string of this reset.
+     */
+    std::string resetValueMathId() const;
 
     /**
      * @brief Create a clone of this reset.
