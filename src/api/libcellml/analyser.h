@@ -44,6 +44,15 @@ public:
      */
     static AnalyserPtr create() noexcept;
 
+    /**
+     * @brief Process the @c Model.
+     *
+     * Process the @c Model using this @c Analyser.
+     *
+     * @param model The @c Model to process.
+     */
+    void processModel(const ModelPtr &model);
+
 private:
     Analyser(); /**< Constructor */
 
