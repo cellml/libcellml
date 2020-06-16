@@ -2589,3 +2589,125 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
+
+TEST(Validator, duplicateIdSimple)
+{
+    std::vector<std::string> e = {"Duplicated id attribute 'id' has been found in:\n"
+                                  "  - model 'model'\n"
+                                  "  - component 'c1' in model 'model'\n"
+                                  "  - variable 'v1' in component 'c1'\n"
+                                  "  - component 'c2' in component 'c1'\n"
+                                  "  - variable 'v2' in component 'c2'\n"};
+
+    auto model = createModelTwoComponentsWithOneVariableEach("model", "c1", "c2", "v1", "v2");
+    model->setId("id");
+    model->component(0)->setId("id");
+    model->component(1)->setId("id");
+    model->component(0)->variable(0)->setId("id");
+    model->component(1)->variable(0)->setId("id");
+    model->component(0)->variable(0)->setUnits("dimensionless");
+    model->component(1)->variable(0)->setUnits("dimensionless");
+
+    model->component(0)->addComponent(model->component(1));
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ_ISSUES(e, validator);
+}
+
+TEST(Validator, duplicateIdAllExceptMathBlocks)
+{
+    // KRM: NB that the reset maths strings aren't fit for purpose ... copied from parser test for ids.
+    std::vector<std::string> expectedIssues;
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id1' has been found in:\n"
+        "  - model 'everything'\n"
+        "  - units 'units2' in model 'everything'\n"
+        "  - encapsulation in model 'everything'\n"
+        "  - variable 'variable2' in component 'component2'\n");
+    // Missing math block in reset_value id1.
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id2' has been found in:\n"
+        "  - unit in units 'units2' in model 'everything'\n"
+        "  - import source for component 'component1'\n"
+        "  - reset at index 0 in component 'component2'\n"
+        "  - encapsulation component_ref to component 'component2'\n"
+        "  - component 'component3' in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id3' has been found in:\n"
+        "  - units 'units3' in model 'everything'\n"
+        "  - imported component 'component1' in model 'everything'\n"
+        "  - test_value in reset at index 0 in component 'component2'\n"
+        "  - variable 'variable2' in component 'component3'\n"
+        "  - encapsulation component_ref to component 'component3'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id4' has been found in:\n"
+        "  - import source for units 'units1'\n"
+        "  - component 'component2' in model 'everything'\n"
+        "  - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2'\n");
+    // Missing math block in test_value id4.
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id5' has been found in:\n"
+        "  - imported units 'units1' in model 'everything'\n"
+        "  - variable 'variable1' in component 'component2'\n"
+        "  - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable2' in component 'component3'\n"
+        "  - reset_value in reset at index 0 in component 'component2'\n");
+
+    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" id=\"id1\">\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"id2\">\n"
+                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"id3\"/>\n"
+                           "  </import>\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"id4\">\n"
+                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"id5\"/>\n"
+                           "  </import>\n"
+                           "  <units name=\"units2\" id=\"id1\">\n"
+                           "    <unit units=\"second\" id=\"id2\"/>\n"
+                           "  </units>\n"
+                           "  <units name=\"units3\" id=\"id3\"/>\n"
+                           "  <units name=\"blob\"/>\n"
+                           "  <component name=\"component2\" id=\"id4\">\n"
+                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"id5\"/>\n"
+                           "    <variable name=\"variable2\" units=\"units2\" id=\"id1\"/>\n"
+                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"id2\">\n"
+                           "      <test_value id=\"id3\">\n"
+                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"id4\">\n"
+                           "          <apply>\n"
+                           "            <eq/>\n"
+                           "            <ci>variable1</ci>\n"
+                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
+                           "          </apply>\n"
+                           "        </math>\n"
+                           "      </test_value>\n"
+                           "      <reset_value id=\"id5\">\n"
+                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"id1\">\n"
+                           "          <apply>\n"
+                           "            <eq/>\n"
+                           "            <ci>variable1</ci>\n"
+                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
+                           "          </apply>\n"
+                           "        </math>\n"
+                           "      </reset_value>\n"
+                           "    </reset>\n"
+                           "  </component>\n"
+                           "  <component name=\"component3\" id=\"id2\">\n"
+                           "    <variable name=\"variable4\" units=\"units2\" interface=\"public\" id=\"id5\"/>\n"
+                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"id3\"/>\n"
+                           "  </component>\n"
+                           "  <connection component_1=\"component2\" component_2=\"component3\" id=\"id4\">\n"
+                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"id5\"/>\n"
+                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable4\" id=\"id2\"/>\n"
+                           "  </connection>\n"
+                           "  <encapsulation id=\"id1\">\n"
+                           "    <component_ref component=\"component2\" id=\"id2\">\n"
+                           "      <component_ref component=\"component3\" id=\"id3\"/>\n"
+                           "    </component_ref>\n"
+                           "  </encapsulation>\n"
+                           "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
