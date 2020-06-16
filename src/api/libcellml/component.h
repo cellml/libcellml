@@ -127,7 +127,7 @@ public:
      *
      * @return id The @c std::string if the id attribute is present, or an empty string if not.
      */
-    std::string mathId();
+    std::string mathId() const;
 
     /**
      * @brief Add a variable by reference as part of this component.
