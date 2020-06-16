@@ -123,6 +123,13 @@ public:
     void removeMath();
 
     /**
+     * @brief Return the id attribute from the math string, if present.
+     *
+     * @return id The @c std::string if the id attribute is present, or an empty string if not.
+     */
+    std::string mathId();
+
+    /**
      * @brief Add a variable by reference as part of this component.
      *
      * Add a variable by reference as part of the given component.

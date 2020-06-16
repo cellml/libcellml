@@ -556,4 +556,34 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
+std::string idFromMathML(const std::string &math)
+{
+    std::string id = math;
+    auto pos = id.find_first_of('>');
+
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(pos + 1);
+
+    pos = id.find("id");
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(0, pos);
+
+    pos = id.find('\"', id.find('\"') + 1);
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(pos);
+
+    pos = id.find('\"') + 1;
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(0, pos);
+    return id;
+}
+
 } // namespace libcellml

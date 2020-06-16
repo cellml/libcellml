@@ -555,4 +555,13 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
+/**
+ * @brief Extract the id string from a MathML string.
+ *
+ * @param math The MathML string to parse.
+ *
+ * @return The id attribute string.
+ */
+std::string idFromMathML(const std::string &math);
+
 } // namespace libcellml
