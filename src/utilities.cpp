@@ -411,18 +411,23 @@ std::string sha1(const std::string &string)
 
 ModelPtr owningModel(const EntityPtr &entity)
 {
+    if (entity == nullptr) {
+        return {};
+    }
     auto model = std::dynamic_pointer_cast<Model>(entity->parent());
     auto component = owningComponent(entity);
     while ((model == nullptr) && (component != nullptr) && component->parent()) {
         model = std::dynamic_pointer_cast<Model>(component->parent());
         component = owningComponent(component);
     }
-
     return model;
 }
 
 ComponentPtr owningComponent(const EntityPtr &entity)
 {
+    if (entity == nullptr) {
+        return {};
+    }
     return std::dynamic_pointer_cast<Component>(entity->parent());
 }
 
