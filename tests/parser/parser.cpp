@@ -1410,11 +1410,11 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
         case (libcellml::Issue::Cause::VARIABLE):
             foundCause.at(6) = true;
             break;
+        case libcellml::Issue::Cause::GENERATOR:
         case libcellml::Issue::Cause::MATHML:
         case libcellml::Issue::Cause::RESET:
         case libcellml::Issue::Cause::UNDEFINED:
         case libcellml::Issue::Cause::XML:
-        case libcellml::Issue::Cause::GENERATOR:
             break;
         }
     }
