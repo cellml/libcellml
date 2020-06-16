@@ -560,6 +560,7 @@ TEST(Component, coverageMathMLId)
     std::string emptyString;
     std::string noOpeningQuotes = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id= myId\"/> and some other stuff\n";
     std::string noClosingQuotes = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId /> and some other stuff\n";
+    std::string idInUrl = "<math xmlns=\"http://www.w3.org/1998/Math/MatidhML\" id=\"myId\"/>\n";
 
     auto component = libcellml::Component::create();
 
@@ -579,5 +580,8 @@ TEST(Component, coverageMathMLId)
     EXPECT_TRUE(component->mathId().empty());
 
     component->setMath(lotsOfWhitespace);
+    EXPECT_EQ("myId", component->mathId());
+
+    component->setMath(idInUrl);
     EXPECT_EQ("myId", component->mathId());
 }
