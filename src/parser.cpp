@@ -726,9 +726,10 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     // Define types for variable and component pairs, and their ids.
     using NameInfo = std::vector<std::string>;
     using NameInfoMap = std::vector<NameInfo>;
+    using NamePair = std::pair<std::string, std::string>;
 
     // Initialise name pairs and flags.
-    NameInfo componentNameInfo;
+    NamePair componentNamePair;
     NameInfo variableNameInfo;
     NameInfoMap variableNameMap;
     bool mapVariablesFound = false;
@@ -778,7 +779,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         mParser->addIssue(issue);
         component2Missing = true;
     }
-    componentNameInfo = {component1Name, component2Name};
+    componentNamePair = std::make_pair(component1Name, component2Name);
 
     XmlNodePtr childNode = node->firstChild();
 
@@ -892,24 +893,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     ComponentPtr component1 = nullptr;
     ComponentPtr component2 = nullptr;
     // Now check the objects exist in the model. TODO Remove as is validation?
-    if (model->containsComponent(componentNameInfo[0])) {
-        component1 = model->component(componentNameInfo[0]);
+    if (model->containsComponent(componentNamePair.first)) {
+        component1 = model->component(componentNamePair.first);
     } else {
         if (!component1Missing) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNameInfo[0] + "' as component_1 but it does not exist in the model.");
+            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
             issue->setModel(model);
             issue->setCause(Issue::Cause::CONNECTION);
             issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT1);
             mParser->addIssue(issue);
         }
     }
-    if (model->containsComponent(componentNameInfo[1])) {
-        component2 = model->component(componentNameInfo[1]);
+    if (model->containsComponent(componentNamePair.second)) {
+        component2 = model->component(componentNamePair.second);
     } else {
         if (!component2Missing) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNameInfo[1] + "' as component_2 but it does not exist in the model.");
+            issue->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
             issue->setModel(model);
             issue->setCause(Issue::Cause::CONNECTION);
             issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_COMPONENT2);
