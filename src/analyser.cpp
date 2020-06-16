@@ -25,12 +25,26 @@ namespace libcellml {
  */
 struct Analyser::AnalyserImpl
 {
+    Analyser::ModelType mModelType = Analyser::ModelType::UNKNOWN;
+
+    AnalyserVariablePtr mVoi = nullptr;
+    std::vector<AnalyserVariablePtr> mStates;
+    std::vector<AnalyserVariablePtr> mVariables;
+
     void processModel(const ModelPtr &model);
+
+    bool hasValidModel() const;
 };
 
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 {
     (void)model;
+}
+
+bool Analyser::AnalyserImpl::hasValidModel() const
+{
+    return (mModelType == Analyser::ModelType::ALGEBRAIC)
+           || (mModelType == Analyser::ModelType::ODE);
 }
 
 Analyser::Analyser()
@@ -53,6 +67,56 @@ void Analyser::processModel(const ModelPtr &model)
     // Process the model.
 
     mPimpl->processModel(model);
+}
+
+Analyser::ModelType Analyser::modelType() const
+{
+    return mPimpl->mModelType;
+}
+
+size_t Analyser::stateCount() const
+{
+    if (!mPimpl->hasValidModel()) {
+        return 0;
+    }
+
+    return mPimpl->mStates.size();
+}
+
+size_t Analyser::variableCount() const
+{
+    if (!mPimpl->hasValidModel()) {
+        return 0;
+    }
+
+    return mPimpl->mVariables.size();
+}
+
+AnalyserVariablePtr Analyser::voi() const
+{
+    if (!mPimpl->hasValidModel()) {
+        return {};
+    }
+
+    return mPimpl->mVoi;
+}
+
+AnalyserVariablePtr Analyser::state(size_t index) const
+{
+    if (!mPimpl->hasValidModel() || (index >= mPimpl->mStates.size())) {
+        return {};
+    }
+
+    return mPimpl->mStates[index];
+}
+
+AnalyserVariablePtr Analyser::variable(size_t index) const
+{
+    if (!mPimpl->hasValidModel() || (index >= mPimpl->mVariables.size())) {
+        return {};
+    }
+
+    return mPimpl->mVariables[index];
 }
 
 } // namespace libcellml
