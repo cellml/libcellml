@@ -376,7 +376,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     if (!encapsulationNodes.empty()) {
-        loadEncapsulation(model, encapsulationNodes[0]);
+        loadEncapsulation(model, encapsulationNodes.at(0));
         if (encapsulationNodes.size() > 1) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Model '" + model->name() + "' has more than one encapsulation element.");
