@@ -2624,7 +2624,8 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
         "  - model 'everything'\n"
         "  - units 'units2' in model 'everything'\n"
         "  - encapsulation in model 'everything'\n"
-        "  - variable 'variable2' in component 'component2'\n");
+        "  - variable 'variable2' in component 'component2'\n"
+        "  - MathML child of reset_value in reset at index 0 in component 'component2'\n");
     // Missing math block in reset_value id1.
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id2' has been found in:\n"
@@ -2644,8 +2645,8 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
         "Duplicated id attribute 'id4' has been found in:\n"
         "  - import source for units 'units1'\n"
         "  - component 'component2' in model 'everything'\n"
-        "  - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2'\n");
-    // Missing math block in test_value id4.
+        "  - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2'\n"
+        "  - MathML child of test_value in reset at index 0 in component 'component2'\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id5' has been found in:\n"
         "  - imported units 'units1' in model 'everything'\n"
@@ -2707,7 +2708,10 @@ TEST(Validator, duplicateIdAllExceptMathBlocks)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
+
+    auto component = model->component("component2");
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
+    printIssues(validator);
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
