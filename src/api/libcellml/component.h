@@ -112,9 +112,11 @@ public:
      * an empty string if math has not been appended, the index is out of range,
      * or the string has been removed.
      *
+     * If no index is specified, the entire math string is returned.
+     *
      * @return @c std::string (index+1)th math string for this component.
      */
-    std::string math(size_t index);
+    std::string math(size_t index) const;
 
     /**
      * @brief Set the math string for this component.
@@ -138,7 +140,14 @@ public:
      *
      * @return Number of <math> elements within the math string.
      */
-    size_t mathCount();
+    size_t mathCount() const;
+
+    /**
+     * @brief Return the id attribute from the math string, if present.
+     *
+     * @return id The @c std::string if the id attribute is present, or an empty string if not.
+     */
+    std::string mathId(size_t index) const;
 
     /**
      * @brief Add a variable by reference as part of this component.

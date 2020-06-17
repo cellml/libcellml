@@ -556,6 +556,38 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
+std::string idFromMathML(const std::string &math)
+{
+    std::string id = math;
+
+    // Remove anything after the first closing bracket.
+    auto pos = id.find_first_of('>');
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(pos + 1);
+
+    // Remove anything before the first "id" string.
+    pos = id.find(" id");
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(0, pos);
+
+    // Remove anything after the second quotes.
+    pos = id.find('\"', id.find('\"') + 1);
+    if (pos >= id.size()) {
+        return "";
+    }
+    id.erase(pos);
+
+    // Remove anything before the first quotes. Don't need to test pos here as will
+    // return in previous test if only one was found.
+    pos = id.find('\"') + 1;
+    id.erase(0, pos);
+    return id;
+}
+
 std::string cleanMathString(const std::string &math)
 {
     // Clean up the given math string so that all its lines have the same

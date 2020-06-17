@@ -134,6 +134,27 @@ std::string Component::math() const
     return mPimpl->mMath;
 }
 
+std::string Component::math(size_t index) const
+{
+    if (index >= mathCount()) {
+        return "";
+    }
+    std::string mathString = math();
+    std::string delimiter = "/math>";
+    size_t pos = 0;
+    size_t num = 0;
+    std::string token;
+    while ((pos = mathString.find(delimiter)) != std::string::npos) {
+        token = mathString.substr(0, pos + delimiter.length());
+        if (num == index) {
+            return token;
+        }
+        mathString.erase(0, pos + delimiter.length());
+        ++num;
+    }
+    return token; // This removes whitespace after the final delimiter ...
+}
+
 void Component::setMath(const std::string &math)
 {
     mPimpl->mMath = math;
@@ -144,7 +165,7 @@ void Component::removeMath()
     mPimpl->mMath.clear();
 }
 
-size_t Component::mathCount()
+size_t Component::mathCount() const
 {
     // Not storing any information about the math string in the component, otherwise it would
     // all have to be updated any time the math string was interacted with.  Probably faster overall
@@ -161,28 +182,10 @@ size_t Component::mathCount()
     return num;
 }
 
-std::string Component::math(size_t index)
+std::string Component::mathId(size_t index) const
 {
-    if(index >= mathCount()){
-        return "";
-    }
-    std::string mathString = math();
-    std::string delimiter = "/math>";
-    size_t pos = 0;
-    size_t num = 0;
-    std::string token;
-    while ((pos = mathString.find(delimiter)) != std::string::npos) {
-        token = mathString.substr(0, pos + delimiter.length());
-        if(num == index){
-            return token;
-        }
-        mathString.erase(0, pos + delimiter.length());
-        ++num;
-    }
-    return token;
+    return idFromMathML(math(index));
 }
-
-
 
 void Component::addVariable(const VariablePtr &variable)
 {

@@ -556,6 +556,15 @@ static inline std::string trimCopy(std::string s)
 }
 
 /**
+ * @brief Extract the id string from a MathML string.
+ *
+ * @param math The MathML string to parse.
+ *
+ * @return The id attribute string.
+ */
+std::string idFromMathML(const std::string &math);
+
+/**
  * @brief Clean up a given MathML string to have one statement per line.
  *
  * @param math The string to clean.

@@ -33,6 +33,9 @@ If `math` is an empty string, math will be removed from the component.";
 %feature("docstring") libcellml::Component::countMath
 "Returns the number of <math> blocks within the math string.";
 
+%feature("docstring") libcellml::Component::mathId
+"Returns the id attribute of <math> block at the given index.";
+
 %feature("docstring") libcellml::Component::addVariable
 "Adds variable `variable` to this component.";
 
