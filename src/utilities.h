@@ -555,4 +555,12 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
+/**
+ * @brief Clean up a given MathML string to have one statement per line.
+ *
+ * @param math The string to clean.
+ * @return string that has been cleaned.
+ */
+std::string cleanMathString(const std::string &math);
+
 } // namespace libcellml

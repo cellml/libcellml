@@ -17,14 +17,19 @@ limitations under the License.
 #include "libcellml/component.h"
 
 #include <algorithm>
+#include <sstream>
 #include <string>
 #include <vector>
+
+#include <iostream> // KRM
 
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include "utilities.h"
+#include "xmldoc.h"
+#include "xmlutils.h"
 
 namespace libcellml {
 
@@ -138,6 +143,46 @@ void Component::removeMath()
 {
     mPimpl->mMath.clear();
 }
+
+size_t Component::mathCount()
+{
+    // Not storing any information about the math string in the component, otherwise it would
+    // all have to be updated any time the math string was interacted with.  Probably faster overall
+    // to only process what data is required when asked.
+
+    auto mathString = math();
+    size_t num = 0;
+    std::string::size_type pos = 0;
+    std::string target = "<math";
+    while ((pos = mathString.find(target, pos)) != std::string::npos) {
+        ++num;
+        pos += target.length();
+    }
+    return num;
+}
+
+std::string Component::math(size_t index)
+{
+    if(index >= mathCount()){
+        return "";
+    }
+    std::string mathString = math();
+    std::string delimiter = "/math>";
+    size_t pos = 0;
+    size_t num = 0;
+    std::string token;
+    while ((pos = mathString.find(delimiter)) != std::string::npos) {
+        token = mathString.substr(0, pos + delimiter.length());
+        if(num == index){
+            return token;
+        }
+        mathString.erase(0, pos + delimiter.length());
+        ++num;
+    }
+    return token;
+}
+
+
 
 void Component::addVariable(const VariablePtr &variable)
 {

@@ -1997,6 +1997,36 @@ TEST(Parser, repeatedMathParsePrintBehaviour)
     EXPECT_EQ(in, output2);
 }
 
+TEST(Parser, twoMathBlocksParseClean)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"A\" initial_value=\"1.0\"/>\n"
+        "    <variable name=\"B\" initial_value=\"-1.0\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>C</ci>\n"
+        "        <apply>\n"
+        "          <plus/>\n"
+        "          <ci>A</ci>\n"
+        "          <ci>B</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+
+    libcellml::ModelPtr model = parser->parseModel(in);
+    std::string output = printer->printModel(model);
+    EXPECT_EQ(in, output);
+}
+
 TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
 {
     const std::string in =

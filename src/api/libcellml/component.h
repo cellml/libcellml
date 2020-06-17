@@ -106,6 +106,17 @@ public:
     std::string math() const;
 
     /**
+     * @brief Get the string for (index+1)th math block in this component.
+     *
+     * Returns a math string if one has been appended for this component. Returns
+     * an empty string if math has not been appended, the index is out of range,
+     * or the string has been removed.
+     *
+     * @return @c std::string (index+1)th math string for this component.
+     */
+    std::string math(size_t index);
+
+    /**
      * @brief Set the math string for this component.
      *
      * Sets the math string for this component. If @p math is an empty
@@ -121,6 +132,13 @@ public:
      * Clears the math string from this component.
      */
     void removeMath();
+
+    /**
+     * @brief Count the number of <math> elements concatenated into the overall math string.
+     *
+     * @return Number of <math> elements within the math string.
+     */
+    size_t mathCount();
 
     /**
      * @brief Add a variable by reference as part of this component.

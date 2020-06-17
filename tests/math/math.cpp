@@ -323,3 +323,55 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
     a = printer->printModel(model);
     EXPECT_EQ(e, a);
 }
+
+TEST(Maths, countGetSeparateMathBlocks)
+{
+    // Test to show desired behaviour:
+    // - component->math() returns all concatenated math blocks, as normal;
+    // - component->mathCount() returns number of individual <math> blocks;
+    // - component->math(i) returns ith math block string;
+    // - component->mathId(i) returns id attribute of ith math block string.
+
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    std::string math1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math1\">\n"
+                        "      <apply>\n"
+                        "        <eq/>\n"
+                        "        <ci>C</ci>\n"
+                        "        <apply>\n"
+                        "          <plus/>\n"
+                        "          <ci>A</ci>\n"
+                        "          <ci>B</ci>\n"
+                        "        </apply>\n"
+                        "      </apply>\n"
+                        "    </math>";
+    std::string math2 = "<math \n"
+                        "xmlns=\"http://www.w3.org/1998/Math/MathML\" "
+                        " id=\"math2\">\n"
+                        "      <apply><eq/>\n"
+                        "        <ci>C</ci><apply>\n"
+                        "          <plus/>\n"
+                        "          <ci>A   </ci>\n"
+                        "          <ci>B</ci>\n"
+                        "        </apply>\n"
+                        "</apply></math>";
+    component->setMath(math1);
+    component->appendMath(math2);
+
+    // Test existing behaviour.
+    EXPECT_EQ(math1 + math2, component->math());
+
+    // Test count.
+    EXPECT_EQ(size_t(2), component->mathCount());
+
+    // Test splitting.
+    EXPECT_EQ(math1, component->math(0));
+    EXPECT_EQ(math2, component->math(1));
+    EXPECT_TRUE(component->math(99).empty());
+
+    // Test id.
+    EXPECT_EQ("math1", component->mathId(0));
+    EXPECT_EQ("math2", component->mathId(1));
+    EXPECT_TRUE(component->mathId(99).empty());
+
+}
