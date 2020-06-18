@@ -294,7 +294,7 @@ struct Validator::ValidatorImpl
                             std::vector<std::string> &history,
                             std::vector<std::vector<std::string>> &errorList);
 
-    /** @brief Function to check ID fields set within the model scope for duplicates.
+    /** @brief Function to check IDs within the model scope are unique.
      *
      * @param model The model to be checked.
      */
@@ -449,7 +449,7 @@ void Validator::validateModel(const ModelPtr &model)
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
 
-    // Check for duplicated ids across the model.
+    // Check ids across the model are unique.
     mPimpl->checkUniqueIds(model);
 }
 
