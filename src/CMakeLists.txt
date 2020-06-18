@@ -154,7 +154,7 @@ else()
 endif()
 
 # Use target compile features to propogate features to consuming projects.
-target_compile_features(cellml PUBLIC cxx_std_11)
+target_compile_features(cellml PUBLIC cxx_std_17)
 
 set_target_properties(cellml PROPERTIES
   CXX_VISIBILITY_PRESET hidden
@@ -175,7 +175,7 @@ set(DEBUG_HEADER_FILES
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
 
-target_compile_features(cellml_debug_utilities PUBLIC cxx_std_11)
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
 
 target_include_directories(cellml_debug_utilities
   PUBLIC
