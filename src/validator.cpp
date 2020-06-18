@@ -322,6 +322,21 @@ struct Validator::ValidatorImpl
      * @param idMap The IdMap under construction.
      */
     void addIdMapItem(const std::string &id, const std::string &info, IdMap &idMap);
+
+    /** @brief Utility function to parse MathML children and add element ids to idMap.
+     *
+     * @param node XMLNode to read.
+     * @param component Owning component of the MathML string.
+     * @param idMap The IdMap under construction.
+     */
+    void buildMathChildIdMap(const XmlNodePtr &node, const ComponentPtr &component, IdMap &idMap, size_t index);
+
+    /** @brief Utility function to parse math and add element ids to idMap.
+     *
+     * @param component Component to investigate
+     * @param idMap The IdMap under construction.
+     */
+    void buildMathIdMap(const ComponentPtr &component, IdMap &idMap);
 };
 
 Validator::Validator()
@@ -1552,10 +1567,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     }
 
     // Maths.
-    if (!component->mathId().empty()) {
-        info = "  - math in component '" + component->name() + "'\n";
-        addIdMapItem(component->mathId(), info, idMap);
-    }
+    buildMathIdMap(component, idMap);
 
     // Imports.
     if (component->isImport() && component->importSource() != nullptr && !component->importSource()->id().empty()) {
@@ -1572,6 +1584,50 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     // Child components.
     for (size_t c = 0; c < component->componentCount(); ++c) {
         buildComponentIdMap(component->component(c), idMap, reportedConnections);
+    }
+}
+
+void Validator::ValidatorImpl::buildMathIdMap(const ComponentPtr &component, IdMap &idMap)
+{
+    std::vector<XmlDocPtr> docs = multiRootXml(component->math());
+    size_t index = 0;
+    for (const auto &doc : docs) {
+        if (doc->xmlErrorCount() > 0) {
+            return;
+        }
+        XmlNodePtr node = doc->rootNode();
+        if (node == nullptr) {
+            return;
+        }
+        if (!node->isMathmlElement("math")) {
+            return;
+        }
+        buildMathChildIdMap(node, component, idMap, index);
+        ++index;
+    }
+}
+
+void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const ComponentPtr &component, IdMap &idMap, size_t index)
+{
+    std::string info;
+    XmlAttributePtr attribute = node->firstAttribute();
+    while (attribute) {
+        if (attribute->isType("id")) {
+            std::string variable;
+            if (node->name() == "ci") {
+                if (node->firstChild() != nullptr) {
+                    variable = "'" + node->firstChild()->convertToString() + "' ";
+                }
+            }
+            info = "  - MathML " + node->name() + " element " + variable + "in maths block at index " + std::to_string(index) + " in component '" + component->name() + "'\n";
+            addIdMapItem(attribute->value(), info, idMap);
+        }
+        attribute = attribute->next();
+    }
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode) {
+        buildMathChildIdMap(childNode, component, idMap, index);
+        childNode = childNode->next();
     }
 }
 
