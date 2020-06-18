@@ -2646,7 +2646,7 @@ TEST(Validator, duplicateIdAll)
         "  - component 'component2' in model 'everything'\n"
         "  - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2'\n"
         "  - MathML child of test_value in reset at index 0 in component 'component2'\n"
-        "  - math in component 'component3'\n");
+        "  - MathML math element in maths block at index 0 in component 'component3'\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id5' has been found in:\n"
         "  - imported units 'units1' in model 'everything'\n"
@@ -2718,5 +2718,145 @@ TEST(Validator, duplicateIdAll)
     auto model = parser->parseModel(in);
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
+}
+
+TEST(Maths, mathMLDuplicateElementIds)
+{
+    std::vector<std::string> expectedIssues;
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id1' has been found in:\n"
+        "  - model 'model'\n"
+        "  - variable 'A' in component 'component1'\n"
+        "  - MathML math element in maths block at index 0 in component 'component1'\n"
+        "  - MathML math element in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id2' has been found in:\n"
+        "  - variable 'B' in component 'component1'\n"
+        "  - MathML apply element in maths block at index 0 in component 'component1'\n"
+        "  - MathML apply element in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id3' has been found in:\n"
+        "  - variable 'C' in component 'component1'\n"
+        "  - MathML eq element in maths block at index 0 in component 'component1'\n"
+        "  - MathML eq element in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id4' has been found in:\n"
+        "  - MathML ci element 'C' in maths block at index 0 in component 'component1'\n"
+        "  - variable 'C' in component 'component2'\n"
+        "  - MathML ci element 'C' in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id5' has been found in:\n"
+        "  - MathML apply element in maths block at index 0 in component 'component1'\n"
+        "  - variable 'B' in component 'component2'\n"
+        "  - MathML apply element in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id6' has been found in:\n"
+        "  - MathML plus element in maths block at index 0 in component 'component1'\n"
+        "  - variable 'A' in component 'component2'\n"
+        "  - MathML plus element in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id7' has been found in:\n"
+        "  - component 'component1' in model 'model'\n"
+        "  - MathML ci element 'A' in maths block at index 0 in component 'component1'\n"
+        "  - MathML ci element 'A' in maths block at index 1 in component 'component2'\n");
+    expectedIssues.emplace_back(
+        "Duplicated id attribute 'id8' has been found in:\n"
+        "  - MathML ci element 'B' in maths block at index 0 in component 'component1'\n"
+        "  - component 'component2' in model 'model'\n"
+        "  - MathML ci element 'B' in maths block at index 1 in component 'component2'\n");
+
+    auto model = libcellml::Model::create("model");
+    auto component1 = libcellml::Component::create("component1");
+    auto component2 = libcellml::Component::create("component2");
+    auto variableA1 = libcellml::Variable::create("A");
+    auto variableB1 = libcellml::Variable::create("B");
+    auto variableC1 = libcellml::Variable::create("C");
+    auto variableA2 = libcellml::Variable::create("A");
+    auto variableB2 = libcellml::Variable::create("B");
+    auto variableC2 = libcellml::Variable::create("C");
+
+    auto validator = libcellml::Validator::create();
+
+    std::string math1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"mathId\">\n"
+                        "  <apply id=\"apply1\">\n"
+                        "    <eq id=\"eqId\"/>\n"
+                        "    <ci id=\"CiIdC\">C</ci>\n"
+                        "    <apply id=\"apply2\">\n"
+                        "      <plus id=\"plusId\"/>\n"
+                        "      <ci id=\"CiIdA\">A</ci>\n"
+                        "      <ci id=\"CiIdB\">B</ci>\n"
+                        "    </apply>\n"
+                        "  </apply>\n"
+                        "</math>";
+    std::string math2 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"id1\">\n"
+                        "  <apply id=\"id2\">\n"
+                        "    <eq id=\"id3\"/>\n"
+                        // Errors begin from here with duplicated ids: 5 in total.
+                        "    <ci id=\"id1\">C</ci>\n"
+                        "    <apply id=\"id2\">\n"
+                        "      <plus id=\"id3\"/>\n"
+                        "      <ci id=\"id1\">A</ci>\n"
+                        "      <ci id=\"id2\">B</ci>\n"
+                        "    </apply>\n"
+                        "  </apply>\n"
+                        "</math>";
+    std::string math3 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"id1\">\n"
+                        "  <apply id=\"id2\">\n"
+                        "    <eq id=\"id3\"/>\n"
+                        "    <ci id=\"id4\">C</ci>\n"
+                        "    <apply id=\"id5\">\n"
+                        "      <plus id=\"id6\"/>\n"
+                        "      <ci id=\"id7\">A</ci>\n"
+                        "      <ci id=\"id8\">B</ci>\n"
+                        "    </apply>\n"
+                        "  </apply>\n"
+                        "</math>";
+
+    variableA1->setUnits("dimensionless");
+    variableB1->setUnits("dimensionless");
+    variableC1->setUnits("dimensionless");
+    component1->addVariable(variableA1);
+    component1->addVariable(variableB1);
+    component1->addVariable(variableC1);
+    model->addComponent(component1);
+
+    // No errors in first model.
+    component1->setMath(math1);
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+
+    // 5 errors from duplicates inside a MathML block from DTD errors
+    // plus 3 errors from id checks later.
+    component1->setMath(math2);
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(8), validator->errorCount());
+
+    // Test for duplicates between inside MathML and outside entities.
+    component1->setMath(math3);
+    component2->setMath(math1);
+    component2->appendMath(math3);
+
+    variableA2->setUnits("dimensionless");
+    variableB2->setUnits("dimensionless");
+    variableC2->setUnits("dimensionless");
+    variableA2->setId("id6");
+    variableB2->setId("id5");
+    variableC2->setId("id4");
+
+    component2->addVariable(variableA2);
+    component2->addVariable(variableB2);
+    component2->addVariable(variableC2);
+    variableA1->setId("id1");
+    variableB1->setId("id2");
+    variableC1->setId("id3");
+
+    model->addComponent(component2);
+    component1->setId("id7");
+    component2->setId("id8");
+    model->setId("id1");
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(8), validator->issueCount());
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
