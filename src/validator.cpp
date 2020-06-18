@@ -298,7 +298,7 @@ struct Validator::ValidatorImpl
      *
      * @param model The model to be checked.
      */
-    void checkForDuplicateIds(const ModelPtr &model);
+    void checkUniqueIds(const ModelPtr &model);
 
     /** @brief Utility function to construct a map of ids used within the model.
      *
@@ -329,14 +329,14 @@ struct Validator::ValidatorImpl
      * @param component Owning component of the MathML string.
      * @param idMap The IdMap under construction.
      */
-    void buildMathChildIdMap(const XmlNodePtr &node, const ComponentPtr &component, IdMap &idMap, size_t index);
+    void buildMathChildIdMap(const XmlNodePtr &node, const std::string &infoRef, IdMap &idMap);
 
     /** @brief Utility function to parse math and add element ids to idMap.
      *
      * @param component Component to investigate
      * @param idMap The IdMap under construction.
      */
-    void buildMathIdMap(const ComponentPtr &component, IdMap &idMap);
+    void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
 };
 
 Validator::Validator()
@@ -450,7 +450,7 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 
     // Check for duplicated ids across the model.
-    mPimpl->checkForDuplicateIds(model);
+    mPimpl->checkUniqueIds(model);
 }
 
 void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const
@@ -1404,7 +1404,7 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
     }
 }
 
-void Validator::ValidatorImpl::checkForDuplicateIds(const ModelPtr &model)
+void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 {
     IdMap idMap = buildModelIdMap(model);
 
@@ -1552,22 +1552,27 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
             info = "  - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
             addIdMapItem(item->testValueId(), info, idMap);
         }
-        if (!item->testValueMathId().empty()) {
-            info = "  - MathML child of test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
-            addIdMapItem(item->testValueMathId(), info, idMap);
-        }
+        // if (!item->testValueMathId().empty()) {
+        //     info = "  - MathML child of test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+        //     addIdMapItem(item->testValueMathId(), info, idMap);
+        // }
+        info = "test_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
+        buildMathIdMap(info, idMap, item->testValue());
         if (!item->resetValueId().empty()) {
             info = "  - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
             addIdMapItem(item->resetValueId(), info, idMap);
         }
-        if (!item->resetValueMathId().empty()) {
-            info = "  - MathML child of reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
-            addIdMapItem(item->resetValueMathId(), info, idMap);
-        }
+        // if (!item->resetValueMathId().empty()) {
+        //     info = "  - MathML child of reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+        //     addIdMapItem(item->resetValueMathId(), info, idMap);
+        // }
+        info = "reset_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
+        buildMathIdMap(info, idMap, item->resetValue());
     }
 
     // Maths.
-    buildMathIdMap(component, idMap);
+    info = "math in component '" + component->name() + "'";
+    buildMathIdMap(info, idMap, component->math());
 
     // Imports.
     if (component->isImport() && component->importSource() != nullptr && !component->importSource()->id().empty()) {
@@ -1587,14 +1592,11 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     }
 }
 
-void Validator::ValidatorImpl::buildMathIdMap(const ComponentPtr &component, IdMap &idMap)
+void Validator::ValidatorImpl::buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input)
 {
-    std::vector<XmlDocPtr> docs = multiRootXml(component->math());
-    size_t index = 0;
+    std::vector<XmlDocPtr> docs = multiRootXml(input);
+
     for (const auto &doc : docs) {
-        if (doc->xmlErrorCount() > 0) {
-            return;
-        }
         XmlNodePtr node = doc->rootNode();
         if (node == nullptr) {
             return;
@@ -1602,12 +1604,11 @@ void Validator::ValidatorImpl::buildMathIdMap(const ComponentPtr &component, IdM
         if (!node->isMathmlElement("math")) {
             return;
         }
-        buildMathChildIdMap(node, component, idMap, index);
-        ++index;
+        buildMathChildIdMap(node, infoRef, idMap);
     }
 }
 
-void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const ComponentPtr &component, IdMap &idMap, size_t index)
+void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const std::string &infoRef, IdMap &idMap)
 {
     std::string info;
     XmlAttributePtr attribute = node->firstAttribute();
@@ -1619,14 +1620,14 @@ void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const
                     variable = "'" + node->firstChild()->convertToString() + "' ";
                 }
             }
-            info = "  - MathML " + node->name() + " element " + variable + "in maths block at index " + std::to_string(index) + " in component '" + component->name() + "'\n";
+            info = "  - MathML " + node->name() + " element " + variable + "in " + infoRef + "\n";
             addIdMapItem(attribute->value(), info, idMap);
         }
         attribute = attribute->next();
     }
     XmlNodePtr childNode = node->firstChild();
     while (childNode) {
-        buildMathChildIdMap(childNode, component, idMap, index);
+        buildMathChildIdMap(childNode, infoRef, idMap);
         childNode = childNode->next();
     }
 }
