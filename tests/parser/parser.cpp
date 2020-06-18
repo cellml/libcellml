@@ -1621,7 +1621,7 @@ TEST(Parser, parseIdsOnEntities)
     EXPECT_EQ(in, printer->printModel(model));
 }
 
-TEST(Parser, parseIdsOnEverything)
+TEST(Parser, parseIdsOnEverythingExceptMath)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1642,7 +1642,7 @@ TEST(Parser, parseIdsOnEverything)
         "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"r1id\">\n"
         "      <test_value id=\"tv1id\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"tv1mid\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          <apply>\n"
         "            <eq/>\n"
         "            <ci>variable1</ci>\n"
@@ -1651,7 +1651,7 @@ TEST(Parser, parseIdsOnEverything)
         "        </math>\n"
         "      </test_value>\n"
         "      <reset_value id=\"rv1id\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"rv1mid\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          <apply>\n"
         "            <eq/>\n"
         "            <ci>variable1</ci>\n"
@@ -1660,7 +1660,7 @@ TEST(Parser, parseIdsOnEverything)
         "        </math>\n"
         "      </reset_value>\n"
         "    </reset>\n"
-        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math1\">\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "      <apply>\n"
         "        <eq/>\n"
         "        <ci>variable1</ci>\n"
@@ -1701,9 +1701,6 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
 
     // Non-entity objects: connections, mappings, encapsulation, and maths.
-    EXPECT_EQ("tv1mid", model->component("component2")->reset(0)->testValueMathId());
-    EXPECT_EQ("rv1mid", model->component("component2")->reset(0)->resetValueMathId());
-    EXPECT_EQ("math1", model->component("component2")->mathId());
     EXPECT_EQ("encap1id", model->encapsulationId());
     EXPECT_EQ("map1id", libcellml::Variable::equivalenceMappingId(
                             model->component("component2")->variable("variable1"),

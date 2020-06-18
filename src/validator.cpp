@@ -1552,20 +1552,12 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
             info = "  - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
             addIdMapItem(item->testValueId(), info, idMap);
         }
-        // if (!item->testValueMathId().empty()) {
-        //     info = "  - MathML child of test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
-        //     addIdMapItem(item->testValueMathId(), info, idMap);
-        // }
         info = "test_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
         buildMathIdMap(info, idMap, item->testValue());
         if (!item->resetValueId().empty()) {
             info = "  - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
             addIdMapItem(item->resetValueId(), info, idMap);
         }
-        // if (!item->resetValueMathId().empty()) {
-        //     info = "  - MathML child of reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
-        //     addIdMapItem(item->resetValueMathId(), info, idMap);
-        // }
         info = "reset_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
         buildMathIdMap(info, idMap, item->resetValue());
     }
