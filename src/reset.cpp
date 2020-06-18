@@ -144,11 +144,6 @@ void Reset::removeTestValue()
     mPimpl->mTestValue = "";
 }
 
-std::string Reset::testValueMathId() const
-{
-    return idFromMathML(mPimpl->mTestValue);
-}
-
 void Reset::appendResetValue(const std::string &math)
 {
     mPimpl->mResetValue.append(math);
@@ -182,11 +177,6 @@ void Reset::removeResetValueId()
 std::string Reset::resetValueId() const
 {
     return mPimpl->mResetValueId;
-}
-
-std::string Reset::resetValueMathId() const
-{
-    return idFromMathML(mPimpl->mResetValue);
 }
 
 ResetPtr Reset::clone() const

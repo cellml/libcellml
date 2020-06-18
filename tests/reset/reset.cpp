@@ -639,13 +639,3 @@ TEST(Reset, resetRemoveResetValueId)
 
     EXPECT_EQ("", r->resetValueId());
 }
-
-TEST(Reset, resetMathId)
-{
-    auto reset = libcellml::Reset::create();
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"myId\"/>";
-    reset->setTestValue(math);
-    reset->setResetValue(math);
-    EXPECT_EQ("myId", reset->testValueMathId());
-    EXPECT_EQ("myId", reset->resetValueMathId());
-}
