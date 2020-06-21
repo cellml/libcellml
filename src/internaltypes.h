@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <map>
+#include <variant>
 #include <vector>
 
 #include "libcellml/variable.h"
