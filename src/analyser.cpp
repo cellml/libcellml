@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#include "libcellml/validator.h"
+
 namespace libcellml {
 
 /**
@@ -64,6 +66,23 @@ AnalyserPtr Analyser::create() noexcept
 
 void Analyser::processModel(const ModelPtr &model)
 {
+    // Make sure that the model is valid before processing it.
+
+    ValidatorPtr validator = Validator::create();
+
+    validator->validateModel(model);
+
+    if (validator->issueCount() > 0) {
+        // The model is not valid, so retrieve the validation issues and make
+        // them our own.
+
+        for (size_t i = 0; i < validator->issueCount(); ++i) {
+            addIssue(validator->issue(i));
+        }
+
+        return;
+    }
+
     // Process the model.
 
     mPimpl->processModel(model);
