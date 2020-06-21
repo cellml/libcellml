@@ -51,11 +51,17 @@ AnnotatorPtr Annotator::create() noexcept
     return std::shared_ptr<Annotator> {new Annotator {}};
 }
 
-void Annotator::build()
-{
+// void Annotator::build(const ModelPtr &model)
+// {
+//     // Function to build a map between existing ids in the model and the items they're related to.
 
-}
+// }
+// std::variant Annotator::itemFromId(std::string &id){
+//     // relies on having the map built already - better for when lots of queries will be made.
+// }
 
-
+// std::variant Annotator::itemFromId(const ModelPtr &model, std::string &id){
+//     // Searches for one id only, good for when only one query will be made as no map will be built.
+// }
 
 } // namespace libcellml

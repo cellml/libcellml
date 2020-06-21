@@ -124,7 +124,7 @@ public:
     static AnnotatorPtr create() noexcept;
 
     // void createAllIds(ModelPtr &model, bool includeMathMLElements);
-    void build();
+    void build(const ModelPtr &model);
 
 private:
     Annotator(); /**< Constructor */
