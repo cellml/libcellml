@@ -123,9 +123,8 @@ public:
      */
     static AnnotatorPtr create() noexcept;
 
-    AnnotatorItemStruct itemFromId(const std::string &id);
-    std::string typeFromId(const std::string &id);
-    void build(const ModelPtr &model);
+    // void createAllIds(ModelPtr &model, bool includeMathMLElements);
+    void build();
 
 private:
     Annotator(); /**< Constructor */
