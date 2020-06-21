@@ -22,7 +22,7 @@ limitations under the License.
 
 TEST(Analyser, emptyModel)
 {
-    libcellml::ModelPtr model = libcellml::Model::create();
+    libcellml::ModelPtr model = libcellml::Model::create("empty_model");
     libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
