@@ -8,6 +8,7 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
+from libcellml.annotator import Annotator
 from libcellml.component import Component
 from libcellml.generator import Generator
 from libcellml.generator import GeneratorVariable
