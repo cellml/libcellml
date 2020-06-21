@@ -51,10 +51,10 @@ public:
     /**
      * @brief Create an @c AnalyserVariable object.
      *
-     * Factory method to create a @c AnalyserVariable. Create an analyser
+     * Factory method to create an @c AnalyserVariable. Create an analyser
      * variable with::
      *
-     *   AnalyserVariablePtr AnalyserVariable = libcellml::AnalyserVariable::create();
+     *   AnalyserVariablePtr analyserVariable = libcellml::AnalyserVariable::create();
      *
      * @return A smart pointer to an @c AnalyserVariable object.
      */
@@ -138,13 +138,13 @@ public:
     Analyser &operator=(Analyser rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Create a @c Analyser object.
+     * @brief Create an @c Analyser object.
      *
-     * Factory method to create a @c Analyser.  Create an analyser with::
+     * Factory method to create an @c Analyser.  Create an analyser with::
      *
      *   AnalyserPtr analyser = libcellml::Analyser::create();
      *
-     * @return A smart pointer to a @c Analyser object.
+     * @return A smart pointer to an @c Analyser object.
      */
     static AnalyserPtr create() noexcept;
 
