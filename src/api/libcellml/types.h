@@ -21,6 +21,8 @@ limitations under the License.
 namespace libcellml {
 
 // General classes.
+class Annotator; /**< Forward declaration of Annotator class. */
+using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for shared annotator pointer. */
 class Issue; /**< Forward declaration of Issue class. */
 using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Generator; /**< Forward declaration of Generator class. */
