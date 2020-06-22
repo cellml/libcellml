@@ -148,7 +148,7 @@ TEST(Parser, simpleGeneratorModel)
         "</math>\n";
 
     libcellml::ParserPtr p = libcellml::Parser::create();
-    libcellml::ModelPtr model = p->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
+    libcellml::ModelPtr model = p->parseModel(fileContents("analyser/initialised_variable_of_integration.cellml"));
 
     EXPECT_EQ(size_t(0), p->issueCount());
 
