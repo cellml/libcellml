@@ -456,7 +456,7 @@ struct Analyser::AnalyserImpl
                      const ComponentPtr &component,
                      const AnalyserEquationPtr &equation);
     AnalyserEquationPtr processNode(const XmlNodePtr &node,
-                                     const ComponentPtr &component);
+                                    const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
