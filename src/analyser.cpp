@@ -883,32 +883,25 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("ci")) {
         std::string variableName = node->firstChild()->convertToString();
         VariablePtr variable = component->variable(variableName);
+        // Note: we always have a variable. Indeed, if we were not to have one,
+        //       it would mean that `variableName` is the name of a variable
+        //       that is referenced in an equation, but not defined anywhere,
+        //       something that is not allowed in CellML and will therefore be
+        //       reported when we validate the model.
 
-        if (variable != nullptr) {
-            // Have our equation track the (ODE) variable (by ODE variable, we
-            // mean a variable that is used in a "diff" element).
+        // Have our equation track the (ODE) variable (by ODE variable, we mean
+        // a variable that is used in a "diff" element).
 
-            if (node->parent()->firstChild()->isMathmlElement("diff")) {
-                equation->addOdeVariable(analyserVariable(variable));
-            } else if (!(node->parent()->isMathmlElement("bvar")
-                         && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-                equation->addVariable(analyserVariable(variable));
-            }
-
-            // Add the variable to our AST.
-
-            ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::CI, variable, astParent);
-        } else {
-            IssuePtr issue = Issue::create();
-
-            issue->setDescription("Variable '" + variableName
-                                  + "' in component '" + component->name()
-                                  + "' of model '" + owningModel(component)->name()
-                                  + "' is referenced in an equation, but it is not defined anywhere.");
-            issue->setCause(Issue::Cause::ANALYSER);
-
-            mAnalyser->addIssue(issue);
+        if (node->parent()->firstChild()->isMathmlElement("diff")) {
+            equation->addOdeVariable(analyserVariable(variable));
+        } else if (!(node->parent()->isMathmlElement("bvar")
+                     && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
+            equation->addVariable(analyserVariable(variable));
         }
+
+        // Add the variable to our AST.
+
+        ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::CI, variable, astParent);
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
@@ -1032,36 +1025,27 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
             && !isCellMLReal(analyserVariable->mVariable->initialValue())) {
             // The initial value is not a double, so it has to be an existing
             // variable of constant type.
+            // Note: we always have an initialising variable. Indeed, if we were
+            //       not to have one, it would mean that the variable is
+            //       initialised using a reference to a variable that is not
+            //       defined anywhere, something that is not allowed in CellML
+            //       and will therefore be reported when we validate the model.
 
             ComponentPtr initialisingComponent = owningComponent(analyserVariable->mVariable);
             VariablePtr initialisingVariable = initialisingComponent->variable(analyserVariable->mVariable->initialValue());
+            AnalyserInternalVariablePtr analyserInitialValueVariable = Analyser::AnalyserImpl::analyserVariable(initialisingVariable);
 
-            if (initialisingVariable == nullptr) {
+            if (analyserInitialValueVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
                 IssuePtr issue = Issue::create();
 
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
                                       + "' of model '" + owningModel(component)->name()
                                       + "' is initialised using variable '" + analyserVariable->mVariable->initialValue()
-                                      + "', but it is not defined anywhere.");
+                                      + "', but it is not a constant.");
                 issue->setCause(Issue::Cause::ANALYSER);
 
                 mAnalyser->addIssue(issue);
-            } else {
-                AnalyserInternalVariablePtr analyserInitialValueVariable = Analyser::AnalyserImpl::analyserVariable(initialisingVariable);
-
-                if (analyserInitialValueVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
-                    IssuePtr issue = Issue::create();
-
-                    issue->setDescription("Variable '" + variable->name()
-                                          + "' in component '" + component->name()
-                                          + "' of model '" + owningModel(component)->name()
-                                          + "' is initialised using variable '" + analyserVariable->mVariable->initialValue()
-                                          + "', but it is not a constant.");
-                    issue->setCause(Issue::Cause::ANALYSER);
-
-                    mAnalyser->addIssue(issue);
-                }
             }
         }
     }
@@ -1554,6 +1538,8 @@ void Analyser::processModel(const ModelPtr &model)
         for (size_t i = 0; i < validator->issueCount(); ++i) {
             addIssue(validator->issue(i));
         }
+
+        mPimpl->mModelType = Analyser::ModelType::INVALID;
 
         return;
     }
