@@ -50,14 +50,16 @@ TEST(Analyser, initialisedVariableOfIntegration)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
@@ -80,14 +82,16 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, twoVariablesOfIntegration)
@@ -110,14 +114,16 @@ TEST(Analyser, twoVariablesOfIntegration)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, nonFirstOrderOdes)
@@ -144,14 +150,16 @@ TEST(Analyser, nonFirstOrderOdes)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, undefinedVariables)
@@ -176,14 +184,16 @@ TEST(Analyser, undefinedVariables)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, variableInitialisedTwice)
@@ -206,14 +216,16 @@ TEST(Analyser, variableInitialisedTwice)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, nonConstantInitialisingVariable)
@@ -236,14 +248,16 @@ TEST(Analyser, nonConstantInitialisingVariable)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, nonExistingInitialisingVariable)
@@ -266,14 +280,16 @@ TEST(Analyser, nonExistingInitialisingVariable)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::INVALID, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, nonInitialisedState)
@@ -296,14 +312,16 @@ TEST(Analyser, nonInitialisedState)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::UNDERCONSTRAINED, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, underconstrained)
@@ -326,14 +344,16 @@ TEST(Analyser, underconstrained)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::UNDERCONSTRAINED, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, overconstrained)
@@ -356,14 +376,16 @@ TEST(Analyser, overconstrained)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::OVERCONSTRAINED, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }
 
 TEST(Analyser, unsuitablyConstrained)
@@ -388,12 +410,14 @@ TEST(Analyser, unsuitablyConstrained)
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    EXPECT_EQ(libcellml::Analyser::ModelType::UNSUITABLY_CONSTRAINED, analyser->modelType());
+    libcellml::AnalyserModelPtr analyserModel = analyser->model();
 
-    EXPECT_EQ(size_t(0), analyser->stateCount());
-    EXPECT_EQ(size_t(0), analyser->variableCount());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyserModel->type());
 
-    EXPECT_EQ(nullptr, analyser->voi());
-    EXPECT_EQ(nullptr, analyser->state(0));
-    EXPECT_EQ(nullptr, analyser->variable(0));
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(0), analyserModel->variableCount());
+
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(0));
 }

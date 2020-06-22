@@ -18,12 +18,17 @@ limitations under the License.
 
 #include <list>
 
+#include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
+#include "libcellml/variable.h"
 
 #include "analyserequationast.h"
+#include "analysermodel_p.h"
+#include "analyservariable_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -35,61 +40,6 @@ limitations under the License.
 namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
-
-/**
- * @brief The AnalyserVariable::AnalyserVariableImpl struct.
- *
- * The private implementation for the AnalyserVariable class.
- */
-struct AnalyserVariable::AnalyserVariableImpl
-{
-    VariablePtr mInitialisingVariable;
-    VariablePtr mVariable;
-    AnalyserVariable::Type mType = AnalyserVariable::Type::CONSTANT;
-
-    void populate(const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable,
-                  AnalyserVariable::Type type);
-};
-
-void AnalyserVariable::AnalyserVariableImpl::populate(const VariablePtr &initialisingVariable,
-                                                      const VariablePtr &variable,
-                                                      AnalyserVariable::Type type)
-{
-    mInitialisingVariable = initialisingVariable;
-    mVariable = variable;
-    mType = type;
-}
-
-AnalyserVariable::AnalyserVariable()
-    : mPimpl(new AnalyserVariableImpl())
-{
-}
-
-AnalyserVariable::~AnalyserVariable()
-{
-    delete mPimpl;
-}
-
-AnalyserVariablePtr AnalyserVariable::create() noexcept
-{
-    return std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-}
-
-VariablePtr AnalyserVariable::initialisingVariable() const
-{
-    return mPimpl->mInitialisingVariable;
-}
-
-VariablePtr AnalyserVariable::variable() const
-{
-    return mPimpl->mVariable;
-}
-
-AnalyserVariable::Type AnalyserVariable::type() const
-{
-    return mPimpl->mType;
-}
 
 struct AnalyserEquation;
 using AnalyserEquationPtr = std::shared_ptr<AnalyserEquation>;
@@ -395,41 +345,12 @@ struct Analyser::AnalyserImpl
 {
     Analyser *mAnalyser = nullptr;
 
-    Analyser::ModelType mModelType = Analyser::ModelType::UNKNOWN;
+    AnalyserModelPtr mModel = nullptr;
 
     std::list<AnalyserInternalVariablePtr> mInternalVariables;
     std::list<AnalyserEquationPtr> mEquations;
 
-    AnalyserVariablePtr mVoi = nullptr;
-    std::vector<AnalyserVariablePtr> mStates;
-    std::vector<AnalyserVariablePtr> mVariables;
-
-    bool mNeedEq = false;
-    bool mNeedNeq = false;
-    bool mNeedLt = false;
-    bool mNeedLeq = false;
-    bool mNeedGt = false;
-    bool mNeedGeq = false;
-    bool mNeedAnd = false;
-    bool mNeedOr = false;
-    bool mNeedXor = false;
-    bool mNeedNot = false;
-
-    bool mNeedMin = false;
-    bool mNeedMax = false;
-
-    bool mNeedSec = false;
-    bool mNeedCsc = false;
-    bool mNeedCot = false;
-    bool mNeedSech = false;
-    bool mNeedCsch = false;
-    bool mNeedCoth = false;
-    bool mNeedAsec = false;
-    bool mNeedAcsc = false;
-    bool mNeedAcot = false;
-    bool mNeedAsech = false;
-    bool mNeedAcsch = false;
-    bool mNeedAcoth = false;
+    explicit AnalyserImpl(Analyser *analyser);
 
     static bool compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
                                        const AnalyserInternalVariablePtr &variable2);
@@ -442,8 +363,6 @@ struct Analyser::AnalyserImpl
 
     static bool compareEquationsByVariable(const AnalyserEquationPtr &equation1,
                                            const AnalyserEquationPtr &equation2);
-
-    bool hasValidModel() const;
 
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
@@ -476,6 +395,12 @@ struct Analyser::AnalyserImpl
 
     void processModel(const ModelPtr &model);
 };
+
+Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
+    : mAnalyser(analyser)
+    , mModel(AnalyserModel::create())
+{
+}
 
 bool Analyser::AnalyserImpl::compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
                                                     const AnalyserInternalVariablePtr &variable2)
@@ -521,12 +446,6 @@ bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserEquationPt
                                                         const AnalyserEquationPtr &equation2)
 {
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
-}
-
-bool Analyser::AnalyserImpl::hasValidModel() const
-{
-    return (mModelType == Analyser::ModelType::ALGEBRAIC)
-           || (mModelType == Analyser::ModelType::ODE);
 }
 
 size_t Analyser::AnalyserImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -688,44 +607,44 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         if (!node->parent()->parent()->isMathmlElement("math")) {
             ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::EQ, astParent);
 
-            mNeedEq = true;
+            mModel->mPimpl->mNeedEq = true;
         }
     } else if (node->isMathmlElement("neq")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::NEQ, astParent);
 
-        mNeedNeq = true;
+        mModel->mPimpl->mNeedNeq = true;
     } else if (node->isMathmlElement("lt")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::LT, astParent);
 
-        mNeedLt = true;
+        mModel->mPimpl->mNeedLt = true;
     } else if (node->isMathmlElement("leq")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::LEQ, astParent);
 
-        mNeedLeq = true;
+        mModel->mPimpl->mNeedLeq = true;
     } else if (node->isMathmlElement("gt")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::GT, astParent);
 
-        mNeedGt = true;
+        mModel->mPimpl->mNeedGt = true;
     } else if (node->isMathmlElement("geq")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::GEQ, astParent);
 
-        mNeedGeq = true;
+        mModel->mPimpl->mNeedGeq = true;
     } else if (node->isMathmlElement("and")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::AND, astParent);
 
-        mNeedAnd = true;
+        mModel->mPimpl->mNeedAnd = true;
     } else if (node->isMathmlElement("or")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::OR, astParent);
 
-        mNeedOr = true;
+        mModel->mPimpl->mNeedOr = true;
     } else if (node->isMathmlElement("xor")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::XOR, astParent);
 
-        mNeedXor = true;
+        mModel->mPimpl->mNeedXor = true;
     } else if (node->isMathmlElement("not")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::NOT, astParent);
 
-        mNeedNot = true;
+        mModel->mPimpl->mNeedNot = true;
 
         // Arithmetic operators.
 
@@ -756,11 +675,11 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("min")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::MIN, astParent);
 
-        mNeedMin = true;
+        mModel->mPimpl->mNeedMin = true;
     } else if (node->isMathmlElement("max")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::MAX, astParent);
 
-        mNeedMax = true;
+        mModel->mPimpl->mNeedMax = true;
     } else if (node->isMathmlElement("rem")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::REM, astParent);
 
@@ -780,15 +699,15 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("sec")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::SEC, astParent);
 
-        mNeedSec = true;
+        mModel->mPimpl->mNeedSec = true;
     } else if (node->isMathmlElement("csc")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::CSC, astParent);
 
-        mNeedCsc = true;
+        mModel->mPimpl->mNeedCsc = true;
     } else if (node->isMathmlElement("cot")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::COT, astParent);
 
-        mNeedCot = true;
+        mModel->mPimpl->mNeedCot = true;
     } else if (node->isMathmlElement("sinh")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::SINH, astParent);
     } else if (node->isMathmlElement("cosh")) {
@@ -798,15 +717,15 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("sech")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::SECH, astParent);
 
-        mNeedSech = true;
+        mModel->mPimpl->mNeedSech = true;
     } else if (node->isMathmlElement("csch")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::CSCH, astParent);
 
-        mNeedCsch = true;
+        mModel->mPimpl->mNeedCsch = true;
     } else if (node->isMathmlElement("coth")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::COTH, astParent);
 
-        mNeedCoth = true;
+        mModel->mPimpl->mNeedCoth = true;
     } else if (node->isMathmlElement("arcsin")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ASIN, astParent);
     } else if (node->isMathmlElement("arccos")) {
@@ -816,15 +735,15 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("arcsec")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ASEC, astParent);
 
-        mNeedAsec = true;
+        mModel->mPimpl->mNeedAsec = true;
     } else if (node->isMathmlElement("arccsc")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ACSC, astParent);
 
-        mNeedAcsc = true;
+        mModel->mPimpl->mNeedAcsc = true;
     } else if (node->isMathmlElement("arccot")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ACOT, astParent);
 
-        mNeedAcot = true;
+        mModel->mPimpl->mNeedAcot = true;
     } else if (node->isMathmlElement("arcsinh")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ASINH, astParent);
     } else if (node->isMathmlElement("arccosh")) {
@@ -834,15 +753,15 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("arcsech")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ASECH, astParent);
 
-        mNeedAsech = true;
+        mModel->mPimpl->mNeedAsech = true;
     } else if (node->isMathmlElement("arccsch")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ACSCH, astParent);
 
-        mNeedAcsch = true;
+        mModel->mPimpl->mNeedAcsch = true;
     } else if (node->isMathmlElement("arccoth")) {
         ast = std::make_shared<AnalyserEquationAst>(AnalyserEquationAst::Type::ACOTH, astParent);
 
-        mNeedAcoth = true;
+        mModel->mPimpl->mNeedAcoth = true;
 
         // Piecewise statement.
 
@@ -1107,7 +1026,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
         //       may be reported (since the type of the variable would be
         //       unknown).
 
-        if (mVoi == nullptr) {
+        if (mModel->mPimpl->mVoi == nullptr) {
             // We have found our variable of integration, but this may not be
             // the one defined in our first component (i.e. the component under
             // which we are likely to expect to see the variable of integration
@@ -1143,21 +1062,21 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                     }
 
                     if (!isVoiInitialized) {
-                        mVoi = AnalyserVariable::create();
+                        mModel->mPimpl->mVoi = AnalyserVariable::create();
 
-                        mVoi->mPimpl->populate(nullptr, voi,
-                                               AnalyserVariable::Type::VARIABLE_OF_INTEGRATION);
+                        mModel->mPimpl->mVoi->mPimpl->populate(nullptr, voi,
+                                                               AnalyserVariable::Type::VARIABLE_OF_INTEGRATION);
                     }
 
                     break;
                 }
             }
-        } else if (!isSameOrEquivalentVariable(variable, mVoi->variable())) {
+        } else if (!isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable())) {
             IssuePtr issue = Issue::create();
 
-            issue->setDescription("Variable '" + mVoi->variable()->name()
-                                  + "' in component '" + owningComponent(mVoi->variable())->name()
-                                  + "' of model '" + owningModel(mVoi->variable())->name()
+            issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
+                                  + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
+                                  + "' of model '" + owningModel(mModel->mPimpl->mVoi->variable())->name()
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' of model '" + owningModel(variable)->name()
@@ -1302,36 +1221,15 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 {
-    // Reset a few things in case we were to process the model more than once.
-    // Note: one would normally process the model only once, so we shouldn't
-    //       need to do this, but better be safe than sorry.
+    // Reset a few things in case this analyser was to be used to process more
+    // than one model.
 
-    mModelType = Analyser::ModelType::UNKNOWN;
+    mAnalyser->removeAllIssues();
+
+    mModel = AnalyserModel::create();
 
     mInternalVariables.clear();
     mEquations.clear();
-
-    mVoi = nullptr;
-    mStates.clear();
-    mVariables.clear();
-
-    mNeedMin = false;
-    mNeedMax = false;
-
-    mNeedSec = false;
-    mNeedCsc = false;
-    mNeedCot = false;
-    mNeedSech = false;
-    mNeedCsch = false;
-    mNeedCoth = false;
-    mNeedAsec = false;
-    mNeedAcsc = false;
-    mNeedAcot = false;
-    mNeedAsech = false;
-    mNeedAcsch = false;
-    mNeedAcoth = false;
-
-    mAnalyser->removeAllIssues();
 
     // Recursively process the model's components, so that we end up with an AST
     // for each of the model's equations.
@@ -1441,25 +1339,25 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
         if (hasUnderconstrainedVariables) {
             if (hasOverconstrainedVariables) {
-                mModelType = Analyser::ModelType::UNSUITABLY_CONSTRAINED;
+                mModel->mPimpl->mType = AnalyserModel::Type::UNSUITABLY_CONSTRAINED;
             } else {
-                mModelType = Analyser::ModelType::UNDERCONSTRAINED;
+                mModel->mPimpl->mType = AnalyserModel::Type::UNDERCONSTRAINED;
             }
         } else if (hasOverconstrainedVariables) {
-            mModelType = Analyser::ModelType::OVERCONSTRAINED;
-        } else if (mVoi != nullptr) {
-            mModelType = Analyser::ModelType::ODE;
+            mModel->mPimpl->mType = AnalyserModel::Type::OVERCONSTRAINED;
+        } else if (mModel->mPimpl->mVoi != nullptr) {
+            mModel->mPimpl->mType = AnalyserModel::Type::ODE;
         } else if (!mInternalVariables.empty()) {
-            mModelType = Analyser::ModelType::ALGEBRAIC;
+            mModel->mPimpl->mType = AnalyserModel::Type::ALGEBRAIC;
         }
     } else {
-        mModelType = Analyser::ModelType::INVALID;
+        mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
     }
 
     // Some final post-processing is now needed, if we have a valid model.
 
-    if ((mModelType == Analyser::ModelType::ODE)
-        || (mModelType == Analyser::ModelType::ALGEBRAIC)) {
+    if ((mModel->mPimpl->mType == AnalyserModel::Type::ODE)
+        || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
         // Scale our equations' AST, i.e. take into account the fact that we may
         // have mapped variables that use compatible units rather than
         // equivalent ones.
@@ -1499,18 +1397,17 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                                               type);
 
             if (type == AnalyserVariable::Type::STATE) {
-                mStates.push_back(stateOrVariable);
+                mModel->mPimpl->mStates.push_back(stateOrVariable);
             } else {
-                mVariables.push_back(stateOrVariable);
+                mModel->mPimpl->mVariables.push_back(stateOrVariable);
             }
         }
     }
 }
 
 Analyser::Analyser()
-    : mPimpl(new AnalyserImpl())
+    : mPimpl(new AnalyserImpl(this))
 {
-    mPimpl->mAnalyser = this;
 }
 
 Analyser::~Analyser()
@@ -1539,7 +1436,7 @@ void Analyser::processModel(const ModelPtr &model)
             addIssue(validator->issue(i));
         }
 
-        mPimpl->mModelType = Analyser::ModelType::INVALID;
+        mPimpl->mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
 
         return;
     }
@@ -1549,54 +1446,9 @@ void Analyser::processModel(const ModelPtr &model)
     mPimpl->processModel(model);
 }
 
-Analyser::ModelType Analyser::modelType() const
+AnalyserModelPtr Analyser::model() const
 {
-    return mPimpl->mModelType;
-}
-
-size_t Analyser::stateCount() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return 0;
-    }
-
-    return mPimpl->mStates.size();
-}
-
-size_t Analyser::variableCount() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return 0;
-    }
-
-    return mPimpl->mVariables.size();
-}
-
-AnalyserVariablePtr Analyser::voi() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return {};
-    }
-
-    return mPimpl->mVoi;
-}
-
-AnalyserVariablePtr Analyser::state(size_t index) const
-{
-    if (!mPimpl->hasValidModel() || (index >= mPimpl->mStates.size())) {
-        return {};
-    }
-
-    return mPimpl->mStates[index];
-}
-
-AnalyserVariablePtr Analyser::variable(size_t index) const
-{
-    if (!mPimpl->hasValidModel() || (index >= mPimpl->mVariables.size())) {
-        return {};
-    }
-
-    return mPimpl->mVariables[index];
+    return mPimpl->mModel;
 }
 
 } // namespace libcellml

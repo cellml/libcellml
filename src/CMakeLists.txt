@@ -47,6 +47,8 @@ configure_file(
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
@@ -74,6 +76,8 @@ set(SOURCE_FILES
 
 set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analysermodel.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyservariable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h

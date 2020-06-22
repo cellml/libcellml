@@ -23,6 +23,8 @@ namespace libcellml {
 // General classes.
 class Analyser; /**< Forward declaration of Analyser class. */
 using AnalyserPtr = std::shared_ptr<Analyser>; /**< Type definition for shared analyser pointer. */
+class AnalyserModel; /**< Forward declaration of AnalyserModel class. */
+using AnalyserModelPtr = std::shared_ptr<AnalyserModel>; /**< Type definition for shared analyser model pointer. */
 class AnalyserVariable; /**< Forward declaration of AnalyserVariable class. */
 using AnalyserVariablePtr = std::shared_ptr<AnalyserVariable>; /**< Type definition for shared analyser variable pointer. */
 class Issue; /**< Forward declaration of Issue class. */
