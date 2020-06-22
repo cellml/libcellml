@@ -46,6 +46,7 @@ configure_file(
 
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
@@ -104,6 +105,7 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
