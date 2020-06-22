@@ -22,61 +22,6 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-TEST(Generator, emptyModel)
-{
-    libcellml::ModelPtr model = libcellml::Model::create();
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ(size_t(0), generator->issueCount());
-
-    EXPECT_EQ(libcellml::Generator::ModelType::UNKNOWN, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
-TEST(Generator, initializedVariableOfIntegration)
-{
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'my_component' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::GENERATOR,
-    };
-
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-
-    generator->processModel(model);
-
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, generator);
-
-    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator->modelType());
-
-    EXPECT_EQ(size_t(0), generator->stateCount());
-    EXPECT_EQ(size_t(0), generator->variableCount());
-
-    EXPECT_EQ(nullptr, generator->voi());
-    EXPECT_EQ(nullptr, generator->state(0));
-    EXPECT_EQ(nullptr, generator->variable(0));
-
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
-    EXPECT_EQ(EMPTY_STRING, generator->implementationCode());
-}
-
 TEST(Generator, initializedVariableOfIntegrationInNonFirstComponent)
 {
     libcellml::ParserPtr parser = libcellml::Parser::create();
