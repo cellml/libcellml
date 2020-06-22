@@ -19,6 +19,8 @@ limitations under the License.
 #include "libcellml/generator.h"
 #include "libcellml/variable.h"
 
+#undef NAN
+
 namespace libcellml {
 
 void printStack(const IndexStack &stack)

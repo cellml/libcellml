@@ -555,4 +555,9 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
+// KRM need docstrings.
+IdList listIds(const ModelPtr &model, bool mathIds);
+void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList);
+std::string makeUniqueId(const std::string &type, IdList &idList);
+
 } // namespace libcellml
