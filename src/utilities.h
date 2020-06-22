@@ -555,9 +555,32 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
-// KRM need docstrings.
+/**
+ * @brief Collect all existing id attributes within the given model.
+ *
+ * @param model The @c ModelPtr to interrogate.
+ * @param mathIds A @c bool flag indicating whether or not to include MathML elements
+ * and their child elements.
+ * @return An @c IdList collection of existing ids.
+ */
 IdList listIds(const ModelPtr &model, bool mathIds);
+
+/**
+ * @brief Utility class to iterate through components to collect ids.
+ *
+ * @param component The @c ComponentPtr to interrogate.
+ * @param mathIds A @c bool flag indicating whether or not to include MathML elements
+ * and their child elements.
+ * @param idList @c IdList collection of found ids.
+ */
 void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList);
+
+/**
+ * @brief Creates an id string for a "type" object, unique in the context of @p idList.
+ *
+ * The id format is {type}_{n} where n is an integer, and type is the given string.
+ * @return A string representing a unique id.
+ */
 std::string makeUniqueId(const std::string &type, IdList &idList);
 
 } // namespace libcellml
