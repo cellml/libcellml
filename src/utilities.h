@@ -446,6 +446,25 @@ bool isStandardPrefixName(const std::string &name);
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
 
 /**
+ * @brief Test to determine if @p variable1 and @p variable2 are the same or
+ * equivalent.
+ *
+ * Test to see if @p variable1 is the same or equivalent to @p variable2.
+ * Returns @c true if @p variable1 is the same or equivalent to @p variable2 and
+ * @c false otherwise.
+ *
+ * @param variable1 The @c Variable to test if it is the same or equivalent to
+ * @p variable2.
+ * @param variable2 The @c Variable that is potentially the same or equivalent
+ * to @p variable1.
+ *
+ * @return @c true if @p variable1 is the same or equivalent to @p variable2 and
+ * @c false otherwise.
+ */
+bool isSameOrEquivalentVariable(const VariablePtr &variable1,
+                                const VariablePtr &variable2);
+
+/**
  * @brief Test to determine if @p entity1 is a child of @p entity2.
  *
  * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
