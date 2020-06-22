@@ -26,9 +26,12 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/namedentity.h"
+#include "libcellml/reset.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 namespace libcellml {
 
@@ -554,6 +557,127 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     for (size_t index = 0; index < component->componentCount(); ++index) {
         findAllVariablesWithEquivalences(component->component(index), variables);
     }
+}
+
+IdList listIds(const ModelPtr &model, bool mathIds)
+{
+    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
+    // invalid models (with duplicated ids) too.
+
+    std::unordered_set<std::string> idList;
+    // Model.
+    std::string id = model->id();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Units.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        id = model->units(u)->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+            std::string prefix;
+            std::string reference;
+            double exponent;
+            double multiplier;
+            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Components.
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        listComponentIds(model->component(c), mathIds, idList);
+    }
+    // Encapsulation.
+    id = model->encapsulationId();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+
+    return idList;
+}
+
+void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList)
+{
+    std::string id = component->id();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Imports.
+    if (!component->isImport()) {
+        if (component->importSource() != nullptr) {
+            id = component->importSource()->id();
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Component reference in encapsulation structure.
+    id = component->encapsulationId();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Variables.
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        id = component->variable(v)->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+
+        for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+            // Equivalent variable mappings.
+            id = Variable::equivalenceMappingId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+            // Connections.
+            id = Variable::equivalenceConnectionId(component->variable(v), component->variable(v)->equivalentVariable(e));
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Resets.
+    for (size_t r = 0; r < component->resetCount(); ++r) {
+        id = component->reset(r)->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        id = component->reset(r)->testValueId();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        id = component->reset(r)->resetValueId();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        // if(mathIds){
+        //     // TODO
+        // }
+    }
+
+    // Maths
+    // TODO
+
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        listComponentIds(component->component(c), mathIds, idList);
+    }
+}
+
+std::string makeUniqueId(const std::string &type, IdList &idList)
+{
+    // Construct a unique id appropriate to the type, and add it to the idList.
+    int counter = 1;
+    std::string id = type + "_" + std::to_string(counter);
+    while (idList.count(id) != 0) {
+        counter++;
+        id = type + "_" + std::to_string(counter);
+    }
+    idList.insert(id);
+    return id;
 }
 
 } // namespace libcellml

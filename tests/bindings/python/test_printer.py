@@ -25,13 +25,12 @@ class PrinterTestCase(unittest.TestCase):
         self.assertEqual(x.issueCount(), 0)
         x.addIssue(libcellml.Issue())
         self.assertEqual(x.issueCount(), 1)
-
     def test_print_model(self):
         from libcellml import Printer, Model
 
         # std::string printModel(ModelPtr model)
         p = Printer()
-        self.assertIsInstance(p.printModel(Model()), str)
+        self.assertIsInstance(p.printModel(Model(), False, False), str)
 
         # std::string printModel(Model model)
         # This method shadows printModel(ModelPtr) so wasn't added

@@ -17,6 +17,9 @@ limitations under the License.
 #pragma once
 
 #include <map>
+
+#include <unordered_set>
+
 #include <variant>
 #include <vector>
 
@@ -44,5 +47,7 @@ using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition 
 using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::InterfaceType>; /**< Type definition for pair of variable interface types. */
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
+
+using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 
 } // namespace libcellml
