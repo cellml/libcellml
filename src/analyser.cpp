@@ -443,6 +443,8 @@ struct Analyser::AnalyserImpl
     static bool compareEquationsByVariable(const AnalyserEquationPtr &equation1,
                                            const AnalyserEquationPtr &equation2);
 
+    bool hasValidModel() const;
+
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
@@ -473,8 +475,6 @@ struct Analyser::AnalyserImpl
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
     void processModel(const ModelPtr &model);
-
-    bool hasValidModel() const;
 };
 
 bool Analyser::AnalyserImpl::compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
@@ -521,6 +521,12 @@ bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserEquationPt
                                                         const AnalyserEquationPtr &equation2)
 {
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
+}
+
+bool Analyser::AnalyserImpl::hasValidModel() const
+{
+    return (mModelType == Analyser::ModelType::ALGEBRAIC)
+           || (mModelType == Analyser::ModelType::ODE);
 }
 
 size_t Analyser::AnalyserImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -1499,12 +1505,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             }
         }
     }
-}
-
-bool Analyser::AnalyserImpl::hasValidModel() const
-{
-    return (mModelType == Analyser::ModelType::ALGEBRAIC)
-           || (mModelType == Analyser::ModelType::ODE);
 }
 
 Analyser::Analyser()
