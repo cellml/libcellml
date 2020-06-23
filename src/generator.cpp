@@ -606,7 +606,7 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
-    std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
+    std::string generateInitializationCode(const GeneratorVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
@@ -3395,16 +3395,16 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
+std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariablePtr &variable)
 {
     std::string scalingFactorCode;
-    double scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->mInitialisingVariable);
+    double scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
 
     if (!areEqual(scalingFactor, 1.0)) {
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
     }
 
-    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->mInitialisingVariable) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
@@ -3469,9 +3469,9 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
 
         std::string methodBody;
 
-        for (const auto &internalVariable : mInternalVariables) {
-            if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
-                methodBody += generateInitializationCode(internalVariable);
+        for (const auto &variable : mVariables) {
+            if (variable->type() == GeneratorVariable::Type::CONSTANT) {
+                methodBody += generateInitializationCode(variable);
             }
         }
 
@@ -3481,10 +3481,8 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
             }
         }
 
-        for (const auto &internalVariable : mInternalVariables) {
-            if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
-                methodBody += generateInitializationCode(internalVariable);
-            }
+        for (const auto &state : mStates) {
+            methodBody += generateInitializationCode(state);
         }
 
         code += replace(mProfile->implementationInitializeStatesAndConstantsMethodString(),
