@@ -7,13 +7,10 @@
 %import "types.i"
 
 %feature("docstring") libcellml::Annotator
-"Holds functionality for annotation.";
+"Validates CellML objects.";
 
-%feature("docstring") libcellml::Annotator::build
-"Build map for given model.";
-
-// %feature("docstring") libcellml::Annotator::itemFromId
-// "Retrieves an ``Entity`` for a given id.";
+%feature("docstring") libcellml::Annotator::test
+"test";
 
 %{
 #include "libcellml/annotator.h"
