@@ -60,6 +60,16 @@ public:
     static AnalyserModelPtr create() noexcept;
 
     /**
+     * @brief Test to determine if @c AnalyserModel is a valid model.
+     *
+     * Test to determine if @c AnalyserModel is a valid model, return @c true if
+     * it is a valid model and @c false otherwise.
+     *
+     * @return @c true if @c AnalyserModel is a valid model, @c false otherwise.
+     */
+    bool isValid() const;
+
+    /**
      * @brief Get the @c Type of the @c Model.
      *
      * Return the @c Type of the @c Model processed by an @c Analyser.
