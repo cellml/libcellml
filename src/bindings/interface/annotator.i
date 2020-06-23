@@ -9,9 +9,6 @@
 %feature("docstring") libcellml::Annotator
 "Validates CellML objects.";
 
-%feature("docstring") libcellml::Annotator::test
-"test";
-
 %{
 #include "libcellml/annotator.h"
 %}

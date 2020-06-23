@@ -50,4 +50,10 @@ using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of 
 
 using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 
+using AnyItem = std::pair<std::string, std::variant<ModelPtr, ImportSourcePtr, UnitsPtr, ComponentPtr,
+                                                    VariablePtr, ResetPtr, VariablePair, std::string,
+                                                    IssuePtr>>; /**< Type definition for AnyType structure.  The first string is the type of item. **/
+
+using ItemList = std::map<std::string, AnyItem>; /**< Type definition for list of id-able items.  The first is the id of the item. */
+
 } // namespace libcellml

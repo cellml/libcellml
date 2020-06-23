@@ -17,6 +17,7 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <libcellml>
+#include <variant>
 
 #include "test_utils.h"
 
@@ -44,15 +45,18 @@ TEST(Annotator, getEntityFromId)
     model->addComponent(component);
     model->addUnits(units);
 
-    // annotator->build(model);
+    annotator->build(model);
+    auto item = annotator->item("model_id");
 
-    // EXPECT_EQ(model, annotator->itemFromId("model_id"));
-    // EXPECT_EQ(component, annotator->itemFromId("component_id"));
-    // EXPECT_EQ(reset, annotator->itemFromId("reset_id"));
-    // EXPECT_EQ(variable, annotator->itemFromId("variable_id"));
-    // EXPECT_EQ(units, annotator->itemFromId("units_id"));
-    // EXPECT_EQ(importSource, annotator->itemFromId("import_id"));
-    // EXPECT_EQ(nullptr, annotator->itemFromId("I_dont_exist"));
+    // std::cout << m << std::endl;
+
+    // EXPECT_EQ(model, std::get_if<0>(&annotator->item("model_id").second));
+    // EXPECT_EQ(component, annotator->item("component_id").second);
+    // EXPECT_EQ(reset, annotator->item("reset_id").second);
+    // EXPECT_EQ(variable, annotator->item("variable_id").second);
+    // EXPECT_EQ(units, annotator->item("units_id").second);
+    // EXPECT_EQ(importSource, annotator->item("import_id").second);
+    // EXPECT_EQ("issue", annotator->item("I_dont_exist").first);
 }
 
 TEST(Annotator, getNonEntityFromId)
@@ -86,7 +90,6 @@ TEST(Annotator, getNonEntityFromId)
     // EXPECT_EQ(v1v2, annotator->itemFromId("connection_id"));
     // EXPECT_EQ(c1, annotator->itemFromId("component_ref1_id"));
     // EXPECT_EQ("encapsulation", annotator->itemFromId("encapsulation_id"));
-
 }
 
 TEST(Annotator, getEntityTypeFromId)

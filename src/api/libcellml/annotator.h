@@ -16,13 +16,22 @@ limitations under the License.
 
 #pragma once
 
+#include <map>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "libcellml/logger.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
+
+using VariablePair = std::pair<VariablePtr, VariablePtr>;
+using AnyItem = std::pair<std::string, std::variant<ModelPtr, ImportSourcePtr, UnitsPtr, ComponentPtr,
+                                                    VariablePtr, ResetPtr, VariablePair, std::string,
+                                                    IssuePtr>>; /**< Type definition for AnyType structure.  The first string is the type of item. **/
+
+using ItemList = std::map<std::string, AnyItem>;
 
 /**
  * @brief The Annotator class.
@@ -49,9 +58,8 @@ public:
      */
     static AnnotatorPtr create() noexcept;
 
-    // void createAllIds(ModelPtr &model, bool includeMathMLElements);
-    // void build(const ModelPtr &model);
-    void test(size_t &i);
+    void build(const ModelPtr &model, bool mathIds=false);
+    AnyItem item(const std::string &id);
 
 private:
     Annotator(); /**< Constructor */
