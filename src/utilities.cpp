@@ -561,9 +561,6 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
 
 IdList listIds(const ModelPtr &model, bool mathIds)
 {
-    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
-    // invalid models (with duplicated ids) too.
-
     std::unordered_set<std::string> idList;
     // Model.
     std::string id = model->id();
