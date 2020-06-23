@@ -53,19 +53,22 @@ struct GeneratorVariable::GeneratorVariableImpl
 {
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
+    size_t mIndex = MAX_SIZE_T;
     GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
 
     void populate(const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable,
+                  const VariablePtr &variable, size_t mIndex,
                   GeneratorVariable::Type type);
 };
 
 void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &initialisingVariable,
                                                         const VariablePtr &variable,
+                                                        size_t index,
                                                         GeneratorVariable::Type type)
 {
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
+    mIndex = index;
     mType = type;
 }
 
@@ -92,6 +95,11 @@ VariablePtr GeneratorVariable::initialisingVariable() const
 VariablePtr GeneratorVariable::variable() const
 {
     return mPimpl->mVariable;
+}
+
+size_t GeneratorVariable::index() const
+{
+    return mPimpl->mIndex;
 }
 
 GeneratorVariable::Type GeneratorVariable::type() const
@@ -503,6 +511,7 @@ struct Generator::GeneratorImpl
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     GeneratorInternalVariablePtr generatorInternalVariable(const VariablePtr &variable);
+    GeneratorVariablePtr generatorVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
                                    const ComponentPtr &component);
@@ -714,8 +723,8 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 
 GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorInternalVariable(const VariablePtr &variable)
 {
-    // Find and return, if there is one, the generator variable associated with
-    // the given variable.
+    // Find and return, if there is one, the internal generator variable
+    // associated with the given variable.
 
     for (const auto &internalVariable : mInternalVariables) {
         if (sameOrEquivalentVariable(variable, internalVariable->mVariable)) {
@@ -723,14 +732,39 @@ GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorInternalVariable
         }
     }
 
-    // No generator variable exists for the given variable, so create one, track
-    // it and return it.
+    // No internal generator variable exists for the given variable, so create
+    // one, track it and return it.
 
     GeneratorInternalVariablePtr internalVariable = std::make_shared<GeneratorInternalVariable>(variable);
 
     mInternalVariables.push_back(internalVariable);
 
     return internalVariable;
+}
+
+GeneratorVariablePtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
+{
+    // Find and return the generator variable associated with the given
+    // variable.
+
+    if ((mVoi != nullptr)
+        && sameOrEquivalentVariable(variable, mVoi->variable())) {
+        return mVoi;
+    }
+
+    for (const auto &state : mStates) {
+        if (sameOrEquivalentVariable(variable, state->variable())) {
+            return state;
+        }
+    }
+
+    for (const auto &localVariable : mVariables) {
+        if (sameOrEquivalentVariable(variable, localVariable->variable())) {
+            return localVariable;
+        }
+    }
+
+    return {};
 }
 
 VariablePtr Generator::GeneratorImpl::voiFirstOccurrence(const VariablePtr &variable,
@@ -1305,7 +1339,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                     if (!isVoiInitialized) {
                         mVoi = GeneratorVariable::create();
 
-                        mVoi->mPimpl->populate(nullptr, voi,
+                        mVoi->mPimpl->populate(nullptr, voi, 0,
                                                GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
                     }
 
@@ -1656,6 +1690,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
                                               internalVariable->mVariable,
+                                              internalVariable->mIndex,
                                               type);
 
             if (type == GeneratorVariable::Type::STATE) {
@@ -2647,10 +2682,10 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     }
 
     VariablePtr initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorInternalVariable(initValueVariable);
+    GeneratorVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initValueVariable);
     std::ostringstream index;
 
-    index << generatorInitialValueVariable->mIndex;
+    index << generatorInitialValueVariable->index();
 
     return mProfile->variablesArrayString() + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
@@ -2658,15 +2693,15 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
                                                                const GeneratorEquationAstPtr &ast)
 {
-    GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorInternalVariable(variable);
+    GeneratorVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
-    if (generatorVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION) {
+    if (generatorVariable->type() == GeneratorVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();
     }
 
     std::string arrayName;
 
-    if (generatorVariable->mType == GeneratorInternalVariable::Type::STATE) {
+    if (generatorVariable->type() == GeneratorVariable::Type::STATE) {
         arrayName = ((ast != nullptr) && (ast->mParent.lock()->mType == GeneratorEquationAst::Type::DIFF)) ?
                         mProfile->ratesArrayString() :
                         mProfile->statesArrayString();
@@ -2676,7 +2711,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
 
     std::ostringstream index;
 
-    index << generatorVariable->mIndex;
+    index << generatorVariable->index();
 
     return arrayName + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
