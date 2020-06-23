@@ -5,6 +5,7 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 */
 %include <std_shared_ptr.i>
 
+%shared_ptr(libcellml::Annotator)
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
