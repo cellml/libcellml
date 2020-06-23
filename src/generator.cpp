@@ -107,9 +107,9 @@ GeneratorVariable::Type GeneratorVariable::type() const
     return mPimpl->mType;
 }
 
-struct GeneratorEquation;
-using GeneratorEquationPtr = std::shared_ptr<GeneratorEquation>;
-using GeneratorEquationWeakPtr = std::weak_ptr<GeneratorEquation>;
+struct GeneratorInternalEquation;
+using GeneratorInternalEquationPtr = std::shared_ptr<GeneratorInternalEquation>;
+using GeneratorInternalEquationWeakPtr = std::weak_ptr<GeneratorInternalEquation>;
 
 struct GeneratorInternalVariable
 {
@@ -132,7 +132,7 @@ struct GeneratorInternalVariable
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
 
-    GeneratorEquationWeakPtr mEquation;
+    GeneratorInternalEquationWeakPtr mInternalEquation;
 
     explicit GeneratorInternalVariable(const VariablePtr &variable);
 
@@ -197,7 +197,8 @@ GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
 {
 }
 
-GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variable,
+GeneratorEquationAst::GeneratorEquationAst(Type type,
+                                           const VariablePtr &variable,
                                            const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mVariable(variable)
@@ -216,9 +217,9 @@ GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
 }
 
 #ifdef SWIG
-struct GeneratorEquation
+struct GeneratorInternalEquation
 #else
-struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
+struct GeneratorInternalEquation: public std::enable_shared_from_this<GeneratorInternalEquation>
 #endif
 {
     enum struct Type
@@ -233,7 +234,7 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
-    std::list<GeneratorEquationPtr> mDependencies;
+    std::list<GeneratorInternalEquationPtr> mDependencies;
 
     GeneratorEquationAstPtr mAst;
 
@@ -248,7 +249,7 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
 
     bool mIsStateRateBased = false;
 
-    explicit GeneratorEquation(const ComponentPtr &component);
+    explicit GeneratorInternalEquation(const ComponentPtr &component);
 
     void addVariable(const GeneratorInternalVariablePtr &variable);
     void addOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
@@ -262,27 +263,27 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
 
-GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
+GeneratorInternalEquation::GeneratorInternalEquation(const ComponentPtr &component)
     : mAst(std::make_shared<GeneratorEquationAst>())
     , mComponent(component)
 {
 }
 
-void GeneratorEquation::addVariable(const GeneratorInternalVariablePtr &variable)
+void GeneratorInternalEquation::addVariable(const GeneratorInternalVariablePtr &variable)
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
     }
 }
 
-void GeneratorEquation::addOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
+void GeneratorInternalEquation::addOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
 {
     if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
         mOdeVariables.push_back(odeVariable);
     }
 }
 
-bool GeneratorEquation::containsNonUnknownVariables(const std::list<GeneratorInternalVariablePtr> &variables)
+bool GeneratorInternalEquation::containsNonUnknownVariables(const std::list<GeneratorInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
                return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN);
@@ -290,7 +291,7 @@ bool GeneratorEquation::containsNonUnknownVariables(const std::list<GeneratorInt
            != std::end(variables);
 }
 
-bool GeneratorEquation::containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables)
+bool GeneratorInternalEquation::containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
                return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
@@ -301,7 +302,7 @@ bool GeneratorEquation::containsNonConstantVariables(const std::list<GeneratorIn
            != std::end(variables);
 }
 
-bool GeneratorEquation::knownVariable(const GeneratorInternalVariablePtr &variable)
+bool GeneratorInternalEquation::knownVariable(const GeneratorInternalVariablePtr &variable)
 {
     return (variable->mIndex != MAX_SIZE_T)
            || (variable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION)
@@ -311,7 +312,7 @@ bool GeneratorEquation::knownVariable(const GeneratorInternalVariablePtr &variab
            || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
 }
 
-bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
+bool GeneratorInternalEquation::knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
 {
     return (odeVariable->mIndex != MAX_SIZE_T)
            || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
@@ -326,8 +327,8 @@ bool sameOrEquivalentVariable(const VariablePtr &variable1,
     return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
-bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
-                              size_t &variableIndex)
+bool GeneratorInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
+                                      size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known (ODE) variable left (i.e.
@@ -370,7 +371,7 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     for (const auto &variable : mVariables) {
         if (knownVariable(variable)) {
-            GeneratorEquationPtr equation = variable->mEquation.lock();
+            GeneratorInternalEquationPtr equation = variable->mInternalEquation.lock();
 
             if (!mIsStateRateBased) {
                 mIsStateRateBased = (equation == nullptr) ?
@@ -426,7 +427,7 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
                                    ++stateIndex :
                                    ++variableIndex;
 
-            variable->mEquation = shared_from_this();
+            variable->mInternalEquation = shared_from_this();
 
             mOrder = ++equationOrder;
             mType = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
@@ -458,7 +459,7 @@ struct Generator::GeneratorImpl
     Generator::ModelType mModelType = Generator::ModelType::UNKNOWN;
 
     std::list<GeneratorInternalVariablePtr> mInternalVariables;
-    std::list<GeneratorEquationPtr> mEquations;
+    std::list<GeneratorInternalEquationPtr> mInternalEquations;
 
     GeneratorVariablePtr mVoi = nullptr;
     std::vector<GeneratorVariablePtr> mStates;
@@ -502,8 +503,8 @@ struct Generator::GeneratorImpl
     static bool compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
                                                const GeneratorInternalVariablePtr &variable2);
 
-    static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
-                                           const GeneratorEquationPtr &equation2);
+    static bool compareEquationsByVariable(const GeneratorInternalEquationPtr &equation1,
+                                           const GeneratorInternalEquationPtr &equation2);
 
     bool hasValidModel() const;
 
@@ -516,12 +517,13 @@ struct Generator::GeneratorImpl
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
                                    const ComponentPtr &component);
 
-    void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
+    void processNode(const XmlNodePtr &node,
+                     GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component,
-                     const GeneratorEquationPtr &equation);
-    GeneratorEquationPtr processNode(const XmlNodePtr &node,
-                                     const ComponentPtr &component);
+                     const GeneratorInternalEquationPtr &equation);
+    GeneratorInternalEquationPtr processNode(const XmlNodePtr &node,
+                                             const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
@@ -616,19 +618,19 @@ struct Generator::GeneratorImpl
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
     std::string generateInitializationCode(const GeneratorVariablePtr &variable);
-    std::string generateEquationCode(const GeneratorEquationPtr &equation,
-                                     std::vector<GeneratorEquationPtr> &remainingEquations,
+    std::string generateEquationCode(const GeneratorInternalEquationPtr &equation,
+                                     std::vector<GeneratorInternalEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
     void addInterfaceComputeModelMethodsCode(std::string &code) const;
     void addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
+                                                                 std::vector<GeneratorInternalEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::string &code,
-                                                             std::vector<GeneratorEquationPtr> &remainingEquations);
+                                                             std::vector<GeneratorInternalEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::string &code,
-                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
+                                                 std::vector<GeneratorInternalEquationPtr> &remainingEquations);
     void addImplementationComputeVariablesMethodCode(std::string &code,
-                                                     std::vector<GeneratorEquationPtr> &remainingEquations);
+                                                     std::vector<GeneratorInternalEquationPtr> &remainingEquations);
 };
 
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
@@ -671,8 +673,8 @@ bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInt
     return variable1->mIndex < variable2->mIndex;
 }
 
-bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
-                                                          const GeneratorEquationPtr &equation2)
+bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorInternalEquationPtr &equation1,
+                                                          const GeneratorInternalEquationPtr &equation2)
 {
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
@@ -794,7 +796,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            GeneratorEquationAstPtr &ast,
                                            const GeneratorEquationAstPtr &astParent,
                                            const ComponentPtr &component,
-                                           const GeneratorEquationPtr &equation)
+                                           const GeneratorInternalEquationPtr &equation)
 {
     // Basic content elements.
 
@@ -1140,14 +1142,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     }
 }
 
-GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                                           const ComponentPtr &component)
+GeneratorInternalEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
+                                                                   const ComponentPtr &component)
 {
     // Create and keep track of the equation associated with the given node.
 
-    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>(component);
+    GeneratorInternalEquationPtr equation = std::make_shared<GeneratorInternalEquation>(component);
 
-    mEquations.push_back(equation);
+    mInternalEquations.push_back(equation);
 
     // Actually process the node and return its corresponding equation.
 
@@ -1503,7 +1505,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mModelType = Generator::ModelType::UNKNOWN;
 
     mInternalVariables.clear();
-    mEquations.clear();
+    mInternalEquations.clear();
 
     mVoi = nullptr;
     mStates.clear();
@@ -1541,8 +1543,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         // Process our different equations' AST to determine the type of our
         // variables.
 
-        for (const auto &equation : mEquations) {
-            processEquationAst(equation->mAst);
+        for (const auto &internalEquation : mInternalEquations) {
+            processEquationAst(internalEquation->mAst);
         }
     }
 
@@ -1570,8 +1572,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         for (;;) {
             bool relevantCheck = false;
 
-            for (const auto &equation : mEquations) {
-                relevantCheck = equation->check(equationOrder, stateIndex, variableIndex)
+            for (const auto &internalEquation : mInternalEquations) {
+                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex)
                                 || relevantCheck;
             }
 
@@ -1658,15 +1660,15 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         // have mapped variables that use compatible units rather than
         // equivalent ones.
 
-        for (const auto &equation : mEquations) {
-            scaleEquationAst(equation->mAst);
+        for (const auto &internalEquation : mInternalEquations) {
+            scaleEquationAst(internalEquation->mAst);
         }
 
         // Sort our variables and equations and make our internal variables
         // available through our API.
 
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
-        mEquations.sort(compareEquationsByVariable);
+        mInternalEquations.sort(compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
             GeneratorVariable::Type type;
@@ -3442,15 +3444,15 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
     return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
-                                                           std::vector<GeneratorEquationPtr> &remainingEquations,
+std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorInternalEquationPtr &equation,
+                                                           std::vector<GeneratorInternalEquationPtr> &remainingEquations,
                                                            bool onlyStateRateBasedEquations)
 {
     std::string res;
 
     for (const auto &dependency : equation->mDependencies) {
         if (!onlyStateRateBasedEquations
-            || ((dependency->mType == GeneratorEquation::Type::ALGEBRAIC)
+            || ((dependency->mType == GeneratorInternalEquation::Type::ALGEBRAIC)
                 && dependency->mIsStateRateBased)) {
             res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
         }
@@ -3495,7 +3497,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &
 }
 
 void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
+                                                                                       std::vector<GeneratorInternalEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationInitializeStatesAndConstantsMethodString().empty()) {
         if (!code.empty()) {
@@ -3510,9 +3512,9 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
             }
         }
 
-        for (const auto &equation : mEquations) {
-            if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
-                methodBody += generateEquationCode(equation, remainingEquations);
+        for (const auto &internalEquation : mInternalEquations) {
+            if (internalEquation->mType == GeneratorInternalEquation::Type::TRUE_CONSTANT) {
+                methodBody += generateEquationCode(internalEquation, remainingEquations);
             }
         }
 
@@ -3526,7 +3528,7 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
 }
 
 void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::string &code,
-                                                                                   std::vector<GeneratorEquationPtr> &remainingEquations)
+                                                                                   std::vector<GeneratorInternalEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
         if (!code.empty()) {
@@ -3535,9 +3537,9 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
         std::string methodBody;
 
-        for (const auto &equation : mEquations) {
-            if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
-                methodBody += generateEquationCode(equation, remainingEquations);
+        for (const auto &internalEquation : mInternalEquations) {
+            if (internalEquation->mType == GeneratorInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                methodBody += generateEquationCode(internalEquation, remainingEquations);
             }
         }
 
@@ -3547,7 +3549,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 }
 
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::string &code,
-                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
+                                                                       std::vector<GeneratorInternalEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeRatesMethodString().empty()) {
         if (!code.empty()) {
@@ -3556,9 +3558,9 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::stri
 
         std::string methodBody;
 
-        for (const auto &equation : mEquations) {
-            if (equation->mType == GeneratorEquation::Type::RATE) {
-                methodBody += generateEquationCode(equation, remainingEquations);
+        for (const auto &internalEquation : mInternalEquations) {
+            if (internalEquation->mType == GeneratorInternalEquation::Type::RATE) {
+                methodBody += generateEquationCode(internalEquation, remainingEquations);
             }
         }
 
@@ -3568,22 +3570,22 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::stri
 }
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::string &code,
-                                                                           std::vector<GeneratorEquationPtr> &remainingEquations)
+                                                                           std::vector<GeneratorInternalEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeVariablesMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mEquations), std::end(mEquations)};
+        std::vector<GeneratorInternalEquationPtr> newRemainingEquations {std::begin(mInternalEquations), std::end(mInternalEquations)};
 
         std::string methodBody;
 
-        for (const auto &equation : mEquations) {
-            if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
-                    && equation->mIsStateRateBased)) {
-                methodBody += generateEquationCode(equation, newRemainingEquations, true);
+        for (const auto &internalEquation : mInternalEquations) {
+            if ((std::find(remainingEquations.begin(), remainingEquations.end(), internalEquation) != remainingEquations.end())
+                || ((internalEquation->mType == GeneratorInternalEquation::Type::ALGEBRAIC)
+                    && internalEquation->mIsStateRateBased)) {
+                methodBody += generateEquationCode(internalEquation, newRemainingEquations, true);
             }
         }
 
@@ -3795,7 +3797,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the implementation to initialise our states and constants.
 
-    std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
+    std::vector<GeneratorInternalEquationPtr> remainingEquations {std::begin(mPimpl->mInternalEquations), std::end(mPimpl->mInternalEquations)};
 
     mPimpl->addImplementationInitializeStatesAndConstantsMethodCode(res, remainingEquations);
 
