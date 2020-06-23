@@ -27,10 +27,11 @@ struct AnalyserVariable::AnalyserVariableImpl
 {
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
+    size_t mIndex = 0;
     AnalyserVariable::Type mType = AnalyserVariable::Type::CONSTANT;
 
     void populate(const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable,
+                  const VariablePtr &variable, size_t index,
                   AnalyserVariable::Type type);
 };
 

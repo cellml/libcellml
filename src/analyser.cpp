@@ -1064,7 +1064,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                     if (!isVoiInitialized) {
                         mModel->mPimpl->mVoi = AnalyserVariable::create();
 
-                        mModel->mPimpl->mVoi->mPimpl->populate(nullptr, voi,
+                        mModel->mPimpl->mVoi->mPimpl->populate(nullptr, voi, 0,
                                                                AnalyserVariable::Type::VARIABLE_OF_INTEGRATION);
                     }
 
@@ -1394,6 +1394,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
             stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
                                               internalVariable->mVariable,
+                                              internalVariable->mIndex,
                                               type);
 
             if (type == AnalyserVariable::Type::STATE) {

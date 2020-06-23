@@ -22,10 +22,12 @@ namespace libcellml {
 
 void AnalyserVariable::AnalyserVariableImpl::populate(const VariablePtr &initialisingVariable,
                                                       const VariablePtr &variable,
+                                                      size_t index,
                                                       AnalyserVariable::Type type)
 {
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
+    mIndex = index;
     mType = type;
 }
 
@@ -52,6 +54,11 @@ VariablePtr AnalyserVariable::initialisingVariable() const
 VariablePtr AnalyserVariable::variable() const
 {
     return mPimpl->mVariable;
+}
+
+size_t AnalyserVariable::index() const
+{
+    return mPimpl->mIndex;
 }
 
 AnalyserVariable::Type AnalyserVariable::type() const
