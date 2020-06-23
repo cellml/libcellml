@@ -41,9 +41,9 @@ namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
-struct AnalyserEquation;
-using AnalyserEquationPtr = std::shared_ptr<AnalyserEquation>;
-using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>;
+struct AnalyserInternalEquation;
+using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
+using AnalyserInternalEquationWeakPtr = std::weak_ptr<AnalyserInternalEquation>;
 
 struct AnalyserInternalVariable
 {
@@ -66,7 +66,7 @@ struct AnalyserInternalVariable
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
 
-    AnalyserEquationWeakPtr mEquation;
+    AnalyserInternalEquationWeakPtr mEquation;
 
     explicit AnalyserInternalVariable(const VariablePtr &variable);
 
@@ -117,7 +117,7 @@ void AnalyserInternalVariable::makeState()
 #ifdef SWIG
 struct AnalyserEquation
 #else
-struct AnalyserEquation: public std::enable_shared_from_this<AnalyserEquation>
+struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInternalEquation>
 #endif
 {
     enum struct Type
@@ -132,7 +132,7 @@ struct AnalyserEquation: public std::enable_shared_from_this<AnalyserEquation>
     size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
-    std::list<AnalyserEquationPtr> mDependencies;
+    std::list<AnalyserInternalEquationPtr> mDependencies;
 
     AnalyserEquationAstPtr mAst;
 
@@ -147,7 +147,7 @@ struct AnalyserEquation: public std::enable_shared_from_this<AnalyserEquation>
 
     bool mIsStateRateBased = false;
 
-    explicit AnalyserEquation(const ComponentPtr &component);
+    explicit AnalyserInternalEquation(const ComponentPtr &component);
 
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -161,27 +161,27 @@ struct AnalyserEquation: public std::enable_shared_from_this<AnalyserEquation>
     bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
 
-AnalyserEquation::AnalyserEquation(const ComponentPtr &component)
+AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
     : mAst(std::make_shared<AnalyserEquationAst>())
     , mComponent(component)
 {
 }
 
-void AnalyserEquation::addVariable(const AnalyserInternalVariablePtr &variable)
+void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &variable)
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
     }
 }
 
-void AnalyserEquation::addOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
+void AnalyserInternalEquation::addOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
 {
     if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
         mOdeVariables.push_back(odeVariable);
     }
 }
 
-bool AnalyserEquation::containsNonUnknownVariables(const std::list<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::containsNonUnknownVariables(const std::list<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN);
@@ -189,7 +189,7 @@ bool AnalyserEquation::containsNonUnknownVariables(const std::list<AnalyserInter
            != std::end(variables);
 }
 
-bool AnalyserEquation::containsNonConstantVariables(const std::list<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::containsNonConstantVariables(const std::list<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
@@ -200,7 +200,7 @@ bool AnalyserEquation::containsNonConstantVariables(const std::list<AnalyserInte
            != std::end(variables);
 }
 
-bool AnalyserEquation::knownVariable(const AnalyserInternalVariablePtr &variable)
+bool AnalyserInternalEquation::knownVariable(const AnalyserInternalVariablePtr &variable)
 {
     return (variable->mIndex != MAX_SIZE_T)
            || (variable->mType == AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION)
@@ -210,14 +210,14 @@ bool AnalyserEquation::knownVariable(const AnalyserInternalVariablePtr &variable
            || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
 }
 
-bool AnalyserEquation::knownOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
+bool AnalyserInternalEquation::knownOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
 {
     return (odeVariable->mIndex != MAX_SIZE_T)
            || (odeVariable->mType == AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
-bool AnalyserEquation::check(size_t &equationOrder, size_t &stateIndex,
-                             size_t &variableIndex)
+bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
+                                     size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known (ODE) variable left (i.e.
@@ -260,7 +260,7 @@ bool AnalyserEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     for (const auto &variable : mVariables) {
         if (knownVariable(variable)) {
-            AnalyserEquationPtr equation = variable->mEquation.lock();
+            AnalyserInternalEquationPtr equation = variable->mEquation.lock();
 
             if (!mIsStateRateBased) {
                 mIsStateRateBased = (equation == nullptr) ?
@@ -348,7 +348,7 @@ struct Analyser::AnalyserImpl
     AnalyserModelPtr mModel = nullptr;
 
     std::list<AnalyserInternalVariablePtr> mInternalVariables;
-    std::list<AnalyserEquationPtr> mEquations;
+    std::list<AnalyserInternalEquationPtr> mInternalEquations;
 
     explicit AnalyserImpl(Analyser *analyser);
 
@@ -361,8 +361,8 @@ struct Analyser::AnalyserImpl
     static bool compareVariablesByTypeAndIndex(const AnalyserInternalVariablePtr &variable1,
                                                const AnalyserInternalVariablePtr &variable2);
 
-    static bool compareEquationsByVariable(const AnalyserEquationPtr &equation1,
-                                           const AnalyserEquationPtr &equation2);
+    static bool compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
+                                           const AnalyserInternalEquationPtr &equation2);
 
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
@@ -375,9 +375,9 @@ struct Analyser::AnalyserImpl
     void processNode(const XmlNodePtr &node, AnalyserEquationAstPtr &ast,
                      const AnalyserEquationAstPtr &astParent,
                      const ComponentPtr &component,
-                     const AnalyserEquationPtr &equation);
-    AnalyserEquationPtr processNode(const XmlNodePtr &node,
-                                    const ComponentPtr &component);
+                     const AnalyserInternalEquationPtr &equation);
+    AnalyserInternalEquationPtr processNode(const XmlNodePtr &node,
+                                            const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
@@ -442,8 +442,8 @@ bool Analyser::AnalyserImpl::compareVariablesByTypeAndIndex(const AnalyserIntern
     return variable1->mIndex < variable2->mIndex;
 }
 
-bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserEquationPtr &equation1,
-                                                        const AnalyserEquationPtr &equation2)
+bool Analyser::AnalyserImpl::compareEquationsByVariable(const AnalyserInternalEquationPtr &equation1,
+                                                        const AnalyserInternalEquationPtr &equation2)
 {
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
@@ -535,7 +535,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
                                          AnalyserEquationAstPtr &ast,
                                          const AnalyserEquationAstPtr &astParent,
                                          const ComponentPtr &component,
-                                         const AnalyserEquationPtr &equation)
+                                         const AnalyserInternalEquationPtr &equation)
 {
     // Basic content elements.
 
@@ -874,14 +874,14 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     }
 }
 
-AnalyserEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
-                                                        const ComponentPtr &component)
+AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
+                                                                const ComponentPtr &component)
 {
     // Create and keep track of the equation associated with the given node.
 
-    AnalyserEquationPtr equation = std::make_shared<AnalyserEquation>(component);
+    AnalyserInternalEquationPtr equation = std::make_shared<AnalyserInternalEquation>(component);
 
-    mEquations.push_back(equation);
+    mInternalEquations.push_back(equation);
 
     // Actually process the node and return its corresponding equation.
 
@@ -1229,7 +1229,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
     mModel = AnalyserModel::create();
 
     mInternalVariables.clear();
-    mEquations.clear();
+    mInternalEquations.clear();
 
     // Recursively process the model's components, so that we end up with an AST
     // for each of the model's equations.
@@ -1245,8 +1245,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         // Process our different equations' AST to determine the type of our
         // variables.
 
-        for (const auto &equation : mEquations) {
-            processEquationAst(equation->mAst);
+        for (const auto &internalEquation : mInternalEquations) {
+            processEquationAst(internalEquation->mAst);
         }
     }
 
@@ -1274,8 +1274,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         for (;;) {
             bool relevantCheck = false;
 
-            for (const auto &equation : mEquations) {
-                relevantCheck = equation->check(equationOrder, stateIndex, variableIndex)
+            for (const auto &internalEquation : mInternalEquations) {
+                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex)
                                 || relevantCheck;
             }
 
@@ -1362,15 +1362,15 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         // have mapped variables that use compatible units rather than
         // equivalent ones.
 
-        for (const auto &equation : mEquations) {
-            scaleEquationAst(equation->mAst);
+        for (const auto &internalEquation : mInternalEquations) {
+            scaleEquationAst(internalEquation->mAst);
         }
 
         // Sort our variables and equations and make our internal variables
         // available through our API.
 
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
-        mEquations.sort(compareEquationsByVariable);
+        mInternalEquations.sort(compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
             AnalyserVariable::Type type;
