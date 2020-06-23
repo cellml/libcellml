@@ -64,12 +64,10 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList, b
         idList.insert(std::make_pair(id, std::make_pair("component", component)));
     }
     // Imports.
-    if (!component->isImport()) {
-        if (component->importSource() != nullptr) {
-            id = component->importSource()->id();
-            if (!id.empty()) {
-                idList.insert(std::make_pair(id, std::make_pair("import", component->importSource())));
-            }
+    if (component->isImport() && component->importSource() != nullptr) {
+        id = component->importSource()->id();
+        if (!id.empty()) {
+            idList.insert(std::make_pair(id, std::make_pair("import", component->importSource())));
         }
     }
     // Component reference in encapsulation structure.
@@ -148,8 +146,12 @@ ItemList listIdsAndItems(const ModelPtr &model, bool mathIds)
             double multiplier;
             model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
-                idList.insert(std::make_pair(id, std::make_pair("unit", model->units(u))));
+                idList.insert(std::make_pair(id, std::make_pair("unit", std::make_pair(model->units(u), i))));
             }
+        }
+        if (model->units(u)->isImport() && model->units(u)->importSource() != nullptr) {
+            id = model->units(u)->importSource()->id();
+            idList.insert(std::make_pair(id, std::make_pair("import", model->units(u)->importSource())));
         }
     }
     // Components.
@@ -198,6 +200,157 @@ AnyItem Annotator::item(const std::string &id)
     return mPimpl->mIdList[id];
 }
 
+ComponentPtr Annotator::component(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ComponentPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
+VariablePtr Annotator::variable(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<VariablePtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+ModelPtr Annotator::model(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ModelPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+UnitsPtr Annotator::units(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<UnitsPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+ImportSourcePtr Annotator::import(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ImportSourcePtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+ResetPtr Annotator::reset(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ResetPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+VariablePair Annotator::connection(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<VariablePair>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return std::make_pair(nullptr, nullptr);
+    }
+}
+
+VariablePair Annotator::map_variables(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<VariablePair>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return std::make_pair(nullptr, nullptr);
+    }
+}
+
+UnitItem Annotator::unit(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<UnitItem>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return std::make_pair(nullptr, -1);
+    }
+}
+
+ComponentPtr Annotator::component_ref(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ComponentPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+std::string Annotator::math(const std::string &id){
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<std::string>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return "";
+    }
+}
+
+std::string Annotator::test_value(const std::string &id){
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<std::string>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return "";
+    }
+}
+
+std::string Annotator::reset_value(const std::string &id){
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<std::string>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return "";
+    }
+}
 
 } // namespace libcellml

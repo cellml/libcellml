@@ -16,9 +16,12 @@ limitations under the License.
 
 #pragma once
 
+#include <any>
+#include <exception>
+#include <functional>
 #include <map>
 #include <string>
-#include <variant>
+// #include <variant>
 #include <vector>
 
 #include "libcellml/logger.h"
@@ -27,10 +30,11 @@ limitations under the License.
 namespace libcellml {
 
 using VariablePair = std::pair<VariablePtr, VariablePtr>;
-using AnyItem = std::pair<std::string, std::variant<ModelPtr, ImportSourcePtr, UnitsPtr, ComponentPtr,
-                                                    VariablePtr, ResetPtr, VariablePair, std::string,
-                                                    IssuePtr>>; /**< Type definition for AnyType structure.  The first string is the type of item. **/
-
+using UnitItem = std::pair<UnitsPtr, size_t>;
+// using AnyItem = std::pair<std::string, std::variant<ModelPtr, ImportSourcePtr, UnitsPtr, ComponentPtr,
+//                                                     VariablePtr, ResetPtr, VariablePair, std::string,
+//                                                     IssuePtr>>; /**< Type definition for AnyType structure.  The first string is the type of item. **/
+using AnyItem = std::pair<std::string, std::any>;
 using ItemList = std::map<std::string, AnyItem>;
 
 /**
@@ -58,8 +62,22 @@ public:
      */
     static AnnotatorPtr create() noexcept;
 
-    void build(const ModelPtr &model, bool mathIds=false);
+    void build(const ModelPtr &model, bool mathIds = false);
     AnyItem item(const std::string &id);
+
+    ComponentPtr component(const std::string &id);
+    VariablePtr variable(const std::string &id);
+    ResetPtr reset(const std::string &id);
+    ModelPtr model(const std::string &id);
+    ImportSourcePtr import(const std::string &id);
+    UnitsPtr units(const std::string &id);
+    VariablePair connection(const std::string &id);
+    VariablePair map_variables(const std::string &id);
+    UnitItem unit(const std::string &id);
+    ComponentPtr component_ref(const std::string &id);
+    std::string math(const std::string &id);
+    std::string test_value(const std::string &id);
+    std::string reset_value(const std::string &id);
 
 private:
     Annotator(); /**< Constructor */
