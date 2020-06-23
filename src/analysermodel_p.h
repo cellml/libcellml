@@ -57,8 +57,6 @@ struct AnalyserModel::AnalyserModelImpl
     bool mNeedAsech = false;
     bool mNeedAcsch = false;
     bool mNeedAcoth = false;
-
-    bool hasValidModel() const;
 };
 
 } // namespace libcellml

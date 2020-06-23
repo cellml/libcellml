@@ -20,12 +20,6 @@ limitations under the License.
 
 namespace libcellml {
 
-bool AnalyserModel::AnalyserModelImpl::hasValidModel() const
-{
-    return (mType == AnalyserModel::Type::ALGEBRAIC)
-           || (mType == AnalyserModel::Type::ODE);
-}
-
 AnalyserModel::AnalyserModel()
     : mPimpl(new AnalyserModelImpl())
 {
@@ -41,6 +35,12 @@ AnalyserModelPtr AnalyserModel::create() noexcept
     return std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
 }
 
+bool AnalyserModel::isValid() const
+{
+    return (mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)
+           || (mPimpl->mType == AnalyserModel::Type::ODE);
+}
+
 AnalyserModel::Type AnalyserModel::type() const
 {
     return mPimpl->mType;
@@ -48,7 +48,7 @@ AnalyserModel::Type AnalyserModel::type() const
 
 size_t AnalyserModel::stateCount() const
 {
-    if (!mPimpl->hasValidModel()) {
+    if (!isValid()) {
         return 0;
     }
 
@@ -57,7 +57,7 @@ size_t AnalyserModel::stateCount() const
 
 size_t AnalyserModel::variableCount() const
 {
-    if (!mPimpl->hasValidModel()) {
+    if (!isValid()) {
         return 0;
     }
 
@@ -66,7 +66,7 @@ size_t AnalyserModel::variableCount() const
 
 AnalyserVariablePtr AnalyserModel::voi() const
 {
-    if (!mPimpl->hasValidModel()) {
+    if (!isValid()) {
         return {};
     }
 
@@ -75,7 +75,7 @@ AnalyserVariablePtr AnalyserModel::voi() const
 
 AnalyserVariablePtr AnalyserModel::state(size_t index) const
 {
-    if (!mPimpl->hasValidModel()
+    if (!isValid()
         || (index >= mPimpl->mStates.size())) {
         return {};
     }
@@ -85,8 +85,7 @@ AnalyserVariablePtr AnalyserModel::state(size_t index) const
 
 AnalyserVariablePtr AnalyserModel::variable(size_t index) const
 {
-    if (!mPimpl->hasValidModel()
-        || (index >= mPimpl->mVariables.size())) {
+    if (!isValid() || (index >= mPimpl->mVariables.size())) {
         return {};
     }
 
