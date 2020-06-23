@@ -100,6 +100,15 @@ public:
     VariablePtr variable() const;
 
     /**
+     * @brief Get the index of this @c GeneratorVariable.
+     *
+     * Return the index of this @c GeneratorVariable.
+     *
+     * @return The index.
+     */
+    size_t index() const;
+
+    /**
      * @brief Get the @c Type for this @c GeneratorVariable.
      *
      * Return the @c Type of this @c GeneratorVariable.
