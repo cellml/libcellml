@@ -53,8 +53,8 @@ public:
     /**
      * @brief Create a @c GeneratorVariable object.
      *
-     * Factory method to create a @c GeneratorVariable.  Create a
-     * generator variable with::
+     * Factory method to create a @c GeneratorVariable. Create a generator
+     * variable with::
      *
      *   GeneratorVariablePtr generatorVariable = libcellml::GeneratorVariable::create();
      *
@@ -142,8 +142,7 @@ public:
     /**
      * @brief Create a @c Generator object.
      *
-     * Factory method to create a @c Generator.  Create a
-     * generator with::
+     * Factory method to create a @c Generator. Create a generator with::
      *
      *   GeneratorPtr generator = libcellml::Generator::create();
      *

@@ -1406,7 +1406,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 }
 
 Analyser::Analyser()
-    : mPimpl(new AnalyserImpl(this))
+    : mPimpl(new AnalyserImpl {this})
 {
 }
 
