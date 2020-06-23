@@ -2655,7 +2655,8 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     return mProfile->variablesArrayString() + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
 
-std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
+                                                               const GeneratorEquationAstPtr &ast)
 {
     GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
