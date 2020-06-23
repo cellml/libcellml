@@ -502,7 +502,7 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
+    GeneratorInternalVariablePtr generatorInternalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
                                    const ComponentPtr &component);
@@ -712,7 +712,7 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     return res;
 }
 
-GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
+GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorInternalVariable(const VariablePtr &variable)
 {
     // Find and return, if there is one, the generator variable associated with
     // the given variable.
@@ -1039,10 +1039,10 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             // mean a variable that is used in a "diff" element).
 
             if (node->parent()->firstChild()->isMathmlElement("diff")) {
-                equation->addOdeVariable(generatorVariable(variable));
+                equation->addOdeVariable(generatorInternalVariable(variable));
             } else if (!(node->parent()->isMathmlElement("bvar")
                          && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-                equation->addVariable(generatorVariable(variable));
+                equation->addVariable(generatorInternalVariable(variable));
             }
 
             // Add the variable to our AST.
@@ -1149,7 +1149,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         // Retrieve the variable's corresponding generator variable.
 
         VariablePtr variable = component->variable(i);
-        GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+        GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorInternalVariable(variable);
 
         // Replace the variable held by `generatorVariable`, in case the
         // existing one has no initial value while `variable` does and after
@@ -1198,7 +1198,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
                 mGenerator->addIssue(issue);
             } else {
-                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initialisingVariable);
+                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorInternalVariable(initialisingVariable);
 
                 if (generatorInitialValueVariable->mType != GeneratorInternalVariable::Type::CONSTANT) {
                     IssuePtr issue = Issue::create();
@@ -1260,7 +1260,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         VariablePtr variable = ast->mVariable;
 
-        generatorVariable(variable)->makeVoi();
+        generatorInternalVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
         //       variable of integration) otherwise unnecessary issue messages
@@ -1353,7 +1353,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
     if ((ast->mType == GeneratorEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::DIFF)) {
-        generatorVariable(ast->mVariable)->makeState();
+        generatorInternalVariable(ast->mVariable)->makeState();
     }
 
     // Recursively check the given AST's children.
@@ -1372,7 +1372,7 @@ double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
     // Return the scaling factor for the given variable.
 
     return Units::scalingFactor(variable->units(),
-                                generatorVariable(variable)->mVariable->units());
+                                generatorInternalVariable(variable)->mVariable->units());
 }
 
 void Generator::GeneratorImpl::scaleAst(const GeneratorEquationAstPtr &ast,
@@ -2647,7 +2647,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     }
 
     VariablePtr initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initValueVariable);
+    GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorInternalVariable(initValueVariable);
     std::ostringstream index;
 
     index << generatorInitialValueVariable->mIndex;
@@ -2658,7 +2658,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
                                                                const GeneratorEquationAstPtr &ast)
 {
-    GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+    GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorInternalVariable(variable);
 
     if (generatorVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();
