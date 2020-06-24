@@ -25,7 +25,7 @@ namespace libcellml {
  */
 struct AnalyserModel::AnalyserModelImpl
 {
-    AnalyserModel::Type mType = AnalyserModel::Type::UNKNOWN;
+    AnalyserModel::Type mType = Type::UNKNOWN;
 
     AnalyserVariablePtr mVoi = nullptr;
     std::vector<AnalyserVariablePtr> mStates;
