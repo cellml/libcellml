@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/variable.h"
+#include "libcellml/analyser.h"
 
 #undef NAN
 
@@ -27,13 +27,18 @@ limitations under the License.
 
 namespace libcellml {
 
-struct AnalyserEquationAst;
-
-using AnalyserEquationAstPtr = std::shared_ptr<AnalyserEquationAst>;
-
-struct AnalyserEquationAst
+/**
+ * @brief The AnalyserEquationAst class.
+ *
+ * The AnalyserEquationAst class is for representing an equation AST in the
+ * context of a CellML Analyser.
+ */
+class LIBCELLML_EXPORT AnalyserEquationAst
 {
-    enum struct Type
+    friend class Analyser;
+
+public:
+    enum class Type
     {
         // Assignment.
 
@@ -128,25 +133,16 @@ struct AnalyserEquationAst
         NAN
     };
 
-    Type mType = Type::ASSIGNMENT;
+    ~AnalyserEquationAst(); /**< Destructor */
+    AnalyserEquationAst(const AnalyserEquationAst &rhs) = delete; /**< Copy constructor */
+    AnalyserEquationAst(AnalyserEquationAst &&rhs) noexcept = delete; /**< Move constructor */
+    AnalyserEquationAst &operator=(AnalyserEquationAst rhs) = delete; /**< Assignment operator */
 
-    std::string mValue;
-    VariablePtr mVariable = nullptr;
+private:
+    AnalyserEquationAst(); /**< Constructor */
 
-    AnalyserEquationAstPtr mParent;
-
-    AnalyserEquationAstPtr mLeft = nullptr;
-    AnalyserEquationAstPtr mRight = nullptr;
-
-    explicit AnalyserEquationAst();
-    explicit AnalyserEquationAst(Type type,
-                                 const AnalyserEquationAstPtr &parent);
-    explicit AnalyserEquationAst(Type type, const std::string &value,
-                                 const AnalyserEquationAstPtr &parent);
-    explicit AnalyserEquationAst(Type type, const VariablePtr &variable,
-                                 const AnalyserEquationAstPtr &parent);
-    explicit AnalyserEquationAst(const AnalyserEquationAstPtr &ast,
-                                 const AnalyserEquationAstPtr &parent);
+    struct AnalyserEquationAstImpl;
+    AnalyserEquationAstImpl *mPimpl;
 };
 
 } // namespace libcellml

@@ -78,6 +78,7 @@ set(SOURCE_FILES
 set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequation.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequationast.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analysermodel.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyservariable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
@@ -111,7 +112,6 @@ set(MODULE_HEADER_FILES
 )
 
 set(GIT_HEADER_FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.h
   ${CMAKE_CURRENT_SOURCE_DIR}/internaltypes.h
   ${CMAKE_CURRENT_SOURCE_DIR}/namespaces.h
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
