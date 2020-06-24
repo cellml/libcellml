@@ -18,6 +18,8 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#include <list>
+
 namespace libcellml {
 
 /**
@@ -31,10 +33,23 @@ class LIBCELLML_EXPORT AnalyserEquation
     friend class Analyser;
 
 public:
+    enum struct Type
+    {
+        TRUE_CONSTANT,
+        VARIABLE_BASED_CONSTANT,
+        RATE,
+        ALGEBRAIC
+    };
+
     ~AnalyserEquation(); /**< Destructor */
     AnalyserEquation(const AnalyserEquation &rhs) = delete; /**< Copy constructor */
     AnalyserEquation(AnalyserEquation &&rhs) noexcept = delete; /**< Move constructor */
     AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator */
+
+    AnalyserEquation::Type type() const;
+    AnalyserEquationAstPtr ast() const;
+    std::list<AnalyserEquationPtr> dependencies() const;
+    bool isStateRateBased() const;
 
 private:
     AnalyserEquation(); /**< Constructor */

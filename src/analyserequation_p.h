@@ -25,6 +25,15 @@ namespace libcellml {
  */
 struct AnalyserEquation::AnalyserEquationImpl
 {
+    AnalyserEquation::Type mType = AnalyserEquation::Type::ALGEBRAIC;
+    AnalyserEquationAstPtr mAst;
+    std::list<AnalyserEquationPtr> mDependencies;
+    bool mIsStateRateBased = false;
+
+    void populate(AnalyserEquation::Type type,
+                  const AnalyserEquationAstPtr &ast,
+                  const std::list<AnalyserEquationPtr> &dependencies,
+                  bool isStateRateBased);
 };
 
 } // namespace libcellml

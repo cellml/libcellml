@@ -20,6 +20,17 @@ limitations under the License.
 
 namespace libcellml {
 
+void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
+                                                      const AnalyserEquationAstPtr &ast,
+                                                      const std::list<AnalyserEquationPtr> &dependencies,
+                                                      bool isStateRateBased)
+{
+    mType = type;
+    mAst = ast;
+    mDependencies = dependencies;
+    mIsStateRateBased = isStateRateBased;
+}
+
 AnalyserEquation::AnalyserEquation()
     : mPimpl(new AnalyserEquationImpl())
 {
@@ -28,6 +39,26 @@ AnalyserEquation::AnalyserEquation()
 AnalyserEquation::~AnalyserEquation()
 {
     delete mPimpl;
+}
+
+AnalyserEquation::Type AnalyserEquation::type() const
+{
+    return mPimpl->mType;
+}
+
+AnalyserEquationAstPtr AnalyserEquation::ast() const
+{
+    return mPimpl->mAst;
+}
+
+std::list<AnalyserEquationPtr> AnalyserEquation::dependencies() const
+{
+    return mPimpl->mDependencies;
+}
+
+bool AnalyserEquation::isStateRateBased() const
+{
+    return mPimpl->mIsStateRateBased;
 }
 
 } // namespace libcellml
