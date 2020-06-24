@@ -59,7 +59,7 @@ std::string printMapVariables(const VariablePair &variablePair, IdList &idList, 
     if (!mappingId.empty()) {
         mapVariables += " id=\"" + mappingId + "\"";
     } else if (autoIds) {
-        mapVariables += " id=\"" + makeUniqueId("map_variables", idList) + "\"";
+        mapVariables += " id=\"" + makeUniqueId(idList) + "\"";
     }
     mapVariables += "/>";
     return mapVariables;
@@ -115,7 +115,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         if (!connectionId.empty()) {
             connections += " id=\"" + connectionId + "\"";
         } else if (autoIds) {
-            connections += " id=\"" + makeUniqueId("connection", idList) + "\"";
+            connections += " id=\"" + makeUniqueId(idList) + "\"";
         }
         connections += ">" + mappingVariables + "</connection>";
         serialisedComponentMap.push_back(currentComponentPair);
@@ -184,13 +184,13 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
         if (!units->importSource()->id().empty()) {
             repr += " id=\"" + units->importSource()->id() + "\"";
         } else if (autoIds) {
-            repr += " id=\"" + makeUniqueId("import", idList) + "\"";
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         repr += "><units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
         if (!units->id().empty()) {
             repr += " id=\"" + units->id() + "\"";
         } else if (autoIds) {
-            repr += " id=\"" + makeUniqueId("units", idList) + "\"";
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         repr += "/></import>";
     } else if (isStandardUnit(units)) {
@@ -205,7 +205,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
         if (!units->id().empty()) {
             repr += " id=\"" + units->id() + "\"";
         } else if (autoIds) {
-            repr += " id=\"" + makeUniqueId("units", idList) + "\"";
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         if (units->unitCount() > 0) {
             endTag = true;
@@ -231,7 +231,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
                 if (!id.empty()) {
                     repr += " id=\"" + id + "\"";
                 } else if (autoIds) {
-                    repr += " id=\"" + makeUniqueId("unit", idList) + "\"";
+                    repr += " id=\"" + makeUniqueId(idList) + "\"";
                 }
                 repr += "/>";
             }
@@ -260,7 +260,7 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
     if (!component->id().empty()) {
         repr += " id=\"" + component->id() + "\"";
     } else if (autoIds) {
-        repr += " id=\"" + makeUniqueId("component", idList) + "\"";
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
     size_t variableCount = component->variableCount();
     size_t resetCount = component->resetCount();
@@ -301,7 +301,7 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
     if (!component->encapsulationId().empty()) {
         repr += " id=\"" + component->encapsulationId() + "\"";
     } else if (autoIds) {
-        repr += " id=\"" + makeUniqueId("component_ref", idList) + "\"";
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
     size_t componentCount = component->componentCount();
     if (componentCount > 0) {
@@ -342,7 +342,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdL
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
     } else if (autoIds) {
-        repr += " id=\"" + makeUniqueId("variable", idList) + "\"";
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
 
     repr += "/>";
@@ -359,7 +359,7 @@ std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel,
         if (!childId.empty()) {
             repr += " id=\"" + childId + "\"";
         } else if (autoIds) {
-            repr += " id=\"" + makeUniqueId(childLabel, idList) + "\"";
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         if (math.empty()) {
             repr += "/>";
@@ -392,7 +392,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idLi
     if (!rid.empty()) {
         repr += " id=\"" + rid + "\"";
     } else if (autoIds) {
-        repr += " id=\"" + makeUniqueId("reset", idList) + "\"";
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
 
     std::string testValue = printResetChild("test_value", reset->testValueId(), reset->testValue(), idList, autoIds);
@@ -431,7 +431,7 @@ PrinterPtr Printer::create() noexcept
     return std::shared_ptr<Printer> {new Printer {}};
 }
 
-std::string Printer::printModel(const ModelPtr &model, bool autoIds, bool autoMathsIds) const
+std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
 {
     if (model == nullptr) {
         return "";
@@ -440,10 +440,10 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds, bool autoMa
     // Automatic ids.
     IdList idList;
     if (autoIds) {
-        idList = listIds(model, autoMathsIds);
+        idList = listIds(model, false);
     }
 
-    // ImportMap
+    // ImportMap.
     using ImportPair = std::pair<std::string, ComponentPtr>;
     using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
     using ImportOrder = std::vector<ImportSourcePtr>;
@@ -491,7 +491,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds, bool autoMa
     if (!model->id().empty()) {
         repr += " id=\"" + model->id() + "\"";
     } else if (autoIds) {
-        repr += " id=\"" + makeUniqueId("model", idList) + "\"";
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
     bool endTag = false;
     if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
@@ -504,7 +504,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds, bool autoMa
         if (!importSource->id().empty()) {
             repr += " id=\"" + importSource->id() + "\"";
         } else if (autoIds) {
-            repr += " id=\"" + makeUniqueId("import", idList) + "\"";
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
 
         repr += ">";
@@ -516,7 +516,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds, bool autoMa
             if (!localComponent->id().empty()) {
                 repr += " id=\"" + localComponent->id() + "\"";
             } else if (autoIds) {
-                repr += " id=\"" + makeUniqueId("component", idList) + "\"";
+                repr += " id=\"" + makeUniqueId(idList) + "\"";
             }
             repr += "/>";
         }
@@ -547,7 +547,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds, bool autoMa
         if (!model->encapsulationId().empty()) {
             repr += " id=\"" + model->encapsulationId() + "\">";
         } else if (autoIds) {
-            repr += " id=\"" + makeUniqueId("encapsulation", idList) + "\">";
+            repr += " id=\"" + makeUniqueId(idList) + "\">";
         } else {
             repr += ">";
         }

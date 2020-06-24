@@ -667,14 +667,21 @@ void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idLis
     }
 }
 
-std::string makeUniqueId(const std::string &type, IdList &idList)
+std::string makeUniqueId(IdList &idList)
 {
-    // Construct a unique id appropriate to the type, and add it to the idList.
-    int counter = 1;
-    std::string id = type + "_" + std::to_string(counter);
+    // Because the counter starts high enough that it will always have a letter as the first character,
+    // we don't need to prefix it with any other string to be valid.
+    int counter = 0xb4da55;
+    std::stringstream stream;
+    stream << std::hex << counter;
+    std::string id = stream.str();
+    stream.str(std::string());
+
     while (idList.count(id) != 0) {
         counter++;
-        id = type + "_" + std::to_string(counter);
+        stream << std::hex << counter;
+        id = stream.str();
+        stream.str(std::string());
     }
     idList.insert(id);
     return id;
