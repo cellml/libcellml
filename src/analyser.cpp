@@ -885,7 +885,7 @@ AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr
 
     // Actually process the node and return its corresponding equation.
 
-    processNode(node, equation->mAst, equation->mAst->mParent.lock(), component, equation);
+    processNode(node, equation->mAst, equation->mAst->mParent, component, equation);
 
     return equation;
 }
@@ -1010,9 +1010,9 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
-    AnalyserEquationAstPtr astParent = ast->mParent.lock();
-    AnalyserEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
-    AnalyserEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
+    AnalyserEquationAstPtr astParent = ast->mParent;
+    AnalyserEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent : nullptr;
+    AnalyserEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent : nullptr;
 
     if ((ast->mType == AnalyserEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mType == AnalyserEquationAst::Type::BVAR)
@@ -1174,7 +1174,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         // dealing with a rate or some other variable, i.e. whether or not it
         // has a DIFF node as a parent.
 
-        AnalyserEquationAstPtr astParent = ast->mParent.lock();
+        AnalyserEquationAstPtr astParent = ast->mParent;
         if (astParent->mType == AnalyserEquationAst::Type::DIFF) {
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
@@ -1187,7 +1187,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
                 // how we do it depends on whether the rate is to be computed or
                 // used.
 
-                AnalyserEquationAstPtr astGrandParent = astParent->mParent.lock();
+                AnalyserEquationAstPtr astGrandParent = astParent->mParent;
 
                 if ((astGrandParent->mType == AnalyserEquationAst::Type::ASSIGNMENT)
                     && (astGrandParent->mLeft == astParent)) {
@@ -1210,7 +1210,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
             if (!areEqual(scalingFactor, 1.0)) {
                 if (astParent->mType == AnalyserEquationAst::Type::DIFF) {
-                    scaleAst(astParent, astParent->mParent.lock(), scalingFactor);
+                    scaleAst(astParent, astParent->mParent, scalingFactor);
                 } else {
                     scaleAst(ast, astParent, scalingFactor);
                 }
