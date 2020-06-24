@@ -19,8 +19,6 @@ limitations under the License.
 #include <map>
 
 #include <unordered_set>
-
-#include <variant>
 #include <vector>
 
 #include "libcellml/variable.h"
