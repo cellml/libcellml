@@ -31,6 +31,10 @@ class Issue; /**< Forward declaration of Issue class. */
 using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
+class GeneratorEquation; /**< Forward declaration of GeneratorEquation class. */
+using GeneratorEquationPtr = std::shared_ptr<GeneratorEquation>; /**< Type definition for shared generator equation pointer. */
+class GeneratorEquationAst; /**< Forward declaration of GeneratorEquationAst class. */
+using GeneratorEquationAstPtr = std::shared_ptr<GeneratorEquationAst>; /**< Type definition for shared generator equation AST pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
 using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
 class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */

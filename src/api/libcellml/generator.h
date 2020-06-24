@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <list>
 #include <string>
 
 #include "libcellml/logger.h"
@@ -122,6 +123,38 @@ private:
 
     struct GeneratorVariableImpl;
     GeneratorVariableImpl *mPimpl;
+};
+
+class LIBCELLML_EXPORT GeneratorEquation
+{
+    friend class Generator;
+
+public:
+    enum struct Type
+    {
+        TRUE_CONSTANT,
+        VARIABLE_BASED_CONSTANT,
+        RATE,
+        ALGEBRAIC
+    };
+
+    ~GeneratorEquation(); /**< Destructor */
+    GeneratorEquation(const GeneratorEquation &rhs) = delete; /**< Copy constructor */
+    GeneratorEquation(GeneratorEquation &&rhs) noexcept = delete; /**< Move constructor */
+    GeneratorEquation &operator=(GeneratorEquation rhs) = delete; /**< Assignment operator */
+
+    static GeneratorEquationPtr create() noexcept;
+
+    GeneratorEquation::Type type() const;
+    GeneratorEquationAstPtr ast() const;
+    std::list<GeneratorEquationPtr> dependencies() const;
+    bool isStateRateBased() const;
+
+private:
+    GeneratorEquation(); /**< Constructor */
+
+    struct GeneratorEquationImpl;
+    GeneratorEquationImpl *mPimpl;
 };
 
 /**

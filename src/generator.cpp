@@ -18,12 +18,12 @@ limitations under the License.
 
 #include <algorithm>
 #include <limits>
-#include <list>
 #include <regex>
 #include <sstream>
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/generatorequationast.h"
 #include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
@@ -31,7 +31,6 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
 
-#include "generatorequationast.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -105,6 +104,65 @@ size_t GeneratorVariable::index() const
 GeneratorVariable::Type GeneratorVariable::type() const
 {
     return mPimpl->mType;
+}
+
+struct GeneratorEquation::GeneratorEquationImpl
+{
+    GeneratorEquation::Type mType = GeneratorEquation::Type::ALGEBRAIC;
+    GeneratorEquationAstPtr mAst;
+    std::list<GeneratorEquationPtr> mDependencies;
+    bool mIsStateRateBased = false;
+
+    void populate(GeneratorEquation::Type type,
+                  const GeneratorEquationAstPtr &ast,
+                  const std::list<GeneratorEquationPtr> &dependencies,
+                  bool isStateRateBased);
+};
+
+void GeneratorEquation::GeneratorEquationImpl::populate(GeneratorEquation::Type type,
+                                                        const GeneratorEquationAstPtr &ast,
+                                                        const std::list<GeneratorEquationPtr> &dependencies,
+                                                        bool isStateRateBased)
+{
+    mType = type;
+    mAst = ast;
+    mDependencies = dependencies;
+    mIsStateRateBased = isStateRateBased;
+}
+
+GeneratorEquation::GeneratorEquation()
+    : mPimpl(new GeneratorEquationImpl())
+{
+}
+
+GeneratorEquation::~GeneratorEquation()
+{
+    delete mPimpl;
+}
+
+GeneratorEquationPtr GeneratorEquation::create() noexcept
+{
+    return std::shared_ptr<GeneratorEquation> {new GeneratorEquation {}};
+}
+
+GeneratorEquation::Type GeneratorEquation::type() const
+{
+    return mPimpl->mType;
+}
+
+GeneratorEquationAstPtr GeneratorEquation::ast() const
+{
+    return mPimpl->mAst;
+}
+
+std::list<GeneratorEquationPtr> GeneratorEquation::dependencies() const
+{
+    return mPimpl->mDependencies;
+}
+
+bool GeneratorEquation::isStateRateBased() const
+{
+    return mPimpl->mIsStateRateBased;
 }
 
 struct GeneratorInternalEquation;
@@ -464,6 +522,7 @@ struct Generator::GeneratorImpl
     GeneratorVariablePtr mVoi = nullptr;
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
+    std::vector<GeneratorEquationPtr> mEquations;
 
     GeneratorProfilePtr mProfile = libcellml::GeneratorProfile::create();
 
@@ -618,19 +677,19 @@ struct Generator::GeneratorImpl
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
     std::string generateInitializationCode(const GeneratorVariablePtr &variable);
-    std::string generateEquationCode(const GeneratorInternalEquationPtr &equation,
-                                     std::vector<GeneratorInternalEquationPtr> &remainingEquations,
+    std::string generateEquationCode(const GeneratorEquationPtr &equation,
+                                     std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
     void addInterfaceComputeModelMethodsCode(std::string &code) const;
     void addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                 std::vector<GeneratorInternalEquationPtr> &remainingEquations);
+                                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::string &code,
-                                                             std::vector<GeneratorInternalEquationPtr> &remainingEquations);
+                                                             std::vector<GeneratorEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::string &code,
-                                                 std::vector<GeneratorInternalEquationPtr> &remainingEquations);
+                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
     void addImplementationComputeVariablesMethodCode(std::string &code,
-                                                     std::vector<GeneratorInternalEquationPtr> &remainingEquations);
+                                                     std::vector<GeneratorEquationPtr> &remainingEquations);
 };
 
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
@@ -1510,6 +1569,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mVoi = nullptr;
     mStates.clear();
     mVariables.clear();
+    mEquations.clear();
 
     mNeedMin = false;
     mNeedMax = false;
@@ -1664,8 +1724,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             scaleEquationAst(internalEquation->mAst);
         }
 
-        // Sort our variables and equations and make our internal variables
-        // available through our API.
+        // Sort our internal variables and equations and make them available
+        // through our API.
 
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mInternalEquations.sort(compareEquationsByVariable);
@@ -1700,6 +1760,39 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             } else {
                 mVariables.push_back(stateOrVariable);
             }
+        }
+
+        std::map<GeneratorInternalEquationPtr, GeneratorEquationPtr> equationMappings;
+
+        for (const auto &internalEquation : mInternalEquations) {
+            equationMappings[internalEquation] = GeneratorEquation::create();
+        }
+
+        for (const auto &internalEquation : mInternalEquations) {
+            GeneratorEquation::Type type;
+
+            if (internalEquation->mType == GeneratorInternalEquation::Type::TRUE_CONSTANT) {
+                type = GeneratorEquation::Type::TRUE_CONSTANT;
+            } else if (internalEquation->mType == GeneratorInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                type = GeneratorEquation::Type::VARIABLE_BASED_CONSTANT;
+            } else if (internalEquation->mType == GeneratorInternalEquation::Type::RATE) {
+                type = GeneratorEquation::Type::RATE;
+            } else {
+                type = GeneratorEquation::Type::ALGEBRAIC;
+            }
+
+            std::list<GeneratorEquationPtr> dependencies;
+
+            for (const auto &dependency : internalEquation->mDependencies) {
+                dependencies.push_back(equationMappings[dependency]);
+            }
+
+            GeneratorEquationPtr equation = equationMappings[internalEquation];
+
+            equation->mPimpl->populate(type, internalEquation->mAst, dependencies,
+                                       internalEquation->mIsStateRateBased);
+
+            mEquations.push_back(equation);
         }
     }
 }
@@ -3444,16 +3537,16 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
     return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorInternalEquationPtr &equation,
-                                                           std::vector<GeneratorInternalEquationPtr> &remainingEquations,
+std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
+                                                           std::vector<GeneratorEquationPtr> &remainingEquations,
                                                            bool onlyStateRateBasedEquations)
 {
     std::string res;
 
-    for (const auto &dependency : equation->mDependencies) {
+    for (const auto &dependency : equation->dependencies()) {
         if (!onlyStateRateBasedEquations
-            || ((dependency->mType == GeneratorInternalEquation::Type::ALGEBRAIC)
-                && dependency->mIsStateRateBased)) {
+            || ((dependency->type() == GeneratorEquation::Type::ALGEBRAIC)
+                && dependency->isStateRateBased())) {
             res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
         }
     }
@@ -3461,7 +3554,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorIntern
     auto equationIter = std::find(remainingEquations.begin(), remainingEquations.end(), equation);
 
     if (equationIter != remainingEquations.end()) {
-        res += mProfile->indentString() + generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
+        res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
 
         remainingEquations.erase(equationIter);
     }
@@ -3497,7 +3590,7 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &
 }
 
 void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                                       std::vector<GeneratorInternalEquationPtr> &remainingEquations)
+                                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationInitializeStatesAndConstantsMethodString().empty()) {
         if (!code.empty()) {
@@ -3512,9 +3605,9 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
             }
         }
 
-        for (const auto &internalEquation : mInternalEquations) {
-            if (internalEquation->mType == GeneratorInternalEquation::Type::TRUE_CONSTANT) {
-                methodBody += generateEquationCode(internalEquation, remainingEquations);
+        for (const auto &equation : mEquations) {
+            if (equation->type() == GeneratorEquation::Type::TRUE_CONSTANT) {
+                methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
@@ -3528,7 +3621,7 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
 }
 
 void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::string &code,
-                                                                                   std::vector<GeneratorInternalEquationPtr> &remainingEquations)
+                                                                                   std::vector<GeneratorEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
         if (!code.empty()) {
@@ -3537,9 +3630,9 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
         std::string methodBody;
 
-        for (const auto &internalEquation : mInternalEquations) {
-            if (internalEquation->mType == GeneratorInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-                methodBody += generateEquationCode(internalEquation, remainingEquations);
+        for (const auto &equation : mEquations) {
+            if (equation->type() == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
+                methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
@@ -3549,7 +3642,7 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 }
 
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::string &code,
-                                                                       std::vector<GeneratorInternalEquationPtr> &remainingEquations)
+                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeRatesMethodString().empty()) {
         if (!code.empty()) {
@@ -3558,9 +3651,9 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::stri
 
         std::string methodBody;
 
-        for (const auto &internalEquation : mInternalEquations) {
-            if (internalEquation->mType == GeneratorInternalEquation::Type::RATE) {
-                methodBody += generateEquationCode(internalEquation, remainingEquations);
+        for (const auto &equation : mEquations) {
+            if (equation->type() == GeneratorEquation::Type::RATE) {
+                methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
@@ -3570,22 +3663,22 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::stri
 }
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::string &code,
-                                                                           std::vector<GeneratorInternalEquationPtr> &remainingEquations)
+                                                                           std::vector<GeneratorEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeVariablesMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        std::vector<GeneratorInternalEquationPtr> newRemainingEquations {std::begin(mInternalEquations), std::end(mInternalEquations)};
+        std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mEquations), std::end(mEquations)};
 
         std::string methodBody;
 
-        for (const auto &internalEquation : mInternalEquations) {
-            if ((std::find(remainingEquations.begin(), remainingEquations.end(), internalEquation) != remainingEquations.end())
-                || ((internalEquation->mType == GeneratorInternalEquation::Type::ALGEBRAIC)
-                    && internalEquation->mIsStateRateBased)) {
-                methodBody += generateEquationCode(internalEquation, newRemainingEquations, true);
+        for (const auto &equation : mEquations) {
+            if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
+                || ((equation->type() == GeneratorEquation::Type::ALGEBRAIC)
+                    && equation->isStateRateBased())) {
+                methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
         }
 
@@ -3797,7 +3890,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the implementation to initialise our states and constants.
 
-    std::vector<GeneratorInternalEquationPtr> remainingEquations {std::begin(mPimpl->mInternalEquations), std::end(mPimpl->mInternalEquations)};
+    std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
     mPimpl->addImplementationInitializeStatesAndConstantsMethodCode(res, remainingEquations);
 
