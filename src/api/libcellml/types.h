@@ -25,6 +25,8 @@ class Analyser; /**< Forward declaration of Analyser class. */
 using AnalyserPtr = std::shared_ptr<Analyser>; /**< Type definition for shared analyser pointer. */
 class AnalyserEquation; /**< Forward declaration of AnalyserEquation class. */
 using AnalyserEquationPtr = std::shared_ptr<AnalyserEquation>; /**< Type definition for shared analyser equation pointer. */
+class AnalyserEquationAst; /**< Forward declaration of AnalyserEquationAst class. */
+using AnalyserEquationAstPtr = std::shared_ptr<AnalyserEquationAst>; /**< Type definition for shared analyser equation AST pointer. */
 class AnalyserModel; /**< Forward declaration of AnalyserModel class. */
 using AnalyserModelPtr = std::shared_ptr<AnalyserModel>; /**< Type definition for shared analyser model pointer. */
 class AnalyserVariable; /**< Forward declaration of AnalyserVariable class. */

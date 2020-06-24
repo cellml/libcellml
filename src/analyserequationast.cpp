@@ -14,43 +14,55 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "analyserequationast.h"
+#include "libcellml/analyserequationast.h"
+
+#include "analyserequationast_p.h"
 
 namespace libcellml {
 
-AnalyserEquationAst::AnalyserEquationAst() = default;
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = type;
+    mParent = parent;
+}
 
-AnalyserEquationAst::AnalyserEquationAst(Type type,
-                                         const AnalyserEquationAstPtr &parent)
-    : mType(type)
-    , mParent(parent)
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+                                                            const std::string &value,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = type;
+    mValue = value;
+    mParent = parent;
+}
+
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+                                                            const VariablePtr &variable,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = type;
+    mVariable = variable;
+    mParent = parent;
+}
+
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(const AnalyserEquationAstPtr &ast,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = ast->mPimpl->mType;
+    mVariable = ast->mPimpl->mVariable;
+    mParent = parent;
+    mLeft = ast->mPimpl->mLeft;
+    mRight = ast->mPimpl->mRight;
+}
+
+AnalyserEquationAst::AnalyserEquationAst()
+    : mPimpl(new AnalyserEquationAstImpl())
 {
 }
 
-AnalyserEquationAst::AnalyserEquationAst(Type type, const std::string &value,
-                                         const AnalyserEquationAstPtr &parent)
-    : mType(type)
-    , mValue(value)
-    , mParent(parent)
+AnalyserEquationAst::~AnalyserEquationAst()
 {
-}
-
-AnalyserEquationAst::AnalyserEquationAst(Type type, const VariablePtr &variable,
-                                         const AnalyserEquationAstPtr &parent)
-    : mType(type)
-    , mVariable(variable)
-    , mParent(parent)
-{
-}
-
-AnalyserEquationAst::AnalyserEquationAst(const AnalyserEquationAstPtr &ast,
-                                         const AnalyserEquationAstPtr &parent)
-    : mType(ast->mType)
-    , mVariable(ast->mVariable)
-    , mParent(parent)
-    , mLeft(ast->mLeft)
-    , mRight(ast->mRight)
-{
+    delete mPimpl;
 }
 
 } // namespace libcellml
