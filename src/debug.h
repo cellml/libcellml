@@ -19,7 +19,6 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
-#include "analyserequationast.h"
 #include "internaltypes.h"
 
 namespace libcellml {
