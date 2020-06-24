@@ -168,6 +168,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -modernize-make-shared
       -modernize-pass-by-value
       -modernize-raw-string-literal
+      -modernize-use-nodiscard
       -modernize-use-trailing-return-type
       performance-*
       -performance-inefficient-string-concatenation
