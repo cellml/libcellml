@@ -30,6 +30,7 @@ struct AnalyserModel::AnalyserModelImpl
     AnalyserVariablePtr mVoi = nullptr;
     std::vector<AnalyserVariablePtr> mStates;
     std::vector<AnalyserVariablePtr> mVariables;
+    std::vector<AnalyserEquationPtr> mEquations;
 
     bool mNeedEq = false;
     bool mNeedNeq = false;

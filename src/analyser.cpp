@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <list>
 
+#include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
@@ -27,6 +28,7 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 
+#include "analyserequation_p.h"
 #include "analyserequationast_p.h"
 #include "analysermodel_p.h"
 #include "analyservariable_p.h"
@@ -1505,8 +1507,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             scaleEquationAst(internalEquation->mAst);
         }
 
-        // Sort our variables and equations and make our internal variables
-        // available through our API.
+        // Sort our internal variables and equations and make them available
+        // through our API.
 
         mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mInternalEquations.sort(compareEquationsByVariable);
@@ -1541,6 +1543,38 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             } else {
                 mModel->mPimpl->mVariables.push_back(stateOrVariable);
             }
+        }
+        std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> equationMappings;
+
+        for (const auto &internalEquation : mInternalEquations) {
+            equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
+        }
+
+        for (const auto &internalEquation : mInternalEquations) {
+            AnalyserEquation::Type type;
+
+            if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
+                type = AnalyserEquation::Type::TRUE_CONSTANT;
+            } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+            } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
+                type = AnalyserEquation::Type::RATE;
+            } else {
+                type = AnalyserEquation::Type::ALGEBRAIC;
+            }
+
+            std::list<AnalyserEquationPtr> dependencies;
+
+            for (const auto &dependency : internalEquation->mDependencies) {
+                dependencies.push_back(equationMappings[dependency]);
+            }
+
+            AnalyserEquationPtr equation = equationMappings[internalEquation];
+
+            equation->mPimpl->populate(type, internalEquation->mAst, dependencies,
+                                       internalEquation->mIsStateRateBased);
+
+            mModel->mPimpl->mEquations.push_back(equation);
         }
     }
 }
