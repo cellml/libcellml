@@ -41,11 +41,6 @@ AnalyserVariable::~AnalyserVariable()
     delete mPimpl;
 }
 
-AnalyserVariablePtr AnalyserVariable::create() noexcept
-{
-    return std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-}
-
 VariablePtr AnalyserVariable::initialisingVariable() const
 {
     return mPimpl->mInitialisingVariable;
