@@ -97,6 +97,5 @@ private:
 void printStack(const IndexStack &stack);
 void printEquivalenceMap(const EquivalenceMap &map);
 void printStringStringMap(const StringStringMap &map);
-void printAst(const AnalyserEquationAstPtr &ast);
 
 } // namespace libcellml
