@@ -47,18 +47,6 @@ public:
     AnalyserVariable &operator=(AnalyserVariable rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Create an @c AnalyserVariable object.
-     *
-     * Factory method to create an @c AnalyserVariable. Create an analyser
-     * variable with::
-     *
-     *   AnalyserVariablePtr analyserVariable = libcellml::AnalyserVariable::create();
-     *
-     * @return A smart pointer to an @c AnalyserVariable object.
-     */
-    static AnalyserVariablePtr create() noexcept;
-
-    /**
      * @brief Get the initialising @c Variable for this @c AnalyserVariable.
      *
      * Return the initialising @c Variable of this @c AnalyserVariable. It is

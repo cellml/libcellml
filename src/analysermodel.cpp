@@ -30,11 +30,6 @@ AnalyserModel::~AnalyserModel()
     delete mPimpl;
 }
 
-AnalyserModelPtr AnalyserModel::create() noexcept
-{
-    return std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
-}
-
 bool AnalyserModel::isValid() const
 {
     return (mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)

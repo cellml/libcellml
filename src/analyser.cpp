@@ -398,7 +398,7 @@ struct Analyser::AnalyserImpl
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
     : mAnalyser(analyser)
-    , mModel(AnalyserModel::create())
+    , mModel(std::shared_ptr<AnalyserModel> {new AnalyserModel {}})
 {
 }
 
@@ -1062,7 +1062,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                     }
 
                     if (!isVoiInitialized) {
-                        mModel->mPimpl->mVoi = AnalyserVariable::create();
+                        mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
                         mModel->mPimpl->mVoi->mPimpl->populate(nullptr, voi, 0,
                                                                AnalyserVariable::Type::VARIABLE_OF_INTEGRATION);
@@ -1226,7 +1226,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
     mAnalyser->removeAllIssues();
 
-    mModel = AnalyserModel::create();
+    mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
 
     mInternalVariables.clear();
     mInternalEquations.clear();
@@ -1390,7 +1390,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 continue;
             }
 
-            AnalyserVariablePtr stateOrVariable = AnalyserVariable::create();
+            AnalyserVariablePtr stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
             stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
                                               internalVariable->mVariable,

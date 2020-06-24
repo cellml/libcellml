@@ -48,18 +48,6 @@ public:
     AnalyserModel &operator=(AnalyserModel rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Create an @c AnalyserModel object.
-     *
-     * Factory method to create an @c AnalyserModel. Create an analyser model
-     * with::
-     *
-     *   AnalyserModelPtr analyserModel = libcellml::AnalyserModel::create();
-     *
-     * @return A smart pointer to an @c AnalyserModel object.
-     */
-    static AnalyserModelPtr create() noexcept;
-
-    /**
      * @brief Test to determine if @c AnalyserModel is a valid model.
      *
      * Test to determine if @c AnalyserModel is a valid model, return @c true if
