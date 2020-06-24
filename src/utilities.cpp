@@ -607,7 +607,7 @@ void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idLis
         idList.insert(id);
     }
     // Imports.
-    if (!component->isImport()) {
+    if (component->isImport()) {
         if (component->importSource() != nullptr) {
             id = component->importSource()->id();
             if (!id.empty()) {
