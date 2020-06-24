@@ -64,8 +64,6 @@ Importer::~Importer()
     delete mPimpl;
 }
 
-// ******************************* RESOLVING FUNCTIONS *******************************
-
 /**
  * @brief Resolve the path of the given filename using the given base.
  *
@@ -81,7 +79,7 @@ Importer::~Importer()
  */
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
-    // We can be naive here as we know what we are dealing with
+    // We can be naive here as we know what we are dealing with.
     std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
     return path;
 }
@@ -205,55 +203,6 @@ void Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
     }
 }
 
-/*
-
-void resolveImport(const ImportedEntityPtr &importedEntity,
-                   const std::string &baseFile)
-{
-    if (importedEntity->isImport()) {
-        ImportSourcePtr importSource = importedEntity->importSource();
-        if (!importSource->hasModel()) {
-            std::string url = resolvePath(importSource->url(), baseFile);
-            std::ifstream file(url);
-            if (file.good()) {
-                std::stringstream buffer;
-                buffer << file.rdbuf();
-                auto parser = Parser::create();
-                auto model = parser->parseModel(buffer.str());
-                auto importer = Importer::create();
-                importSource->setModel(model);
-                importer->resolveImports(model, url);
-            }
-        }
-    }
-}
-
-void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
-                             const std::string &baseFile)
-{
-    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
-        if (component->isImport()) {
-            resolveImport(component, baseFile);
-        }
-        resolveComponentImports(component, baseFile);
-    }
-}
-
-void Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
-{
-    for (size_t n = 0; n < model->unitsCount(); ++n) {
-        libcellml::UnitsPtr units = model->units(n);
-        resolveImport(units, baseFile);
-    }
-    resolveComponentImports(model, baseFile);
-}
-
-
-*/
-
-// ******************************* FLATTENING FUNCTIONS *******************************
-
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -355,7 +304,6 @@ void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &
     }
 }
 
-// Move the flatten() function here:
 ModelPtr Importer::flatten(const ModelPtr &inModel)
 {
     if (inModel->hasUnresolvedImports()) {
