@@ -30,7 +30,6 @@ namespace libcellml {
 struct AnalyserEquationAst;
 
 using AnalyserEquationAstPtr = std::shared_ptr<AnalyserEquationAst>;
-using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>;
 
 struct AnalyserEquationAst
 {
@@ -134,7 +133,7 @@ struct AnalyserEquationAst
     std::string mValue;
     VariablePtr mVariable = nullptr;
 
-    AnalyserEquationAstWeakPtr mParent;
+    AnalyserEquationAstPtr mParent;
 
     AnalyserEquationAstPtr mLeft = nullptr;
     AnalyserEquationAstPtr mRight = nullptr;
