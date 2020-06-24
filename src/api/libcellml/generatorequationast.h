@@ -27,14 +27,15 @@ limitations under the License.
 
 namespace libcellml {
 
-struct GeneratorEquationAst;
+class GeneratorEquationAst;
 
 using GeneratorEquationAstPtr = std::shared_ptr<GeneratorEquationAst>;
 using GeneratorEquationAstWeakPtr = std::weak_ptr<GeneratorEquationAst>;
 
-struct GeneratorEquationAst
+class GeneratorEquationAst
 {
-    enum struct Type
+public:
+    enum class Type
     {
         // Assignment.
 
