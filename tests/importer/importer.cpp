@@ -143,6 +143,7 @@ TEST(Importer, missingUnitsFromImportOfCnTerms)
     // in imported components were not being imported is now fixed.
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
+    EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
 TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
