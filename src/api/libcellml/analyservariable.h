@@ -99,7 +99,7 @@ public:
      *
      * @return The @c Type.
      */
-    AnalyserVariable::Type type() const;
+    Type type() const;
 
 private:
     AnalyserVariable(); /**< Constructor */

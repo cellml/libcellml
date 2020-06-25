@@ -46,7 +46,6 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct AnalyserInternalEquation;
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
-using AnalyserInternalEquationWeakPtr = std::weak_ptr<AnalyserInternalEquation>;
 
 struct AnalyserInternalVariable
 {
@@ -69,7 +68,7 @@ struct AnalyserInternalVariable
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
 
-    AnalyserInternalEquationWeakPtr mEquation;
+    AnalyserInternalEquationPtr mEquation;
 
     explicit AnalyserInternalVariable(const VariablePtr &variable);
 
@@ -265,16 +264,14 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     for (const auto &variable : mVariables) {
         if (knownVariable(variable)) {
-            AnalyserInternalEquationPtr equation = variable->mEquation.lock();
-
             if (!mIsStateRateBased) {
-                mIsStateRateBased = (equation == nullptr) ?
+                mIsStateRateBased = (variable->mEquation == nullptr) ?
                                         (variable->mType == AnalyserInternalVariable::Type::STATE) :
-                                        equation->mIsStateRateBased;
+                                        variable->mEquation->mIsStateRateBased;
             }
 
-            if (equation != nullptr) {
-                mDependencies.push_back(equation);
+            if (variable->mEquation != nullptr) {
+                mDependencies.push_back(variable->mEquation);
             }
         }
     }
@@ -574,29 +571,29 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         size_t childCount = mathmlChildCount(node);
 
         processNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->mPimpl->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 1), ast->mPimpl->mLeftChild, ast, component, equation);
 
         if (childCount >= 3) {
-            AnalyserEquationAstPtr astRight;
+            AnalyserEquationAstPtr astRightChild;
             AnalyserEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
+            processNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
 
             for (size_t i = childCount - 2; i > 1; --i) {
                 processNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeft, tempAst, component, equation);
+                processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
-                astRight->mPimpl->mParent = tempAst;
+                astRightChild->mPimpl->mParent = tempAst;
 
-                tempAst->mPimpl->mRight = astRight;
-                astRight = tempAst;
+                tempAst->mPimpl->mRightChild = astRightChild;
+                astRightChild = tempAst;
             }
 
-            if (astRight != nullptr) {
-                astRight->mPimpl->mParent = ast;
+            if (astRightChild != nullptr) {
+                astRightChild->mPimpl->mParent = ast;
             }
 
-            ast->mPimpl->mRight = astRight;
+            ast->mPimpl->mRightChild = astRightChild;
         }
 
         // Assignment, and relational and logical operators.
@@ -610,274 +607,172 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         // AnalyserEquationAst::Type::ASSIGNMENT type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
-            ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+            ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::EQ, astParent);
 
-            ast->mPimpl->populate(AnalyserEquationAst::Type::EQ, astParent);
-
-            mModel->mPimpl->mNeedEq = true;
+            mModel->mPimpl->mNeedEqFunction = true;
         }
     } else if (node->isMathmlElement("neq")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::NEQ, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::NEQ, astParent);
-
-        mModel->mPimpl->mNeedNeq = true;
+        mModel->mPimpl->mNeedNeqFunction = true;
     } else if (node->isMathmlElement("lt")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LT, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::LT, astParent);
-
-        mModel->mPimpl->mNeedLt = true;
+        mModel->mPimpl->mNeedLtFunction = true;
     } else if (node->isMathmlElement("leq")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LEQ, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::LEQ, astParent);
-
-        mModel->mPimpl->mNeedLeq = true;
+        mModel->mPimpl->mNeedLeqFunction = true;
     } else if (node->isMathmlElement("gt")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::GT, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::GT, astParent);
-
-        mModel->mPimpl->mNeedGt = true;
+        mModel->mPimpl->mNeedGtFunction = true;
     } else if (node->isMathmlElement("geq")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::GEQ, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::GEQ, astParent);
-
-        mModel->mPimpl->mNeedGeq = true;
+        mModel->mPimpl->mNeedGeqFunction = true;
     } else if (node->isMathmlElement("and")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::AND, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::AND, astParent);
-
-        mModel->mPimpl->mNeedAnd = true;
+        mModel->mPimpl->mNeedAndFunction = true;
     } else if (node->isMathmlElement("or")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::OR, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::OR, astParent);
-
-        mModel->mPimpl->mNeedOr = true;
+        mModel->mPimpl->mNeedOrFunction = true;
     } else if (node->isMathmlElement("xor")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::XOR, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::XOR, astParent);
-
-        mModel->mPimpl->mNeedXor = true;
+        mModel->mPimpl->mNeedXorFunction = true;
     } else if (node->isMathmlElement("not")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::NOT, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::NOT, astParent);
-
-        mModel->mPimpl->mNeedNot = true;
+        mModel->mPimpl->mNeedNotFunction = true;
 
         // Arithmetic operators.
 
     } else if (node->isMathmlElement("plus")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::PLUS, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PLUS, astParent);
     } else if (node->isMathmlElement("minus")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::MINUS, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::MINUS, astParent);
     } else if (node->isMathmlElement("times")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::TIMES, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
     } else if (node->isMathmlElement("divide")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::DIVIDE, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::DIVIDE, astParent);
     } else if (node->isMathmlElement("power")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::POWER, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::POWER, astParent);
     } else if (node->isMathmlElement("root")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ROOT, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ROOT, astParent);
     } else if (node->isMathmlElement("abs")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ABS, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ABS, astParent);
     } else if (node->isMathmlElement("exp")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::EXP, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::EXP, astParent);
     } else if (node->isMathmlElement("ln")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::LN, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LN, astParent);
     } else if (node->isMathmlElement("log")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::LOG, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LOG, astParent);
     } else if (node->isMathmlElement("ceiling")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::CEILING, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::FLOOR, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::FLOOR, astParent);
     } else if (node->isMathmlElement("min")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::MIN, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::MIN, astParent);
-
-        mModel->mPimpl->mNeedMin = true;
+        mModel->mPimpl->mNeedMinFunction = true;
     } else if (node->isMathmlElement("max")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::MAX, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::MAX, astParent);
-
-        mModel->mPimpl->mNeedMax = true;
+        mModel->mPimpl->mNeedMaxFunction = true;
     } else if (node->isMathmlElement("rem")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::REM, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::REM, astParent);
 
         // Calculus elements.
 
     } else if (node->isMathmlElement("diff")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::DIFF, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::DIFF, astParent);
 
         // Trigonometric operators.
 
     } else if (node->isMathmlElement("sin")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::SIN, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SIN, astParent);
     } else if (node->isMathmlElement("cos")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::COS, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COS, astParent);
     } else if (node->isMathmlElement("tan")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::TAN, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TAN, astParent);
     } else if (node->isMathmlElement("sec")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SEC, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::SEC, astParent);
-
-        mModel->mPimpl->mNeedSec = true;
+        mModel->mPimpl->mNeedSecFunction = true;
     } else if (node->isMathmlElement("csc")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CSC, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::CSC, astParent);
-
-        mModel->mPimpl->mNeedCsc = true;
+        mModel->mPimpl->mNeedCscFunction = true;
     } else if (node->isMathmlElement("cot")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COT, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::COT, astParent);
-
-        mModel->mPimpl->mNeedCot = true;
+        mModel->mPimpl->mNeedCotFunction = true;
     } else if (node->isMathmlElement("sinh")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::SINH, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SINH, astParent);
     } else if (node->isMathmlElement("cosh")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::COSH, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COSH, astParent);
     } else if (node->isMathmlElement("tanh")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::TANH, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TANH, astParent);
     } else if (node->isMathmlElement("sech")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SECH, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::SECH, astParent);
-
-        mModel->mPimpl->mNeedSech = true;
+        mModel->mPimpl->mNeedSechFunction = true;
     } else if (node->isMathmlElement("csch")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CSCH, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::CSCH, astParent);
-
-        mModel->mPimpl->mNeedCsch = true;
+        mModel->mPimpl->mNeedCschFunction = true;
     } else if (node->isMathmlElement("coth")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COTH, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::COTH, astParent);
-
-        mModel->mPimpl->mNeedCoth = true;
+        mModel->mPimpl->mNeedCothFunction = true;
     } else if (node->isMathmlElement("arcsin")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ASIN, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASIN, astParent);
     } else if (node->isMathmlElement("arccos")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOS, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOS, astParent);
     } else if (node->isMathmlElement("arctan")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ATAN, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ATAN, astParent);
     } else if (node->isMathmlElement("arcsec")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASEC, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ASEC, astParent);
-
-        mModel->mPimpl->mNeedAsec = true;
+        mModel->mPimpl->mNeedAsecFunction = true;
     } else if (node->isMathmlElement("arccsc")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACSC, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ACSC, astParent);
-
-        mModel->mPimpl->mNeedAcsc = true;
+        mModel->mPimpl->mNeedAcscFunction = true;
     } else if (node->isMathmlElement("arccot")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOT, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOT, astParent);
-
-        mModel->mPimpl->mNeedAcot = true;
+        mModel->mPimpl->mNeedAcotFunction = true;
     } else if (node->isMathmlElement("arcsinh")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ASINH, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASINH, astParent);
     } else if (node->isMathmlElement("arccosh")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOSH, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOSH, astParent);
     } else if (node->isMathmlElement("arctanh")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ATANH, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ATANH, astParent);
     } else if (node->isMathmlElement("arcsech")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASECH, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ASECH, astParent);
-
-        mModel->mPimpl->mNeedAsech = true;
+        mModel->mPimpl->mNeedAsechFunction = true;
     } else if (node->isMathmlElement("arccsch")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACSCH, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ACSCH, astParent);
-
-        mModel->mPimpl->mNeedAcsch = true;
+        mModel->mPimpl->mNeedAcschFunction = true;
     } else if (node->isMathmlElement("arccoth")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOTH, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOTH, astParent);
-
-        mModel->mPimpl->mNeedAcoth = true;
+        mModel->mPimpl->mNeedAcothFunction = true;
 
         // Piecewise statement.
 
     } else if (node->isMathmlElement("piecewise")) {
         size_t childCount = mathmlChildCount(node);
 
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
         if (childCount >= 2) {
             AnalyserEquationAstPtr astRight;
@@ -886,35 +781,29 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
             processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
             for (size_t i = childCount - 2; i > 0; --i) {
-                tempAst = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+                tempAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-                tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
-
-                processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeft, tempAst, component, equation);
+                processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
                 astRight->mPimpl->mParent = tempAst;
 
-                tempAst->mPimpl->mRight = astRight;
+                tempAst->mPimpl->mRightChild = astRight;
                 astRight = tempAst;
             }
 
             astRight->mPimpl->mParent = ast;
 
-            ast->mPimpl->mRight = astRight;
+            ast->mPimpl->mRightChild = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECE, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::PIECE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeft, ast, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->mPimpl->mRight, ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        processNode(mathmlChildNode(node, 1), ast->mPimpl->mRightChild, ast, component, equation);
     } else if (node->isMathmlElement("otherwise")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::OTHERWISE, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::OTHERWISE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
         // Token elements.
 
@@ -939,75 +828,51 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
         // Add the variable to our AST.
 
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CI, variable, astParent);
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
-            ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
+            ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
-            ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
+            ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
         }
 
         // Qualifier elements.
 
     } else if (node->isMathmlElement("degree")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::DEGREE, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::DEGREE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("logbase")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LOGBASE, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::LOGBASE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("bvar")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::BVAR, astParent);
 
-        ast->mPimpl->populate(AnalyserEquationAst::Type::BVAR, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
         XmlNodePtr rightNode = mathmlChildNode(node, 1);
 
         if (rightNode != nullptr) {
-            processNode(rightNode, ast->mPimpl->mRight, ast, component, equation);
+            processNode(rightNode, ast->mPimpl->mRightChild, ast, component, equation);
         }
 
         // Constants.
 
     } else if (node->isMathmlElement("true")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::TRUE, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TRUE, astParent);
     } else if (node->isMathmlElement("false")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::FALSE, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::FALSE, astParent);
     } else if (node->isMathmlElement("exponentiale")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::E, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::E, astParent);
     } else if (node->isMathmlElement("pi")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::PI, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PI, astParent);
     } else if (node->isMathmlElement("infinity")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::INF, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::INF, astParent);
     } else if (node->isMathmlElement("notanumber")) {
-        ast = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-        ast->mPimpl->populate(AnalyserEquationAst::Type::NAN, astParent);
+        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::NAN, astParent);
     }
 }
 
@@ -1022,7 +887,7 @@ AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr
 
     // Actually process the node and return its corresponding equation.
 
-    processNode(node, equation->mAst, equation->mAst->mPimpl->mParent, component, equation);
+    processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
 
     return equation;
 }
@@ -1147,9 +1012,9 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
-    AnalyserEquationAstPtr astParent = ast->mPimpl->mParent;
-    AnalyserEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mPimpl->mParent : nullptr;
-    AnalyserEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mPimpl->mParent : nullptr;
+    AnalyserEquationAstPtr astParent = ast->mPimpl->mParent.lock();
+    AnalyserEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mPimpl->mParent.lock() : nullptr;
+    AnalyserEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mPimpl->mParent.lock() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
@@ -1233,7 +1098,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
         double value;
         if (!convertToDouble(ast->mPimpl->mValue, value) || !areEqual(value, 1.0)) {
             IssuePtr issue = Issue::create();
-            VariablePtr variable = astGreatGrandParent->mPimpl->mRight->mPimpl->mVariable;
+            VariablePtr variable = astGreatGrandParent->mPimpl->mRightChild->mPimpl->mVariable;
 
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
@@ -1254,12 +1119,12 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
     // Recursively check the given AST's children.
 
-    if (ast->mPimpl->mLeft != nullptr) {
-        processEquationAst(ast->mPimpl->mLeft);
+    if (ast->mPimpl->mLeftChild != nullptr) {
+        processEquationAst(ast->mPimpl->mLeftChild);
     }
 
-    if (ast->mPimpl->mRight != nullptr) {
-        processEquationAst(ast->mPimpl->mRight);
+    if (ast->mPimpl->mRightChild != nullptr) {
+        processEquationAst(ast->mPimpl->mRightChild);
     }
 }
 
@@ -1277,21 +1142,17 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
 {
     // Scale the given AST using the given scaling factor
 
-    AnalyserEquationAstPtr scaledAst = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
+    AnalyserEquationAstPtr scaledAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
 
-    scaledAst->mPimpl->populate(AnalyserEquationAst::Type::TIMES, astParent);
-
-    scaledAst->mPimpl->mLeft = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-    scaledAst->mPimpl->mRight = ast;
-
-    scaledAst->mPimpl->mLeft->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mPimpl->mLeftChild = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mPimpl->mRightChild = ast;
 
     ast->mPimpl->mParent = scaledAst;
 
-    if (astParent->mPimpl->mLeft == ast) {
-        astParent->mPimpl->mLeft = scaledAst;
+    if (astParent->mPimpl->mLeftChild == ast) {
+        astParent->mPimpl->mLeftChild = scaledAst;
     } else {
-        astParent->mPimpl->mRight = scaledAst;
+        astParent->mPimpl->mRightChild = scaledAst;
     }
 }
 
@@ -1299,12 +1160,12 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 {
     // Recursively scale the given AST's children.
 
-    if (ast->mPimpl->mLeft != nullptr) {
-        scaleEquationAst(ast->mPimpl->mLeft);
+    if (ast->mPimpl->mLeftChild != nullptr) {
+        scaleEquationAst(ast->mPimpl->mLeftChild);
     }
 
-    if (ast->mPimpl->mRight != nullptr) {
-        scaleEquationAst(ast->mPimpl->mRight);
+    if (ast->mPimpl->mRightChild != nullptr) {
+        scaleEquationAst(ast->mPimpl->mRightChild);
     }
 
     // If the given AST node is a variabe (i.e. a CI node) then we may need to
@@ -1315,24 +1176,24 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         // dealing with a rate or some other variable, i.e. whether or not it
         // has a DIFF node as a parent.
 
-        AnalyserEquationAstPtr astParent = ast->mPimpl->mParent;
+        AnalyserEquationAstPtr astParent = ast->mPimpl->mParent.lock();
         if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
             // needed.
 
-            double scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mLeft->mPimpl->mLeft->mPimpl->mVariable);
+            double scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mLeftChild->mPimpl->mLeftChild->mPimpl->mVariable);
 
             if (!areEqual(scalingFactor, 1.0)) {
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
 
-                AnalyserEquationAstPtr astGrandParent = astParent->mPimpl->mParent;
+                AnalyserEquationAstPtr astGrandParent = astParent->mPimpl->mParent.lock();
 
                 if ((astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
-                    && (astGrandParent->mPimpl->mLeft == astParent)) {
-                    scaleAst(astGrandParent->mPimpl->mRight, astGrandParent, 1.0 / scalingFactor);
+                    && (astGrandParent->mPimpl->mLeftChild == astParent)) {
+                    scaleAst(astGrandParent->mPimpl->mRightChild, astGrandParent, 1.0 / scalingFactor);
                 } else {
                     scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
                 }
@@ -1340,7 +1201,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         }
 
         if (((astParent->mPimpl->mType != AnalyserEquationAst::Type::ASSIGNMENT)
-             || (astParent->mPimpl->mLeft != ast))
+             || (astParent->mPimpl->mLeftChild != ast))
             && (astParent->mPimpl->mType != AnalyserEquationAst::Type::BVAR)) {
             // We are dealing with a variable which is neither a computed
             // variable nor our variable of integration, so retrieve its scaling
@@ -1351,7 +1212,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 
             if (!areEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-                    scaleAst(astParent, astParent->mPimpl->mParent, scalingFactor);
+                    scaleAst(astParent, astParent->mPimpl->mParent.lock(), scalingFactor);
                 } else {
                     scaleAst(ast, astParent, scalingFactor);
                 }

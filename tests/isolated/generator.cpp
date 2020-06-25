@@ -205,9 +205,9 @@ TEST(Generator, isolatedFirstOrderModel)
     //          - profile() return "C" (cf "PYTHON"); and
     //          - modelType() returns "ODE".
 
-    libcellml::GeneratorPtr generator = libcellml::Generator::create();
-    generator->processModel(model);
+    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    analyser->processModel(model);
 
     //  5.b   Check whether the generator has encountered any issues.
-    EXPECT_EQ(size_t(0), generator->issueCount());
+    EXPECT_EQ(size_t(0), analyser->issueCount());
 }
