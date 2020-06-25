@@ -8,9 +8,13 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
+from libcellml.generator import Analyser
+from libcellml.generator import AnalyserEquation
+from libcellml.generator import AnalyserEquationAst
+from libcellml.generator import AnalyserModel
+from libcellml.generator import AnalyserVariable
 from libcellml.component import Component
 from libcellml.generator import Generator
-from libcellml.generator import GeneratorVariable
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importsource import ImportSource
 from libcellml.issue import Issue
@@ -49,6 +53,123 @@ def convert(base, enum, variables, new_base=None):
         setattr(base if new_base is None else new_base, enum, obj)
 
 
+convert(AnalyserEquation, 'Type', [
+    'TRUE_CONSTANT',
+    'VARIABLE_BASED_CONSTANT',
+    'RATE',
+    'ALGEBRAIC',
+])
+convert(AnalyserEquationAst, 'Type', [
+    'ASSIGNMENT',
+
+    # Relational and logical operators.
+
+    'EQ',
+    'NEQ',
+    'LT',
+    'LEQ',
+    'GT',
+    'GEQ',
+    'AND',
+    'OR',
+    'XOR',
+    'NOT',
+
+    # Arithmetic operators.
+
+    'PLUS',
+    'MINUS',
+    'TIMES',
+    'DIVIDE',
+    'POWER',
+    'ROOT',
+    'ABS',
+    'EXP',
+    'LN',
+    'LOG',
+    'CEILING',
+    'FLOOR',
+    'MIN',
+    'MAX',
+    'REM',
+
+    # Calculus elements.
+
+    'DIFF',
+
+    # Trigonometric operators.
+
+    'SIN',
+    'COS',
+    'TAN',
+    'SEC',
+    'CSC',
+    'COT',
+    'SINH',
+    'COSH',
+    'TANH',
+    'SECH',
+    'CSCH',
+    'COTH',
+    'ASIN',
+    'ACOS',
+    'ATAN',
+    'ASEC',
+    'ACSC',
+    'ACOT',
+    'ASINH',
+    'ACOSH',
+    'ATANH',
+    'ASECH',
+    'ACSCH',
+    'ACOTH',
+
+    # Piecewise statement.
+
+    'PIECEWISE',
+    'PIECE',
+    'OTHERWISE',
+
+    # Token elements.
+
+    'CI',
+    'CN',
+
+    # Qualifier elements.
+
+    'DEGREE',
+    'LOGBASE',
+    'BVAR',
+
+    # Constants.
+
+    'TRUE',
+    'FALSE',
+    'E',
+    'PI',
+    'INF',
+    'NAN',
+])
+convert(AnalyserModel, 'Type', [
+    'UNKNOWN',
+    'ALGEBRAIC',
+    'ODE',
+    'INVALID',
+    'UNDERCONSTRAINED',
+    'OVERCONSTRAINED',
+    'UNSUITABLY_CONSTRAINED',
+])
+convert(AnalyserVariable, 'Type', [
+    'VARIABLE_OF_INTEGRATION',
+    'STATE',
+    'CONSTANT',
+    'COMPUTED_CONSTANT',
+    'ALGEBRAIC',
+])
+convert(GeneratorProfile, 'Profile', [
+    'C',
+    'PYTHON',
+])
 convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',
@@ -68,80 +189,6 @@ convert(Issue, 'Level', [
     'WARNING',
     'HINT',
 ])
-convert(Generator, 'ModelType', [
-    'UNKNOWN',
-    'ALGEBRAIC',
-    'ODE',
-    'INVALID',
-    'UNDERCONSTRAINED',
-    'OVERCONSTRAINED',
-    'UNSUITABLY_CONSTRAINED',
-])
-convert(GeneratorProfile, 'Profile', [
-    'C',
-    'PYTHON',
-])
-convert(Variable, 'InterfaceType', [
-    'NONE',
-    'PRIVATE',
-    'PUBLIC',
-    'PUBLIC_AND_PRIVATE',
-])
-convert(Units, 'StandardUnit', [
-    'AMPERE',
-    'BECQUEREL',
-    'CANDELA',
-    'COULOMB',
-    'DIMENSIONLESS',
-    'FARAD',
-    'GRAM',
-    'GRAY',
-    'HENRY',
-    'HERTZ',
-    'JOULE',
-    'KATAL',
-    'KELVIN',
-    'KILOGRAM',
-    'LITRE',
-    'LUMEN',
-    'LUX',
-    'METRE',
-    'MOLE',
-    'NEWTON',
-    'OHM',
-    'PASCAL',
-    'RADIAN',
-    'SECOND',
-    'SIEMENS',
-    'SIEVERT',
-    'STERADIAN',
-    'TESLA',
-    'VOLT',
-    'WATT',
-    'WEBER',
-])
-convert(Units, 'Prefix', [
-    'YOTTA',
-    'ZETTA',
-    'EXA',
-    'PETA',
-    'TERA',
-    'GIGA',
-    'MEGA',
-    'KILO',
-    'HECTO',
-    'DECA',
-    'DECI',
-    'CENTI',
-    'MILLI',
-    'MICRO',
-    'NANO',
-    'PICO',
-    'FEMTO',
-    'ATTO',
-    'ZEPTO',
-    'YOCTO',
-], new_base=Units)
 convert(Issue, 'ReferenceRule', [
     'UNDEFINED',
     'DATA_REPR_IDENTIFIER_UNICODE',
@@ -201,5 +248,66 @@ convert(Issue, 'ReferenceRule', [
     'MAP_VARIABLES_VARIABLE2',
     'MAP_VARIABLES_UNIQUE',
     'MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION',
+])
+convert(Units, 'Prefix', [
+    'YOTTA',
+    'ZETTA',
+    'EXA',
+    'PETA',
+    'TERA',
+    'GIGA',
+    'MEGA',
+    'KILO',
+    'HECTO',
+    'DECA',
+    'DECI',
+    'CENTI',
+    'MILLI',
+    'MICRO',
+    'NANO',
+    'PICO',
+    'FEMTO',
+    'ATTO',
+    'ZEPTO',
+    'YOCTO',
+], new_base=Units)
+convert(Units, 'StandardUnit', [
+    'AMPERE',
+    'BECQUEREL',
+    'CANDELA',
+    'COULOMB',
+    'DIMENSIONLESS',
+    'FARAD',
+    'GRAM',
+    'GRAY',
+    'HENRY',
+    'HERTZ',
+    'JOULE',
+    'KATAL',
+    'KELVIN',
+    'KILOGRAM',
+    'LITRE',
+    'LUMEN',
+    'LUX',
+    'METRE',
+    'MOLE',
+    'NEWTON',
+    'OHM',
+    'PASCAL',
+    'RADIAN',
+    'SECOND',
+    'SIEMENS',
+    'SIEVERT',
+    'STERADIAN',
+    'TESLA',
+    'VOLT',
+    'WATT',
+    'WEBER',
+])
+convert(Variable, 'InterfaceType', [
+    'NONE',
+    'PRIVATE',
+    'PUBLIC',
+    'PUBLIC_AND_PRIVATE',
 ])
 del (convert, libcellml)
