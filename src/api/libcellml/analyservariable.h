@@ -84,9 +84,9 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Get the index of this @c GeneratorVariable.
+     * @brief Get the index of this @c AnalyserVariable.
      *
-     * Return the index of this @c GeneratorVariable.
+     * Return the index of this @c AnalyserVariable.
      *
      * @return The index.
      */
