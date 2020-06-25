@@ -17,7 +17,6 @@ limitations under the License.
 #include "libcellml/annotator.h"
 
 #include <algorithm>
-#include <variant>
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
@@ -29,6 +28,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "internaltypes.h"
 #include "namespaces.h"
 #include "utilities.h"
 
@@ -38,6 +38,7 @@ struct Annotator::AnnotatorImpl
 {
     Annotator *mAnnotator = nullptr;
     ItemList mIdList;
+    bool isBuilt = false;
 };
 
 Annotator::Annotator()
@@ -45,6 +46,7 @@ Annotator::Annotator()
 {
     mPimpl->mAnnotator = this;
     mPimpl->mIdList = std::map<std::string, AnyItem>();
+    mPimpl->isBuilt = false;
 }
 
 Annotator::~Annotator()
@@ -57,41 +59,41 @@ AnnotatorPtr Annotator::create() noexcept
     return std::shared_ptr<Annotator> {new Annotator {}};
 }
 
-void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList, bool mathIds)
+void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
 {
     std::string id = component->id();
     if (!id.empty()) {
-        idList.insert(std::make_pair(id, std::make_pair("component", component)));
+        idList.insert(std::make_pair(id, std::make_pair(0, component)));
     }
     // Imports.
     if (component->isImport() && component->importSource() != nullptr) {
         id = component->importSource()->id();
         if (!id.empty()) {
-            idList.insert(std::make_pair(id, std::make_pair("import", component->importSource())));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::IMPORT, component->importSource())));
         }
     }
     // Component reference in encapsulation structure.
     id = component->encapsulationId();
     if (!id.empty()) {
-        idList.insert(std::make_pair(id, std::make_pair("component_ref", component)));
+        idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::COMPONENT_REF, component)));
     }
     // Variables.
     for (size_t v = 0; v < component->variableCount(); ++v) {
         id = component->variable(v)->id();
         if (!id.empty()) {
-            idList.insert(std::make_pair(id, std::make_pair("variable", component->variable(v))));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::VARIABLE, component->variable(v))));
         }
 
         for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
             // Equivalent variable mappings.
             id = Variable::equivalenceMappingId(component->variable(v), component->variable(v)->equivalentVariable(e));
             if (!id.empty()) {
-                idList.insert(std::make_pair(id, std::make_pair("map_variables", std::make_pair(component->variable(v), component->variable(v)->equivalentVariable(e)))));
+                idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::MAP_VARIABLES, std::make_pair(component->variable(v), component->variable(v)->equivalentVariable(e)))));
             }
             // Connections.
             id = Variable::equivalenceConnectionId(component->variable(v), component->variable(v)->equivalentVariable(e));
             if (!id.empty()) {
-                idList.insert(std::make_pair(id, std::make_pair("connection", std::make_pair(component->variable(v), component->variable(v)->equivalentVariable(e)))));
+                idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::CONNECTION, std::make_pair(component->variable(v), component->variable(v)->equivalentVariable(e)))));
             }
         }
     }
@@ -99,30 +101,24 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList, b
     for (size_t r = 0; r < component->resetCount(); ++r) {
         id = component->reset(r)->id();
         if (!id.empty()) {
-            idList.insert(std::make_pair(id, std::make_pair("reset", component->reset(r))));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::RESET, component->reset(r))));
         }
         id = component->reset(r)->testValueId();
         if (!id.empty()) {
-            idList.insert(std::make_pair(id, std::make_pair("test_value", component->reset(r)->testValue())));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::TEST_VALUE, component->reset(r))));
         }
         id = component->reset(r)->resetValueId();
         if (!id.empty()) {
-            idList.insert(std::make_pair(id, std::make_pair("reset_value", component->reset(r)->resetValue())));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::RESET_VALUE, component->reset(r))));
         }
-        // if(mathIds){
-        //     // TODO
-        // }
     }
 
-    // Maths
-    // TODO
-
     for (size_t c = 0; c < component->componentCount(); ++c) {
-        listComponentIdsAndItems(component->component(c), idList, mathIds);
+        listComponentIdsAndItems(component->component(c), idList);
     }
 }
 
-ItemList listIdsAndItems(const ModelPtr &model, bool mathIds)
+ItemList listIdsAndItems(const ModelPtr &model)
 {
     // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
     // invalid models (with duplicated ids) too.
@@ -131,13 +127,13 @@ ItemList listIdsAndItems(const ModelPtr &model, bool mathIds)
     // Model.
     std::string id = model->id();
     if (!id.empty()) {
-        idList.insert(std::make_pair(id, std::make_pair("model", model)));
+        idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::MODEL, model)));
     }
     // Units.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         id = model->units(u)->id();
         if (!id.empty()) {
-            idList.insert(std::make_pair(id, std::make_pair("units", model->units(u))));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::UNITS, model->units(u))));
         }
         for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
             std::string prefix;
@@ -146,211 +142,72 @@ ItemList listIdsAndItems(const ModelPtr &model, bool mathIds)
             double multiplier;
             model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
-                idList.insert(std::make_pair(id, std::make_pair("unit", std::make_pair(model->units(u), i))));
+                idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::UNIT, std::make_pair(model->units(u), i))));
             }
         }
         if (model->units(u)->isImport() && model->units(u)->importSource() != nullptr) {
             id = model->units(u)->importSource()->id();
-            idList.insert(std::make_pair(id, std::make_pair("import", model->units(u)->importSource())));
+            idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::IMPORT, model->units(u)->importSource())));
         }
     }
     // Components.
     for (size_t c = 0; c < model->componentCount(); ++c) {
-        listComponentIdsAndItems(model->component(c), idList, mathIds);
+        listComponentIdsAndItems(model->component(c), idList);
     }
     // Encapsulation.
     id = model->encapsulationId();
     if (!id.empty()) {
-        idList.insert(std::make_pair(id, std::make_pair("encapsulation", "")));
+        idList.insert(std::make_pair(id, std::make_pair(Annotator::TYPE::ENCAPSULATION, std::string())));
     }
 
     return idList;
 }
 
-void Annotator::build(const ModelPtr &model, bool mathIds)
+void Annotator::build(const ModelPtr &model)
 {
+    mPimpl->isBuilt = false;
     removeAllIssues();
     mPimpl->mIdList.clear();
-    mPimpl->mIdList = listIdsAndItems(model, mathIds);
+    mPimpl->mIdList = listIdsAndItems(model);
+    mPimpl->isBuilt = true;
 }
 
 AnyItem Annotator::item(const std::string &id)
 {
     AnyItem item;
-    if (mPimpl->mIdList.empty()) {
+    if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
         issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
-        item = std::make_pair("issue", issue);
+        item = std::make_pair(Annotator::TYPE::ISSUE, issue);
+        return item;
+    }
+    if (mPimpl->mIdList.empty()) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("The id map is empty; the supplied model has no id attributes.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
+        item = std::make_pair(Annotator::TYPE::ISSUE, issue);
         return item;
     }
 
     // Retrieve the item from the idList.
     ItemList::iterator it;
     it = mPimpl->mIdList.find(id);
+
     if (it == mPimpl->mIdList.end()) {
         auto issue = libcellml::Issue::create();
         issue->setDescription("Could not find an item with id='" + id + "' in the model.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
-        item = std::make_pair("issue", issue);
+        item = std::make_pair(Annotator::TYPE::ISSUE, issue);
+        // Adding the requested id string and this issue to the map, so that future requests (ie: to the .second)
+        // will return the same IssuePtr rather than creating a new one.
+        mPimpl->mIdList.insert(std::make_pair(id, item));
         return item;
     }
     return mPimpl->mIdList[id];
-}
-
-ComponentPtr Annotator::component(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<ComponentPtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-VariablePtr Annotator::variable(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<VariablePtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-ModelPtr Annotator::model(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<ModelPtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-UnitsPtr Annotator::units(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<UnitsPtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-ImportSourcePtr Annotator::import(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<ImportSourcePtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-ResetPtr Annotator::reset(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<ResetPtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-VariablePair Annotator::connection(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<VariablePair>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return std::make_pair(nullptr, nullptr);
-    }
-}
-
-VariablePair Annotator::map_variables(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<VariablePair>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return std::make_pair(nullptr, nullptr);
-    }
-}
-
-UnitItem Annotator::unit(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<UnitItem>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return std::make_pair(nullptr, -1);
-    }
-}
-
-ComponentPtr Annotator::component_ref(const std::string &id)
-{
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<ComponentPtr>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
-}
-
-std::string Annotator::math(const std::string &id){
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<std::string>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return "";
-    }
-}
-
-std::string Annotator::test_value(const std::string &id){
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<std::string>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return "";
-    }
-}
-
-std::string Annotator::reset_value(const std::string &id){
-    auto i = item(id);
-    try {
-        auto j = std::any_cast<std::string>(i.second);
-        return j;
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return "";
-    }
 }
 
 } // namespace libcellml
