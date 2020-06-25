@@ -13,7 +13,7 @@
 #endif
 
 %feature("docstring") libcellml::Generator
-"Can generate code from a :class:`Model` according to a code generation profile.";
+"Creates a :class:`Generator` object.";
 
 %feature("docstring") libcellml::Generator::profile
 "Returns the :enum:`Profile` type.";
@@ -22,10 +22,10 @@
 "Sets this :class:`Generator`'s profile.";
 
 %feature("docstring") libcellml::Generator::interfaceCode
-"Return the interface code for the :class:`Model` processed.";
+"Returns the interface code for an :class:`AnalyserModel`.";
 
 %feature("docstring") libcellml::Generator::implementationCode
-"Return the implementation code for the :class:`Model` processed.";
+"Returns the implementation code for an :class:`AnalyserModel`.";
 
 %{
 #include "libcellml/generator.h"
