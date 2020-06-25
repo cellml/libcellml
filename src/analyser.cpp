@@ -16,8 +16,6 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
-#include <list>
-
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analysermodel.h"
@@ -232,7 +230,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     }
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
-        AnalyserInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if ((variable->mIndex != MAX_SIZE_T)
             && (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
@@ -287,13 +285,13 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // of our equation and set its order, if the (ODE) variable is a state,
     // computed constant or algebraic variable.
 
-    bool relevantCheck = false;
+    auto relevantCheck = false;
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
-        AnalyserInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
-            VariablePtr localVariable = mComponent->variable(i);
+            auto localVariable = mComponent->variable(i);
 
             if (isSameOrEquivalentVariable(variable->mVariable, localVariable)) {
                 variable->setVariable(localVariable, false);
@@ -407,8 +405,8 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
 bool Analyser::AnalyserImpl::compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
                                                     const AnalyserInternalVariablePtr &variable2)
 {
-    ComponentPtr realComponent1 = owningComponent(variable1->mVariable);
-    ComponentPtr realComponent2 = owningComponent(variable2->mVariable);
+    auto realComponent1 = owningComponent(variable1->mVariable);
+    auto realComponent2 = owningComponent(variable2->mVariable);
 
     if (realComponent1->name() == realComponent2->name()) {
         return variable1->mVariable->name() < variable2->mVariable->name();
@@ -455,7 +453,7 @@ size_t Analyser::AnalyserImpl::mathmlChildCount(const XmlNodePtr &node) const
     // Return the number of child elements, in the MathML namespace, for the
     // given node.
 
-    XmlNodePtr childNode = node->firstChild();
+    auto childNode = node->firstChild();
     size_t res = childNode->isMathmlElement() ? 1 : 0;
 
     while (childNode != nullptr) {
@@ -475,8 +473,8 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
     // Return the nth child element of the given node, skipping anything that is
     // not int he MathML namespace.
 
-    XmlNodePtr res = node->firstChild();
-    size_t childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
+    auto res = node->firstChild();
+    auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
 
     while ((res != nullptr) && (childNodeIndex != index)) {
         res = res->next();
@@ -503,7 +501,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserVariable(const Varia
     // No analyser variable exists for the given variable, so create one, track
     // it and return it.
 
-    AnalyserInternalVariablePtr internalVariable = std::make_shared<AnalyserInternalVariable>(variable);
+    auto internalVariable = std::make_shared<AnalyserInternalVariable>(variable);
 
     mInternalVariables.push_back(internalVariable);
 
@@ -517,7 +515,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
     // given component.
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        VariablePtr localVariable = component->variable(i);
+        auto localVariable = component->variable(i);
 
         if (isSameOrEquivalentVariable(variable, localVariable)) {
             return localVariable;
@@ -568,7 +566,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         //                 |       d   e |
         //                 +-------------+
 
-        size_t childCount = mathmlChildCount(node);
+        auto childCount = mathmlChildCount(node);
 
         processNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
         processNode(mathmlChildNode(node, 1), ast->mPimpl->mLeftChild, ast, component, equation);
@@ -579,7 +577,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
             processNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
 
-            for (size_t i = childCount - 2; i > 1; --i) {
+            for (auto i = childCount - 2; i > 1; --i) {
                 processNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
                 processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
@@ -768,7 +766,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         // Piecewise statement.
 
     } else if (node->isMathmlElement("piecewise")) {
-        size_t childCount = mathmlChildCount(node);
+        auto childCount = mathmlChildCount(node);
 
         ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
@@ -780,7 +778,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
             processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
-            for (size_t i = childCount - 2; i > 0; --i) {
+            for (auto i = childCount - 2; i > 0; --i) {
                 tempAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
                 processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
@@ -808,8 +806,8 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         // Token elements.
 
     } else if (node->isMathmlElement("ci")) {
-        std::string variableName = node->firstChild()->convertToString();
-        VariablePtr variable = component->variable(variableName);
+        auto variableName = node->firstChild()->convertToString();
+        auto variable = component->variable(variableName);
         // Note: we always have a variable. Indeed, if we were not to have one,
         //       it would mean that `variableName` is the name of a variable
         //       that is referenced in an equation, but not defined anywhere,
@@ -853,7 +851,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
-        XmlNodePtr rightNode = mathmlChildNode(node, 1);
+        auto rightNode = mathmlChildNode(node, 1);
 
         if (rightNode != nullptr) {
             processNode(rightNode, ast->mPimpl->mRightChild, ast, component, equation);
@@ -881,7 +879,7 @@ AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr
 {
     // Create and keep track of the equation associated with the given node.
 
-    AnalyserInternalEquationPtr equation = std::make_shared<AnalyserInternalEquation>(component, std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}});
+    auto equation = std::make_shared<AnalyserInternalEquation>(component, std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}});
 
     mInternalEquations.push_back(equation);
 
@@ -897,8 +895,8 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
     // Retrieve the math string associated with the given component and process
     // it, one equation at a time.
 
-    XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    std::string math = component->math();
+    auto xmlDoc = std::make_shared<XmlDoc>();
+    auto math = component->math();
 
     if (!math.empty()) {
         xmlDoc->parseMathML(math, false);
@@ -933,8 +931,8 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
         } else if ((variable != analyserVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !analyserVariable->mVariable->initialValue().empty()) {
-            IssuePtr issue = Issue::create();
-            ComponentPtr trackedVariableComponent = owningComponent(analyserVariable->mVariable);
+            auto issue = Issue::create();
+            auto trackedVariableComponent = owningComponent(analyserVariable->mVariable);
 
             issue->setDescription("Variable '" + variable->name()
                                   + "' in component '" + component->name()
@@ -958,12 +956,12 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
             //       defined anywhere, something that is not allowed in CellML
             //       and will therefore be reported when we validate the model.
 
-            ComponentPtr initialisingComponent = owningComponent(analyserVariable->mVariable);
-            VariablePtr initialisingVariable = initialisingComponent->variable(analyserVariable->mVariable->initialValue());
-            AnalyserInternalVariablePtr analyserInitialValueVariable = Analyser::AnalyserImpl::analyserVariable(initialisingVariable);
+            auto initialisingComponent = owningComponent(analyserVariable->mVariable);
+            auto initialisingVariable = initialisingComponent->variable(analyserVariable->mVariable->initialValue());
+            auto analyserInitialValueVariable = Analyser::AnalyserImpl::analyserVariable(initialisingVariable);
 
             if (analyserInitialValueVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
-                IssuePtr issue = Issue::create();
+                auto issue = Issue::create();
 
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
@@ -988,7 +986,7 @@ void Analyser::AnalyserImpl::doEquivalentVariables(const VariablePtr &variable,
                                                    std::vector<VariablePtr> &equivalentVariables) const
 {
     for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
-        VariablePtr equivalentVariable = variable->equivalentVariable(i);
+        auto equivalentVariable = variable->equivalentVariable(i);
 
         if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
             equivalentVariables.push_back(equivalentVariable);
@@ -1012,14 +1010,14 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
-    AnalyserEquationAstPtr astParent = ast->mPimpl->mParent.lock();
-    AnalyserEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mPimpl->mParent.lock() : nullptr;
-    AnalyserEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mPimpl->mParent.lock() : nullptr;
+    auto astParent = ast->mPimpl->mParent.lock();
+    auto astGrandParent = (astParent != nullptr) ? astParent->mPimpl->mParent.lock() : nullptr;
+    auto astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mPimpl->mParent.lock() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
         && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        VariablePtr variable = ast->mPimpl->mVariable;
+        auto variable = ast->mPimpl->mVariable;
 
         analyserVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
@@ -1035,10 +1033,10 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
             // to be defined), so go through our components and look for the
             // first occurrence of our variable of integration.
 
-            ModelPtr model = owningModel(variable);
+            auto model = owningModel(variable);
 
             for (size_t i = 0; i < model->componentCount(); ++i) {
-                VariablePtr voi = voiFirstOccurrence(variable, model->component(i));
+                auto voi = voiFirstOccurrence(variable, model->component(i));
 
                 if (voi != nullptr) {
                     // We have found the first occurrence of our variable of
@@ -1049,7 +1047,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
                     for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
                         if (!voiEquivalentVariable->initialValue().empty()) {
-                            IssuePtr issue = Issue::create();
+                            auto issue = Issue::create();
 
                             issue->setDescription("Variable '" + voiEquivalentVariable->name()
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
@@ -1074,7 +1072,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                 }
             }
         } else if (!isSameOrEquivalentVariable(variable, mModel->mPimpl->mVoi->variable())) {
-            IssuePtr issue = Issue::create();
+            auto issue = Issue::create();
 
             issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
                                   + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
@@ -1096,9 +1094,10 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
         && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
         double value;
+
         if (!convertToDouble(ast->mPimpl->mValue, value) || !areEqual(value, 1.0)) {
-            IssuePtr issue = Issue::create();
-            VariablePtr variable = astGreatGrandParent->mPimpl->mRightChild->mPimpl->mVariable;
+            auto issue = Issue::create();
+            auto variable = astGreatGrandParent->mPimpl->mRightChild->mPimpl->mVariable;
 
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
@@ -1142,7 +1141,7 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
 {
     // Scale the given AST using the given scaling factor
 
-    AnalyserEquationAstPtr scaledAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
+    auto scaledAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
 
     scaledAst->mPimpl->mLeftChild = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
     scaledAst->mPimpl->mRightChild = ast;
@@ -1176,20 +1175,21 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         // dealing with a rate or some other variable, i.e. whether or not it
         // has a DIFF node as a parent.
 
-        AnalyserEquationAstPtr astParent = ast->mPimpl->mParent.lock();
+        auto astParent = ast->mPimpl->mParent.lock();
+
         if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
             // needed.
 
-            double scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mLeftChild->mPimpl->mLeftChild->mPimpl->mVariable);
+            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mLeftChild->mPimpl->mLeftChild->mPimpl->mVariable);
 
             if (!areEqual(scalingFactor, 1.0)) {
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
 
-                AnalyserEquationAstPtr astGrandParent = astParent->mPimpl->mParent.lock();
+                auto astGrandParent = astParent->mPimpl->mParent.lock();
 
                 if ((astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
                     && (astGrandParent->mPimpl->mLeftChild == astParent)) {
@@ -1208,7 +1208,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             // factor and apply it, if needed, distinguishing between a rate
             // variable and an algebraic variable.
 
-            double scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->mPimpl->mVariable);
+            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->mPimpl->mVariable);
 
             if (!areEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
@@ -1262,7 +1262,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
         mInternalVariables.sort(compareVariablesByName);
 
-        size_t variableIndex = MAX_SIZE_T;
+        auto variableIndex = MAX_SIZE_T;
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
@@ -1270,8 +1270,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             }
         }
 
-        size_t equationOrder = MAX_SIZE_T;
-        size_t stateIndex = MAX_SIZE_T;
+        auto equationOrder = MAX_SIZE_T;
+        auto stateIndex = MAX_SIZE_T;
 
         for (;;) {
             bool relevantCheck = false;
@@ -1314,8 +1314,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             }
 
             if (!issueType.empty()) {
-                IssuePtr issue = Issue::create();
-                VariablePtr realVariable = internalVariable->mVariable;
+                auto issue = Issue::create();
+                auto realVariable = internalVariable->mVariable;
 
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
@@ -1329,12 +1329,12 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
         // Determine the type of our model.
 
-        bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
+        auto hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
                                                 return (variable->mType == AnalyserInternalVariable::Type::UNKNOWN)
                                                        || (variable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE);
                                             })
                                             != std::end(mInternalVariables);
-        bool hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
+        auto hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const AnalyserInternalVariablePtr &variable) {
                                                return variable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED;
                                            })
                                            != std::end(mInternalVariables);
@@ -1392,7 +1392,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 continue;
             }
 
-            AnalyserVariablePtr stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+            auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
             stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
                                               internalVariable->mVariable,
@@ -1405,6 +1405,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 mModel->mPimpl->mVariables.push_back(stateOrVariable);
             }
         }
+
         std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> equationMappings;
 
         for (const auto &internalEquation : mInternalEquations) {
@@ -1430,7 +1431,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 dependencies.push_back(equationMappings[dependency]);
             }
 
-            AnalyserEquationPtr equation = equationMappings[internalEquation];
+            auto equation = equationMappings[internalEquation];
 
             equation->mPimpl->populate(type, internalEquation->mAst, dependencies,
                                        internalEquation->mIsStateRateBased);
@@ -1459,7 +1460,7 @@ void Analyser::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it.
 
-    ValidatorPtr validator = Validator::create();
+    auto validator = Validator::create();
 
     validator->validateModel(model);
 
