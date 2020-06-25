@@ -46,7 +46,7 @@ public:
     AnalyserEquation(AnalyserEquation &&rhs) noexcept = delete; /**< Move constructor */
     AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator */
 
-    AnalyserEquation::Type type() const;
+    Type type() const;
     AnalyserEquationAstPtr ast() const;
     std::list<AnalyserEquationPtr> dependencies() const;
     bool isStateRateBased() const;

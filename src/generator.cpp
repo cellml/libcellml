@@ -22,6 +22,10 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
+#include "libcellml/analyserequation.h"
+#include "libcellml/analyserequationast.h"
+#include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
 #include "libcellml/generatorequationast.h"
 #include "libcellml/generatorprofile.h"
@@ -41,470 +45,6 @@ limitations under the License.
 
 namespace libcellml {
 
-static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
-
-/**
- * @brief The GeneratorVariable::GeneratorVariableImpl struct.
- *
- * The private implementation for the GeneratorVariable class.
- */
-struct GeneratorVariable::GeneratorVariableImpl
-{
-    VariablePtr mInitialisingVariable;
-    VariablePtr mVariable;
-    size_t mIndex = MAX_SIZE_T;
-    GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
-
-    void populate(const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable, size_t mIndex,
-                  GeneratorVariable::Type type);
-};
-
-void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &initialisingVariable,
-                                                        const VariablePtr &variable,
-                                                        size_t index,
-                                                        GeneratorVariable::Type type)
-{
-    mInitialisingVariable = initialisingVariable;
-    mVariable = variable;
-    mIndex = index;
-    mType = type;
-}
-
-GeneratorVariable::GeneratorVariable()
-    : mPimpl(new GeneratorVariableImpl())
-{
-}
-
-GeneratorVariable::~GeneratorVariable()
-{
-    delete mPimpl;
-}
-
-GeneratorVariablePtr GeneratorVariable::create() noexcept
-{
-    return std::shared_ptr<GeneratorVariable> {new GeneratorVariable {}};
-}
-
-VariablePtr GeneratorVariable::initialisingVariable() const
-{
-    return mPimpl->mInitialisingVariable;
-}
-
-VariablePtr GeneratorVariable::variable() const
-{
-    return mPimpl->mVariable;
-}
-
-size_t GeneratorVariable::index() const
-{
-    return mPimpl->mIndex;
-}
-
-GeneratorVariable::Type GeneratorVariable::type() const
-{
-    return mPimpl->mType;
-}
-
-struct GeneratorEquation::GeneratorEquationImpl
-{
-    GeneratorEquation::Type mType = GeneratorEquation::Type::ALGEBRAIC;
-    GeneratorEquationAstPtr mAst;
-    std::list<GeneratorEquationPtr> mDependencies;
-    bool mIsStateRateBased = false;
-
-    void populate(GeneratorEquation::Type type,
-                  const GeneratorEquationAstPtr &ast,
-                  const std::list<GeneratorEquationPtr> &dependencies,
-                  bool isStateRateBased);
-};
-
-void GeneratorEquation::GeneratorEquationImpl::populate(GeneratorEquation::Type type,
-                                                        const GeneratorEquationAstPtr &ast,
-                                                        const std::list<GeneratorEquationPtr> &dependencies,
-                                                        bool isStateRateBased)
-{
-    mType = type;
-    mAst = ast;
-    mDependencies = dependencies;
-    mIsStateRateBased = isStateRateBased;
-}
-
-GeneratorEquation::GeneratorEquation()
-    : mPimpl(new GeneratorEquationImpl())
-{
-}
-
-GeneratorEquation::~GeneratorEquation()
-{
-    delete mPimpl;
-}
-
-GeneratorEquationPtr GeneratorEquation::create() noexcept
-{
-    return std::shared_ptr<GeneratorEquation> {new GeneratorEquation {}};
-}
-
-GeneratorEquation::Type GeneratorEquation::type() const
-{
-    return mPimpl->mType;
-}
-
-GeneratorEquationAstPtr GeneratorEquation::ast() const
-{
-    return mPimpl->mAst;
-}
-
-std::list<GeneratorEquationPtr> GeneratorEquation::dependencies() const
-{
-    return mPimpl->mDependencies;
-}
-
-bool GeneratorEquation::isStateRateBased() const
-{
-    return mPimpl->mIsStateRateBased;
-}
-
-struct GeneratorInternalEquation;
-using GeneratorInternalEquationPtr = std::shared_ptr<GeneratorInternalEquation>;
-using GeneratorInternalEquationWeakPtr = std::weak_ptr<GeneratorInternalEquation>;
-
-struct GeneratorInternalVariable
-{
-    enum struct Type
-    {
-        UNKNOWN,
-        SHOULD_BE_STATE,
-        VARIABLE_OF_INTEGRATION,
-        STATE,
-        CONSTANT,
-        COMPUTED_TRUE_CONSTANT,
-        COMPUTED_VARIABLE_BASED_CONSTANT,
-        ALGEBRAIC,
-        OVERCONSTRAINED
-    };
-
-    size_t mIndex = MAX_SIZE_T;
-    Type mType = Type::UNKNOWN;
-
-    VariablePtr mInitialisingVariable;
-    VariablePtr mVariable;
-
-    GeneratorInternalEquationWeakPtr mInternalEquation;
-
-    explicit GeneratorInternalVariable(const VariablePtr &variable);
-
-    void setVariable(const VariablePtr &variable,
-                     bool checkInitialValue = true);
-
-    void makeVoi();
-    void makeState();
-};
-
-using GeneratorInternalVariablePtr = std::shared_ptr<GeneratorInternalVariable>;
-
-GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable)
-{
-    setVariable(variable);
-}
-
-void GeneratorInternalVariable::setVariable(const VariablePtr &variable,
-                                            bool checkInitialValue)
-{
-    if (checkInitialValue && !variable->initialValue().empty()) {
-        // The variable has an initial value, so it can either be a constant or
-        // a state. By default, we consider it to be a constant and, if we find
-        // an ODE for that variable, we will know that it was actually a state.
-
-        mType = Type::CONSTANT;
-
-        mInitialisingVariable = variable;
-    }
-
-    mVariable = variable;
-}
-
-void GeneratorInternalVariable::makeVoi()
-{
-    mType = Type::VARIABLE_OF_INTEGRATION;
-}
-
-void GeneratorInternalVariable::makeState()
-{
-    if (mType == Type::UNKNOWN) {
-        mType = Type::SHOULD_BE_STATE;
-    } else if (mType == Type::CONSTANT) {
-        mType = Type::STATE;
-    }
-}
-
-GeneratorEquationAst::GeneratorEquationAst() = default;
-
-GeneratorEquationAst::GeneratorEquationAst(Type type,
-                                           const GeneratorEquationAstPtr &parent)
-    : mType(type)
-    , mParent(parent)
-{
-}
-
-GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
-                                           const GeneratorEquationAstPtr &parent)
-    : mType(type)
-    , mValue(value)
-    , mParent(parent)
-{
-}
-
-GeneratorEquationAst::GeneratorEquationAst(Type type,
-                                           const VariablePtr &variable,
-                                           const GeneratorEquationAstPtr &parent)
-    : mType(type)
-    , mVariable(variable)
-    , mParent(parent)
-{
-}
-
-GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
-                                           const GeneratorEquationAstPtr &parent)
-    : mType(ast->mType)
-    , mVariable(ast->mVariable)
-    , mParent(parent)
-    , mLeft(ast->mLeft)
-    , mRight(ast->mRight)
-{
-}
-
-#ifdef SWIG
-struct GeneratorInternalEquation
-#else
-struct GeneratorInternalEquation: public std::enable_shared_from_this<GeneratorInternalEquation>
-#endif
-{
-    enum struct Type
-    {
-        UNKNOWN,
-        TRUE_CONSTANT,
-        VARIABLE_BASED_CONSTANT,
-        RATE,
-        ALGEBRAIC
-    };
-
-    size_t mOrder = MAX_SIZE_T;
-    Type mType = Type::UNKNOWN;
-
-    std::list<GeneratorInternalEquationPtr> mDependencies;
-
-    GeneratorEquationAstPtr mAst;
-
-    std::list<GeneratorInternalVariablePtr> mVariables;
-    std::list<GeneratorInternalVariablePtr> mOdeVariables;
-
-    GeneratorInternalVariablePtr mVariable = nullptr;
-    ComponentPtr mComponent = nullptr;
-
-    bool mComputedTrueConstant = true;
-    bool mComputedVariableBasedConstant = true;
-
-    bool mIsStateRateBased = false;
-
-    explicit GeneratorInternalEquation(const ComponentPtr &component);
-
-    void addVariable(const GeneratorInternalVariablePtr &variable);
-    void addOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
-
-    static bool containsNonUnknownVariables(const std::list<GeneratorInternalVariablePtr> &variables);
-    static bool containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables);
-
-    static bool knownVariable(const GeneratorInternalVariablePtr &variable);
-    static bool knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
-
-    bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
-};
-
-GeneratorInternalEquation::GeneratorInternalEquation(const ComponentPtr &component)
-    : mAst(std::make_shared<GeneratorEquationAst>())
-    , mComponent(component)
-{
-}
-
-void GeneratorInternalEquation::addVariable(const GeneratorInternalVariablePtr &variable)
-{
-    if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
-        mVariables.push_back(variable);
-    }
-}
-
-void GeneratorInternalEquation::addOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
-{
-    if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
-        mOdeVariables.push_back(odeVariable);
-    }
-}
-
-bool GeneratorInternalEquation::containsNonUnknownVariables(const std::list<GeneratorInternalVariablePtr> &variables)
-{
-    return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
-               return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN);
-           })
-           != std::end(variables);
-}
-
-bool GeneratorInternalEquation::containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables)
-{
-    return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
-               return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
-                      && (variable->mType != GeneratorInternalVariable::Type::CONSTANT)
-                      && (variable->mType != GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                      && (variable->mType != GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
-           })
-           != std::end(variables);
-}
-
-bool GeneratorInternalEquation::knownVariable(const GeneratorInternalVariablePtr &variable)
-{
-    return (variable->mIndex != MAX_SIZE_T)
-           || (variable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION)
-           || (variable->mType == GeneratorInternalVariable::Type::STATE)
-           || (variable->mType == GeneratorInternalVariable::Type::CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
-}
-
-bool GeneratorInternalEquation::knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
-{
-    return (odeVariable->mIndex != MAX_SIZE_T)
-           || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
-}
-
-bool sameOrEquivalentVariable(const VariablePtr &variable1,
-                              const VariablePtr &variable2)
-{
-    // Return whether the given variables are the same or are equivalent (be it
-    // directly or indirectly).
-
-    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
-}
-
-bool GeneratorInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
-                                      size_t &variableIndex)
-{
-    // Nothing to check if the equation has already been given an order (i.e.
-    // everything is fine) or if there is one known (ODE) variable left (i.e.
-    // this equation is an overconstraint).
-
-    if (mOrder != MAX_SIZE_T) {
-        return false;
-    }
-
-    if (mVariables.size() + mOdeVariables.size() == 1) {
-        GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
-
-        if ((variable->mIndex != MAX_SIZE_T)
-            && (variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
-            && (variable->mType != GeneratorInternalVariable::Type::SHOULD_BE_STATE)) {
-            variable->mType = GeneratorInternalVariable::Type::OVERCONSTRAINED;
-
-            return false;
-        }
-    }
-
-    // Determine, from the (new) known (ODE) variables, whether the equation is
-    // truly a constant or a variable-based constant.
-
-    mComputedTrueConstant = mComputedTrueConstant
-                            && !containsNonUnknownVariables(mVariables)
-                            && !containsNonUnknownVariables(mOdeVariables);
-    mComputedVariableBasedConstant = mComputedVariableBasedConstant
-                                     && !containsNonConstantVariables(mVariables)
-                                     && !containsNonConstantVariables(mOdeVariables);
-
-    // Determine whether the equation is state/rate based and add, as a
-    // dependency, the equations used to compute the (new) known variables.
-    // (Note that we don't account for the (new) known ODE variables since their
-    // corresponding equation can obviously not be of algebraic type.)
-
-    if (!mIsStateRateBased) {
-        mIsStateRateBased = !mOdeVariables.empty();
-    }
-
-    for (const auto &variable : mVariables) {
-        if (knownVariable(variable)) {
-            GeneratorInternalEquationPtr equation = variable->mInternalEquation.lock();
-
-            if (!mIsStateRateBased) {
-                mIsStateRateBased = (equation == nullptr) ?
-                                        (variable->mType == GeneratorInternalVariable::Type::STATE) :
-                                        equation->mIsStateRateBased;
-            }
-
-            if (equation != nullptr) {
-                mDependencies.push_back(equation);
-            }
-        }
-    }
-
-    // Stop tracking (new) known (ODE) variables.
-
-    mVariables.remove_if(knownVariable);
-    mOdeVariables.remove_if(knownOdeVariable);
-
-    // If there is one (ODE) variable left then update its viariable (to be the
-    // corresponding one in the component in which the equation is), its type
-    // (if it is currently unknown), determine its index and determine the type
-    // of our equation and set its order, if the (ODE) variable is a state,
-    // computed constant or algebraic variable.
-
-    bool relevantCheck = false;
-
-    if (mVariables.size() + mOdeVariables.size() == 1) {
-        GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
-
-        for (size_t i = 0; i < mComponent->variableCount(); ++i) {
-            VariablePtr localVariable = mComponent->variable(i);
-
-            if (sameOrEquivalentVariable(variable->mVariable, localVariable)) {
-                variable->setVariable(localVariable, false);
-
-                break;
-            }
-        }
-
-        if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
-            variable->mType = mComputedTrueConstant ?
-                                  GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT :
-                                  mComputedVariableBasedConstant ?
-                                  GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT :
-                                  GeneratorInternalVariable::Type::ALGEBRAIC;
-        }
-
-        if ((variable->mType == GeneratorInternalVariable::Type::STATE)
-            || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-            || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-            || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
-            variable->mIndex = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
-                                   ++stateIndex :
-                                   ++variableIndex;
-
-            variable->mInternalEquation = shared_from_this();
-
-            mOrder = ++equationOrder;
-            mType = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
-                        Type::RATE :
-                        (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
-                        Type::TRUE_CONSTANT :
-                        (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
-                        Type::VARIABLE_BASED_CONSTANT :
-                        Type::ALGEBRAIC;
-
-            mVariable = variable;
-
-            relevantCheck = true;
-        }
-    }
-
-    return relevantCheck;
-}
-
 /**
  * @brief The Generator::GeneratorImpl struct.
  *
@@ -514,1367 +54,218 @@ struct Generator::GeneratorImpl
 {
     Generator *mGenerator = nullptr;
 
-    Generator::ModelType mModelType = Generator::ModelType::UNKNOWN;
+    AnalyserModelPtr mModel = nullptr;
 
-    std::list<GeneratorInternalVariablePtr> mInternalVariables;
-    std::list<GeneratorInternalEquationPtr> mInternalEquations;
-
-    GeneratorVariablePtr mVoi = nullptr;
-    std::vector<GeneratorVariablePtr> mStates;
-    std::vector<GeneratorVariablePtr> mVariables;
-    std::vector<GeneratorEquationPtr> mEquations;
+    std::string mCode;
 
     GeneratorProfilePtr mProfile = libcellml::GeneratorProfile::create();
 
-    bool mNeedEq = false;
-    bool mNeedNeq = false;
-    bool mNeedLt = false;
-    bool mNeedLeq = false;
-    bool mNeedGt = false;
-    bool mNeedGeq = false;
-    bool mNeedAnd = false;
-    bool mNeedOr = false;
-    bool mNeedXor = false;
-    bool mNeedNot = false;
+    AnalyserVariablePtr analyserVariable(const VariablePtr &variable) const;
 
-    bool mNeedMin = false;
-    bool mNeedMax = false;
+    double scalingFactor(const VariablePtr &variable) const;
 
-    bool mNeedSec = false;
-    bool mNeedCsc = false;
-    bool mNeedCot = false;
-    bool mNeedSech = false;
-    bool mNeedCsch = false;
-    bool mNeedCoth = false;
-    bool mNeedAsec = false;
-    bool mNeedAcsc = false;
-    bool mNeedAcot = false;
-    bool mNeedAsech = false;
-    bool mNeedAcsch = false;
-    bool mNeedAcoth = false;
-
-    static bool compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
-                                       const GeneratorInternalVariablePtr &variable2);
-
-    static bool isStateVariable(const GeneratorInternalVariablePtr &variable);
-    static bool isConstantOrAlgebraicVariable(const GeneratorInternalVariablePtr &variable);
-
-    static bool compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
-                                               const GeneratorInternalVariablePtr &variable2);
-
-    static bool compareEquationsByVariable(const GeneratorInternalEquationPtr &equation1,
-                                           const GeneratorInternalEquationPtr &equation2);
-
-    bool hasValidModel() const;
-
-    size_t mathmlChildCount(const XmlNodePtr &node) const;
-    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
-
-    GeneratorInternalVariablePtr generatorInternalVariable(const VariablePtr &variable);
-    GeneratorVariablePtr generatorVariable(const VariablePtr &variable);
-
-    VariablePtr voiFirstOccurrence(const VariablePtr &variable,
-                                   const ComponentPtr &component);
-
-    void processNode(const XmlNodePtr &node,
-                     GeneratorEquationAstPtr &ast,
-                     const GeneratorEquationAstPtr &astParent,
-                     const ComponentPtr &component,
-                     const GeneratorInternalEquationPtr &equation);
-    GeneratorInternalEquationPtr processNode(const XmlNodePtr &node,
-                                             const ComponentPtr &component);
-    void processComponent(const ComponentPtr &component);
-
-    void doEquivalentVariables(const VariablePtr &variable,
-                               std::vector<VariablePtr> &equivalentVariables) const;
-    std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
-
-    void processEquationAst(const GeneratorEquationAstPtr &ast);
-
-    double scalingFactor(const VariablePtr &variable);
-
-    void scaleAst(const GeneratorEquationAstPtr &ast,
-                  const GeneratorEquationAstPtr &astParent,
-                  double scalingFactor);
-    void scaleEquationAst(const GeneratorEquationAstPtr &ast);
-
-    void processModel(const ModelPtr &model);
-
-    bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isAndOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isOrOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isXorOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isPlusOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isMinusOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isTimesOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isDivideOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isPowerOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
+    bool isRelationalOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isAndOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isOrOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isXorOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isLogicalOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isPlusOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isMinusOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isTimesOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isDivideOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isPowerOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isRootOperator(const AnalyserEquationAstPtr &ast) const;
+    bool isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const;
 
     std::string replace(std::string string, const std::string &from,
                         const std::string &to);
 
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
-                                 const GeneratorVariablePtr &variable);
+                                 const AnalyserVariablePtr &variable);
 
     bool modifiedProfile() const;
 
-    void addOriginCommentCode(std::string &code);
+    void addOriginCommentCode();
 
-    void addInterfaceHeaderCode(std::string &code) const;
-    void addImplementationHeaderCode(std::string &code);
+    void addInterfaceHeaderCode();
+    void addImplementationHeaderCode();
 
-    void addVersionAndLibcellmlVersionCode(std::string &code,
-                                           bool interface = false);
+    void addVersionAndLibcellmlVersionCode(bool interface = false);
 
-    void addStateAndVariableCountCode(std::string &code,
-                                      bool interface = false);
+    void addStateAndVariableCountCode(bool interface = false);
 
-    void addVariableTypeObjectCode(std::string &code) const;
+    void addVariableTypeObjectCode();
 
     std::string generateVariableInfoObjectCode(const std::string &objectString);
 
-    void addVariableInfoObjectCode(std::string &code);
-    void addVariableInfoWithTypeObjectCode(std::string &code);
+    void addVariableInfoObjectCode();
+    void addVariableInfoWithTypeObjectCode();
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
                                               const std::string &component);
 
-    void addInterfaceVoiStateAndVariableInfoCode(std::string &code) const;
-    void addImplementationVoiInfoCode(std::string &code);
-    void addImplementationStateInfoCode(std::string &code);
-    void addImplementationVariableInfoCode(std::string &code);
+    void addInterfaceVoiStateAndVariableInfoCode();
+    void addImplementationVoiInfoCode();
+    void addImplementationStateInfoCode();
+    void addImplementationVariableInfoCode();
 
-    void addArithmeticFunctionsCode(std::string &code) const;
-    void addTrigonometricFunctionsCode(std::string &code) const;
+    void addArithmeticFunctionsCode();
+    void addTrigonometricFunctionsCode();
 
-    void addInterfaceCreateDeleteArrayMethodsCode(std::string &code) const;
-    void addImplementationCreateStatesArrayMethodCode(std::string &code) const;
-    void addImplementationCreateVariablesArrayMethodCode(std::string &code) const;
-    void addImplementationDeleteArrayMethodCode(std::string &code) const;
+    void addInterfaceCreateDeleteArrayMethodsCode();
+    void addImplementationCreateStatesArrayMethodCode();
+    void addImplementationCreateVariablesArrayMethodCode();
+    void addImplementationDeleteArrayMethodCode();
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
     std::string generateDoubleCode(const std::string &value);
     std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable);
     std::string generateVariableNameCode(const VariablePtr &variable,
-                                         const GeneratorEquationAstPtr &ast = nullptr);
+                                         const AnalyserEquationAstPtr &ast = nullptr) const;
 
     std::string generateOperatorCode(const std::string &op,
-                                     const GeneratorEquationAstPtr &ast);
-    std::string generateMinusUnaryCode(const GeneratorEquationAstPtr &ast);
+                                     const AnalyserEquationAstPtr &ast);
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast);
     std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const GeneratorEquationAstPtr &ast);
+                                                 const AnalyserEquationAstPtr &ast);
     std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const GeneratorEquationAstPtr &ast);
+                                                 const AnalyserEquationAstPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value);
     std::string generatePiecewiseElseCode(const std::string &value);
-    std::string generateCode(const GeneratorEquationAstPtr &ast);
+    std::string generateCode(const AnalyserEquationAstPtr &ast);
 
-    std::string generateInitializationCode(const GeneratorVariablePtr &variable);
-    std::string generateEquationCode(const GeneratorEquationPtr &equation,
-                                     std::vector<GeneratorEquationPtr> &remainingEquations,
+    std::string generateInitializationCode(const AnalyserVariablePtr &variable);
+    std::string generateEquationCode(const AnalyserEquationPtr &equation,
+                                     std::vector<AnalyserEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
-    void addInterfaceComputeModelMethodsCode(std::string &code) const;
-    void addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
-    void addImplementationComputeComputedConstantsMethodCode(std::string &code,
-                                                             std::vector<GeneratorEquationPtr> &remainingEquations);
-    void addImplementationComputeRatesMethodCode(std::string &code,
-                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
-    void addImplementationComputeVariablesMethodCode(std::string &code,
-                                                     std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addInterfaceComputeModelMethodsCode();
+    void addImplementationInitializeStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
 };
 
-bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
-                                                      const GeneratorInternalVariablePtr &variable2)
+AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
 {
-    ComponentPtr realComponent1 = owningComponent(variable1->mVariable);
-    ComponentPtr realComponent2 = owningComponent(variable2->mVariable);
+    // Find and return the analyser variable associated with the given variable.
 
-    if (realComponent1->name() == realComponent2->name()) {
-        return variable1->mVariable->name() < variable2->mVariable->name();
+    auto modelVoi = mModel->voi();
+
+    if ((modelVoi != nullptr)
+        && isSameOrEquivalentVariable(variable, modelVoi->variable())) {
+        return modelVoi;
     }
 
-    return realComponent1->name() < realComponent2->name();
-}
+    for (size_t i = 0; i < mModel->stateCount(); ++i) {
+        auto modelState = mModel->state(i);
 
-bool Generator::GeneratorImpl::isStateVariable(const GeneratorInternalVariablePtr &variable)
-{
-    return variable->mType == GeneratorInternalVariable::Type::STATE;
-}
-
-bool Generator::GeneratorImpl::isConstantOrAlgebraicVariable(const GeneratorInternalVariablePtr &variable)
-{
-    return (variable->mType == GeneratorInternalVariable::Type::CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-           || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC);
-}
-
-bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
-                                                              const GeneratorInternalVariablePtr &variable2)
-{
-    if (isStateVariable(variable1) && isConstantOrAlgebraicVariable(variable2)) {
-        return true;
-    }
-
-    if (isConstantOrAlgebraicVariable(variable1) && isStateVariable(variable2)) {
-        return false;
-    }
-
-    return variable1->mIndex < variable2->mIndex;
-}
-
-bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorInternalEquationPtr &equation1,
-                                                          const GeneratorInternalEquationPtr &equation2)
-{
-    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
-}
-
-bool Generator::GeneratorImpl::hasValidModel() const
-{
-    return (mModelType == Generator::ModelType::ALGEBRAIC)
-           || (mModelType == Generator::ModelType::ODE);
-}
-
-size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
-{
-    // Return the number of child elements, in the MathML namespace, for the
-    // given node.
-
-    XmlNodePtr childNode = node->firstChild();
-    size_t res = childNode->isMathmlElement() ? 1 : 0;
-
-    while (childNode != nullptr) {
-        childNode = childNode->next();
-
-        if (childNode && childNode->isMathmlElement()) {
-            ++res;
+        if (isSameOrEquivalentVariable(variable, modelState->variable())) {
+            return modelState;
         }
     }
 
-    return res;
-}
+    for (size_t i = 0; i < mModel->variableCount(); ++i) {
+        auto modelVariable = mModel->variable(i);
 
-XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, size_t index) const
-{
-    // Return the nth child element of the given node, skipping anything that is
-    // not int he MathML namespace.
-
-    XmlNodePtr res = node->firstChild();
-    size_t childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
-
-    while ((res != nullptr) && (childNodeIndex != index)) {
-        res = res->next();
-
-        if (res && res->isMathmlElement()) {
-            ++childNodeIndex;
-        }
-    }
-
-    return res;
-}
-
-GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorInternalVariable(const VariablePtr &variable)
-{
-    // Find and return, if there is one, the internal generator variable
-    // associated with the given variable.
-
-    for (const auto &internalVariable : mInternalVariables) {
-        if (sameOrEquivalentVariable(variable, internalVariable->mVariable)) {
-            return internalVariable;
-        }
-    }
-
-    // No internal generator variable exists for the given variable, so create
-    // one, track it and return it.
-
-    GeneratorInternalVariablePtr internalVariable = std::make_shared<GeneratorInternalVariable>(variable);
-
-    mInternalVariables.push_back(internalVariable);
-
-    return internalVariable;
-}
-
-GeneratorVariablePtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
-{
-    // Find and return the generator variable associated with the given
-    // variable.
-
-    if ((mVoi != nullptr)
-        && sameOrEquivalentVariable(variable, mVoi->variable())) {
-        return mVoi;
-    }
-
-    for (const auto &state : mStates) {
-        if (sameOrEquivalentVariable(variable, state->variable())) {
-            return state;
-        }
-    }
-
-    for (const auto &localVariable : mVariables) {
-        if (sameOrEquivalentVariable(variable, localVariable->variable())) {
-            return localVariable;
+        if (isSameOrEquivalentVariable(variable, modelVariable->variable())) {
+            return modelVariable;
         }
     }
 
     return {};
 }
 
-VariablePtr Generator::GeneratorImpl::voiFirstOccurrence(const VariablePtr &variable,
-                                                         const ComponentPtr &component)
-{
-    // Recursively look for the first occurrence of the given variable in the
-    // given component.
-
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        VariablePtr localVariable = component->variable(i);
-
-        if (sameOrEquivalentVariable(variable, localVariable)) {
-            return localVariable;
-        }
-    }
-
-    VariablePtr voi = nullptr;
-
-    for (size_t i = 0; i < component->componentCount() && voi == nullptr; ++i) {
-        voi = voiFirstOccurrence(variable, component->component(i));
-    }
-
-    return voi;
-}
-
-void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                           GeneratorEquationAstPtr &ast,
-                                           const GeneratorEquationAstPtr &astParent,
-                                           const ComponentPtr &component,
-                                           const GeneratorInternalEquationPtr &equation)
-{
-    // Basic content elements.
-
-    if (node->isMathmlElement("apply")) {
-        // We may have 2, 3 or more child nodes, e.g.
-        //
-        //                 +--------+
-        //                 |   +    |
-        //        "+a" ==> |  / \   |
-        //                 | a  nil |
-        //                 +--------+
-        //
-        //                 +-------+
-        //                 |   +   |
-        //       "a+b" ==> |  / \  |
-        //                 | a   b |
-        //                 +-------+
-        //
-        //                 +-------------+
-        //                 |   +         |
-        //                 |  / \        |
-        //                 | a   +       |
-        //                 |    / \      |
-        // "a+b+c+d+e" ==> |   b   +     |
-        //                 |      / \    |
-        //                 |     c   +   |
-        //                 |        / \  |
-        //                 |       d   e |
-        //                 +-------------+
-
-        size_t childCount = mathmlChildCount(node);
-
-        processNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->mLeft, ast, component, equation);
-
-        if (childCount >= 3) {
-            GeneratorEquationAstPtr astRight;
-            GeneratorEquationAstPtr tempAst;
-
-            processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
-
-            for (size_t i = childCount - 2; i > 1; --i) {
-                processNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                processNode(mathmlChildNode(node, i), tempAst->mLeft, tempAst, component, equation);
-
-                astRight->mParent = tempAst;
-
-                tempAst->mRight = astRight;
-                astRight = tempAst;
-            }
-
-            if (astRight != nullptr) {
-                astRight->mParent = ast;
-            }
-
-            ast->mRight = astRight;
-        }
-
-        // Assignment, and relational and logical operators.
-
-    } else if (node->isMathmlElement("eq")) {
-        // This element is used both to describe "a = b" and "a == b". We can
-        // distinguish between the two by checking its grand-parent. If it's a
-        // "math" element then it means that it is used to describe "a = b"
-        // otherwise it is used to describe "a == b". In the former case, there
-        // is nothing more we need to do since `ast` is already of
-        // GeneratorEquationAst::Type::ASSIGNMENT type.
-
-        if (!node->parent()->parent()->isMathmlElement("math")) {
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ, astParent);
-
-            mNeedEq = true;
-        }
-    } else if (node->isMathmlElement("neq")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ, astParent);
-
-        mNeedNeq = true;
-    } else if (node->isMathmlElement("lt")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LT, astParent);
-
-        mNeedLt = true;
-    } else if (node->isMathmlElement("leq")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LEQ, astParent);
-
-        mNeedLeq = true;
-    } else if (node->isMathmlElement("gt")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GT, astParent);
-
-        mNeedGt = true;
-    } else if (node->isMathmlElement("geq")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GEQ, astParent);
-
-        mNeedGeq = true;
-    } else if (node->isMathmlElement("and")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::AND, astParent);
-
-        mNeedAnd = true;
-    } else if (node->isMathmlElement("or")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR, astParent);
-
-        mNeedOr = true;
-    } else if (node->isMathmlElement("xor")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR, astParent);
-
-        mNeedXor = true;
-    } else if (node->isMathmlElement("not")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NOT, astParent);
-
-        mNeedNot = true;
-
-        // Arithmetic operators.
-
-    } else if (node->isMathmlElement("plus")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PLUS, astParent);
-    } else if (node->isMathmlElement("minus")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MINUS, astParent);
-    } else if (node->isMathmlElement("times")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
-    } else if (node->isMathmlElement("divide")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, astParent);
-    } else if (node->isMathmlElement("power")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::POWER, astParent);
-    } else if (node->isMathmlElement("root")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ROOT, astParent);
-    } else if (node->isMathmlElement("abs")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ABS, astParent);
-    } else if (node->isMathmlElement("exp")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EXP, astParent);
-    } else if (node->isMathmlElement("ln")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LN, astParent);
-    } else if (node->isMathmlElement("log")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOG, astParent);
-    } else if (node->isMathmlElement("ceiling")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CEILING, astParent);
-    } else if (node->isMathmlElement("floor")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FLOOR, astParent);
-    } else if (node->isMathmlElement("min")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MIN, astParent);
-
-        mNeedMin = true;
-    } else if (node->isMathmlElement("max")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MAX, astParent);
-
-        mNeedMax = true;
-    } else if (node->isMathmlElement("rem")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM, astParent);
-
-        // Calculus elements.
-
-    } else if (node->isMathmlElement("diff")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIFF, astParent);
-
-        // Trigonometric operators.
-
-    } else if (node->isMathmlElement("sin")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SIN, astParent);
-    } else if (node->isMathmlElement("cos")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COS, astParent);
-    } else if (node->isMathmlElement("tan")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TAN, astParent);
-    } else if (node->isMathmlElement("sec")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SEC, astParent);
-
-        mNeedSec = true;
-    } else if (node->isMathmlElement("csc")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSC, astParent);
-
-        mNeedCsc = true;
-    } else if (node->isMathmlElement("cot")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COT, astParent);
-
-        mNeedCot = true;
-    } else if (node->isMathmlElement("sinh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SINH, astParent);
-    } else if (node->isMathmlElement("cosh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COSH, astParent);
-    } else if (node->isMathmlElement("tanh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TANH, astParent);
-    } else if (node->isMathmlElement("sech")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SECH, astParent);
-
-        mNeedSech = true;
-    } else if (node->isMathmlElement("csch")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSCH, astParent);
-
-        mNeedCsch = true;
-    } else if (node->isMathmlElement("coth")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COTH, astParent);
-
-        mNeedCoth = true;
-    } else if (node->isMathmlElement("arcsin")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASIN, astParent);
-    } else if (node->isMathmlElement("arccos")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOS, astParent);
-    } else if (node->isMathmlElement("arctan")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATAN, astParent);
-    } else if (node->isMathmlElement("arcsec")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASEC, astParent);
-
-        mNeedAsec = true;
-    } else if (node->isMathmlElement("arccsc")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSC, astParent);
-
-        mNeedAcsc = true;
-    } else if (node->isMathmlElement("arccot")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOT, astParent);
-
-        mNeedAcot = true;
-    } else if (node->isMathmlElement("arcsinh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASINH, astParent);
-    } else if (node->isMathmlElement("arccosh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOSH, astParent);
-    } else if (node->isMathmlElement("arctanh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATANH, astParent);
-    } else if (node->isMathmlElement("arcsech")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASECH, astParent);
-
-        mNeedAsech = true;
-    } else if (node->isMathmlElement("arccsch")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSCH, astParent);
-
-        mNeedAcsch = true;
-    } else if (node->isMathmlElement("arccoth")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOTH, astParent);
-
-        mNeedAcoth = true;
-
-        // Piecewise statement.
-
-    } else if (node->isMathmlElement("piecewise")) {
-        size_t childCount = mathmlChildCount(node);
-
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
-
-        if (childCount >= 2) {
-            GeneratorEquationAstPtr astRight;
-            GeneratorEquationAstPtr tempAst;
-
-            processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
-
-            for (size_t i = childCount - 2; i > 0; --i) {
-                tempAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE, astParent);
-
-                processNode(mathmlChildNode(node, i), tempAst->mLeft, tempAst, component, equation);
-
-                astRight->mParent = tempAst;
-
-                tempAst->mRight = astRight;
-                astRight = tempAst;
-            }
-
-            astRight->mParent = ast;
-
-            ast->mRight = astRight;
-        }
-    } else if (node->isMathmlElement("piece")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->mRight, ast, component, equation);
-    } else if (node->isMathmlElement("otherwise")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OTHERWISE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
-
-        // Token elements.
-
-    } else if (node->isMathmlElement("ci")) {
-        std::string variableName = node->firstChild()->convertToString();
-        VariablePtr variable = component->variable(variableName);
-
-        if (variable != nullptr) {
-            // Have our equation track the (ODE) variable (by ODE variable, we
-            // mean a variable that is used in a "diff" element).
-
-            if (node->parent()->firstChild()->isMathmlElement("diff")) {
-                equation->addOdeVariable(generatorInternalVariable(variable));
-            } else if (!(node->parent()->isMathmlElement("bvar")
-                         && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-                equation->addVariable(generatorInternalVariable(variable));
-            }
-
-            // Add the variable to our AST.
-
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
-        } else {
-            IssuePtr issue = Issue::create();
-
-            issue->setDescription("Variable '" + variableName
-                                  + "' in component '" + component->name()
-                                  + "' of model '" + owningModel(component)->name()
-                                  + "' is referenced in an equation, but it is not defined anywhere.");
-            issue->setCause(Issue::Cause::GENERATOR);
-
-            mGenerator->addIssue(issue);
-        }
-    } else if (node->isMathmlElement("cn")) {
-        if (mathmlChildCount(node) == 1) {
-            // We are dealing with an e-notation based CN value.
-
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
-        } else {
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
-        }
-
-        // Qualifier elements.
-
-    } else if (node->isMathmlElement("degree")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
-    } else if (node->isMathmlElement("logbase")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOGBASE, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
-    } else if (node->isMathmlElement("bvar")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR, astParent);
-
-        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
-
-        XmlNodePtr rightNode = mathmlChildNode(node, 1);
-
-        if (rightNode != nullptr) {
-            processNode(rightNode, ast->mRight, ast, component, equation);
-        }
-
-        // Constants.
-
-    } else if (node->isMathmlElement("true")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TRUE, astParent);
-    } else if (node->isMathmlElement("false")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FALSE, astParent);
-    } else if (node->isMathmlElement("exponentiale")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::E, astParent);
-    } else if (node->isMathmlElement("pi")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PI, astParent);
-    } else if (node->isMathmlElement("infinity")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::INF, astParent);
-    } else if (node->isMathmlElement("notanumber")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NAN, astParent);
-    }
-}
-
-GeneratorInternalEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                                                   const ComponentPtr &component)
-{
-    // Create and keep track of the equation associated with the given node.
-
-    GeneratorInternalEquationPtr equation = std::make_shared<GeneratorInternalEquation>(component);
-
-    mInternalEquations.push_back(equation);
-
-    // Actually process the node and return its corresponding equation.
-
-    processNode(node, equation->mAst, equation->mAst->mParent.lock(), component, equation);
-
-    return equation;
-}
-
-void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
-{
-    // Retrieve the math string associated with the given component and process
-    // it, one equation at a time.
-
-    XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    std::string math = component->math();
-
-    if (!math.empty()) {
-        xmlDoc->parseMathML(math, false);
-
-        XmlNodePtr mathNode = xmlDoc->rootNode();
-
-        for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
-            if (node->isMathmlElement()) {
-                processNode(node, component);
-            }
-        }
-    }
-
-    // Go through the given component's variables and make sure that everything
-    // makes sense.
-
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        // Retrieve the variable's corresponding generator variable.
-
-        VariablePtr variable = component->variable(i);
-        GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorInternalVariable(variable);
-
-        // Replace the variable held by `generatorVariable`, in case the
-        // existing one has no initial value while `variable` does and after
-        // insuring that the initial value is either a double or an existing
-        // variable. Otherwise, generate an error if the variable held by
-        // `generatorVariable` and `variable` are both initialised.
-
-        if (!variable->initialValue().empty()
-            && generatorVariable->mVariable->initialValue().empty()) {
-            generatorVariable->setVariable(variable);
-        } else if ((variable != generatorVariable->mVariable)
-                   && !variable->initialValue().empty()
-                   && !generatorVariable->mVariable->initialValue().empty()) {
-            IssuePtr issue = Issue::create();
-            ComponentPtr trackedVariableComponent = owningComponent(generatorVariable->mVariable);
-
-            issue->setDescription("Variable '" + variable->name()
-                                  + "' in component '" + component->name()
-                                  + "' of model '" + owningModel(component)->name()
-                                  + "' and variable '" + generatorVariable->mVariable->name()
-                                  + "' in component '" + trackedVariableComponent->name()
-                                  + "' of model '" + owningModel(trackedVariableComponent)->name()
-                                  + "' are equivalent and cannot therefore both be initialised.");
-            issue->setCause(Issue::Cause::GENERATOR);
-
-            mGenerator->addIssue(issue);
-        }
-
-        if (!generatorVariable->mVariable->initialValue().empty()
-            && !isCellMLReal(generatorVariable->mVariable->initialValue())) {
-            // The initial value is not a double, so it has to be an existing
-            // variable of constant type.
-
-            ComponentPtr initialisingComponent = owningComponent(generatorVariable->mVariable);
-            VariablePtr initialisingVariable = initialisingComponent->variable(generatorVariable->mVariable->initialValue());
-
-            if (initialisingVariable == nullptr) {
-                IssuePtr issue = Issue::create();
-
-                issue->setDescription("Variable '" + variable->name()
-                                      + "' in component '" + component->name()
-                                      + "' of model '" + owningModel(component)->name()
-                                      + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                      + "', but it is not defined anywhere.");
-                issue->setCause(Issue::Cause::GENERATOR);
-
-                mGenerator->addIssue(issue);
-            } else {
-                GeneratorInternalVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorInternalVariable(initialisingVariable);
-
-                if (generatorInitialValueVariable->mType != GeneratorInternalVariable::Type::CONSTANT) {
-                    IssuePtr issue = Issue::create();
-
-                    issue->setDescription("Variable '" + variable->name()
-                                          + "' in component '" + component->name()
-                                          + "' of model '" + owningModel(component)->name()
-                                          + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
-                                          + "', but it is not a constant.");
-                    issue->setCause(Issue::Cause::GENERATOR);
-
-                    mGenerator->addIssue(issue);
-                }
-            }
-        }
-    }
-
-    // Do the same for the components encapsulated by the given component.
-
-    for (size_t i = 0; i < component->componentCount(); ++i) {
-        processComponent(component->component(i));
-    }
-}
-
-void Generator::GeneratorImpl::doEquivalentVariables(const VariablePtr &variable,
-                                                     std::vector<VariablePtr> &equivalentVariables) const
-{
-    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
-        VariablePtr equivalentVariable = variable->equivalentVariable(i);
-
-        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
-            equivalentVariables.push_back(equivalentVariable);
-
-            doEquivalentVariables(equivalentVariable, equivalentVariables);
-        }
-    }
-}
-
-std::vector<VariablePtr> Generator::GeneratorImpl::equivalentVariables(const VariablePtr &variable) const
-{
-    std::vector<VariablePtr> res = {variable};
-
-    doEquivalentVariables(variable, res);
-
-    return res;
-}
-
-void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)
-{
-    // Look for the definition of a variable of integration and make sure that
-    // we don't have more than one of it and that it's not initialised.
-
-    GeneratorEquationAstPtr astParent = ast->mParent.lock();
-    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
-    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
-
-    if ((ast->mType == GeneratorEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::BVAR)
-        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
-        VariablePtr variable = ast->mVariable;
-
-        generatorInternalVariable(variable)->makeVoi();
-        // Note: we must make the variable a variable of integration in all
-        //       cases (i.e. even if there is, for example, already another
-        //       variable of integration) otherwise unnecessary issue messages
-        //       may be reported (since the type of the variable would be
-        //       unknown).
-
-        if (mVoi == nullptr) {
-            // We have found our variable of integration, but this may not be
-            // the one defined in our first component (i.e. the component under
-            // which we are likely to expect to see the variable of integration
-            // to be defined), so go through our components and look for the
-            // first occurrence of our variable of integration.
-
-            ModelPtr model = owningModel(variable);
-
-            for (size_t i = 0; i < model->componentCount(); ++i) {
-                VariablePtr voi = voiFirstOccurrence(variable, model->component(i));
-
-                if (voi != nullptr) {
-                    // We have found the first occurrence of our variable of
-                    // integration, but now we must ensure that it (or one of
-                    // its equivalent variables) is not initialised.
-
-                    bool isVoiInitialized = false;
-
-                    for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
-                        if (!voiEquivalentVariable->initialValue().empty()) {
-                            IssuePtr issue = Issue::create();
-
-                            issue->setDescription("Variable '" + voiEquivalentVariable->name()
-                                                  + "' in component '" + owningComponent(voiEquivalentVariable)->name()
-                                                  + "' of model '" + owningModel(voiEquivalentVariable)->name()
-                                                  + "' cannot be both a variable of integration and initialised.");
-                            issue->setCause(Issue::Cause::GENERATOR);
-
-                            mGenerator->addIssue(issue);
-
-                            isVoiInitialized = true;
-                        }
-                    }
-
-                    if (!isVoiInitialized) {
-                        mVoi = GeneratorVariable::create();
-
-                        mVoi->mPimpl->populate(nullptr, voi, 0,
-                                               GeneratorVariable::Type::VARIABLE_OF_INTEGRATION);
-                    }
-
-                    break;
-                }
-            }
-        } else if (!sameOrEquivalentVariable(variable, mVoi->variable())) {
-            IssuePtr issue = Issue::create();
-
-            issue->setDescription("Variable '" + mVoi->variable()->name()
-                                  + "' in component '" + owningComponent(mVoi->variable())->name()
-                                  + "' of model '" + owningModel(mVoi->variable())->name()
-                                  + "' and variable '" + variable->name()
-                                  + "' in component '" + owningComponent(variable)->name()
-                                  + "' of model '" + owningModel(variable)->name()
-                                  + "' cannot both be the variable of integration.");
-            issue->setCause(Issue::Cause::GENERATOR);
-
-            mGenerator->addIssue(issue);
-        }
-    }
-
-    // Make sure that we only use first-order ODEs.
-
-    if ((ast->mType == GeneratorEquationAst::Type::CN)
-        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::DEGREE)
-        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::BVAR)
-        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
-        double value;
-        if (!convertToDouble(ast->mValue, value) || !areEqual(value, 1.0)) {
-            IssuePtr issue = Issue::create();
-            VariablePtr variable = astGreatGrandParent->mRight->mVariable;
-
-            issue->setDescription("The differential equation for variable '" + variable->name()
-                                  + "' in component '" + owningComponent(variable)->name()
-                                  + "' of model '" + owningModel(variable)->name()
-                                  + "' must be of the first order.");
-            issue->setCause(Issue::Cause::GENERATOR);
-
-            mGenerator->addIssue(issue);
-        }
-    }
-
-    // Make a variable a state if it is used in an ODE.
-
-    if ((ast->mType == GeneratorEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::DIFF)) {
-        generatorInternalVariable(ast->mVariable)->makeState();
-    }
-
-    // Recursively check the given AST's children.
-
-    if (ast->mLeft != nullptr) {
-        processEquationAst(ast->mLeft);
-    }
-
-    if (ast->mRight != nullptr) {
-        processEquationAst(ast->mRight);
-    }
-}
-
-double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable)
+double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
 {
     // Return the scaling factor for the given variable.
 
     return Units::scalingFactor(variable->units(),
-                                generatorInternalVariable(variable)->mVariable->units());
+                                analyserVariable(variable)->variable()->units());
 }
 
-void Generator::GeneratorImpl::scaleAst(const GeneratorEquationAstPtr &ast,
-                                        const GeneratorEquationAstPtr &astParent,
-                                        double scalingFactor)
+bool Generator::GeneratorImpl::isRelationalOperator(const AnalyserEquationAstPtr &ast) const
 {
-    // Scale the given AST using the given scaling factor
-
-    GeneratorEquationAstPtr scaledAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
-
-    scaledAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
-    scaledAst->mRight = ast;
-
-    ast->mParent = scaledAst;
-
-    if (astParent->mLeft == ast) {
-        astParent->mLeft = scaledAst;
-    } else {
-        astParent->mRight = scaledAst;
-    }
-}
-
-void Generator::GeneratorImpl::scaleEquationAst(const GeneratorEquationAstPtr &ast)
-{
-    // Recursively scale the given AST's children.
-
-    if (ast->mLeft != nullptr) {
-        scaleEquationAst(ast->mLeft);
-    }
-
-    if (ast->mRight != nullptr) {
-        scaleEquationAst(ast->mRight);
-    }
-
-    // If the given AST node is a variabe (i.e. a CI node) then we may need to
-    // do some scaling.
-
-    if (ast->mType == GeneratorEquationAst::Type::CI) {
-        // The kind of scaling we may end up doing depends on whether we are
-        // dealing with a rate or some other variable, i.e. whether or not it
-        // has a DIFF node as a parent.
-
-        GeneratorEquationAstPtr astParent = ast->mParent.lock();
-        if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
-            // We are dealing with a rate, so retrieve the scaling factor for
-            // its corresponding variable of integration and apply it, if
-            // needed.
-
-            double scalingFactor = Generator::GeneratorImpl::scalingFactor(astParent->mLeft->mLeft->mVariable);
-
-            if (!areEqual(scalingFactor, 1.0)) {
-                // We need to scale using the inverse of the scaling factor, but
-                // how we do it depends on whether the rate is to be computed or
-                // used.
-
-                GeneratorEquationAstPtr astGrandParent = astParent->mParent.lock();
-
-                if ((astGrandParent->mType == GeneratorEquationAst::Type::ASSIGNMENT)
-                    && (astGrandParent->mLeft == astParent)) {
-                    scaleAst(astGrandParent->mRight, astGrandParent, 1.0 / scalingFactor);
-                } else {
-                    scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
-                }
-            }
-        }
-
-        if (((astParent->mType != GeneratorEquationAst::Type::ASSIGNMENT)
-             || (astParent->mLeft != ast))
-            && (astParent->mType != GeneratorEquationAst::Type::BVAR)) {
-            // We are dealing with a variable which is neither a computed
-            // variable nor our variable of integration, so retrieve its scaling
-            // factor and apply it, if needed, distinguishing between a rate
-            // variable and an algebraic variable.
-
-            double scalingFactor = Generator::GeneratorImpl::scalingFactor(ast->mVariable);
-
-            if (!areEqual(scalingFactor, 1.0)) {
-                if (astParent->mType == GeneratorEquationAst::Type::DIFF) {
-                    scaleAst(astParent, astParent->mParent.lock(), scalingFactor);
-                } else {
-                    scaleAst(ast, astParent, scalingFactor);
-                }
-            }
-        }
-    }
-}
-
-void Generator::GeneratorImpl::processModel(const ModelPtr &model)
-{
-    // Reset a few things in case we were to process the model more than once.
-    // Note: one would normally process the model only once, so we shouldn't
-    //       need to do this, but better be safe than sorry.
-
-    mModelType = Generator::ModelType::UNKNOWN;
-
-    mInternalVariables.clear();
-    mInternalEquations.clear();
-
-    mVoi = nullptr;
-    mStates.clear();
-    mVariables.clear();
-    mEquations.clear();
-
-    mNeedMin = false;
-    mNeedMax = false;
-
-    mNeedSec = false;
-    mNeedCsc = false;
-    mNeedCot = false;
-    mNeedSech = false;
-    mNeedCsch = false;
-    mNeedCoth = false;
-    mNeedAsec = false;
-    mNeedAcsc = false;
-    mNeedAcot = false;
-    mNeedAsech = false;
-    mNeedAcsch = false;
-    mNeedAcoth = false;
-
-    mGenerator->removeAllIssues();
-
-    // Recursively process the model's components, so that we end up with an AST
-    // for each of the model's equations.
-
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        processComponent(model->component(i));
-    }
-
-    // Some more processing is needed, but it can only be done if we didn't come
-    // across any errors during the processing of our components.
-
-    if (mGenerator->errorCount() == 0) {
-        // Process our different equations' AST to determine the type of our
-        // variables.
-
-        for (const auto &internalEquation : mInternalEquations) {
-            processEquationAst(internalEquation->mAst);
-        }
-    }
-
-    // Some post-processing is now needed, but it can only be done if we didn't
-    // come across any errors during the processing of our equations' AST.
-
-    if (mGenerator->errorCount() == 0) {
-        // Sort our variables, determine the index of our constant variables and
-        // then loop over our equations, checking which variables, if any, can
-        // be determined using a given equation.
-
-        mInternalVariables.sort(compareVariablesByName);
-
-        size_t variableIndex = MAX_SIZE_T;
-
-        for (const auto &internalVariable : mInternalVariables) {
-            if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
-                internalVariable->mIndex = ++variableIndex;
-            }
-        }
-
-        size_t equationOrder = MAX_SIZE_T;
-        size_t stateIndex = MAX_SIZE_T;
-
-        for (;;) {
-            bool relevantCheck = false;
-
-            for (const auto &internalEquation : mInternalEquations) {
-                relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex)
-                                || relevantCheck;
-            }
-
-            if (!relevantCheck) {
-                break;
-            }
-        }
-
-        // Make sure that our variables are valid.
-
-        for (const auto &internalVariable : mInternalVariables) {
-            std::string issueType;
-
-            switch (internalVariable->mType) {
-            case GeneratorInternalVariable::Type::UNKNOWN:
-                issueType = "is not computed";
-
-                break;
-            case GeneratorInternalVariable::Type::SHOULD_BE_STATE:
-                issueType = "is used in an ODE, but it is not initialised";
-
-                break;
-            case GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION:
-            case GeneratorInternalVariable::Type::STATE:
-            case GeneratorInternalVariable::Type::CONSTANT:
-            case GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
-            case GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-            case GeneratorInternalVariable::Type::ALGEBRAIC:
-                break;
-            case GeneratorInternalVariable::Type::OVERCONSTRAINED:
-                issueType = "is computed more than once";
-
-                break;
-            }
-
-            if (!issueType.empty()) {
-                IssuePtr issue = Issue::create();
-                VariablePtr realVariable = internalVariable->mVariable;
-
-                issue->setDescription("Variable '" + realVariable->name()
-                                      + "' in component '" + owningComponent(realVariable)->name()
-                                      + "' of model '" + owningModel(realVariable)->name()
-                                      + "' " + issueType + ".");
-                issue->setCause(Issue::Cause::GENERATOR);
-
-                mGenerator->addIssue(issue);
-            }
-        }
-
-        // Determine the type of our model.
-
-        bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
-                                                return (variable->mType == GeneratorInternalVariable::Type::UNKNOWN)
-                                                       || (variable->mType == GeneratorInternalVariable::Type::SHOULD_BE_STATE);
-                                            })
-                                            != std::end(mInternalVariables);
-        bool hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
-                                               return variable->mType == GeneratorInternalVariable::Type::OVERCONSTRAINED;
-                                           })
-                                           != std::end(mInternalVariables);
-
-        if (hasUnderconstrainedVariables) {
-            if (hasOverconstrainedVariables) {
-                mModelType = Generator::ModelType::UNSUITABLY_CONSTRAINED;
-            } else {
-                mModelType = Generator::ModelType::UNDERCONSTRAINED;
-            }
-        } else if (hasOverconstrainedVariables) {
-            mModelType = Generator::ModelType::OVERCONSTRAINED;
-        } else if (mVoi != nullptr) {
-            mModelType = Generator::ModelType::ODE;
-        } else if (!mInternalVariables.empty()) {
-            mModelType = Generator::ModelType::ALGEBRAIC;
-        }
-    } else {
-        mModelType = Generator::ModelType::INVALID;
-    }
-
-    // Some final post-processing is now needed, if we have a valid model.
-
-    if ((mModelType == Generator::ModelType::ODE)
-        || (mModelType == Generator::ModelType::ALGEBRAIC)) {
-        // Scale our equations' AST, i.e. take into account the fact that we may
-        // have mapped variables that use compatible units rather than
-        // equivalent ones.
-
-        for (const auto &internalEquation : mInternalEquations) {
-            scaleEquationAst(internalEquation->mAst);
-        }
-
-        // Sort our internal variables and equations and make them available
-        // through our API.
-
-        mInternalVariables.sort(compareVariablesByTypeAndIndex);
-        mInternalEquations.sort(compareEquationsByVariable);
-
-        for (const auto &internalVariable : mInternalVariables) {
-            GeneratorVariable::Type type;
-
-            if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
-                type = GeneratorVariable::Type::STATE;
-            } else if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
-                type = GeneratorVariable::Type::CONSTANT;
-            } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                       || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-                type = GeneratorVariable::Type::COMPUTED_CONSTANT;
-            } else if (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC) {
-                type = GeneratorVariable::Type::ALGEBRAIC;
-            } else {
-                // This is the variable of integration, so skip it.
-
-                continue;
-            }
-
-            GeneratorVariablePtr stateOrVariable = GeneratorVariable::create();
-
-            stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
-                                              internalVariable->mVariable,
-                                              internalVariable->mIndex,
-                                              type);
-
-            if (type == GeneratorVariable::Type::STATE) {
-                mStates.push_back(stateOrVariable);
-            } else {
-                mVariables.push_back(stateOrVariable);
-            }
-        }
-
-        std::map<GeneratorInternalEquationPtr, GeneratorEquationPtr> equationMappings;
-
-        for (const auto &internalEquation : mInternalEquations) {
-            equationMappings[internalEquation] = GeneratorEquation::create();
-        }
-
-        for (const auto &internalEquation : mInternalEquations) {
-            GeneratorEquation::Type type;
-
-            if (internalEquation->mType == GeneratorInternalEquation::Type::TRUE_CONSTANT) {
-                type = GeneratorEquation::Type::TRUE_CONSTANT;
-            } else if (internalEquation->mType == GeneratorInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-                type = GeneratorEquation::Type::VARIABLE_BASED_CONSTANT;
-            } else if (internalEquation->mType == GeneratorInternalEquation::Type::RATE) {
-                type = GeneratorEquation::Type::RATE;
-            } else {
-                type = GeneratorEquation::Type::ALGEBRAIC;
-            }
-
-            std::list<GeneratorEquationPtr> dependencies;
-
-            for (const auto &dependency : internalEquation->mDependencies) {
-                dependencies.push_back(equationMappings[dependency]);
-            }
-
-            GeneratorEquationPtr equation = equationMappings[internalEquation];
-
-            equation->mPimpl->populate(type, internalEquation->mAst, dependencies,
-                                       internalEquation->mIsStateRateBased);
-
-            mEquations.push_back(equation);
-        }
-    }
-}
-
-bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
-{
-    return ((ast->mType == GeneratorEquationAst::Type::EQ)
+    return ((ast->type() == AnalyserEquationAst::Type::EQ)
             && mProfile->hasEqOperator())
-           || ((ast->mType == GeneratorEquationAst::Type::NEQ)
+           || ((ast->type() == AnalyserEquationAst::Type::NEQ)
                && mProfile->hasNeqOperator())
-           || ((ast->mType == GeneratorEquationAst::Type::LT)
+           || ((ast->type() == AnalyserEquationAst::Type::LT)
                && mProfile->hasLtOperator())
-           || ((ast->mType == GeneratorEquationAst::Type::LEQ)
+           || ((ast->type() == AnalyserEquationAst::Type::LEQ)
                && mProfile->hasLeqOperator())
-           || ((ast->mType == GeneratorEquationAst::Type::GT)
+           || ((ast->type() == AnalyserEquationAst::Type::GT)
                && mProfile->hasGtOperator())
-           || ((ast->mType == GeneratorEquationAst::Type::GEQ)
+           || ((ast->type() == AnalyserEquationAst::Type::GEQ)
                && mProfile->hasGeqOperator());
 }
 
-bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isAndOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::AND)
+    return (ast->type() == AnalyserEquationAst::Type::AND)
            && mProfile->hasAndOperator();
 }
 
-bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isOrOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::OR)
+    return (ast->type() == AnalyserEquationAst::Type::OR)
            && mProfile->hasOrOperator();
 }
 
-bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isXorOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::XOR)
+    return (ast->type() == AnalyserEquationAst::Type::XOR)
            && mProfile->hasXorOperator();
 }
 
-bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isLogicalOperator(const AnalyserEquationAstPtr &ast) const
 {
-    // Note: GeneratorEquationAst::Type::NOT is a unary logical operator, hence
+    // Note: AnalyserEquationAst::Type::NOT is a unary logical operator, hence
     //       we don't include it here since this method is only used to
     //       determine whether parentheses should be added around some code.
 
     return isAndOperator(ast) || isOrOperator(ast) || isXorOperator(ast);
 }
 
-bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isPlusOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::PLUS;
+    return ast->type() == AnalyserEquationAst::Type::PLUS;
 }
 
-bool Generator::GeneratorImpl::isMinusOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isMinusOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::MINUS;
+    return ast->type() == AnalyserEquationAst::Type::MINUS;
 }
 
-bool Generator::GeneratorImpl::isTimesOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isTimesOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::TIMES;
+    return ast->type() == AnalyserEquationAst::Type::TIMES;
 }
 
-bool Generator::GeneratorImpl::isDivideOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isDivideOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::DIVIDE;
+    return ast->type() == AnalyserEquationAst::Type::DIVIDE;
 }
 
-bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isPowerOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::POWER)
+    return (ast->type() == AnalyserEquationAst::Type::POWER)
            && mProfile->hasPowerOperator();
 }
 
-bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isRootOperator(const AnalyserEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::ROOT)
+    return (ast->type() == AnalyserEquationAst::Type::ROOT)
            && mProfile->hasPowerOperator();
 }
 
-bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const
+bool Generator::GeneratorImpl::isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::PIECEWISE)
+    return (ast->type() == AnalyserEquationAst::Type::PIECEWISE)
            && mProfile->hasConditionalOperator();
 }
 
@@ -1892,7 +283,7 @@ std::string Generator::GeneratorImpl::replace(std::string string,
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &nameSize,
                                                        size_t &unitsSize,
-                                                       const GeneratorVariablePtr &variable)
+                                                       const AnalyserVariablePtr &variable)
 {
     auto variableComponentSize = owningComponent(variable->variable())->name().length() + 1;
     auto variableNameSize = variable->variable()->name().length() + 1;
@@ -2168,7 +559,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     return res;
 }
 
-void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
+void Generator::GeneratorImpl::addOriginCommentCode()
 {
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
@@ -2193,36 +584,35 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
                                                   "<PROFILE_INFORMATION>", profileInformation),
                                           "<LIBCELLML_VERSION>", versionString());
 
-        code += replace(mProfile->commentString(),
-                        "<CODE>", commentCode);
+        mCode += replace(mProfile->commentString(),
+                         "<CODE>", commentCode);
     }
 }
 
-void Generator::GeneratorImpl::addInterfaceHeaderCode(std::string &code) const
+void Generator::GeneratorImpl::addInterfaceHeaderCode()
 {
     if (!mProfile->interfaceHeaderString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->interfaceHeaderString();
+        mCode += mProfile->interfaceHeaderString();
     }
 }
 
-void Generator::GeneratorImpl::addImplementationHeaderCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationHeaderCode()
 {
     if (!mProfile->implementationHeaderString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += replace(mProfile->implementationHeaderString(),
-                        "<INTERFACE_FILE_NAME>", mProfile->interfaceFileNameString());
+        mCode += replace(mProfile->implementationHeaderString(),
+                         "<INTERFACE_FILE_NAME>", mProfile->interfaceFileNameString());
     }
 }
 
-void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(std::string &code,
-                                                                 bool interface)
+void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(bool interface)
 {
     std::string versionAndLibcellmlCode;
 
@@ -2250,14 +640,13 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(std::string &co
     }
 
     if (!versionAndLibcellmlCode.empty()) {
-        code += "\n";
+        mCode += "\n";
     }
 
-    code += versionAndLibcellmlCode;
+    mCode += versionAndLibcellmlCode;
 }
 
-void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
-                                                            bool interface)
+void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 {
     std::string stateAndVariableCountCode;
 
@@ -2266,7 +655,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
         stateAndVariableCountCode += interface ?
                                          mProfile->interfaceStateCountString() :
                                          replace(mProfile->implementationStateCountString(),
-                                                 "<STATE_COUNT>", std::to_string(mStates.size()));
+                                                 "<STATE_COUNT>", std::to_string(mModel->stateCount()));
     }
 
     if ((interface && !mProfile->interfaceVariableCountString().empty())
@@ -2274,24 +663,24 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
         stateAndVariableCountCode += interface ?
                                          mProfile->interfaceVariableCountString() :
                                          replace(mProfile->implementationVariableCountString(),
-                                                 "<VARIABLE_COUNT>", std::to_string(mVariables.size()));
+                                                 "<VARIABLE_COUNT>", std::to_string(mModel->variableCount()));
     }
 
     if (!stateAndVariableCountCode.empty()) {
-        code += "\n";
+        mCode += "\n";
     }
 
-    code += stateAndVariableCountCode;
+    mCode += stateAndVariableCountCode;
 }
 
-void Generator::GeneratorImpl::addVariableTypeObjectCode(std::string &code) const
+void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
     if (!mProfile->variableTypeObjectString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->variableTypeObjectString();
+        mCode += mProfile->variableTypeObjectString();
     }
 }
 
@@ -2301,16 +690,16 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (mVoi != nullptr) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mVoi);
+    if (mModel->voi() != nullptr) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mModel->voi());
     }
 
-    for (const auto &state : mStates) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
+    for (size_t i = 0; i < mModel->stateCount(); ++i) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mModel->state(i));
     }
 
-    for (const auto &variable : mVariables) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
+    for (size_t i = 0; i < mModel->variableCount(); ++i) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mModel->variable(i));
     }
 
     return replace(replace(replace(objectString,
@@ -2319,25 +708,25 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::
                    "<UNITS_SIZE>", std::to_string(unitsSize));
 }
 
-void Generator::GeneratorImpl::addVariableInfoObjectCode(std::string &code)
+void Generator::GeneratorImpl::addVariableInfoObjectCode()
 {
     if (!mProfile->variableInfoObjectString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += generateVariableInfoObjectCode(mProfile->variableInfoObjectString());
+        mCode += generateVariableInfoObjectCode(mProfile->variableInfoObjectString());
     }
 }
 
-void Generator::GeneratorImpl::addVariableInfoWithTypeObjectCode(std::string &code)
+void Generator::GeneratorImpl::addVariableInfoWithTypeObjectCode()
 {
     if (!mProfile->variableInfoWithTypeObjectString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += generateVariableInfoObjectCode(mProfile->variableInfoWithTypeObjectString());
+        mCode += generateVariableInfoObjectCode(mProfile->variableInfoWithTypeObjectString());
     }
 }
 
@@ -2351,7 +740,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                    "<COMPONENT>", component);
 }
 
-void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode(std::string &code) const
+void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode()
 {
     std::string interfaceVoiStateAndVariableInfoCode;
 
@@ -2368,44 +757,46 @@ void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode(std::stri
     }
 
     if (!interfaceVoiStateAndVariableInfoCode.empty()) {
-        code += "\n";
+        mCode += "\n";
     }
 
-    code += interfaceVoiStateAndVariableInfoCode;
+    mCode += interfaceVoiStateAndVariableInfoCode;
 }
 
-void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationVoiInfoCode()
 {
     if (!mProfile->implementationVoiInfoString().empty()
         && !mProfile->variableInfoEntryString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        std::string name = (mVoi != nullptr) ? mVoi->variable()->name() : "";
-        std::string units = (mVoi != nullptr) ? mVoi->variable()->units()->name() : "";
-        std::string component = (mVoi != nullptr) ? owningComponent(mVoi->variable())->name() : "";
+        std::string name = (mModel->voi() != nullptr) ? mModel->voi()->variable()->name() : "";
+        std::string units = (mModel->voi() != nullptr) ? mModel->voi()->variable()->units()->name() : "";
+        std::string component = (mModel->voi() != nullptr) ? owningComponent(mModel->voi()->variable())->name() : "";
 
-        code += replace(mProfile->implementationVoiInfoString(),
-                        "<CODE>", generateVariableInfoEntryCode(name, units, component));
+        mCode += replace(mProfile->implementationVoiInfoString(),
+                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationStateInfoCode()
 {
     if (!mProfile->implementationStateInfoString().empty()
         && !mProfile->variableInfoEntryString().empty()
         && !mProfile->arrayElementSeparatorString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
         std::string infoElementsCode;
 
-        for (const auto &state : mStates) {
+        for (size_t i = 0; i < mModel->stateCount(); ++i) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
+
+            auto state = mModel->state(i);
 
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->variable()->name(),
@@ -2417,12 +808,12 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             infoElementsCode += "\n";
         }
 
-        code += replace(mProfile->implementationStateInfoString(),
-                        "<CODE>", infoElementsCode);
+        mCode += replace(mProfile->implementationStateInfoString(),
+                         "<CODE>", infoElementsCode);
     }
 }
 
-void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationVariableInfoCode()
 {
     if (!mProfile->implementationVariableInfoString().empty()
         && !mProfile->variableInfoWithTypeEntryString().empty()
@@ -2430,24 +821,26 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
         && !mProfile->constantVariableTypeString().empty()
         && !mProfile->computedConstantVariableTypeString().empty()
         && !mProfile->algebraicVariableTypeString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
         std::string infoElementsCode;
 
-        for (const auto &variable : mVariables) {
+        for (size_t i = 0; i < mModel->variableCount(); ++i) {
             if (!infoElementsCode.empty()) {
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
             std::string variableType;
 
-            if (variable->type() == GeneratorVariable::Type::CONSTANT) {
+            auto variable = mModel->variable(i);
+
+            if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 variableType = mProfile->constantVariableTypeString();
-            } else if (variable->type() == GeneratorVariable::Type::COMPUTED_CONSTANT) {
+            } else if (variable->type() == AnalyserVariable::Type::COMPUTED_CONSTANT) {
                 variableType = mProfile->computedConstantVariableTypeString();
-            } else if (variable->type() == GeneratorVariable::Type::ALGEBRAIC) {
+            } else if (variable->type() == AnalyserVariable::Type::ALGEBRAIC) {
                 variableType = mProfile->algebraicVariableTypeString();
             }
 
@@ -2463,234 +856,234 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
             infoElementsCode += "\n";
         }
 
-        code += replace(mProfile->implementationVariableInfoString(),
-                        "<CODE>", infoElementsCode);
+        mCode += replace(mProfile->implementationVariableInfoString(),
+                         "<CODE>", infoElementsCode);
     }
 }
 
-void Generator::GeneratorImpl::addArithmeticFunctionsCode(std::string &code) const
+void Generator::GeneratorImpl::addArithmeticFunctionsCode()
 {
-    if (mNeedEq && !mProfile->hasEqOperator()
+    if (mModel->needEqFunction() && !mProfile->hasEqOperator()
         && !mProfile->eqFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->eqFunctionString();
+        mCode += mProfile->eqFunctionString();
     }
 
-    if (mNeedNeq && !mProfile->hasNeqOperator()
+    if (mModel->needNeqFunction() && !mProfile->hasNeqOperator()
         && !mProfile->neqFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->neqFunctionString();
+        mCode += mProfile->neqFunctionString();
     }
 
-    if (mNeedLt && !mProfile->hasLtOperator()
+    if (mModel->needLtFunction() && !mProfile->hasLtOperator()
         && !mProfile->ltFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->ltFunctionString();
+        mCode += mProfile->ltFunctionString();
     }
 
-    if (mNeedLeq && !mProfile->hasLeqOperator()
+    if (mModel->needLeqFunction() && !mProfile->hasLeqOperator()
         && !mProfile->leqFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->leqFunctionString();
+        mCode += mProfile->leqFunctionString();
     }
 
-    if (mNeedGt && !mProfile->hasGtOperator()
+    if (mModel->needGtFunction() && !mProfile->hasGtOperator()
         && !mProfile->gtFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->gtFunctionString();
+        mCode += mProfile->gtFunctionString();
     }
 
-    if (mNeedGeq && !mProfile->hasGeqOperator()
+    if (mModel->needGeqFunction() && !mProfile->hasGeqOperator()
         && !mProfile->geqFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->geqFunctionString();
+        mCode += mProfile->geqFunctionString();
     }
 
-    if (mNeedAnd && !mProfile->hasAndOperator()
+    if (mModel->needAndFunction() && !mProfile->hasAndOperator()
         && !mProfile->andFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->andFunctionString();
+        mCode += mProfile->andFunctionString();
     }
 
-    if (mNeedOr && !mProfile->hasOrOperator()
+    if (mModel->needOrFunction() && !mProfile->hasOrOperator()
         && !mProfile->orFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->orFunctionString();
+        mCode += mProfile->orFunctionString();
     }
 
-    if (mNeedXor && !mProfile->hasXorOperator()
+    if (mModel->needXorFunction() && !mProfile->hasXorOperator()
         && !mProfile->xorFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->xorFunctionString();
+        mCode += mProfile->xorFunctionString();
     }
 
-    if (mNeedNot && !mProfile->hasNotOperator()
+    if (mModel->needNotFunction() && !mProfile->hasNotOperator()
         && !mProfile->notFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->notFunctionString();
+        mCode += mProfile->notFunctionString();
     }
 
-    if (mNeedMin
+    if (mModel->needMinFunction()
         && !mProfile->minFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->minFunctionString();
+        mCode += mProfile->minFunctionString();
     }
 
-    if (mNeedMax
+    if (mModel->needMaxFunction()
         && !mProfile->maxFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->maxFunctionString();
+        mCode += mProfile->maxFunctionString();
     }
 }
 
-void Generator::GeneratorImpl::addTrigonometricFunctionsCode(std::string &code) const
+void Generator::GeneratorImpl::addTrigonometricFunctionsCode()
 {
-    if (mNeedSec
+    if (mModel->needSecFunction()
         && !mProfile->secFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->secFunctionString();
+        mCode += mProfile->secFunctionString();
     }
 
-    if (mNeedCsc
+    if (mModel->needCscFunction()
         && !mProfile->cscFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->cscFunctionString();
+        mCode += mProfile->cscFunctionString();
     }
 
-    if (mNeedCot
+    if (mModel->needCotFunction()
         && !mProfile->cotFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->cotFunctionString();
+        mCode += mProfile->cotFunctionString();
     }
 
-    if (mNeedSech
+    if (mModel->needSechFunction()
         && !mProfile->sechFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->sechFunctionString();
+        mCode += mProfile->sechFunctionString();
     }
 
-    if (mNeedCsch
+    if (mModel->needCschFunction()
         && !mProfile->cschFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->cschFunctionString();
+        mCode += mProfile->cschFunctionString();
     }
 
-    if (mNeedCoth
+    if (mModel->needCothFunction()
         && !mProfile->cothFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->cothFunctionString();
+        mCode += mProfile->cothFunctionString();
     }
 
-    if (mNeedAsec
+    if (mModel->needAsecFunction()
         && !mProfile->asecFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->asecFunctionString();
+        mCode += mProfile->asecFunctionString();
     }
 
-    if (mNeedAcsc
+    if (mModel->needAcscFunction()
         && !mProfile->acscFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->acscFunctionString();
+        mCode += mProfile->acscFunctionString();
     }
 
-    if (mNeedAcot
+    if (mModel->needAcotFunction()
         && !mProfile->acotFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->acotFunctionString();
+        mCode += mProfile->acotFunctionString();
     }
 
-    if (mNeedAsech
+    if (mModel->needAsechFunction()
         && !mProfile->asechFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->asechFunctionString();
+        mCode += mProfile->asechFunctionString();
     }
 
-    if (mNeedAcsch
+    if (mModel->needAcschFunction()
         && !mProfile->acschFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->acschFunctionString();
+        mCode += mProfile->acschFunctionString();
     }
 
-    if (mNeedAcoth
+    if (mModel->needAcothFunction()
         && !mProfile->acothFunctionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->acothFunctionString();
+        mCode += mProfile->acothFunctionString();
     }
 }
 
-void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::string &code) const
+void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
 {
     std::string interfaceCreateDeleteArraysCode;
 
@@ -2707,42 +1100,42 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::str
     }
 
     if (!interfaceCreateDeleteArraysCode.empty()) {
-        code += "\n";
+        mCode += "\n";
     }
 
-    code += interfaceCreateDeleteArraysCode;
+    mCode += interfaceCreateDeleteArraysCode;
 }
 
-void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(std::string &code) const
+void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
 {
     if (!mProfile->implementationCreateStatesArrayMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->implementationCreateStatesArrayMethodString();
+        mCode += mProfile->implementationCreateStatesArrayMethodString();
     }
 }
 
-void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode(std::string &code) const
+void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode()
 {
     if (!mProfile->implementationCreateVariablesArrayMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->implementationCreateVariablesArrayMethodString();
+        mCode += mProfile->implementationCreateVariablesArrayMethodString();
     }
 }
 
-void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode(std::string &code) const
+void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode()
 {
     if (!mProfile->implementationDeleteArrayMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        code += mProfile->implementationDeleteArrayMethodString();
+        mCode += mProfile->implementationDeleteArrayMethodString();
     }
 }
 
@@ -2777,27 +1170,27 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
     }
 
     VariablePtr initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    GeneratorVariablePtr generatorInitialValueVariable = Generator::GeneratorImpl::generatorVariable(initValueVariable);
+    AnalyserVariablePtr analyserInitialValueVariable = Generator::GeneratorImpl::analyserVariable(initValueVariable);
     std::ostringstream index;
 
-    index << generatorInitialValueVariable->index();
+    index << analyserInitialValueVariable->index();
 
     return mProfile->variablesArrayString() + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
-                                                               const GeneratorEquationAstPtr &ast)
+                                                               const AnalyserEquationAstPtr &ast) const
 {
-    GeneratorVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+    AnalyserVariablePtr analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
 
-    if (generatorVariable->type() == GeneratorVariable::Type::VARIABLE_OF_INTEGRATION) {
+    if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();
     }
 
     std::string arrayName;
 
-    if (generatorVariable->type() == GeneratorVariable::Type::STATE) {
-        arrayName = ((ast != nullptr) && (ast->mParent.lock()->mType == GeneratorEquationAst::Type::DIFF)) ?
+    if (analyserVariable->type() == AnalyserVariable::Type::STATE) {
+        arrayName = ((ast != nullptr) && (ast->parent()->type() == AnalyserEquationAst::Type::DIFF)) ?
                         mProfile->ratesArrayString() :
                         mProfile->statesArrayString();
     } else {
@@ -2806,18 +1199,18 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
 
     std::ostringstream index;
 
-    index << generatorVariable->index();
+    index << analyserVariable->index();
 
     return arrayName + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
-                                                           const GeneratorEquationAstPtr &ast)
+                                                           const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the left and right branches of the given AST.
 
-    std::string left = generateCode(ast->mLeft);
-    std::string right = generateCode(ast->mRight);
+    std::string leftChild = generateCode(ast->leftChild());
+    std::string rightChild = generateCode(ast->rightChild());
 
     // Determine whether parentheses should be added around the left and/or
     // right piece of code, and this based on the precedence of the operators
@@ -2836,78 +1229,78 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     // 11. PIECEWISE (as an operator)                            [Right to left]
 
     if (isPlusOperator(ast)) {
-        if (isRelationalOperator(ast->mLeft)
-            || isLogicalOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isLogicalOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isLogicalOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isLogicalOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
         }
     } else if (isMinusOperator(ast)) {
-        if (isRelationalOperator(ast->mLeft)
-            || isLogicalOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isLogicalOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isLogicalOperator(ast->mRight)
-            || isMinusOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isLogicalOperator(ast->rightChild())
+            || isMinusOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
         }
     } else if (isTimesOperator(ast)) {
-        if (isRelationalOperator(ast->mLeft)
-            || isLogicalOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)
-                   || isMinusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isLogicalOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())
+                   || isMinusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isLogicalOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)
-                   || isMinusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isLogicalOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())
+                   || isMinusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
         }
     } else if (isDivideOperator(ast)) {
-        if (isRelationalOperator(ast->mLeft)
-            || isLogicalOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)
-                   || isMinusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isLogicalOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())
+                   || isMinusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isLogicalOperator(ast->mRight)
-            || isTimesOperator(ast->mRight)
-            || isDivideOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)
-                   || isMinusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isLogicalOperator(ast->rightChild())
+            || isTimesOperator(ast->rightChild())
+            || isDivideOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())
+                   || isMinusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
         }
     } else if (isAndOperator(ast)) {
@@ -2916,36 +1309,36 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       better/clearer to have some around some other operators
         //       (agreed, this is somewhat subjective).
 
-        if (isRelationalOperator(ast->mLeft)
-            || isOrOperator(ast->mLeft)
-            || isXorOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)
-                   || isMinusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isOrOperator(ast->leftChild())
+            || isXorOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())
+                   || isMinusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
-        } else if (isPowerOperator(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isRootOperator(ast->mLeft)) {
-            left = "(" + left + ")";
+        } else if (isPowerOperator(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isRootOperator(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isOrOperator(ast->mRight)
-            || isXorOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)
-                   || isMinusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isOrOperator(ast->rightChild())
+            || isXorOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())
+                   || isMinusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
-        } else if (isPowerOperator(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isRootOperator(ast->mRight)) {
-            right = "(" + right + ")";
+        } else if (isPowerOperator(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isRootOperator(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
         }
     } else if (isOrOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
@@ -2953,36 +1346,36 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       to have some around some other operators (agreed, this is
         //       somewhat subjective).
 
-        if (isRelationalOperator(ast->mLeft)
-            || isAndOperator(ast->mLeft)
-            || isXorOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)
-                   || isMinusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isAndOperator(ast->leftChild())
+            || isXorOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())
+                   || isMinusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
-        } else if (isPowerOperator(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isRootOperator(ast->mLeft)) {
-            left = "(" + left + ")";
+        } else if (isPowerOperator(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isRootOperator(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isAndOperator(ast->mRight)
-            || isXorOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)
-                   || isMinusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isAndOperator(ast->rightChild())
+            || isXorOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())
+                   || isMinusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
-        } else if (isPowerOperator(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isRootOperator(ast->mRight)) {
-            right = "(" + right + ")";
+        } else if (isPowerOperator(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isRootOperator(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
         }
     } else if (isXorOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
@@ -2990,113 +1383,113 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       better/clearer to have some around some other operators
         //       (agreed, this is somewhat subjective).
 
-        if (isRelationalOperator(ast->mLeft)
-            || isAndOperator(ast->mLeft)
-            || isOrOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)
-                   || isMinusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isAndOperator(ast->leftChild())
+            || isOrOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())
+                   || isMinusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
-        } else if (isPowerOperator(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isRootOperator(ast->mLeft)) {
-            left = "(" + left + ")";
+        } else if (isPowerOperator(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isRootOperator(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isAndOperator(ast->mRight)
-            || isOrOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)
-                   || isMinusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isAndOperator(ast->rightChild())
+            || isOrOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())
+                   || isMinusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
-        } else if (isPowerOperator(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isRootOperator(ast->mRight)) {
-            right = "(" + right + ")";
+        } else if (isPowerOperator(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isRootOperator(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
         }
     } else if (isPowerOperator(ast)) {
-        if (isRelationalOperator(ast->mLeft)
-            || isLogicalOperator(ast->mLeft)
-            || isMinusOperator(ast->mLeft)
-            || isTimesOperator(ast->mLeft)
-            || isDivideOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isLogicalOperator(ast->leftChild())
+            || isMinusOperator(ast->leftChild())
+            || isTimesOperator(ast->leftChild())
+            || isDivideOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
         }
 
-        if (isRelationalOperator(ast->mRight)
-            || isLogicalOperator(ast->mRight)
-            || isMinusOperator(ast->mLeft)
-            || isTimesOperator(ast->mRight)
-            || isDivideOperator(ast->mRight)
-            || isPowerOperator(ast->mRight)
-            || isRootOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isLogicalOperator(ast->rightChild())
+            || isMinusOperator(ast->leftChild())
+            || isTimesOperator(ast->rightChild())
+            || isDivideOperator(ast->rightChild())
+            || isPowerOperator(ast->rightChild())
+            || isRootOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
         }
     } else if (isRootOperator(ast)) {
-        if (isRelationalOperator(ast->mRight)
-            || isLogicalOperator(ast->mRight)
-            || isMinusOperator(ast->mRight)
-            || isTimesOperator(ast->mRight)
-            || isDivideOperator(ast->mRight)
-            || isPiecewiseStatement(ast->mRight)) {
-            right = "(" + right + ")";
-        } else if (isPlusOperator(ast->mRight)) {
-            if (ast->mRight->mRight != nullptr) {
-                right = "(" + right + ")";
+        if (isRelationalOperator(ast->rightChild())
+            || isLogicalOperator(ast->rightChild())
+            || isMinusOperator(ast->rightChild())
+            || isTimesOperator(ast->rightChild())
+            || isDivideOperator(ast->rightChild())
+            || isPiecewiseStatement(ast->rightChild())) {
+            rightChild = "(" + rightChild + ")";
+        } else if (isPlusOperator(ast->rightChild())) {
+            if (ast->rightChild()->rightChild() != nullptr) {
+                rightChild = "(" + rightChild + ")";
             }
         }
 
-        if (isRelationalOperator(ast->mLeft)
-            || isLogicalOperator(ast->mLeft)
-            || isMinusOperator(ast->mLeft)
-            || isTimesOperator(ast->mLeft)
-            || isDivideOperator(ast->mLeft)
-            || isPowerOperator(ast->mLeft)
-            || isRootOperator(ast->mLeft)
-            || isPiecewiseStatement(ast->mLeft)) {
-            left = "(" + left + ")";
-        } else if (isPlusOperator(ast->mLeft)) {
-            if (ast->mLeft->mRight != nullptr) {
-                left = "(" + left + ")";
+        if (isRelationalOperator(ast->leftChild())
+            || isLogicalOperator(ast->leftChild())
+            || isMinusOperator(ast->leftChild())
+            || isTimesOperator(ast->leftChild())
+            || isDivideOperator(ast->leftChild())
+            || isPowerOperator(ast->leftChild())
+            || isRootOperator(ast->leftChild())
+            || isPiecewiseStatement(ast->leftChild())) {
+            leftChild = "(" + leftChild + ")";
+        } else if (isPlusOperator(ast->leftChild())) {
+            if (ast->leftChild()->rightChild() != nullptr) {
+                leftChild = "(" + leftChild + ")";
             }
         }
 
-        return right + op + "(1.0/" + left + ")";
+        return rightChild + op + "(1.0/" + leftChild + ")";
     }
 
-    return left + op + right;
+    return leftChild + op + rightChild;
 }
 
-std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the left branch of the given AST.
 
-    std::string left = generateCode(ast->mLeft);
+    std::string left = generateCode(ast->leftChild());
 
     // Determine whether parentheses should be added around the left code.
 
-    if (isRelationalOperator(ast->mLeft)
-        || isLogicalOperator(ast->mLeft)
-        || isPlusOperator(ast->mLeft)
-        || isMinusOperator(ast->mLeft)
-        || isPiecewiseStatement(ast->mLeft)) {
+    if (isRelationalOperator(ast->leftChild())
+        || isLogicalOperator(ast->leftChild())
+        || isPlusOperator(ast->leftChild())
+        || isMinusOperator(ast->leftChild())
+        || isPiecewiseStatement(ast->leftChild())) {
         left = "(" + left + ")";
     }
 
@@ -3104,15 +1497,15 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
-                                                                       const GeneratorEquationAstPtr &ast)
+                                                                       const AnalyserEquationAstPtr &ast)
 {
-    return function + "(" + generateCode(ast->mLeft) + ")";
+    return function + "(" + generateCode(ast->leftChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
-                                                                       const GeneratorEquationAstPtr &ast)
+                                                                       const AnalyserEquationAstPtr &ast)
 {
-    return function + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+    return function + "(" + generateCode(ast->leftChild()) + ", " + generateCode(ast->rightChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
@@ -3133,23 +1526,23 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
                    "<ELSE_STATEMENT>", value);
 }
 
-std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast)
 {
     // Generate the code for the given AST.
 
     std::string code;
 
-    switch (ast->mType) {
+    switch (ast->type()) {
         // Assignment.
 
-    case GeneratorEquationAst::Type::ASSIGNMENT:
+    case AnalyserEquationAst::Type::ASSIGNMENT:
         code = generateOperatorCode(mProfile->assignmentString(), ast);
 
         break;
 
         // Relational and logical operators.
 
-    case GeneratorEquationAst::Type::EQ:
+    case AnalyserEquationAst::Type::EQ:
         if (mProfile->hasEqOperator()) {
             code = generateOperatorCode(mProfile->eqString(), ast);
         } else {
@@ -3157,7 +1550,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::NEQ:
+    case AnalyserEquationAst::Type::NEQ:
         if (mProfile->hasNeqOperator()) {
             code = generateOperatorCode(mProfile->neqString(), ast);
         } else {
@@ -3165,7 +1558,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::LT:
+    case AnalyserEquationAst::Type::LT:
         if (mProfile->hasLtOperator()) {
             code = generateOperatorCode(mProfile->ltString(), ast);
         } else {
@@ -3173,7 +1566,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::LEQ:
+    case AnalyserEquationAst::Type::LEQ:
         if (mProfile->hasLeqOperator()) {
             code = generateOperatorCode(mProfile->leqString(), ast);
         } else {
@@ -3181,7 +1574,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::GT:
+    case AnalyserEquationAst::Type::GT:
         if (mProfile->hasGtOperator()) {
             code = generateOperatorCode(mProfile->gtString(), ast);
         } else {
@@ -3189,7 +1582,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::GEQ:
+    case AnalyserEquationAst::Type::GEQ:
         if (mProfile->hasGeqOperator()) {
             code = generateOperatorCode(mProfile->geqString(), ast);
         } else {
@@ -3197,7 +1590,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::AND:
+    case AnalyserEquationAst::Type::AND:
         if (mProfile->hasAndOperator()) {
             code = generateOperatorCode(mProfile->andString(), ast);
         } else {
@@ -3205,7 +1598,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::OR:
+    case AnalyserEquationAst::Type::OR:
         if (mProfile->hasOrOperator()) {
             code = generateOperatorCode(mProfile->orString(), ast);
         } else {
@@ -3213,7 +1606,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::XOR:
+    case AnalyserEquationAst::Type::XOR:
         if (mProfile->hasXorOperator()) {
             code = generateOperatorCode(mProfile->xorString(), ast);
         } else {
@@ -3221,9 +1614,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         break;
-    case GeneratorEquationAst::Type::NOT:
+    case AnalyserEquationAst::Type::NOT:
         if (mProfile->hasNotOperator()) {
-            code = mProfile->notString() + generateCode(ast->mLeft);
+            code = mProfile->notString() + generateCode(ast->leftChild());
         } else {
             code = generateOneParameterFunctionCode(mProfile->notString(), ast);
         }
@@ -3232,32 +1625,32 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         // Arithmetic operators.
 
-    case GeneratorEquationAst::Type::PLUS:
-        if (ast->mRight != nullptr) {
+    case AnalyserEquationAst::Type::PLUS:
+        if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mProfile->plusString(), ast);
         } else {
-            code = generateCode(ast->mLeft);
+            code = generateCode(ast->leftChild());
         }
 
         break;
-    case GeneratorEquationAst::Type::MINUS:
-        if (ast->mRight != nullptr) {
+    case AnalyserEquationAst::Type::MINUS:
+        if (ast->rightChild() != nullptr) {
             code = generateOperatorCode(mProfile->minusString(), ast);
         } else {
             code = generateMinusUnaryCode(ast);
         }
 
         break;
-    case GeneratorEquationAst::Type::TIMES:
+    case AnalyserEquationAst::Type::TIMES:
         code = generateOperatorCode(mProfile->timesString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::DIVIDE:
+    case AnalyserEquationAst::Type::DIVIDE:
         code = generateOperatorCode(mProfile->divideString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::POWER: {
-        std::string stringValue = generateCode(ast->mRight);
+    case AnalyserEquationAst::Type::POWER: {
+        std::string stringValue = generateCode(ast->rightChild());
         double doubleValue;
         bool validConversion = convertToDouble(stringValue, doubleValue);
 
@@ -3269,254 +1662,254 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         } else {
             code = mProfile->hasPowerOperator() ?
                        generateOperatorCode(mProfile->powerString(), ast) :
-                       mProfile->powerString() + "(" + generateCode(ast->mLeft) + ", " + stringValue + ")";
+                       mProfile->powerString() + "(" + generateCode(ast->leftChild()) + ", " + stringValue + ")";
         }
 
         break;
     }
-    case GeneratorEquationAst::Type::ROOT:
-        if (ast->mRight != nullptr) {
+    case AnalyserEquationAst::Type::ROOT:
+        if (ast->rightChild() != nullptr) {
             double doubleValue;
 
-            if (convertToDouble(generateCode(ast->mLeft), doubleValue)
+            if (convertToDouble(generateCode(ast->leftChild()), doubleValue)
                 && areEqual(doubleValue, 2.0)) {
-                code = mProfile->squareRootString() + "(" + generateCode(ast->mRight) + ")";
+                code = mProfile->squareRootString() + "(" + generateCode(ast->rightChild()) + ")";
             } else {
-                GeneratorEquationAstPtr rootValueAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, ast);
+                AnalyserEquationAstPtr rootValueAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::DIVIDE, ast);
 
-                rootValueAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, "1.0", rootValueAst);
-                rootValueAst->mRight = std::make_shared<GeneratorEquationAst>(ast->mLeft, rootValueAst);
+                rootValueAst->setLeftChild(AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, "1.0", rootValueAst));
+                rootValueAst->setRightChild(AnalyserEquationAst::create(ast->leftChild(), rootValueAst));
 
                 code = mProfile->hasPowerOperator() ?
                            generateOperatorCode(mProfile->powerString(), ast) :
-                           mProfile->powerString() + "(" + generateCode(ast->mRight) + ", " + generateOperatorCode(mProfile->divideString(), rootValueAst) + ")";
+                           mProfile->powerString() + "(" + generateCode(ast->rightChild()) + ", " + generateOperatorCode(mProfile->divideString(), rootValueAst) + ")";
             }
         } else {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
         }
 
         break;
-    case GeneratorEquationAst::Type::ABS:
+    case AnalyserEquationAst::Type::ABS:
         code = generateOneParameterFunctionCode(mProfile->absoluteValueString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::EXP:
+    case AnalyserEquationAst::Type::EXP:
         code = generateOneParameterFunctionCode(mProfile->exponentialString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::LN:
+    case AnalyserEquationAst::Type::LN:
         code = generateOneParameterFunctionCode(mProfile->napierianLogarithmString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::LOG:
-        if (ast->mRight != nullptr) {
-            std::string stringValue = generateCode(ast->mLeft);
+    case AnalyserEquationAst::Type::LOG:
+        if (ast->rightChild() != nullptr) {
+            std::string stringValue = generateCode(ast->leftChild());
             double doubleValue;
 
             if (convertToDouble(stringValue, doubleValue)
                 && areEqual(doubleValue, 10.0)) {
-                code = mProfile->commonLogarithmString() + "(" + generateCode(ast->mRight) + ")";
+                code = mProfile->commonLogarithmString() + "(" + generateCode(ast->rightChild()) + ")";
             } else {
-                code = mProfile->napierianLogarithmString() + "(" + generateCode(ast->mRight) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
+                code = mProfile->napierianLogarithmString() + "(" + generateCode(ast->rightChild()) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
             }
         } else {
             code = generateOneParameterFunctionCode(mProfile->commonLogarithmString(), ast);
         }
 
         break;
-    case GeneratorEquationAst::Type::CEILING:
+    case AnalyserEquationAst::Type::CEILING:
         code = generateOneParameterFunctionCode(mProfile->ceilingString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::FLOOR:
+    case AnalyserEquationAst::Type::FLOOR:
         code = generateOneParameterFunctionCode(mProfile->floorString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::MIN:
+    case AnalyserEquationAst::Type::MIN:
         code = generateTwoParameterFunctionCode(mProfile->minString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::MAX:
+    case AnalyserEquationAst::Type::MAX:
         code = generateTwoParameterFunctionCode(mProfile->maxString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::REM:
+    case AnalyserEquationAst::Type::REM:
         code = generateTwoParameterFunctionCode(mProfile->remString(), ast);
 
         break;
 
         // Calculus elements.
 
-    case GeneratorEquationAst::Type::DIFF:
-        code = generateCode(ast->mRight);
+    case AnalyserEquationAst::Type::DIFF:
+        code = generateCode(ast->rightChild());
 
         break;
 
         // Trigonometric operators.
 
-    case GeneratorEquationAst::Type::SIN:
+    case AnalyserEquationAst::Type::SIN:
         code = generateOneParameterFunctionCode(mProfile->sinString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::COS:
+    case AnalyserEquationAst::Type::COS:
         code = generateOneParameterFunctionCode(mProfile->cosString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::TAN:
+    case AnalyserEquationAst::Type::TAN:
         code = generateOneParameterFunctionCode(mProfile->tanString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::SEC:
+    case AnalyserEquationAst::Type::SEC:
         code = generateOneParameterFunctionCode(mProfile->secString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::CSC:
+    case AnalyserEquationAst::Type::CSC:
         code = generateOneParameterFunctionCode(mProfile->cscString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::COT:
+    case AnalyserEquationAst::Type::COT:
         code = generateOneParameterFunctionCode(mProfile->cotString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::SINH:
+    case AnalyserEquationAst::Type::SINH:
         code = generateOneParameterFunctionCode(mProfile->sinhString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::COSH:
+    case AnalyserEquationAst::Type::COSH:
         code = generateOneParameterFunctionCode(mProfile->coshString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::TANH:
+    case AnalyserEquationAst::Type::TANH:
         code = generateOneParameterFunctionCode(mProfile->tanhString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::SECH:
+    case AnalyserEquationAst::Type::SECH:
         code = generateOneParameterFunctionCode(mProfile->sechString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::CSCH:
+    case AnalyserEquationAst::Type::CSCH:
         code = generateOneParameterFunctionCode(mProfile->cschString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::COTH:
+    case AnalyserEquationAst::Type::COTH:
         code = generateOneParameterFunctionCode(mProfile->cothString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ASIN:
+    case AnalyserEquationAst::Type::ASIN:
         code = generateOneParameterFunctionCode(mProfile->asinString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ACOS:
+    case AnalyserEquationAst::Type::ACOS:
         code = generateOneParameterFunctionCode(mProfile->acosString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ATAN:
+    case AnalyserEquationAst::Type::ATAN:
         code = generateOneParameterFunctionCode(mProfile->atanString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ASEC:
+    case AnalyserEquationAst::Type::ASEC:
         code = generateOneParameterFunctionCode(mProfile->asecString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ACSC:
+    case AnalyserEquationAst::Type::ACSC:
         code = generateOneParameterFunctionCode(mProfile->acscString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ACOT:
+    case AnalyserEquationAst::Type::ACOT:
         code = generateOneParameterFunctionCode(mProfile->acotString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ASINH:
+    case AnalyserEquationAst::Type::ASINH:
         code = generateOneParameterFunctionCode(mProfile->asinhString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ACOSH:
+    case AnalyserEquationAst::Type::ACOSH:
         code = generateOneParameterFunctionCode(mProfile->acoshString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ATANH:
+    case AnalyserEquationAst::Type::ATANH:
         code = generateOneParameterFunctionCode(mProfile->atanhString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ASECH:
+    case AnalyserEquationAst::Type::ASECH:
         code = generateOneParameterFunctionCode(mProfile->asechString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ACSCH:
+    case AnalyserEquationAst::Type::ACSCH:
         code = generateOneParameterFunctionCode(mProfile->acschString(), ast);
 
         break;
-    case GeneratorEquationAst::Type::ACOTH:
+    case AnalyserEquationAst::Type::ACOTH:
         code = generateOneParameterFunctionCode(mProfile->acothString(), ast);
 
         break;
 
         // Piecewise statement.
 
-    case GeneratorEquationAst::Type::PIECEWISE:
-        if (ast->mRight != nullptr) {
-            if (ast->mRight->mType == GeneratorEquationAst::Type::PIECE) {
-                code = generateCode(ast->mLeft) + generatePiecewiseElseCode(generateCode(ast->mRight) + generatePiecewiseElseCode(mProfile->nanString()));
+    case AnalyserEquationAst::Type::PIECEWISE:
+        if (ast->rightChild() != nullptr) {
+            if (ast->rightChild()->type() == AnalyserEquationAst::Type::PIECE) {
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(ast->rightChild()) + generatePiecewiseElseCode(mProfile->nanString()));
             } else {
-                code = generateCode(ast->mLeft) + generatePiecewiseElseCode(generateCode(ast->mRight));
+                code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(generateCode(ast->rightChild()));
             }
         } else {
-            code = generateCode(ast->mLeft) + generatePiecewiseElseCode(mProfile->nanString());
+            code = generateCode(ast->leftChild()) + generatePiecewiseElseCode(mProfile->nanString());
         }
 
         break;
-    case GeneratorEquationAst::Type::PIECE:
-        code = generatePiecewiseIfCode(generateCode(ast->mRight), generateCode(ast->mLeft));
+    case AnalyserEquationAst::Type::PIECE:
+        code = generatePiecewiseIfCode(generateCode(ast->rightChild()), generateCode(ast->leftChild()));
 
         break;
-    case GeneratorEquationAst::Type::OTHERWISE:
-        code = generateCode(ast->mLeft);
+    case AnalyserEquationAst::Type::OTHERWISE:
+        code = generateCode(ast->leftChild());
 
         break;
 
         // Token elements.
 
-    case GeneratorEquationAst::Type::CI:
-        code = generateVariableNameCode(ast->mVariable, ast);
+    case AnalyserEquationAst::Type::CI:
+        code = generateVariableNameCode(ast->variable(), ast);
 
         break;
-    case GeneratorEquationAst::Type::CN:
-        code = generateDoubleCode(ast->mValue);
+    case AnalyserEquationAst::Type::CN:
+        code = generateDoubleCode(ast->value());
 
         break;
 
         // Qualifier elements.
 
-    case GeneratorEquationAst::Type::DEGREE:
-    case GeneratorEquationAst::Type::LOGBASE:
-    case GeneratorEquationAst::Type::BVAR:
-        code = generateCode(ast->mLeft);
+    case AnalyserEquationAst::Type::DEGREE:
+    case AnalyserEquationAst::Type::LOGBASE:
+    case AnalyserEquationAst::Type::BVAR:
+        code = generateCode(ast->leftChild());
 
         break;
 
         // Constants.
 
-    case GeneratorEquationAst::Type::TRUE:
+    case AnalyserEquationAst::Type::TRUE:
         code = mProfile->trueString();
 
         break;
-    case GeneratorEquationAst::Type::FALSE:
+    case AnalyserEquationAst::Type::FALSE:
         code = mProfile->falseString();
 
         break;
-    case GeneratorEquationAst::Type::E:
+    case AnalyserEquationAst::Type::E:
         code = mProfile->eString();
 
         break;
-    case GeneratorEquationAst::Type::PI:
+    case AnalyserEquationAst::Type::PI:
         code = mProfile->piString();
 
         break;
-    case GeneratorEquationAst::Type::INF:
+    case AnalyserEquationAst::Type::INF:
         code = mProfile->infString();
 
         break;
-    case GeneratorEquationAst::Type::NAN:
+    case AnalyserEquationAst::Type::NAN:
         code = mProfile->nanString();
 
         break;
@@ -3525,7 +1918,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariablePtr &variable)
+std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable)
 {
     std::string scalingFactorCode;
     double scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
@@ -3537,15 +1930,15 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
     return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
-                                                           std::vector<GeneratorEquationPtr> &remainingEquations,
+std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
+                                                           std::vector<AnalyserEquationPtr> &remainingEquations,
                                                            bool onlyStateRateBasedEquations)
 {
     std::string res;
 
     for (const auto &dependency : equation->dependencies()) {
         if (!onlyStateRateBasedEquations
-            || ((dependency->type() == GeneratorEquation::Type::ALGEBRAIC)
+            || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
                 && dependency->isStateRateBased())) {
             res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
         }
@@ -3562,7 +1955,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
     return res;
 }
 
-void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &code) const
+void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
     std::string interfaceComputeModelMethodsCode;
 
@@ -3583,107 +1976,104 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
-        code += "\n";
+        mCode += "\n";
     }
 
-    code += interfaceComputeModelMethodsCode;
+    mCode += interfaceComputeModelMethodsCode;
 }
 
-void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationInitializeStatesAndConstantsMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
         std::string methodBody;
 
-        for (const auto &variable : mVariables) {
-            if (variable->type() == GeneratorVariable::Type::CONSTANT) {
+        for (const auto &variable : mModel->variables()) {
+            if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 methodBody += generateInitializationCode(variable);
             }
         }
 
-        for (const auto &equation : mEquations) {
-            if (equation->type() == GeneratorEquation::Type::TRUE_CONSTANT) {
+        for (const auto &equation : mModel->equations()) {
+            if (equation->type() == AnalyserEquation::Type::TRUE_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
-        for (const auto &state : mStates) {
+        for (const auto &state : mModel->states()) {
             methodBody += generateInitializationCode(state);
         }
 
-        code += replace(mProfile->implementationInitializeStatesAndConstantsMethodString(),
-                        "<CODE>", generateMethodBodyCode(methodBody));
+        mCode += replace(mProfile->implementationInitializeStatesAndConstantsMethodString(),
+                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::string &code,
-                                                                                   std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
         std::string methodBody;
 
-        for (const auto &equation : mEquations) {
-            if (equation->type() == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
+        for (const auto &equation : mModel->equations()) {
+            if (equation->type() == AnalyserEquation::Type::VARIABLE_BASED_CONSTANT) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
-        code += replace(mProfile->implementationComputeComputedConstantsMethodString(),
-                        "<CODE>", generateMethodBodyCode(methodBody));
+        mCode += replace(mProfile->implementationComputeComputedConstantsMethodString(),
+                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::string &code,
-                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeRatesMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
         std::string methodBody;
 
-        for (const auto &equation : mEquations) {
-            if (equation->type() == GeneratorEquation::Type::RATE) {
+        for (const auto &equation : mModel->equations()) {
+            if (equation->type() == AnalyserEquation::Type::RATE) {
                 methodBody += generateEquationCode(equation, remainingEquations);
             }
         }
 
-        code += replace(mProfile->implementationComputeRatesMethodString(),
-                        "<CODE>", generateMethodBodyCode(methodBody));
+        mCode += replace(mProfile->implementationComputeRatesMethodString(),
+                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
-void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::string &code,
-                                                                           std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
     if (!mProfile->implementationComputeVariablesMethodString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
+        if (!mCode.empty()) {
+            mCode += "\n";
         }
 
-        std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mEquations), std::end(mEquations)};
+        auto equations = mModel->equations();
+        std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
 
         std::string methodBody;
 
-        for (const auto &equation : mEquations) {
+        for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || ((equation->type() == GeneratorEquation::Type::ALGEBRAIC)
+                || ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
                     && equation->isStateRateBased())) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
         }
 
-        code += replace(mProfile->implementationComputeVariablesMethodString(),
-                        "<CODE>", generateMethodBodyCode(methodBody));
+        mCode += replace(mProfile->implementationComputeVariablesMethodString(),
+                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -3713,195 +2103,128 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
     mPimpl->mProfile = profile;
 }
 
-void Generator::processModel(const ModelPtr &model)
+std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
 {
-    // Make sure that the model is valid before processing it.
-
-    /*TODO: enable the below code once validation is known to work fine.
-    ValidatorPtr validator = Validator::create();
-
-    validator->validateModel(model);
-
-    if (validator->issueCount() > 0) {
-        // The model is not valid, so retrieve the validation issues and make
-        // them our own.
-
-        for (size_t i = 0; i < validator->issueCount(); ++i) {
-            addIssue(validator->issue(i));
-        }
-
-        return;
-    }
-*/
-
-    // Process the model.
-
-    mPimpl->processModel(model);
-}
-
-Generator::ModelType Generator::modelType() const
-{
-    return mPimpl->mModelType;
-}
-
-size_t Generator::stateCount() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return 0;
-    }
-
-    return mPimpl->mStates.size();
-}
-
-size_t Generator::variableCount() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return 0;
-    }
-
-    return mPimpl->mVariables.size();
-}
-
-GeneratorVariablePtr Generator::voi() const
-{
-    if (!mPimpl->hasValidModel()) {
+    if (!model->isValid() || !mPimpl->mProfile->hasInterface()) {
         return {};
     }
 
-    return mPimpl->mVoi;
-}
+    // Keep track of the model (so we don't have to keep passing it around).
 
-GeneratorVariablePtr Generator::state(size_t index) const
-{
-    if (!mPimpl->hasValidModel() || (index >= mPimpl->mStates.size())) {
-        return {};
-    }
-
-    return mPimpl->mStates[index];
-}
-
-GeneratorVariablePtr Generator::variable(size_t index) const
-{
-    if (!mPimpl->hasValidModel() || (index >= mPimpl->mVariables.size())) {
-        return {};
-    }
-
-    return mPimpl->mVariables[index];
-}
-
-std::string Generator::interfaceCode() const
-{
-    if (!mPimpl->hasValidModel() || !mPimpl->mProfile->hasInterface()) {
-        return {};
-    }
+    mPimpl->mModel = model;
 
     // Add code for the origin comment.
 
-    std::string res;
+    mPimpl->mCode = {};
 
-    mPimpl->addOriginCommentCode(res);
+    mPimpl->addOriginCommentCode();
 
     // Add code for the header.
 
-    mPimpl->addInterfaceHeaderCode(res);
+    mPimpl->addInterfaceHeaderCode();
 
     // Add code for the interface of the version of the profile and libCellML.
 
-    mPimpl->addVersionAndLibcellmlVersionCode(res, true);
+    mPimpl->addVersionAndLibcellmlVersionCode(true);
 
     // Add code for the interface of the number of states and variables.
 
-    mPimpl->addStateAndVariableCountCode(res, true);
+    mPimpl->addStateAndVariableCountCode(true);
 
     // Add code for the variable information related objects.
 
     if (mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableTypeObjectCode(res);
-        mPimpl->addVariableInfoObjectCode(res);
-        mPimpl->addVariableInfoWithTypeObjectCode(res);
+        mPimpl->addVariableTypeObjectCode();
+        mPimpl->addVariableInfoObjectCode();
+        mPimpl->addVariableInfoWithTypeObjectCode();
     }
 
     // Add code for the interface of the information about the variable of
     // integration, states and (other) variables.
 
-    mPimpl->addInterfaceVoiStateAndVariableInfoCode(res);
+    mPimpl->addInterfaceVoiStateAndVariableInfoCode();
 
     // Add code for the interface to create and delete arrays.
 
-    mPimpl->addInterfaceCreateDeleteArrayMethodsCode(res);
+    mPimpl->addInterfaceCreateDeleteArrayMethodsCode();
 
     // Add code for the interface to compute the model.
 
-    mPimpl->addInterfaceComputeModelMethodsCode(res);
+    mPimpl->addInterfaceComputeModelMethodsCode();
 
-    return res;
+    return mPimpl->mCode;
 }
 
-std::string Generator::implementationCode() const
+std::string Generator::implementationCode(const AnalyserModelPtr &model) const
 {
-    if (!mPimpl->hasValidModel()) {
+    if (!model->isValid()) {
         return {};
     }
 
-    std::string res;
+    // Keep track of the model (so we don't have to keep passing it around).
+
+    mPimpl->mModel = model;
 
     // Add code for the origin comment.
 
-    mPimpl->addOriginCommentCode(res);
+    mPimpl->mCode = {};
+
+    mPimpl->addOriginCommentCode();
 
     // Add code for the header.
 
-    mPimpl->addImplementationHeaderCode(res);
+    mPimpl->addImplementationHeaderCode();
 
     // Add code for the implementation of the version of the profile and
     // libCellML.
 
-    mPimpl->addVersionAndLibcellmlVersionCode(res);
+    mPimpl->addVersionAndLibcellmlVersionCode();
 
     // Add code for the implementation of the number of states and variables.
 
-    mPimpl->addStateAndVariableCountCode(res);
+    mPimpl->addStateAndVariableCountCode();
 
     // Add code for the variable information related objects.
 
     if (!mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableTypeObjectCode(res);
-        mPimpl->addVariableInfoObjectCode(res);
-        mPimpl->addVariableInfoWithTypeObjectCode(res);
+        mPimpl->addVariableTypeObjectCode();
+        mPimpl->addVariableInfoObjectCode();
+        mPimpl->addVariableInfoWithTypeObjectCode();
     }
 
     // Add code for the implementation of the information about the variable of
     // integration, states and (other) variables.
 
-    mPimpl->addImplementationVoiInfoCode(res);
-    mPimpl->addImplementationStateInfoCode(res);
-    mPimpl->addImplementationVariableInfoCode(res);
+    mPimpl->addImplementationVoiInfoCode();
+    mPimpl->addImplementationStateInfoCode();
+    mPimpl->addImplementationVariableInfoCode();
 
     // Add code for the arithmetic and trigonometric functions.
 
-    mPimpl->addArithmeticFunctionsCode(res);
-    mPimpl->addTrigonometricFunctionsCode(res);
+    mPimpl->addArithmeticFunctionsCode();
+    mPimpl->addTrigonometricFunctionsCode();
 
     // Add code for the implementation to create and delete arrays.
 
-    mPimpl->addImplementationCreateStatesArrayMethodCode(res);
-    mPimpl->addImplementationCreateVariablesArrayMethodCode(res);
-    mPimpl->addImplementationDeleteArrayMethodCode(res);
+    mPimpl->addImplementationCreateStatesArrayMethodCode();
+    mPimpl->addImplementationCreateVariablesArrayMethodCode();
+    mPimpl->addImplementationDeleteArrayMethodCode();
 
     // Add code for the implementation to initialise our states and constants.
 
-    std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
+    auto equations = mPimpl->mModel->equations();
+    std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
-    mPimpl->addImplementationInitializeStatesAndConstantsMethodCode(res, remainingEquations);
+    mPimpl->addImplementationInitializeStatesAndConstantsMethodCode(remainingEquations);
 
     // Add code for the implementation to compute our computed constants.
 
-    mPimpl->addImplementationComputeComputedConstantsMethodCode(res, remainingEquations);
+    mPimpl->addImplementationComputeComputedConstantsMethodCode(remainingEquations);
 
     // Add code for the implementation to compute our rates (and any variables
     // on which they depend).
 
-    mPimpl->addImplementationComputeRatesMethodCode(res, remainingEquations);
+    mPimpl->addImplementationComputeRatesMethodCode(remainingEquations);
 
     // Add code for the implementation to compute our variables.
     // Note: this method computes the remaining variables, i.e. the ones not
@@ -3911,9 +2234,9 @@ std::string Generator::implementationCode() const
     //       variables that rely on the value of some states/rates are up to
     //       date.
 
-    mPimpl->addImplementationComputeVariablesMethodCode(res, remainingEquations);
+    mPimpl->addImplementationComputeVariablesMethodCode(remainingEquations);
 
-    return res;
+    return mPimpl->mCode;
 }
 
 } // namespace libcellml

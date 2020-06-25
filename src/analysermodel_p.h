@@ -32,32 +32,32 @@ struct AnalyserModel::AnalyserModelImpl
     std::vector<AnalyserVariablePtr> mVariables;
     std::vector<AnalyserEquationPtr> mEquations;
 
-    bool mNeedEq = false;
-    bool mNeedNeq = false;
-    bool mNeedLt = false;
-    bool mNeedLeq = false;
-    bool mNeedGt = false;
-    bool mNeedGeq = false;
-    bool mNeedAnd = false;
-    bool mNeedOr = false;
-    bool mNeedXor = false;
-    bool mNeedNot = false;
+    bool mNeedEqFunction = false;
+    bool mNeedNeqFunction = false;
+    bool mNeedLtFunction = false;
+    bool mNeedLeqFunction = false;
+    bool mNeedGtFunction = false;
+    bool mNeedGeqFunction = false;
+    bool mNeedAndFunction = false;
+    bool mNeedOrFunction = false;
+    bool mNeedXorFunction = false;
+    bool mNeedNotFunction = false;
 
-    bool mNeedMin = false;
-    bool mNeedMax = false;
+    bool mNeedMinFunction = false;
+    bool mNeedMaxFunction = false;
 
-    bool mNeedSec = false;
-    bool mNeedCsc = false;
-    bool mNeedCot = false;
-    bool mNeedSech = false;
-    bool mNeedCsch = false;
-    bool mNeedCoth = false;
-    bool mNeedAsec = false;
-    bool mNeedAcsc = false;
-    bool mNeedAcot = false;
-    bool mNeedAsech = false;
-    bool mNeedAcsch = false;
-    bool mNeedAcoth = false;
+    bool mNeedSecFunction = false;
+    bool mNeedCscFunction = false;
+    bool mNeedCotFunction = false;
+    bool mNeedSechFunction = false;
+    bool mNeedCschFunction = false;
+    bool mNeedCothFunction = false;
+    bool mNeedAsecFunction = false;
+    bool mNeedAcscFunction = false;
+    bool mNeedAcotFunction = false;
+    bool mNeedAsechFunction = false;
+    bool mNeedAcschFunction = false;
+    bool mNeedAcothFunction = false;
 };
 
 } // namespace libcellml
