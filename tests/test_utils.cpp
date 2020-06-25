@@ -46,6 +46,7 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
         std::cout << "Issue " << std::setw(width) << i + 1 << ": ";
+
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
@@ -55,7 +56,8 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
         }
-        std::cout << std::endl;
+        std::cout << std::endl
+                  << l->issue(i)->description() << std::endl;
     }
 }
 

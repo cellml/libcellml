@@ -21,6 +21,7 @@ limitations under the License.
 #include <unordered_set>
 #include <vector>
 
+#include "libcellml/annotator.h"
 #include "libcellml/variable.h"
 
 namespace libcellml {
@@ -48,13 +49,9 @@ using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of 
 
 using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 
-// using AnyItem = std::pair<std::string, std::variant<ModelPtr, ImportSourcePtr, UnitsPtr, ComponentPtr,
-//                                                     VariablePtr, ResetPtr, VariablePair, std::string,
-//                                                     IssuePtr>>; /**< Type definition for AnyType structure.  The first string is the type of item. **/
-
-using AnyItem = std::pair<std::string, std::any>;
+using VariablePair = std::pair<VariablePtr, VariablePtr>;
 using UnitItem = std::pair<UnitsPtr, size_t>;
-
-using ItemList = std::map<std::string, AnyItem>; /**< Type definition for list of id-able items.  The first is the id of the item. */
+using AnyItem = std::pair<std::uint64_t, std::any>; // Clang-tidy suggested this type instead of the Annotator::TIDY enum.
+using ItemList = std::map<std::string, AnyItem>;
 
 } // namespace libcellml

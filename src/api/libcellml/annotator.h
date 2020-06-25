@@ -17,11 +17,8 @@ limitations under the License.
 #pragma once
 
 #include <any>
-#include <exception>
-#include <functional>
 #include <map>
 #include <string>
-// #include <variant>
 #include <vector>
 
 #include "libcellml/logger.h"
@@ -31,12 +28,10 @@ namespace libcellml {
 
 using VariablePair = std::pair<VariablePtr, VariablePtr>;
 using UnitItem = std::pair<UnitsPtr, size_t>;
-// using AnyItem = std::pair<std::string, std::variant<ModelPtr, ImportSourcePtr, UnitsPtr, ComponentPtr,
-//                                                     VariablePtr, ResetPtr, VariablePair, std::string,
-//                                                     IssuePtr>>; /**< Type definition for AnyType structure.  The first string is the type of item. **/
-using AnyItem = std::pair<std::string, std::any>;
+using AnyItem = std::pair<std::uint64_t, std::any>;
+// using ItemList = std::map<std::string, std::pair<std::uint64_t, std::any>>;
+// using AnyItem = std::pair<Annotator::TYPE, std::any>; // Clang-tidy suggested this type instead of the Annotator::TIDY enum.
 using ItemList = std::map<std::string, AnyItem>;
-
 /**
  * @brief The Annotator class.
  *
@@ -45,6 +40,24 @@ using ItemList = std::map<std::string, AnyItem>;
 class LIBCELLML_EXPORT Annotator: public Logger
 {
 public:
+    enum TYPE
+    {
+        COMPONENT,
+        COMPONENT_REF,
+        CONNECTION,
+        ENCAPSULATION,
+        IMPORT,
+        ISSUE,
+        MAP_VARIABLES,
+        MODEL,
+        RESET,
+        RESET_VALUE,
+        TEST_VALUE,
+        UNIT,
+        UNITS,
+        VARIABLE,
+    };
+
     ~Annotator() override; /**< Destructor */
     Annotator(const Annotator &rhs) = delete; /**< Copy constructor */
     Annotator(Annotator &&rhs) noexcept = delete; /**< Move constructor */
@@ -62,22 +75,64 @@ public:
      */
     static AnnotatorPtr create() noexcept;
 
-    void build(const ModelPtr &model, bool mathIds = false);
-    AnyItem item(const std::string &id);
+    /**
+     * @brief Builds the internal map of ids to items for the model provided.
+     *
+     * @param model A @c ModelPtr model to build map for.
+     */
+    void build(const ModelPtr &model);
 
-    ComponentPtr component(const std::string &id);
-    VariablePtr variable(const std::string &id);
-    ResetPtr reset(const std::string &id);
-    ModelPtr model(const std::string &id);
-    ImportSourcePtr import(const std::string &id);
-    UnitsPtr units(const std::string &id);
-    VariablePair connection(const std::string &id);
-    VariablePair map_variables(const std::string &id);
-    UnitItem unit(const std::string &id);
-    ComponentPtr component_ref(const std::string &id);
-    std::string math(const std::string &id);
-    std::string test_value(const std::string &id);
-    std::string reset_value(const std::string &id);
+    /**
+     * @brief Retrieves an item with the given id string, in the model
+     * for which the internal map was built using @sa build().
+     *
+     * The item returned is a @c std::pair containing:
+     *  - an @c Annotator::Type enum, and
+     *  - an @c std::any item containing the item.
+     *
+     * Possible string labels and their corresponding items returned are:
+     *  - Annotator::Type::COMPONENT
+     *          ComponentPtr to item with this id.
+     *  - Annotator::Type::COMPONENT_REF
+     *          ComponentPtr to component which has component->componentRefId() == id.
+     *  - Annotator::Type::CONNECTION
+     *          VariablePair including two VariablePtr items which can be used to retrieve the
+     *          connection.  Note that multiple pairs of variables could be used to identify
+     *          a single connection.
+     *   Annotator::Type::ENCAPSULATION
+     *          An empty string.
+     *   Annotator::Type::IMPORT
+     *          An ImportSourcePtr item with this id.
+     *   Annotator::Type::ISSUE
+     *          An IssuePtr containing an error message.
+     *   Annotator::Type::MAP_VARIABLES
+     *          A VariablePair including two VariablePtr items which can be used to retrieve the
+     *          equivalence.
+     *   Annotator::Type::MODEL
+     *          A ModelPtr with this id.
+     *   Annotator::Type::RESET
+     *          A ResetPtr with this id.
+     *   Annotator::Type::RESET_VALUE
+     *          A ResetPtr which is the parent of the reset_value item found with this id.
+     *          Retrieve the reset_value MathML string using reset->resetValue().
+     *   Annotator::Type::TEST_VALUE
+     *          A ResetPtr which is the parent of the test_value item found with this id.
+     *          Retrieve the test_value MathML string using reset->testValue().
+     *   Annotator::Type::UNIT
+     *          A UnitItem pair containing:
+     *              .first: A UnitsPtr to the parent of the unit item with this id, and
+     *              .second: A size_t with the index to the Unit item.
+     *          Retrieve the unit description using Units::unitAttributes() function with
+     *   Annotator::Type::UNITS
+     *          A UnitsPtr item with this id.
+     *   Annotator::Type::VARIABLE
+     *          A VariablePtr item with this id.
+          *
+     * @param id A @c std::string representing the @p id to retrieve.
+     *
+     * @return An @c AnyItem item as described above.
+     */
+    AnyItem item(const std::string &id);
 
 private:
     Annotator(); /**< Constructor */
