@@ -16,14 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include <list>
-#include <string>
-
 #include "libcellml/logger.h"
 
 namespace libcellml {
-
-class Generator;
 
 /**
  * @brief The Generator class.

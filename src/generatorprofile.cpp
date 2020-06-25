@@ -21,7 +21,6 @@ limitations under the License.
 #include "libcellml/generatorprofile.h"
 
 #include <cmath>
-#include <string>
 
 #include "utilities.h"
 

@@ -132,12 +132,12 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
-    std::list<AnalyserInternalEquationPtr> mDependencies;
+    std::vector<AnalyserInternalEquationPtr> mDependencies;
 
     AnalyserEquationAstPtr mAst;
 
-    std::list<AnalyserInternalVariablePtr> mVariables;
-    std::list<AnalyserInternalVariablePtr> mOdeVariables;
+    std::vector<AnalyserInternalVariablePtr> mVariables;
+    std::vector<AnalyserInternalVariablePtr> mOdeVariables;
 
     AnalyserInternalVariablePtr mVariable = nullptr;
     ComponentPtr mComponent = nullptr;
@@ -153,8 +153,8 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
-    static bool containsNonUnknownVariables(const std::list<AnalyserInternalVariablePtr> &variables);
-    static bool containsNonConstantVariables(const std::list<AnalyserInternalVariablePtr> &variables);
+    static bool containsNonUnknownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    static bool containsNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
     static bool knownVariable(const AnalyserInternalVariablePtr &variable);
     static bool knownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -183,7 +183,7 @@ void AnalyserInternalEquation::addOdeVariable(const AnalyserInternalVariablePtr 
     }
 }
 
-bool AnalyserInternalEquation::containsNonUnknownVariables(const std::list<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::containsNonUnknownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN);
@@ -191,7 +191,7 @@ bool AnalyserInternalEquation::containsNonUnknownVariables(const std::list<Analy
            != std::end(variables);
 }
 
-bool AnalyserInternalEquation::containsNonConstantVariables(const std::list<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::containsNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
@@ -276,8 +276,12 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     // Stop tracking (new) known (ODE) variables.
 
-    mVariables.remove_if(knownVariable);
-    mOdeVariables.remove_if(knownOdeVariable);
+    mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(),
+                                    knownVariable),
+                     mVariables.end());
+    mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(),
+                                       knownOdeVariable),
+                        mOdeVariables.end());
 
     // If there is one (ODE) variable left then update its viariable (to be the
     // corresponding one in the component in which the equation is), its type
@@ -347,8 +351,8 @@ struct Analyser::AnalyserImpl
 
     AnalyserModelPtr mModel = nullptr;
 
-    std::list<AnalyserInternalVariablePtr> mInternalVariables;
-    std::list<AnalyserInternalEquationPtr> mInternalEquations;
+    std::vector<AnalyserInternalVariablePtr> mInternalVariables;
+    std::vector<AnalyserInternalEquationPtr> mInternalEquations;
 
     explicit AnalyserImpl(Analyser *analyser);
 
@@ -1260,7 +1264,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         // then loop over our equations, checking which variables, if any, can
         // be determined using a given equation.
 
-        mInternalVariables.sort(compareVariablesByName);
+        std::sort(mInternalVariables.begin(), mInternalVariables.end(),
+                  compareVariablesByName);
 
         auto variableIndex = MAX_SIZE_T;
 
@@ -1371,8 +1376,10 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         // Sort our internal variables and equations and make them available
         // through our API.
 
-        mInternalVariables.sort(compareVariablesByTypeAndIndex);
-        mInternalEquations.sort(compareEquationsByVariable);
+        std::sort(mInternalVariables.begin(), mInternalVariables.end(),
+                  compareVariablesByTypeAndIndex);
+        std::sort(mInternalEquations.begin(), mInternalEquations.end(),
+                  compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
             AnalyserVariable::Type type;
@@ -1425,7 +1432,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 type = AnalyserEquation::Type::ALGEBRAIC;
             }
 
-            std::list<AnalyserEquationPtr> dependencies;
+            std::vector<AnalyserEquationPtr> dependencies;
 
             for (const auto &dependency : internalEquation->mDependencies) {
                 dependencies.push_back(equationMappings[dependency]);

@@ -16,27 +16,19 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 
-#include <algorithm>
-#include <limits>
 #include <regex>
 #include <sstream>
-#include <vector>
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
-#include "libcellml/generatorequationast.h"
 #include "libcellml/generatorprofile.h"
-#include "libcellml/model.h"
 #include "libcellml/units.h"
-#include "libcellml/validator.h"
-#include "libcellml/variable.h"
 #include "libcellml/version.h"
 
 #include "utilities.h"
-#include "xmldoc.h"
 
 #ifdef __linux__
 #    undef TRUE

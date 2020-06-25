@@ -49,7 +49,7 @@ public:
     /**
      * @brief Get the initialising @c Variable for this @c AnalyserVariable.
      *
-     * Return the initialising @c Variable of this @c AnalyserVariable. It is
+     * Return the initialising @c Variable for this @c AnalyserVariable. It is
      * used to retrieve the initial value of the @c Variable, if there is one.
      * It may or may not be the same @c Variable as the one returned by
      * @sa variable. If it is not the same (e.g., a state variable is
@@ -69,7 +69,7 @@ public:
     /**
      * @brief Get the @c Variable for this @c AnalyserVariable.
      *
-     * Return the @c Variable of this @c AnalyserVariable. Its @c Component is
+     * Return the @c Variable for this @c AnalyserVariable. Its @c Component is
      * the one in which the @c Variable is first defined (in the case of the
      * variable of integration), initialised (in the case of a constant) or
      * computed (in the case of a state, computed constant or algebraic
@@ -93,7 +93,7 @@ public:
     size_t index() const;
 
     /**
-     * @brief Get the @c Type for this @c AnalyserVariable.
+     * @brief Get the @c Type of this @c AnalyserVariable.
      *
      * Return the @c Type of this @c AnalyserVariable.
      *
