@@ -154,30 +154,37 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
 {
     // Find and return the analyser variable associated with the given variable.
 
+    AnalyserVariablePtr res;
     auto modelVoi = mModel->voi();
 
     if ((modelVoi != nullptr)
         && isSameOrEquivalentVariable(variable, modelVoi->variable())) {
-        return modelVoi;
-    }
+        res = modelVoi;
+    } else {
+        for (size_t i = 0; i < mModel->stateCount(); ++i) {
+            auto modelState = mModel->state(i);
 
-    for (size_t i = 0; i < mModel->stateCount(); ++i) {
-        auto modelState = mModel->state(i);
+            if (isSameOrEquivalentVariable(variable, modelState->variable())) {
+                res = modelState;
 
-        if (isSameOrEquivalentVariable(variable, modelState->variable())) {
-            return modelState;
+                break;
+            }
+        }
+
+        if (res == nullptr) {
+            for (size_t i = 0; i < mModel->variableCount(); ++i) {
+                auto modelVariable = mModel->variable(i);
+
+                if (isSameOrEquivalentVariable(variable, modelVariable->variable())) {
+                    res = modelVariable;
+
+                    break;
+                }
+            }
         }
     }
 
-    for (size_t i = 0; i < mModel->variableCount(); ++i) {
-        auto modelVariable = mModel->variable(i);
-
-        if (isSameOrEquivalentVariable(variable, modelVariable->variable())) {
-            return modelVariable;
-        }
-    }
-
-    return {};
+    return res;
 }
 
 double Generator::GeneratorImpl::scalingFactor(const VariablePtr &variable) const
