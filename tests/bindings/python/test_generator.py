@@ -5,15 +5,6 @@ import unittest
 
 from test_resources import file_contents
 
-class GeneratorVariableTestCase(unittest.TestCase):
-
-    def test_create_destroy(self):
-        from libcellml import GeneratorVariable
-
-        x = GeneratorVariable()
-        del(x)
-
-
 class GeneratorTestCase(unittest.TestCase):
 
     def test_create_destroy(self):
