@@ -18,8 +18,6 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
-#include <list>
-
 namespace libcellml {
 
 /**
@@ -46,9 +44,43 @@ public:
     AnalyserEquation(AnalyserEquation &&rhs) noexcept = delete; /**< Move constructor */
     AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator */
 
+    /**
+     * @brief Get the @c Type of the @c AnalyserEquation.
+     *
+     * Return the @c Type of the @c AnalyserEquation.
+     *
+     * @return The @c Type.
+     */
     Type type() const;
+
+    /**
+     * @brief Get the @c AnalyserEquationAst for the @c AnalyserEquation.
+     *
+     * Return the @c AnalyserEquationAst for the @c AnalyserEquation.
+     *
+     * @return The @c AnalyserEquationAst.
+     */
     AnalyserEquationAstPtr ast() const;
-    std::list<AnalyserEquationPtr> dependencies() const;
+
+    /**
+     * @brief Get the @c Type of the @c AnalyserEquation.
+     *
+     * Return the @c Type of the @c AnalyserEquation.
+     *
+     * @return The @c Type.
+     */
+    std::vector<AnalyserEquationPtr> dependencies() const;
+
+    /**
+     * @brief Test to determine if @c AnalyserEquation relies on states and/or
+     * rates.
+     *
+     * Test to determine if @c AnalyserEquation relies on states and/or rates,
+     * return @c true if it does and @c false otherwise.
+     *
+     * @return @c true if @c AnalyserEquation relies on states and/or rates,
+     * @c false otherwise.
+     */
     bool isStateRateBased() const;
 
 private:
