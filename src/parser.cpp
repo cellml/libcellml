@@ -787,10 +787,10 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         IssuePtr issue = Issue::create();
         std::string des = "Connection in model '" + model->name() + "'";
         if (connectionId.empty()) {
-            des += " does not contain any 'map_variables' elements. It will not be loaded into the model.";
+            des += " does not contain any 'map_variables' elements and will be disregarded.";
         } else {
             des += " has an id of '" + connectionId + "' but does not contain any 'map_variables' elements.";
-            des += " The connection will not be loaded into the model, and the associated id bookmark will be lost.";
+            des += " The connection will be disregarded and the associated id will be lost.";
         }
         issue->setDescription(des);
         issue->setModel(model);
@@ -1163,9 +1163,9 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     if (!childNode) {
         auto issue = Issue::create();
         if (id.empty()) {
-            issue->setDescription("Import from '" + node->attribute("href") + "' is empty. It will not be loaded into the model.");
+            issue->setDescription("Import from '" + node->attribute("href") + "' is empty and will be disregarded.");
         } else {
-            issue->setDescription("Import from '" + node->attribute("href") + "' has an id of '" + id + "' but is empty. It will not be loaded into the model, and the associated id bookmark will be lost.");
+            issue->setDescription("Import from '" + node->attribute("href") + "' has an id of '" + id + "' but is empty. The import will be disregarded and the associated id will be lost.");
         }
         issue->setImportSource(importSource);
         issue->setCause(libcellml::Issue::Cause::IMPORT);
