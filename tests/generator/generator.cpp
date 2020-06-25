@@ -22,6 +22,22 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
+TEST(Generator, emptyModel)
+{
+    libcellml::ModelPtr model = libcellml::Model::create("empty_model");
+    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+
+    analyser->processModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+
+    auto analyserModel = analyser->model();
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->implementationCode(analyserModel));
+}
+
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
