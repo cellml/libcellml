@@ -1154,21 +1154,21 @@ TEST(Parser, importedComponent2Connection)
     EXPECT_EQ(size_t(0), parser->issueCount());
 }
 
-TEST(Parser, emptyImportWithId)
+TEST(Parser, emptyImportWithAndWithoutId)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <import/>"
         "  <import id = \"import_id\" />\n"
         "</model>\n";
-    std::string e = {
+    std::vector<std::string> e = {
+        "Import from '' is empty. It will not be loaded into the model.",
         "Import from '' has an id of 'import_id' but is empty. It will not be loaded into the model, and the associated id bookmark will be lost.",
     };
     libcellml::ParserPtr parser = libcellml::Parser::create();
     auto m = parser->parseModel(in);
-    EXPECT_EQ(size_t(1), parser->issueCount());
-    EXPECT_EQ(e, parser->issue(0)->description());
-    EXPECT_EQ(libcellml::Issue::Level::WARNING, parser->issue(0)->level());
+    EXPECT_EQ_ISSUES(e, parser);
 }
 
 TEST(Parser, validConnectionMapVariablesFirst)
