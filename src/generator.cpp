@@ -299,12 +299,12 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 {
     // Whether the profile requires an interface to be generated.
 
-    const std::string trueValue = "true";
-    const std::string falseValue = "false";
+    static const std::string TRUE_VALUE = "true";
+    static const std::string FALSE_VALUE = "false";
 
-    std::string profileContents = mProfile->hasInterface() ?
-                                      trueValue :
-                                      falseValue;
+    auto profileContents = mProfile->hasInterface() ?
+                               TRUE_VALUE :
+                               FALSE_VALUE;
 
     // Assignment.
 
@@ -324,35 +324,35 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->notString();
 
     profileContents += (mProfile->hasEqOperator() ?
-                            trueValue :
-                            falseValue)
+                            TRUE_VALUE :
+                            FALSE_VALUE)
                        + (mProfile->hasNeqOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasLtOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasLeqOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasGtOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasGeqOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasAndOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasOrOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasXorOperator() ?
-                              trueValue :
-                              falseValue)
+                              TRUE_VALUE :
+                              FALSE_VALUE)
                        + (mProfile->hasNotOperator() ?
-                              trueValue :
-                              falseValue);
+                              TRUE_VALUE :
+                              FALSE_VALUE);
 
     // Arithmetic operators.
 
@@ -374,8 +374,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->remString();
 
     profileContents += mProfile->hasPowerOperator() ?
-                           trueValue :
-                           falseValue;
+                           TRUE_VALUE :
+                           FALSE_VALUE;
 
     // Trigonometric operators.
 
@@ -412,8 +412,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->piecewiseElseString();
 
     profileContents += mProfile->hasConditionalOperator() ?
-                           trueValue :
-                           falseValue;
+                           TRUE_VALUE :
+                           FALSE_VALUE;
 
     // Constants.
 
@@ -542,8 +542,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     // Compute and check the hash of our profile contents.
 
-    bool res = false;
-    std::string profileContentsSha1 = sha1(profileContents);
+    auto res = false;
+    auto profileContentsSha1 = sha1(profileContents);
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
@@ -580,12 +580,8 @@ void Generator::GeneratorImpl::addOriginCommentCode()
 
         profileInformation += " profile of";
 
-        std::string commentCode = replace(replace(mProfile->originCommentString(),
-                                                  "<PROFILE_INFORMATION>", profileInformation),
-                                          "<LIBCELLML_VERSION>", versionString());
-
         mCode += replace(mProfile->commentString(),
-                         "<CODE>", commentCode);
+                         "<CODE>", replace(replace(mProfile->originCommentString(), "<PROFILE_INFORMATION>", profileInformation), "<LIBCELLML_VERSION>", versionString()));
     }
 }
 
@@ -832,9 +828,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
                 infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            std::string variableType;
-
             auto variable = mModel->variable(i);
+            std::string variableType;
 
             if (variable->type() == AnalyserVariable::Type::CONSTANT) {
                 variableType = mProfile->constantVariableTypeString();
@@ -1154,7 +1149,7 @@ std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &valu
         return value;
     }
 
-    size_t ePos = value.find('e');
+    auto ePos = value.find('e');
 
     if (ePos == std::string::npos) {
         return value + ".0";
@@ -1169,8 +1164,8 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
         return generateDoubleCode(variable->initialValue());
     }
 
-    VariablePtr initValueVariable = owningComponent(variable)->variable(variable->initialValue());
-    AnalyserVariablePtr analyserInitialValueVariable = Generator::GeneratorImpl::analyserVariable(initValueVariable);
+    auto initValueVariable = owningComponent(variable)->variable(variable->initialValue());
+    auto analyserInitialValueVariable = analyserVariable(initValueVariable);
     std::ostringstream index;
 
     index << analyserInitialValueVariable->index();
@@ -1181,7 +1176,7 @@ std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(c
 std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable,
                                                                const AnalyserEquationAstPtr &ast) const
 {
-    AnalyserVariablePtr analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
+    auto analyserVariable = Generator::GeneratorImpl::analyserVariable(variable);
 
     if (analyserVariable->type() == AnalyserVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->voiString();
@@ -1209,8 +1204,8 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 {
     // Generate the code for the left and right branches of the given AST.
 
-    std::string leftChild = generateCode(ast->leftChild());
-    std::string rightChild = generateCode(ast->rightChild());
+    auto leftChild = generateCode(ast->leftChild());
+    auto rightChild = generateCode(ast->rightChild());
 
     // Determine whether parentheses should be added around the left and/or
     // right piece of code, and this based on the precedence of the operators
@@ -1481,7 +1476,7 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
 {
     // Generate the code for the left branch of the given AST.
 
-    std::string left = generateCode(ast->leftChild());
+    auto left = generateCode(ast->leftChild());
 
     // Determine whether parentheses should be added around the left code.
 
@@ -1921,7 +1916,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable)
 {
     std::string scalingFactorCode;
-    double scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
+    auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
 
     if (!areEqual(scalingFactor, 1.0)) {
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
@@ -2061,7 +2056,6 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 
         auto equations = mModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
-
         std::string methodBody;
 
         for (const auto &equation : equations) {
