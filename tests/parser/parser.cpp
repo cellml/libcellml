@@ -985,7 +985,7 @@ TEST(Parser, emptyConnections)
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
         "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
-        "Connection in model 'model_name' does not contain any 'map_variables' elements. It will not be loaded into the model.",
+        "Connection in model 'model_name' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1003,7 +1003,7 @@ TEST(Parser, emptyConnectionWithId)
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
         "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
-        "Connection in model 'model_name' has an id of 'myId' but does not contain any 'map_variables' elements. The connection will not be loaded into the model, and the associated id bookmark will be lost.",
+        "Connection in model 'model_name' has an id of 'myId' but does not contain any 'map_variables' elements. The connection will be disregarded and the associated id will be lost.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1123,8 +1123,8 @@ TEST(Parser, connectionErrorNoMapVariables)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid connection attribute 'component_3'.",
-        "Connection in model '' does not contain any 'map_variables' elements. It will not be loaded into the model.",
-        "Connection in model '' does not contain any 'map_variables' elements. It will not be loaded into the model.",
+        "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
+        "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1163,8 +1163,8 @@ TEST(Parser, emptyImportWithAndWithoutId)
         "  <import id = \"import_id\" />\n"
         "</model>\n";
     std::vector<std::string> e = {
-        "Import from '' is empty. It will not be loaded into the model.",
-        "Import from '' has an id of 'import_id' but is empty. It will not be loaded into the model, and the associated id bookmark will be lost.",
+        "Import from '' is empty and will be disregarded.",
+        "Import from '' has an id of 'import_id' but is empty. The import will be disregarded and the associated id will be lost.",
     };
     libcellml::ParserPtr parser = libcellml::Parser::create();
     auto m = parser->parseModel(in);
@@ -1405,7 +1405,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     const std::vector<std::string> expectedIssues = {
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
-        "Import from '' is empty. It will not be loaded into the model.",
+        "Import from '' is empty and will be disregarded.",
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
@@ -1414,7 +1414,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
-        "Connection in model 'starwars' does not contain any 'map_variables' elements. It will not be loaded into the model.",
+        "Connection in model 'starwars' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     // Parse and check for CellML issues.
