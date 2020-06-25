@@ -30,6 +30,10 @@ limitations under the License.
 // information.)
 #undef PASCAL
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -37,6 +41,10 @@ namespace libcellml {
  * Class for Units.
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                              public std::enable_shared_from_this<Units>
+#endif
 {
 public:
     ~Units() override; /**< Destructor */
@@ -423,7 +431,7 @@ public:
      * @return @c true when these @c Units rely on @c Units which are imported,
      * or @c false otherwise.
      */
-    bool requiresImports() const;
+    bool requiresImports();
 
     /**
      * @brief Return the scaling factor difference between two @c Units.
