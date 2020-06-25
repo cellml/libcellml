@@ -22,8 +22,8 @@ limitations under the License.
 
 TEST(Analyser, emptyModel)
 {
-    libcellml::ModelPtr model = libcellml::Model::create("empty_model");
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto model = libcellml::Model::create("empty_model");
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
@@ -32,8 +32,8 @@ TEST(Analyser, emptyModel)
 
 TEST(Analyser, initialisedVariableOfIntegration)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/initialised_variable_of_integration.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/initialised_variable_of_integration.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -44,13 +44,13 @@ TEST(Analyser, initialisedVariableOfIntegration)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -64,8 +64,8 @@ TEST(Analyser, initialisedVariableOfIntegration)
 
 TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/initialised_variable_of_integration_in_non_first_component.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/initialised_variable_of_integration_in_non_first_component.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -76,13 +76,13 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -96,8 +96,8 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
 
 TEST(Analyser, twoVariablesOfIntegration)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/two_variables_of_integration.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/two_variables_of_integration.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -108,13 +108,13 @@ TEST(Analyser, twoVariablesOfIntegration)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -128,8 +128,8 @@ TEST(Analyser, twoVariablesOfIntegration)
 
 TEST(Analyser, nonFirstOrderOdes)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/non_first_order_odes.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/non_first_order_odes.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -144,13 +144,13 @@ TEST(Analyser, nonFirstOrderOdes)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -164,8 +164,8 @@ TEST(Analyser, nonFirstOrderOdes)
 
 TEST(Analyser, undefinedVariables)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/undefined_variables.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/undefined_variables.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -178,13 +178,13 @@ TEST(Analyser, undefinedVariables)
         libcellml::Issue::Cause::MATHML,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -198,8 +198,8 @@ TEST(Analyser, undefinedVariables)
 
 TEST(Analyser, variableInitialisedTwice)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/variable_initialised_twice.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/variable_initialised_twice.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -210,13 +210,13 @@ TEST(Analyser, variableInitialisedTwice)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -230,8 +230,8 @@ TEST(Analyser, variableInitialisedTwice)
 
 TEST(Analyser, nonConstantInitialisingVariable)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/non_constant_initialising_variable.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/non_constant_initialising_variable.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -242,13 +242,13 @@ TEST(Analyser, nonConstantInitialisingVariable)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -262,8 +262,8 @@ TEST(Analyser, nonConstantInitialisingVariable)
 
 TEST(Analyser, nonExistingInitialisingVariable)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/non_existing_initialising_variable.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/non_existing_initialising_variable.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -274,13 +274,13 @@ TEST(Analyser, nonExistingInitialisingVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyserModel->type());
 
@@ -294,8 +294,8 @@ TEST(Analyser, nonExistingInitialisingVariable)
 
 TEST(Analyser, nonInitialisedState)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/non_initialised_state.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/non_initialised_state.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -306,13 +306,13 @@ TEST(Analyser, nonInitialisedState)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyserModel->type());
 
@@ -326,8 +326,8 @@ TEST(Analyser, nonInitialisedState)
 
 TEST(Analyser, underconstrained)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/underconstrained.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/underconstrained.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -338,13 +338,13 @@ TEST(Analyser, underconstrained)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyserModel->type());
 
@@ -358,8 +358,8 @@ TEST(Analyser, underconstrained)
 
 TEST(Analyser, overconstrained)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/overconstrained.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/overconstrained.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -370,13 +370,13 @@ TEST(Analyser, overconstrained)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyserModel->type());
 
@@ -390,8 +390,8 @@ TEST(Analyser, overconstrained)
 
 TEST(Analyser, unsuitablyConstrained)
 {
-    libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(fileContents("analyser/unsuitably_constrained.cellml"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("analyser/unsuitably_constrained.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
@@ -404,13 +404,13 @@ TEST(Analyser, unsuitablyConstrained)
         libcellml::Issue::Cause::ANALYSER,
     };
 
-    libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
+    auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
-    libcellml::AnalyserModelPtr analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyserModel->type());
 
