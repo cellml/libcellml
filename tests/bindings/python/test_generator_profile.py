@@ -1,5 +1,5 @@
 #
-# Tests the Parser class bindings
+# Tests the GeneratorProfile class bindings
 #
 import unittest
 
@@ -10,7 +10,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         from libcellml import GeneratorProfile
 
         x = GeneratorProfile()
-        del(x)
+        del x
 
     def test_profile(self):
         from libcellml import GeneratorProfile
