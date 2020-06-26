@@ -187,49 +187,49 @@ public:
     bool needNeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the lower-than
+     * @brief Test to determine if @c AnalyserModel needs the lower than
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the lower-than function,
+     * Test to determine if @c AnalyserModel needs the lower than function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the lower-than function,
+     * @return @c true if @c AnalyserModel needs the lower than function,
      * @c false otherwise.
      */
     bool needLtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the
-     * lower-or-equal-than function.
+     * @brief Test to determine if @c AnalyserModel needs the lower or equal
+     * than function.
      *
-     * Test to determine if @c AnalyserModel needs the lower-or-equal-than
+     * Test to determine if @c AnalyserModel needs the lower or equal than
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the lower-or-equal-than
+     * @return @c true if @c AnalyserModel needs the lower or equal than
      * function, @c false otherwise.
      */
     bool needLeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the greater-than
+     * @brief Test to determine if @c AnalyserModel needs the greater than
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the greater-than function,
+     * Test to determine if @c AnalyserModel needs the greater than function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the greater-than function,
+     * @return @c true if @c AnalyserModel needs the greater than function,
      * @c false otherwise.
      */
     bool needGtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the
-     * greater-or-equal-than function.
+     * @brief Test to determine if @c AnalyserModel needs the greater or equal
+     * than function.
      *
-     * Test to determine if @c AnalyserModel needs the greater-or-equal-than
+     * Test to determine if @c AnalyserModel needs the greater or equal than
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the greater-or-equal-than
+     * @return @c true if @c AnalyserModel needs the greater or equal than
      * function, @c false otherwise.
      */
     bool needGeqFunction() const;
