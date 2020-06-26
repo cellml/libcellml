@@ -1,9 +1,10 @@
 #
-# Tests the Parser class bindings
+# Tests the Generator class bindings
 #
 import unittest
 
 from test_resources import file_contents
+
 
 class GeneratorTestCase(unittest.TestCase):
 
@@ -11,7 +12,7 @@ class GeneratorTestCase(unittest.TestCase):
         from libcellml import Generator
 
         x = Generator()
-        del(x)
+        del x
 
     def test_inheritance(self):
         import libcellml
@@ -27,19 +28,9 @@ class GeneratorTestCase(unittest.TestCase):
         x.addIssue(libcellml.Issue())
         self.assertEqual(x.issueCount(), 1)
 
-    def test_process_model(self):
-        from libcellml import Generator
-        from libcellml import Model
-
-        m = Model()
-        g = Generator()
-
-        g.processModel(m)
-
-        self.assertEqual(0, g.errorCount())
-        self.assertEqual(Generator.ModelType.UNKNOWN, g.modelType())
-
     def test_algebraic_eqn_computed_var_on_rhs(self):
+        from libcellml import Analyser
+        from libcellml import AnalyserModel
         from libcellml import Parser
         from libcellml import Generator
         from libcellml import GeneratorProfile
@@ -47,19 +38,23 @@ class GeneratorTestCase(unittest.TestCase):
         p = Parser()
         m = p.parseModel(file_contents('generator/algebraic_eqn_computed_var_on_rhs/model.cellml'))
 
+        a = Analyser()
+        a.processModel(m)
+
+        am = a.model()
+
+        self.assertEqual(AnalyserModel.Type.ALGEBRAIC, am.type())
+
         g = Generator()
 
-        g.processModel(m)
-
-        self.assertEqual(Generator.ModelType.ALGEBRAIC, g.modelType())
-
-        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), g.implementationCode())
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"),
+                         g.implementationCode(am))
 
         profile = GeneratorProfile(GeneratorProfile.Profile.C)
         g.setProfile(profile)
 
-        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), g.interfaceCode())
-        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), g.implementationCode())
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), g.interfaceCode(am))
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), g.implementationCode(am))
 
 
 if __name__ == '__main__':

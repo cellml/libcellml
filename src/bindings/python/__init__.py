@@ -8,11 +8,11 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
-from libcellml.generator import Analyser
-from libcellml.generator import AnalyserEquation
-from libcellml.generator import AnalyserEquationAst
-from libcellml.generator import AnalyserModel
-from libcellml.generator import AnalyserVariable
+from libcellml.analyser import Analyser
+from libcellml.analyserequation import AnalyserEquation
+from libcellml.analyserequationast import AnalyserEquationAst
+from libcellml.analysermodel import AnalyserModel
+from libcellml.analyservariable import AnalyserVariable
 from libcellml.component import Component
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile

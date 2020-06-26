@@ -19,6 +19,11 @@ endif()
 # Add swig interface files
 # Note: These filenames double as (generated .so file) module names!
 set(SWIG_INTERFACE_SRCS
+    ../interface/analyser.i
+    ../interface/analyserequation.i
+    ../interface/analyserequationast.i
+    ../interface/analysermodel.i
+    ../interface/analyservariable.i
     ../interface/component.i
     ../interface/componententity.i
     ../interface/entity.i
