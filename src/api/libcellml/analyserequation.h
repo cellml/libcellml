@@ -63,11 +63,12 @@ public:
     AnalyserEquationAstPtr ast() const;
 
     /**
-     * @brief Get the @c Type of the @c AnalyserEquation.
+     * @brief Get the list of @c AnalyserEquation dependencies.
      *
-     * Return the @c Type of the @c AnalyserEquation.
+     * Return the list of @c AnalyserEquation which corresponds to the equations
+     * on which this  @c AnalyserEquation depends.
      *
-     * @return The @c Type.
+     * @return The list of @c AnalyserEquation.
      */
     std::vector<AnalyserEquationPtr> dependencies() const;
 
