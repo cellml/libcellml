@@ -20,11 +20,6 @@ limitations under the License.
 
 #undef NAN
 
-#ifdef __linux__
-#    undef TRUE
-#    undef FALSE
-#endif
-
 namespace libcellml {
 
 /**
