@@ -30,11 +30,6 @@ limitations under the License.
 
 #include "utilities.h"
 
-#ifdef __linux__
-#    undef TRUE
-#    undef FALSE
-#endif
-
 namespace libcellml {
 
 /**
