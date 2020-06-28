@@ -572,9 +572,19 @@ IdList listIds(const ModelPtr &model, bool mathIds)
     }
     // Units.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
-        id = model->units(u)->id();
+        auto units = model->units(u);
+        id = units->id();
         if (!id.empty()) {
             idList.insert(id);
+        }
+        // Imports.
+        if (units->isImport()) {
+            if (units->importSource() != nullptr) {
+                id = units->importSource()->id();
+                if (!id.empty()) {
+                    idList.insert(id);
+                }
+            }
         }
         for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
             std::string prefix;
