@@ -578,7 +578,8 @@ void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idLis
 /**
  * @brief Creates an id string for a "type" object, unique in the context of @p idList.
  *
- * The id format is {type}_{n} where n is an integer, and type is the given string.
+ * The id format is a 6-digit hexadecimal string.
+ *
  * @return A string representing a unique id.
  */
 std::string makeUniqueId(IdList &idList);
