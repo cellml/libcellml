@@ -620,7 +620,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
     } else if (!isStandardUnitName(unitsName)) {
-        ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+        ComponentPtr component = owningComponent(variable);
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             IssuePtr issue = Issue::create();
@@ -683,7 +683,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     } else {
         description += "with variable '" + reset->variable()->name() + "', ";
         auto var = reset->variable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         varParentName = varParent->name();
         if (varParentName != component->name()) {
             varOutsideComponent = true;
@@ -696,7 +696,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         description += "with test_variable '" + reset->testVariable()->name() + "', ";
 
         auto var = reset->testVariable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         testVarParentName = varParent->name();
         if (testVarParentName != component->name()) {
             testVarOutsideComponent = true;
@@ -1017,12 +1017,12 @@ bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequi
 void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported) const
 {
     Variable::InterfaceType interfaceType = determineInterfaceType(variable);
-    auto component = std::dynamic_pointer_cast<Component>(variable->parent());
+    auto component = owningComponent(variable);
     std::string componentName = component->name();
     if (interfaceType == Variable::InterfaceType::NONE) {
         for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
             const auto equivalentVariable = variable->equivalentVariable(index);
-            auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
                 VariablePair reversePair = std::make_pair(equivalentVariable, variable);
                 auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
@@ -1066,8 +1066,8 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                ComponentPtr parent1 = owningComponent(variable);
+                ComponentPtr parent2 = owningComponent(equivalentVariable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
@@ -1087,7 +1087,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
         if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto component = owningComponent(equivalentVariable);
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
