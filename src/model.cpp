@@ -570,7 +570,7 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
 IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
 {
     IndexStack indexStack;
-    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+    ComponentPtr component = owningComponent(variable);
     indexStack.push_back(getVariableIndexInComponent(component, variable));
 
     ComponentEntityPtr parent = component;
