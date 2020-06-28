@@ -559,7 +559,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
-IdList listIds(const ModelPtr &model, bool mathIds)
+IdList listIds(const ModelPtr &model)
 {
     // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
     // invalid models (with duplicated ids) too.
@@ -599,7 +599,7 @@ IdList listIds(const ModelPtr &model, bool mathIds)
     }
     // Components.
     for (size_t c = 0; c < model->componentCount(); ++c) {
-        listComponentIds(model->component(c), mathIds, idList);
+        listComponentIds(model->component(c), idList);
     }
     // Encapsulation.
     id = model->encapsulationId();
@@ -610,7 +610,7 @@ IdList listIds(const ModelPtr &model, bool mathIds)
     return idList;
 }
 
-void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList)
+void listComponentIds(const ComponentPtr &component, IdList &idList)
 {
     std::string id = component->id();
     if (!id.empty()) {
@@ -664,16 +664,12 @@ void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idLis
         if (!id.empty()) {
             idList.insert(id);
         }
-        // if(mathIds){
-        //     // TODO
-        // }
     }
 
-    // Maths
-    // TODO
+    // TODO MathML ids on component math blocks and reset blocks are not yet included.
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
-        listComponentIds(component->component(c), mathIds, idList);
+        listComponentIds(component->component(c), idList);
     }
 }
 
