@@ -559,21 +559,18 @@ static inline std::string trimCopy(std::string s)
  * @brief Collect all existing id attributes within the given model.
  *
  * @param model The @c ModelPtr to interrogate.
- * @param mathIds A @c bool flag indicating whether or not to include MathML elements
  * and their child elements.
  * @return An @c IdList collection of existing ids.
  */
-IdList listIds(const ModelPtr &model, bool mathIds);
+IdList listIds(const ModelPtr &model);
 
 /**
  * @brief Utility class to iterate through components to collect ids.
  *
  * @param component The @c ComponentPtr to interrogate.
- * @param mathIds A @c bool flag indicating whether or not to include MathML elements
- * and their child elements.
  * @param idList @c IdList collection of found ids.
  */
-void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList);
+void listComponentIds(const ComponentPtr &component, IdList &idList);
 
 /**
  * @brief Creates an id string for a "type" object, unique in the context of @p idList.

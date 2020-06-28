@@ -440,7 +440,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     // Automatic ids.
     IdList idList;
     if (autoIds) {
-        idList = listIds(model, false);
+        idList = listIds(model);
     }
 
     // ImportMap.
