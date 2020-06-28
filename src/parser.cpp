@@ -783,9 +783,16 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
 
     XmlNodePtr childNode = node->firstChild();
 
-    if (!childNode) {
+    if (childNode == nullptr) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Connection in model '" + model->name() + "' does not contain any 'map_variables' elements.");
+        std::string des = "Connection in model '" + model->name() + "'";
+        if (connectionId.empty()) {
+            des += " does not contain any 'map_variables' elements and will be disregarded.";
+        } else {
+            des += " has an id of '" + connectionId + "' but does not contain any 'map_variables' elements.";
+            des += " The connection will be disregarded and the associated id will be lost.";
+        }
+        issue->setDescription(des);
         issue->setModel(model);
         issue->setCause(Issue::Cause::CONNECTION);
         issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
@@ -1134,11 +1141,13 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
 void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
+    std::string id;
     while (attribute) {
         if (attribute->isType("href", XLINK_NS)) {
             importSource->setUrl(attribute->value());
         } else if (attribute->isType("id")) {
-            importSource->setId(attribute->value());
+            id = attribute->value();
+            importSource->setId(id);
         } else if (attribute->inNamespaceUri(XLINK_NS)) {
             // Allow xlink attributes but do nothing for them.
         } else {
@@ -1150,6 +1159,19 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         attribute = attribute->next();
     }
     XmlNodePtr childNode = node->firstChild();
+
+    if (childNode == nullptr) {
+        auto issue = Issue::create();
+        if (id.empty()) {
+            issue->setDescription("Import from '" + node->attribute("href") + "' is empty and will be disregarded.");
+        } else {
+            issue->setDescription("Import from '" + node->attribute("href") + "' has an id of '" + id + "' but is empty. The import will be disregarded and the associated id will be lost.");
+        }
+        issue->setImportSource(importSource);
+        issue->setCause(libcellml::Issue::Cause::IMPORT);
+        issue->setLevel(libcellml::Issue::Level::WARNING);
+        mParser->addIssue(issue);
+    }
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = Component::create();
