@@ -150,8 +150,8 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
                 }
                 if (!pairFound) {
                     // Get parent components.
-                    ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                    ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                    ComponentPtr component1 = owningComponent(variable);
+                    ComponentPtr component2 = owningComponent(equivalentVariable);
                     // Add new unique variable equivalence pair to the VariableMap.
                     variableMap.push_back(variablePair);
                     // Also create a component map pair corresponding with the variable map pair.
