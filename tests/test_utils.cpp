@@ -55,7 +55,8 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
         }
-        std::cout << std::endl;
+        std::cout << std::endl
+                  << l->issue(i)->description() << std::endl;
     }
 }
 
