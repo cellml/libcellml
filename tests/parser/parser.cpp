@@ -2076,7 +2076,3 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
 
     EXPECT_EQ(in, output2);
 }
-
-TEST(Parser, parseEmptyEncapsulationWithId)
-{
-}

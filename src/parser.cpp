@@ -783,7 +783,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
 
     XmlNodePtr childNode = node->firstChild();
 
-    if (!childNode) {
+    if (childNode == nullptr) {
         IssuePtr issue = Issue::create();
         std::string des = "Connection in model '" + model->name() + "'";
         if (connectionId.empty()) {
@@ -1160,7 +1160,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     }
     XmlNodePtr childNode = node->firstChild();
 
-    if (!childNode) {
+    if (childNode == nullptr) {
         auto issue = Issue::create();
         if (id.empty()) {
             issue->setDescription("Import from '" + node->attribute("href") + "' is empty and will be disregarded.");
