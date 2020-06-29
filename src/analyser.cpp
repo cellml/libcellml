@@ -1068,8 +1068,8 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                     if (!isVoiInitialized) {
                         mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
-                        mModel->mPimpl->mVoi->mPimpl->populate(nullptr, voi, 0,
-                                                               AnalyserVariable::Type::VARIABLE_OF_INTEGRATION);
+                        mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
+                                                               0, nullptr, voi);
                     }
 
                     break;
@@ -1401,10 +1401,9 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
             auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
-            stateOrVariable->mPimpl->populate(internalVariable->mInitialisingVariable,
-                                              internalVariable->mVariable,
-                                              internalVariable->mIndex,
-                                              type);
+            stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
+                                              internalVariable->mInitialisingVariable,
+                                              internalVariable->mVariable);
 
             if (type == AnalyserVariable::Type::STATE) {
                 mModel->mPimpl->mStates.push_back(stateOrVariable);
@@ -1440,7 +1439,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
             auto equation = equationMappings[internalEquation];
 
-            equation->mPimpl->populate(type, internalEquation->mAst, dependencies,
+            equation->mPimpl->populate(type,
+                                       internalEquation->mAst, dependencies,
                                        internalEquation->mIsStateRateBased);
 
             mModel->mPimpl->mEquations.push_back(equation);

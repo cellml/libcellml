@@ -45,18 +45,18 @@ public:
     AnalyserEquation &operator=(AnalyserEquation rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Get the @c Type of the @c AnalyserEquation.
+     * @brief Get the @c Type of this @c AnalyserEquation.
      *
-     * Return the @c Type of the @c AnalyserEquation.
+     * Return the @c Type of this @c AnalyserEquation.
      *
      * @return The @c Type.
      */
     Type type() const;
 
     /**
-     * @brief Get the @c AnalyserEquationAst for the @c AnalyserEquation.
+     * @brief Get the @c AnalyserEquationAst for this @c AnalyserEquation.
      *
-     * Return the @c AnalyserEquationAst for the @c AnalyserEquation.
+     * Return the @c AnalyserEquationAst for this @c AnalyserEquation.
      *
      * @return The @c AnalyserEquationAst.
      */
