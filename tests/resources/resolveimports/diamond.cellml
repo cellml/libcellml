@@ -1,12 +1,9 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<model name="forked_import"
-	xmlns="http://www.cellml.org/cellml/2.0#"
-	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
-	xmlns:xlink="http://www.w3.org/1999/xlink">
-	<import xlink:href="diamond_left.cellml">
-		<component name="left" component_ref="left" />
-	</import>
-	<import xlink:href="diamond_right.cellml">
-		<component name="right" component_ref="right" />
-	</import>
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="diamond_import">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="diamond_left.cellml">
+    <component component_ref="left" name="left"/>
+  </import>
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="diamond_right.cellml">
+    <component component_ref="right" name="right"/>
+  </import>
 </model>

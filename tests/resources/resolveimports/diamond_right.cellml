@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<model name="diamond_right"
-	xmlns="http://www.cellml.org/cellml/2.0#"
-	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
-	xmlns:xlink="http://www.w3.org/1999/xlink">
-	<import xlink:href="diamond_point.cellml">
-		<component name="right" component_ref="pointyBit" />
-	</import>
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="diamond_right">
+  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="diamond_point.cellml">
+    <component component_ref="pointyBit" name="right"/>
+  </import>
 </model>

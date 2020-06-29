@@ -19,6 +19,23 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Importer::flatten
 "Instantiate all imported Components and Units and return a self-contained model.";
 
+%feature("docstring") libcellml::Importer::libraryCount
+"Returns the number of models loaded into the importer's library."
+
+%feature("docstring") libcellml::Importer::library
+"Returns the model instance stored at the given url in the library.
+The url string must be the absolute path to the document, including both the filename
+and the baseFile path."
+
+%feature("docstring") libcellml::Importer::addModel
+"Manually add a local model instance into the library under the url key provided.
+Returns true if the model was added, and false if the url key already exists."
+
+%feature("docstring") libcellml::Importer::replaceModel
+"Manually replace an existing library model instance with the one provided.
+Returns true if the url key is found in the library and the model is added,
+and false if the url key does not exist."
+
 %{
 #include "libcellml/importer.h"
 %}

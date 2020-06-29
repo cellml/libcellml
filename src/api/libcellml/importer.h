@@ -70,6 +70,57 @@ public:
      */
     void resolveImports(ModelPtr &model, const std::string &baseFile);
 
+    /**
+     * @brief Return the number of models present in the importer's library.
+     *
+     * @return The number of models present in the importer's library.
+     */
+    size_t libraryCount();
+
+    /**
+     * @brief Retrieve the @c ModelPtr instance from the importer library which was loaded
+     *        from the given @p url.
+     *
+     *  The @p url must be the absolute path, including the filename and the baseFile path.
+     *
+     * @return A @c ModelPtr instance.
+     */
+    ModelPtr library(const std::string &url);
+
+    /**
+     * @brief Manually add a local @c ModelPtr model instance to the importer library,
+     *        using the given @p url as a reference.
+     *
+     * If the given url already exists in the library, the function will return false
+     * and the library will not be changed.
+     * @sa replaceModel.
+     *
+     * @param model a @c ModelPtr instance to add.
+     * @param url a @c std::string representing the url to associate with the model.
+     *
+     * @return boolean value, @c true if the model was added, @c false if it was not.
+     */
+    bool addModel(const ModelPtr &model, const std::string &url);
+
+    /**
+     * @brief Replace a @c ModelPtr model instance in the importer library,
+     *        using the given @p url as a reference.
+     *
+     * If the given url already exists in the library, the function will replace its
+     * model with the one supplied, and return @c true.
+     *
+     * If the given url does not exist, the function will return @c false, and
+     * the library will be unchanged.
+     *
+     * @sa addModel.
+     *
+     * @param model a @c ModelPtr instance to replace the current one.
+     * @param url a @c std::string representing the url at which to replace the model.
+     *
+     * @return boolean value, @c true if the model was replaced, @c false if it was not.
+     */
+    bool replaceModel(const ModelPtr &model, const std::string &url);
+
 private:
     Importer(); /**< Constructor */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/

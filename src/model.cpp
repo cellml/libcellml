@@ -308,11 +308,14 @@ bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponen
 bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
     bool unresolvedImports = false;
-    if (component->isImport()) {
+    if (component->isImport()) { //KRM also means that importSource is non-null
+        // KRM this is redundant? is tested again below?
         unresolvedImports = isUnresolvedImport(component);
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
             ImportSourcePtr importedSource = component->importSource();
+
+            // KRM either remove this if, or the call to isUnresolvedImport above
             if (importedSource->hasModel()) {
                 ModelPtr importedModel = importedSource->model();
                 ComponentPtr importedComponent = importedModel->component(component->importReference());
@@ -324,6 +327,7 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
             }
         }
     } else {
+        // KRM check this component for imported children
         unresolvedImports = hasUnresolvedComponentImports(component);
     }
     return unresolvedImports;
