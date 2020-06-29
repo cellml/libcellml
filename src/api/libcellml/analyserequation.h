@@ -84,6 +84,15 @@ public:
      */
     bool isStateRateBased() const;
 
+    /**
+     * @brief Get the @c AnalyserVariable for this @c AnalyserEquation.
+     *
+     * Return the @c AnalyserVariable for this @c AnalyserEquation.
+     *
+     * @return The @c AnalyserVariable.
+     */
+    AnalyserVariablePtr variable() const;
+
 private:
     AnalyserEquation(); /**< Constructor */
 

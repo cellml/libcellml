@@ -17,6 +17,9 @@
 %feature("docstring") libcellml::AnalyserEquation::isStateRateBased
 "Tests if this :class:`AnalyserEquation` object relies on states and/or rates.";
 
+%feature("docstring") libcellml::AnalyserEquation::variable
+"Returns the :class:`AnalyserVariable` object for this :class:`AnalyserEquation` object.";
+
 %{
 #include "libcellml/analyserequation.h"
 %}

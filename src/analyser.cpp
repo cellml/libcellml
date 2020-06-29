@@ -1069,7 +1069,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                         mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
-                                                               0, nullptr, voi);
+                                                               0, nullptr, voi, nullptr);
                     }
 
                     break;
@@ -1381,6 +1381,13 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         std::sort(mInternalEquations.begin(), mInternalEquations.end(),
                   compareEquationsByVariable);
 
+        std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> equationMappings;
+        std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
+
+        for (const auto &internalEquation : mInternalEquations) {
+            equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
+        }
+
         for (const auto &internalVariable : mInternalVariables) {
             AnalyserVariable::Type type;
 
@@ -1400,22 +1407,22 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             }
 
             auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+            auto equation = equationMappings[internalVariable->mEquation];
 
             stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
                                               internalVariable->mInitialisingVariable,
-                                              internalVariable->mVariable);
+                                              internalVariable->mVariable,
+                                              equation);
+
+            if (equation != nullptr) {
+                variableMappings[equation] = stateOrVariable;
+            }
 
             if (type == AnalyserVariable::Type::STATE) {
                 mModel->mPimpl->mStates.push_back(stateOrVariable);
             } else {
                 mModel->mPimpl->mVariables.push_back(stateOrVariable);
             }
-        }
-
-        std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> equationMappings;
-
-        for (const auto &internalEquation : mInternalEquations) {
-            equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
         }
 
         for (const auto &internalEquation : mInternalEquations) {
@@ -1441,7 +1448,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
             equation->mPimpl->populate(type,
                                        internalEquation->mAst, dependencies,
-                                       internalEquation->mIsStateRateBased);
+                                       internalEquation->mIsStateRateBased,
+                                       variableMappings[equation]);
 
             mModel->mPimpl->mEquations.push_back(equation);
         }

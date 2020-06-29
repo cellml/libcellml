@@ -101,6 +101,15 @@ public:
      */
     VariablePtr variable() const;
 
+    /**
+     * @brief Get the @c AnalyserEquation for this @c AnalyserVariable.
+     *
+     * Return the @c AnalyserEquation for this @c AnalyserVariable.
+     *
+     * @return The @c AnalyserEquation.
+     */
+    AnalyserEquationPtr equation() const;
+
 private:
     AnalyserVariable(); /**< Constructor */
 
