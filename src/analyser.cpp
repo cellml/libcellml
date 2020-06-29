@@ -905,7 +905,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
         for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
-                processNode(node, component);
+//                processNode(node, component);
             }
         }
     }
@@ -1237,7 +1237,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
     // for each of the model's equations.
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
-//        processComponent(model->component(i));
+        processComponent(model->component(i));
     }
 
     // Some more processing is needed, but it can only be done if we didn't come
