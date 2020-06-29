@@ -25,14 +25,14 @@ namespace libcellml {
  */
 struct AnalyserVariable::AnalyserVariableImpl
 {
+    AnalyserVariable::Type mType = Type::CONSTANT;
+    size_t mIndex = 0;
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
-    size_t mIndex = 0;
-    AnalyserVariable::Type mType = Type::CONSTANT;
 
-    void populate(const VariablePtr &initialisingVariable,
-                  const VariablePtr &variable, size_t index,
-                  AnalyserVariable::Type type);
+    void populate(AnalyserVariable::Type type, size_t index,
+                  const VariablePtr &initialisingVariable,
+                  const VariablePtr &variable);
 };
 
 } // namespace libcellml

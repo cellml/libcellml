@@ -20,15 +20,15 @@ limitations under the License.
 
 namespace libcellml {
 
-void AnalyserVariable::AnalyserVariableImpl::populate(const VariablePtr &initialisingVariable,
-                                                      const VariablePtr &variable,
+void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type type,
                                                       size_t index,
-                                                      AnalyserVariable::Type type)
+                                                      const VariablePtr &initialisingVariable,
+                                                      const VariablePtr &variable)
 {
+    mType = type;
+    mIndex = index;
     mInitialisingVariable = initialisingVariable;
     mVariable = variable;
-    mIndex = index;
-    mType = type;
 }
 
 AnalyserVariable::AnalyserVariable()
@@ -41,6 +41,16 @@ AnalyserVariable::~AnalyserVariable()
     delete mPimpl;
 }
 
+AnalyserVariable::Type AnalyserVariable::type() const
+{
+    return mPimpl->mType;
+}
+
+size_t AnalyserVariable::index() const
+{
+    return mPimpl->mIndex;
+}
+
 VariablePtr AnalyserVariable::initialisingVariable() const
 {
     return mPimpl->mInitialisingVariable;
@@ -49,16 +59,6 @@ VariablePtr AnalyserVariable::initialisingVariable() const
 VariablePtr AnalyserVariable::variable() const
 {
     return mPimpl->mVariable;
-}
-
-size_t AnalyserVariable::index() const
-{
-    return mPimpl->mIndex;
-}
-
-AnalyserVariable::Type AnalyserVariable::type() const
-{
-    return mPimpl->mType;
 }
 
 } // namespace libcellml
