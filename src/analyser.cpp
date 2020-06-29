@@ -1490,7 +1490,7 @@ void Analyser::processModel(const ModelPtr &model)
 
     // Process the model.
 
-    mPimpl->processModel(model);
+//    mPimpl->processModel(model);
 }
 
 AnalyserModelPtr Analyser::model() const
