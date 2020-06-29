@@ -276,12 +276,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     // Stop tracking (new) known (ODE) variables.
 
-    mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(),
-                                    knownVariable),
-                     mVariables.end());
-    mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(),
-                                       knownOdeVariable),
-                        mOdeVariables.end());
+    mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), knownVariable), mVariables.end());
+    mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), knownOdeVariable), mOdeVariables.end());
 
     // If there is one (ODE) variable left then update its viariable (to be the
     // corresponding one in the component in which the equation is), its type
