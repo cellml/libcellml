@@ -22,6 +22,7 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
+/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -37,6 +38,7 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode(analyserModel));
 }
+*/
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
@@ -79,6 +81,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode(analyserModel));
 }
 
+/*
 TEST(Generator, algebraicEqnConstVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
@@ -1536,3 +1539,4 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode(analyserModel));
 }
+*/
