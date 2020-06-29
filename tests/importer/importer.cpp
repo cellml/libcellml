@@ -37,7 +37,6 @@ TEST(Importer, noWarningForkedImport)
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     importer->resolveImports(model, resourcePath("resolveimports/"));
-    printIssues(importer);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
@@ -51,7 +50,6 @@ TEST(Importer, noWarningDiamondImport)
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     importer->resolveImports(model, resourcePath("resolveimports/"));
-    printIssues(importer);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
