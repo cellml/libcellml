@@ -1237,7 +1237,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
     // for each of the model's equations.
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        processComponent(model->component(i));
+//        processComponent(model->component(i));
     }
 
     // Some more processing is needed, but it can only be done if we didn't come
@@ -1490,7 +1490,7 @@ void Analyser::processModel(const ModelPtr &model)
 
     // Process the model.
 
-//    mPimpl->processModel(model);
+    mPimpl->processModel(model);
 }
 
 AnalyserModelPtr Analyser::model() const
