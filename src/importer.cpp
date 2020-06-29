@@ -50,6 +50,7 @@ struct Importer::ImporterImpl
     Importer *mImporter = nullptr;
 
     ImportLibrary mLibrary;
+    std::vector<std::pair<std::string, std::string>> mExternals;
 
     bool resolveImport(const ImportedEntityPtr &importedEntity,
                        const std::string &destination,
@@ -147,6 +148,8 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
             std::string url = resolvePath(importSource->url(), baseFile);
             if (this->mLibrary.count(url) == 0) {
                 // If the url has not been resolved into a model in this library, parse it and save.
+                // Need to keep track of which models were resolved by parsing an external dependency, and
+                // which are present in the library.
                 std::ifstream file(url);
                 if (file.good()) {
                     std::stringstream buffer;
@@ -156,6 +159,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                     importSource->setModel(model);
                     // Save the pair of model and url to the library map.
                     this->mLibrary.insert(std::make_pair(url, model));
+                    this->mExternals.emplace_back(std::make_pair(url, importedEntity->importReference()));
                     return doResolveImports(model, url, history);
                 }
             } else {
@@ -380,6 +384,19 @@ bool Importer::replaceModel(const ModelPtr &model, const std::string &url)
     }
     mPimpl->mLibrary[url] = model;
     return true;
+}
+
+size_t Importer::externalDependencyCount() const
+{
+    return mPimpl->mExternals.size();
+}
+
+std::pair<std::string, std::string> Importer::externalDependency(size_t index) const
+{
+    if (index < mPimpl->mExternals.size()) {
+        return mPimpl->mExternals.at(index);
+    }
+    return std::make_pair("", "");
 }
 
 } // namespace libcellml

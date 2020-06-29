@@ -121,6 +121,30 @@ public:
      */
     bool replaceModel(const ModelPtr &model, const std::string &url);
 
+    /**
+     * @brief Retrieve the pair of url key and import reference at the given index.
+     *
+     * This is taken from the list of dependencies for the models which have been resolved,
+     * and is what will break if those external files are ever moved or renamed.
+     *
+     * The "first" attribute of the returned pair is the url at which the imported model was
+     * accessed and under which it is now stored in the library, and the "second" attribute
+     * is the import reference.
+     *
+     * @return a @c std::pair of @c std::strings.
+     */
+    std::pair<std::string, std::string> externalDependency(size_t index) const;
+
+    /**
+     * @brief Get the number of external dependencies in the library.
+     *
+     * Returns the number of dependencies for the models which have been resolved by this
+     * importer.
+     *
+     * @return the number of variables.
+     */
+    size_t externalDependencyCount() const;
+
 private:
     Importer(); /**< Constructor */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/

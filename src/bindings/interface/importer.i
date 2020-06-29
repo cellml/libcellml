@@ -36,6 +36,15 @@ Returns true if the model was added, and false if the url key already exists."
 Returns true if the url key is found in the library and the model is added,
 and false if the url key does not exist."
 
+%feature("docstring") libcellml::Importer::externalDependencyCount
+"Returns the number of external dependencies accessed while resolving all
+the models passed to this importer."
+
+%feature("docstring") libcellml::Importer::externalDependency
+"Returns a pairs of strings at the given index. The first item in the pair is the external url
+at which imports for models which have been resolved by the importer were accessed (and under
+which are now stored in the library). The second item is the import reference."
+
 %{
 #include "libcellml/importer.h"
 %}
