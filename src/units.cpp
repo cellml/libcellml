@@ -531,11 +531,11 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
     return unitsMap;
 }
 
-bool Units::requiresImports() const
+bool Units::requiresImports()
 {
     // Function to check child unit dependencies for imports.
 
-    auto model = std::dynamic_pointer_cast<Model>(parent());
+    auto model = owningModel(shared_from_this());
     if (model != nullptr) {
         std::string ref;
         std::string prefix;
