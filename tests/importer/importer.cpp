@@ -22,8 +22,6 @@ limitations under the License->
 
 TEST(Importer, create)
 {
-    auto parser = libcellml::Parser::create();
-    // auto model = parser->parseModel(fileContents());
     auto importer = libcellml::Importer::create();
 }
 
@@ -417,4 +415,13 @@ TEST(Importer, replaceModel)
 
     EXPECT_EQ(size_t(0), importer->issueCount());
     EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, getNonexistentModel)
+{
+    // For coverage.
+    auto importer = libcellml::Importer::create();
+    auto model = libcellml::Model::create("model");
+    importer->addModel(model, "howdy");
+    EXPECT_EQ(nullptr, importer->library("bonjour"));
 }
