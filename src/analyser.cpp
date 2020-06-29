@@ -882,9 +882,8 @@ AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr
     mInternalEquations.push_back(equation);
 
     // Actually process the node and return its corresponding equation.
-(void) node;
 
-//    processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
+    processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
 
     return equation;
 }
