@@ -425,3 +425,28 @@ TEST(Importer, getNonexistentModel)
     importer->addModel(model, "howdy");
     EXPECT_EQ(nullptr, importer->library("bonjour"));
 }
+
+TEST(Importer, getListOfDependencies)
+{
+    // This test shows how a model can be interrogated to return a list of its dependencies/urls.
+    // These then become the url "keys" that must be supplied to the importer, if their actual location
+    // should not be used or is inaccessible.
+
+    // Note that in order to resolve the dependencies further than the first generation, the models will
+    // need to be instantiated and saved anyway.  The external dependencies are those which, during the
+    // resolution for this model, were sourced from locations outside the library.  They will have since
+    // been saved to the importer library, and subsequent calls to resolveImports for those same imported
+    // files will not change the dependencies list.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/diamond.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+
+    EXPECT_EQ(size_t(3), importer->externalDependencyCount());
+    for (size_t e = 0; e < importer->externalDependencyCount(); ++e) {
+        auto info = importer->externalDependency(e);
+        EXPECT_NE(nullptr, importer->library(info.first));
+    }
+}
