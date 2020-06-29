@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<model name="pointyBitModel"
-	xmlns="http://www.cellml.org/cellml/2.0#"
-	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
-	xmlns:xlink="http://www.w3.org/1999/xlink">
-	<component name="pointyBit"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="pointyBitModel">
+  <component name="pointyBit"/>
 </model>

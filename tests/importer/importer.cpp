@@ -92,7 +92,7 @@ TEST(Importer, warningCircularImportReferencesUnits)
 
 TEST(Importer, warningUnrequiredCircularDependencyComponent)
 {
-    // This test in intended to show what happens when one model attempts to import a concrete component from a
+    // This test is intended to show what happens when one model attempts to import a concrete component from a
     // second model, where the second model has unrelated circular dependencies:
     //   - model1 imports component1 from model2
     //   - model2 defines component1
@@ -110,6 +110,7 @@ TEST(Importer, warningUnrequiredCircularDependencyComponent)
     auto model = parser->parseModel(fileContents("resolveimports/master1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
     importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(size_t(1), importer->warningCount());
     EXPECT_EQ(warningMessage, importer->warning(0)->description());
@@ -288,4 +289,134 @@ TEST(Model, importUnitsDuplicated)
 
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(e, printer->printModel(model));
+}
+
+TEST(Importer, duplicatesImportedOnceOnly)
+{
+    std::string in = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
+                     "<model name=\"forked_import\" xmlns=\"http://www.cellml.org/cellml/2.0#\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+                     "  <import xlink:href=\"prong.cellml\">\n"
+                     "    <component name=\"left\" component_ref=\"component1\" />\n"
+                     "  </import>\n"
+                     "  <import xlink:href=\"prong.cellml\">\n"
+                     "    <component name=\"right\" component_ref=\"component1\" />\n"
+                     "  </import>\n"
+                     "  <import xlink:href=\"prong.cellml\">\n"
+                     "    <component name=\"centre\" component_ref=\"component1\" />\n"
+                     "  </import>\n"
+                     "</model>";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto importer = libcellml::Importer::create();
+
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_EQ(size_t(3), model->componentCount()); // Three imported components ...
+    EXPECT_EQ(size_t(1), importer->libraryCount()); // ... but just one imported model.
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, accessImportedModelLibrary)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/diamond.cellml"));
+    auto importer = libcellml::Importer::create();
+    auto printer = libcellml::Printer::create();
+
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    // Library should contain left, right, and one instance (not two) of the point.
+    EXPECT_EQ(size_t(3), importer->libraryCount());
+
+    auto left = importer->library(resourcePath("resolveimports/diamond_left.cellml"));
+    auto right = importer->library(resourcePath("resolveimports/diamond_right.cellml"));
+    auto point = importer->library(resourcePath("resolveimports/diamond_point.cellml"));
+
+    // Access library items by their URL.
+    EXPECT_EQ(fileContents("resolveimports/diamond_left.cellml"), printer->printModel(left));
+    EXPECT_EQ(fileContents("resolveimports/diamond_right.cellml"), printer->printModel(right));
+    EXPECT_EQ(fileContents("resolveimports/diamond_point.cellml"), printer->printModel(point));
+}
+
+TEST(Importer, multipleModelResolution)
+{
+    // This test is intended to show how the Importer class can hold multitple imported models in its library, and that
+    // these can be used to resolve the imports of more than one importing model.
+    // The example give has three models A, B, C, each importing the same four components, a, b, c, d from a
+    // fourth model D. We expect the that model D is parsed and instantiated just once, rather than 12 times.
+
+    auto parser = libcellml::Parser::create();
+    auto modelA = parser->parseModel(fileContents("resolveimports/generic.cellml"));
+    auto modelB = parser->parseModel(fileContents("resolveimports/generic.cellml"));
+    auto modelC = parser->parseModel(fileContents("resolveimports/generic.cellml"));
+
+    // ModelD will be imorted into the library as it's included as a dependency in the models here.
+    // Passing in one of the models for resolution will load modelD into the library.
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(modelA, resourcePath("resolveimports/"));
+
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+
+    // Now resolve the other models and expect the library contents to be unchanged.
+    importer->resolveImports(modelB, resourcePath("resolveimports/"));
+    importer->resolveImports(modelC, resourcePath("resolveimports/"));
+
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+}
+
+TEST(Importer, addModelToLibrary)
+{
+    // This test shows how a model instance can be manually added to the import library by the user,
+    // and will be used to resolve imports, rather than from an external file/url.
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/generic_no_source.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    auto sourceModel = libcellml::Model::create("source");
+    sourceModel->addComponent(libcellml::Component::create("a"));
+    sourceModel->addComponent(libcellml::Component::create("b"));
+    sourceModel->addComponent(libcellml::Component::create("c"));
+    sourceModel->addComponent(libcellml::Component::create("d"));
+
+    // Add a model manually to the library, including the URL that it will replace in future imports.
+    EXPECT_TRUE(importer->addModel(sourceModel, "i_dont_exist.cellml"));
+
+    // Can't add to the same url key more than once.
+    EXPECT_FALSE(importer->addModel(sourceModel, "i_dont_exist.cellml"));
+
+    importer->resolveImports(model, "");
+
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, replaceModel)
+{
+    // This test shows how a model instance can be manually added to the import library by the user,
+    // and will be used to resolve imports, rather than from an external file/url.
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/generic_no_source.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    auto wrongSourceModel = libcellml::Model::create("wrong");
+
+    auto rightSourceModel = libcellml::Model::create("source");
+    rightSourceModel->addComponent(libcellml::Component::create("a"));
+    rightSourceModel->addComponent(libcellml::Component::create("b"));
+    rightSourceModel->addComponent(libcellml::Component::create("c"));
+    rightSourceModel->addComponent(libcellml::Component::create("d"));
+
+    // Add a model manually to the library, including the URL that it will replace in future imports.
+    EXPECT_TRUE(importer->addModel(wrongSourceModel, "i_dont_exist.cellml"));
+    // Can't add to the same url key more than once.
+    EXPECT_FALSE(importer->addModel(rightSourceModel, "i_dont_exist.cellml"));
+
+    // Use replaceModel instead.
+    EXPECT_FALSE(importer->replaceModel(rightSourceModel, "not_in_library"));
+    EXPECT_TRUE(importer->replaceModel(rightSourceModel, "i_dont_exist.cellml"));
+
+    importer->resolveImports(model, "");
+
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    EXPECT_FALSE(model->hasUnresolvedImports());
 }
