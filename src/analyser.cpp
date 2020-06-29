@@ -499,7 +499,7 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserVariable(const Varia
     // No analyser variable exists for the given variable, so create one, track
     // it and return it.
 
-    auto internalVariable = std::make_shared<AnalyserInternalVariable>(variable);
+    auto internalVariable = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
 
     mInternalVariables.push_back(internalVariable);
 
@@ -877,7 +877,7 @@ AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr
 {
     // Create and keep track of the equation associated with the given node.
 
-    auto equation = std::make_shared<AnalyserInternalEquation>(component);
+    auto equation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
 
     mInternalEquations.push_back(equation);
 
