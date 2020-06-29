@@ -1464,7 +1464,7 @@ Analyser::~Analyser()
 
 AnalyserPtr Analyser::create() noexcept
 {
-    return AnalyserPtr {new Analyser {}};
+    return std::shared_ptr<Analyser> {new Analyser {}};
 }
 
 void Analyser::processModel(const ModelPtr &model)
