@@ -147,8 +147,7 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
 
     bool mIsStateRateBased = false;
 
-    explicit AnalyserInternalEquation(const ComponentPtr &component,
-                                      const AnalyserEquationAstPtr &ast);
+    explicit AnalyserInternalEquation(const ComponentPtr &component);
 
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -162,9 +161,8 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
 
-AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component,
-                                                   const AnalyserEquationAstPtr &ast)
-    : mAst(ast)
+AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
+    : mAst(AnalyserEquationAst::create())
     , mComponent(component)
 {
 }
@@ -879,7 +877,7 @@ AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr
 {
     // Create and keep track of the equation associated with the given node.
 
-    auto equation = std::make_shared<AnalyserInternalEquation>(component, std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}});
+    auto equation = std::make_shared<AnalyserInternalEquation>(component);
 
     mInternalEquations.push_back(equation);
 
@@ -905,7 +903,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
         for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
-//                processNode(node, component);
+                processNode(node, component);
             }
         }
     }
