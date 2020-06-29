@@ -1364,11 +1364,14 @@ TEST(Generator, coverage)
     EXPECT_EQ(size_t(180), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->voi()->equation());
     EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->state(0)->equation());
     EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
     EXPECT_NE(nullptr, analyserModel->variable(0));
     EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
     EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_NE(nullptr, analyserModel->equation(0)->variable());
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();

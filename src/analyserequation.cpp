@@ -23,12 +23,14 @@ namespace libcellml {
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      bool isStateRateBased)
+                                                      bool isStateRateBased,
+                                                      const AnalyserVariablePtr &variable)
 {
     mType = type;
     mAst = ast;
     mDependencies = dependencies;
     mIsStateRateBased = isStateRateBased;
+    mVariable = variable;
 }
 
 AnalyserEquation::AnalyserEquation()
@@ -59,6 +61,11 @@ std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
 bool AnalyserEquation::isStateRateBased() const
 {
     return mPimpl->mIsStateRateBased;
+}
+
+AnalyserVariablePtr AnalyserEquation::variable() const
+{
+    return mPimpl->mVariable.lock();
 }
 
 } // namespace libcellml
