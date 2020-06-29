@@ -56,7 +56,6 @@ TEST(ModelFlattening, modelWithUnresolvedImports)
 
     auto parser = libcellml::Parser::create();
     auto modelWithUnitsImports = parser->parseModel(modelImportingUnits);
-    printIssues(parser);
 
     EXPECT_TRUE(modelWithUnitsImports->hasUnresolvedImports());
 

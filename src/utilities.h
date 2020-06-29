@@ -557,8 +557,8 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
-// **************************
-
+// These functions were moved out of the Model class to here so that they can be used by the Importer class
+// during model flattening.
 NameList findCnUnitsNames(const XmlNodePtr &node);
 
 NameList findComponentCnUnitsNames(const ComponentPtr &component);

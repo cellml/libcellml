@@ -299,17 +299,6 @@ public:
      */
     bool hasImports() const;
 
-    // /**
-    //  * @brief Resolve all imports in this model.
-    //  *
-    //  * Resolve all @c Component and @c Units imports by loading the models
-    //  * from local disk through relative URLs.  The @p baseFile is used to determine
-    //  * the full path to the source model relative to this one.
-    //  *
-    //  * @param baseFile The @c std::string location on local disk of the source @c Model.
-    //  */
-    // void resolveImports(const std::string &baseFile);
-
     /**
      * @brief Test if this model has unresolved imports.
      *
@@ -329,19 +318,6 @@ public:
      * @return a new @c ModelPtr to the cloned model.
      */
     ModelPtr clone() const;
-
-    // /**
-    //  * @brief Flatten this model.
-    //  *
-    //  * Instantiates all imports and removes them from this model.
-    //  * The result is a self-contained model requiring no external
-    //  * resources and having no imports.
-    //  *
-    //  * The effects of this method cannot be undone.
-    //  *
-    //  * @sa clone
-    //  */
-    // void flatten();
 
     /**
      * @brief Fix @c Variable interfaces throughout the model.
