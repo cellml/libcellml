@@ -136,6 +136,7 @@ public:
      * @sa removeVariable
      *
      * @param variable The variable to add.
+     *
      * @return @c true if the variable is added or @c false otherwise.
      */
     bool addVariable(const VariablePtr &variable);
@@ -309,6 +310,7 @@ public:
      * @sa removeReset
      *
      * @param reset The reset to add.
+     *
      * @return @c true if the reset is added or @c false otherwise.
      */
     bool addReset(const ResetPtr &reset);
@@ -318,7 +320,7 @@ public:
      *
      * Remove the reset at the given index from this component and
      * returns a reference to a reset at the index @p index for this
-     * component. If the index is not valid a @c nullptr is returned, the valid
+     * component. If the index is not valid, a @c nullptr is returned. The valid
      * range for the index is [0, \#resets).
      *
      * @param index The index of the reset to return.

@@ -861,7 +861,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Add all required units to a model so referenced units can be resolved.
         auto requiredUnitsModel = Model::create();
         for (const auto &units : requiredUnits) {
-            // Cloning units present elsewhere so that they don't get moved by the addUnits function:
+            // Cloning units present elsewhere so that they don't get moved by the addUnits function.
             if (units->parent() == nullptr) {
                 requiredUnitsModel->addUnits(units);
             } else {
