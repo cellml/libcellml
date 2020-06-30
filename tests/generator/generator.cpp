@@ -22,7 +22,6 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -38,7 +37,6 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(EMPTY_STRING, generator->implementationCode(analyserModel));
 }
-*/
 
 TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
@@ -51,37 +49,36 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
     analyser->processModel(model);
 
-//    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->issueCount());
 
-//    auto analyserModel = analyser->model();
+    auto analyserModel = analyser->model();
 
-//    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ALGEBRAIC, analyserModel->type());
 
-//    EXPECT_EQ(size_t(0), analyserModel->stateCount());
-//    EXPECT_EQ(size_t(2), analyserModel->variableCount());
-//    EXPECT_EQ(size_t(2), analyserModel->equationCount());
+    EXPECT_EQ(size_t(0), analyserModel->stateCount());
+    EXPECT_EQ(size_t(2), analyserModel->variableCount());
+    EXPECT_EQ(size_t(2), analyserModel->equationCount());
 
-//    EXPECT_EQ(nullptr, analyserModel->voi());
-//    EXPECT_EQ(nullptr, analyserModel->state(0));
-//    EXPECT_NE(nullptr, analyserModel->variable(0));
-//    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
-//    EXPECT_NE(nullptr, analyserModel->equation(0));
-//    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+    EXPECT_EQ(nullptr, analyserModel->voi());
+    EXPECT_EQ(nullptr, analyserModel->state(0));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
-//    auto generator = libcellml::Generator::create();
+    auto generator = libcellml::Generator::create();
 
-//    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), generator->interfaceCode(analyserModel));
-//    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), generator->implementationCode(analyserModel));
 
-//    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
-//    generator->setProfile(profile);
+    generator->setProfile(profile);
 
-//    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-//    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator->implementationCode(analyserModel));
 }
 
-/*
 TEST(Generator, algebraicEqnConstVarOnRhs)
 {
     auto parser = libcellml::Parser::create();
@@ -1539,4 +1536,3 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode(analyserModel));
 }
-*/
