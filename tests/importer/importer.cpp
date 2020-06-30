@@ -449,4 +449,6 @@ TEST(Importer, getListOfDependencies)
         auto info = importer->externalDependency(e);
         EXPECT_NE(nullptr, importer->library(info.first));
     }
+    std::pair<std::string, std::string> empty;
+    EXPECT_EQ(empty, importer->externalDependency(999));
 }
