@@ -364,8 +364,11 @@ void Validator::validateModel(const ModelPtr &model)
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching entries at the same position in the source and ref vectors).
                     if (!unitsImportSources.empty() && (!foundImportIssue)) {
-                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
-                            == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())) {
+                        auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource);
+                        auto usedImportSourceAt = usedImportSource - unitsImportSources.begin();
+                        auto usedUnitsRefs = std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef);
+                        auto usedUnitsRefsAt = usedUnitsRefs - unitsRefs.begin();
+                        if ((usedImportSource != unitsImportSources.end()) && (usedUnitsRefs != unitsRefs.end()) && (usedUnitsRefsAt == usedImportSourceAt)) {
                             IssuePtr issue = Issue::create();
                             issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
                             issue->setModel(model);
