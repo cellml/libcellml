@@ -536,7 +536,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     // Create the AST, if needed.
 
     if (ast.get() == nullptr) {
-        ast.reset(new AnalyserEquationAst);
+        ast.reset(new AnalyserEquationAst {});
     }
 
     // Basic content elements.
