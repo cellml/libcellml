@@ -1139,7 +1139,7 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
                                       const AnalyserEquationAstPtr &astParent,
                                       double scalingFactor)
 {
-    // Scale the given AST using the given scaling factor
+    // Scale the given AST using the given scaling factor.
 
     auto scaledAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
 
