@@ -28,6 +28,7 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/version.h"
 
+#include "analyserequationast_p.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -1664,10 +1665,18 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                 && areEqual(doubleValue, 2.0)) {
                 code = mProfile->squareRootString() + "(" + generateCode(ast->rightChild()) + ")";
             } else {
-                AnalyserEquationAstPtr rootValueAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::DIVIDE, ast);
+                auto rootValueAst = AnalyserEquationAst::create();
 
-                rootValueAst->setLeftChild(AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, "1.0", rootValueAst));
-                rootValueAst->setRightChild(AnalyserEquationAst::create(ast->leftChild(), rootValueAst));
+                rootValueAst->mPimpl->populate(AnalyserEquationAst::Type::DIVIDE, ast);
+
+                auto leftChild = AnalyserEquationAst::create();
+                auto rightChild = AnalyserEquationAst::create();
+
+                leftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, "1.0", rootValueAst);
+                rightChild->mPimpl->populate(ast->leftChild(), rootValueAst);
+
+                rootValueAst->setLeftChild(leftChild);
+                rootValueAst->setRightChild(rightChild);
 
                 code = mProfile->hasPowerOperator() ?
                            generateOperatorCode(mProfile->powerString(), ast) :
