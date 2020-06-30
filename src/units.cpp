@@ -531,7 +531,7 @@ UnitsMap createUnitsMap(const UnitsPtr &units, bool &isValid)
     return unitsMap;
 }
 
-bool Units::requiresImports()
+bool Units::requiresImports() const
 {
     // Function to check child unit dependencies for imports.
 
