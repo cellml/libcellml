@@ -215,7 +215,7 @@ VariablePtr Variable::create(const std::string &name) noexcept
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (variable1 != nullptr && variable2 != nullptr) {
+    if ((variable1 != nullptr) && (variable2 != nullptr)) {
         bool canAdd1 = variable1->mPimpl->setEquivalentTo(variable2);
         bool canAdd2 = variable2->mPimpl->setEquivalentTo(variable1);
         if (canAdd1 && !canAdd2) {
