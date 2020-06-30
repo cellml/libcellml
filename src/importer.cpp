@@ -101,6 +101,41 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
+bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
+
+{
+    // Check through model for overlap with the current history.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        auto units = model->units(u);
+        if (units->isImport()) {
+            ImportSourcePtr importSource = units->importSource();
+            auto h = std::make_tuple(units->name(), units->importReference(), importSource->url());
+
+            // Check for cyclical dependencies using the entire tuple contents.
+            if (std::find(history.begin(), history.end(), h) != history.end()) {
+                history.emplace_back(h);
+                return false;
+            }
+            history.emplace_back(h);
+        }
+    }
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        auto component = model->component(c);
+        if (component->isImport()) {
+            ImportSourcePtr importSource = component->importSource();
+            auto h = std::make_tuple(component->name(), component->importReference(), importSource->url());
+
+            // Check for cyclical dependencies using the entire tuple contents.
+            if (std::find(history.begin(), history.end(), h) != history.end()) {
+                history.emplace_back(h);
+                return false;
+            }
+            history.emplace_back(h);
+        }
+    }
+    return true;
+}
+
 bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string &baseFile,
                                               std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
@@ -164,13 +199,13 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                 }
             } else {
                 // If it has, then pass the previous model instance to the import source.
-                // auto model = mLibrary[url];
-                importSource->setModel(mLibrary[url]);
+                auto model = mLibrary[url];
+                importSource->setModel(model);
                 // Check its child imports for reporting purposes.  We now prevent cyclic imports from being instantiated,
                 // but also want to alert the user when they're present in a model structure. This will only do one
                 // level of recusion as the model has already been resolved previously.
                 // KRM I'm not sure that we need to do this really ... maybe find a better way to report cycles?
-                // return doResolveImports(model, url, history); // KRM removing to try and test memory leak location
+                return checkForCycles(model, history); // KRM removing to try and test memory leak location
             }
         }
     }
