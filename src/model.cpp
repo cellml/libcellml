@@ -24,6 +24,8 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
+#include <iostream> // KRM
+
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
@@ -308,26 +310,21 @@ bool hasUnresolvedComponentImports(const ComponentEntityConstPtr &parentComponen
 bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
     bool unresolvedImports = false;
-    if (component->isImport()) { //KRM also means that importSource is non-null
-        // KRM this is redundant? is tested again below?
+    if (component->isImport()) {
         unresolvedImports = isUnresolvedImport(component);
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
             ImportSourcePtr importedSource = component->importSource();
 
-            // KRM either remove this if, or the call to isUnresolvedImport above
-            if (importedSource->hasModel()) {
-                ModelPtr importedModel = importedSource->model();
-                ComponentPtr importedComponent = importedModel->component(component->importReference());
-                if (importedComponent == nullptr) {
-                    unresolvedImports = true;
-                } else {
-                    unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
-                }
+            ModelPtr importedModel = importedSource->model();
+            ComponentPtr importedComponent = importedModel->component(component->importReference());
+            if (importedComponent == nullptr) {
+                unresolvedImports = true;
+            } else {
+                unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
             }
         }
     } else {
-        // KRM check this component for imported children
         unresolvedImports = hasUnresolvedComponentImports(component);
     }
     return unresolvedImports;
