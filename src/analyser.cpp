@@ -44,6 +44,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct AnalyserInternalEquation;
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
+using AnalyserInternalEquationWeakPtr = std::weak_ptr<AnalyserInternalEquation>;
 
 struct AnalyserInternalVariable
 {
@@ -66,7 +67,7 @@ struct AnalyserInternalVariable
     VariablePtr mInitialisingVariable;
     VariablePtr mVariable;
 
-    AnalyserInternalEquationPtr mEquation;
+    AnalyserInternalEquationWeakPtr mEquation;
 
     explicit AnalyserInternalVariable(const VariablePtr &variable);
 
@@ -139,7 +140,7 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     std::vector<AnalyserInternalVariablePtr> mVariables;
     std::vector<AnalyserInternalVariablePtr> mOdeVariables;
 
-    AnalyserInternalVariablePtr mVariable = nullptr;
+    AnalyserInternalVariablePtr mVariable;
     ComponentPtr mComponent = nullptr;
 
     bool mComputedTrueConstant = true;
@@ -260,14 +261,17 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     for (const auto &variable : mVariables) {
         if (knownVariable(variable)) {
+            auto hasEquation = !variable->mEquation.expired();
+            auto equation = hasEquation ? variable->mEquation.lock() : nullptr;
+
             if (!mIsStateRateBased) {
-                mIsStateRateBased = (variable->mEquation == nullptr) ?
-                                        (variable->mType == AnalyserInternalVariable::Type::STATE) :
-                                        variable->mEquation->mIsStateRateBased;
+                mIsStateRateBased = hasEquation ?
+                                        equation->mIsStateRateBased :
+                                        (variable->mType == AnalyserInternalVariable::Type::STATE);
             }
 
-            if (variable->mEquation != nullptr) {
-                mDependencies.push_back(variable->mEquation);
+            if (hasEquation) {
+                mDependencies.push_back(equation);
             }
         }
     }
@@ -1407,7 +1411,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             }
 
             auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-            auto equation = equationMappings[internalVariable->mEquation];
+            auto equation = equationMappings[internalVariable->mEquation.lock()];
 
             stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
                                               internalVariable->mInitialisingVariable,
