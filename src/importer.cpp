@@ -104,14 +104,12 @@ std::string resolvePath(const std::string &filename, const std::string &base)
 bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 
 {
-    // Check through model for overlap with the current history.
+    // Check through model for overlap with the current history so we can report cycles properly.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         auto units = model->units(u);
         if (units->isImport()) {
             ImportSourcePtr importSource = units->importSource();
             auto h = std::make_tuple(units->name(), units->importReference(), importSource->url());
-
-            // Check for cyclical dependencies using the entire tuple contents.
             if (std::find(history.begin(), history.end(), h) != history.end()) {
                 history.emplace_back(h);
                 return false;
@@ -124,8 +122,6 @@ bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::st
         if (component->isImport()) {
             ImportSourcePtr importSource = component->importSource();
             auto h = std::make_tuple(component->name(), component->importReference(), importSource->url());
-
-            // Check for cyclical dependencies using the entire tuple contents.
             if (std::find(history.begin(), history.end(), h) != history.end()) {
                 history.emplace_back(h);
                 return false;
@@ -183,8 +179,6 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
             std::string url = resolvePath(importSource->url(), baseFile);
             if (mLibrary.count(url) == 0) {
                 // If the url has not been resolved into a model in this library, parse it and save.
-                // Need to keep track of which models were resolved by parsing an external dependency, and
-                // which are present in the library.
                 std::ifstream file(url);
                 if (file.good()) {
                     std::stringstream buffer;
@@ -192,8 +186,11 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                     auto parser = Parser::create();
                     auto model = parser->parseModel(buffer.str());
                     importSource->setModel(model);
+
                     // Save the pair of model and url to the library map.
                     mLibrary.insert(std::make_pair(url, model));
+
+                    // Save the imported model to a list of external dependencies.
                     mExternals.emplace_back(std::make_pair(url, importedEntity->importReference()));
                     return doResolveImports(model, url, history);
                 }
@@ -201,11 +198,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                 // If it has, then pass the previous model instance to the import source.
                 auto model = mLibrary[url];
                 importSource->setModel(model);
-                // Check its child imports for reporting purposes.  We now prevent cyclic imports from being instantiated,
-                // but also want to alert the user when they're present in a model structure. This will only do one
-                // level of recusion as the model has already been resolved previously.
-                // KRM I'm not sure that we need to do this really ... maybe find a better way to report cycles?
-                return checkForCycles(model, history); // KRM removing to try and test memory leak location
+                return checkForCycles(model, history);
             }
         }
     }

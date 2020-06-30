@@ -112,6 +112,32 @@ TEST(Importer, warningUnrequiredCircularDependencyComponent)
     EXPECT_EQ(warningMessage, importer->warning(0)->description());
 }
 
+TEST(Importer, warningUnrequiredCircularDependencyUnits)
+{
+    // This test is intended to show what happens when one model attempts to import a concrete units from a
+    // second model, where the second model has unrelated circular dependencies:
+    //   - model1 imports units1 from model2
+    //   - model2 defines units1
+    //   - model2 also defines a circular dependency unrelated to units1
+
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve units in model 'circularImport3'. The dependency loop is:\n"
+                                 "    units 'c' imports 'i_am_ok_but_my_sibling_is_cyclic' from 'circularUnits_1.cellml',\n"
+                                 "    units 'i_am_cyclic' imports 'u2' from 'circularUnits_2.cellml',\n"
+                                 "    units 'u2' imports 'u3' from 'circularUnits_3.cellml',\n"
+                                 "    units 'u3' imports 'i_am_cyclic' from 'circularUnits_1.cellml',\n"
+                                 "    units 'i_am_cyclic' imports 'u2' from 'circularUnits_2.cellml'.";
+
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("resolveimports/master2.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(size_t(1), importer->warningCount());
+    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+}
+
 TEST(Importer, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
