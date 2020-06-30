@@ -12,24 +12,20 @@ class GeneratorProfileTestCase(unittest.TestCase):
         x = GeneratorProfile()
         del x
 
-    def test_profile(self):
+    def test_generator_profile(self):
         from libcellml import GeneratorProfile
 
+        # Create a default, i.e. C, profile.
         p = GeneratorProfile()
         self.assertEqual(GeneratorProfile.Profile.C, p.profile())
 
+        # Make the profile a Python profile.
         p.setProfile(GeneratorProfile.Profile.PYTHON)
         self.assertEqual(GeneratorProfile.Profile.PYTHON, p.profile())
 
-    def test_has_interface(self):
-        from libcellml import GeneratorProfile
-
-        p = GeneratorProfile()
-
-        self.assertTrue(p.hasInterface())
-
-        p.setHasInterface(False)
-        self.assertFalse(p.hasInterface())
+        # Create a Python profile.
+        pp = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
+        self.assertEqual(GeneratorProfile.Profile.PYTHON, pp.profile())
 
 
 if __name__ == '__main__':
