@@ -1710,20 +1710,18 @@ TEST(Variable, addVariableDuplicates)
     EXPECT_TRUE(model->addComponent(tomato));
     EXPECT_TRUE(model->addComponent(apple));
 
-    // Adding a pip to the tomato
+    // Adding a pip to the tomato.
     EXPECT_TRUE(tomato->addVariable(pip));
+    EXPECT_EQ(size_t(1), tomato->variableCount());
 
-    // Add some more ... expect false return.
+    // Try to add the same pip again.
     EXPECT_FALSE(tomato->addVariable(pip));
 
-    // Add a pip to the apple as well (I'd expect this to move the variable out
-    // of the tomato component):
+    // Add the same pip to the apple this time, which will effectively move it
+    // from the tomato to the apple.
     EXPECT_TRUE(apple->addVariable(pip));
 
-    // I would expect the last addVariable (which was in to the apple component) to move the
-    // pip variable there.
     EXPECT_EQ(size_t(1), apple->variableCount());
-    // ... and out of the tomato:
     EXPECT_EQ(size_t(0), tomato->variableCount());
 }
 
@@ -1740,11 +1738,11 @@ TEST(Variable, addEquivalenceReturnsFalseProperly)
     EXPECT_TRUE(c1->addVariable(v1));
     EXPECT_TRUE(c2->addVariable(v2));
 
-    // Create a connection with self variable, expect no connections have been created:
+    // Create a connection with self variable, expect no connections have been created.
     EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, v1));
     EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
 
-    // Create a connection with one nullptr, expect no connections have been created:
+    // Create a connection with one nullptr, expect no connections have been created.
     EXPECT_FALSE(libcellml::Variable::addEquivalence(v2, nullptr));
     EXPECT_EQ(size_t(0), v2->equivalentVariableCount());
 }
