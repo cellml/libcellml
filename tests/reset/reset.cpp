@@ -208,11 +208,12 @@ TEST(Reset, addResetThatHasAParentComponent)
     EXPECT_EQ(size_t(0), c1->resetCount());
     EXPECT_EQ(size_t(0), c2->resetCount());
 
+    // Add r to c1.
     EXPECT_TRUE(c1->addReset(r));
     EXPECT_EQ(size_t(1), c1->resetCount());
     EXPECT_EQ(size_t(0), c2->resetCount());
 
-    // Reset is moved from c1 to c2
+    // Add r to c2, which effectively moves it from c1 to c2.
     EXPECT_TRUE(c2->addReset(r));
     EXPECT_EQ(size_t(0), c1->resetCount());
     EXPECT_EQ(size_t(1), c2->resetCount());
@@ -225,14 +226,15 @@ TEST(Reset, addResetInvalidArguments)
 
     EXPECT_EQ(size_t(0), c->resetCount());
 
+    // Add r to c.
     EXPECT_TRUE(c->addReset(r));
     EXPECT_EQ(size_t(1), c->resetCount());
 
-    // Try and add an existing reset to trigger 'false' return.
+    // Try to add r to c again, which cannot be done.
     EXPECT_FALSE(c->addReset(r));
     EXPECT_EQ(size_t(1), c->resetCount());
 
-    // Try and add a nullptr to trigger 'false' return.
+    // Try to add a nullptr to c, which cannot be done.
     EXPECT_FALSE(c->addReset(nullptr));
     EXPECT_EQ(size_t(1), c->resetCount());
 }
@@ -244,22 +246,24 @@ TEST(Reset, removeReset)
     libcellml::ResetPtr r2 = libcellml::Reset::create();
     libcellml::ResetPtr r3 = libcellml::Reset::create();
 
-    c->addReset(r1);
-    c->addReset(r2);
+    // Add r1 and r2 to c.
+    EXPECT_TRUE(c->addReset(r1));
+    EXPECT_TRUE(c->addReset(r2));
+    EXPECT_EQ(size_t(2), c->resetCount());
 
-    // Remove the reset r1.
-    c->removeReset(r1);
+    // Remove r1 from c.
+    EXPECT_TRUE(c->removeReset(r1));
     EXPECT_EQ(nullptr, r1->parent());
     EXPECT_EQ(size_t(1), c->resetCount());
 
-    // Remove reset by index.
-    c->removeReset(0);
+    // Remove r2 by index.
+    EXPECT_TRUE(c->removeReset(0));
     EXPECT_EQ(size_t(0), c->resetCount());
 
-    // Add resets and use removeAllResets to remove them.
-    c->addReset(r1);
-    c->addReset(r2);
-    c->addReset(r3);
+    // Add r1, r2 and r3 to c, and use removeAllResets to remove them.
+    EXPECT_TRUE(c->addReset(r1));
+    EXPECT_TRUE(c->addReset(r2));
+    EXPECT_TRUE(c->addReset(r3));
     EXPECT_EQ(size_t(3), c->resetCount());
 
     c->removeAllResets();
@@ -272,7 +276,8 @@ TEST(Reset, removeResetInvalidArguments)
     libcellml::ResetPtr r1 = libcellml::Reset::create();
     libcellml::ResetPtr r2 = libcellml::Reset::create();
 
-    c->addReset(r1);
+    // Add r1 to c.
+    EXPECT_TRUE(c->addReset(r1));
 
     // Try and remove the ones which don't exist so we trigger the 'false' return statement.
     EXPECT_FALSE(c->removeReset(1));
@@ -286,9 +291,11 @@ TEST(Reset, takeReset)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::ResetPtr r = libcellml::Reset::create();
 
-    c->addReset(r);
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
     EXPECT_EQ(size_t(1), c->resetCount());
 
+    // Retrieve r by index.
     auto taken_r = c->takeReset(0);
     EXPECT_EQ(r, taken_r);
     EXPECT_EQ(nullptr, r->parent());
@@ -301,9 +308,11 @@ TEST(Reset, takeNonExistentReset)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::ResetPtr r = libcellml::Reset::create();
 
-    c->addReset(r);
+    // Add r to c.
+    EXPECT_TRUE(c->addReset(r));
     EXPECT_EQ(size_t(1), c->resetCount());
 
+    // Retrieve a non-existent reset from c.
     auto taken_r = c->takeReset(1);
     EXPECT_EQ(nullptr, taken_r);
     EXPECT_EQ(size_t(1), c->resetCount());
