@@ -582,6 +582,8 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
             processNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
 
             for (auto i = childCount - 2; i > 1; --i) {
+                tempAst = AnalyserEquationAst::create();
+
                 processNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
                 processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
@@ -783,6 +785,8 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
             processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
             for (auto i = childCount - 2; i > 0; --i) {
+                tempAst = AnalyserEquationAst::create();
+
                 tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
                 processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
