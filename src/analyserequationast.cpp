@@ -70,57 +70,6 @@ AnalyserEquationAstPtr AnalyserEquationAst::create() noexcept
     return std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
 }
 
-AnalyserEquationAstPtr AnalyserEquationAst::create(Type type,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = type;
-    res->mPimpl->mParent = parent;
-
-    return res;
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(Type type,
-                                                   const std::string &value,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = type;
-    res->mPimpl->mValue = value;
-    res->mPimpl->mParent = parent;
-
-    return res;
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(Type type,
-                                                   const VariablePtr &variable,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = type;
-    res->mPimpl->mVariable = variable;
-    res->mPimpl->mParent = parent;
-
-    return res;
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(const AnalyserEquationAstPtr &ast,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = ast->mPimpl->mType;
-    res->mPimpl->mVariable = ast->mPimpl->mVariable;
-    res->mPimpl->mParent = parent;
-    res->mPimpl->mLeftChild = ast->mPimpl->mLeftChild;
-    res->mPimpl->mRightChild = ast->mPimpl->mRightChild;
-
-    return res;
-}
-
 AnalyserEquationAst::Type AnalyserEquationAst::type() const
 {
     return mPimpl->mType;
