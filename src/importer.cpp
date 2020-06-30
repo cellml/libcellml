@@ -146,7 +146,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
         // Only parse import if it doesn't already exist in our importer library.
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->url(), baseFile);
-            if (this->mLibrary.count(url) == 0) {
+            if (mLibrary.count(url) == 0) {
                 // If the url has not been resolved into a model in this library, parse it and save.
                 // Need to keep track of which models were resolved by parsing an external dependency, and
                 // which are present in the library.
@@ -158,19 +158,19 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                     auto model = parser->parseModel(buffer.str());
                     importSource->setModel(model);
                     // Save the pair of model and url to the library map.
-                    this->mLibrary.insert(std::make_pair(url, model));
-                    this->mExternals.emplace_back(std::make_pair(url, importedEntity->importReference()));
+                    mLibrary.insert(std::make_pair(url, model));
+                    mExternals.emplace_back(std::make_pair(url, importedEntity->importReference()));
                     return doResolveImports(model, url, history);
                 }
             } else {
                 // If it has, then pass the previous model instance to the import source.
-                auto model = this->mLibrary[url];
-                importSource->setModel(model);
+                // auto model = mLibrary[url];
+                importSource->setModel(mLibrary[url]);
                 // Check its child imports for reporting purposes.  We now prevent cyclic imports from being instantiated,
                 // but also want to alert the user when they're present in a model structure. This will only do one
                 // level of recusion as the model has already been resolved previously.
                 // KRM I'm not sure that we need to do this really ... maybe find a better way to report cycles?
-                return doResolveImports(model, url, history);
+                // return doResolveImports(model, url, history); // KRM removing to try and test memory leak location
             }
         }
     }
