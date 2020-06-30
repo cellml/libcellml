@@ -374,8 +374,6 @@ struct Analyser::AnalyserImpl
                      const AnalyserEquationAstPtr &astParent,
                      const ComponentPtr &component,
                      const AnalyserInternalEquationPtr &equation);
-    AnalyserInternalEquationPtr processNode(const XmlNodePtr &node,
-                                            const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
@@ -882,22 +880,6 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     }
 }
 
-AnalyserInternalEquationPtr Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
-                                                                const ComponentPtr &component)
-{
-    // Create and keep track of the equation associated with the given node.
-
-    auto equation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
-
-    mInternalEquations.push_back(equation);
-
-    // Actually process the node and return its corresponding equation.
-
-    processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
-
-    return equation;
-}
-
 void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 {
     // Retrieve the math string associated with the given component and process
@@ -913,7 +895,17 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
         for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
-                processNode(node, component);
+                // Create and keep track of the equation associated with the
+                // given node.
+
+                auto equation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
+
+                mInternalEquations.push_back(equation);
+
+                // Actually process the node and return its corresponding
+                // equation.
+
+                processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
             }
         }
     }
