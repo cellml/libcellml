@@ -28,12 +28,9 @@ using AnalyserEquationAstWeakPtr = std::weak_ptr<AnalyserEquationAst>; /**< Type
 struct AnalyserEquationAst::AnalyserEquationAstImpl
 {
     AnalyserEquationAst::Type mType = Type::ASSIGNMENT;
-
     std::string mValue;
     VariablePtr mVariable = nullptr;
-
     AnalyserEquationAstWeakPtr mParent;
-
     AnalyserEquationAstPtr mLeftChild = nullptr;
     AnalyserEquationAstPtr mRightChild = nullptr;
 
