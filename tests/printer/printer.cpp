@@ -123,8 +123,8 @@ TEST(Printer, printReset)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"valid_name\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
         "    <variable name=\"variable1\"/>\n"
         "    <variable name=\"variable2\"/>\n"
         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
@@ -138,15 +138,11 @@ TEST(Printer, printReset)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ModelPtr m = createModelWithComponent("model", "component");
     libcellml::ComponentPtr c = m->component(0);
-    libcellml::VariablePtr v1 = libcellml::Variable::create();
-    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create("variable1");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("variable2");
     libcellml::ResetPtr r = libcellml::Reset::create();
-
-    c->setName("valid_name");
-    v1->setName("variable1");
-    v2->setName("variable2");
 
     r->setVariable(v1);
     r->setTestVariable(v2);

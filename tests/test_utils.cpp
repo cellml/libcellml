@@ -189,11 +189,11 @@ libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model,
     return component;
 }
 
-libcellml::ModelPtr createModelWithComponent(const std::string &name)
+libcellml::ModelPtr createModelWithComponent(const std::string &modelName, const std::string &componentName)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
-    model->setName(name);
-    createComponentInModel(model, "");
+    model->setName(modelName);
+    createComponentInModel(model, componentName);
     return model;
 }
 
