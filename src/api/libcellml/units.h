@@ -430,7 +430,7 @@ public:
      *
      * Test to determine whether this units has any imported units.
      *
-     * @return @c true when these @c Units rely on @c Units which are imported,
+     * @return @c true when this @c Units relies on @c Units which are imported,
      * @c false otherwise.
      */
     bool requiresImports() const;
