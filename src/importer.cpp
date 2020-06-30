@@ -174,7 +174,12 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
 
         // Only parse import if it doesn't already exist in our importer library.
         if (!importSource->hasModel()) {
-            std::string url = resolvePath(importSource->url(), baseFile);
+            std::string url = importSource->url();
+
+            if (mLibrary.count(url) == 0) {
+                url = resolvePath(importSource->url(), baseFile);
+            }
+
             if (mLibrary.count(url) == 0) {
                 // If the url has not been resolved into a model in this library, parse it and save.
                 std::ifstream file(url);

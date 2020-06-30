@@ -479,27 +479,109 @@ TEST(Importer, getListOfDependencies)
     EXPECT_EQ(empty, importer->externalDependency(999));
 }
 
-// TEST(Importer, tryingStuffOut)
-// {
-//     // This is a test to figure out whether we need to restrict the library keys to absolute URLs, or
-//     // whether they could be any string.
-//     auto parser = libcellml::Parser::create();
+TEST(Importer, tryingStuffOut)
+{
+    // This is a test to figure out whether we need to restrict the library keys to absolute URLs, or
+    // whether they could be any string.  This test creates a collection of models from different sources,
+    // some which need imports, some not, and uses them to resolve imports on another model.
+    auto parser = libcellml::Parser::create();
 
-//     // Create a collection of useful models from different sources, some which need imports, some not.
-//     auto concreteUnits = parser->parseModel(resourcePath("resolveimports/units_concrete.cellml"));
-//     auto importedUnits = parser->parseModel(resourcePath("resolveimports/units_imported.cellm"));
-//     auto concreteComponents = parser->parseModel(resourcePath("resolveimports/components_concrete.cellml"));
-//     auto importedComponents = parser->parseModel(resourcePath("resolveimports/components_imported.cellml"));
+    // Parsing concrete units and components.
+    auto concreteUnits = parser->parseModel(fileContents("resolveimports/units_concrete.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    printIssues(parser);
+    auto concreteComponents = parser->parseModel(fileContents("resolveimports/components_concrete.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    printIssues(parser);
 
-//     // Create other models through the API.
-//     auto localUnits = libcellml::Model::create("localUnits");
-//     localUnits->addUnits(libcellml::Units::create("u1Local"));
+    // Parsing a model which imports components and units from files called units_source.cellml
+    // and components_source.cellml respectively.  These "hidden" files will also be added to the importer
+    // library when they're resolved.
+    auto importedUnits = parser->parseModel(fileContents("resolveimports/units_imported.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    printIssues(parser);
+    auto importedComponents = parser->parseModel(fileContents("resolveimports/components_imported.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    printIssues(parser);
 
-//     auto localComponents = libcellml::Model::create("localComponents");
-//     localComponents->addComponent(libcellml::Component::create("c1Local"));
+    // Create models through the API. These don't need import resolution.
+    auto localConcreteUnits = libcellml::Model::create("localConcreteUnits");
+    localConcreteUnits->addUnits(libcellml::Units::create("units5"));
+    auto localConcreteComponents = libcellml::Model::create("localConcreteComponents");
+    localConcreteComponents->addComponent(libcellml::Component::create("component5"));
 
-//     // Add all the concrete models to the Importer.
-//     auto importer = libcellml::Importer::create();
-//     importer->addModel(localUnits, "local units key"); // add with a key that's not a URL.
-//     importer->addModel(localComponents, "")
-// }
+    // Add all the concrete models to the Importer. These don't need resolving as they have no imports of their own.
+    auto importer = libcellml::Importer::create();
+    importer->addModel(concreteUnits, "the concrete units file"); // add with key that's not a URL
+    importer->addModel(concreteComponents, "https://www.example.com/myComponents.cellml"); // add with a key that is a remote URL
+    importer->addModel(localConcreteUnits, "1234567890"); // add with a numerical key (yeah, I know, why would you? But hey ...)
+    importer->addModel(localConcreteComponents, "#hello!"); // add with a key with special characters (here too ...)
+
+    // Add models which have imports to the Importer by resolving them. They are automatically saved into the
+    // Importer's library, along with any dependencies, under the names used to resolve them.
+    importer->resolveImports(importedUnits, resourcePath("resolveimports/"));
+    importer->resolveImports(importedComponents, resourcePath("resolveimports/"));
+
+    EXPECT_FALSE(importedUnits->hasUnresolvedImports());
+    EXPECT_FALSE(importedComponents->hasUnresolvedImports());
+
+    // for (size_t e = 0; e < importer->externalDependencyCount(); ++e) {
+    //     std::cout << importer->externalDependency(e).first << " " << importer->externalDependency(e).second << std::endl;
+    // }
+
+    // Now create a funky model that imports from all over the place and see what happens.
+    std::string funkyString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                              "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"funky\">\n"
+                              // Status quo functionality, key is local URL + base file path as the local URL doesn't exist as a key.
+                              "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_imported.cellml\">\n"
+                              "    <units units_ref=\"units1_imported\" name=\"units1FromLibrary\"/>\n"
+                              "  </import>\n"
+                              // Use the local URL for a hidden child source component.
+                              "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"components_source.cellml\">\n"
+                              "    <component component_ref=\"component1\" name=\"component1FromLibrary\"/>\n"
+                              "  </import>\n"
+                              // Use the absolute URL for a hidden child source component.
+                              "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\""
+                              + resourcePath("resolveimports/components_source.cellml")
+                              + "\">\n"
+                                "    <component component_ref=\"component2\" name=\"component2FromLibrary\"/>\n"
+                                "  </import>\n"
+                                // Remote website URL used for key.
+                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://www.example.com/myComponents.cellml\">\n"
+                                "    <component component_ref=\"component3\" name=\"component3FromLibrary\"/>\n"
+                                "  </import>\n"
+                                // Random string used for key. Most certainly not a valid URL.
+                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"the concrete units file\">\n"
+                                "    <units units_ref=\"units4\" name=\"units4FromLibrary\"/>\n"
+                                "  </import>\n"
+                                // Numerical key.
+                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"1234567890\">\n"
+                                "    <units units_ref=\"units5\" name=\"units5FromLibrary\"/>\n"
+                                "  </import>\n"
+                                // Key with special characters.
+                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"#hello!\">\n"
+                                "    <component component_ref=\"component5\" name=\"component5FromLibrary\"/>\n"
+                                "  </import>\n"
+                                "</model>";
+
+    auto funkyModel = parser->parseModel(funkyString);
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    // Pass in a base file path, this will be used to resolve URLs if they don't already exist as keys.
+    // This allows the model to be resolved against different locations where local files are specified.
+    importer->resolveImports(funkyModel, resourcePath("resolveimports/"));
+    EXPECT_FALSE(funkyModel->hasUnresolvedImports());
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    // Apparently funky hrefs are valid ...
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(funkyModel);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    // ... and can be flattened as expected too.
+    auto flattenedFunkyModel = importer->flatten(funkyModel);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    flattenedFunkyModel->setName("flattenedFunkyModel");
+    validator->validateModel(flattenedFunkyModel);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+}
