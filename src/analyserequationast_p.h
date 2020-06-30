@@ -36,6 +36,15 @@ struct AnalyserEquationAst::AnalyserEquationAstImpl
 
     AnalyserEquationAstPtr mLeftChild = nullptr;
     AnalyserEquationAstPtr mRightChild = nullptr;
+
+    void populate(AnalyserEquationAst::Type type,
+                  const AnalyserEquationAstPtr &parent);
+    void populate(AnalyserEquationAst::Type type, const std::string &value,
+                  const AnalyserEquationAstPtr &parent);
+    void populate(AnalyserEquationAst::Type type, const VariablePtr &variable,
+                  const AnalyserEquationAstPtr &parent);
+    void populate(const AnalyserEquationAstPtr &ast,
+                  const AnalyserEquationAstPtr &parent);
 };
 
 } // namespace libcellml

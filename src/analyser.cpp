@@ -535,6 +535,12 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
                                          const ComponentPtr &component,
                                          const AnalyserInternalEquationPtr &equation)
 {
+    // Create the AST, if needed.
+
+    if (ast.get() == nullptr) {
+        ast.reset(new AnalyserEquationAst);
+    }
+
     // Basic content elements.
 
     if (node->isMathmlElement("apply")) {
@@ -603,161 +609,161 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         // AnalyserEquationAst::Type::ASSIGNMENT type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
-            ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::EQ, astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::EQ, astParent);
 
             mModel->mPimpl->mNeedEqFunction = true;
         }
     } else if (node->isMathmlElement("neq")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::NEQ, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::NEQ, astParent);
 
         mModel->mPimpl->mNeedNeqFunction = true;
     } else if (node->isMathmlElement("lt")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LT, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::LT, astParent);
 
         mModel->mPimpl->mNeedLtFunction = true;
     } else if (node->isMathmlElement("leq")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LEQ, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::LEQ, astParent);
 
         mModel->mPimpl->mNeedLeqFunction = true;
     } else if (node->isMathmlElement("gt")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::GT, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::GT, astParent);
 
         mModel->mPimpl->mNeedGtFunction = true;
     } else if (node->isMathmlElement("geq")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::GEQ, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::GEQ, astParent);
 
         mModel->mPimpl->mNeedGeqFunction = true;
     } else if (node->isMathmlElement("and")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::AND, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::AND, astParent);
 
         mModel->mPimpl->mNeedAndFunction = true;
     } else if (node->isMathmlElement("or")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::OR, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::OR, astParent);
 
         mModel->mPimpl->mNeedOrFunction = true;
     } else if (node->isMathmlElement("xor")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::XOR, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::XOR, astParent);
 
         mModel->mPimpl->mNeedXorFunction = true;
     } else if (node->isMathmlElement("not")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::NOT, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::NOT, astParent);
 
         mModel->mPimpl->mNeedNotFunction = true;
 
         // Arithmetic operators.
 
     } else if (node->isMathmlElement("plus")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PLUS, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::PLUS, astParent);
     } else if (node->isMathmlElement("minus")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::MINUS, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::MINUS, astParent);
     } else if (node->isMathmlElement("times")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::TIMES, astParent);
     } else if (node->isMathmlElement("divide")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::DIVIDE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::DIVIDE, astParent);
     } else if (node->isMathmlElement("power")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::POWER, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::POWER, astParent);
     } else if (node->isMathmlElement("root")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ROOT, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ROOT, astParent);
     } else if (node->isMathmlElement("abs")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ABS, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ABS, astParent);
     } else if (node->isMathmlElement("exp")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::EXP, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::EXP, astParent);
     } else if (node->isMathmlElement("ln")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::LN, astParent);
     } else if (node->isMathmlElement("log")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LOG, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::LOG, astParent);
     } else if (node->isMathmlElement("ceiling")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CEILING, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::FLOOR, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::FLOOR, astParent);
     } else if (node->isMathmlElement("min")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::MIN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::MIN, astParent);
 
         mModel->mPimpl->mNeedMinFunction = true;
     } else if (node->isMathmlElement("max")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::MAX, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::MAX, astParent);
 
         mModel->mPimpl->mNeedMaxFunction = true;
     } else if (node->isMathmlElement("rem")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::REM, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::REM, astParent);
 
         // Calculus elements.
 
     } else if (node->isMathmlElement("diff")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::DIFF, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::DIFF, astParent);
 
         // Trigonometric operators.
 
     } else if (node->isMathmlElement("sin")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SIN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::SIN, astParent);
     } else if (node->isMathmlElement("cos")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COS, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::COS, astParent);
     } else if (node->isMathmlElement("tan")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TAN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::TAN, astParent);
     } else if (node->isMathmlElement("sec")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SEC, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::SEC, astParent);
 
         mModel->mPimpl->mNeedSecFunction = true;
     } else if (node->isMathmlElement("csc")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CSC, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::CSC, astParent);
 
         mModel->mPimpl->mNeedCscFunction = true;
     } else if (node->isMathmlElement("cot")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COT, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::COT, astParent);
 
         mModel->mPimpl->mNeedCotFunction = true;
     } else if (node->isMathmlElement("sinh")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SINH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::SINH, astParent);
     } else if (node->isMathmlElement("cosh")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COSH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::COSH, astParent);
     } else if (node->isMathmlElement("tanh")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TANH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::TANH, astParent);
     } else if (node->isMathmlElement("sech")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::SECH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::SECH, astParent);
 
         mModel->mPimpl->mNeedSechFunction = true;
     } else if (node->isMathmlElement("csch")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CSCH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::CSCH, astParent);
 
         mModel->mPimpl->mNeedCschFunction = true;
     } else if (node->isMathmlElement("coth")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::COTH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::COTH, astParent);
 
         mModel->mPimpl->mNeedCothFunction = true;
     } else if (node->isMathmlElement("arcsin")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASIN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ASIN, astParent);
     } else if (node->isMathmlElement("arccos")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOS, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOS, astParent);
     } else if (node->isMathmlElement("arctan")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ATAN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ATAN, astParent);
     } else if (node->isMathmlElement("arcsec")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASEC, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ASEC, astParent);
 
         mModel->mPimpl->mNeedAsecFunction = true;
     } else if (node->isMathmlElement("arccsc")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACSC, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ACSC, astParent);
 
         mModel->mPimpl->mNeedAcscFunction = true;
     } else if (node->isMathmlElement("arccot")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOT, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOT, astParent);
 
         mModel->mPimpl->mNeedAcotFunction = true;
     } else if (node->isMathmlElement("arcsinh")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASINH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ASINH, astParent);
     } else if (node->isMathmlElement("arccosh")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOSH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOSH, astParent);
     } else if (node->isMathmlElement("arctanh")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ATANH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ATANH, astParent);
     } else if (node->isMathmlElement("arcsech")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ASECH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ASECH, astParent);
 
         mModel->mPimpl->mNeedAsechFunction = true;
     } else if (node->isMathmlElement("arccsch")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACSCH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ACSCH, astParent);
 
         mModel->mPimpl->mNeedAcschFunction = true;
     } else if (node->isMathmlElement("arccoth")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::ACOTH, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::ACOTH, astParent);
 
         mModel->mPimpl->mNeedAcothFunction = true;
 
@@ -766,7 +772,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("piecewise")) {
         auto childCount = mathmlChildCount(node);
 
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECEWISE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
@@ -777,7 +783,7 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
             processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
             for (auto i = childCount - 2; i > 0; --i) {
-                tempAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECEWISE, astParent);
+                tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
                 processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
@@ -792,12 +798,12 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
             ast->mPimpl->mRightChild = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PIECE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::PIECE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
         processNode(mathmlChildNode(node, 1), ast->mPimpl->mRightChild, ast, component, equation);
     } else if (node->isMathmlElement("otherwise")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::OTHERWISE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::OTHERWISE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
@@ -824,28 +830,28 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
         // Add the variable to our AST.
 
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CI, variable, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::CI, variable, astParent);
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
-            ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
-            ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
         }
 
         // Qualifier elements.
 
     } else if (node->isMathmlElement("degree")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::DEGREE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::DEGREE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("logbase")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::LOGBASE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::LOGBASE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("bvar")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::BVAR, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::BVAR, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
@@ -858,17 +864,17 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         // Constants.
 
     } else if (node->isMathmlElement("true")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::TRUE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::TRUE, astParent);
     } else if (node->isMathmlElement("false")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::FALSE, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::FALSE, astParent);
     } else if (node->isMathmlElement("exponentiale")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::E, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::E, astParent);
     } else if (node->isMathmlElement("pi")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::PI, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::PI, astParent);
     } else if (node->isMathmlElement("infinity")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::INF, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::INF, astParent);
     } else if (node->isMathmlElement("notanumber")) {
-        ast = AnalyserEquationAst::create(AnalyserEquationAst::Type::NAN, astParent);
+        ast->mPimpl->populate(AnalyserEquationAst::Type::NAN, astParent);
     }
 }
 
@@ -1137,12 +1143,16 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
                                       const AnalyserEquationAstPtr &astParent,
                                       double scalingFactor)
 {
-    // Scale the given AST using the given scaling factor
+    // Scale the given AST using the given scaling factor.
 
-    auto scaledAst = AnalyserEquationAst::create(AnalyserEquationAst::Type::TIMES, astParent);
+    auto scaledAst = AnalyserEquationAst::create();
 
-    scaledAst->mPimpl->mLeftChild = AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mPimpl->populate(AnalyserEquationAst::Type::TIMES, astParent);
+
+    scaledAst->mPimpl->mLeftChild = AnalyserEquationAst::create();
     scaledAst->mPimpl->mRightChild = ast;
+
+    scaledAst->mPimpl->mLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
 
     ast->mPimpl->mParent = scaledAst;
 

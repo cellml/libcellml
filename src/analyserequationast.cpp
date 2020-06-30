@@ -20,6 +20,41 @@ limitations under the License.
 
 namespace libcellml {
 
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = type;
+    mParent = parent;
+}
+
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+                                                            const std::string &value,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = type;
+    mValue = value;
+    mParent = parent;
+}
+
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
+                                                            const VariablePtr &variable,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = type;
+    mVariable = variable;
+    mParent = parent;
+}
+
+void AnalyserEquationAst::AnalyserEquationAstImpl::populate(const AnalyserEquationAstPtr &ast,
+                                                            const AnalyserEquationAstPtr &parent)
+{
+    mType = ast->mPimpl->mType;
+    mVariable = ast->mPimpl->mVariable;
+    mParent = parent;
+    mLeftChild = ast->mPimpl->mLeftChild;
+    mRightChild = ast->mPimpl->mRightChild;
+}
+
 AnalyserEquationAst::AnalyserEquationAst()
     : mPimpl(new AnalyserEquationAstImpl())
 {
@@ -33,57 +68,6 @@ AnalyserEquationAst::~AnalyserEquationAst()
 AnalyserEquationAstPtr AnalyserEquationAst::create() noexcept
 {
     return std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(Type type,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = type;
-    res->mPimpl->mParent = parent;
-
-    return res;
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(Type type,
-                                                   const std::string &value,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = type;
-    res->mPimpl->mValue = value;
-    res->mPimpl->mParent = parent;
-
-    return res;
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(Type type,
-                                                   const VariablePtr &variable,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = type;
-    res->mPimpl->mVariable = variable;
-    res->mPimpl->mParent = parent;
-
-    return res;
-}
-
-AnalyserEquationAstPtr AnalyserEquationAst::create(const AnalyserEquationAstPtr &ast,
-                                                   const AnalyserEquationAstPtr &parent) noexcept
-{
-    auto res = std::shared_ptr<AnalyserEquationAst> {new AnalyserEquationAst {}};
-
-    res->mPimpl->mType = ast->mPimpl->mType;
-    res->mPimpl->mVariable = ast->mPimpl->mVariable;
-    res->mPimpl->mParent = parent;
-    res->mPimpl->mLeftChild = ast->mPimpl->mLeftChild;
-    res->mPimpl->mRightChild = ast->mPimpl->mRightChild;
-
-    return res;
 }
 
 AnalyserEquationAst::Type AnalyserEquationAst::type() const

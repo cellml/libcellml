@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/analyser.h"
+#include "libcellml/generator.h"
 
 #undef NAN
 
@@ -31,6 +32,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT AnalyserEquationAst
 {
     friend class Analyser;
+    friend class Generator;
 
 public:
     enum class Type
@@ -146,100 +148,6 @@ public:
      * @return A smart pointer to a @c AnalyserEquationAst object.
      */
     static AnalyserEquationAstPtr create() noexcept;
-
-    /**
-     * @brief Create an @c AnalyserEquationAst object with a type and a parent.
-     *
-     * Factory method to create an @c AnalyserEquationAst with a type and a
-     * parent. Create an equation AST with an equal type and a parent AST with:
-     *
-     * @code
-     *   AnalyserEquationAstPtr ast = libcellml::AnalyserEquationAst::create(AnalyserEquationAst::Type::EQ, astParent);
-     * @endcode
-     *
-     * @overload
-     *
-     * @param type The @c AnalyserEquationAst::Type of this equation AST.
-     * @param parent The @c AnalyserEquationAst which is the parent of this
-     * equation AST.
-     *
-     * @return A smart pointer to an @c AnalyserEquationAst object.
-     */
-    static AnalyserEquationAstPtr create(AnalyserEquationAst::Type type,
-                                         const AnalyserEquationAstPtr &parent) noexcept;
-
-    /**
-     * @brief Create an @c AnalyserEquationAst object with a type, a value and a
-     * parent.
-     *
-     * Factory method to create an @c AnalyserEquationAst with a type, a value
-     * and a parent. Create an equation AST with a CN type, a value of "123" and
-     * a parent AST with:
-     *
-     * @code
-     *   AnalyserEquationAstPtr ast = libcellml::AnalyserEquationAst::create(AnalyserEquationAst::Type::CN, "123", astParent);
-     * @endcode
-     *
-     * @overload
-     *
-     * @param type The @c AnalyserEquationAst::Type of this equation AST.
-     * @param value The @c std::string representing the value of this equation
-     * AST.
-     * @param parent The @c AnalyserEquationAst which is the parent of this
-     * equation AST.
-     *
-     * @return A smart pointer to an @c AnalyserEquationAst object.
-     */
-    static AnalyserEquationAstPtr create(AnalyserEquationAst::Type type,
-                                         const std::string &value,
-                                         const AnalyserEquationAstPtr &parent) noexcept;
-
-    /**
-     * @brief Create an @c AnalyserEquationAst object with a type, a variable
-     * and a parent.
-     *
-     * Factory method to create an @c AnalyserEquationAst with a type, a
-     * variable and a parent. Create an equation AST with a CI type, a variable
-     * and a parent AST with:
-     *
-     * @code
-     *   AnalyserEquationAstPtr ast = libcellml::AnalyserEquationAst::create(AnalyserEquationAst::Type::CI, variable, astParent);
-     * @endcode
-     *
-     * @overload
-     *
-     * @param type The @c AnalyserEquationAst::Type of this equation AST.
-     * @param variable The @c Variable associated with this equation AST.
-     * @param parent The @c AnalyserEquationAst which is the parent of this
-     * equation AST.
-     *
-     * @return A smart pointer to an @c AnalyserEquationAst object.
-     */
-    static AnalyserEquationAstPtr create(AnalyserEquationAst::Type type,
-                                         const VariablePtr &variable,
-                                         const AnalyserEquationAstPtr &parent) noexcept;
-
-    /**
-     * @brief Create an @c AnalyserEquationAst object with an AST and a parent.
-     *
-     * Factory method to create an @c AnalyserEquationAst with an AST and a
-     * parent. Create an equation AST from another AST and a parent AST with:
-     *
-     * @code
-     *   AnalyserEquationAstPtr ast = libcellml::AnalyserEquationAst::create(otherAst, astParent);
-     * @endcode
-     *
-     * @overload
-     *
-     * @param ast The @c AnalyserEquationAst from which we want to initialise
-     * this equation AST.
-     * @param parent The @c AnalyserEquationAst which is the parent of this
-     * equation AST.
-     *
-     * @return A smart pointer to an @c AnalyserEquationAst object.
-     */
-    static AnalyserEquationAstPtr create(const AnalyserEquationAstPtr &ast,
-                                         const AnalyserEquationAstPtr &parent) noexcept;
 
     /**
      * @brief Get the @c Type of this @c AnalyserEquationAst.
