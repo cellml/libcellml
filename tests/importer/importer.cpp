@@ -86,32 +86,31 @@ TEST(Importer, warningCircularImportReferencesUnits)
     EXPECT_EQ(warningMessage, importer->warning(0)->description());
 }
 
-// KRM Removing to see whether this triggers memory leaks.
-// TEST(Importer, warningUnrequiredCircularDependencyComponent)
-// {
-//     // This test is intended to show what happens when one model attempts to import a concrete component from a
-//     // second model, where the second model has unrelated circular dependencies:
-//     //   - model1 imports component1 from model2
-//     //   - model2 defines component1
-//     //   - model2 also defines a circular dependency unrelated to component1
+TEST(Importer, warningUnrequiredCircularDependencyComponent)
+{
+    // This test is intended to show what happens when one model attempts to import a concrete component from a
+    // second model, where the second model has unrelated circular dependencies:
+    //   - model1 imports component1 from model2
+    //   - model2 defines component1
+    //   - model2 also defines a circular dependency unrelated to component1
 
-//     std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport1'. The dependency loop is:\n"
-//                                  "    component 'c' imports 'i_am_ok_but_my_sibling_is_cyclic' from 'circularImport_1.cellml',\n"
-//                                  "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml',\n"
-//                                  "    component 'c2' imports 'c3' from 'circularImport_3.cellml',\n"
-//                                  "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
-//                                  "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
+    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport3'. The dependency loop is:\n"
+                                 "    component 'c' imports 'i_am_ok_but_my_sibling_is_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml',\n"
+                                 "    component 'c2' imports 'c3' from 'circularImport_3.cellml',\n"
+                                 "    component 'c3' imports 'i_am_cyclic' from 'circularImport_1.cellml',\n"
+                                 "    component 'i_am_cyclic' imports 'c2' from 'circularImport_2.cellml'.";
 
-//     auto parser = libcellml::Parser::create();
-//     auto importer = libcellml::Importer::create();
-//     auto model = parser->parseModel(fileContents("resolveimports/master1.cellml"));
-//     EXPECT_EQ(size_t(0), parser->issueCount());
-//     importer->resolveImports(model, resourcePath("resolveimports/"));
-//     EXPECT_FALSE(model->hasUnresolvedImports());
-//     EXPECT_EQ(size_t(1), importer->issueCount());
-//     EXPECT_EQ(size_t(1), importer->warningCount());
-//     EXPECT_EQ(warningMessage, importer->warning(0)->description());
-// }
+    auto parser = libcellml::Parser::create();
+    auto importer = libcellml::Importer::create();
+    auto model = parser->parseModel(fileContents("resolveimports/master1.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(size_t(1), importer->warningCount());
+    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+}
 
 TEST(Importer, missingUnitsFromImportOfCnTerms)
 {
