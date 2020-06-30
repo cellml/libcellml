@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/analyser.h"
+#include "libcellml/generator.h"
 
 #undef NAN
 
@@ -31,6 +32,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT AnalyserEquationAst
 {
     friend class Analyser;
+    friend class Generator;
 
 public:
     enum class Type
