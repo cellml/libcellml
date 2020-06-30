@@ -114,7 +114,6 @@ bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::st
                 history.emplace_back(h);
                 return false;
             }
-            history.emplace_back(h);
         }
     }
     for (size_t c = 0; c < model->componentCount(); ++c) {
@@ -126,7 +125,6 @@ bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::st
                 history.emplace_back(h);
                 return false;
             }
-            history.emplace_back(h);
         }
     }
     return true;
