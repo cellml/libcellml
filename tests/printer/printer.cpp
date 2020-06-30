@@ -119,6 +119,52 @@ TEST(Printer, printEmptyReset)
     EXPECT_EQ(e, a);
 }
 
+TEST(Printer, printReset)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    c->setName("valid_name");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    r->setResetValue(EMPTY_MATH);
+    r->setTestValue(EMPTY_MATH);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addReset(r);
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+
+    const std::string a = printer->printModel(m);
+    EXPECT_EQ(e, a);
+
+}
+
 TEST(Printer, printEncapsulation)
 {
     const std::string e_parent =

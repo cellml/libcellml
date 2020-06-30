@@ -428,10 +428,12 @@ public:
     /**
      * @brief Check whether there are any imported child @c Units.
      *
+     * Test to determine whether this units has any imported units.
+     *
      * @return @c true when these @c Units rely on @c Units which are imported,
-     * or @c false otherwise.
+     * @c false otherwise.
      */
-    bool requiresImports();
+    bool requiresImports() const;
 
     /**
      * @brief Return the scaling factor difference between two @c Units.
