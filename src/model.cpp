@@ -24,8 +24,6 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
-#include <iostream> // KRM
-
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
