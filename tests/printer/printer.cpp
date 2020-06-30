@@ -162,7 +162,6 @@ TEST(Printer, printReset)
 
     const std::string a = printer->printModel(m);
     EXPECT_EQ(e, a);
-
 }
 
 TEST(Printer, printEncapsulation)
