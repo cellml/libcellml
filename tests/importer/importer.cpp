@@ -478,3 +478,28 @@ TEST(Importer, getListOfDependencies)
     std::pair<std::string, std::string> empty;
     EXPECT_EQ(empty, importer->externalDependency(999));
 }
+
+// TEST(Importer, tryingStuffOut)
+// {
+//     // This is a test to figure out whether we need to restrict the library keys to absolute URLs, or
+//     // whether they could be any string.
+//     auto parser = libcellml::Parser::create();
+
+//     // Create a collection of useful models from different sources, some which need imports, some not.
+//     auto concreteUnits = parser->parseModel(resourcePath("resolveimports/units_concrete.cellml"));
+//     auto importedUnits = parser->parseModel(resourcePath("resolveimports/units_imported.cellm"));
+//     auto concreteComponents = parser->parseModel(resourcePath("resolveimports/components_concrete.cellml"));
+//     auto importedComponents = parser->parseModel(resourcePath("resolveimports/components_imported.cellml"));
+
+//     // Create other models through the API.
+//     auto localUnits = libcellml::Model::create("localUnits");
+//     localUnits->addUnits(libcellml::Units::create("u1Local"));
+
+//     auto localComponents = libcellml::Model::create("localComponents");
+//     localComponents->addComponent(libcellml::Component::create("c1Local"));
+
+//     // Add all the concrete models to the Importer.
+//     auto importer = libcellml::Importer::create();
+//     importer->addModel(localUnits, "local units key"); // add with a key that's not a URL.
+//     importer->addModel(localComponents, "")
+// }
