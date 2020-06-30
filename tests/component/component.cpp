@@ -553,19 +553,17 @@ TEST(Component, addVariableMultipleTimes)
     EXPECT_TRUE(model->addComponent(tomato));
     EXPECT_TRUE(model->addComponent(apple));
 
-    // Adding a pip to the tomato: It would be nice to have a boolean return from all addSomething functions!
-    tomato->addVariable(pip);
+    // Adding a pip to the tomato.
+    EXPECT_TRUE(tomato->addVariable(pip));
 
-    // Add some more ... (this shouldn't be allowed, but I can do it!)
-    tomato->addVariable(pip);
-    tomato->addVariable(pip);
-    tomato->addVariable(pip);
+    // Try to add the same pip again.
+    EXPECT_FALSE(tomato->addVariable(pip));
 
     EXPECT_EQ(size_t(1), tomato->variableCount());
 
-    // Add a pip to the apple as well (I'd expect this to move the variable out
-    // of the tomato component, but it just adds it here too):
-    apple->addVariable(pip);
+    // Add the pip to the apple, which will effectively move it from the tomato
+    // to the apple.
+    EXPECT_TRUE(apple->addVariable(pip));
     EXPECT_EQ(size_t(0), tomato->variableCount());
     EXPECT_EQ(size_t(1), apple->variableCount());
 }
