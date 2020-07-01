@@ -2,6 +2,10 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
+
+%import "types.i"
+
 %feature("docstring") libcellml::AnalyserEquationAst
 "Creates an :class:`AnalyserEquationAst` object.";
 
