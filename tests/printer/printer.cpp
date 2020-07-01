@@ -298,7 +298,8 @@ TEST(Printer, printModelWithStandardUnitsAdded)
 TEST(Printer, printModelImportingModelParentComponent)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importingModelParentComponent.cellml"));
+    auto modelContents = fileContents("importingModelParentComponent.cellml");
+    auto model = parser->parseModel(modelContents);
     EXPECT_EQ(size_t(0), parser->errorCount());
 
     auto validator = libcellml::Validator::create();
@@ -308,13 +309,14 @@ TEST(Printer, printModelImportingModelParentComponent)
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
-    EXPECT_EQ(serialisedModel, fileContents("importingModelParentComponent.cellml"));
+    EXPECT_EQ(serialisedModel, modelContents);
 }
 
 TEST(Printer, printModelImportingModelChildComponent)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importingModelChildComponent.cellml"));
+    auto modelContents = fileContents("importingModelChildComponent.cellml");
+    auto model = parser->parseModel(modelContents);
 
     auto validator = libcellml::Validator::create();
     validator->validateModel(model);
@@ -324,5 +326,5 @@ TEST(Printer, printModelImportingModelChildComponent)
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
-    EXPECT_EQ(serialisedModel, fileContents("importingModelChildComponent.cellml"));
+    EXPECT_EQ(serialisedModel, modelContents);
 }
