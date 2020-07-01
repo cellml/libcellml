@@ -71,6 +71,11 @@ other variables), this component will not be serialised in the connection.";
 %feature("docstring") libcellml::Component::addReset
 "Add a reset `reset` to this component.";
 
+%feature("docstring") libcellml::Component::takeReset
+"Removes a reset and returns it from this component, specified by index.
+
+Returns the `Reset` on success.";
+
 %feature("docstring") libcellml::Component::removeReset
 "Remove the reset at the given index from this component.
 If the index is not valid @c false is returned, the valid
