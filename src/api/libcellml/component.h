@@ -125,13 +125,21 @@ public:
     /**
      * @brief Add a variable by reference as part of this component.
      *
-     * Add a variable by reference as part of the given component.
+     * Add a variable by reference to the component. If the variable
+     * was previously in a different component, it is moved to this one, and the
+     * previous component's variable list is updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p variable reference already exists in this component; or
+     *  - The @p variable is the @c nullptr.
      *
      * @sa removeVariable
      *
      * @param variable The variable to add.
+     *
+     * @return @c true if the variable is added or @c false otherwise.
      */
-    void addVariable(const VariablePtr &variable);
+    bool addVariable(const VariablePtr &variable);
 
     /**
      * @brief Remove the variable at the given @p index from this component.
@@ -291,13 +299,35 @@ public:
     /**
      * @brief Add a reset by reference as part of this component.
      *
-     * Add a reset by reference as part of the given component.
+     * Add a reset by reference to the component. If the reset
+     * was previously in a different component, it is moved to this one, and the
+     * previous component's reset list is updated.
+     *
+     * The function will return @c false with no action taken if:
+     *  - the @p reset already exists in this component; or
+     *  - the supplied @param reset pointer is @c nullptr.
      *
      * @sa removeReset
      *
      * @param reset The reset to add.
+     *
+     * @return @c true if the reset is added or @c false otherwise.
      */
-    void addReset(const ResetPtr &reset);
+    bool addReset(const ResetPtr &reset);
+
+    /**
+     * @brief Take a reset at index.
+     *
+     * Remove the reset at the given index from this component and
+     * returns a reference to a reset at the index @p index for this
+     * component. If the index is not valid, a @c nullptr is returned. The valid
+     * range for the index is [0, \#resets).
+     *
+     * @param index The index of the reset to return.
+     *
+     * @return A reference to the reset at the given index on success, @c nullptr otherwise.
+     */
+    ResetPtr takeReset(size_t index);
 
     /**
      * @brief Remove the reset at the given @p index from this component.
@@ -310,7 +340,7 @@ public:
      *
      * @param index The index of the reset to remove.
      *
-     * @return True if the reset was removed, false otherwise.
+     * @return @c true if the reset was removed, @c false otherwise.
      */
     bool removeReset(size_t index);
 
