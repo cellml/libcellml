@@ -1109,19 +1109,23 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
+        // If the parent component of the variable is nonexistent or imported, don't check it.
+        auto equivalentComponent = owningComponent(equivalentVariable);
+        if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
+            continue;
+        }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             VariablePair reversePair = std::make_pair(equivalentVariable, variable);
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parent1 = owningComponent(variable);
-                ComponentPtr parent2 = owningComponent(equivalentVariable);
+                ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
@@ -1160,6 +1164,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
     }
 
     for (const VariablePtr &variable : variables) {
+        auto parentComponent = owningComponent(variable);
+        if (parentComponent->isImport()) {
+            continue;
+        }
         validateVariableInterface(variable, interfaceErrorsAlreadyReported);
         validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
         validateEquivalenceStructure(variable);
