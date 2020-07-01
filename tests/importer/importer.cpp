@@ -669,11 +669,13 @@ TEST(Importer, importFilesWithSameName)
 TEST(Importer, coverageNestedImportsClearingModels)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("resolveimports/model.cellml"));
+    auto model = parser->parseModel(fileContents("resolveimports/nested_components.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
+    printModel(model);
 
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("resolveimports/"));
+    printIssues(importer);
     EXPECT_EQ(size_t(0), importer->issueCount());
 
     EXPECT_FALSE(model->hasUnresolvedImports());
