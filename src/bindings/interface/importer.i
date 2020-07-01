@@ -45,6 +45,9 @@ the models passed to this importer."
 at which imports for models which have been resolved by the importer were accessed (and under
 which are now stored in the library). The second item is the import reference."
 
+%feature("docstring") libcellml::Importer::clearImports
+"Clears the links with other models from all import sources."
+
 %{
 #include "libcellml/importer.h"
 %}

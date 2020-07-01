@@ -252,6 +252,34 @@ void Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
     mPimpl->doResolveImports(model, baseFile, history);
 }
 
+void clearComponentImports(const ComponentPtr &component)
+{
+    if (component->isImport()) {
+        component->importSource()->setModel(nullptr);
+    }
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        if (component->component(c)->isImport()) {
+            component->component(c)->importSource()->setModel(nullptr);
+        }
+    }
+}
+
+void Importer::clearImports(ModelPtr &model)
+{
+    // Clears the models from all import sources in the model.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        if (model->units(u)->isImport()) {
+            model->units(u)->importSource()->setModel(nullptr);
+        }
+    }
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        clearComponentImports(model->component(c));
+        if (model->component(c)->isImport()) {
+            model->component(c)->importSource()->setModel(nullptr);
+        }
+    }
+}
+
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
