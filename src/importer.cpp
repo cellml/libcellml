@@ -262,7 +262,7 @@ void Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 void clearComponentImports(const ComponentPtr &component)
 {
     if (component->isImport()) {
-        component->importSource()->clearModel();
+        component->importSource()->setModel(nullptr);
     }
     for (size_t c = 0; c < component->componentCount(); ++c) {
         clearComponentImports(component->component(c));
@@ -274,7 +274,7 @@ void Importer::clearImports(ModelPtr &model)
     // Clears the models from all import sources in the model.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         if (model->units(u)->isImport()) {
-            model->units(u)->importSource()->clearModel();
+            model->units(u)->importSource()->setModel(nullptr);
         }
     }
     for (size_t c = 0; c < model->componentCount(); ++c) {

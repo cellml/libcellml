@@ -60,24 +60,24 @@ void ImportSource::setUrl(const std::string &url)
 
 ModelPtr ImportSource::model() const
 {
+    if (mPimpl->mModel.expired()) {
+        return nullptr;
+    }
     return mPimpl->mModel.lock();
 }
 
 void ImportSource::setModel(const ModelPtr &model)
 {
-    mPimpl->mModel = model;
+    if ((model == nullptr)&&(!mPimpl->mModel.expired())) {
+        mPimpl->mModel.reset();
+    } else {
+        mPimpl->mModel = model;
+    }
 }
 
 bool ImportSource::hasModel() const
 {
     return !mPimpl->mModel.expired();
-}
-
-void ImportSource::clearModel()
-{
-    if (!mPimpl->mModel.expired()){
-        mPimpl->mModel.reset();
-    }
 }
 
 ImportSourcePtr ImportSource::clone() const
