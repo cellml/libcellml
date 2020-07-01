@@ -73,6 +73,13 @@ bool ImportSource::hasModel() const
     return !mPimpl->mModel.expired();
 }
 
+void ImportSource::clearModel()
+{
+    if (!mPimpl->mModel.expired()){
+        mPimpl->mModel.reset();
+    }
+}
+
 ImportSourcePtr ImportSource::clone() const
 {
     auto i = create();
