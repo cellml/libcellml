@@ -19,7 +19,7 @@ class AnalyserTestCase(unittest.TestCase):
         x = Analyser()
         self.assertIsInstance(x, libcellml.logger.Logger)
 
-        # Test access to inherited methods
+        # Test access to inherited methods.
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(-1))
         self.assertEqual(x.issueCount(), 0)
