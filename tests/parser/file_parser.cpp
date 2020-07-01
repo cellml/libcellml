@@ -159,10 +159,11 @@ TEST(Parser, simpleGeneratorModel)
 TEST(Parser, parseModelWithImportedEquivVariables)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importingModel.cellml"));
+    auto modelContents = fileContents("importingModel.cellml");
+    auto model = parser->parseModel(modelContents);
 
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
-    EXPECT_EQ(serialisedModel, fileContents("importingModel.cellml"));
+    EXPECT_EQ(serialisedModel, modelContents);
 }
