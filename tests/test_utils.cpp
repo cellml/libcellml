@@ -60,7 +60,7 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths)
+void prettyPrintModelToStdout(libcellml::ModelPtr &model, bool includeMaths)
 {
     std::string spacer = "    ";
 
@@ -78,11 +78,11 @@ void printModelToTerminal(libcellml::ModelPtr &model, bool includeMaths)
     std::cout << spacer << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
     for (size_t c = 0; c < model->componentCount(); ++c) {
         auto component = model->component(c);
-        printComponentToTerminal(component, c, spacer + spacer, includeMaths);
+        prettyPrintComponentToStdout(component, c, spacer + spacer, includeMaths);
     }
 }
 
-void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths)
+void prettyPrintComponentToStdout(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths)
 {
     std::string local = "    ";
 
@@ -146,7 +146,7 @@ void printComponentToTerminal(const libcellml::ComponentPtr &component, size_t c
         for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
             auto child = component->component(c2);
             std::string oneMoreSpacer = spacer + local + local;
-            printComponentToTerminal(child, c2, oneMoreSpacer, includeMaths);
+            prettyPrintComponentToStdout(child, c2, oneMoreSpacer, includeMaths);
         }
     }
 }
