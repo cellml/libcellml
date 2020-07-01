@@ -54,6 +54,7 @@ using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Typ
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
 class Entity; /**< Forward declaration of Entity class. */
 using EntityPtr = std::shared_ptr<Entity>; /**< Type definition for shared entity pointer. */
+using EntityConstPtr = std::shared_ptr<const Entity>; /**< Type definition for shared entity const pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
