@@ -486,20 +486,18 @@ TEST(Importer, tryingStuffOut)
     // Parsing concrete units and components.
     auto concreteUnits = parser->parseModel(fileContents("resolveimports/units_concrete.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
+
     auto concreteComponents = parser->parseModel(fileContents("resolveimports/components_concrete.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
 
     // Parsing a model which imports components and units from files called units_source.cellml
     // and components_source.cellml respectively.  These "hidden" files will also be added to the importer
     // library when they're resolved.
     auto importedUnits = parser->parseModel(fileContents("resolveimports/units_imported.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
+
     auto importedComponents = parser->parseModel(fileContents("resolveimports/components_imported.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printIssues(parser);
 
     // Create models through the API. These don't need import resolution.
     auto localConcreteUnits = libcellml::Model::create("localConcreteUnits");
@@ -653,7 +651,6 @@ TEST(Importer, importFilesWithSameName)
 
     importer->resolveImports(model, resourcePath("resolveimports/"));
     EXPECT_EQ(size_t(0), importer->issueCount());
-    printIssues(importer);
 
     // 4 items in the library.
     EXPECT_EQ(size_t(4), importer->libraryCount());
@@ -667,4 +664,19 @@ TEST(Importer, importFilesWithSameName)
     for (size_t i = 0; i < importer->libraryCount(); ++i) {
         EXPECT_EQ(modelNames[i], importer->library(i)->name());
     }
+}
+
+TEST(Importer, coverageNestedImportsClearingModels)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/model.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    importer->clearImports(model);
+    EXPECT_TRUE(model->hasUnresolvedImports());
 }
