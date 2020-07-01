@@ -25,6 +25,9 @@ unset).";
 %feature("docstring") libcellml::ImportSource::setModel
 "Sets the Model to resolve this ImportSource.";
 
+%feature("docstring") libcellml::ImportSource::clearModel
+"Removes the association of this import source with a model."
+
 %feature("docstring") libcellml::ImportSource::hasModel
 "Returns True if this ImportSource has been resolved, False otherwise.";
 

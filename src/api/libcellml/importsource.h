@@ -89,6 +89,11 @@ public:
     void setModel(const ModelPtr &model);
 
     /**
+     * @brief Removes the association between this import source and a model.
+     */
+    void clearModel();
+
+    /**
      * @brief Test if this @c ImportSource is resolved.
      *
      * Method to test if this @c ImportSource has been resolved, i.e. the source @c Model has
