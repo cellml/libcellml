@@ -409,7 +409,7 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-ModelPtr owningModel(const EntityPtr &entity)
+ModelPtr owningModel(const EntityConstPtr &entity)
 {
     auto model = std::dynamic_pointer_cast<Model>(entity->parent());
     auto component = owningComponent(entity);
@@ -421,7 +421,7 @@ ModelPtr owningModel(const EntityPtr &entity)
     return model;
 }
 
-ComponentPtr owningComponent(const EntityPtr &entity)
+ComponentPtr owningComponent(const EntityConstPtr &entity)
 {
     return std::dynamic_pointer_cast<Component>(entity->parent());
 }
