@@ -309,7 +309,7 @@ TEST(Printer, printModelImportingModelParentComponent)
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
-    EXPECT_EQ(serialisedModel, modelContents);
+    EXPECT_EQ(modelContents, serialisedModel);
 }
 
 TEST(Printer, printModelImportingModelChildComponent)
@@ -326,5 +326,5 @@ TEST(Printer, printModelImportingModelChildComponent)
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
-    EXPECT_EQ(serialisedModel, modelContents);
+    EXPECT_EQ(modelContents, serialisedModel);
 }
