@@ -1712,7 +1712,7 @@ TEST(Variable, connectionsPersistAfterImporting)
     importedComponent->setImportReference("importMe");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -1749,7 +1749,7 @@ TEST(Variable, connectionsAsymmetricWithRepeatedUnits)
     c2->setImportReference("importMe");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
@@ -1790,7 +1790,7 @@ TEST(Variable, connectionsSymmetricWithMismatchedUnits)
     c2->setImportReference("importMe");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 
     model->flatten();
