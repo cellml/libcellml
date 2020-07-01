@@ -30,6 +30,10 @@ limitations under the License.
 // information.)
 #undef PASCAL
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -37,6 +41,10 @@ namespace libcellml {
  * Class for Units.
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                              public std::enable_shared_from_this<Units>
+#endif
 {
 public:
     ~Units() override; /**< Destructor */
@@ -420,8 +428,10 @@ public:
     /**
      * @brief Check whether there are any imported child @c Units.
      *
-     * @return @c true when these @c Units rely on @c Units which are imported,
-     * or @c false otherwise.
+     * Test to determine whether this units has any imported units.
+     *
+     * @return @c true when this @c Units relies on @c Units which are imported,
+     * @c false otherwise.
      */
     bool requiresImports() const;
 
