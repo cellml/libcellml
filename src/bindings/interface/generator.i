@@ -6,7 +6,6 @@
 
 %import "createconstructor.i"
 %import "logger.i"
-%import "types.i"
 
 #ifdef SWIGPYTHON
 %import "generatorprofile.i"
@@ -39,5 +38,4 @@ self.setProfile(profile)
 
 %create_constructor(Generator)
 
-%include "libcellml/types.h"
 %include "libcellml/generator.h"
