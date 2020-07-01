@@ -50,10 +50,12 @@ struct Importer::ImporterImpl
     Importer *mImporter = nullptr;
 
     ImportLibrary mLibrary;
+    std::vector<std::string> mLibraryIndex;
     std::vector<std::pair<std::string, std::string>> mExternals;
 
     bool resolveImport(const ImportedEntityPtr &importedEntity,
                        const std::string &destination,
+                       const std::string &typeString,
                        const std::string &baseFile,
                        std::vector<std::tuple<std::string, std::string, std::string>> &history);
 
@@ -101,8 +103,7 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
-bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
-
+bool checkUnitsForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
     // Check through model for overlap with the current history so we can report cycles properly.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
@@ -116,6 +117,10 @@ bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::st
             }
         }
     }
+    return true;
+}
+bool checkComponentForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
+{
     for (size_t c = 0; c < model->componentCount(); ++c) {
         auto component = model->component(c);
         if (component->isImport()) {
@@ -136,7 +141,7 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
     for (size_t n = 0; n < model->unitsCount(); ++n) {
         auto units = model->units(n);
 
-        if ((!resolveImport(units, units->name(), baseFile, history)) && (!history.empty())) {
+        if ((!resolveImport(units, units->name(), "units", baseFile, history)) && (!history.empty())) {
             std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + model->name() + "'. The dependency loop is:\n";
             std::string spacer = "    ";
             for (auto &h : history) {
@@ -158,6 +163,7 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
 
 bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEntity,
                                            const std::string &destination,
+                                           const std::string &typeString,
                                            const std::string &baseFile,
                                            std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
@@ -175,11 +181,9 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
         // Only parse import if it doesn't already exist in our importer library.
         if (!importSource->hasModel()) {
             std::string url = importSource->url();
-
             if (mLibrary.count(url) == 0) {
                 url = resolvePath(importSource->url(), baseFile);
             }
-
             if (mLibrary.count(url) == 0) {
                 // If the url has not been resolved into a model in this library, parse it and save.
                 std::ifstream file(url);
@@ -201,7 +205,10 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                 // If it has, then pass the previous model instance to the import source.
                 auto model = mLibrary[url];
                 importSource->setModel(model);
-                return checkForCycles(model, history);
+                if (typeString == "component") {
+                    return checkComponentForCycles(model, history);
+                }
+                return checkUnitsForCycles(model, history);
             }
         }
     }
@@ -216,7 +223,7 @@ bool Importer::ImporterImpl::resolveComponentImports(const ComponentEntityPtr &p
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->component(n);
         if (component->isImport()) {
-            if (!resolveImport(component, component->name(), baseFile, history)) {
+            if (!resolveImport(component, component->name(), "component", baseFile, history)) {
                 if (!history.empty()) {
                     std::string msg = "Cyclic dependencies were found when attempting to resolve components";
                     auto parentModel = owningModel(component);
@@ -279,6 +286,7 @@ void Importer::clearImports(ModelPtr &model)
         }
     }
 }
+
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -422,31 +430,45 @@ size_t Importer::libraryCount()
     return mPimpl->mLibrary.size();
 }
 
-ModelPtr Importer::library(const std::string &url)
+ModelPtr Importer::library(const std::string &key)
 {
-    if (mPimpl->mLibrary.count(url) > 0) {
-        return mPimpl->mLibrary[url];
+    if (mPimpl->mLibrary.count(key) > 0) {
+        return mPimpl->mLibrary[key];
     }
     return nullptr;
 }
 
-bool Importer::addModel(const ModelPtr &model, const std::string &url)
+ModelPtr Importer::library(const size_t &index)
 {
-    if (mPimpl->mLibrary.count(url) > 0) {
-        // If the url already exists in the library, do nothing.
+    if (index >= mPimpl->mLibrary.size()) {
+        return nullptr;
+    }
+    auto it = mPimpl->mLibrary.begin();
+    size_t i = 0;
+    while (i < index) {
+        it++;
+        i++;
+    }
+    return it->second;
+}
+
+bool Importer::addModel(const ModelPtr &model, const std::string &key)
+{
+    if (mPimpl->mLibrary.count(key) > 0) {
+        // If the key already exists in the library, do nothing.
         return false;
     }
-    mPimpl->mLibrary.insert(std::make_pair(url, model));
+    mPimpl->mLibrary.insert(std::make_pair(key, model));
     return true;
 }
 
-bool Importer::replaceModel(const ModelPtr &model, const std::string &url)
+bool Importer::replaceModel(const ModelPtr &model, const std::string &key)
 {
-    if (mPimpl->mLibrary.count(url) == 0) {
-        // If the url is not found, do nothing.
+    if (mPimpl->mLibrary.count(key) == 0) {
+        // If the key is not found, do nothing.
         return false;
     }
-    mPimpl->mLibrary[url] = model;
+    mPimpl->mLibrary[key] = model;
     return true;
 }
 

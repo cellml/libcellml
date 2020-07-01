@@ -79,47 +79,55 @@ public:
 
     /**
      * @brief Retrieve the @c ModelPtr instance from the importer library which was loaded
-     *        from the given @p url.
-     *
-     *  The @p url must be the absolute path, including the filename and the baseFile path.
+     *        from the given @p key.
      *
      * @return A @c ModelPtr instance.
      */
-    ModelPtr library(const std::string &url);
+    ModelPtr library(const std::string &key);
+
+    /**
+     * @brief Retrieve the @c ModelPtr instance from the importer library which was loaded
+     *        at the given index.
+     *
+     *  The @p index must be less than libraryCount().
+     *
+     * @return A @c ModelPtr instance.
+     */
+    ModelPtr library(const size_t &index);
 
     /**
      * @brief Manually add a local @c ModelPtr model instance to the importer library,
-     *        using the given @p url as a reference.
+     *        using the given @p key as a reference.
      *
-     * If the given url already exists in the library, the function will return false
+     * If the given key already exists in the library, the function will return false
      * and the library will not be changed.
      * @sa replaceModel.
      *
      * @param model a @c ModelPtr instance to add.
-     * @param url a @c std::string representing the url to associate with the model.
+     * @param key a @c std::string representing the key to associate with the model.
      *
      * @return boolean value, @c true if the model was added, @c false if it was not.
      */
-    bool addModel(const ModelPtr &model, const std::string &url);
+    bool addModel(const ModelPtr &model, const std::string &key);
 
     /**
      * @brief Replace a @c ModelPtr model instance in the importer library,
-     *        using the given @p url as a reference.
+     *        using the given @p key as a reference.
      *
-     * If the given url already exists in the library, the function will replace its
+     * If the given key already exists in the library, the function will replace its
      * model with the one supplied, and return @c true.
      *
-     * If the given url does not exist, the function will return @c false, and
+     * If the given key does not exist, the function will return @c false, and
      * the library will be unchanged.
      *
      * @sa addModel.
      *
      * @param model a @c ModelPtr instance to replace the current one.
-     * @param url a @c std::string representing the url at which to replace the model.
+     * @param key a @c std::string representing the key at which to replace the model.
      *
      * @return boolean value, @c true if the model was replaced, @c false if it was not.
      */
-    bool replaceModel(const ModelPtr &model, const std::string &url);
+    bool replaceModel(const ModelPtr &model, const std::string &key);
 
     /**
      * @brief Retrieve the pair of url key and import reference at the given index.
@@ -128,7 +136,7 @@ public:
      * and is what will break if those external files are ever moved or renamed.
      *
      * The "first" attribute of the returned pair is the url at which the imported model was
-     * accessed and under which it is now stored in the library, and the "second" attribute
+     * accessed and under which it is now stored in the library as its key, and the "second" attribute
      * is the import reference.
      *
      * @return a @c std::pair of @c std::strings.

@@ -633,3 +633,38 @@ TEST(Importer, resolveApiModelImports)
     flatModel = importer->flatten(model);
     EXPECT_EQ("chocolate", flatModel->component(0)->variable(0)->name());
 }
+
+TEST(Importer, importFilesWithSameName)
+{
+    // This test is to see whether the importer correctly resolves imported sources, where
+    // the imported files all have the same file name.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("resolveimports/model.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+
+    // Manually add a model to the library with the "model.cellml" key.
+    auto anotherModel = libcellml::Model::create("anotherModelWithKey_model.cellml");
+    anotherModel->addComponent(libcellml::Component::create("b"));
+    anotherModel->addUnits(libcellml::Units::create("a"));
+    importer->addModel(anotherModel, "model.cellml");
+
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    printIssues(importer);
+
+    // 4 items in the library.
+    EXPECT_EQ(size_t(4), importer->libraryCount());
+    // 3 of them are resolved from external locations -> have absolute URLs as keys.
+    EXPECT_EQ(size_t(3), importer->externalDependencyCount());
+
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    // Compare the library items against their model name to be sure they're different.
+    std::vector<std::string> modelNames = {"layer3_model", "layer2_model", "layer1_model", "anotherModelWithKey_model.cellml"};
+    for (size_t i = 0; i < importer->libraryCount(); ++i) {
+        EXPECT_EQ(modelNames[i], importer->library(i)->name());
+    }
+}
