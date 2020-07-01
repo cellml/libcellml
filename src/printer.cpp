@@ -249,11 +249,7 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component) 
         }
         size_t variableCount = component->variableCount();
         size_t resetCount = component->resetCount();
-        bool hasChildren = false;
-        if (variableCount > 0 || resetCount > 0 || !component->math().empty()) {
-            hasChildren = true;
-        }
-        if (hasChildren) {
+        if ((variableCount > 0) || (resetCount > 0) || !component->math().empty()) {
             repr += ">";
             for (size_t i = 0; i < variableCount; ++i) {
                 repr += printVariable(component->variable(i));
