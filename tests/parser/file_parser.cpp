@@ -165,5 +165,5 @@ TEST(Parser, parseModelWithImportedEquivVariables)
     auto printer = libcellml::Printer::create();
     auto serialisedModel = printer->printModel(model);
 
-    EXPECT_EQ(serialisedModel, modelContents);
+    EXPECT_EQ(modelContents, serialisedModel);
 }
