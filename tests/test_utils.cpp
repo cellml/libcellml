@@ -60,44 +60,27 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-void prettyPrintModelToStdout(libcellml::ModelPtr &model, bool includeMaths)
+static const std::string INDENT = "    ";
+
+void printComponent(const libcellml::ComponentPtr &component, size_t c, const std::string &indent, bool includeMaths)
 {
-    std::string spacer = "    ";
-
-    std::cout << " MODEL: '" << model->name() << "'";
-    if (model->id() != "") {
-        std::cout << ", id: '" << model->id() << "'";
-    }
-    std::cout << std::endl;
-
-    std::cout << spacer << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
-    for (size_t u = 0; u < model->unitsCount(); ++u) {
-        std::cout << spacer << spacer << "[" << u << "]: " << model->units(u)->name() << std::endl;
+    if (c == -1) {
+        std::cout << "COMPONENT: '" << component->name() << "'";
+    } else {
+        std::cout << indent << "[" << c + 1 << "]: " << component->name();
     }
 
-    std::cout << spacer << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        auto component = model->component(c);
-        prettyPrintComponentToStdout(component, c, spacer + spacer, includeMaths);
-    }
-}
-
-void prettyPrintComponentToStdout(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths)
-{
-    std::string local = "    ";
-
-    std::cout << spacer << "[" << c << "]: " << component->name();
     if (component->id() != "") {
-        std::cout << " id: " << component->id();
+        std::cout << ", id: " << component->id();
     }
-    std::cout << std::endl;
 
-    std::cout << spacer << local << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
+    std::cout << std::endl;
+    std::cout << indent << INDENT << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
 
     // Printing the variables within the component.
-    for (size_t v = 0; v < component->variableCount(); v++) {
-        std::cout << spacer << local << local;
-        std::cout << "[" << v << "]: " << component->variable(v)->name();
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        std::cout << indent << INDENT << INDENT;
+        std::cout << "[" << v + 1 << "]: " << component->variable(v)->name();
         if (component->variable(v)->units() != nullptr) {
             std::cout << " [" << component->variable(v)->units()->name() << "]";
         }
@@ -106,7 +89,7 @@ void prettyPrintComponentToStdout(const libcellml::ComponentPtr &component, size
         }
         std::cout << std::endl;
         if (component->variable(v)->equivalentVariableCount() > 0) {
-            std::cout << spacer << local << local << local;
+            std::cout << indent << INDENT << INDENT << INDENT;
             std::string con = "  └──> ";
             for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
                 auto ev = component->variable(v)->equivalentVariable(e);
@@ -132,22 +115,46 @@ void prettyPrintComponentToStdout(const libcellml::ComponentPtr &component, size
     // Print the maths within the component.
     if (includeMaths) {
         if (component->math() != "") {
-            std::cout << spacer << "  Maths in the component is:" << std::endl;
+            std::cout << indent << "  Maths in the component is:" << std::endl;
             std::cout << component->math() << std::endl;
         }
     }
 
     // Print the encapsulated components
     if (component->componentCount() > 0) {
-        std::cout << spacer << local << "COMPONENT " << component->name() << " has "
-                  << component->componentCount()
-                  << " child components:" << std::endl;
+        std::cout << indent << INDENT << "CHILD COMPONENTS: " << component->componentCount()
+                  << " child components" << std::endl;
+        std::string newIndent = indent + INDENT + INDENT;
 
-        for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
+        for (size_t c2 = 0; c2 < component->componentCount(); ++c2) {
             auto child = component->component(c2);
-            std::string oneMoreSpacer = spacer + local + local;
-            prettyPrintComponentToStdout(child, c2, oneMoreSpacer, includeMaths);
+            printComponent(child, c2, newIndent, includeMaths);
         }
+    }
+}
+
+void printComponent(const libcellml::ComponentPtr &component, bool includeMaths)
+{
+    printComponent(component, -1, {}, includeMaths);
+}
+
+void printModel(const libcellml::ModelPtr &model, bool includeMaths)
+{
+    std::cout << "MODEL: '" << model->name() << "'";
+    if (model->id() != "") {
+        std::cout << ", id: '" << model->id() << "'";
+    }
+    std::cout << std::endl;
+
+    std::cout << INDENT << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        std::cout << INDENT << INDENT << "[" << u + 1 << "]: " << model->units(u)->name() << std::endl;
+    }
+
+    std::cout << INDENT << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        auto component = model->component(c);
+        printComponent(component, c, INDENT + INDENT, includeMaths);
     }
 }
 
