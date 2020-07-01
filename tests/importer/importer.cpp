@@ -476,6 +476,35 @@ TEST(Importer, getListOfDependencies)
     EXPECT_EQ(empty, importer->externalDependency(999));
 }
 
+TEST(Importer, library)
+{
+    auto importer = libcellml::Importer::create();
+    auto model1 = libcellml::Model::create("model1");
+    auto model2 = libcellml::Model::create("model2");
+    auto model3 = libcellml::Model::create("model3");
+    auto model4 = libcellml::Model::create("model4");
+
+    EXPECT_TRUE(importer->addModel(model1, "a_model_the_first.cellml"));
+    EXPECT_TRUE(importer->addModel(model2, "b_tweede_model.cellml"));
+    EXPECT_TRUE(importer->addModel(model3, "c_troisieme_model.cellml"));
+
+    // Add another under the first key, expect false.
+    EXPECT_FALSE(importer->addModel(model4, "a_model_the_first.cellml"));
+    EXPECT_EQ(size_t(3), importer->libraryCount());
+
+    // Access library by key.
+    EXPECT_EQ(model1, importer->library("a_model_the_first.cellml"));
+    EXPECT_EQ(model2, importer->library("b_tweede_model.cellml"));
+    EXPECT_EQ(model3, importer->library("c_troisieme_model.cellml"));
+    EXPECT_EQ(nullptr, importer->library("d_tuawha.cellml"));
+
+    // Access library by index.
+    EXPECT_EQ(model1, importer->library(0));
+    EXPECT_EQ(model2, importer->library(1));
+    EXPECT_EQ(model3, importer->library(2));
+    EXPECT_EQ(nullptr, importer->library(999));
+}
+
 TEST(Importer, tryingStuffOut)
 {
     // This is a test to figure out whether we need to restrict the library keys to absolute URLs, or
@@ -502,15 +531,11 @@ TEST(Importer, tryingStuffOut)
     // Create models through the API. These don't need import resolution.
     auto localConcreteUnits = libcellml::Model::create("localConcreteUnits");
     localConcreteUnits->addUnits(libcellml::Units::create("units5"));
-    auto localConcreteComponents = libcellml::Model::create("localConcreteComponents");
-    localConcreteComponents->addComponent(libcellml::Component::create("component5"));
 
     // Add all the concrete models to the Importer. These don't need resolving as they have no imports of their own.
     auto importer = libcellml::Importer::create();
-    importer->addModel(concreteUnits, "the concrete units file"); // add with key that's not a URL
+    importer->addModel(concreteUnits, "i_dont_exist_yet.cellml"); // add with key that's not a file (yet).
     importer->addModel(concreteComponents, "https://www.example.com/myComponents.cellml"); // add with a key that is a remote URL
-    importer->addModel(localConcreteUnits, "1234567890"); // add with a numerical key (yeah, I know, why would you? But hey ...)
-    importer->addModel(localConcreteComponents, "#hello!"); // add with a key with special characters (here too ...)
 
     // Add models which have imports to the Importer by resolving them. They are automatically saved into the
     // Importer's library, along with any dependencies, under the names used to resolve them.
@@ -519,10 +544,6 @@ TEST(Importer, tryingStuffOut)
 
     EXPECT_FALSE(importedUnits->hasUnresolvedImports());
     EXPECT_FALSE(importedComponents->hasUnresolvedImports());
-
-    // for (size_t e = 0; e < importer->externalDependencyCount(); ++e) {
-    //     std::cout << importer->externalDependency(e).first << " " << importer->externalDependency(e).second << std::endl;
-    // }
 
     // Now create a funky model that imports from all over the place and see what happens.
     std::string funkyString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -545,17 +566,10 @@ TEST(Importer, tryingStuffOut)
                                 "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://www.example.com/myComponents.cellml\">\n"
                                 "    <component component_ref=\"component3\" name=\"component3FromLibrary\"/>\n"
                                 "  </import>\n"
-                                // Random string used for key. Most certainly not a valid URL.
-                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"the concrete units file\">\n"
+                                // Currently non-existent file used for the key. For this CellML file to function outside of the
+                                // the Importer instance, this model needs to be written to this location.
+                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"i_dont_exist_yet.cellml\">\n"
                                 "    <units units_ref=\"units4\" name=\"units4FromLibrary\"/>\n"
-                                "  </import>\n"
-                                // Numerical key.
-                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"1234567890\">\n"
-                                "    <units units_ref=\"units5\" name=\"units5FromLibrary\"/>\n"
-                                "  </import>\n"
-                                // Key with special characters.
-                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"#hello!\">\n"
-                                "    <component component_ref=\"component5\" name=\"component5FromLibrary\"/>\n"
                                 "  </import>\n"
                                 "</model>";
 
@@ -597,14 +611,14 @@ TEST(Importer, resolveApiModelImports)
     model->addComponent(libcellml::Component::create("componentIWillImport"));
     model->addUnits(libcellml::Units::create("unitsThatIWillImport"));
     auto imp1 = libcellml::ImportSource::create();
-    imp1->setUrl("flavour of the month"); // Set URL to be an arbitrary string.
+    imp1->setUrl("flavourOfTheMonth"); // Set URL to be an arbitrary string.
     model->component(0)->setImportSource(imp1); // Set the same import source for both units and component
     model->units(0)->setImportSource(imp1);
     model->component(0)->setImportReference("componentThatINeed");
     model->units(0)->setImportReference("unitsThatINeed");
 
     // Add the source model to the importer library, as "flavour of the month".
-    importer->addModel(source1, "flavour of the month");
+    importer->addModel(source1, "flavourOfTheMonth");
 
     // Resolve the model against the importer library and check it contains vanilla.
     importer->resolveImports(model, "");
@@ -622,7 +636,7 @@ TEST(Importer, resolveApiModelImports)
     source2->component(0)->addVariable(chocolate);
 
     // Replace the "flavour of the month" with the new source model.
-    EXPECT_TRUE(importer->replaceModel(source2, "flavour of the month"));
+    EXPECT_TRUE(importer->replaceModel(source2, "flavourOfTheMonth"));
     // Resolve the model's imports again against the new "flavour".
     importer->clearImports(model); // TODO Not sure if this should be done each time the imports are resolved anyway?
     importer->resolveImports(model, "");
