@@ -585,3 +585,54 @@ TEST(Importer, tryingStuffOut)
     validator->validateModel(flattenedFunkyModel);
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
+
+TEST(Importer, resolveApiModelImports)
+{
+    auto importer = libcellml::Importer::create();
+
+    // Create a source model, and add units and components for use elsewhere.
+    auto source1 = libcellml::Model::create("source1");
+    source1->addComponent(libcellml::Component::create("componentThatINeed"));
+    source1->addUnits(libcellml::Units::create("unitsThatINeed"));
+    auto vanilla = libcellml::Variable::create("vanilla");
+    source1->component(0)->addVariable(vanilla);
+
+    // Create a model which consumes "componentThatINeed" and "unitsThatINeed".
+    auto model = libcellml::Model::create("model");
+    model->addComponent(libcellml::Component::create("componentIWillImport"));
+    model->addUnits(libcellml::Units::create("unitsThatIWillImport"));
+    auto imp1 = libcellml::ImportSource::create();
+    imp1->setUrl("flavour of the month"); // Set URL to be an arbitrary string.
+    model->component(0)->setImportSource(imp1); // Set the same import source for both units and component
+    model->units(0)->setImportSource(imp1);
+    model->component(0)->setImportReference("componentThatINeed");
+    model->units(0)->setImportReference("unitsThatINeed");
+
+    // Add the source model to the importer library, as "flavour of the month".
+    importer->addModel(source1, "flavour of the month");
+
+    // Resolve the model against the importer library and check it contains vanilla.
+    importer->resolveImports(model, "");
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    auto flatModel = importer->flatten(model);
+    EXPECT_EQ("vanilla", flatModel->component(0)->variable(0)->name());
+
+    // But now the flavour of the month changes, and you have a better definition for componentThatINeed
+    // and unitsThatINeed.
+    auto source2 = libcellml::Model::create("source2");
+    source2->addComponent(libcellml::Component::create("componentThatINeed"));
+    source2->addUnits(libcellml::Units::create("unitsThatINeed"));
+    auto chocolate = libcellml::Variable::create("chocolate");
+    source2->component(0)->addVariable(chocolate);
+
+    // Replace the "flavour of the month" with the new source model.
+    EXPECT_TRUE(importer->replaceModel(source2, "flavour of the month"));
+    // Resolve the model's imports again against the new "flavour".
+    importer->clearImports(model); // TODO Not sure if this should be done each time the imports are resolved anyway?
+    importer->resolveImports(model, "");
+
+    // Check that we now have a variable called "chocolate" in the flattened model.
+    flatModel = importer->flatten(model);
+    EXPECT_EQ("chocolate", flatModel->component(0)->variable(0)->name());
+}

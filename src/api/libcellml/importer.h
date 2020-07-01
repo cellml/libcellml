@@ -145,6 +145,11 @@ public:
      */
     size_t externalDependencyCount() const;
 
+    /**
+     * @brief Clears the links with other models from all import sources.
+     */
+    void clearImports(ModelPtr &model);
+
 private:
     Importer(); /**< Constructor */
     explicit Importer(const std::string &name); /**< Constructor with std::string parameter*/
