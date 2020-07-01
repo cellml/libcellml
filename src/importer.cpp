@@ -279,7 +279,6 @@ void Importer::clearImports(ModelPtr &model)
         }
     }
 }
-
 void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
@@ -318,7 +317,13 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Add all required units to a model so referenced units can be resolved.
         auto requiredUnitsModel = Model::create();
         for (const auto &units : requiredUnits) {
-            requiredUnitsModel->addUnits(units);
+            // Cloning units present elsewhere so that they don't get moved by the addUnits function.
+            if (units->parent() == nullptr) {
+                requiredUnitsModel->addUnits(units);
+            } else {
+                auto cloned = units->clone();
+                requiredUnitsModel->addUnits(cloned);
+            }
         }
 
         // Make a map of component name to component pointer.

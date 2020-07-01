@@ -138,7 +138,7 @@ TEST(Importer, warningUnrequiredCircularDependencyUnits)
     EXPECT_EQ(warningMessage, importer->warning(0)->description());
 }
 
-TEST(Importer, missingUnitsFromImportOfCnTerms)
+TEST(Model, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
     // it have the same end result.  Previously (see #519) any units
@@ -157,16 +157,15 @@ TEST(Importer, missingUnitsFromImportOfCnTerms)
     model->addComponent(c);
 
     EXPECT_TRUE(model->hasUnresolvedImports());
+
     importer->resolveImports(model, resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
-
     model = importer->flatten(model);
 
     // Confirm that the bug reported in #519 wherein units used solely by <cn> items
     // in imported components were not being imported is now fixed.
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
-    EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
 TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
@@ -213,9 +212,8 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
     auto importedModel = parser->parseModel(in);
-
-    auto validator = libcellml::Validator::create();
     auto importer = libcellml::Importer::create();
+    auto validator = libcellml::Validator::create();
 
     // No problems with the imported model.
     validator->validateModel(importedModel);
@@ -238,7 +236,6 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-
     model = importer->flatten(model);
 
     validator->validateModel(model);
@@ -284,9 +281,8 @@ TEST(Model, importUnitsDuplicated)
 
     // Create the model by parsing the string above.
     auto parser = libcellml::Parser::create();
-    auto importer = libcellml::Importer::create();
     auto importedModel = parser->parseModel(in);
-
+    auto importer = libcellml::Importer::create();
     auto validator = libcellml::Validator::create();
     validator->validateModel(importedModel);
     EXPECT_EQ(size_t(0), validator->errorCount());
@@ -303,8 +299,9 @@ TEST(Model, importUnitsDuplicated)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-
     model = importer->flatten(model);
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
