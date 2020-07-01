@@ -77,8 +77,8 @@ std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
 
-void TEST_EXPORT prettyPrintModelToStdout(libcellml::ModelPtr &model, bool includeMaths = true);
-void TEST_EXPORT prettyPrintComponentToStdout(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer, bool includeMaths = true);
+void TEST_EXPORT printModel(const libcellml::ModelPtr &model, bool includeMaths = true);
+void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, bool includeMaths = true);
 
 void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
