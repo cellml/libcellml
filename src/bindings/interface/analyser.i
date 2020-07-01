@@ -20,5 +20,4 @@
 
 %create_constructor(Analyser)
 
-%include "libcellml/types.h"
 %include "libcellml/analyser.h"
