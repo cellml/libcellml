@@ -215,7 +215,16 @@ VariablePtr Variable::create(const std::string &name) noexcept
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    return (variable1 != nullptr && variable2 != nullptr && variable1->mPimpl->setEquivalentTo(variable2) && variable2->mPimpl->setEquivalentTo(variable1));
+    if ((variable1 != nullptr) && (variable2 != nullptr)) {
+        bool canAdd1 = variable1->mPimpl->setEquivalentTo(variable2);
+        bool canAdd2 = variable2->mPimpl->setEquivalentTo(variable1);
+        if (canAdd1 && !canAdd2) {
+            // Remove connection from variable1, since it can't be added to variable2.
+            variable1->mPimpl->unsetEquivalentTo(variable2);
+        }
+        return canAdd1 && canAdd2;
+    }
+    return false;
 }
 
 bool Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
