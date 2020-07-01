@@ -12,6 +12,20 @@ class AnalyserEquationAstTestCase(unittest.TestCase):
         x = AnalyserEquationAst()
         del x
 
+    def test_analyser_equation_ast(self):
+        from libcellml import AnalyserEquationAst
+
+        # Create an equation AST and check its default settings.
+        ast = AnalyserEquationAst()
+        self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, ast.type())
+        self.assertEqual('', ast.value())
+        self.assertIsNone(ast.variable())
+        self.assertIsNone(ast.parent())
+        self.assertIsNone(ast.leftChild())
+        self.assertIsNone(ast.rightChild())
+
+        del ast
+
 
 if __name__ == '__main__':
     unittest.main()
