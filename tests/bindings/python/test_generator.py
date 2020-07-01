@@ -3,8 +3,6 @@
 #
 import unittest
 
-from test_resources import file_contents
-
 
 class GeneratorTestCase(unittest.TestCase):
 
@@ -34,6 +32,7 @@ class GeneratorTestCase(unittest.TestCase):
         from libcellml import Parser
         from libcellml import Generator
         from libcellml import GeneratorProfile
+        from test_resources import file_contents
 
         p = Parser()
         m = p.parseModel(file_contents('generator/algebraic_eqn_computed_var_on_rhs/model.cellml'))
