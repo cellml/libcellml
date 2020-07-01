@@ -68,7 +68,7 @@ ModelPtr ImportSource::model() const
 
 void ImportSource::setModel(const ModelPtr &model)
 {
-    if ((model == nullptr)&&(!mPimpl->mModel.expired())) {
+    if (model == nullptr) {
         mPimpl->mModel.reset();
     } else {
         mPimpl->mModel = model;

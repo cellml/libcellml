@@ -671,14 +671,32 @@ TEST(Importer, coverageNestedImportsClearingModels)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("resolveimports/nested_components.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
-    printModel(model);
 
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("resolveimports/"));
-    printIssues(importer);
+
     EXPECT_EQ(size_t(0), importer->issueCount());
 
     EXPECT_FALSE(model->hasUnresolvedImports());
     importer->clearImports(model);
     EXPECT_TRUE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, importSourceGetSetModel)
+{
+    auto model = libcellml::Model::create("m");
+    auto component = libcellml::Component::create("c");
+    auto importsource = libcellml::ImportSource::create();
+
+    component->setImportSource(importsource);
+    EXPECT_EQ(nullptr, importsource->model());
+
+    importsource->setModel(nullptr);
+    EXPECT_EQ(nullptr, importsource->model());
+
+    importsource->setModel(model);
+    EXPECT_EQ(model, importsource->model());
+
+    importsource->setModel(nullptr);
+    EXPECT_EQ(nullptr, importsource->model());
 }
