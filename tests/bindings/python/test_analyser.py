@@ -31,6 +31,8 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import AnalyserModel
         from libcellml import Model
 
+        # Process an empty model and make sure that we get no errors and an UNKNOWN type for the analyser model.
+
         m = Model('my_model')
         a = Analyser()
 
