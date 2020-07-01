@@ -65,19 +65,18 @@ ModelPtr ImportSource::model() const
 
 void ImportSource::setModel(const ModelPtr &model)
 {
-    mPimpl->mModel = model;
+    if (model == nullptr) {
+        if (!mPimpl->mModel.expired()) {
+            mPimpl->mModel.reset();
+        }
+    } else {
+        mPimpl->mModel = model;
+    }
 }
 
 bool ImportSource::hasModel() const
 {
     return !mPimpl->mModel.expired();
-}
-
-void ImportSource::clearModel()
-{
-    if (!mPimpl->mModel.expired()){
-        mPimpl->mModel.reset();
-    }
 }
 
 ImportSourcePtr ImportSource::clone() const
