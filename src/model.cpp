@@ -100,10 +100,25 @@ bool Model::doAddComponent(const ComponentPtr &component)
     return ComponentEntity::doAddComponent(component);
 }
 
-void Model::addUnits(const UnitsPtr &units)
+bool Model::addUnits(const UnitsPtr &units)
 {
+    if (units == nullptr) {
+        return false;
+    }
+
+    // Prevent adding multiple times to list.
+    if (hasUnits(units)) {
+        return false;
+    }
+
+    // Prevent adding to multiple models: move units to this model.
+    if (units->hasParent()) {
+        auto otherParent = std::dynamic_pointer_cast<Model>(units->parent());
+        otherParent->removeUnits(units);
+    }
     mPimpl->mUnits.push_back(units);
     units->setParent(shared_from_this());
+    return true;
 }
 
 bool Model::removeUnits(size_t index)
@@ -147,6 +162,9 @@ bool Model::removeUnits(const UnitsPtr &units)
 
 void Model::removeAllUnits()
 {
+    for (const auto &u : mPimpl->mUnits) {
+        u->removeParent();
+    }
     mPimpl->mUnits.clear();
 }
 
@@ -413,6 +431,284 @@ ModelPtr Model::clone() const
     return m;
 }
 
+/*
+IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
+{
+    auto dummyVariable = Variable::create();
+    component->addVariable(dummyVariable);
+    IndexStack indexStack = reverseEngineerIndexStack(dummyVariable);
+    indexStack.pop_back();
+    component->removeVariable(dummyVariable);
+
+    return indexStack;
+}
+
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    auto rebasedStack = stack;
+
+    rebasedStack.resize(originStack.size(), SIZE_MAX);
+    if (rebasedStack == originStack) {
+        rebasedStack = destinationStack;
+        auto offsetIt = stack.begin() + static_cast<int64_t>(originStack.size());
+        rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
+    } else {
+        rebasedStack.clear();
+    }
+
+    return rebasedStack;
+}
+
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    EquivalenceMap rebasedMap;
+    for (const auto &entry : map) {
+        auto key = entry.first;
+        auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
+        if (!rebasedKey.empty()) {
+            auto vector = entry.second;
+            std::vector<IndexStack> rebasedVector;
+            for (const auto &stack : vector) {
+                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+                if (!rebasedTarget.empty()) {
+                    rebasedVector.push_back(rebasedTarget);
+                }
+            }
+
+            if (!rebasedVector.empty()) {
+                rebasedMap[rebasedKey] = rebasedVector;
+            }
+        }
+    }
+
+    return rebasedMap;
+}
+
+void componentNames(const ComponentPtr &component, NameList &names)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        names.push_back(c->name());
+        componentNames(c, names);
+    }
+}
+
+NameList componentNames(const ModelPtr &model)
+{
+    NameList names;
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        auto component = model->component(index);
+        names.push_back(component->name());
+        componentNames(component, names);
+    }
+    return names;
+}
+
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
+{
+    ComponentNameMap nameMap;
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        nameMap[c->name()] = c;
+        ComponentNameMap childrenNameMap = createComponentNamesMap(c);
+        nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
+    }
+
+    return nameMap;
+}
+
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units)
+{
+    std::vector<UnitsPtr> requiredUnits;
+
+    std::string ref;
+    std::string pre;
+    std::string id;
+    double expMult;
+    double uExp;
+
+    for (size_t index = 0; index < units->unitCount(); ++index) {
+        units->unitAttributes(index, ref, pre, uExp, expMult, id);
+        if (!isStandardUnitName(ref)) {
+            auto refUnits = model->units(ref);
+            if (refUnits != nullptr) {
+                auto requiredUnitsUnits = referencedUnits(model, refUnits);
+                requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
+                requiredUnits.push_back(refUnits);
+            }
+        }
+    }
+
+    return requiredUnits;
+}
+
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
+{
+    std::vector<UnitsPtr> usedUnits;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto v = component->variable(i);
+        auto u = v->units();
+        if (u != nullptr && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+    auto componentCnUnitsNames = findComponentCnUnitsNames(component);
+    for (const auto &unitsName : componentCnUnitsNames) {
+        auto u = model->units(unitsName);
+        if (u != nullptr && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        auto childUsedUnits = unitsUsed(model, childComponent);
+        usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
+    }
+
+    return usedUnits;
+}
+
+void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
+{
+    if (component->isImport()) {
+        auto model = owningModel(component);
+        auto importSource = component->importSource();
+        auto importModel = importSource->model();
+        auto importedComponent = importModel->component(component->importReference());
+
+        // Determine names of components already in use.
+        NameList compNames = componentNames(model);
+
+        // Determine the stack for the destination component.
+        IndexStack destinationComponentBaseIndexStack = reverseEngineerIndexStack(component);
+
+        // Determine the stack for the source component.
+        IndexStack importedComponentBaseIndexStack = reverseEngineerIndexStack(importedComponent);
+
+        // Generate equivalence map for the source component.
+        EquivalenceMap map;
+        recordVariableEquivalences(importedComponent, map, importedComponentBaseIndexStack);
+        generateEquivalenceMap(importedComponent, map, importedComponentBaseIndexStack);
+
+        // Rebase the generated equivalence map from the source component to the destination component.
+        auto rebasedMap = rebaseEquivalenceMap(map, importedComponentBaseIndexStack, destinationComponentBaseIndexStack);
+
+        // Take a copy of the imported component which will be used to replace the import defined in this model.
+        auto importedComponentCopy = importedComponent->clone();
+        importedComponentCopy->setName(component->name());
+        for (size_t i = 0; i < component->componentCount(); ++i) {
+            importedComponentCopy->addComponent(component->component(i));
+        }
+
+        // Get list of required units from component's variables.
+        std::vector<UnitsPtr> requiredUnits = unitsUsed(importModel, importedComponentCopy);
+
+        // Add all required units to a model so referenced units can be resolved.
+        auto requiredUnitsModel = Model::create();
+        for (const auto &units : requiredUnits) {
+            // Cloning units present elsewhere so that they don't get moved by the addUnits function.
+            if (units->parent() == nullptr) {
+                requiredUnitsModel->addUnits(units);
+            } else {
+                auto cloned = units->clone();
+                requiredUnitsModel->addUnits(cloned);
+            }
+        }
+
+        // Make a map of component name to component pointer.
+        ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
+        for (const auto &entry : newComponentNames) {
+            std::string newName = entry.first;
+            size_t count = 1;
+            while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
+                newName += "_" + convertToString(count++);
+            }
+            if (newName != entry.first) {
+                entry.second->setName(newName);
+            }
+        }
+
+        // If the component 'component' has variables then they are equivalent variables and they
+        // need to be exchanged with the real variables from the component 'importedComponent'.
+        for (size_t i = 0; i < component->variableCount(); ++i) {
+            auto placeholderVariable = component->variable(i);
+            for (size_t j = 0; j < placeholderVariable->equivalentVariableCount(); ++j) {
+                auto localModelVariable = placeholderVariable->equivalentVariable(j);
+                auto importedComponentVariable = importedComponentCopy->variable(placeholderVariable->name());
+                Variable::removeEquivalence(placeholderVariable, localModelVariable);
+                Variable::addEquivalence(importedComponentVariable, localModelVariable);
+            }
+        }
+        parent->replaceComponent(index, importedComponentCopy);
+
+        // Apply the rebased equivalence map onto the modified model.
+        applyEquivalenceMapToModel(rebasedMap, model);
+
+        // Copy over units used in imported component to this model.
+        std::map<std::string, std::string> unitsNamesToReplace;
+        for (const auto &u : requiredUnits) {
+            if (!model->hasUnits(u)) {
+                auto orignalName = u->name();
+                size_t count = 0;
+                while (!model->hasUnits(u) && model->hasUnits(u->name())) {
+                    auto name = u->name();
+                    name += "_" + convertToString(++count);
+                    u->setName(name);
+                }
+                model->addUnits(u);
+                if (orignalName != u->name()) {
+                    unitsNamesToReplace[orignalName] = u->name();
+                }
+            }
+        }
+        findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
+    }
+}
+
+void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t componentIndex)
+{
+    flattenComponent(parent, component, componentIndex);
+    auto flattenedComponent = parent->component(componentIndex);
+    for (size_t index = 0; index < flattenedComponent->componentCount(); ++index) {
+        auto c = flattenedComponent->component(index);
+        flattenComponentTree(flattenedComponent, c, index);
+    }
+}
+
+void Model::flatten()
+{
+    if (hasUnresolvedImports()) {
+        return;
+    }
+
+    while (hasImports()) {
+        // Go through Units and instantiate any imported Units.
+        for (size_t index = 0; index < unitsCount(); ++index) {
+            auto u = units(index);
+            if (u->isImport()) {
+                auto importedUnits = u->importSource()->model()->units(u->importReference());
+                auto importedUnitsCopy = importedUnits->clone();
+                importedUnitsCopy->setName(u->name());
+                replaceUnits(index, importedUnitsCopy);
+            }
+        }
+
+        // Go through Components and instatiate any imported Components
+        for (size_t index = 0; index < componentCount(); ++index) {
+            auto c = component(index);
+            flattenComponentTree(shared_from_this(), c, index);
+        }
+    }
+
+    linkUnits();
+}
+
+*/
 bool Model::fixVariableInterfaces()
 {
     VariablePtrs variables;
