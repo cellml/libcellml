@@ -47,76 +47,76 @@
 "Removes the equation, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::needEqFunction
-"Tests if this :class:`AnalyserModel` object needs the equality function.";
+"Tests if this :class:`AnalyserModel` object needs an \"equivalence\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNeqFunction
-"Tests if this :class:`AnalyserModel` object needs the inequality function.";
+"Tests if this :class:`AnalyserModel` object needs a \"nonequivalence\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLtFunction
-"Tests if this :class:`AnalyserModel` object needs the less than function.";
+"Tests if this :class:`AnalyserModel` object needs a \"less than\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLeqFunction
-"Tests if this :class:`AnalyserModel` object needs the less than or equal to function.";
+"Tests if this :class:`AnalyserModel` object needs a \"less than or equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needGtFunction
-"Tests if this :class:`AnalyserModel` object needs the greater than function.";
+"Tests if this :class:`AnalyserModel` object needs a \"greater than\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needGeqFunction
-"Tests if this :class:`AnalyserModel` object needs the greater than or equal to function.";
+"Tests if this :class:`AnalyserModel` object needs a \"greater than or equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAndFunction
-"Tests if this :class:`AnalyserModel` object needs the and function.";
+"Tests if this :class:`AnalyserModel` object needs an \"and\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needOrFunction
-"Tests if this :class:`AnalyserModel` object needs the or function.";
+"Tests if this :class:`AnalyserModel` object needs an \"or\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needXorFunction
-"Tests if this :class:`AnalyserModel` object needs the xor function.";
+"Tests if this :class:`AnalyserModel` object needs a \"xor\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNotFunction
-"Tests if this :class:`AnalyserModel` object needs the not function.";
+"Tests if this :class:`AnalyserModel` object needs a \"not\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needMinFunction
-"Tests if this :class:`AnalyserModel` object needs the minimum function.";
+"Tests if this :class:`AnalyserModel` object needs a \"minimum\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needMaxFunction
-"Tests if this :class:`AnalyserModel` object needs the maximum function.";
+"Tests if this :class:`AnalyserModel` object needs a \"maximum\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needSecFunction
-"Tests if this :class:`AnalyserModel` object needs the secant function.";
+"Tests if this :class:`AnalyserModel` object needs a \"secant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needCscFunction
-"Tests if this :class:`AnalyserModel` object needs the cosecant function.";
+"Tests if this :class:`AnalyserModel` object needs a \"cosecant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needCotFunction
-"Tests if this :class:`AnalyserModel` object needs the cotangent function.";
+"Tests if this :class:`AnalyserModel` object needs a \"cotangent\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needSechFunction
-"Tests if this :class:`AnalyserModel` object needs the hyperbolic secant function.";
+"Tests if this :class:`AnalyserModel` object needs a \"hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needCschFunction
-"Tests if this :class:`AnalyserModel` object needs the hyperbolic cosecant function.";
+"Tests if this :class:`AnalyserModel` object needs a \"hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needCothFunction
-"Tests if this :class:`AnalyserModel` object needs the hyperbolic cotangent function.";
+"Tests if this :class:`AnalyserModel` object needs a \"hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAsecFunction
-"Tests if this :class:`AnalyserModel` object needs the arc secant function.";
+"Tests if this :class:`AnalyserModel` object needs an \"arc secant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAcscFunction
-"Tests if this :class:`AnalyserModel` object needs the arc cosecant function.";
+"Tests if this :class:`AnalyserModel` object needs an \"arc cosecant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAcotFunction
-"Tests if this :class:`AnalyserModel` object needs the arc cotangent function.";
+"Tests if this :class:`AnalyserModel` object needs an \"arc cotangent\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAsechFunction
-"Tests if this :class:`AnalyserModel` object needs the arc hyperbolic secant function.";
+"Tests if this :class:`AnalyserModel` object needs an \"arc hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAcschFunction
-"Tests if this :class:`AnalyserModel` object needs the arc hyperbolic cosecant function.";
+"Tests if this :class:`AnalyserModel` object needs an \"arc hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAcothFunction
-"Tests if this :class:`AnalyserModel` object needs the arc hyperbolic cotangent function.";
+"Tests if this :class:`AnalyserModel` object needs an \"arc hyperbolic cotangent\" function.";
 
 %{
 #include "libcellml/analysermodel.h"
