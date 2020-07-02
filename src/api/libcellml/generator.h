@@ -16,7 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/logger.h"
+#include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -25,10 +26,10 @@ namespace libcellml {
  *
  * The Generator class is for representing a CellML Generator.
  */
-class LIBCELLML_EXPORT Generator: public Logger
+class LIBCELLML_EXPORT Generator
 {
 public:
-    ~Generator() override; /**< Destructor */
+    ~Generator(); /**< Destructor */
     Generator(const Generator &rhs) = delete; /**< Copy constructor */
     Generator(Generator &&rhs) noexcept = delete; /**< Move constructor */
     Generator &operator=(Generator rhs) = delete; /**< Assignment operator */
