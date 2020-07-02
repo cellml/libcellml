@@ -24,424 +24,424 @@ according to this profile.";
 "Set whether this :class:`GeneratorProfile` requires an interface.";
 
 %feature("docstring") libcellml::GeneratorProfile::assignmentString
-"Return the assigment operator.";
+"Return the \"assigment\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAssignmentString
-"Set the assigment operator.";
+"Set the \"assigment\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::eqString
-"Return the equivalence operator.";
+"Return the \"equivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEqString
-"Set the equivalence operator.";
+"Set the \"equivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqString
-"Return the the nonequivalence operator.";
+"Return the the \"nonequivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNeqString
-"Set the nonequivalence operator.";
+"Set the \"nonequivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::ltString
-"Return the less than operator.";
+"Return the \"less than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setLtString
-"Set the less than operator.";
+"Set the \"less than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::leqString
-"Return the less than or equal to operator.";
+"Return the \"less than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setLeqString
-"Set the less than or equal to operator.";
+"Set the \"less than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::gtString
-"Return the greater than operator.";
+"Return the \"greater than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setGtString
-"Set the greater than operator.";
+"Set the \"greater than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::geqString
-"Return the greater than or equal to operator.";
+"Return the \"greater than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setGeqString
-"Set the greater than or equal to operator.";
+"Set the \"greater than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::andString
-"Return the and operator.";
+"Return the \"and\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAndString
-"Set the and operator.";
+"Set the \"and\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::orString
-"Return the or operator.";
+"Return the \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setOrString
-"Set the or operator.";
+"Set the \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::xorString
-"Return the exclusive or operator.";
+"Return the \"xor\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setXorString
-"Set the exclusive or operator.";
+"Set the \"xor\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::notString
-"Return the not operator.";
+"Return the \"not\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNotString
-"Set the not operator.";
+"Set the \"not\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasEqOperator
-"Test if this :class:`GeneratorProfile` has an equivalence operator.";
+"Test if this :class:`GeneratorProfile` has an \"equivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasEqOperator
-"Set whether this :class:`GeneratorProfile` has an equivalence operator.";
+"Set whether this :class:`GeneratorProfile` has an \"equivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNeqOperator
-"Test if this :class:`GeneratorProfile` has a nonequivalence operator.";
+"Test if this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasNeqOperator
-"Set whether this :class:`GeneratorProfile` has a nonequivalence operator.";
+"Set whether this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasLtOperator
-"Test if this :class:`GeneratorProfile` has a less than operator.";
+"Test if this :class:`GeneratorProfile` has a \"less than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasLtOperator
-"Set whether this :class:`GeneratorProfile` has a less than operator.";
+"Set whether this :class:`GeneratorProfile` has a \"less than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasLeqOperator
-"Test if this :class:`GeneratorProfile` has a less than or equal to operator.";
+"Test if this :class:`GeneratorProfile` has a \"less than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasLeqOperator
-"Set whether this :class:`GeneratorProfile` has a less than or equal to operator.";
+"Set whether this :class:`GeneratorProfile` has a \"less than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasGtOperator
-"Test if this :class:`GeneratorProfile` has a greater than operator.";
+"Test if this :class:`GeneratorProfile` has a \"greater than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasGtOperator
-"Set whether this :class:`GeneratorProfile` has a greater than operator.";
+"Set whether this :class:`GeneratorProfile` has a \"greater than\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasGeqOperator
-"Test if this :class:`GeneratorProfile` has a greater than or equal to operator.";
+"Test if this :class:`GeneratorProfile` has a \"greater than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasGeqOperator
-"Set whether this :class:`GeneratorProfile` has a greater than or equal to operator.";
+"Set whether this :class:`GeneratorProfile` has a \"greater than or equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasAndOperator
-"Test if this :class:`GeneratorProfile` has an and operator.";
+"Test if this :class:`GeneratorProfile` has an \"and\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasAndOperator
-"Set whether this :class:`GeneratorProfile` has an and operator.";
+"Set whether this :class:`GeneratorProfile` has an \"and\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasOrOperator
-"Test if this :class:`GeneratorProfile` has an or operator.";
+"Test if this :class:`GeneratorProfile` has an \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasOrOperator
-"Set whether this :class:`GeneratorProfile` has an or operator.";
+"Set whether this :class:`GeneratorProfile` has an \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasXorOperator
-"Test if this :class:`GeneratorProfile` has an exclusive or operator.";
+"Test if this :class:`GeneratorProfile` has an \"xor\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasXorOperator
-"Set whether this :class:`GeneratorProfile` has an exclusive or operator.";
+"Set whether this :class:`GeneratorProfile` has an \"xor\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNotOperator
-"Test if this :class:`GeneratorProfile` has a not operator.";
+"Test if this :class:`GeneratorProfile` has a \"not\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasNotOperator
-"Set whether this :class:`GeneratorProfile` has a not operator.";
+"Set whether this :class:`GeneratorProfile` has a \"not\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::plusString
-"Return the string for addition.";
+"Return the string for the \"plus\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setPlusString
-"Set the string for addition.";
+"Set the string for the \"plus\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::minusString
-"Return the string for subtraction.";
+"Return the string for the \"minus\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setMinusString
-"Set the string for subtraction.";
+"Set the string for the \"minus\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::timesString
-"Return the string for multiplication.";
+"Return the string for the \"times\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setTimesString
-"Set the string for multiplication.";
+"Set the string for the \"times\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::divideString
-"Return the string for division.";
+"Return the string for the \"divide\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setDivideString
-"Set the string for division.";
+"Set the string for the \"divide\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::powerString
-"Return the string for power.";
+"Return the string for the \"power\" operator or function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setPowerString
-"Set the string for power.";
+"Set the string for the \"power\" operator or function.";
 
 %feature("docstring") libcellml::GeneratorProfile::squareRootString
-"Return the string for square root.";
+"Return the string for the \"square root\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSquareRootString
-"Set the string for square root.";
+"Set the string for the \"square root\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::squareString
-"Return the string for square.";
+"Return the string for the \"square\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSquareString
-"Set the string for square.";
+"Set the string for the \"square\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::absoluteValueString
-"Return the string for absolute value.";
+"Return the string for the \"absolute value\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAbsoluteValueString
-"Set the string for absolute value.";
+"Set the string for the \"absolute value\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::exponentialString
-"Return the string for addition.";
+"Return the string for the \"exponential\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setExponentialString
-"Set the string for exponential.";
+"Set the string for the \"exponential\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::napierianLogarithmString
-"Return the string for Napierian logarithm.";
+"Return the string for the \"Napierian logarithm\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNapierianLogarithmString
-"Set the string for Napierian logarithm.";
+"Set the string for the \"Napierian logarithm\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::commonLogarithmString
-"Return the string for common logarithm.";
+"Return the string for the \"common logarithm\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCommonLogarithmString
-"Set the string for common logarithm.";
+"Set the string for the \"common logarithm\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::ceilingString
-"Return the string for ceiling.";
+"Return the string for the \"ceiling\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCeilingString
-"Set the string for ceiling.";
+"Set the string for the \"ceiling\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::floorString
-"Return the string for floor.";
+"Return the string for the \"floor\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setFloorString
-"Set the string for floor.";
+"Set the string for the \"floor\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::minString
-"Return the string for minimum.";
+"Return the string for the \"minimum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setMinString
-"Set the string for minimum.";
+"Set the string for the \"minimum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::maxString
-"Return the string for maximum.";
+"Return the string for the \"maximum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setMaxString
-"Set the string for maximum.";
+"Set the string for the \"maximum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::remString
-"Return the string for remainder.";
+"Return the string for the \"remainder\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setRemString
-"Set the string for remainder.";
+"Set the string for the \"remainder\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasPowerOperator
-"Test if this :class:`GeneratorProfile` has a power operator.";
+"Test if this :class:`GeneratorProfile` has a \"power\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasPowerOperator
-"Set whether this :class:`GeneratorProfile` has a power operator.";
+"Set whether this :class:`GeneratorProfile` has a \"power\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::sinString
-"Return the string for sine.";
+"Return the string for the \"sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSinString
-"Set the string for sine.";
+"Set the string for the \"sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cosString
-"Return the string for cosine.";
+"Return the string for the \"cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCosString
-"Set the string for cosine.";
+"Set the string for the \"cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::tanString
-"Return the string for tangent.";
+"Return the string for the \"tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setTanString
-"Set the string for tangent.";
+"Set the string for the \"tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::secString
-"Return the string for secant.";
+"Return the string for the \"secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSecString
-"Set the string for secant.";
+"Set the string for the \"secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cscString
-"Return the string for cosecant.";
+"Return the string for the \"cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCscString
-"Set the string for cosecant.";
+"Set the string for the \"cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cotString
-"Return the string for cotangent.";
+"Return the string for the \"cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCotString
-"Set the string for cotangent.";
+"Set the string for the \"cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::sinhString
-"Return the string for hyperbolic sine.";
+"Return the string for the \"hyperbolic sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSinhString
-"Set the string for hyperbolic sine.";
+"Set the string for the \"hyperbolic sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::coshString
-"Return the string for hyperbolic cosine.";
+"Return the string for the \"hyperbolic cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCoshString
-"Set the string for hyperbolic cosine.";
+"Set the string for the \"hyperbolic cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::tanhString
-"Return the string for hyperbolic tangent.";
+"Return the string for the \"hyperbolic tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setTanhString
-"Set the string for hyperbolic tangent.";
+"Set the string for the \"hyperbolic tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::sechString
-"Return the string for hyperbolic secant.";
+"Return the string for the \"hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSechString
-"Set the string for hyperbolic secant.";
+"Set the string for the \"hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cschString
-"Return the string for hyperbolic cosecant.";
+"Return the string for the \"hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCschString
-"Set the string for hyperbolic cosecant.";
+"Set the string for the \"hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cothString
-"Return the string for hyperbolic cotangent.";
+"Return the string for the \"hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCothString
-"Set the string for hyperbolic cotangent.";
+"Set the string for the \"hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::asinString
-"Return the string for inverse sine.";
+"Return the string for the \"arc sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAsinString
-"Set the string for inverse sine.";
+"Set the string for the \"arc sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acosString
-"Return the string for inverse cosine.";
+"Return the string for the \"arc cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcosString
-"Set the string for inverse cosine.";
+"Set the string for the \"arc cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::atanString
-"Return the string for inverse tangent.";
+"Return the string for the \"arc tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAtanString
-"Set the string for inverse tangent.";
+"Set the string for the \"arc tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::asecString
-"Return the string for inverse secant.";
+"Return the string for the \"arc secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAsecString
-"Set the string for inverse secant.";
+"Set the string for the \"arc secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acscString
-"Return the string for inverse cosecant.";
+"Return the string for the \"arc cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcscString
-"Set the string for inverse cosecant.";
+"Set the string for the \"arc cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acotString
-"Return the string for inverse cotangent.";
+"Return the string for the \"arc cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcotString
-"Set the string for inverse cotangent.";
+"Set the string for the \"arc cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::asinhString
-"Return the string for inverse hyperbolic sine.";
+"Return the string for the \"arc hyperbolic sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAsinhString
-"Set the string for inverse hyperbolic sine.";
+"Set the string for the \"arc hyperbolic sine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acoshString
-"Return the string for inverse hyperbolic cosine.";
+"Return the string for the \"arc hyperbolic cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcoshString
-"Set the string for inverse hyperbolic cosine.";
+"Set the string for the \"arc hyperbolic cosine\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::atanhString
-"Return the string for inverse hyperbolic tangent.";
+"Return the string for the \"arc hyperbolic tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAtanhString
-"Set the string for inverse hyperbolic tangent.";
+"Set the string for the \"arc hyperbolic tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::asechString
-"Return the string for inverse hyperbolic secant.";
+"Return the string for the \"arc hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAsechString
-"Set the string for inverse hyperbolic secant.";
+"Set the string for the \"arc hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acschString
-"Return the string for inverse hyperbolic cosecant.";
+"Return the string for the \"arc hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcschString
-"Set the string for inverse hyperbolic cosecant.";
+"Set the string for the \"arc hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acothString
-"Return the string for inverse hyperbolic tangent.";
+"Return the string for the \"arc hyperbolic tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcothString
-"Set the string for inverse hyperbolic tangent.";
+"Set the string for the \"arc hyperbolic tangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::conditionalOperatorIfString
-"Return the if part of a condition statement.";
+"Return the \"if\" part of a \"conditional\" statement or operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setConditionalOperatorIfString
-"Set the if part of a condition statement.";
+"Set the \"if\" part of a \"conditional\" statement or operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::conditionalOperatorElseString
-"Return the else part of a condition statement.";
+"Return the \"else\" part of a \"conditional\" statement or operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setConditionalOperatorElseString
-"Set the else part of a condition statement.";
+"Set the \"else\" part of a \"conditional\" statement or operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::piecewiseIfString
-"Return the if part of a piecewise statement.";
+"Return the \"if\" part of a \"piecewise\" statement.";
 
 %feature("docstring") libcellml::GeneratorProfile::setPiecewiseIfString
-"Set the if part of a piecewise statement.";
+"Set the \"if\" part of a \"piecewise\" statement.";
 
 %feature("docstring") libcellml::GeneratorProfile::piecewiseElseString
-"Return the else part of a piecewise statement.";
+"Return the \"else\" part of a \"piecewise\" statement.";
 
 %feature("docstring") libcellml::GeneratorProfile::setPiecewiseElseString
-"Set the else part of a piecewise statement.";
+"Set the \"else\" part of a \"piecewise\" statement.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasConditionalOperator
-"Test if this :class:`GeneratorProfile` has a conditional operator.";
+"Test if this :class:`GeneratorProfile` has a \"conditional\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasConditionalOperator
-"Set whether this :class:`GeneratorProfile` has a conditional operator.";
+"Set whether this :class:`GeneratorProfile` has a \"conditional\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::trueString
-"Return the string for true.";
+"Return the string for \"true\".";
 
 %feature("docstring") libcellml::GeneratorProfile::setTrueString
-"Set the string for true.";
+"Set the string for \"true\".";
 
 %feature("docstring") libcellml::GeneratorProfile::falseString
-"Return the string for false.";
+"Return the string for \"false\".";
 
 %feature("docstring") libcellml::GeneratorProfile::setFalseString
-"Set the string for false.";
+"Set the string for \"false\".";
 
 %feature("docstring") libcellml::GeneratorProfile::eString
-"Return the string for exponential constant.";
+"Return the string for the \"exponential\" constant.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEString
-"Set the string for exponential constant.";
+"Set the string for the \"exponential\" constant.";
 
 %feature("docstring") libcellml::GeneratorProfile::piString
 "Return the string for pi.";
@@ -450,160 +450,160 @@ according to this profile.";
 "Set the string for pi.";
 
 %feature("docstring") libcellml::GeneratorProfile::infString
-"Return the string for infinity.";
+"Return the string for \"infinity\".";
 
 %feature("docstring") libcellml::GeneratorProfile::setInfString
-"Set the string for infinity.";
+"Set the string for \"infinity\".";
 
 %feature("docstring") libcellml::GeneratorProfile::nanString
-"Return the string for NaN.";
+"Return the string for \"not-a-number\".";
 
 %feature("docstring") libcellml::GeneratorProfile::setNanString
-"Set the string for NaN.";
+"Set the string for \"not-a-number\".";
 
 %feature("docstring") libcellml::GeneratorProfile::eqFunctionString
-"Return the string for the equivalence function.";
+"Return the string for the \"equivalence\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEqFunctionString
-"Set the string for the equivalence function.";
+"Set the string for the \"equivalence\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqFunctionString
-"Return the string for the nonequivalence function.";
+"Return the string for the \"nonequivalence\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNeqFunctionString
-"Set the string for the nonequivalence function.";
+"Set the string for the \"nonequivalence\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::ltFunctionString
-"Return the string for the less than function.";
+"Return the string for the \"less than\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setLtFunctionString
-"Set the string for the less than function.";
+"Set the string for the \"less than\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::leqFunctionString
-"Return the string for the less than or equal to function.";
+"Return the string for the \"less than or equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setLeqFunctionString
-"Set the string for the less than or equal to function.";
+"Set the string for the \"less than or equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::gtFunctionString
-"Return the string for the greater than function.";
+"Return the string for the \"greater than\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setGtFunctionString
-"Set the string for the greater than function.";
+"Set the string for the \"greater than\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::geqFunctionString
-"Return the string for the greater than or equal to function.";
+"Return the string for the \"greater than or equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setGeqFunctionString
-"Set the string for the greater than or equal to function.";
+"Set the string for the \"greater than or equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::andFunctionString
-"Return the string for the and function.";
+"Return the string for the \"and\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAndFunctionString
-"Set the string for the and function.";
+"Set the string for the \"and\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::orFunctionString
-"Return the string for the or function.";
+"Return the string for the \"or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setOrFunctionString
-"Set the string for the or function.";
+"Set the string for the \"or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::xorFunctionString
-"Return the string for the exclusive or function.";
+"Return the string for the \"xor\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setXorFunctionString
-"Set the string for the exclusive function.";
+"Set the string for the \"xor\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::notFunctionString
-"Return the string for the not function.";
+"Return the string for the \"not\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNotFunctionString
-"Set the string for the not function.";
+"Set the string for the \"not\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::minFunctionString
-"Return the string for the minimum function.";
+"Return the string for the \"minimum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setMinFunctionString
-"Set the string for the minimum function.";
+"Set the string for the \"minimum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::maxFunctionString
-"Return the string for the maximum function.";
+"Return the string for the \"maximum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setMaxFunctionString
-"Set the string for the maximum function.";
+"Set the string for the \"maximum\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::secFunctionString
-"Return the string for the secant function.";
+"Return the string for the \"secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSecFunctionString
-"Set the string for the secant function.";
+"Set the string for the \"secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cscFunctionString
-"Return the string for the cosecant function.";
+"Return the string for the \"cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCscFunctionString
-"Set the string for the cosecant function.";
+"Set the string for the \"cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cotFunctionString
-"Return the string for the cotangent function.";
+"Return the string for the \"cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCotFunctionString
-"Set the string for the cotangent function.";
+"Set the string for the \"cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::sechFunctionString
-"Return the string for the hyperbolic secant function.";
+"Return the string for the \"hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setSechFunctionString
-"Set the string for the hyperbolic secant function.";
+"Set the string for the \"hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cschFunctionString
-"Return the string for the hyperbolic cosecant function.";
+"Return the string for the \"hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCschFunctionString
-"Set the string for the hyperbolic cosecant function.";
+"Set the string for the \"hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::cothFunctionString
-"Return the string for the hyperbolic cotangent function.";
+"Return the string for the \"hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setCothFunctionString
-"Set the string for the hyperbolic cotangent function.";
+"Set the string for the \"hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::asecFunctionString
-"Return the string for the inverse secant function.";
+"Return the string for the \"arc secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAsecFunctionString
-"Set the string for the inverse secant function.";
+"Set the string for the \"arc secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acscFunctionString
-"Return the string for the inverse cosecant function.";
+"Return the string for the \"arc cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcscFunctionString
-"Set the string for the inverse cosecant function.";
+"Set the string for the \"arc cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acotFunctionString
-"Return the string for the inverse cotangent function.";
+"Return the string for the \"arc cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcotFunctionString
-"Set the string for the inverse cotangent function.";
+"Set the string for the \"arc cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::asechFunctionString
-"Return the string for the inverse hyperbolic secant function.";
+"Return the string for the \"arc hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAsechFunctionString
-"Set the string for the inverse hyperbolic secant function.";
+"Set the string for the \"arc hyperbolic secant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acschFunctionString
-"Return the string for the inverse hyperbolic cosecant function.";
+"Return the string for the \"arc hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcschFunctionString
-"Set the string for the inverse hyperbolic cosecant function.";
+"Set the string for the \"arc hyperbolic cosecant\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::acothFunctionString
-"Return the string for the inverse hyperbolic cotangent function.";
+"Return the string for the \"arc hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setAcothFunctionString
-"Set the string for the inverse hyperbolic cotangent function.";
+"Set the string for the \"arc hyperbolic cotangent\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::commentString
 "Return the string for a comment.";

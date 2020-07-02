@@ -164,280 +164,281 @@ public:
     AnalyserEquationPtr equation(size_t index) const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the equality function.
+     * @brief Test to determine if @c AnalyserModel needs an "equivalence"
+     * function.
      *
-     * Test to determine if @c AnalyserModel needs the equality function, return
-     * @c true if it does and @c false otherwise.
+     * Test to determine if @c AnalyserModel needs an "equivalence" function,
+     * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the equality function, @c false
-     * otherwise.
+     * @return @c true if @c AnalyserModel needs an "equivalence" function,
+     * @c false otherwise.
      */
     bool needEqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the inequality
+     * @brief Test to determine if @c AnalyserModel needs a "nonequivalence"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the inequality function,
+     * Test to determine if @c AnalyserModel needs a "nonequivalence" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the inequality function,
+     * @return @c true if @c AnalyserModel needs a "nonequivalence" function,
      * @c false otherwise.
      */
     bool needNeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the less than
+     * @brief Test to determine if @c AnalyserModel needs a "less than"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the less than function,
+     * Test to determine if @c AnalyserModel needs a "less than" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the less than function,
+     * @return @c true if @c AnalyserModel needs a "less than" function,
      * @c false otherwise.
      */
     bool needLtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the less than or equal
-     * to function.
+     * @brief Test to determine if @c AnalyserModel needs a "less than or equal
+     * to" function.
      *
-     * Test to determine if @c AnalyserModel needs the less than or equal to
+     * Test to determine if @c AnalyserModel needs a "less than or equal to"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the less than or equal to
+     * @return @c true if @c AnalyserModel needs a "less than or equal to"
      * function, @c false otherwise.
      */
     bool needLeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the greater than
+     * @brief Test to determine if @c AnalyserModel needs a "greater than"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the greater than function,
+     * Test to determine if @c AnalyserModel needs a "greater than" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the greater than function,
+     * @return @c true if @c AnalyserModel needs a "greater than" function,
      * @c false otherwise.
      */
     bool needGtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the greater than or
-     * equal to function.
+     * @brief Test to determine if @c AnalyserModel needs a "greater than or
+     * equal to" function.
      *
-     * Test to determine if @c AnalyserModel needs the greater than or equal to
+     * Test to determine if @c AnalyserModel needs a "greater than or equal to"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the greater than or equal to
+     * @return @c true if @c AnalyserModel needs a "greater than or equal to"
      * function, @c false otherwise.
      */
     bool needGeqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the and function.
+     * @brief Test to determine if @c AnalyserModel needs an "and" function.
      *
-     * Test to determine if @c AnalyserModel needs the and function, return
+     * Test to determine if @c AnalyserModel needs an "and" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the and function, @c false
+     * @return @c true if @c AnalyserModel needs an "and" function, @c false
      * otherwise.
      */
     bool needAndFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the or function.
+     * @brief Test to determine if @c AnalyserModel needs an "or" function.
      *
-     * Test to determine if @c AnalyserModel needs the or function, return
+     * Test to determine if @c AnalyserModel needs an "or" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the or function, @c false
+     * @return @c true if @c AnalyserModel needs an "or" function, @c false
      * otherwise.
      */
     bool needOrFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the xor function.
+     * @brief Test to determine if @c AnalyserModel needs a "xor" function.
      *
-     * Test to determine if @c AnalyserModel needs the xor function, return
+     * Test to determine if @c AnalyserModel needs a "xor" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the xor function, @c false
+     * @return @c true if @c AnalyserModel needs a "xor" function, @c false
      * otherwise.
      */
     bool needXorFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the not function.
+     * @brief Test to determine if @c AnalyserModel needs a "not" function.
      *
-     * Test to determine if @c AnalyserModel needs the not function, return
+     * Test to determine if @c AnalyserModel needs a "not" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the not function, @c false
+     * @return @c true if @c AnalyserModel needs a "not" function, @c false
      * otherwise.
      */
     bool needNotFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the minimum function.
+     * @brief Test to determine if @c AnalyserModel needs a "minimum" function.
      *
-     * Test to determine if @c AnalyserModel needs the minimum function, return
+     * Test to determine if @c AnalyserModel needs a "minimum" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the minimum function, @c false
+     * @return @c true if @c AnalyserModel needs a "minimum" function, @c false
      * otherwise.
      */
     bool needMinFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the maximum function.
+     * @brief Test to determine if @c AnalyserModel needs a "maximum" function.
      *
-     * Test to determine if @c AnalyserModel needs the maximum function, return
+     * Test to determine if @c AnalyserModel needs a "maximum" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the maximum function, @c false
+     * @return @c true if @c AnalyserModel needs a "maximum" function, @c false
      * otherwise.
      */
     bool needMaxFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the secant function.
+     * @brief Test to determine if @c AnalyserModel needs a "secant" function.
      *
-     * Test to determine if @c AnalyserModel needs the secant function, return
+     * Test to determine if @c AnalyserModel needs a "secant" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the secant function, @c false
+     * @return @c true if @c AnalyserModel needs a "secant" function, @c false
      * otherwise.
      */
     bool needSecFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the cosecant function.
+     * @brief Test to determine if @c AnalyserModel needs a "cosecant" function.
      *
-     * Test to determine if @c AnalyserModel needs the cosecant function, return
+     * Test to determine if @c AnalyserModel needs a "cosecant" function, return
      * @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the cosecant function, @c false
+     * @return @c true if @c AnalyserModel needs a "cosecant" function, @c false
      * otherwise.
      */
     bool needCscFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the cotangent
+     * @brief Test to determine if @c AnalyserModel needs a "cotangent"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the cotangent function,
+     * Test to determine if @c AnalyserModel needs a "cotangent" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the cotangent function,
+     * @return @c true if @c AnalyserModel needs a "cotangent" function,
      * @c false otherwise.
      */
     bool needCotFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the hyperbolic secant
+     * @brief Test to determine if @c AnalyserModel needs a "hyperbolic secant"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the hyperbolic secant
+     * Test to determine if @c AnalyserModel needs a "hyperbolic secant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the hyperbolic secant function,
+     * @return @c true if @c AnalyserModel needs a "hyperbolic secant" function,
      * @c false otherwise.
      */
     bool needSechFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the hyperbolic
-     * cosecant function.
+     * @brief Test to determine if @c AnalyserModel needs a "hyperbolic
+     * cosecant" function.
      *
-     * Test to determine if @c AnalyserModel needs the hyperbolic cosecant
+     * Test to determine if @c AnalyserModel needs a "hyperbolic cosecant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the hyperbolic cosecant
+     * @return @c true if @c AnalyserModel needs a "hyperbolic cosecant"
      * function, @c false otherwise.
      */
     bool needCschFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the hyperbolic
-     * cotangent function.
+     * @brief Test to determine if @c AnalyserModel needs a "hyperbolic
+     * cotangent" function.
      *
-     * Test to determine if @c AnalyserModel needs the hyperbolic cotangent
+     * Test to determine if @c AnalyserModel needs a "hyperbolic cotangent"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the hyperbolic cotangent
+     * @return @c true if @c AnalyserModel needs a "hyperbolic cotangent"
      * function, @c false otherwise.
      */
     bool needCothFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the arc secant
+     * @brief Test to determine if @c AnalyserModel needs an "arc secant"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the arc secant function,
+     * Test to determine if @c AnalyserModel needs an "arc secant" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the arc secant function,
+     * @return @c true if @c AnalyserModel needs an "arc secant" function,
      * @c false otherwise.
      */
     bool needAsecFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the arc cosecant
+     * @brief Test to determine if @c AnalyserModel needs an "arc cosecant"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the arc cosecant function,
+     * Test to determine if @c AnalyserModel needs an "arc cosecant" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the arc cosecant function,
+     * @return @c true if @c AnalyserModel needs an "arc cosecant" function,
      * @c false otherwise.
      */
     bool needAcscFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the arc cotangent
+     * @brief Test to determine if @c AnalyserModel needs an "arc cotangent"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs the arc cotangent function,
+     * Test to determine if @c AnalyserModel needs an "arc cotangent" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the arc cotangent function,
+     * @return @c true if @c AnalyserModel needs an "arc cotangent" function,
      * @c false otherwise.
      */
     bool needAcotFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the arc hyperbolic
-     * secant function.
+     * @brief Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * secant" function.
      *
-     * Test to determine if @c AnalyserModel needs the arc hyperbolic secant
+     * Test to determine if @c AnalyserModel needs an "arc hyperbolic secant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the arc hyperbolic secant
+     * @return @c true if @c AnalyserModel needs an "arc hyperbolic secant"
      * function, @c false otherwise.
      */
     bool needAsechFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the arc hyperbolic
-     * cosecant function.
+     * @brief Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * cosecant" function.
      *
-     * Test to determine if @c AnalyserModel needs the arc hyperbolic cosecant
+     * Test to determine if @c AnalyserModel needs an "arc hyperbolic cosecant"
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the arc hyperbolic cosecant
+     * @return @c true if @c AnalyserModel needs an "arc hyperbolic cosecant"
      * function, @c false otherwise.
      */
     bool needAcschFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the arc hyperbolic
-     * cotangent function.
+     * @brief Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * cotangent" function.
      *
-     * Test to determine if @c AnalyserModel needs the arc hyperbolic cotangent
-     * function, return @c true if it does and @c false otherwise.
+     * Test to determine if @c AnalyserModel needs an "arc hyperbolic
+     * cotangent" function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the arc hyperbolic cotangent
+     * @return @c true if @c AnalyserModel needs an "arc hyperbolic cotangent"
      * function, @c false otherwise.
      */
     bool needAcothFunction() const;
