@@ -1281,19 +1281,16 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
         auto equationOrder = MAX_SIZE_T;
         auto stateIndex = MAX_SIZE_T;
+        bool relevantCheck;
 
-        for (;;) {
-            bool relevantCheck = false;
+        do {
+            relevantCheck = false;
 
             for (const auto &internalEquation : mInternalEquations) {
                 relevantCheck = internalEquation->check(equationOrder, stateIndex, variableIndex)
                                 || relevantCheck;
             }
-
-            if (!relevantCheck) {
-                break;
-            }
-        }
+        } while (relevantCheck);
 
         // Make sure that our variables are valid.
 
