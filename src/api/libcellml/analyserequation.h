@@ -65,22 +65,22 @@ public:
     /**
      * @brief Get the list of @c AnalyserEquation dependencies.
      *
-     * Return the list of @c AnalyserEquation which corresponds to the equations
-     * on which this  @c AnalyserEquation depends.
+     * Return the list of @c AnalyserEquation items which correspond to the
+     * equations on which this @c AnalyserEquation depends.
      *
-     * @return The list of @c AnalyserEquation.
+     * @return The list of @c AnalyserEquation dependencies.
      */
     std::vector<AnalyserEquationPtr> dependencies() const;
 
     /**
-     * @brief Test to determine if @c AnalyserEquation relies on states and/or
-     * rates.
+     * @brief Test to determine if this @c AnalyserEquation relies on states
+     * and/or rates.
      *
-     * Test to determine if @c AnalyserEquation relies on states and/or rates,
-     * return @c true if it does and @c false otherwise.
+     * Test to determine if this @c AnalyserEquation relies on states and/or
+     * rates, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserEquation relies on states and/or rates,
-     * @c false otherwise.
+     * @return @c true if this @c AnalyserEquation relies on states and/or
+     * rates, @c false otherwise.
      */
     bool isStateRateBased() const;
 
