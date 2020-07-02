@@ -91,6 +91,9 @@ libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &mode
 libcellml::VariablePtr TEST_EXPORT createVariableWithUnits(const std::string &name, const std::string &units);
 libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(const std::string &modelName = "", const std::string &c1Name = "", const std::string &c2Name = "", const std::string &v1Name = "", const std::string &v2Name = "");
 
+libcellml::ComponentPtr TEST_EXPORT createImportInModel(const libcellml::ModelPtr &model, const std::string &componentName, const std::string &importSourceUrl, const std::string &importReference);
+libcellml::ComponentPtr TEST_EXPORT createImportInComponent(const libcellml::ComponentPtr &component, const std::string &componentName, const std::string &importSourceUrl, const std::string &importReference);
+
 #define EXPECT_EQ_ISSUES(issues, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssues(issues, logger)

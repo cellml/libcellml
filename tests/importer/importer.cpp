@@ -635,15 +635,64 @@ TEST(Importer, resolveApiModelImports)
     auto chocolate = libcellml::Variable::create("chocolate");
     source2->component(0)->addVariable(chocolate);
 
-    // Replace the "flavour of the month" with the new source model.
+    // Replace the flavour of the month with the new source model.
     EXPECT_TRUE(importer->replaceModel(source2, "flavourOfTheMonth"));
     // Resolve the model's imports again against the new "flavour".
-    importer->clearImports(model); // TODO Not sure if this should be done each time the imports are resolved anyway?
+    importer->clearImports(model);
     importer->resolveImports(model, "");
 
     // Check that we now have a variable called "chocolate" in the flattened model.
     flatModel = importer->flatten(model);
     EXPECT_EQ("chocolate", flatModel->component(0)->variable(0)->name());
+}
+
+TEST(Importer, importEncapsulatedChildren)
+{
+    // Test to make sure that the Importer is correctly importing child components,
+    // and not duplicating them.
+    std::string flatModelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                  "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"trunkModel\">\n"
+                                  "  <component name=\"branch1\"/>\n"
+                                  "  <component name=\"leaf1\"/>\n"
+                                  "  <component name=\"leaf2\"/>\n"
+                                  "  <component name=\"leaf3\"/>\n"
+                                  "  <component name=\"branch2\"/>\n"
+                                  "  <component name=\"leaf4\"/>\n"
+                                  "  <component name=\"flower1\"/>\n"
+                                  "  <component name=\"flower2\"/>\n"
+                                  "  <component name=\"branch3\"/>\n"
+                                  "  <component name=\"leaf5\"/>\n"
+                                  "  <component name=\"leaf6\"/>\n"
+                                  "  <component name=\"fruit\"/>\n"
+                                  "  <encapsulation>\n"
+                                  "    <component_ref component=\"branch1\">\n"
+                                  "      <component_ref component=\"leaf1\"/>\n"
+                                  "      <component_ref component=\"leaf2\"/>\n"
+                                  "      <component_ref component=\"leaf3\"/>\n"
+                                  "    </component_ref>\n"
+                                  "    <component_ref component=\"branch2\">\n"
+                                  "      <component_ref component=\"leaf4\"/>\n"
+                                  "      <component_ref component=\"flower1\"/>\n"
+                                  "      <component_ref component=\"flower2\"/>\n"
+                                  "    </component_ref>\n"
+                                  "    <component_ref component=\"branch3\">\n"
+                                  "      <component_ref component=\"leaf5\"/>\n"
+                                  "      <component_ref component=\"leaf6\"/>\n"
+                                  "      <component_ref component=\"fruit\"/>\n"
+                                  "    </component_ref>\n"
+                                  "  </encapsulation>\n"
+                                  "</model>\n";
+
+    auto importer = libcellml::Importer::create();
+    auto parser = libcellml::Parser::create();
+    auto printer = libcellml::Printer::create();
+    auto model = parser->parseModel(fileContents("resolveimports/trunk.cellml"));
+
+    importer->resolveImports(model, resourcePath("resolveimports/"));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+    EXPECT_EQ(size_t(2), importer->libraryCount());
+    auto flat = importer->flatten(model);
+    EXPECT_EQ(flatModelString, printer->printModel(flat));
 }
 
 TEST(Importer, importFilesWithSameName)
