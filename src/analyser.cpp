@@ -945,7 +945,6 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' of model '" + owningModel(trackedVariableComponent)->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
-            issue->setCause(Issue::Cause::ANALYSER);
 
             mAnalyser->addIssue(issue);
         }
@@ -972,7 +971,6 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
                                       + "' of model '" + owningModel(component)->name()
                                       + "' is initialised using variable '" + analyserVariable->mVariable->initialValue()
                                       + "', but it is not a constant.");
-                issue->setCause(Issue::Cause::ANALYSER);
 
                 mAnalyser->addIssue(issue);
             }
@@ -1057,7 +1055,6 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' of model '" + owningModel(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
-                            issue->setCause(Issue::Cause::ANALYSER);
 
                             mAnalyser->addIssue(issue);
 
@@ -1085,7 +1082,6 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' of model '" + owningModel(variable)->name()
                                   + "' cannot both be the variable of integration.");
-            issue->setCause(Issue::Cause::ANALYSER);
 
             mAnalyser->addIssue(issue);
         }
@@ -1107,7 +1103,6 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' of model '" + owningModel(variable)->name()
                                   + "' must be of the first order.");
-            issue->setCause(Issue::Cause::ANALYSER);
 
             mAnalyser->addIssue(issue);
         }
@@ -1327,7 +1322,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' of model '" + owningModel(realVariable)->name()
                                       + "' " + issueType + ".");
-                issue->setCause(Issue::Cause::ANALYSER);
 
                 mAnalyser->addIssue(issue);
             }

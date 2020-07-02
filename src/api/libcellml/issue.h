@@ -100,11 +100,9 @@ public:
      */
     enum class Cause
     {
-        ANALYSER,
         COMPONENT,
         CONNECTION,
         ENCAPSULATION,
-        GENERATOR,
         IMPORT,
         MATHML,
         MODEL,

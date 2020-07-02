@@ -31,7 +31,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
         "Variable 'time' in component 'my_component' of model 'initialised_variable_of_integration' cannot be both a variable of integration and initialised.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -54,7 +54,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
         "Variable 'time' in component 'environment' of model 'initialised_variable_of_integration_in_non_first_component' cannot be both a variable of integration and initialised.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -77,7 +77,7 @@ TEST(Analyser, twoVariablesOfIntegration)
         "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be the variable of integration.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -102,9 +102,9 @@ TEST(Analyser, nonFirstOrderOdes)
         "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
-        libcellml::Issue::Cause::ANALYSER,
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
+        libcellml::Issue::Cause::UNDEFINED,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -152,7 +152,7 @@ TEST(Analyser, variableInitialisedTwice)
         "Variable 'x' in component 'sub' of model 'variable_initialised_twice' and variable 'x' in component 'main' of model 'variable_initialised_twice' are equivalent and cannot therefore both be initialised.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -175,7 +175,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
         "Variable 'x' in component 'main' of model 'my_model' is initialised using variable 'k2', but it is not a constant.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -221,7 +221,7 @@ TEST(Analyser, nonInitialisedState)
         "Variable 'x' in component 'my_component' of model 'non_initialised_state' is used in an ODE, but it is not initialised.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -244,7 +244,7 @@ TEST(Analyser, underconstrained)
         "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -267,7 +267,7 @@ TEST(Analyser, overconstrained)
         "Variable 'x' in component 'my_component' of model 'my_model' is computed more than once.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -291,8 +291,8 @@ TEST(Analyser, unsuitablyConstrained)
         "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::ANALYSER,
-        libcellml::Issue::Cause::ANALYSER,
+        libcellml::Issue::Cause::UNDEFINED,
+        libcellml::Issue::Cause::UNDEFINED,
     };
 
     auto analyser = libcellml::Analyser::create();

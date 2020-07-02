@@ -174,7 +174,6 @@ convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',
     'ENCAPSULATION',
-    'GENERATOR',
     'IMPORT',
     'MATHML',
     'MODEL',
