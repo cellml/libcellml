@@ -471,7 +471,7 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
                                                    size_t index) const
 {
     // Return the nth child element of the given node, skipping anything that is
-    // not int he MathML namespace.
+    // not int the MathML namespace.
 
     auto res = node->firstChild();
     auto childNodeIndex = res->isMathmlElement() ? 0 : MAX_SIZE_T;
