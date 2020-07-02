@@ -1175,7 +1175,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         scaleEquationAst(ast->mPimpl->mRightChild);
     }
 
-    // If the given AST node is a variabe (i.e. a CI node) then we may need to
+    // If the given AST node is a variable (i.e. a CI node) then we may need to
     // do some scaling.
 
     if (ast->mPimpl->mType == AnalyserEquationAst::Type::CI) {
