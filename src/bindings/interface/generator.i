@@ -5,9 +5,9 @@
 %include <std_string.i>
 
 %import "createconstructor.i"
-%import "logger.i"
 
 #ifdef SWIGPYTHON
+%import "analysermodel.i"
 %import "generatorprofile.i"
 #endif
 
