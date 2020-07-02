@@ -153,8 +153,8 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
-    static bool containsNonUnknownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
-    static bool containsNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
     static bool isKnownVariable(const AnalyserInternalVariablePtr &variable);
     static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -182,7 +182,7 @@ void AnalyserInternalEquation::addOdeVariable(const AnalyserInternalVariablePtr 
     }
 }
 
-bool AnalyserInternalEquation::containsNonUnknownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN);
@@ -190,7 +190,7 @@ bool AnalyserInternalEquation::containsNonUnknownVariables(const std::vector<Ana
            != std::end(variables);
 }
 
-bool AnalyserInternalEquation::containsNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
+bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
                return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
@@ -244,11 +244,11 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // truly a constant or a variable-based constant.
 
     mComputedTrueConstant = mComputedTrueConstant
-                            && !containsNonUnknownVariables(mVariables)
-                            && !containsNonUnknownVariables(mOdeVariables);
+                            && !hasKnownVariables(mVariables)
+                            && !hasKnownVariables(mOdeVariables);
     mComputedVariableBasedConstant = mComputedVariableBasedConstant
-                                     && !containsNonConstantVariables(mVariables)
-                                     && !containsNonConstantVariables(mOdeVariables);
+                                     && !hasNonConstantVariables(mVariables)
+                                     && !hasNonConstantVariables(mOdeVariables);
 
     // Determine whether the equation is state/rate based and add, as a
     // dependency, the equations used to compute the (new) known variables.
