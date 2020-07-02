@@ -48,10 +48,10 @@ according to this profile.";
 "Set the less than operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::leqString
-"Return the less than or equal operator.";
+"Return the less than or equal to operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setLeqString
-"Set the less than or equal operator.";
+"Set the less than or equal to operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::gtString
 "Return the greater than operator.";
@@ -60,10 +60,10 @@ according to this profile.";
 "Set the greater than operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::geqString
-"Return the greater than or equal operator.";
+"Return the greater than or equal to operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setGeqString
-"Set the greater than or equal operator.";
+"Set the greater than or equal to operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::andString
 "Return the and operator.";

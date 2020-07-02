@@ -199,13 +199,13 @@ public:
     bool needLtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the less or equal than
-     * function.
+     * @brief Test to determine if @c AnalyserModel needs the less than or equal
+     * to function.
      *
-     * Test to determine if @c AnalyserModel needs the less or equal than
+     * Test to determine if @c AnalyserModel needs the less than or equal to
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the less or equal than
+     * @return @c true if @c AnalyserModel needs the less than or equal to
      * function, @c false otherwise.
      */
     bool needLeqFunction() const;
@@ -223,13 +223,13 @@ public:
     bool needGtFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs the greater or equal
-     * than function.
+     * @brief Test to determine if @c AnalyserModel needs the greater than or
+     * equal to function.
      *
-     * Test to determine if @c AnalyserModel needs the greater or equal than
+     * Test to determine if @c AnalyserModel needs the greater than or equal to
      * function, return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs the greater or equal than
+     * @return @c true if @c AnalyserModel needs the greater than or equal to
      * function, @c false otherwise.
      */
     bool needGeqFunction() const;
