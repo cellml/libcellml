@@ -56,13 +56,13 @@
 "Tests if this :class:`AnalyserModel` object needs the less than function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLeqFunction
-"Tests if this :class:`AnalyserModel` object needs the less or equal than function.";
+"Tests if this :class:`AnalyserModel` object needs the less than or equal to function.";
 
 %feature("docstring") libcellml::AnalyserModel::needGtFunction
 "Tests if this :class:`AnalyserModel` object needs the greater than function.";
 
 %feature("docstring") libcellml::AnalyserModel::needGeqFunction
-"Tests if this :class:`AnalyserModel` object needs the greater or equal than function.";
+"Tests if this :class:`AnalyserModel` object needs the greater than or equal to function.";
 
 %feature("docstring") libcellml::AnalyserModel::needAndFunction
 "Tests if this :class:`AnalyserModel` object needs the and function.";
