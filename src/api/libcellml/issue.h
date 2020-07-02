@@ -104,6 +104,7 @@ public:
         COMPONENT,
         CONNECTION,
         ENCAPSULATION,
+        GENERATOR,
         IMPORT,
         MATHML,
         MODEL,
@@ -111,8 +112,7 @@ public:
         UNDEFINED,
         UNITS,
         VARIABLE,
-        XML,
-        GENERATOR
+        XML
     };
 
     /**
