@@ -162,38 +162,38 @@ public:
     void setNeqString(const std::string &neqString);
 
     /**
-     * @brief Get the @c std::string for the lower than operator.
+     * @brief Get the @c std::string for the less than operator.
      *
-     * Return the @c std::string for the lower than operator.
+     * Return the @c std::string for the less than operator.
      *
-     * @return The @c std::string for the lower than operator.
+     * @return The @c std::string for the less than operator.
      */
     std::string ltString() const;
 
     /**
-     * @brief Set the @c std::string for the lower than operator.
+     * @brief Set the @c std::string for the less than operator.
      *
-     * Set this @c std::string for the lower than operator.
+     * Set this @c std::string for the less than operator.
      *
-     * @param ltString The @c std::string to use for the lower than operator.
+     * @param ltString The @c std::string to use for the less than operator.
      */
     void setLtString(const std::string &ltString);
 
     /**
-     * @brief Get the @c std::string for the lower or equal than operator.
+     * @brief Get the @c std::string for the less or equal than operator.
      *
-     * Return the @c std::string for the lower or equal than operator.
+     * Return the @c std::string for the less or equal than operator.
      *
-     * @return The @c std::string for the lower or equal than operator.
+     * @return The @c std::string for the less or equal than operator.
      */
     std::string leqString() const;
 
     /**
-     * @brief Set the @c std::string for the lower or equal than operator.
+     * @brief Set the @c std::string for the less or equal than operator.
      *
-     * Set this @c std::string for the lower or equal than operator.
+     * Set this @c std::string for the less or equal than operator.
      *
-     * @param leqString The @c std::string to use for the lower or equal than
+     * @param leqString The @c std::string to use for the less or equal than
      * operator.
      */
     void setLeqString(const std::string &leqString);
@@ -348,45 +348,45 @@ public:
     void setHasNeqOperator(bool hasNeqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a lower than operator.
+     * @brief Test if this @c GeneratorProfile has a less than operator.
      *
-     * Test if this @c GeneratorProfile has a lower than operator.
+     * Test if this @c GeneratorProfile has a less than operator.
      *
-     * @return @c true if the @c GeneratorProfile has a lower than operator,
+     * @return @c true if the @c GeneratorProfile has a less than operator,
      * @c false otherwise.
      */
     bool hasLtOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a lower than operator.
+     * @brief Set whether this @c GeneratorProfile has a less than operator.
      *
-     * Set whether this @c GeneratorProfile has a lower than operator.
+     * Set whether this @c GeneratorProfile has a less than operator.
      *
      * @param hasLtOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a lower than operator.
+     * @c GeneratorProfile has a less than operator.
      */
     void setHasLtOperator(bool hasLtOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a lower or equal than
+     * @brief Test if this @c GeneratorProfile has a less or equal than
      * operator.
      *
-     * Test if this @c GeneratorProfile has a lower or equal than operator.
+     * Test if this @c GeneratorProfile has a less or equal than operator.
      *
-     * @return @c true if the @c GeneratorProfile has a lower or equal than
+     * @return @c true if the @c GeneratorProfile has a less or equal than
      * operator,
      * @c false otherwise.
      */
     bool hasLeqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a lower or equal than
+     * @brief Set whether this @c GeneratorProfile has a less or equal than
      *  operator.
      *
-     * Set whether this @c GeneratorProfile has a lower or equal than operator.
+     * Set whether this @c GeneratorProfile has a less or equal than operator.
      *
      * @param hasLeqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a lower or equal than operator.
+     * @c GeneratorProfile has a less or equal than operator.
      */
     void setHasLeqOperator(bool hasLeqOperator);
 
@@ -1515,39 +1515,39 @@ public:
     void setNeqFunctionString(const std::string &neqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the lower than function.
+     * @brief Get the @c std::string for the less than function.
      *
-     * Return the @c std::string for the lower than function.
+     * Return the @c std::string for the less than function.
      *
-     * @return The @c std::string for the lower than function.
+     * @return The @c std::string for the less than function.
      */
     std::string ltFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the lower than function.
+     * @brief Set the @c std::string for the less than function.
      *
-     * Set this @c std::string for the lower than function.
+     * Set this @c std::string for the less than function.
      *
-     * @param ltFunctionString The @c std::string to use for the lower than
+     * @param ltFunctionString The @c std::string to use for the less than
      * function.
      */
     void setLtFunctionString(const std::string &ltFunctionString);
 
     /**
-     * @brief Get the @c std::string for the lower or equal than function.
+     * @brief Get the @c std::string for the less or equal than function.
      *
-     * Return the @c std::string for the lower or equal than function.
+     * Return the @c std::string for the less or equal than function.
      *
-     * @return The @c std::string for the lower or equal than function.
+     * @return The @c std::string for the less or equal than function.
      */
     std::string leqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the lower or equal than function.
+     * @brief Set the @c std::string for the less or equal than function.
      *
-     * Set this @c std::string for the lower or equal than function.
+     * Set this @c std::string for the less or equal than function.
      *
-     * @param leqFunctionString The @c std::string to use for the lower or equal
+     * @param leqFunctionString The @c std::string to use for the less or equal
      * than function.
      */
     void setLeqFunctionString(const std::string &leqFunctionString);
