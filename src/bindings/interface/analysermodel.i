@@ -53,10 +53,10 @@
 "Tests if this :class:`AnalyserModel` object needs the inequality function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLtFunction
-"Tests if this :class:`AnalyserModel` object needs the lower than function.";
+"Tests if this :class:`AnalyserModel` object needs the less than function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLeqFunction
-"Tests if this :class:`AnalyserModel` object needs the lower or equal than function.";
+"Tests if this :class:`AnalyserModel` object needs the less or equal than function.";
 
 %feature("docstring") libcellml::AnalyserModel::needGtFunction
 "Tests if this :class:`AnalyserModel` object needs the greater than function.";
