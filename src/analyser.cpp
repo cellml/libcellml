@@ -156,8 +156,8 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     static bool containsNonUnknownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
     static bool containsNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
-    static bool knownVariable(const AnalyserInternalVariablePtr &variable);
-    static bool knownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
+    static bool isKnownVariable(const AnalyserInternalVariablePtr &variable);
+    static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
     bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
@@ -201,7 +201,7 @@ bool AnalyserInternalEquation::containsNonConstantVariables(const std::vector<An
            != std::end(variables);
 }
 
-bool AnalyserInternalEquation::knownVariable(const AnalyserInternalVariablePtr &variable)
+bool AnalyserInternalEquation::isKnownVariable(const AnalyserInternalVariablePtr &variable)
 {
     return (variable->mIndex != MAX_SIZE_T)
            || (variable->mType == AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION)
@@ -211,7 +211,7 @@ bool AnalyserInternalEquation::knownVariable(const AnalyserInternalVariablePtr &
            || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
 }
 
-bool AnalyserInternalEquation::knownOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
+bool AnalyserInternalEquation::isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
 {
     return (odeVariable->mIndex != MAX_SIZE_T)
            || (odeVariable->mType == AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION);
@@ -260,7 +260,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     }
 
     for (const auto &variable : mVariables) {
-        if (knownVariable(variable)) {
+        if (isKnownVariable(variable)) {
             auto hasEquation = !variable->mEquation.expired();
             auto equation = hasEquation ? variable->mEquation.lock() : nullptr;
 
@@ -278,8 +278,8 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     // Stop tracking (new) known (ODE) variables.
 
-    mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), knownVariable), mVariables.end());
-    mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), knownOdeVariable), mOdeVariables.end());
+    mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
+    mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
     // If there is one (ODE) variable left then update its viariable (to be the
     // corresponding one in the component in which the equation is), its type
