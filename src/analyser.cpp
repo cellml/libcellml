@@ -1047,7 +1047,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                     // integration, but now we must ensure that it (or one of
                     // its equivalent variables) is not initialised.
 
-                    bool isVoiInitialized = false;
+                    bool isVoiInitialised = false;
 
                     for (const auto &voiEquivalentVariable : equivalentVariables(voi)) {
                         if (!voiEquivalentVariable->initialValue().empty()) {
@@ -1061,11 +1061,11 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
                             mAnalyser->addIssue(issue);
 
-                            isVoiInitialized = true;
+                            isVoiInitialised = true;
                         }
                     }
 
-                    if (!isVoiInitialized) {
+                    if (!isVoiInitialised) {
                         mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
