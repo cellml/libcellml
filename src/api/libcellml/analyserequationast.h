@@ -26,8 +26,8 @@ namespace libcellml {
 /**
  * @brief The AnalyserEquationAst class.
  *
- * The AnalyserEquationAst class is for representing an equation AST in the
- * context of a CellML Analyser.
+ * The AnalyserEquationAst class is for representing an equation abstract syntax
+ * tree (AST) in the context of a CellML Analyser.
  */
 class LIBCELLML_EXPORT AnalyserEquationAst
 {
