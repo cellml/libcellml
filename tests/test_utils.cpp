@@ -237,3 +237,27 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
 
     return model;
 }
+
+libcellml::ComponentPtr createImportInModel(const libcellml::ModelPtr &model,
+                                            const std::string &componentName,
+                                            const std::string &importSourceUrl,
+                                            const std::string &importReference)
+{
+    model->addComponent(libcellml::Component::create(componentName));
+    model->component(componentName)->setImportSource(libcellml::ImportSource::create());
+    model->component(componentName)->importSource()->setUrl(importSourceUrl);
+    model->component(componentName)->setImportReference(importReference);
+    return model->component(componentName);
+}
+
+libcellml::ComponentPtr createImportInComponent(const libcellml::ComponentPtr &component,
+                                                const std::string &componentName,
+                                                const std::string &importSourceUrl,
+                                                const std::string &importReference)
+{
+    component->addComponent(libcellml::Component::create(componentName));
+    component->component(componentName)->setImportSource(libcellml::ImportSource::create());
+    component->component(componentName)->importSource()->setUrl(importSourceUrl);
+    component->component(componentName)->setImportReference(importReference);
+    return component->component(componentName);
+}
