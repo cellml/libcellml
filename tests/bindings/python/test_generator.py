@@ -12,20 +12,6 @@ class GeneratorTestCase(unittest.TestCase):
         x = Generator()
         del x
 
-    def test_inheritance(self):
-        import libcellml
-        from libcellml import Generator
-
-        x = Generator()
-        self.assertIsInstance(x, libcellml.logger.Logger)
-
-        # Test access to inherited methods.
-        self.assertIsNone(x.issue(0))
-        self.assertIsNone(x.issue(-1))
-        self.assertEqual(x.issueCount(), 0)
-        x.addIssue(libcellml.Issue())
-        self.assertEqual(x.issueCount(), 1)
-
     def test_algebraic_eqn_computed_var_on_rhs(self):
         from libcellml import Analyser
         from libcellml import AnalyserModel
