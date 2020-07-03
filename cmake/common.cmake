@@ -196,8 +196,14 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     string(REPLACE "/" "\\\/"
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
 
+    if(MSVC)
+      # Extra argument for Clang-Tidy when used with cl
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/20512#note_722771
+      set(_EXTRA_ARG ";--extra-arg=/EHsc")
+    endif()
+
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE}${_EXTRA_ARG};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
