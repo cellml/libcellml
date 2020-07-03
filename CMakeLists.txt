@@ -30,6 +30,30 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(common)
 include(environmentchecks)
 
+# Make sure that clcache/ccache gets used, if available.
+if(WIN32)
+    find_program(CLCACHE clcache)
+
+    if(CLCACHE)
+        set(CLCACHEWRAPPER ${PROJECT_BUILD_DIR}/clcachewrapper)
+
+        execute_process(COMMAND ${C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${PROJECT_SOURCE_DIR}/cmake/clcachewrapper.c
+                        RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
+
+        if(RESULT EQUAL 0)
+            set(CMAKE_C_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
+            set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
+        endif()
+    endif()
+else()
+    find_program(CCACHE ccache)
+
+    if(CCACHE)
+        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE})
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+    endif()
+endif()
+
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
