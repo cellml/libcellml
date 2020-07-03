@@ -57,6 +57,18 @@ endif()
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
+# CLANG_TIDY ==> LIBCELLML_CLANG_TIDY
+set(_PARAM_ANNOTATION "Enable Clang-Tidy.")
+if(CLANG_TIDY_AVAILABLE)
+  set(LIBCELLML_CLANG_TIDY ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif()
+if(DEFINED CLANG_TIDY AND CLANG_TIDY_AVAILABLE)
+  set(LIBCELLML_CLANG_TIDY "${CLANG_TIDY}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+elseif(CLANG_TIDY)
+  message(WARNING "LLVM coverage testing requested but llvm-profdata or llvm-cov not found!")
+endif()
+unset(CLANG_TIDY CACHE)
+
 # COVERAGE ==> LIBCELLML_COVERAGE
 set(_PARAM_ANNOTATION "Enable coverage testing.")
 if(COVERAGE_TESTING_AVAILABLE)
