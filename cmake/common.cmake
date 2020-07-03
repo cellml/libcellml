@@ -20,7 +20,7 @@ function(TARGET_WARNINGS_AS_ERRORS _TARGET)
   if(${_INDEX} GREATER -1)
     set(_COMPILER_WAE -Wall -W -Werror)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(_COMPILER_WAE /W4 /WX)
+    set(_COMPILER_WAE /WX)
   endif()
 
   if(_COMPILER_WAE)
