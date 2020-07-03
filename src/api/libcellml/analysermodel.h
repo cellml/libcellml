@@ -67,12 +67,12 @@ public:
     Type type() const;
 
     /**
-     * @brief Get the variable of integration of the @c Model.
+     * @brief Get the @c Variable of integration of the @c Model.
      *
      * Return the @c Variable of integration of the @c Model processed by this
      * @c Analyser.
      *
-     * @return The @c Type.
+     * @return The @c Variable of integration.
      */
     AnalyserVariablePtr voi() const;
 

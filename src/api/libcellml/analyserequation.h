@@ -31,7 +31,7 @@ class LIBCELLML_EXPORT AnalyserEquation
     friend class Analyser;
 
 public:
-    enum struct Type
+    enum class Type
     {
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
