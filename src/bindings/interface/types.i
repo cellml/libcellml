@@ -42,30 +42,6 @@ Only meant to be included, shouldn't be passed to cmake as a module!
   }
 }
 
-%typemap(in) libcellml::AnalyserModel::Type (int val, int ecode) {
-  ecode = SWIG_AsVal(int)($input, &val);
-  if (!SWIG_IsOK(ecode)) {
-    %argument_fail(ecode, "$type", $symname, $argnum);
-  } else {
-    if (val < %static_cast(libcellml::AnalyserModel::Type::UNKNOWN, int) || %static_cast(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, int) < val) {
-      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
-    }
-    $1 = %static_cast(val,$basetype);
-  }
-}
-
-%typemap(in) libcellml::AnalyserVariable::Type (int val, int ecode) {
-  ecode = SWIG_AsVal(int)($input, &val);
-  if (!SWIG_IsOK(ecode)) {
-    %argument_fail(ecode, "$type", $symname, $argnum);
-  } else {
-    if (val < %static_cast(libcellml::AnalyserVariable::Type::VARIABLE_OF_INTEGRATION, int) || %static_cast(libcellml::AnalyserVariable::Type::ALGEBRAIC, int) < val) {
-      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
-    }
-    $1 = %static_cast(val,$basetype);
-  }
-}
-
 %typemap(in) libcellml::GeneratorProfile::Profile (int val, int ecode) {
   ecode = SWIG_AsVal(int)($input, &val);
   if (!SWIG_IsOK(ecode)) {
