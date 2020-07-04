@@ -34,6 +34,8 @@ include(environmentchecks)
 if(WIN32)
   find_program(CLCACHE clcache)
 
+  mark_as_advanced(CLCACHE)
+
   if(CLCACHE)
     set(CLCACHEWRAPPER ${PROJECT_BUILD_DIR}/clcachewrapper)
 
@@ -47,6 +49,8 @@ if(WIN32)
   endif()
 else()
   find_program(CCACHE ccache)
+
+  mark_as_advanced(CCACHE)
 
   if(CCACHE)
     set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE})
