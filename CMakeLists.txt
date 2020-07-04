@@ -37,9 +37,9 @@ if(WIN32)
   mark_as_advanced(CLCACHE)
 
   if(CLCACHE)
-    set(CLCACHEWRAPPER ${PROJECT_BUILD_DIR}/clcachewrapper)
+    set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
 
-    execute_process(COMMAND ${C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${PROJECT_SOURCE_DIR}/cmake/clcachewrapper.c
+    execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
                     RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
 
     if(RESULT EQUAL 0)
