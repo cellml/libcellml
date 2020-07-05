@@ -354,13 +354,13 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables);\n",
-              generatorProfile->interfaceInitializeStatesAndConstantsMethodString());
-    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables)\n"
+    EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables);\n",
+              generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
+    EXPECT_EQ("void initialiseStatesAndConstants(double *states, double *variables)\n"
               "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->implementationInitializeStatesAndConstantsMethodString());
+              generatorProfile->implementationInitialiseStatesAndConstantsMethodString());
 
     EXPECT_EQ("void computeComputedConstants(double *variables);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
@@ -390,8 +390,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("    ", generatorProfile->indentString());
 
-    EXPECT_EQ("{", generatorProfile->openArrayInitializerString());
-    EXPECT_EQ("}", generatorProfile->closeArrayInitializerString());
+    EXPECT_EQ("{", generatorProfile->openArrayInitialiserString());
+    EXPECT_EQ("}", generatorProfile->closeArrayInitialiserString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
     EXPECT_EQ("]", generatorProfile->closeArrayString());
@@ -748,8 +748,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceDeleteArrayMethodString(value);
     generatorProfile->setImplementationDeleteArrayMethodString(value);
 
-    generatorProfile->setInterfaceInitializeStatesAndConstantsMethodString(value);
-    generatorProfile->setImplementationInitializeStatesAndConstantsMethodString(value);
+    generatorProfile->setInterfaceInitialiseStatesAndConstantsMethodString(value);
+    generatorProfile->setImplementationInitialiseStatesAndConstantsMethodString(value);
 
     generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
     generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
@@ -764,8 +764,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setIndentString(value);
 
-    generatorProfile->setOpenArrayInitializerString(value);
-    generatorProfile->setCloseArrayInitializerString(value);
+    generatorProfile->setOpenArrayInitialiserString(value);
+    generatorProfile->setCloseArrayInitialiserString(value);
 
     generatorProfile->setOpenArrayString(value);
     generatorProfile->setCloseArrayString(value);
@@ -832,8 +832,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceInitializeStatesAndConstantsMethodString());
-    EXPECT_EQ(value, generatorProfile->implementationInitializeStatesAndConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceInitialiseStatesAndConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationInitialiseStatesAndConstantsMethodString());
 
     EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());
@@ -848,8 +848,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->indentString());
 
-    EXPECT_EQ(value, generatorProfile->openArrayInitializerString());
-    EXPECT_EQ(value, generatorProfile->closeArrayInitializerString());
+    EXPECT_EQ(value, generatorProfile->openArrayInitialiserString());
+    EXPECT_EQ(value, generatorProfile->closeArrayInitialiserString());
 
     EXPECT_EQ(value, generatorProfile->openArrayString());
     EXPECT_EQ(value, generatorProfile->closeArrayString());

@@ -886,16 +886,16 @@ be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setImplementationDeleteArrayMethodString
 "Set the string for the implementation to delete an array.";
 
-%feature("docstring") libcellml::GeneratorProfile::interfaceInitializeStatesAndConstantsMethodString
+%feature("docstring") libcellml::GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString
 "Return the string for the interface to initialise states and constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitializeStatesAndConstantsMethodString
+%feature("docstring") libcellml::GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString
 "Set the string for the interface to initialise states and constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::implementationInitializeStatesAndConstantsMethodString
+%feature("docstring") libcellml::GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString
 "Return the string for the implementation to initialise states and constants.";
 
-%feature("docstring") libcellml::GeneratorProfile::setImplementationInitializeStatesAndConstantsMethodString
+%feature("docstring") libcellml::GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString
 "Set the string for the implementation to initialise states and constants.";
 
 %feature("docstring") libcellml::GeneratorProfile::interfaceComputeComputedConstantsMethodString
@@ -946,17 +946,17 @@ be replaced with some code to create the variables array.";
 %feature("docstring") libcellml::GeneratorProfile::setIndentString
 "Set the string for an indent.";
 
-%feature("docstring") libcellml::GeneratorProfile::openArrayInitializerString
-"Return the string for opening an array initializer.";
+%feature("docstring") libcellml::GeneratorProfile::openArrayInitialiserString
+"Return the string for opening an array initialiser.";
 
-%feature("docstring") libcellml::GeneratorProfile::setOpenArrayInitializerString
-"Set the string for opening an array initializer.";
+%feature("docstring") libcellml::GeneratorProfile::setOpenArrayInitialiserString
+"Set the string for opening an array initialiser.";
 
-%feature("docstring") libcellml::GeneratorProfile::closeArrayInitializerString
-"Return the string for closing an array initializer.";
+%feature("docstring") libcellml::GeneratorProfile::closeArrayInitialiserString
+"Return the string for closing an array initialiser.";
 
-%feature("docstring") libcellml::GeneratorProfile::setCloseArrayInitializerString
-"Set the string for closing an array initializer.";
+%feature("docstring") libcellml::GeneratorProfile::setCloseArrayInitialiserString
+"Set the string for closing an array initialiser.";
 
 %feature("docstring") libcellml::GeneratorProfile::openArrayString
 "Return the string for opening an array.";
