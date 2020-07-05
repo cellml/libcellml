@@ -139,4 +139,4 @@ For more information about replacement, please see the API documentation for :ap
 
 .. container:: gotcha
 
-    Note that these **only** operate on collections of items ; that is, the collections of :code:`Units` and :code:`Component` items in a :code:`Model`, and encapsulated child :code:`Component` items in a parent :code:`Component`.
+    Note that these **only** operate on collections of items; that is, the collections of :code:`Units` and :code:`Component` items in a :code:`Model`, and encapsulated child :code:`Component` items in a parent :code:`Component`.

@@ -64,7 +64,7 @@ The following example shows how all variables in a component can be listed.
 
   .. code-tab:: c++
 
-      // Looping through variables in the component myComponent and retrieve their names.
+      // Loop through variables in the component myComponent and retrieve their names.
       //    NOTE that indexing starts from zero.
       for(size_t v = 0; v < myComponent->variableCount(); ++v) {
 
@@ -87,7 +87,7 @@ The following example shows how all variables in a component can be listed.
 
   .. code-tab:: python
 
-      # Looping through variables in the component myComponent and retrieve their names.
+      # Loop through variables in the component myComponent and retrieve their names.
       #    NOTE that indexing starts from zero:
       for v in range(0, my_component.variableCount()):
 

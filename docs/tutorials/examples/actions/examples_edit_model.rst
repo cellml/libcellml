@@ -106,7 +106,7 @@ Editing an encapsulation hierarchy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Components may be added to a model or another component to create an encapsulation hierarchy, but there are a few things to watch out for in this situation.
 Components must belong to only one parent.
-When adding a component from one location in the encapsulation to another, you will need to first clear the previous parent before adding into the new spot.
+When adding a component from one location in the encapsulation to another ... **TODO** check behaviour of the addSomething functions vs any moveSomething function?
 This is shown in the code snippet below.
 
 .. include:: ../snippets/snippet_edit_encapsulation.rst
