@@ -200,7 +200,9 @@ group_source_to_dir_structure(
   ${DEBUG_HEADER_FILES}
 )
 
-configure_clang_and_clang_tidy_settings(cellml)
+if(LIBCELLML_CLANG_TIDY)
+  configure_clang_and_clang_tidy_settings(cellml)
+endif()
 
 if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
   set_target_properties(cellml PROPERTIES
