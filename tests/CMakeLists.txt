@@ -82,7 +82,9 @@ foreach(TEST ${LIBCELLML_TESTS})
 
   set_target_properties(${CURRENT_TEST} PROPERTIES FOLDER tests)
 
-  configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
+  if(LIBCELLML_CLANG_TIDY)
+    configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
+  endif()
 
   if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
     target_warnings_as_errors(${CURRENT_TEST})
