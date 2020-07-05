@@ -1,3 +1,4 @@
+#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -132,7 +133,7 @@ struct Generator::GeneratorImpl
                                      bool onlyStateRateBasedEquations = false);
 
     void addInterfaceComputeModelMethodsCode();
-    void addImplementationInitializeStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
+    void addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeComputedConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
     void addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
@@ -507,8 +508,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
     profileContents += mProfile->interfaceDeleteArrayMethodString()
                        + mProfile->implementationDeleteArrayMethodString();
 
-    profileContents += mProfile->interfaceInitializeStatesAndConstantsMethodString()
-                       + mProfile->implementationInitializeStatesAndConstantsMethodString();
+    profileContents += mProfile->interfaceInitialiseStatesAndConstantsMethodString()
+                       + mProfile->implementationInitialiseStatesAndConstantsMethodString();
 
     profileContents += mProfile->interfaceComputeComputedConstantsMethodString()
                        + mProfile->implementationComputeComputedConstantsMethodString();
@@ -523,8 +524,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     profileContents += mProfile->indentString();
 
-    profileContents += mProfile->openArrayInitializerString()
-                       + mProfile->closeArrayInitializerString();
+    profileContents += mProfile->openArrayInitialiserString()
+                       + mProfile->closeArrayInitialiserString();
 
     profileContents += mProfile->openArrayString()
                        + mProfile->closeArrayString();
@@ -542,11 +543,13 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "e2aa9af2767ab84b217cf996c491c485ae876563";
+std::cout << "C SHA1: " << profileContentsSha1 << std::endl;
+        res = profileContentsSha1 != "0e79e682d28bcaf67f5ed5cbf419de670fd7373b";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "1abb41ecb908526b51c2ac8c44bc9542942a9652";
+std::cout << "PYTHON SHA1: " << profileContentsSha1 << std::endl;
+        res = profileContentsSha1 != "073377e89d73541021cbea7dce4b06ee4dc88c13";
 
         break;
     }
@@ -1957,8 +1960,8 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 {
     std::string interfaceComputeModelMethodsCode;
 
-    if (!mProfile->interfaceInitializeStatesAndConstantsMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mProfile->interfaceInitializeStatesAndConstantsMethodString();
+    if (!mProfile->interfaceInitialiseStatesAndConstantsMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mProfile->interfaceInitialiseStatesAndConstantsMethodString();
     }
 
     if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
@@ -1980,9 +1983,9 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     mCode += interfaceComputeModelMethodsCode;
 }
 
-void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (!mProfile->implementationInitializeStatesAndConstantsMethodString().empty()) {
+    if (!mProfile->implementationInitialiseStatesAndConstantsMethodString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2005,7 +2008,7 @@ void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMeth
             methodBody += generateInitializationCode(state);
         }
 
-        mCode += replace(mProfile->implementationInitializeStatesAndConstantsMethodString(),
+        mCode += replace(mProfile->implementationInitialiseStatesAndConstantsMethodString(),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -2212,7 +2215,7 @@ std::string Generator::implementationCode(const AnalyserModelPtr &model) const
     auto equations = mPimpl->mModel->equations();
     std::vector<AnalyserEquationPtr> remainingEquations {std::begin(equations), std::end(equations)};
 
-    mPimpl->addImplementationInitializeStatesAndConstantsMethodCode(remainingEquations);
+    mPimpl->addImplementationInitialiseStatesAndConstantsMethodCode(remainingEquations);
 
     // Add code for the implementation to compute our computed constants.
 
