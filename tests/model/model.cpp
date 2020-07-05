@@ -375,7 +375,7 @@ struct structure
     }
 
 private:
-    big_and_complicated *m_data;
+    big_and_complicated *m_data = nullptr;
 };
 
 TEST(Model, replaceComponent)
@@ -740,6 +740,8 @@ TEST(Model, importUnitsDuplicated)
 
     EXPECT_FALSE(model->hasUnresolvedImports());
     model->flatten();
+
+    EXPECT_EQ(size_t(2), model->unitsCount());
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());

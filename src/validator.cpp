@@ -87,7 +87,7 @@ struct Validator::ValidatorImpl
      * @param name The name of the component to validate.
      * @param names The list of component names already used in the model.
      */
-    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names);
+    void validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -109,7 +109,7 @@ struct Validator::ValidatorImpl
      *
      * @param component The imported component to validate.
      */
-    void validateImportedComponent(const ComponentPtr &component);
+    void validateImportedComponent(const ComponentPtr &component) const;
 
     /**
      * @brief Validate the component tree of the given @p component.
@@ -132,7 +132,7 @@ struct Validator::ValidatorImpl
      * @param units The units to validate.
      * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
      */
-    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames) const;
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
@@ -142,7 +142,7 @@ struct Validator::ValidatorImpl
      *
      * @param model The model which may contain variable connections to validate.
      */
-    void validateConnections(const ModelPtr &model);
+    void validateConnections(const ModelPtr &model) const;
 
     /**
      * @brief Validate the units of the given variables equivalent variables.
@@ -154,7 +154,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param alreadyReported A list of variable pointer pairs.
      */
-    void validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported);
+    void validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported) const;
 
     /**
      * @brief Validate the structure of the variables equivalences.
@@ -163,7 +163,7 @@ struct Validator::ValidatorImpl
      *
      * @param variable The variable to validate.
      */
-    void validateEquivalenceStructure(const VariablePtr &variable);
+    void validateEquivalenceStructure(const VariablePtr &variable) const;
 
     /**
      * @brief Validate the variable interface type.
@@ -173,7 +173,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param alreadyReported A list of variable pointer pairs.
      */
-    void validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported);
+    void validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported) const;
 
     /**
      * @brief Check if the provided @p name is a valid CellML identifier.
@@ -187,7 +187,7 @@ struct Validator::ValidatorImpl
      *
      * @return @c true if @name is a valid CellML identifier and @c false otherwise.
      */
-    bool isCellmlIdentifier(const std::string &name);
+    bool isCellmlIdentifier(const std::string &name) const;
 
     /**
      * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
@@ -199,7 +199,7 @@ struct Validator::ValidatorImpl
      * @param units The units to validate.
      * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
      */
-    void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+    void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames) const;
 
     /**
      * @brief Validate the @p variable using the CellML 2.0 Specification.
@@ -210,7 +210,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
+    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames) const;
 
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
@@ -245,9 +245,9 @@ struct Validator::ValidatorImpl
      */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
 
-    void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component);
-    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames);
-    bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode);
+    void validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const;
+    void validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const;
+    bool validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode) const;
 
     /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
@@ -404,7 +404,7 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 }
 
-void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names)
+void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const
 {
     if (!name.empty()) {
         if (std::find(names.begin(), names.end(), name) != names.end()) {
@@ -432,7 +432,7 @@ void Validator::ValidatorImpl::validateComponentTree(const ModelPtr &model, cons
     }
 }
 
-void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component)
+void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &component) const
 {
     if (!isCellmlIdentifier(component->name())) {
         IssuePtr issue = Issue::create();
@@ -521,7 +521,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     }
 }
 
-void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames) const
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(units->name())) {
@@ -552,7 +552,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
     }
 }
 
-void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames) const
 {
     // Validate the unit at the given index.
     std::string reference;
@@ -601,7 +601,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames) const
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(variable->name())) {
@@ -620,7 +620,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
     } else if (!isStandardUnitName(unitsName)) {
-        ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+        ComponentPtr component = owningComponent(variable);
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             IssuePtr issue = Issue::create();
@@ -683,7 +683,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     } else {
         description += "with variable '" + reset->variable()->name() + "', ";
         auto var = reset->variable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         varParentName = varParent->name();
         if (varParentName != component->name()) {
             varOutsideComponent = true;
@@ -696,7 +696,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         description += "with test_variable '" + reset->testVariable()->name() + "', ";
 
         auto var = reset->testVariable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         testVarParentName = varParent->name();
         if (testVarParentName != component->name()) {
             testVarOutsideComponent = true;
@@ -840,7 +840,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     }
 }
 
-bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode)
+bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, const std::string &unitsName, const std::string &textNode) const
 {
     if (isCellmlIdentifier(unitsName)) {
         return true;
@@ -865,7 +865,7 @@ std::string text(const XmlNodePtr &node)
     return {};
 }
 
-void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component)
+void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, const ComponentPtr &component) const
 {
     // Get cellml:units attribute.
     XmlAttributePtr attribute = node->firstAttribute();
@@ -921,7 +921,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
     }
 }
 
-void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames) const
 {
     XmlNodePtr childNode = node->firstChild();
     std::string textInNode = text(childNode);
@@ -1014,15 +1014,15 @@ bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequi
     return interfaceTypeCompatibleWith.find(interfaceTypeMinimumRequiredString) != std::string::npos;
 }
 
-void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported)
+void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported) const
 {
     Variable::InterfaceType interfaceType = determineInterfaceType(variable);
-    auto component = std::dynamic_pointer_cast<Component>(variable->parent());
+    auto component = owningComponent(variable);
     std::string componentName = component->name();
     if (interfaceType == Variable::InterfaceType::NONE) {
         for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
             const auto equivalentVariable = variable->equivalentVariable(index);
-            auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
                 VariablePair reversePair = std::make_pair(equivalentVariable, variable);
                 auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
@@ -1055,24 +1055,28 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
     }
 }
 
-void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported)
+void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, const VariablePtr &variable, VariableMap &alreadyReported) const
 {
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
+        // If the parent component of the variable is nonexistent or imported, don't check it.
+        auto equivalentComponent = owningComponent(equivalentVariable);
+        if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
+            continue;
+        }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             VariablePair reversePair = std::make_pair(equivalentVariable, variable);
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
@@ -1082,12 +1086,12 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     }
 }
 
-void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &variable)
+void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &variable) const
 {
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
         if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto component = owningComponent(equivalentVariable);
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
@@ -1099,7 +1103,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
     }
 }
 
-void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
+void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
 {
     VariableMap interfaceErrorsAlreadyReported;
     VariableMap equivalentUnitErrorsAlreadyReported;
@@ -1111,6 +1115,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 
     for (const VariablePtr &variable : variables) {
+        auto parentComponent = owningComponent(variable);
+        if (parentComponent->isImport()) {
+            continue;
+        }
         validateVariableInterface(variable, interfaceErrorsAlreadyReported);
         validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
         validateEquivalenceStructure(variable);
@@ -1123,7 +1131,7 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
 
-bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
+bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name) const
 {
     bool result = true;
     // One or more alphabetic characters.

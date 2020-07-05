@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -42,9 +43,9 @@ std::string fileContents(const std::string &fileName)
 
 void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
 {
+    int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
-        std::cout << "Issue " << std::setw(3) << i + 1 << ": ";
-        std::cout << l->issue(i)->description();
+        std::cout << "Issue " << std::setw(width) << i + 1 << ": ";
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
@@ -54,7 +55,8 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
         }
-        std::cout << std::endl;
+        std::cout << std::endl
+                  << l->issue(i)->description() << std::endl;
     }
 }
 
@@ -187,11 +189,11 @@ libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model,
     return component;
 }
 
-libcellml::ModelPtr createModelWithComponent(const std::string &name)
+libcellml::ModelPtr createModelWithComponent(const std::string &modelName, const std::string &componentName)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
-    model->setName(name);
-    createComponentInModel(model, "");
+    model->setName(modelName);
+    createComponentInModel(model, componentName);
     return model;
 }
 

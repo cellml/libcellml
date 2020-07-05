@@ -409,26 +409,21 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-std::string entityName(const EntityPtr &entity)
-{
-    std::string name;
-    auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(entity);
-    if (namedEntity != nullptr) {
-        name = namedEntity->name();
-    }
-    return name;
-}
-
-ModelPtr owningModel(const EntityPtr &entity)
+ModelPtr owningModel(const EntityConstPtr &entity)
 {
     auto model = std::dynamic_pointer_cast<Model>(entity->parent());
-    auto component = std::dynamic_pointer_cast<Component>(entity->parent());
-    while (!model && component && component->parent()) {
+    auto component = owningComponent(entity);
+    while ((model == nullptr) && (component != nullptr) && component->parent()) {
         model = std::dynamic_pointer_cast<Model>(component->parent());
-        component = std::dynamic_pointer_cast<Component>(component->parent());
+        component = owningComponent(component);
     }
 
     return model;
+}
+
+ComponentPtr owningComponent(const EntityConstPtr &entity)
+{
+    return std::dynamic_pointer_cast<Component>(entity->parent());
 }
 
 bool isStandardUnitName(const std::string &name)

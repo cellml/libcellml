@@ -86,7 +86,8 @@ void TEST_EXPORT expectEqualIssuesCauses(const std::vector<std::string> &issues,
                                          const std::vector<libcellml::Issue::Cause> &causes,
                                          const libcellml::LoggerPtr &logger);
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
-libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");
+libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
+                                                         const std::string &componentName = "");
 libcellml::VariablePtr TEST_EXPORT createVariableWithUnits(const std::string &name, const std::string &units);
 libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(const std::string &modelName = "", const std::string &c1Name = "", const std::string &c2Name = "", const std::string &v1Name = "", const std::string &v2Name = "");
 
@@ -98,6 +99,6 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ISSUES_KINDS(issues, causes, logger) \
+#define EXPECT_EQ_ISSUES_CAUSES(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesCauses(issues, causes, logger)

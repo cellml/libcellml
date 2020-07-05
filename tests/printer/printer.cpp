@@ -119,6 +119,47 @@ TEST(Printer, printEmptyReset)
     EXPECT_EQ(e, a);
 }
 
+TEST(Printer, printReset)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent("model", "component");
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v1 = libcellml::Variable::create("variable1");
+    libcellml::VariablePtr v2 = libcellml::Variable::create("variable2");
+    libcellml::ResetPtr r = libcellml::Reset::create();
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    r->setResetValue(EMPTY_MATH);
+    r->setTestValue(EMPTY_MATH);
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addReset(r);
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+
+    const std::string a = printer->printModel(m);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Printer, printEncapsulation)
 {
     const std::string e_parent =
@@ -188,11 +229,12 @@ TEST(Printer, printModelWithImports)
         "    <component component_ref=\"sin\" name=\"parabolic_approx_sin\"/>\n"
         "  </import>\n"
         "  <component name=\"main\" id=\"main\">\n"
-        "    <variable name=\"x\" units=\"dimensionless\" initial_value=\"0\" interface=\"public_and_private\" id=\"x\"/>\n"
+        "    <variable name=\"x\" units=\"dimensionless\" interface=\"public_and_private\" id=\"x\"/>\n"
         "    <variable name=\"sin1\" units=\"dimensionless\" interface=\"public_and_private\" id=\"sin\"/>\n"
         "    <variable name=\"sin2\" units=\"dimensionless\" interface=\"public_and_private\" id=\"deriv_approx\"/>\n"
         "    <variable name=\"deriv_approx_initial_value\" units=\"dimensionless\" initial_value=\"0\" interface=\"public_and_private\" id=\"deriv_approx_initial_value\"/>\n"
         "    <variable name=\"sin3\" units=\"dimensionless\" interface=\"public_and_private\" id=\"parabolic_approx\"/>\n"
+        "    <variable name=\"C\" units=\"dimensionless\" initial_value=\"0.75\" interface=\"public_and_private\"/>\n"
         "  </component>\n"
         "  <connection component_1=\"main\" component_2=\"actual_sin\">\n"
         "    <map_variables variable_1=\"x\" variable_2=\"x\"/>\n"
@@ -206,6 +248,7 @@ TEST(Printer, printModelWithImports)
         "  <connection component_1=\"main\" component_2=\"parabolic_approx_sin\">\n"
         "    <map_variables variable_1=\"x\" variable_2=\"x\"/>\n"
         "    <map_variables variable_1=\"sin3\" variable_2=\"sin\"/>\n"
+        "    <map_variables variable_1=\"C\" variable_2=\"C\"/>\n"
         "  </connection>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"main\">\n"

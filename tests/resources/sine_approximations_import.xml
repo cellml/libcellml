@@ -13,11 +13,12 @@
   </import>
 
   <component name="main" id="main">
-    <variable id="x" name="x" units="dimensionless" initial_value="0" interface="public_and_private"/>
+    <variable id="x" name="x" units="dimensionless" interface="public_and_private"/>
     <variable id="sin" name="sin1" units="dimensionless" interface="public_and_private"/>
     <variable id="deriv_approx" units="dimensionless" name="sin2" interface="public_and_private"/>
     <variable id="deriv_approx_initial_value" units="dimensionless" name="deriv_approx_initial_value" initial_value="0" interface="public_and_private"/>
     <variable id="parabolic_approx" name="sin3" units="dimensionless" interface="public_and_private"/>
+	<variable name="C" units="dimensionless" interface="public_and_private" initial_value="0.75"/>
   </component>
 
   <encapsulation>
@@ -43,6 +44,7 @@
   <connection component_1="parabolic_approx_sin" component_2="main">
     <map_variables variable_1="sin" variable_2="sin3"/>
     <map_variables variable_1="x" variable_2="x"/>
+	<map_variables variable_1="C" variable_2="C"/>
   </connection>
 
 </model>
