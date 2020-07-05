@@ -351,8 +351,7 @@ void Validator::validateModel(const ModelPtr &model)
                         addIssue(issue);
                         foundImportIssue = true;
                     }
-                    // Check for a xlink:href.
-                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
+                    // Check for a xlink:href and its format.
                     if (importSource.empty()) {
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
@@ -360,6 +359,18 @@ void Validator::validateModel(const ModelPtr &model)
                         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
                         addIssue(issue);
                         foundImportIssue = true;
+                    } else {
+                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                        if (uri == nullptr) {
+                            IssuePtr issue = Issue::create();
+                            issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the href attribute.");
+                            issue->setImportSource(units->importSource());
+                            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+                            addIssue(issue);
+
+                        } else {
+                            xmlFreeURI(uri);
+                        }
                     }
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching entries at the same position in the source and ref vectors).
