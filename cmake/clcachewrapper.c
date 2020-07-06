@@ -34,9 +34,6 @@ int main(int argc, char *argv[])
             if (argv[i][j] == '\\') {
                 clcacheCommand[++k] = '\\';
                 clcacheCommand[++k] = '\\';
-            } else if (argv[i][j] == '"') {
-                clcacheCommand[++k] = '\\';
-                clcacheCommand[++k] = '"';
             } else {
                 clcacheCommand[++k] = argv[i][j];
             }
