@@ -37,7 +37,7 @@ double * createStatesVector();
 double * createVariablesArray();
 void deleteArray(double *array);
 
-void initializeStatesAndConstants(double *states, double *variables);
+void initialiseStatesAndConstants(double *states, double *variables);
 void computeComputedConstants(double *variables);
 void computeRates(double voi, double *states, double *rates, double *variables);
 void computeVariables(double voi, double *states, double *rates, double *variables);

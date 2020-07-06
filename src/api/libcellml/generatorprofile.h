@@ -2827,7 +2827,7 @@ public:
      * @return The @c std::string for the interface to initialise states and
      * constants.
      */
-    std::string interfaceInitializeStatesAndConstantsMethodString() const;
+    std::string interfaceInitialiseStatesAndConstantsMethodString() const;
 
     /**
      * @brief Set the @c std::string for the interface to initialise states and
@@ -2836,11 +2836,11 @@ public:
      * Set this @c std::string for the interface to initialise states and
      * constants.
      *
-     * @param interfaceInitializeStatesAndConstantsMethodString The
+     * @param interfaceInitialiseStatesAndConstantsMethodString The
      * @c std::string to use for the interface to initialise states and
      * constants.
      */
-    void setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString);
+    void setInterfaceInitialiseStatesAndConstantsMethodString(const std::string &interfaceInitialiseStatesAndConstantsMethodString);
 
     /**
      * @brief Get the @c std::string for the implementation to initialise states
@@ -2852,7 +2852,7 @@ public:
      * @return The @c std::string for the implementation to initialise states
      * and constants.
      */
-    std::string implementationInitializeStatesAndConstantsMethodString() const;
+    std::string implementationInitialiseStatesAndConstantsMethodString() const;
 
     /**
      * @brief Set the @c std::string for the implementation to initialise states
@@ -2861,11 +2861,11 @@ public:
      * Set this @c std::string for the implementation to initialise states and
      * constants.
      *
-     * @param implementationInitializeStatesAndConstantsMethodString The
+     * @param implementationInitialiseStatesAndConstantsMethodString The
      * @c std::string to use for the implementation to initialise states and
      * constants.
      */
-    void setImplementationInitializeStatesAndConstantsMethodString(const std::string &implementationInitializeStatesAndConstantsMethodString);
+    void setImplementationInitialiseStatesAndConstantsMethodString(const std::string &implementationInitialiseStatesAndConstantsMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to compute computed
@@ -3030,42 +3030,42 @@ public:
     void setIndentString(const std::string &indentString);
 
     /**
-     * @brief Get the @c std::string for opening an array initializer.
+     * @brief Get the @c std::string for opening an array initialiser.
      *
-     * Return the @c std::string for opening an array initializer.
+     * Return the @c std::string for opening an array initialiser.
      *
-     * @return The @c std::string for opening an array initializer.
+     * @return The @c std::string for opening an array initialiser.
      */
-    std::string openArrayInitializerString() const;
+    std::string openArrayInitialiserString() const;
 
     /**
-     * @brief Set the @c std::string for opening an array initializer.
+     * @brief Set the @c std::string for opening an array initialiser.
      *
-     * Set this @c std::string for opening an array initializer.
+     * Set this @c std::string for opening an array initialiser.
      *
-     * @param openArrayInitializerString The @c std::string to use for opening
-     * an array initializer.
+     * @param openArrayInitialiserString The @c std::string to use for opening
+     * an array initialiser.
      */
-    void setOpenArrayInitializerString(const std::string &openArrayInitializerString);
+    void setOpenArrayInitialiserString(const std::string &openArrayInitialiserString);
 
     /**
-     * @brief Get the @c std::string for closing an array initializer.
+     * @brief Get the @c std::string for closing an array initialiser.
      *
-     * Return the @c std::string for closing an array initializer.
+     * Return the @c std::string for closing an array initialiser.
      *
-     * @return The @c std::string for closing an array initializer.
+     * @return The @c std::string for closing an array initialiser.
      */
-    std::string closeArrayInitializerString() const;
+    std::string closeArrayInitialiserString() const;
 
     /**
-     * @brief Set the @c std::string for closing an array initializer.
+     * @brief Set the @c std::string for closing an array initialiser.
      *
-     * Set this @c std::string for closing an array initializer.
+     * Set this @c std::string for closing an array initialiser.
      *
-     * @param closeArrayInitializerString The @c std::string to use for closing
-     *  an array initializer.
+     * @param closeArrayInitialiserString The @c std::string to use for closing
+     *  an array initialiser.
      */
-    void setCloseArrayInitializerString(const std::string &closeArrayInitializerString);
+    void setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString);
 
     /**
      * @brief Get the @c std::string for opening an array.
