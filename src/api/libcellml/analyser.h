@@ -50,8 +50,11 @@ public:
      * Process the @c Model using this @c Analyser.
      *
      * @param model The @c Model to process.
+     * @param externalVariables The set of @c Variable items that are externally
+     * evaluated.
      */
-    void processModel(const ModelPtr &model);
+    void processModel(const ModelPtr &model,
+                      const std::vector<VariablePtr> &externalVariables = {});
 
     /**
      * @brief Get the analysed model.

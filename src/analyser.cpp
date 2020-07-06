@@ -393,7 +393,8 @@ struct Analyser::AnalyserImpl
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
-    void processModel(const ModelPtr &model);
+    void processModel(const ModelPtr &model,
+                      const std::vector<VariablePtr> &externalVariables);
 };
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
@@ -1224,8 +1225,10 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
     }
 }
 
-void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
+void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
+                                          const std::vector<VariablePtr> &externalVariables)
 {
+(void) externalVariables;
     // Reset a few things in case this analyser was to be used to process more
     // than one model.
 
@@ -1466,7 +1469,8 @@ AnalyserPtr Analyser::create() noexcept
     return std::shared_ptr<Analyser> {new Analyser {}};
 }
 
-void Analyser::processModel(const ModelPtr &model)
+void Analyser::processModel(const ModelPtr &model,
+                            const std::vector<VariablePtr> &externalVariables)
 {
     // Make sure that the model is valid before processing it.
 
@@ -1489,7 +1493,7 @@ void Analyser::processModel(const ModelPtr &model)
 
     // Process the model.
 
-    mPimpl->processModel(model);
+    mPimpl->processModel(model, externalVariables);
 }
 
 AnalyserModelPtr Analyser::model() const

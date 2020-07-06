@@ -1251,6 +1251,53 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode(analyserModel));
 }
 
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    std::vector<libcellml::VariablePtr> externalVariables;
+
+    externalVariables.push_back(model->component("membrane")->variable("V"));
+    externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
+    externalVariables.push_back(model->component("potassium_channel_n_gate")->variable("alpha_n"));
+
+    analyser->processModel(model, externalVariables);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(3), analyserModel->stateCount());
+    EXPECT_EQ(size_t(19), analyserModel->variableCount());
+    EXPECT_EQ(size_t(15), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h"), generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"), generator->implementationCode(analyserModel));
+
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode(analyserModel));
+}
+
 TEST(Generator, nobleModel1962)
 {
     auto parser = libcellml::Parser::create();
