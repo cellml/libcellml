@@ -130,13 +130,14 @@ There is only one encapsulation in a model, and its :code:`id` attribute is acce
     // Get the encapsulation id.
     std::string encapsulationIdString = model->encapsulationId();
 
-  .. code-tabs:: python
+  .. code-tab:: python
 
     # Set the encapsulation id.
     model.setEncapsulationId("encapsId")
 
     # Get the encapsulation id.
     encapsulation_id_string = model.encapsulationId()
+
 
 Some items are most readily accessed through their entity-type parents, these being:
 
