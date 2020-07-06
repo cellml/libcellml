@@ -348,6 +348,7 @@ struct Analyser::AnalyserImpl
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = nullptr;
+    std::vector<VariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
@@ -1228,13 +1229,13 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                                           const std::vector<VariablePtr> &externalVariables)
 {
-(void) externalVariables;
     // Reset a few things in case this analyser was to be used to process more
     // than one model.
 
     mAnalyser->removeAllIssues();
 
     mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    mExternalVariables = externalVariables;
 
     mInternalVariables.clear();
     mInternalEquations.clear();
