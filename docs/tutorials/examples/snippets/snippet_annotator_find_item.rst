@@ -11,6 +11,8 @@
   - first: an enumerated value representing the kind of item retrieved; and
   - second: the item itself, stored in a :code:`std::any` container.
 
+  **TODO** Not sure how to do the casting :(
+
   .. tabs::
 
     .. code-tab:: c++
@@ -32,6 +34,6 @@
         case libcellml::Annotator::Type::COMPONENT:
           item = std::any_cast<libcellml::Component>(myItem.second);
 
-
-
     .. code-tab:: python
+
+      # TODO

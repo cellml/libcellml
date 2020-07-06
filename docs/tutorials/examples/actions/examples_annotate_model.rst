@@ -183,7 +183,7 @@ Note that there are several overloads of the arguments for this function; please
 
 
 +-------------------+-----------------------------------------------------------------------------------------------------+
-| enumeration value | object type                                                                                         |
+| enumeration value | Object type in the "any" container.                                                                                         |
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | COMPONENT         | Pointer to a :code:`Component` with the given :code:`id`.                                           |
 +-------------------+-----------------------------------------------------------------------------------------------------+
@@ -216,9 +216,6 @@ Note that there are several overloads of the arguments for this function; please
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | VARIABLE          | Pointer to a :code:`Variable` item with the given :code:`id`.                                       |
 +-------------------+-----------------------------------------------------------------------------------------------------+
-
-
-
 
 
 Useful snippets
