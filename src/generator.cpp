@@ -1,4 +1,3 @@
-#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -543,12 +542,10 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-std::cout << "C SHA1: " << profileContentsSha1 << std::endl;
         res = profileContentsSha1 != "0e79e682d28bcaf67f5ed5cbf419de670fd7373b";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-std::cout << "PYTHON SHA1: " << profileContentsSha1 << std::endl;
         res = profileContentsSha1 != "073377e89d73541021cbea7dce4b06ee4dc88c13";
 
         break;
