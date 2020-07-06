@@ -182,9 +182,48 @@ Note that there are several overloads of the arguments for this function; please
     mm3PerSecond.unitAttributes(1, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId)
 
 
-.. Useful snippets
-.. ===============
++-------------------+-----------------------------------------------------------------------------------------------------+
+| enumeration value | object type                                                                                         |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| COMPONENT         | Pointer to a :code:`Component` with the given :code:`id`.                                           |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| COMPONENT_REF     | Pointer to a :code:`Component`, whose encapsulation :code:`component_ref` has the given :code:`id`. |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| CONNECTION        | :code:`VariablePair` containing pointers to two :code:`Variable` items which span the connection.   |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| ENCAPSULATION     | An empty string.  The encapsulation can be retrieved from the model itself.                         |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| IMPORT            | Pointer to an :code:`ImportSource` item with the given :code:`id`.                                  |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| ISSUE             | Pointer to an :code:`Issue` item, created when something has gone wrong.                            |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| MAP_VARIABLES     | :code:`VariablePair` containing the two :code:`Variable` items connected by a variable              |
+|                   | equivalence with the given :code:`id`.                                                              |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| MODEL             | Pointer to the :code:`Model` item with the given :code:`id`.                                        |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| RESET             | Pointer to the :code:`Reset` item with the given :code:`id`.                                        |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| RESET_VALUE       | Pointer to the parent :code:`Reset` item containing a reset value with the given :code:`id`.        |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| TEST_VALUE        | Pointer to the parent :code:`Reset` item containing a test value with the given :code:`id`.         |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| UNIT              | :code:`UnitItem` pair, when the first attribute is a :code:`Units` pointer to the parent of         |
+|                   | the unit with the given :code:`id`, and the second attribute is the index within the                |
+|                   | :code:`Units` item at which the unit can be found.                                                  |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| UNITS             | Pointer to a :code:`Units` item with the given :code:`id`.                                          |
++-------------------+-----------------------------------------------------------------------------------------------------+
+| VARIABLE          | Pointer to a :code:`Variable` item with the given :code:`id`.                                       |
++-------------------+-----------------------------------------------------------------------------------------------------+
 
-.. .. include:: ../snippets/snippet_annotate_auto_ids.rst
+
+
+
+
+Useful snippets
+===============
+
+.. include:: ../snippets/snippet_annotate_auto_ids.rst
 
 .. .. include:: ../snippets/snippet_annotate_find_item.rst
