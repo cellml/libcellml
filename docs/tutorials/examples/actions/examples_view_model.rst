@@ -155,25 +155,27 @@ The raw CellML syntax stores each component individually as children of the mode
 In libCellML, the encapsulation structure is embedded in the ownership of the components, so that one component can be a parent of another.
 This can be confusing if the simple :code:`componentCount()` function on a model is called naively, as shown below.
 
-.. code-block:: cpp
+.. tabs::
 
-    // The number of components owned by the grandfather model refers *only* to its direct children:
-    auto grandfatherHasTwoKids = grandfather->componentCount(); // returns 2
+  .. code-tab:: cpp
 
-    // Each component must be interrogated individually to determine its children.
-    //    Note that the uncle component is the 0th child of the grandfather model.
-    auto uncleHasNoKids = grandfather->component(0)->componentCount();          // returns 0
-    auto motherHasTwoKids = grandfather->component("Mother")->componentCount(); // returns 2
+      // The number of components owned by the grandfather model refers *only* to its direct children:
+      auto grandfatherHasTwoKids = grandfather->componentCount(); // returns 2
 
-.. code-block:: python
+      // Each component must be interrogated individually to determine its children.
+      //    Note that the uncle component is the 0th child of the grandfather model.
+      auto uncleHasNoKids = grandfather->component(0)->componentCount();          // returns 0
+      auto motherHasTwoKids = grandfather->component("Mother")->componentCount(); // returns 2
 
-    # The number of components owned by the grandfather model refers *only* to its direct children:
-    grandfather_has_two_kids = grandfather->componentCount() # returns 2
+  .. code-tab:: python
 
-    # Each component must be interrogated individually to determine its children.
-    #    Note that the uncle component is the 0th child of the grandfather model.
-    uncle_has_no_kids = grandfather.component(0).componentCount()          # returns 0
-    mother_has_two_kids = grandfather.component("Mother").componentCount() # returns 2
+      # The number of components owned by the grandfather model refers *only* to its direct children:
+      grandfather_has_two_kids = grandfather->componentCount() # returns 2
+
+      # Each component must be interrogated individually to determine its children.
+      #    Note that the uncle component is the 0th child of the grandfather model.
+      uncle_has_no_kids = grandfather.component(0).componentCount()          # returns 0
+      mother_has_two_kids = grandfather.component("Mother").componentCount() # returns 2
 
 
 Useful snippets

@@ -113,55 +113,57 @@ The :code:`Generator` classifies all the :code:`Variable` items within each :cod
 
     - **Variables**: These do not require integration, but come in three types:
 
-      - :code:`CONSTANT` variables do not need any kind of calculation;
-      - :code:`COMPUTED_CONSTANT` variables need calculation but not integration; and
-      - :code:`ALGEBRAIC` variables need ...?? **TODO**
+      - :code:`CONSTANT` variables do not need any kind of calculation, and is initialised directly using a constant value (for example, :math:`x = 3`);
+      - :code:`COMPUTED_CONSTANT` variables only need calculation in order to set their initial (and thereafter constant) value (for example, :math:`x = y+5`); and
+      - :code:`ALGEBRAIC` variables are computed based on the values of other variables (for example, :math:`x = 3yz` where :math:`y` and/or :math:`z` are not constant).
 
     - **Variables of integration**: Also called "base variables", "free variables", or "VOI", these are specified by the :code:`<bvar>` child of the :code:`<diff>` operator.
       VOI must not be initialised.
 
     - **States**: These are those variables which need integration by a solver.
-      They are the :code:`<ci>` child of the :code:`<diff>` operator.
+      They are the :code:`<ci>` operand of the :code:`<diff>` operator.
 
 We can see this results of this classification process in the generated code returned by a call to the :code:`implementationCode` function of the :code:`Generator`.
 
-.. code-block:: cpp
+.. tabs::
 
-  // Defining the VOI variable of integration, its units and the name of its parent component
-  const VariableInfo VOI_INFO = {"time", "dimensionless", "shark_fish_interaction"};
+  .. code-tab:: cpp
 
-  // Defining the states: the variables which require integration
-  const VariableInfo STATE_INFO[] = {
-      {"y_f", "dimensionless", "shark_fish_interaction"},
-      {"y_s", "dimensionless", "shark_fish_interaction"}
-  };
+    // Defines the VOI variable of integration, its units and the name of its parent component.
+    const VariableInfo VOI_INFO = {"time", "dimensionless", "shark_fish_interaction"};
 
-  // Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
-  const VariableInfoWithType VARIABLE_INFO[] = {
-      {"a", "dimensionless", "shark_fish_interaction", CONSTANT},
-      {"b", "dimensionless", "shark_fish_interaction", CONSTANT},
-      {"c", "dimensionless", "shark_fish_interaction", CONSTANT},
-      {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
-  };
+    // Defines the states: the variables which require integration.
+    const VariableInfo STATE_INFO[] = {
+        {"y_f", "dimensionless", "shark_fish_interaction"},
+        {"y_s", "dimensionless", "shark_fish_interaction"}
+    };
 
-.. code-block:: python
+    // Defines the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration.
+    const VariableInfoWithType VARIABLE_INFO[] = {
+        {"a", "dimensionless", "shark_fish_interaction", CONSTANT},
+        {"b", "dimensionless", "shark_fish_interaction", CONSTANT},
+        {"c", "dimensionless", "shark_fish_interaction", CONSTANT},
+        {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
+    };
 
-  # Defining the VOI variable of integration, its units and the name of its parent component
-  VOI_INFO = {"name": "time", "units": "dimensionless", "component": "shark_fish_interaction"}
+  .. code-tab:: python
 
-  # Defining the states: the variables which require integration
-  STATE_INFO = [
-      {"name": "y_f", "units": "dimensionless", "component": "shark_fish_interaction"},
-      {"name": "y_s", "units": "dimensionless", "component": "shark_fish_interaction"}
-  ]
+    # Defines the VOI variable of integration, its units and the name of its parent component.
+    VOI_INFO = {"name": "time", "units": "dimensionless", "component": "shark_fish_interaction"}
 
-  # Defining the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration
-  VARIABLE_INFO = [
-      {"name": "a", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
-      {"name": "b", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
-      {"name": "c", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
-      {"name": "d", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.COMPUTED_CONSTANT}
-  ]
+    # Defines the states: the variables which require integration.
+    STATE_INFO = [
+        {"name": "y_f", "units": "dimensionless", "component": "shark_fish_interaction"},
+        {"name": "y_s", "units": "dimensionless", "component": "shark_fish_interaction"}
+    ]
+
+    # Defines the CONSTANT and COMPUTED_CONSTANT variables: these do not require integration.
+    VARIABLE_INFO = [
+        {"name": "a", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
+        {"name": "b", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
+        {"name": "c", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.CONSTANT},
+        {"name": "d", "units": "dimensionless", "component": "shark_fish_interaction", "type": VariableType.COMPUTED_CONSTANT}
+    ]
 
 Defining the initial values
 +++++++++++++++++++++++++++
