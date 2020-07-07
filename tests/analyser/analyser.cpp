@@ -28,7 +28,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'my_component' of model 'initialised_variable_of_integration' cannot be both a variable of integration and initialised.",
+        "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -48,7 +48,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'environment' of model 'initialised_variable_of_integration_in_non_first_component' cannot be both a variable of integration and initialised.",
+        "Variable 'time' in component 'environment' cannot be both a variable of integration and initialised.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -68,7 +68,7 @@ TEST(Analyser, twoVariablesOfIntegration)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be the variable of integration.",
+        "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -88,9 +88,9 @@ TEST(Analyser, nonFirstOrderOdes)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
-        "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
-        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order.",
+        "The differential equation for variable 'x' in component 'main' must be of the first order.",
+        "The differential equation for variable 'y' in component 'sub' must be of the first order.",
+        "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -131,7 +131,7 @@ TEST(Analyser, variableInitialisedTwice)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'sub' of model 'variable_initialised_twice' and variable 'x' in component 'main' of model 'variable_initialised_twice' are equivalent and cannot therefore both be initialised.",
+        "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -151,7 +151,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'main' of model 'my_model' is initialised using variable 'k2', but it is not a constant.",
+        "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -191,7 +191,7 @@ TEST(Analyser, nonInitialisedState)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'non_initialised_state' is used in an ODE, but it is not initialised.",
+        "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -211,7 +211,7 @@ TEST(Analyser, underconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
+        "Variable 'x' in component 'my_component' is not computed.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -231,7 +231,7 @@ TEST(Analyser, overconstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is computed more than once.",
+        "Variable 'x' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -251,8 +251,8 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
-        "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once.",
+        "Variable 'x' in component 'my_component' is not computed.",
+        "Variable 'y' in component 'my_component' is computed more than once.",
     };
 
     auto analyser = libcellml::Analyser::create();
