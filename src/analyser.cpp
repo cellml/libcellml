@@ -1335,93 +1335,102 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
     if ((mModel->mPimpl->mType == AnalyserModel::Type::ODE)
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
-        // Scale our equations' AST, i.e. take into account the fact that we may
-        // have mapped variables that use compatible units rather than
-        // equivalent ones.
+        // Mark some variables as external variables, if needed.
 
-        for (const auto &internalEquation : mInternalEquations) {
-            scaleEquationAst(internalEquation->mAst);
+        if (!externalVariables.empty()) {
         }
 
-        // Sort our internal variables and equations and make them available
-        // through our API.
+        // Carry on only if there are no errors (i.e. warnings are fine).
 
-        std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-                  compareVariablesByTypeAndIndex);
-        std::sort(mInternalEquations.begin(), mInternalEquations.end(),
-                  compareEquationsByVariable);
+        if (mAnalyser->errorCount() == 0) {
+            // Scale our equations' AST, i.e. take into account the fact that we
+            // may have mapped variables that use compatible units rather than
+            // equivalent ones.
 
-        std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> equationMappings;
-        std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
-
-        for (const auto &internalEquation : mInternalEquations) {
-            equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
-        }
-
-        for (const auto &internalVariable : mInternalVariables) {
-            AnalyserVariable::Type type;
-
-            if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
-                type = AnalyserVariable::Type::STATE;
-            } else if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
-                type = AnalyserVariable::Type::CONSTANT;
-            } else if ((internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-                       || (internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-                type = AnalyserVariable::Type::COMPUTED_CONSTANT;
-            } else if (internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
-                type = AnalyserVariable::Type::ALGEBRAIC;
-            } else {
-                // This is the variable of integration, so skip it.
-
-                continue;
+            for (const auto &internalEquation : mInternalEquations) {
+                scaleEquationAst(internalEquation->mAst);
             }
 
-            auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-            auto equation = equationMappings[internalVariable->mEquation.lock()];
+            // Sort our internal variables and equations and make them available
+            // through our API.
 
-            stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
-                                              internalVariable->mInitialisingVariable,
-                                              internalVariable->mVariable,
-                                              equation);
+            std::sort(mInternalVariables.begin(), mInternalVariables.end(),
+                      compareVariablesByTypeAndIndex);
+            std::sort(mInternalEquations.begin(), mInternalEquations.end(),
+                      compareEquationsByVariable);
 
-            if (equation != nullptr) {
-                variableMappings[equation] = stateOrVariable;
+            std::map<AnalyserInternalEquationPtr, AnalyserEquationPtr> equationMappings;
+            std::map<AnalyserEquationPtr, AnalyserVariablePtr> variableMappings;
+
+            for (const auto &internalEquation : mInternalEquations) {
+                equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
             }
 
-            if (type == AnalyserVariable::Type::STATE) {
-                mModel->mPimpl->mStates.push_back(stateOrVariable);
-            } else {
-                mModel->mPimpl->mVariables.push_back(stateOrVariable);
+            for (const auto &internalVariable : mInternalVariables) {
+                AnalyserVariable::Type type;
+
+                if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
+                    type = AnalyserVariable::Type::STATE;
+                } else if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
+                    type = AnalyserVariable::Type::CONSTANT;
+                } else if ((internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                           || (internalVariable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
+                    type = AnalyserVariable::Type::COMPUTED_CONSTANT;
+                } else if (internalVariable->mType == AnalyserInternalVariable::Type::ALGEBRAIC) {
+                    type = AnalyserVariable::Type::ALGEBRAIC;
+                } else {
+                    // This is the variable of integration, so skip it.
+
+                    continue;
+                }
+
+                auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
+                auto equation = equationMappings[internalVariable->mEquation.lock()];
+
+                stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
+                                                  internalVariable->mInitialisingVariable,
+                                                  internalVariable->mVariable,
+                                                  equation);
+
+                if (equation != nullptr) {
+                    variableMappings[equation] = stateOrVariable;
+                }
+
+                if (type == AnalyserVariable::Type::STATE) {
+                    mModel->mPimpl->mStates.push_back(stateOrVariable);
+                } else {
+                    mModel->mPimpl->mVariables.push_back(stateOrVariable);
+                }
             }
-        }
 
-        for (const auto &internalEquation : mInternalEquations) {
-            AnalyserEquation::Type type;
+            for (const auto &internalEquation : mInternalEquations) {
+                AnalyserEquation::Type type;
 
-            if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
-                type = AnalyserEquation::Type::TRUE_CONSTANT;
-            } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-                type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-            } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
-                type = AnalyserEquation::Type::RATE;
-            } else {
-                type = AnalyserEquation::Type::ALGEBRAIC;
+                if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
+                    type = AnalyserEquation::Type::TRUE_CONSTANT;
+                } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                    type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+                } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
+                    type = AnalyserEquation::Type::RATE;
+                } else {
+                    type = AnalyserEquation::Type::ALGEBRAIC;
+                }
+
+                std::vector<AnalyserEquationPtr> dependencies;
+
+                for (const auto &dependency : internalEquation->mDependencies) {
+                    dependencies.push_back(equationMappings[dependency]);
+                }
+
+                auto equation = equationMappings[internalEquation];
+
+                equation->mPimpl->populate(type,
+                                           internalEquation->mAst, dependencies,
+                                           internalEquation->mIsStateRateBased,
+                                           variableMappings[equation]);
+
+                mModel->mPimpl->mEquations.push_back(equation);
             }
-
-            std::vector<AnalyserEquationPtr> dependencies;
-
-            for (const auto &dependency : internalEquation->mDependencies) {
-                dependencies.push_back(equationMappings[dependency]);
-            }
-
-            auto equation = equationMappings[internalEquation];
-
-            equation->mPimpl->populate(type,
-                                       internalEquation->mAst, dependencies,
-                                       internalEquation->mIsStateRateBased,
-                                       variableMappings[equation]);
-
-            mModel->mPimpl->mEquations.push_back(equation);
         }
     }
 }
