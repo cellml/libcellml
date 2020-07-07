@@ -1667,13 +1667,21 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
             } else {
                 auto rootValueAst = AnalyserEquationAst::create();
 
-                rootValueAst->mPimpl->populate(AnalyserEquationAst::Type::DIVIDE, ast);
+                rootValueAst->setType(AnalyserEquationAst::Type::DIVIDE);
+                rootValueAst->setParent(ast);
 
                 auto leftChild = AnalyserEquationAst::create();
                 auto rightChild = AnalyserEquationAst::create();
 
-                leftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, "1.0", rootValueAst);
-                rightChild->mPimpl->populate(ast->leftChild(), rootValueAst);
+                leftChild->setType(AnalyserEquationAst::Type::CN);
+                leftChild->setValue("1.0");
+                leftChild->setParent(rootValueAst);
+
+                rightChild->setType(ast->leftChild()->type());
+                rightChild->setVariable(ast->leftChild()->variable());
+                rightChild->setParent(rootValueAst);
+                rightChild->setLeftChild(ast->leftChild()->leftChild());
+                rightChild->setRightChild(ast->leftChild()->rightChild());
 
                 rootValueAst->setLeftChild(leftChild);
                 rootValueAst->setRightChild(rightChild);
