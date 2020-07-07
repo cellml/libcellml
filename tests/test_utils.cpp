@@ -162,6 +162,18 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
+void expectEqualIssuesLevels(const std::vector<std::string> &issues,
+                             const std::vector<libcellml::Issue::Level> &levels,
+                             const libcellml::LoggerPtr &logger)
+{
+    EXPECT_EQ(issues.size(), logger->issueCount());
+    EXPECT_EQ(levels.size(), logger->issueCount());
+    for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
+        EXPECT_EQ(issues.at(i), logger->issue(i)->description());
+        EXPECT_EQ(levels.at(i), logger->issue(i)->level());
+    }
+}
+
 libcellml::ModelPtr createModel(const std::string &name)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
