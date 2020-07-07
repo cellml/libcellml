@@ -32,7 +32,6 @@ namespace libcellml {
 class LIBCELLML_EXPORT AnalyserEquationAst
 {
     friend class Analyser;
-    friend class Generator;
 
 public:
     enum class Type
