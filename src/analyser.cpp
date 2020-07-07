@@ -933,10 +933,8 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
             issue->setDescription("Variable '" + variable->name()
                                   + "' in component '" + component->name()
-                                  + "' of model '" + owningModel(component)->name()
                                   + "' and variable '" + analyserVariable->mVariable->name()
                                   + "' in component '" + trackedVariableComponent->name()
-                                  + "' of model '" + owningModel(trackedVariableComponent)->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
 
             mAnalyser->addIssue(issue);
@@ -961,7 +959,6 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
                 issue->setDescription("Variable '" + variable->name()
                                       + "' in component '" + component->name()
-                                      + "' of model '" + owningModel(component)->name()
                                       + "' is initialised using variable '" + analyserVariable->mVariable->initialValue()
                                       + "', but it is not a constant.");
 
@@ -1046,7 +1043,6 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
                             issue->setDescription("Variable '" + voiEquivalentVariable->name()
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
-                                                  + "' of model '" + owningModel(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
 
                             mAnalyser->addIssue(issue);
@@ -1070,10 +1066,8 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
             issue->setDescription("Variable '" + mModel->mPimpl->mVoi->variable()->name()
                                   + "' in component '" + owningComponent(mModel->mPimpl->mVoi->variable())->name()
-                                  + "' of model '" + owningModel(mModel->mPimpl->mVoi->variable())->name()
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
-                                  + "' of model '" + owningModel(variable)->name()
                                   + "' cannot both be the variable of integration.");
 
             mAnalyser->addIssue(issue);
@@ -1094,7 +1088,6 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
-                                  + "' of model '" + owningModel(variable)->name()
                                   + "' must be of the first order.");
 
             mAnalyser->addIssue(issue);
@@ -1299,7 +1292,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
-                                      + "' of model '" + owningModel(realVariable)->name()
                                       + "' " + issueType + ".");
 
                 mAnalyser->addIssue(issue);
