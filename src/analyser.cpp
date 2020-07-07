@@ -153,11 +153,11 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
 
-    static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
-    static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
-
     static bool isKnownVariable(const AnalyserInternalVariablePtr &variable);
     static bool isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
+
+    static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
+    static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
     bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
@@ -182,10 +182,20 @@ void AnalyserInternalEquation::addOdeVariable(const AnalyserInternalVariablePtr 
     }
 }
 
+bool AnalyserInternalEquation::isKnownVariable(const AnalyserInternalVariablePtr &variable)
+{
+    return variable->mType != AnalyserInternalVariable::Type::UNKNOWN;
+}
+
+bool AnalyserInternalEquation::isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
+{
+    return odeVariable->mIndex != MAX_SIZE_T;
+}
+
 bool AnalyserInternalEquation::hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const AnalyserInternalVariablePtr &variable) {
-               return (variable->mType != AnalyserInternalVariable::Type::UNKNOWN);
+               return isKnownVariable(variable);
            })
            != std::end(variables);
 }
@@ -199,22 +209,6 @@ bool AnalyserInternalEquation::hasNonConstantVariables(const std::vector<Analyse
                       && (variable->mType != AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
            })
            != std::end(variables);
-}
-
-bool AnalyserInternalEquation::isKnownVariable(const AnalyserInternalVariablePtr &variable)
-{
-    return (variable->mIndex != MAX_SIZE_T)
-           || (variable->mType == AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION)
-           || (variable->mType == AnalyserInternalVariable::Type::STATE)
-           || (variable->mType == AnalyserInternalVariable::Type::CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
-           || (variable->mType == AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
-}
-
-bool AnalyserInternalEquation::isKnownOdeVariable(const AnalyserInternalVariablePtr &odeVariable)
-{
-    return (odeVariable->mIndex != MAX_SIZE_T)
-           || (odeVariable->mType == AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
 bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
@@ -908,8 +902,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
                 mInternalEquations.push_back(equation);
 
-                // Actually process the node and return its corresponding
-                // equation.
+                // Actually process the node
 
                 processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
             }
@@ -1296,26 +1289,12 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         for (const auto &internalVariable : mInternalVariables) {
             std::string issueType;
 
-            switch (internalVariable->mType) {
-            case AnalyserInternalVariable::Type::UNKNOWN:
+            if (internalVariable->mType == AnalyserInternalVariable::Type::UNKNOWN) {
                 issueType = "is not computed";
-
-                break;
-            case AnalyserInternalVariable::Type::SHOULD_BE_STATE:
+            } else if (internalVariable->mType == AnalyserInternalVariable::Type::SHOULD_BE_STATE) {
                 issueType = "is used in an ODE, but it is not initialised";
-
-                break;
-            case AnalyserInternalVariable::Type::VARIABLE_OF_INTEGRATION:
-            case AnalyserInternalVariable::Type::STATE:
-            case AnalyserInternalVariable::Type::CONSTANT:
-            case AnalyserInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
-            case AnalyserInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-            case AnalyserInternalVariable::Type::ALGEBRAIC:
-                break;
-            case AnalyserInternalVariable::Type::OVERCONSTRAINED:
+            } else if (internalVariable->mType == AnalyserInternalVariable::Type::OVERCONSTRAINED) {
                 issueType = "is computed more than once";
-
-                break;
             }
 
             if (!issueType.empty()) {
