@@ -264,6 +264,27 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }
 
+TEST(Analyser, voiExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'environment' is the variable of integration and cannot therefore be marked as an external variable.",
+    };
+
+    auto analyser = libcellml::Analyser::create();
+    std::vector<libcellml::VariablePtr> externalVariables;
+
+    externalVariables.push_back(model->component("environment")->variable("time"));
+
+    analyser->processModel(model, externalVariables);
+
+    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+}
+
 TEST(Analyser, exactSameExternalVariables)
 {
     auto parser = libcellml::Parser::create();
@@ -294,7 +315,24 @@ TEST(Analyser, exactSameExternalVariables)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, notPrimaryExternalVariable)
+TEST(Analyser, onePrimaryExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    std::vector<libcellml::VariablePtr> externalVariables;
+
+    externalVariables.push_back(model->component("membrane")->variable("V"));
+
+    analyser->processModel(model, externalVariables);
+
+    EXPECT_EQ(size_t(0), analyser->issueCount());
+}
+
+TEST(Analyser, oneNonPrimaryExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -318,7 +356,7 @@ TEST(Analyser, notPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryExternalVariable)
+TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -343,7 +381,32 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryExternalVariable)
+TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Both variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one marked as an external variable.",
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::WARNING,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+    std::vector<libcellml::VariablePtr> externalVariables;
+
+    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
+    externalVariables.push_back(model->component("potassium_channel")->variable("V"));
+
+    analyser->processModel(model, externalVariables);
+
+    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+}
+
+TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -369,32 +432,7 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, twoEquivalentExternalVariablesButNotIncludingPrimaryExternalVariable)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Both variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one marked as an external variable.",
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-    };
-
-    auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
-
-    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
-    externalVariables.push_back(model->component("potassium_channel")->variable("V"));
-
-    analyser->processModel(model, externalVariables);
-
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
-}
-
-TEST(Analyser, threeEquivalentExternalVariablesButNotIncludingPrimaryExternalVariable)
+TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -418,27 +456,6 @@ TEST(Analyser, threeEquivalentExternalVariablesButNotIncludingPrimaryExternalVar
     analyser->processModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
-}
-
-TEST(Analyser, voiExternalVariable)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser->issueCount());
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'environment' is the variable of integration and cannot therefore be marked as an external variable.",
-    };
-
-    auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
-
-    externalVariables.push_back(model->component("environment")->variable("time"));
-
-    analyser->processModel(model, externalVariables);
-
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
 
 TEST(Analyser, coverage)
