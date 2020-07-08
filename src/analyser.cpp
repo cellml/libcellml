@@ -1393,15 +1393,26 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
             std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
 
+            uniqueExternalVariables.clear();
+
             for (const auto &externalVariable : mExternalVariables) {
                 for (const auto &internalVariable : mInternalVariables) {
                     if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
                         primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
 
+                        if (std::find(uniqueExternalVariables.begin(),
+                                      uniqueExternalVariables.end(),
+                                      internalVariable->mVariable)
+                            == uniqueExternalVariables.end()) {
+                            uniqueExternalVariables.push_back(internalVariable->mVariable);
+                        }
+
                         break;
                     }
                 }
             }
+
+            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
             for (const auto &primaryExternalVariable : primaryExternalVariables) {
                 std::string description;
