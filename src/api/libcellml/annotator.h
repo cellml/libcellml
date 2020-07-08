@@ -29,8 +29,6 @@ namespace libcellml {
 using VariablePair = std::pair<VariablePtr, VariablePtr>;
 using UnitItem = std::pair<UnitsPtr, size_t>;
 using AnyItem = std::pair<std::uint64_t, std::any>;
-// using ItemList = std::map<std::string, std::pair<std::uint64_t, std::any>>;
-// using AnyItem = std::pair<Annotator::TYPE, std::any>; // Clang-tidy suggested this type instead of the Annotator::TIDY enum.
 using ItemList = std::map<std::string, AnyItem>;
 /**
  * @brief The Annotator class.
@@ -40,7 +38,7 @@ using ItemList = std::map<std::string, AnyItem>;
 class LIBCELLML_EXPORT Annotator: public Logger
 {
 public:
-    enum TYPE
+    enum Type
     {
         COMPONENT,
         COMPONENT_REF,
@@ -133,6 +131,24 @@ public:
      * @return An @c AnyItem item as described above.
      */
     AnyItem item(const std::string &id);
+
+    // KRM reinstating specific return types
+    // ComponentPtr component(const std::string &id);
+    // VariablePtr variable(const std::string &id);
+    // ResetPtr reset(const std::string &id);
+    // ModelPtr model(const std::string &id);
+    // ImportSourcePtr import(const std::string &id);
+    // UnitsPtr units(const std::string &id);
+    // VariablePair connection(const std::string &id);
+    // VariablePair map_variables(const std::string &id);
+    // UnitItem unit(const std::string &id);
+    // ComponentPtr component_ref(const std::string &id);
+    // std::string math(const std::string &id);
+    // std::string test_value(const std::string &id);
+    // std::string reset_value(const std::string &id);
+
+    std::pair<Annotator::Type, std::vector<std::size_t>> indicesToItem(const std::string &id);
+    std::string instructions(const std::string &id);
 
 private:
     Annotator(); /**< Constructor */
