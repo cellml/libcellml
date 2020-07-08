@@ -342,6 +342,7 @@ struct Analyser::AnalyserImpl
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = nullptr;
+    std::vector<VariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
@@ -386,6 +387,9 @@ struct Analyser::AnalyserImpl
                   const AnalyserEquationAstPtr &astParent,
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
+
+    bool isExternalVariable(const VariablePtr &variable);
+    void removeExternalVariable(const VariablePtr &variable);
 
     void processModel(const ModelPtr &model,
                       const std::vector<VariablePtr> &externalVariables);
@@ -1211,17 +1215,30 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
     }
 }
 
+bool Analyser::AnalyserImpl::isExternalVariable(const VariablePtr &variable)
+{
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(),
+                        [=](const VariablePtr &v) -> bool { return v == variable; })
+           != mExternalVariables.end();
+}
+
+void Analyser::AnalyserImpl::removeExternalVariable(const VariablePtr &variable)
+{
+    mExternalVariables.erase(std::remove_if(mExternalVariables.begin(), mExternalVariables.end(),
+                                            [=](const VariablePtr &v) -> bool { return v == variable; }),
+                             mExternalVariables.end());
+}
+
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                                           const std::vector<VariablePtr> &externalVariables)
 {
-    (void)externalVariables;
-
     // Reset a few things in case this analyser was to be used to process more
     // than one model.
 
     mAnalyser->removeAllIssues();
 
     mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    mExternalVariables = externalVariables;
 
     mInternalVariables.clear();
     mInternalEquations.clear();
@@ -1338,6 +1355,21 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         // Mark some variables as external variables, if needed.
 
         if (!externalVariables.empty()) {
+            // Check whether the variable of integration is to be marked as an
+            // external variable.
+
+            if ((mModel->mPimpl->mVoi != nullptr) && isExternalVariable(mModel->mPimpl->mVoi->variable())) {
+                auto issue = Issue::create();
+                auto voi = mModel->mPimpl->mVoi->variable();
+
+                issue->setDescription("Variable '" + voi->name()
+                                      + "' in component '" + owningComponent(voi)->name()
+                                      + "' is the variable of integration and cannot therefore be marked as an external variable.");
+
+                mAnalyser->addIssue(issue);
+
+                removeExternalVariable(voi);
+            }
         }
 
         // Carry on only if there are no errors (i.e. warnings are fine).
