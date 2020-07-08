@@ -318,7 +318,7 @@ TEST(Analyser, notPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, twoSameExternalVariablesIncludingPrimaryExternalVariable)
+TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -343,7 +343,7 @@ TEST(Analyser, twoSameExternalVariablesIncludingPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, threeSameExternalVariablesIncludingPrimaryExternalVariable)
+TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -369,7 +369,7 @@ TEST(Analyser, threeSameExternalVariablesIncludingPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, twoSameExternalVariablesButNotIncludingPrimaryExternalVariable)
+TEST(Analyser, twoEquivalentExternalVariablesButNotIncludingPrimaryExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -394,7 +394,7 @@ TEST(Analyser, twoSameExternalVariablesButNotIncludingPrimaryExternalVariable)
     EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
 }
 
-TEST(Analyser, threeSameExternalVariablesButNotIncludingPrimaryExternalVariable)
+TEST(Analyser, threeEquivalentExternalVariablesButNotIncludingPrimaryExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
