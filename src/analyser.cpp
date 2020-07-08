@@ -16,8 +16,6 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
-#include <unordered_set>
-
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analysermodel.h"
@@ -1360,16 +1358,19 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
             // Check whether a variable is marked as an external variable more
             // than once.
 
-            std::unordered_set<VariablePtr> uniqueExternalVariables;
+            std::vector<VariablePtr> uniqueExternalVariables;
             std::vector<VariablePtr> multipleExternalVariables;
 
             for (const auto &externalVariable : mExternalVariables) {
-                auto res = uniqueExternalVariables.insert(externalVariable);
-
-                if (!res.second
-                    && (std::find(multipleExternalVariables.begin(),
-                                  multipleExternalVariables.end(),
-                                  externalVariable) == multipleExternalVariables.end())) {
+                if (std::find(uniqueExternalVariables.begin(),
+                              uniqueExternalVariables.end(),
+                              externalVariable)
+                    == uniqueExternalVariables.end()) {
+                    uniqueExternalVariables.push_back(externalVariable);
+                } else if (std::find(multipleExternalVariables.begin(),
+                                     multipleExternalVariables.end(),
+                                     externalVariable)
+                           == multipleExternalVariables.end()) {
                     multipleExternalVariables.push_back(externalVariable);
                 }
             }
