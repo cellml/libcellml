@@ -1434,7 +1434,11 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                     description += " Variable '" + primaryExternalVariable.first->name()
                                    + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
                                    + "' is";
-                    description += hasPrimaryVariable ? " the" : " its corresponding";
+                    description += hasPrimaryVariable ?
+                                       " the" :
+                                       (equivalentVariableCount == 1) ?
+                                           " its corresponding" :
+                                           " their corresponding";
                     description += " primary variable and will therefore be";
                     description += (equivalentVariableCount == 1) ?
                                        " marked as an external variable instead." :
