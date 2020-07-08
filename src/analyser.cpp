@@ -1370,6 +1370,36 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
                 removeExternalVariable(voi);
             }
+
+            // Check whether a variable is marked as an external variable more
+            // than once.
+
+            std::unordered_set<VariablePtr> uniqueExternalVariables;
+            std::vector<VariablePtr> multipleExternalVariables;
+
+            for (const auto &externalVariable : mExternalVariables) {
+                auto res = uniqueExternalVariables.insert(externalVariable);
+
+                if (!res.second
+                    && (std::find(multipleExternalVariables.begin(),
+                                  multipleExternalVariables.end(),
+                                  externalVariable) == multipleExternalVariables.end())) {
+                    multipleExternalVariables.push_back(externalVariable);
+                }
+            }
+
+            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
+
+            for (const auto &externalVariable : multipleExternalVariables) {
+                auto issue = Issue::create();
+
+                issue->setDescription("Variable '" + externalVariable->name()
+                                      + "' in component '" + owningComponent(externalVariable)->name()
+                                      + "' is marked as an external variable more than once.");
+                issue->setLevel(Issue::Level::WARNING);
+
+                mAnalyser->addIssue(issue);
+            }
         }
 
         // Carry on only if there are no errors (i.e. warnings are fine).
