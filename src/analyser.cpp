@@ -1357,22 +1357,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         // Mark some variables as external variables, if needed.
 
         if (!externalVariables.empty()) {
-            // Check whether the variable of integration is to be marked as an
-            // external variable.
-
-            if ((mModel->mPimpl->mVoi != nullptr) && isExternalVariable(mModel->mPimpl->mVoi->variable())) {
-                auto issue = Issue::create();
-                auto voi = mModel->mPimpl->mVoi->variable();
-
-                issue->setDescription("Variable '" + voi->name()
-                                      + "' in component '" + owningComponent(voi)->name()
-                                      + "' is the variable of integration and cannot therefore be marked as an external variable.");
-
-                mAnalyser->addIssue(issue);
-
-                removeExternalVariable(voi);
-            }
-
             // Check whether a variable is marked as an external variable more
             // than once.
 
@@ -1401,6 +1385,22 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 issue->setLevel(Issue::Level::WARNING);
 
                 mAnalyser->addIssue(issue);
+            }
+
+            // Check whether the variable of integration is to be marked as an
+            // external variable.
+
+            if ((mModel->mPimpl->mVoi != nullptr) && isExternalVariable(mModel->mPimpl->mVoi->variable())) {
+                auto issue = Issue::create();
+                auto voi = mModel->mPimpl->mVoi->variable();
+
+                issue->setDescription("Variable '" + voi->name()
+                                      + "' in component '" + owningComponent(voi)->name()
+                                      + "' is the variable of integration and cannot therefore be marked as an external variable.");
+
+                mAnalyser->addIssue(issue);
+
+                removeExternalVariable(voi);
             }
         }
 
