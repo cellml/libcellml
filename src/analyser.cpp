@@ -1376,11 +1376,11 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
             mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
-            for (const auto &externalVariable : multipleExternalVariables) {
+            for (const auto &multipleExternalVariable : multipleExternalVariables) {
                 auto issue = Issue::create();
 
-                issue->setDescription("Variable '" + externalVariable->name()
-                                      + "' in component '" + owningComponent(externalVariable)->name()
+                issue->setDescription("Variable '" + multipleExternalVariable->name()
+                                      + "' in component '" + owningComponent(multipleExternalVariable)->name()
                                       + "' is marked as an external variable more than once.");
                 issue->setLevel(Issue::Level::WARNING);
 
