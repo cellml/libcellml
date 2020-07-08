@@ -51,7 +51,7 @@ struct Printer::PrinterImpl
     std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, IdList &idList, bool autoIds);
 };
 
-std::string printMapVariables(const VariablePair &variablePair, IdList &idList, const bool autoIds)
+std::string printMapVariables(const VariablePair &variablePair, IdList &idList, bool autoIds)
 {
     std::string mapVariables = "<map_variables variable_1=\"" + variablePair.first->name() + "\""
                                + " variable_2=\"" + variablePair.second->name() + "\"";
@@ -176,7 +176,7 @@ void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componen
     }
 }
 
-std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idList, const bool autoIds)
+std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idList, bool autoIds)
 {
     std::string repr;
     if (units->isImport()) {
@@ -246,7 +246,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
     return repr;
 }
 
-std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, IdList &idList, const bool autoIds)
+std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, IdList &idList, bool autoIds)
 {
     std::string repr;
     if (component->isImport()) {
@@ -291,7 +291,7 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
     return repr;
 }
 
-std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &component, IdList &idList, const bool autoIds)
+std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &component, IdList &idList, bool autoIds)
 {
     std::string componentName = component->name();
     std::string repr = "<component_ref";
@@ -318,7 +318,7 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
     return repr;
 }
 
-std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdList &idList, const bool autoIds)
+std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdList &idList, bool autoIds)
 {
     std::string repr;
     repr += "<variable";
@@ -371,7 +371,7 @@ std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel,
     return repr;
 }
 
-std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idList, const bool autoIds)
+std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idList, bool autoIds)
 {
     std::string repr = "<reset";
     std::string rid = reset->id();
