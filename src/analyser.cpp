@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "libcellml/analyser.h"
 
+#include <unordered_set>
+
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
 #include "libcellml/analysermodel.h"
