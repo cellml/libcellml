@@ -55,7 +55,8 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
         }
-        std::cout << std::endl;
+        std::cout << std::endl
+                  << l->issue(i)->description() << std::endl;
     }
 }
 
@@ -188,11 +189,11 @@ libcellml::ComponentPtr createComponentInModel(const libcellml::ModelPtr &model,
     return component;
 }
 
-libcellml::ModelPtr createModelWithComponent(const std::string &name)
+libcellml::ModelPtr createModelWithComponent(const std::string &modelName, const std::string &componentName)
 {
     libcellml::ModelPtr model = libcellml::Model::create();
-    model->setName(name);
-    createComponentInModel(model, "");
+    model->setName(modelName);
+    createComponentInModel(model, componentName);
     return model;
 }
 

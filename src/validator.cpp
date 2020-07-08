@@ -620,7 +620,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
     } else if (!isStandardUnitName(unitsName)) {
-        ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+        ComponentPtr component = owningComponent(variable);
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             IssuePtr issue = Issue::create();
@@ -683,7 +683,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     } else {
         description += "with variable '" + reset->variable()->name() + "', ";
         auto var = reset->variable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         varParentName = varParent->name();
         if (varParentName != component->name()) {
             varOutsideComponent = true;
@@ -696,7 +696,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         description += "with test_variable '" + reset->testVariable()->name() + "', ";
 
         auto var = reset->testVariable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         testVarParentName = varParent->name();
         if (testVarParentName != component->name()) {
             testVarOutsideComponent = true;
@@ -1017,12 +1017,12 @@ bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequi
 void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported) const
 {
     Variable::InterfaceType interfaceType = determineInterfaceType(variable);
-    auto component = std::dynamic_pointer_cast<Component>(variable->parent());
+    auto component = owningComponent(variable);
     std::string componentName = component->name();
     if (interfaceType == Variable::InterfaceType::NONE) {
         for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
             const auto equivalentVariable = variable->equivalentVariable(index);
-            auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
                 VariablePair reversePair = std::make_pair(equivalentVariable, variable);
                 auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
@@ -1060,19 +1060,23 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
+        // If the parent component of the variable is nonexistent or imported, don't check it.
+        auto equivalentComponent = owningComponent(equivalentVariable);
+        if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
+            continue;
+        }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             VariablePair reversePair = std::make_pair(equivalentVariable, variable);
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
@@ -1087,7 +1091,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
         if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto component = owningComponent(equivalentVariable);
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
@@ -1111,6 +1115,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
     }
 
     for (const VariablePtr &variable : variables) {
+        auto parentComponent = owningComponent(variable);
+        if (parentComponent->isImport()) {
+            continue;
+        }
         validateVariableInterface(variable, interfaceErrorsAlreadyReported);
         validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
         validateEquivalenceStructure(variable);
