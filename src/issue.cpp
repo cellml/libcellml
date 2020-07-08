@@ -319,25 +319,22 @@ static const std::map<Issue::ReferenceRule, std::vector<std::string>> ruleToInfo
 
 std::string Issue::referenceHeading() const
 {
-    std::string heading;
     auto search = ruleToInformation.find(referenceRule());
     if (search != ruleToInformation.end()) {
-        heading = search->second.at(0);
+        return search->second[0];
     }
-    return heading;
+    return {};
 }
-
 std::string Issue::url() const
 {
     if (referenceRule() == Issue::ReferenceRule::UNDEFINED) {
-        return "";
+        return {};
     }
-    std::string issueUrl;
     auto search = ruleToInformation.find(referenceRule());
     if (search != ruleToInformation.end()) {
-        issueUrl = search->second.at(1) + search->second.at(2) + ".html?issue=" + search->second.at(0);
+        return search->second[1] + search->second[2] + ".html?issue=" + search->second[0];
     }
-    return issueUrl;
+    return {};
 }
 
 } // namespace libcellml
