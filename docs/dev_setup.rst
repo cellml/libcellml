@@ -37,7 +37,7 @@ We commonly use `Git for windows <http://gitforwindows.org/>`_, but other popula
   - `GitKracken <https://www.gitkraken.com/>`_
   - `Git SCM <https://git-scm.com/>`_
 
-* `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions) `Git <https://git-scm.com/>`_ can be installed using the package manager with the command ``sudo apt-get install git``.
+* `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions) `Git <https://git-scm.com/>`_ can be installed using the package manager with the command ``sudo apt install git``.
 * `macOS <https://en.wikipedia.org/wiki/MacOS>`_ `Git <https://git-scm.com/>`_ is pre-installed and available from the command line.
 
 CMake
@@ -47,7 +47,7 @@ CMake
 `CMake <https://cmake.org/>`_ is used to control the software compilation process using simple platform and compiler independent configuration files, and to generate native makefiles and workspaces that can be used in the compiler environment of your choice.
 
 Again, installation of `CMake <https://cmake.org/>`_ is particular to each operating system.
-For `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), `CMake <https://cmake.org/>`_ can be installed using the package manager with the command ``sudo apt-get install cmake``.
+For `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), `CMake <https://cmake.org/>`_ can be installed using the package manager with the command ``sudo apt install cmake``.
 For `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_ and `macOS <https://en.wikipedia.org/wiki/MacOS>`_, `CMake <https://cmake.org/>`_ provides `installation binaries <https://cmake.org/download/>`_.
 Choose the binary appropriate for your operating system and follow the installation instructions.
 
