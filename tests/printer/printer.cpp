@@ -328,3 +328,37 @@ TEST(Printer, printModelImportingModelChildComponent)
 
     EXPECT_EQ(modelContents, serialisedModel);
 }
+
+TEST(Printer, printModelImportingModelGrandparentComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto modelContents = fileContents("importingModelGrandparentComponent.cellml");
+    auto model = parser->parseModel(modelContents);
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(modelContents, serialisedModel);
+}
+
+TEST(Printer, printModelImportingModelGrandchildComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto modelContents = fileContents("importingModelGrandchildComponent.cellml");
+    auto model = parser->parseModel(modelContents);
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(modelContents, serialisedModel);
+}
