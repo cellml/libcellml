@@ -1387,6 +1387,40 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 mAnalyser->addIssue(issue);
             }
 
+            // Check whether a variable is marked as an external variable more
+            // than once through equivalence.
+
+            std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
+
+            for (const auto &externalVariable : mExternalVariables) {
+                for (const auto &internalVariable : mInternalVariables) {
+                    if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
+                        primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
+
+                        break;
+                    }
+                }
+            }
+
+            for (const auto &primaryExternalVariable : primaryExternalVariables) {
+                auto hasPrimaryVariable = std::find(primaryExternalVariable.second.begin(),
+                                                    primaryExternalVariable.second.end(),
+                                                    primaryExternalVariable.first) != primaryExternalVariable.second.end();
+
+                if ((primaryExternalVariable.second.size() == 1) && !hasPrimaryVariable) {
+                    auto issue = Issue::create();
+
+                    issue->setDescription("Variable '" + primaryExternalVariable.second[0]->name()
+                                          + "' in component '" + owningComponent(primaryExternalVariable.second[0])->name()
+                                          + "' is marked as an external variable, but it is not a primary variable. Variable '" + primaryExternalVariable.first->name()
+                                          + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
+                                          + "' is its corresponding primary variable and will therefore be marked as an external variable instead.");
+                    issue->setLevel(Issue::Level::WARNING);
+
+                    mAnalyser->addIssue(issue);
+                }
+            }
+
             // Check whether the variable of integration is to be marked as an
             // external variable.
 
