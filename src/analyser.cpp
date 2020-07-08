@@ -1404,18 +1404,47 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
             }
 
             for (const auto &primaryExternalVariable : primaryExternalVariables) {
+                std::string description;
+                auto equivalentVariableCount = primaryExternalVariable.second.size();
                 auto hasPrimaryVariable = std::find(primaryExternalVariable.second.begin(),
                                                     primaryExternalVariable.second.end(),
-                                                    primaryExternalVariable.first) != primaryExternalVariable.second.end();
+                                                    primaryExternalVariable.first)
+                                          != primaryExternalVariable.second.end();
 
-                if ((primaryExternalVariable.second.size() == 1) && !hasPrimaryVariable) {
+                if ((equivalentVariableCount > 1) || !hasPrimaryVariable) {
+                    description += (equivalentVariableCount == 2) ? "Both " : "";
+
+                    for (size_t i = 0; i < equivalentVariableCount; ++i) {
+                        if (i != 0) {
+                            description += (i != equivalentVariableCount - 1) ? ", " : " and ";
+                        }
+
+                        std::string variableString = ((i == 0) && (equivalentVariableCount != 2)) ? "Variable" : "variable";
+
+                        description += variableString + " '" + primaryExternalVariable.second[i]->name()
+                                       + "' in component '" + owningComponent(primaryExternalVariable.second[i])->name()
+                                       + "'";
+                    }
+
+                    description += (equivalentVariableCount == 1) ?
+                                       " is marked as an external variable, but it is not a primary variable." :
+                                       " are marked as external variables, but they are";
+                    description += (equivalentVariableCount > 2) ? " all" : "";
+                    description += (equivalentVariableCount == 1) ? "" : " equivalent.";
+                    description += " Variable '" + primaryExternalVariable.first->name()
+                                   + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
+                                   + "' is";
+                    description += hasPrimaryVariable ? " the" : " its corresponding";
+                    description += " primary variable and will therefore be";
+                    description += (equivalentVariableCount == 1) ?
+                                       " marked as an external variable instead." :
+                                       " the one marked as an external variable.";
+                }
+
+                if (!description.empty()) {
                     auto issue = Issue::create();
 
-                    issue->setDescription("Variable '" + primaryExternalVariable.second[0]->name()
-                                          + "' in component '" + owningComponent(primaryExternalVariable.second[0])->name()
-                                          + "' is marked as an external variable, but it is not a primary variable. Variable '" + primaryExternalVariable.first->name()
-                                          + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
-                                          + "' is its corresponding primary variable and will therefore be marked as an external variable instead.");
+                    issue->setDescription(description);
                     issue->setLevel(Issue::Level::WARNING);
 
                     mAnalyser->addIssue(issue);
