@@ -102,3 +102,20 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
 #define EXPECT_EQ_ISSUES_CAUSES(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesCauses(issues, causes, logger)
+
+const static std::map<libcellml::Annotator::Type, std::string> annotatorTypeToString = {
+    {libcellml::Annotator::Type::COMPONENT, "component"},
+    {libcellml::Annotator::Type::COMPONENT_REF, "component_ref"},
+    {libcellml::Annotator::Type::IMPORT, "import"},
+    {libcellml::Annotator::Type::VARIABLE, "variable"},
+    {libcellml::Annotator::Type::MODEL, "model"},
+    {libcellml::Annotator::Type::CONNECTION, "connection"},
+    {libcellml::Annotator::Type::UNITS, "units"},
+    {libcellml::Annotator::Type::UNIT, "unit"},
+    {libcellml::Annotator::Type::RESET, "reset"},
+    {libcellml::Annotator::Type::RESET_VALUE, "reset_value"},
+    {libcellml::Annotator::Type::TEST_VALUE, "test_value"},
+    {libcellml::Annotator::Type::MAP_VARIABLES, "map_variables"},
+    {libcellml::Annotator::Type::ENCAPSULATION, "encapsulation"},
+    {libcellml::Annotator::Type::ISSUE, "issue"},
+};
