@@ -100,10 +100,25 @@ bool Model::doAddComponent(const ComponentPtr &component)
     return ComponentEntity::doAddComponent(component);
 }
 
-void Model::addUnits(const UnitsPtr &units)
+bool Model::addUnits(const UnitsPtr &units)
 {
+    if (units == nullptr) {
+        return false;
+    }
+
+    // Prevent adding multiple times to list.
+    if (hasUnits(units)) {
+        return false;
+    }
+
+    // Prevent adding to multiple models: move units to this model.
+    if (units->hasParent()) {
+        auto otherParent = std::dynamic_pointer_cast<Model>(units->parent());
+        otherParent->removeUnits(units);
+    }
     mPimpl->mUnits.push_back(units);
     units->setParent(shared_from_this());
+    return true;
 }
 
 bool Model::removeUnits(size_t index)
@@ -147,6 +162,9 @@ bool Model::removeUnits(const UnitsPtr &units)
 
 void Model::removeAllUnits()
 {
+    for (const auto &u : mPimpl->mUnits) {
+        u->removeParent();
+    }
     mPimpl->mUnits.clear();
 }
 
@@ -552,7 +570,7 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
 IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
 {
     IndexStack indexStack;
-    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+    ComponentPtr component = owningComponent(variable);
     indexStack.push_back(getVariableIndexInComponent(component, variable));
 
     ComponentEntityPtr parent = component;
@@ -843,7 +861,13 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         // Add all required units to a model so referenced units can be resolved.
         auto requiredUnitsModel = Model::create();
         for (const auto &units : requiredUnits) {
-            requiredUnitsModel->addUnits(units);
+            // Cloning units present elsewhere so that they don't get moved by the addUnits function.
+            if (units->parent() == nullptr) {
+                requiredUnitsModel->addUnits(units);
+            } else {
+                auto cloned = units->clone();
+                requiredUnitsModel->addUnits(cloned);
+            }
         }
 
         // Make a map of component name to component pointer.
