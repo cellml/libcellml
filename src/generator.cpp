@@ -769,9 +769,9 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode()
             mCode += "\n";
         }
 
-        std::string name = (mModel->voi() != nullptr) ? mModel->voi()->variable()->name() : "";
-        std::string units = (mModel->voi() != nullptr) ? mModel->voi()->variable()->units()->name() : "";
-        std::string component = (mModel->voi() != nullptr) ? owningComponent(mModel->voi()->variable())->name() : "";
+        auto name = (mModel->voi() != nullptr) ? mModel->voi()->variable()->name() : "";
+        auto units = (mModel->voi() != nullptr) ? mModel->voi()->variable()->units()->name() : "";
+        auto component = (mModel->voi() != nullptr) ? owningComponent(mModel->voi()->variable())->name() : "";
 
         mCode += replace(mProfile->implementationVoiInfoString(),
                          "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -1667,7 +1667,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         break;
     case AnalyserEquationAst::Type::POWER: {
-        std::string stringValue = generateCode(ast->rightChild());
+        auto stringValue = generateCode(ast->rightChild());
         double doubleValue;
         bool validConversion = convertToDouble(stringValue, doubleValue);
 
@@ -1736,7 +1736,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
         break;
     case AnalyserEquationAst::Type::LOG:
         if (ast->rightChild() != nullptr) {
-            std::string stringValue = generateCode(ast->leftChild());
+            auto stringValue = generateCode(ast->leftChild());
             double doubleValue;
 
             if (convertToDouble(stringValue, doubleValue)
