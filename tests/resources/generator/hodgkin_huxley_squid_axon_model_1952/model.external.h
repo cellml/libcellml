@@ -29,8 +29,6 @@ typedef struct {
     VariableType type;
 } VariableInfoWithType;
 
-typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, int index);
-
 extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
 extern const VariableInfoWithType VARIABLE_INFO[];
@@ -38,6 +36,8 @@ extern const VariableInfoWithType VARIABLE_INFO[];
 double * createStatesArray();
 double * createVariablesArray();
 void deleteArray(double *array);
+
+typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, int index);
 
 void initialiseStatesAndConstants(double *states, double *variables);
 void computeComputedConstants(double *variables);
