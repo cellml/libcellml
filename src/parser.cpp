@@ -126,13 +126,13 @@ struct Parser::ParserImpl
      * components or units to the @p model. If any attributes exist in @p import source
      * with names matching those in @p node, they will be overwritten. Likewise,
      * any imported components or units of the same name already in @p model will
-     * be overwritten by those parsed from @p node.
+     * be overwritten by those parsed from @p node.cmake
      *
      * @param importSource The @c ImportSourcePtr to update.
      * @param model The @c ModelPtr to add imported components/units to.
      * @param node The @c XmlNodePtr to parse and update the @p import source with.
      */
-    void loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const;
+    void loadImport(ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const;
 
     /**
      * @brief Update the @p units with attributes parsed from @p node.
@@ -1138,7 +1138,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
     }
 }
 
-void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const
+void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node) const
 {
     XmlAttributePtr attribute = node->firstAttribute();
     std::string id;

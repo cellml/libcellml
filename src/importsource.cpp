@@ -14,9 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/importsource.h"
+#include <vector>
 
+#include "libcellml/importedentity.h"
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -29,6 +32,7 @@ struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
     ModelPtr mModel;
+    std::vector<ImportedEntityPtr> mImportedEntities;
 };
 
 ImportSource::ImportSource()
@@ -81,6 +85,39 @@ ImportSourcePtr ImportSource::clone() const
     i->setModel(model());
 
     return i;
+}
+
+bool ImportSource::addEntity(const ImportedEntityPtr &item)
+{
+    if (std::find(mPimpl->mImportedEntities.begin(), mPimpl->mImportedEntities.end(), item) == mPimpl->mImportedEntities.end()) {
+        return false;
+    }
+    mPimpl->mImportedEntities.push_back(item);
+    return true;
+}
+
+ImportedEntityPtr ImportSource::entity(size_t index) const
+{
+    if (index < mPimpl->mImportedEntities.size()) {
+        return mPimpl->mImportedEntities.at(index);
+    }
+    return nullptr;
+}
+
+size_t ImportSource::entityCount() const
+{
+    return mPimpl->mImportedEntities.size();
+}
+
+bool ImportSource::removeEntity(size_t index)
+{
+    if (index < mPimpl->mImportedEntities.size()) {
+        auto entity = mPimpl->mImportedEntities[index];
+        mPimpl->mImportedEntities.erase(mPimpl->mImportedEntities.begin() + int64_t(index));
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace libcellml

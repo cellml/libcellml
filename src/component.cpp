@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
@@ -122,16 +123,23 @@ bool Component::doAddComponent(const ComponentPtr &component)
     return ComponentEntity::doAddComponent(component);
 }
 
-void Component::setImportSource(const ImportSourcePtr &importSource)
+void Component::setImportSource(ImportSourcePtr &importSource)
 {
-    auto model = owningModel(shared_from_this());
+    auto component = shared_from_this();
+
+    if (importSource != nullptr) {
+        importSource->addEntity(component);
+    }
+
+    auto model = owningModel(component);
     if (model != nullptr) {
         model->addImportSource(importSource);
     }
+
     ImportedEntity::setImportSource(importSource);
 }
 
-void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)
+void Component::setSourceComponent(ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
     setImportReference(name);
@@ -383,7 +391,8 @@ ComponentPtr Component::clone() const
     c->setName(name());
     c->setMath(math());
 
-    c->setImportSource(importSource());
+    auto i = importSource();
+    c->setImportSource(i);
     c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
