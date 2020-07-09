@@ -2146,11 +2146,9 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
 
     // Add code for the variable information related objects.
 
-    if (mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableTypeObjectCode();
-        mPimpl->addVariableInfoObjectCode();
-        mPimpl->addVariableInfoWithTypeObjectCode();
-    }
+    mPimpl->addVariableTypeObjectCode();
+    mPimpl->addVariableInfoObjectCode();
+    mPimpl->addVariableInfoWithTypeObjectCode();
 
     // Add code for the interface of the information about the variable of
     // integration, states and (other) variables.
