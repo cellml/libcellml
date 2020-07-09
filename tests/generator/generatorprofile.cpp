@@ -294,6 +294,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("CONSTANT", generatorProfile->constantVariableTypeString());
     EXPECT_EQ("COMPUTED_CONSTANT", generatorProfile->computedConstantVariableTypeString());
     EXPECT_EQ("ALGEBRAIC", generatorProfile->algebraicVariableTypeString());
+    EXPECT_EQ("EXTERNAL", generatorProfile->externalVariableTypeString());
 
     EXPECT_EQ("typedef struct {\n"
               "    char name[<NAME_SIZE>];\n"
@@ -720,6 +721,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setConstantVariableTypeString(value);
     generatorProfile->setComputedConstantVariableTypeString(value);
     generatorProfile->setAlgebraicVariableTypeString(value);
+    generatorProfile->setExternalVariableTypeString(value);
 
     generatorProfile->setVariableInfoObjectString(value);
     generatorProfile->setVariableInfoWithTypeObjectString(value);
@@ -804,6 +806,7 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->constantVariableTypeString());
     EXPECT_EQ(value, generatorProfile->computedConstantVariableTypeString());
     EXPECT_EQ(value, generatorProfile->algebraicVariableTypeString());
+    EXPECT_EQ(value, generatorProfile->externalVariableTypeString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
     EXPECT_EQ(value, generatorProfile->variableInfoWithTypeObjectString());

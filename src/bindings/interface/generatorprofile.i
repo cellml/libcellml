@@ -716,6 +716,12 @@ type object.";
 %feature("docstring") libcellml::GeneratorProfile::setAlgebraicVariableTypeString
 "Set the string for the name of the algebraic variable type.";
 
+%feature("docstring") libcellml::GeneratorProfile::externalVariableTypeString
+"Return the string for the name of the external variable type.";
+
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariableTypeString
+"Set the string for the name of the external variable type.";
+
 %feature("docstring") libcellml::GeneratorProfile::variableInfoObjectString
 "Return the string for the data structure for the variable
 information object.";

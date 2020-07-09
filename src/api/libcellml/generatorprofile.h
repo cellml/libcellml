@@ -2350,6 +2350,25 @@ public:
     void setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString);
 
     /**
+     * @brief Get the @c std::string for the name of the external variable type.
+     *
+     * Return the @c std::string for the name of the external variable type.
+     *
+     * @return The @c std::string for the name of the external variable type.
+     */
+    std::string externalVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the external variable type.
+     *
+     * Set this @c std::string for the name of the external variable type.
+     *
+     * @param statesArrayString The @c std::string to use for the name of the
+     * external variable type.
+     */
+    void setExternalVariableTypeString(const std::string &externalVariableTypeString);
+
+    /**
      * @brief Get the @c std::string for the data structure for the variable
      * information object.
      *

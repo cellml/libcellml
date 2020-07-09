@@ -192,6 +192,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mConstantVariableTypeString;
     std::string mComputedConstantVariableTypeString;
     std::string mAlgebraicVariableTypeString;
+    std::string mExternalVariableTypeString;
 
     std::string mVariableInfoObjectString;
     std::string mVariableInfoWithTypeObjectString;
@@ -472,6 +473,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mConstantVariableTypeString = "CONSTANT";
         mComputedConstantVariableTypeString = "COMPUTED_CONSTANT";
         mAlgebraicVariableTypeString = "ALGEBRAIC";
+        mExternalVariableTypeString = "EXTERNAL";
 
         mVariableInfoObjectString = "typedef struct {\n"
                                     "    char name[<NAME_SIZE>];\n"
@@ -778,6 +780,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mConstantVariableTypeString = "VariableType.CONSTANT";
         mComputedConstantVariableTypeString = "VariableType.COMPUTED_CONSTANT";
         mAlgebraicVariableTypeString = "VariableType.ALGEBRAIC";
+        mExternalVariableTypeString = "VariableType.EXTERNAL";
 
         mVariableInfoObjectString = "";
         mVariableInfoWithTypeObjectString = "";
@@ -2029,6 +2032,16 @@ std::string GeneratorProfile::algebraicVariableTypeString() const
 void GeneratorProfile::setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString)
 {
     mPimpl->mAlgebraicVariableTypeString = algebraicVariableTypeString;
+}
+
+std::string GeneratorProfile::externalVariableTypeString() const
+{
+    return mPimpl->mExternalVariableTypeString;
+}
+
+void GeneratorProfile::setExternalVariableTypeString(const std::string &externalVariableTypeString)
+{
+    mPimpl->mExternalVariableTypeString = externalVariableTypeString;
 }
 
 std::string GeneratorProfile::variableInfoObjectString() const
