@@ -20,6 +20,7 @@ const VariableInfo STATE_INFO[] = {
 };
 
 const VariableInfoWithType VARIABLE_INFO[] = {
+    {"V", "millivolt", "membrane", EXTERNAL},
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
     {"Cm", "microF_per_cm2", "membrane", CONSTANT},
     {"E_R", "millivolt", "membrane", CONSTANT},
@@ -37,8 +38,7 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"E_K", "millivolt", "potassium_channel", COMPUTED_CONSTANT},
     {"i_K", "microA_per_cm2", "potassium_channel", ALGEBRAIC},
     {"alpha_n", "per_millisecond", "potassium_channel_n_gate", EXTERNAL},
-    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC},
-    {"V", "millivolt", "membrane", EXTERNAL}
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate", ALGEBRAIC}
 };
 
 double * createStatesArray()

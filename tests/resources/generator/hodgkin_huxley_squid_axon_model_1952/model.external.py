@@ -26,6 +26,7 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
+    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.EXTERNAL},
     {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
     {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
@@ -43,8 +44,7 @@ VARIABLE_INFO = [
     {"name": "E_K", "units": "millivolt", "component": "potassium_channel", "type": VariableType.COMPUTED_CONSTANT},
     {"name": "i_K", "units": "microA_per_cm2", "component": "potassium_channel", "type": VariableType.ALGEBRAIC},
     {"name": "alpha_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.EXTERNAL},
-    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC},
-    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.EXTERNAL}
+    {"name": "beta_n", "units": "per_millisecond", "component": "potassium_channel_n_gate", "type": VariableType.ALGEBRAIC}
 ]
 
 
