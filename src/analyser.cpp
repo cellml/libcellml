@@ -388,9 +388,6 @@ struct Analyser::AnalyserImpl
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
-    bool isExternalVariable(const VariablePtr &variable);
-    void removeExternalVariable(const VariablePtr &variable);
-
     void processModel(const ModelPtr &model,
                       const std::vector<VariablePtr> &externalVariables);
 };
@@ -1213,20 +1210,6 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
             }
         }
     }
-}
-
-bool Analyser::AnalyserImpl::isExternalVariable(const VariablePtr &variable)
-{
-    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v == variable; })
-           != mExternalVariables.end();
-}
-
-void Analyser::AnalyserImpl::removeExternalVariable(const VariablePtr &variable)
-{
-    mExternalVariables.erase(std::remove_if(mExternalVariables.begin(), mExternalVariables.end(),
-                                            [=](const VariablePtr &v) -> bool { return v == variable; }),
-                             mExternalVariables.end());
 }
 
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
