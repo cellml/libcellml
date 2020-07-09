@@ -342,6 +342,7 @@ struct Analyser::AnalyserImpl
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = nullptr;
+    std::vector<VariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
@@ -386,6 +387,8 @@ struct Analyser::AnalyserImpl
                   const AnalyserEquationAstPtr &astParent,
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
+
+    bool isExternalVariable(const VariablePtr &variable);
 
     void processModel(const ModelPtr &model,
                       const std::vector<VariablePtr> &externalVariables);
@@ -1211,6 +1214,13 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
     }
 }
 
+bool Analyser::AnalyserImpl::isExternalVariable(const VariablePtr &variable)
+{
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(),
+                        [=](const VariablePtr &v) -> bool { return v == variable; })
+           != mExternalVariables.end();
+}
+
 void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                                           const std::vector<VariablePtr> &externalVariables)
 {
@@ -1220,6 +1230,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
     mAnalyser->removeAllIssues();
 
     mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
+    mExternalVariables = externalVariables;
 
     mInternalVariables.clear();
     mInternalEquations.clear();
@@ -1335,8 +1346,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
         // Mark some variables as external variables, if needed.
 
-        std::vector<VariablePtr> realExternalVariables;
-
         if (!externalVariables.empty()) {
             // Check whether a variable is marked as an external variable more
             // than once.
@@ -1358,7 +1367,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 }
             }
 
-            realExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
+            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
             for (const auto &multipleExternalVariable : multipleExternalVariables) {
                 auto issue = Issue::create();
@@ -1378,10 +1387,10 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
             uniqueExternalVariables.clear();
 
-            for (const auto &realExternalVariable : realExternalVariables) {
+            for (const auto &externalVariable : mExternalVariables) {
                 for (const auto &internalVariable : mInternalVariables) {
-                    if (isSameOrEquivalentVariable(realExternalVariable, internalVariable->mVariable)) {
-                        primaryExternalVariables[internalVariable->mVariable].push_back(realExternalVariable);
+                    if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
+                        primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
 
                         if (((mModel->mPimpl->mVoi == nullptr)
                              || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
@@ -1397,7 +1406,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 }
             }
 
-            realExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
+            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
             for (const auto &primaryExternalVariable : primaryExternalVariables) {
                 std::string description;
@@ -1490,7 +1499,9 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
             for (const auto &internalVariable : mInternalVariables) {
                 AnalyserVariable::Type type;
 
-                if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
+                if (isExternalVariable(internalVariable->mVariable)) {
+                    type = AnalyserVariable::Type::EXTERNAL;
+                } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
                     type = AnalyserVariable::Type::STATE;
                 } else if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
                     type = AnalyserVariable::Type::CONSTANT;
@@ -1506,7 +1517,9 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 }
 
                 auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-                auto equation = equationMappings[internalVariable->mEquation.lock()];
+                auto equation = (type == AnalyserVariable::Type::EXTERNAL) ?
+                                    nullptr :
+                                    equationMappings[internalVariable->mEquation.lock()];
 
                 stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
                                                   internalVariable->mInitialisingVariable,
@@ -1525,32 +1538,34 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
             }
 
             for (const auto &internalEquation : mInternalEquations) {
-                AnalyserEquation::Type type;
+                if (!isExternalVariable(internalEquation->mVariable->mVariable)) {
+                    AnalyserEquation::Type type;
 
-                if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
-                    type = AnalyserEquation::Type::TRUE_CONSTANT;
-                } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-                    type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-                } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
-                    type = AnalyserEquation::Type::RATE;
-                } else {
-                    type = AnalyserEquation::Type::ALGEBRAIC;
+                    if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
+                        type = AnalyserEquation::Type::TRUE_CONSTANT;
+                    } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                        type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+                    } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
+                        type = AnalyserEquation::Type::RATE;
+                    } else {
+                        type = AnalyserEquation::Type::ALGEBRAIC;
+                    }
+
+                    std::vector<AnalyserEquationPtr> dependencies;
+
+                    for (const auto &dependency : internalEquation->mDependencies) {
+                        dependencies.push_back(equationMappings[dependency]);
+                    }
+
+                    auto equation = equationMappings[internalEquation];
+
+                    equation->mPimpl->populate(type,
+                                               internalEquation->mAst, dependencies,
+                                               internalEquation->mIsStateRateBased,
+                                               variableMappings[equation]);
+
+                    mModel->mPimpl->mEquations.push_back(equation);
                 }
-
-                std::vector<AnalyserEquationPtr> dependencies;
-
-                for (const auto &dependency : internalEquation->mDependencies) {
-                    dependencies.push_back(equationMappings[dependency]);
-                }
-
-                auto equation = equationMappings[internalEquation];
-
-                equation->mPimpl->populate(type,
-                                           internalEquation->mAst, dependencies,
-                                           internalEquation->mIsStateRateBased,
-                                           variableMappings[equation]);
-
-                mModel->mPimpl->mEquations.push_back(equation);
             }
         }
     }

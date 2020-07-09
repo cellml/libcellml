@@ -38,7 +38,8 @@ public:
         STATE,
         CONSTANT,
         COMPUTED_CONSTANT,
-        ALGEBRAIC
+        ALGEBRAIC,
+        EXTERNAL
     };
 
     ~AnalyserVariable(); /**< Destructor */
