@@ -893,9 +893,9 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
     if (!math.empty()) {
         xmlDoc->parseMathML(math, false);
 
-        XmlNodePtr mathNode = xmlDoc->rootNode();
+        auto mathNode = xmlDoc->rootNode();
 
-        for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
+        for (auto node = mathNode->firstChild(); node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
                 // Create and keep track of the equation associated with the
                 // given node.
@@ -917,8 +917,8 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
     for (size_t i = 0; i < component->variableCount(); ++i) {
         // Retrieve the variable's corresponding analyser variable.
 
-        VariablePtr variable = component->variable(i);
-        AnalyserInternalVariablePtr analyserVariable = Analyser::AnalyserImpl::analyserVariable(variable);
+        auto variable = component->variable(i);
+        auto analyserVariable = Analyser::AnalyserImpl::analyserVariable(variable);
 
         // Replace the variable held by `analyserVariable`, in case the
         // existing one has no initial value while `variable` does and after
