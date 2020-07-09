@@ -47,9 +47,12 @@ namespace libcellml {
 struct Model::ModelImpl
 {
     std::vector<UnitsPtr> mUnits;
+    std::vector<ImportSourcePtr> mImports;
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
+
+    std::vector<ImportSourcePtr>::iterator findImportSource(const std::string &inUrl);
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -97,6 +100,10 @@ bool Model::doAddComponent(const ComponentPtr &component)
         removeComponentFromEntity(parent, component);
     }
     component->setParent(shared_from_this());
+
+    if (component->isImport()) {
+        addImportSource(component->importSource());
+    }
     return ComponentEntity::doAddComponent(component);
 }
 
@@ -118,6 +125,10 @@ bool Model::addUnits(const UnitsPtr &units)
     }
     mPimpl->mUnits.push_back(units);
     units->setParent(shared_from_this());
+
+    if (units->isImport()) {
+        addImportSource(units->importSource());
+    }
     return true;
 }
 
@@ -240,6 +251,97 @@ bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 size_t Model::unitsCount() const
 {
     return mPimpl->mUnits.size();
+}
+
+std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl)
+{
+    return std::find_if(mImports.begin(), mImports.end(),
+                        [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl; });
+}
+
+bool Model::hasImportSource(const std::string &url) const
+{
+    return mPimpl->findImportSource(url) != mPimpl->mImports.end();
+}
+
+bool Model::hasImportSource(const ImportSourcePtr &imp) const
+{
+    bool hasPointer = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end();
+    bool hasUrl = hasImportSource(imp->url());
+    return hasPointer || hasUrl;
+}
+
+bool Model::addImportSource(const ImportSourcePtr &imp)
+{
+    if (imp == nullptr) {
+        return false;
+    }
+
+    // Prevent adding multiple times to list.
+    if (hasImportSource(imp)) {
+        return false;
+    }
+
+    // Prevent adding to multiple models: move import to this model.
+    // if (imp->hasParent()) {
+    //     auto otherParent = std::dynamic_pointer_cast<Model>(imp->parent());
+    //     otherParent->removeImportSource(imp);
+    // }
+    mPimpl->mImports.push_back(imp);
+    // imp->setParent(shared_from_this()); // Are imports owned by the model or the imported thing??
+    return true;
+}
+
+size_t Model::importSourceCount() const
+{
+    return mPimpl->mImports.size();
+}
+
+ImportSourcePtr Model::importSource(size_t index) const
+{
+    ImportSourcePtr imp = nullptr;
+    if (index < mPimpl->mImports.size()) {
+        imp = mPimpl->mImports.at(index);
+    }
+
+    return imp;
+}
+
+ImportSourcePtr Model::importSource(const std::string &url) const
+{
+    ImportSourcePtr imp = nullptr;
+    auto result = mPimpl->findImportSource(url);
+    if (result != mPimpl->mImports.end()) {
+        imp = *result;
+    }
+
+    return imp;
+}
+
+bool Model::removeImportSource(size_t index)
+{
+    bool status = false;
+    if (index < mPimpl->mImports.size()) {
+        auto imp = *(mPimpl->mImports.begin() + int64_t(index));
+        imp->removeParent();
+        mPimpl->mImports.erase(mPimpl->mImports.begin() + int64_t(index));
+        status = true;
+    }
+
+    return status;
+}
+
+bool Model::removeImportSource(const ImportSourcePtr &imp)
+{
+    bool status = false;
+    auto result = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp);
+    if (result != mPimpl->mImports.end()) {
+        imp->removeParent();
+        mPimpl->mImports.erase(result);
+        status = true;
+    }
+
+    return status;
 }
 
 void linkComponentVariableUnits(const ComponentPtr &component)

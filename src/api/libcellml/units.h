@@ -491,6 +491,16 @@ public:
      */
     UnitsPtr clone() const;
 
+    /**
+     * @brief Set the import source of these units.
+     *
+     * If these units are already located in a Model instance, then the
+     * import source is added to the Model too.
+     *
+     * @param importSource The @c ImportSourcePtr to add to this @c Units item.
+     */
+    void setImportSource(const ImportSourcePtr &importSource);
+
 private:
     Units(); /**< Constructor */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/

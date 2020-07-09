@@ -414,6 +414,16 @@ public:
      */
     ComponentPtr clone() const;
 
+    /**
+     * @brief Set the import source of this component.
+     *
+     * If this component is already located in a Model instance, then the
+     * import source is added to the Model too.
+     *
+     * @param importSource The @c ImportSourcePtr to add to this @c Component.
+     */
+    void setImportSource(const ImportSourcePtr &importSource);
+
 private:
     Component(); /**< Constructor @private*/
     explicit Component(const std::string &name); /**< Constructor named @private */

@@ -413,6 +413,15 @@ void Units::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
+void Units::setImportSource(const ImportSourcePtr &importSource)
+{
+    auto model = owningModel(shared_from_this());
+    if (model != nullptr) {
+        model->addImportSource(importSource);
+    }
+    ImportedEntity::setImportSource(importSource);
+}
+
 void Units::setSourceUnits(const ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
