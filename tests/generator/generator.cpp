@@ -22,7 +22,6 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -1251,7 +1250,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode(analyserModel));
 }
-*/
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 {
@@ -1300,7 +1298,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode(analyserModel));
 }
 
-/*
 TEST(Generator, nobleModel1962)
 {
     auto parser = libcellml::Parser::create();
@@ -1588,4 +1585,3 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode(analyserModel));
 }
-*/
