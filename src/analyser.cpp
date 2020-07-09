@@ -1400,10 +1400,12 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                     if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
                         primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
 
-                        if (std::find(uniqueExternalVariables.begin(),
-                                      uniqueExternalVariables.end(),
-                                      internalVariable->mVariable)
-                            == uniqueExternalVariables.end()) {
+                        if (((mModel->mPimpl->mVoi == nullptr)
+                             || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
+                            && (std::find(uniqueExternalVariables.begin(),
+                                          uniqueExternalVariables.end(),
+                                          internalVariable->mVariable)
+                                == uniqueExternalVariables.end())) {
                             uniqueExternalVariables.push_back(internalVariable->mVariable);
                         }
 
