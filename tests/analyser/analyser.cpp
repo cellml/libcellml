@@ -416,10 +416,14 @@ TEST(Analyser, exactSameExternalVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
+        "Variable 'time' in component 'environment' is marked as an external variable more than once.",
         "Variable 'V' in component 'membrane' is marked as an external variable more than once.",
         "Variable 'i_Na' in component 'sodium_channel' is marked as an external variable more than once.",
+        "Variable 'time' in component 'environment' is marked as an external variable, but it is the variable of integration which cannot be marked as an external variable.",
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::WARNING,
+        libcellml::Issue::Level::WARNING,
         libcellml::Issue::Level::WARNING,
         libcellml::Issue::Level::WARNING,
     };
@@ -427,11 +431,13 @@ TEST(Analyser, exactSameExternalVariables)
     auto analyser = libcellml::Analyser::create();
     std::vector<libcellml::VariablePtr> externalVariables;
 
+    externalVariables.push_back(model->component("environment")->variable("time"));
     externalVariables.push_back(model->component("membrane")->variable("V"));
     externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
     externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
+    externalVariables.push_back(model->component("environment")->variable("time"));
     externalVariables.push_back(model->component("membrane")->variable("V"));
+    externalVariables.push_back(model->component("environment")->variable("time"));
 
     analyser->processModel(model, externalVariables);
 
