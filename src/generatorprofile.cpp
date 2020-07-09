@@ -215,6 +215,10 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
+    std::string mExternalVariableMethodTypeDefinitionString;
+    std::string mExternalVariableMethodParameterString;
+    std::string mExternalVariableMethodString;
+
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
 
@@ -509,6 +513,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
+        mExternalVariableMethodTypeDefinitionString = "typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, int index);\n";
+        mExternalVariableMethodParameterString = ", ExternalVariable externalVariable";
+        mExternalVariableMethodString = "externalVariable";
+
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
@@ -539,13 +547,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                               "<CODE>"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n";
+        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n"
                                                   "<CODE>"
                                                   "}\n";
 
-        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables);\n";
-        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n";
+        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n"
                                                       "{\n"
                                                       "<CODE>"
                                                       "}\n";
@@ -807,6 +815,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
+        mExternalVariableMethodTypeDefinitionString = "";
+        mExternalVariableMethodParameterString = ", externalVariable";
+        mExternalVariableMethodString = "externalVariable";
+
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
                                                        "def create_states_array():\n"
@@ -832,12 +844,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceComputeRatesMethodString = "";
         mImplementationComputeRatesMethodString = "\n"
-                                                  "def compute_rates(voi, states, rates, variables):\n"
+                                                  "def compute_rates(voi, states, rates, variables<OPTIONAL_PARAMETER>):\n"
                                                   "<CODE>";
 
         mInterfaceComputeVariablesMethodString = "";
         mImplementationComputeVariablesMethodString = "\n"
-                                                      "def compute_variables(voi, states, rates, variables):\n"
+                                                      "def compute_variables(voi, states, rates, variables<OPTIONAL_PARAMETER>):\n"
                                                       "<CODE>";
 
         mEmptyMethodString = "pass\n";
@@ -2182,6 +2194,36 @@ std::string GeneratorProfile::variablesArrayString() const
 void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
 {
     mPimpl->mVariablesArrayString = variablesArrayString;
+}
+
+std::string GeneratorProfile::externalVariableMethodTypeDefinitionString() const
+{
+    return mPimpl->mExternalVariableMethodTypeDefinitionString;
+}
+
+void GeneratorProfile::setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString)
+{
+    mPimpl->mExternalVariableMethodTypeDefinitionString = externalVariableMethodTypeDefinitionString;
+}
+
+std::string GeneratorProfile::externalVariableMethodParameterString() const
+{
+    return mPimpl->mExternalVariableMethodParameterString;
+}
+
+void GeneratorProfile::setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString)
+{
+    mPimpl->mExternalVariableMethodParameterString = externalVariableMethodParameterString;
+}
+
+std::string GeneratorProfile::externalVariableMethodString() const
+{
+    return mPimpl->mExternalVariableMethodString;
+}
+
+void GeneratorProfile::setExternalVariableMethodString(const std::string &externalVariableMethodString)
+{
+    mPimpl->mExternalVariableMethodString = externalVariableMethodString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
