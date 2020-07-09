@@ -53,6 +53,7 @@ struct Model::ModelImpl
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
 
     std::vector<ImportSourcePtr>::iterator findImportSource(const std::string &inUrl);
+    std::vector<ImportSourcePtr>::iterator findImportSource(const std::string &inUrl, const std::string &inId);
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -102,7 +103,9 @@ bool Model::doAddComponent(const ComponentPtr &component)
     component->setParent(shared_from_this());
 
     if (component->isImport()) {
-        addImportSource(component->importSource());
+        auto importSource = component->importSource();
+
+        addImportSource(importSource);
     }
     return ComponentEntity::doAddComponent(component);
 }
@@ -259,6 +262,12 @@ std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const 
                         [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl; });
 }
 
+std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl, const std::string &inId)
+{
+    return std::find_if(mImports.begin(), mImports.end(),
+                        [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl && u->id() == inId; });
+}
+
 bool Model::hasImportSource(const std::string &url) const
 {
     return mPimpl->findImportSource(url) != mPimpl->mImports.end();
@@ -278,17 +287,22 @@ bool Model::addImportSource(const ImportSourcePtr &imp)
     }
 
     // Prevent adding multiple times to list.
-    if (hasImportSource(imp)) {
+    // TODO Should also check for IDs here, so that people can have import sources with different comments on
+    // if they so choose, and so that the ids aren't lost.
+    auto it = mPimpl->findImportSource(imp->url(), imp->id());
+
+    if (it != mPimpl->mImports.end()) {
+        // Add any child entities of this imp to the one already in the model.
+        for (size_t c = 0; c < imp->componentCount(); ++c) {
+            (*it)->addComponent(imp->component(c));
+        }
+        for (size_t u = 0; u < imp->unitsCount(); ++u) {
+            (*it)->addUnits(imp->units(u));
+        }
         return false;
     }
 
-    // Prevent adding to multiple models: move import to this model.
-    // if (imp->hasParent()) {
-    //     auto otherParent = std::dynamic_pointer_cast<Model>(imp->parent());
-    //     otherParent->removeImportSource(imp);
-    // }
     mPimpl->mImports.push_back(imp);
-    // imp->setParent(shared_from_this()); // Are imports owned by the model or the imported thing??
     return true;
 }
 

@@ -76,6 +76,22 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::fixVariableInterfaces
 "Fix variable interfaces throughout the model.";
 
+%feature("docstring") libcellml::Model::addImportSource
+"Manually add an ImportSource to the Model.";
+
+%feature("docstring") libcellml::Model::importSourceCount
+"Return the number of ImportSource items in the Model.";
+
+%feature("docstring") libcellml::Model::importSource
+"Retrieve an ImportSource by index or url.";
+
+%feature("docstring") libcellml::Model::removeImportSource
+"Remove an ImportSource from the Model by index or reference.";
+
+%feature("docstring") libcellml::Model::hasImportSource
+"Test whether this Model already contains the given ImportSource, by reference or url.";
+
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {

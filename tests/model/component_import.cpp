@@ -157,26 +157,13 @@ TEST(ComponentImport, nonExistentURLAndParse)
 
 TEST(ComponentImport, multipleImportAndParse)
 {
-    const std::string e1 =
+    const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
         "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
-        "  </import>\n"
-        "</model>\n";
-    const std::string e2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-        "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-        "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
-        "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
         "  </import>\n"
         "</model>\n";
 
@@ -201,14 +188,14 @@ TEST(ComponentImport, multipleImportAndParse)
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string a = printer->printModel(m);
-    EXPECT_TRUE((e1 == a) || (e2 == a));
+    EXPECT_EQ(e, a);
 
     // Parse
     libcellml::ParserPtr parser = libcellml::Parser::create();
-    libcellml::ModelPtr model = parser->parseModel(e2);
+    libcellml::ModelPtr model = parser->parseModel(e);
     EXPECT_EQ(size_t(3), model->componentCount());
     a = printer->printModel(model);
-    EXPECT_TRUE((e1 == a) || (e2 == a));
+    EXPECT_EQ(e, a);
 }
 
 TEST(ComponentImport, hierarchicalImportAndParse)
@@ -330,7 +317,7 @@ TEST(ComponentImport, complexImportAndParse)
     EXPECT_EQ(size_t(2), constBob->componentCount());
 }
 
-TEST(Model, importSourceComponentMethods)
+TEST(ComponentImport, importSourceComponentMethods)
 {
     auto model = libcellml::Model::create("so_much_importing");
 

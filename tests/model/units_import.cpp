@@ -216,7 +216,6 @@ TEST(UnitsImport, importModifyAndParse)
     EXPECT_EQ(size_t(5), model->unitsCount());
 }
 
-
 TEST(UnitsImport, importSourceUnitsMethods)
 {
     auto model = libcellml::Model::create("so_much_importing");
