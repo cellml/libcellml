@@ -20,7 +20,7 @@ function(target_warnings_as_errors _TARGET)
   if(${_INDEX} GREATER -1)
     set(_COMPILER_WAE -Wall -W -Werror)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(_COMPILER_WAE /W4 /WX)
+    set(_COMPILER_WAE /WX)
   endif()
 
   if(_COMPILER_WAE)
@@ -196,8 +196,14 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
     string(REPLACE "/" "\\\/"
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
 
+    if(MSVC)
+      # Extra argument for Clang-Tidy when used with cl
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/20512#note_722771
+      set(_EXTRA_ARG ";--extra-arg=/EHsc")
+    endif()
+
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE}${_EXTRA_ARG};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
