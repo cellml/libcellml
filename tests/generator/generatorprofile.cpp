@@ -26,6 +26,7 @@ limitations under the License.
 
 #include <cmath>
 
+/*
 std::string convertToString(double value)
 {
     std::ostringstream strs;
@@ -253,8 +254,10 @@ TEST(GeneratorProfile, defaultTrigonometricFunctionValues)
 TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = libcellml::GeneratorProfile::create();
+*/
 
-    EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
+//    EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
+/*
     EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
 
     EXPECT_EQ("model.h", generatorProfile->interfaceFileNameString());
@@ -860,3 +863,4 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
 }
+*/
