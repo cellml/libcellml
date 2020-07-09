@@ -1481,6 +1481,11 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 scaleEquationAst(internalEquation->mAst);
             }
 
+            // Make it known through our API whether the model has some external
+            // variables.
+
+            mModel->mPimpl->mHasExternalVariables = !mExternalVariables.empty();
+
             // Sort our internal variables and equations and make them available
             // through our API.
 

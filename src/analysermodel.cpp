@@ -41,6 +41,15 @@ AnalyserModel::Type AnalyserModel::type() const
     return mPimpl->mType;
 }
 
+bool AnalyserModel::hasExternalVariables() const
+{
+    if (!isValid()) {
+        return false;
+    }
+
+    return mPimpl->mHasExternalVariables;
+}
+
 AnalyserVariablePtr AnalyserModel::voi() const
 {
     if (!isValid()) {
