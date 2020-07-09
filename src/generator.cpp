@@ -128,6 +128,7 @@ struct Generator::GeneratorImpl
     std::string generateCode(const AnalyserEquationAstPtr &ast);
 
     std::string generateInitializationCode(const AnalyserVariablePtr &variable);
+    std::string generateExternalCode(const AnalyserVariablePtr &variable);
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
@@ -1962,6 +1963,15 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
     return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
+std::string Generator::GeneratorImpl::generateExternalCode(const AnalyserVariablePtr &variable)
+{
+    std::ostringstream index;
+
+    index << variable->index();
+
+    return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + mProfile->externalVariableMethodString() + "(" + mProfile->voiString() + ", " + mProfile->statesArrayString() + ", " + mProfile->ratesArrayString() + ", " + mProfile->variablesArrayString() + ", " + index.str() + ")" + mProfile->commandSeparatorString() + "\n";
+}
+
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
                                                            bool onlyStateRateBasedEquations)
@@ -2075,6 +2085,12 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 
         std::string methodBody;
 
+        for (const auto &variable : mModel->variables()) {
+            if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
+                methodBody += generateExternalCode(variable);
+            }
+        }
+
         for (const auto &equation : mModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::RATE) {
                 methodBody += generateEquationCode(equation, remainingEquations);
@@ -2094,9 +2110,16 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             mCode += "\n";
         }
 
+        std::string methodBody;
+
+        for (const auto &variable : mModel->variables()) {
+            if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
+                methodBody += generateExternalCode(variable);
+            }
+        }
+
         auto equations = mModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
-        std::string methodBody;
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
