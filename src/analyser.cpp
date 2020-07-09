@@ -363,7 +363,7 @@ struct Analyser::AnalyserImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    AnalyserInternalVariablePtr analyserVariable(const VariablePtr &variable);
+    AnalyserInternalVariablePtr analyserInternalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
                                    const ComponentPtr &component);
@@ -481,7 +481,7 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
     return res;
 }
 
-AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserVariable(const VariablePtr &variable)
+AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserInternalVariable(const VariablePtr &variable)
 {
     // Find and return, if there is one, the analyser variable associated with
     // the given variable.
@@ -822,10 +822,10 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
         // a variable that is used in a "diff" element).
 
         if (node->parent()->firstChild()->isMathmlElement("diff")) {
-            equation->addOdeVariable(analyserVariable(variable));
+            equation->addOdeVariable(analyserInternalVariable(variable));
         } else if (!(node->parent()->isMathmlElement("bvar")
                      && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-            equation->addVariable(analyserVariable(variable));
+            equation->addVariable(analyserInternalVariable(variable));
         }
 
         // Add the variable to our AST.
@@ -914,7 +914,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
         // Retrieve the variable's corresponding analyser variable.
 
         auto variable = component->variable(i);
-        auto analyserVariable = Analyser::AnalyserImpl::analyserVariable(variable);
+        auto analyserVariable = Analyser::AnalyserImpl::analyserInternalVariable(variable);
 
         // Replace the variable held by `analyserVariable`, in case the
         // existing one has no initial value while `variable` does and after
@@ -952,7 +952,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
             auto initialisingComponent = owningComponent(analyserVariable->mVariable);
             auto initialisingVariable = initialisingComponent->variable(analyserVariable->mVariable->initialValue());
-            auto analyserInitialValueVariable = Analyser::AnalyserImpl::analyserVariable(initialisingVariable);
+            auto analyserInitialValueVariable = Analyser::AnalyserImpl::analyserInternalVariable(initialisingVariable);
 
             if (analyserInitialValueVariable->mType != AnalyserInternalVariable::Type::CONSTANT) {
                 auto issue = Issue::create();
@@ -1011,7 +1011,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
         && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
         auto variable = ast->mPimpl->mVariable;
 
-        analyserVariable(variable)->makeVoi();
+        analyserInternalVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
         //       variable of integration) otherwise unnecessary issue messages
@@ -1098,7 +1098,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        analyserVariable(ast->mPimpl->mVariable)->makeState();
+        analyserInternalVariable(ast->mPimpl->mVariable)->makeState();
     }
 
     // Recursively check the given AST's children.
@@ -1117,7 +1117,7 @@ double Analyser::AnalyserImpl::scalingFactor(const VariablePtr &variable)
     // Return the scaling factor for the given variable.
 
     return Units::scalingFactor(variable->units(),
-                                analyserVariable(variable)->mVariable->units());
+                                analyserInternalVariable(variable)->mVariable->units());
 }
 
 void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
