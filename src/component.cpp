@@ -128,7 +128,7 @@ void Component::setImportSource(ImportSourcePtr &importSource)
     auto component = shared_from_this();
 
     if (importSource != nullptr) {
-        importSource->addEntity(component);
+        importSource->addComponent(component);
     }
 
     auto model = owningModel(component);

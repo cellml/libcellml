@@ -43,6 +43,7 @@ namespace libcellml {
  */
 struct Printer::PrinterImpl
 {
+    std::string printImports(const ModelPtr &model) const;
     std::string printUnits(const UnitsPtr &units) const;
     std::string printComponent(const ComponentPtr &component) const;
     std::string printEncapsulation(const ComponentPtr &component) const;
@@ -175,19 +176,7 @@ void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componen
 std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
 {
     std::string repr;
-    if (units->isImport()) {
-        repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + units->importSource()->url() + "\"";
-        if (!units->importSource()->id().empty()) {
-            repr += " id=\"" + units->importSource()->id() + "\"";
-        }
-        repr += "><units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
-        if (!units->id().empty()) {
-            repr += " id=\"" + units->id() + "\"";
-        }
-        repr += "/></import>";
-    } else if (isStandardUnit(units)) {
-        // Do nothing.
-    } else {
+    if (!units->isImport() && !isStandardUnit(units)) {
         bool endTag = false;
         repr += "<units";
         std::string unitsName = units->name();
@@ -393,6 +382,42 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset) const
     return repr;
 }
 
+std::string Printer::PrinterImpl::printImports(const ModelPtr &model) const
+{
+    std::string repr;
+    // TODO KRM Should empty import sources be printed or not?
+    for (size_t i = 0; i < model->importSourceCount(); ++i) {
+        auto importSource = model->importSource(i);
+
+        repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
+        if (!importSource->id().empty()) {
+            repr += " id=\"" + importSource->id() + "\"";
+        }
+        repr += ">";
+
+        for (size_t c = 0; c < importSource->componentCount(); ++c) {
+            auto component = importSource->component(c);
+            repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
+            if (!component->id().empty()) {
+                repr += " id=\"" + component->id() + "\"";
+            }
+            repr += "/>";
+        }
+
+        for (size_t u = 0; u < importSource->unitsCount(); ++u) {
+            auto units = importSource->units(u);
+            repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
+            if (!units->id().empty()) {
+                repr += " id=\"" + units->id() + "\"";
+            }
+            repr += "/>";
+        }
+        repr += "</import>";
+    }
+
+    return repr;
+}
+
 Printer::Printer()
     : mPimpl(new PrinterImpl())
 {
@@ -414,46 +439,6 @@ std::string Printer::printModel(const ModelPtr &model) const
         return "";
     }
 
-    // ImportMap
-    using ImportPair = std::pair<std::string, ComponentPtr>;
-    using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
-    using ImportOrder = std::vector<ImportSourcePtr>;
-    ImportMap importMap;
-    ImportOrder importOrder;
-    VariableMap variableMap;
-    ComponentMap componentMap;
-
-    // Gather all imports.
-    std::list<ComponentPtr> componentStack;
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        ComponentPtr comp = model->component(i);
-        while (comp) {
-            if (comp->isImport()) {
-                ImportPair pair = std::make_pair(comp->importReference(), comp);
-                ImportSourcePtr importSource = comp->importSource();
-                if (importMap.count(importSource) == 0) {
-                    importMap[importSource] = std::vector<ImportPair>();
-                    // We track the order to make the testing easier. The alternative
-                    // is to implement a weak ordering method on the ImportSource class.
-                    importOrder.push_back(importSource);
-                }
-                importMap[importSource].push_back(pair);
-            } else {
-                for (size_t j = 0; j < comp->componentCount(); ++j) {
-                    auto childComponent = comp->component(j);
-                    componentStack.push_back(childComponent);
-                }
-            }
-
-            if (componentStack.empty()) {
-                comp = nullptr;
-            } else {
-                comp = componentStack.front();
-                componentStack.pop_front();
-            }
-        }
-    }
-
     std::string repr;
     repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\"";
     if (!model->name().empty()) {
@@ -462,29 +447,15 @@ std::string Printer::printModel(const ModelPtr &model) const
     if (!model->id().empty()) {
         repr += " id=\"" + model->id() + "\"";
     }
+
     bool endTag = false;
-    if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
+    if ((model->componentCount() > 0) || (model->unitsCount() > 0)) {
         endTag = true;
         repr += ">";
     }
 
-    for (const auto &importSource : importOrder) {
-        repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
-        if (!importSource->id().empty()) {
-            repr += " id=\"" + importSource->id() + "\"";
-        }
-        repr += ">";
-        const auto &importVector = importMap[importSource];
-        for (const auto &entry : importVector) {
-            const auto &reference = entry.first;
-            const auto &localComponent = entry.second;
-            repr += "<component component_ref=\"" + reference + "\" name=\"" + localComponent->name() + "\"";
-            if (!localComponent->id().empty()) {
-                repr += " id=\"" + localComponent->id() + "\"";
-            }
-            repr += "/>";
-        }
-        repr += "</import>";
+    if (model->hasImports()) {
+        repr += mPimpl->printImports(model);
     }
 
     for (size_t i = 0; i < model->unitsCount(); ++i) {
@@ -501,6 +472,8 @@ std::string Printer::printModel(const ModelPtr &model) const
         }
     }
 
+    VariableMap variableMap;
+    ComponentMap componentMap;
     // Build unique variable equivalence pairs (ComponentMap, VariableMap) for connections.
     buildMaps(model, componentMap, variableMap);
     // Serialise connections of the model.
@@ -522,11 +495,8 @@ std::string Printer::printModel(const ModelPtr &model) const
     }
 
     // Generate a pretty-print version of the model using libxml2.
-
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-
     xmlDoc->parse(repr);
-
     return xmlDoc->prettyPrint();
 }
 

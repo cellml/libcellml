@@ -420,7 +420,7 @@ void Units::setImportSource(ImportSourcePtr &importSource)
         model->addImportSource(importSource);
     }
     if (importSource != nullptr) {
-        importSource->addEntity(shared_from_this());
+        importSource->addUnits(shared_from_this());
     }
     ImportedEntity::setImportSource(importSource);
 }
