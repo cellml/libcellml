@@ -1416,13 +1416,15 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
             for (const auto &primaryExternalVariable : primaryExternalVariables) {
                 std::string description;
+                auto isVoi = (mModel->mPimpl->mVoi != nullptr)
+                             && (primaryExternalVariable.first == mModel->mPimpl->mVoi->mPimpl->mVariable);
                 auto equivalentVariableCount = primaryExternalVariable.second.size();
                 auto hasPrimaryVariable = std::find(primaryExternalVariable.second.begin(),
                                                     primaryExternalVariable.second.end(),
                                                     primaryExternalVariable.first)
                                           != primaryExternalVariable.second.end();
 
-                if ((equivalentVariableCount > 1) || !hasPrimaryVariable) {
+                if (isVoi || (equivalentVariableCount > 1) || !hasPrimaryVariable) {
                     description += (equivalentVariableCount == 2) ? "Both " : "";
 
                     for (size_t i = 0; i < equivalentVariableCount; ++i) {
@@ -1437,20 +1439,30 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                                        + "'";
                     }
 
-                    description += (equivalentVariableCount == 1) ?
-                                       " is marked as an external variable, but it is not a primary variable." :
-                                       " are marked as external variables, but they are";
-                    description += (equivalentVariableCount > 2) ? " all" : "";
-                    description += (equivalentVariableCount == 1) ? "" : " equivalent.";
-                    description += " Variable '" + primaryExternalVariable.first->name()
-                                   + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
-                                   + "' is";
-                    description += hasPrimaryVariable ?
-                                       " the" :
-                                       (equivalentVariableCount == 1) ?
-                                           " its corresponding" :
-                                           " their corresponding";
-                    description += " primary variable and will therefore be the one marked as an external variable.";
+                    if (isVoi) {
+                        description += (equivalentVariableCount == 1) ?
+                                           " is marked as an external variable, but it is" :
+                                           " are marked as external variables, but they are";
+                        description += ((equivalentVariableCount == 1) && hasPrimaryVariable) ?
+                                           " the" :
+                                           " equivalent to the primary";
+                        description += " variable of integration which cannot be marked as an external variable.";
+                    } else {
+                        description += (equivalentVariableCount == 1) ?
+                                           " is marked as an external variable, but it is not a primary variable." :
+                                           " are marked as external variables, but they are";
+                        description += (equivalentVariableCount > 2) ? " all" : "";
+                        description += (equivalentVariableCount == 1) ? "" : " equivalent.";
+                        description += " Variable '" + primaryExternalVariable.first->name()
+                                       + "' in component '" + owningComponent(primaryExternalVariable.first)->name()
+                                       + "' is";
+                        description += hasPrimaryVariable ?
+                                           " the" :
+                                           (equivalentVariableCount == 1) ?
+                                               " its corresponding" :
+                                               " their corresponding";
+                        description += " primary variable and will therefore be the one marked as an external variable.";
+                    }
                 }
 
                 if (!description.empty()) {
@@ -1461,22 +1473,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
                     mAnalyser->addIssue(issue);
                 }
-            }
-
-            // Check whether the variable of integration is to be marked as an
-            // external variable.
-
-            if ((mModel->mPimpl->mVoi != nullptr) && isExternalVariable(mModel->mPimpl->mVoi->variable())) {
-                auto issue = Issue::create();
-                auto voi = mModel->mPimpl->mVoi->variable();
-
-                issue->setDescription("Variable '" + voi->name()
-                                      + "' in component '" + owningComponent(voi)->name()
-                                      + "' is the variable of integration and cannot therefore be marked as an external variable.");
-
-                mAnalyser->addIssue(issue);
-
-                removeExternalVariable(voi);
             }
         }
 
