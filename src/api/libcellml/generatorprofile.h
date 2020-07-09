@@ -2716,9 +2716,7 @@ public:
      * @brief Set the @c std::string for the interface to create the states
      * array.
      *
-     * Set this @c std::string for the interface to create the states array. To
-     * be useful, the string should contain the <CODE> tag, which will be
-     * replaced with some code to create the states array.
+     * Set this @c std::string for the interface to create the states array.
      *
      * @param interfaceCreateStatesArrayMethodString The @c std::string to use
      * for the interface to create the states array.
@@ -2742,8 +2740,7 @@ public:
      * array.
      *
      * Set this @c std::string for the implementation to create the states
-     * array. To be useful, the string should contain the <CODE> tag, which will
-     * be replaced with some code to create the states array.
+     * array.
      *
      * @param implementationCreateStatesArrayMethodString The @c std::string to
      * use for the implementation to create the states array.
@@ -2764,9 +2761,7 @@ public:
      * @brief Set the @c std::string for the interface to create variables
      * array.
      *
-     * Set this @c std::string for the interface to create variables array. To
-     * be useful, the string should contain the <CODE> tag, which will be
-     * replaced with some code to create the variables array.
+     * Set this @c std::string for the interface to create variables array.
      *
      * @param interfaceCreateVariablesArrayMethodString The @c std::string to
      * use for the interface to create variables array.
@@ -2790,8 +2785,7 @@ public:
      * variables array.
      *
      * Set this @c std::string for the implementation to create the variables
-     * array. To be useful, the string should contain the <CODE> tag, which will
-     * be replaced with some code to create the variables array.
+     * array.
      *
      * @param implementationCreateVariablesArrayMethodString The @c std::string
      * to use for the implementation to create the variables array.
@@ -2878,7 +2872,8 @@ public:
      * and constants.
      *
      * Set this @c std::string for the implementation to initialise states and
-     * constants.
+     * constants. To be useful, the string should contain the <CODE> tag, which
+     * will be replaced with some code to initialise states and constants.
      *
      * @param implementationInitialiseStatesAndConstantsMethodString The
      * @c std::string to use for the implementation to initialise states and
@@ -2926,7 +2921,8 @@ public:
      * constants.
      *
      * Set this @c std::string for the implementation to compute computed
-     * constants.
+     * constants. To be useful, the string should contain the <CODE> tag, which
+     * will be replaced with some code to compute computed constants.
      *
      * @param implementationComputeComputedConstantsMethodString The
      * @c std::string to use for the implementation to compute computed
@@ -2965,7 +2961,9 @@ public:
     /**
      * @brief Set the @c std::string for the implementation to compute rates.
      *
-     * Set this @c std::string for the implementation to compute rates.
+     * Set this @c std::string for the implementation to compute rates. To be
+     * useful, the string should contain the <CODE> tag, which will be replaced
+     * with some code to compute rates.
      *
      * @param implementationComputeRatesMethodString The @c std::string to use
      * for the implementation to compute rates.
@@ -3005,7 +3003,9 @@ public:
      * @brief Set the @c std::string for the implementation to compute
      * variables.
      *
-     * Set this @c std::string for the implementation to compute variables.
+     * Set this @c std::string for the implementation to compute variables. To
+     * be useful, the string should contain the <CODE> tag, which will be
+     * replaced with some code to compute variables.
      *
      * @param implementationComputeVariablesMethodString The @c std::string to
      * use for the implementation to compute variables.
