@@ -475,7 +475,8 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     profileContents += mProfile->constantVariableTypeString()
                        + mProfile->computedConstantVariableTypeString()
-                       + mProfile->algebraicVariableTypeString();
+                       + mProfile->algebraicVariableTypeString()
+                       + mProfile->externalVariableTypeString();
 
     profileContents += mProfile->variableInfoObjectString()
                        + mProfile->variableInfoWithTypeObjectString();
@@ -542,11 +543,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "0e79e682d28bcaf67f5ed5cbf419de670fd7373b";
+        res = profileContentsSha1 != "4298cdaabd6b374270ace3012a919116a057e3ca";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "073377e89d73541021cbea7dce4b06ee4dc88c13";
+        res = profileContentsSha1 != "59fdd1a7470d57ea668e58d171f2e09faf190858";
 
         break;
     }
@@ -811,7 +812,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
         && !mProfile->arrayElementSeparatorString().empty()
         && !mProfile->constantVariableTypeString().empty()
         && !mProfile->computedConstantVariableTypeString().empty()
-        && !mProfile->algebraicVariableTypeString().empty()) {
+        && !mProfile->algebraicVariableTypeString().empty()
+        && !mProfile->externalVariableTypeString().empty()) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -832,6 +834,8 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode()
                 variableType = mProfile->computedConstantVariableTypeString();
             } else if (variable->type() == AnalyserVariable::Type::ALGEBRAIC) {
                 variableType = mProfile->algebraicVariableTypeString();
+            } else if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
+                variableType = mProfile->externalVariableTypeString();
             }
 
             infoElementsCode += mProfile->indentString()

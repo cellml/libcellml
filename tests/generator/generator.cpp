@@ -1484,6 +1484,7 @@ TEST(Generator, coverage)
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
+    profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
     profile->setVariableInfoWithTypeObjectString("");
@@ -1555,6 +1556,7 @@ TEST(Generator, coverage)
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
     profile->setAlgebraicVariableTypeString("");
+    profile->setExternalVariableTypeString("");
 
     profile->setVariableInfoObjectString("");
     profile->setVariableInfoWithTypeObjectString("");
