@@ -1459,8 +1459,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                         description += hasPrimaryVariable ?
                                            " the" :
                                            (equivalentVariableCount == 1) ?
-                                               " its corresponding" :
-                                               " their corresponding";
+                                           " its corresponding" :
+                                           " their corresponding";
                         description += " primary variable and will therefore be the one marked as an external variable.";
                     }
                 }
