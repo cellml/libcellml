@@ -32,7 +32,8 @@ struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
     ModelPtr mModel;
-    std::vector<ImportedEntityPtr> mImportedEntities;
+    std::vector<ComponentPtr> mComponents;
+    std::vector<UnitsPtr> mUnits;
 };
 
 ImportSource::ImportSource()
@@ -87,33 +88,66 @@ ImportSourcePtr ImportSource::clone() const
     return i;
 }
 
-bool ImportSource::addEntity(const ImportedEntityPtr &item)
+bool ImportSource::addComponent(const ComponentPtr &component)
 {
-    if (std::find(mPimpl->mImportedEntities.begin(), mPimpl->mImportedEntities.end(), item) == mPimpl->mImportedEntities.end()) {
+    if (std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component) != mPimpl->mComponents.end()) {
         return false;
     }
-    mPimpl->mImportedEntities.push_back(item);
+    mPimpl->mComponents.push_back(component);
     return true;
 }
 
-ImportedEntityPtr ImportSource::entity(size_t index) const
+ComponentPtr ImportSource::component(size_t index) const
 {
-    if (index < mPimpl->mImportedEntities.size()) {
-        return mPimpl->mImportedEntities.at(index);
+    if (index < mPimpl->mComponents.size()) {
+        return mPimpl->mComponents.at(index);
     }
     return nullptr;
 }
 
-size_t ImportSource::entityCount() const
+size_t ImportSource::componentCount() const
 {
-    return mPimpl->mImportedEntities.size();
+    return mPimpl->mComponents.size();
 }
 
-bool ImportSource::removeEntity(size_t index)
+bool ImportSource::removeComponent(size_t index)
 {
-    if (index < mPimpl->mImportedEntities.size()) {
-        auto entity = mPimpl->mImportedEntities[index];
-        mPimpl->mImportedEntities.erase(mPimpl->mImportedEntities.begin() + int64_t(index));
+    if (index < mPimpl->mComponents.size()) {
+        auto component = mPimpl->mComponents[index];
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        return true;
+    }
+
+    return false;
+}
+
+bool ImportSource::addUnits(const UnitsPtr &units)
+{
+    if (std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units) != mPimpl->mUnits.end()) {
+        return false;
+    }
+    mPimpl->mUnits.push_back(units);
+    return true;
+}
+
+UnitsPtr ImportSource::units(size_t index) const
+{
+    if (index < mPimpl->mUnits.size()) {
+        return mPimpl->mUnits.at(index);
+    }
+    return nullptr;
+}
+
+size_t ImportSource::unitsCount() const
+{
+    return mPimpl->mUnits.size();
+}
+
+bool ImportSource::removeUnits(size_t index)
+{
+    if (index < mPimpl->mUnits.size()) {
+        auto units = mPimpl->mUnits[index];
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         return true;
     }
 

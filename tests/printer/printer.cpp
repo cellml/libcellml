@@ -307,7 +307,8 @@ TEST(Printer, printMultipleChildrenOfImports)
                      "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
                      "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
                      "  </import>\n"
-                     "</model>";
+                     "</model>\n";
+
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
     auto printer = libcellml::Printer::create();
