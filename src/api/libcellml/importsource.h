@@ -109,6 +109,12 @@ public:
      */
     ImportSourcePtr clone() const;
 
+    // KRM docstrings
+    bool addEntity(const ImportedEntityPtr &item);
+    bool removeEntity(size_t index);
+    size_t entityCount() const;
+    ImportedEntityPtr entity(size_t index) const;
+
 private:
     ImportSource(); /**< Constructor */
 

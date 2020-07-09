@@ -409,12 +409,13 @@ public:
      * @brief Set the source of the units for this Units.
      *
      * Make this Units an imported units by defining an import model
-     * from which to extract the named Units from.
+     * from which to extract the named Units.  This Units will be added to the
+     * importSource's list of dependent entities.
      *
      * @param importSource The import source from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
-    void setSourceUnits(const ImportSourcePtr &importSource, const std::string &name);
+    void setSourceUnits(ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Get the number of units that compose this units.
@@ -499,7 +500,7 @@ public:
      *
      * @param importSource The @c ImportSourcePtr to add to this @c Units item.
      */
-    void setImportSource(const ImportSourcePtr &importSource);
+    void setImportSource(ImportSourcePtr &importSource);
 
 private:
     Units(); /**< Constructor */
