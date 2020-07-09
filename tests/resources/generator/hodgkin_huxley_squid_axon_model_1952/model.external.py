@@ -86,31 +86,31 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables, external_variable):
-    variables[18] = external_variable(voi, states, rates, variables, 18);
+    variables[18] = external_variable(voi, states, rates, variables, 18)
     variables[10] = 0.1*(variables[18]+25.0)/(exp((variables[18]+25.0)/10.0)-1.0)
     variables[11] = 4.0*exp(variables[18]/18.0)
     rates[0] = variables[10]*(1.0-states[0])-variables[11]*states[0]
     variables[12] = 0.07*exp(variables[18]/20.0)
     variables[13] = 1.0/(exp((variables[18]+30.0)/10.0)+1.0)
     rates[1] = variables[12]*(1.0-states[1])-variables[13]*states[1]
-    variables[16] = external_variable(voi, states, rates, variables, 16);
+    variables[16] = external_variable(voi, states, rates, variables, 16)
     variables[17] = 0.125*exp(variables[18]/80.0)
     rates[2] = variables[16]*(1.0-states[2])-variables[17]*states[2]
     variables[5] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[7] = variables[0]*(variables[18]-variables[6])
     variables[15] = variables[3]*pow(states[2], 4.0)*(variables[18]-variables[14])
-    variables[9] = external_variable(voi, states, rates, variables, 9);
+    variables[9] = external_variable(voi, states, rates, variables, 9)
     rates[3] = -(-variables[5]+variables[9]+variables[15]+variables[7])/variables[1]
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
     variables[7] = variables[0]*(variables[18]-variables[6])
-    variables[9] = external_variable(voi, states, rates, variables, 9);
+    variables[9] = external_variable(voi, states, rates, variables, 9)
     variables[10] = 0.1*(variables[18]+25.0)/(exp((variables[18]+25.0)/10.0)-1.0)
     variables[11] = 4.0*exp(variables[18]/18.0)
     variables[12] = 0.07*exp(variables[18]/20.0)
     variables[13] = 1.0/(exp((variables[18]+30.0)/10.0)+1.0)
     variables[15] = variables[3]*pow(states[2], 4.0)*(variables[18]-variables[14])
-    variables[16] = external_variable(voi, states, rates, variables, 16);
+    variables[16] = external_variable(voi, states, rates, variables, 16)
     variables[17] = 0.125*exp(variables[18]/80.0)
-    variables[18] = external_variable(voi, states, rates, variables, 18);
+    variables[18] = external_variable(voi, states, rates, variables, 18)
