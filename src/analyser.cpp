@@ -1450,10 +1450,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                                        (equivalentVariableCount == 1) ?
                                            " its corresponding" :
                                            " their corresponding";
-                    description += " primary variable and will therefore be";
-                    description += (equivalentVariableCount == 1) ?
-                                       " marked as an external variable instead." :
-                                       " the one marked as an external variable.";
+                    description += " primary variable and will therefore be the one marked as an external variable.";
                 }
 
                 if (!description.empty()) {
