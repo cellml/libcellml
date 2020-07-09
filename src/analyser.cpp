@@ -342,7 +342,6 @@ struct Analyser::AnalyserImpl
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = nullptr;
-    std::vector<VariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
@@ -1221,7 +1220,6 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
     mAnalyser->removeAllIssues();
 
     mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
-    mExternalVariables = externalVariables;
 
     mInternalVariables.clear();
     mInternalEquations.clear();
@@ -1337,6 +1335,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
         // Mark some variables as external variables, if needed.
 
+        std::vector<VariablePtr> realExternalVariables;
+
         if (!externalVariables.empty()) {
             // Check whether a variable is marked as an external variable more
             // than once.
@@ -1344,7 +1344,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
             std::vector<VariablePtr> uniqueExternalVariables;
             std::vector<VariablePtr> multipleExternalVariables;
 
-            for (const auto &externalVariable : mExternalVariables) {
+            for (const auto &externalVariable : externalVariables) {
                 if (std::find(uniqueExternalVariables.begin(),
                               uniqueExternalVariables.end(),
                               externalVariable)
@@ -1358,7 +1358,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 }
             }
 
-            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
+            realExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
             for (const auto &multipleExternalVariable : multipleExternalVariables) {
                 auto issue = Issue::create();
@@ -1378,10 +1378,10 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
 
             uniqueExternalVariables.clear();
 
-            for (const auto &externalVariable : mExternalVariables) {
+            for (const auto &realExternalVariable : realExternalVariables) {
                 for (const auto &internalVariable : mInternalVariables) {
-                    if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
-                        primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
+                    if (isSameOrEquivalentVariable(realExternalVariable, internalVariable->mVariable)) {
+                        primaryExternalVariables[internalVariable->mVariable].push_back(realExternalVariable);
 
                         if (((mModel->mPimpl->mVoi == nullptr)
                              || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
@@ -1397,7 +1397,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 }
             }
 
-            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
+            realExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
             for (const auto &primaryExternalVariable : primaryExternalVariables) {
                 std::string description;
