@@ -67,6 +67,17 @@ public:
     Type type() const;
 
     /**
+     * @brief Test to determine if @c AnalyserModel has external variables.
+     *
+     * Test to determine if @c AnalyserModel has external variables, return
+     * @c true if it does and @c false otherwise.
+     *
+     * @return @c true if @c AnalyserModel has external variables, @c false
+     * otherwise.
+     */
+    bool hasExternalVariables() const;
+
+    /**
      * @brief Get the @c Variable of integration of the @c Model.
      *
      * Return the @c Variable of integration of the @c Model processed by this

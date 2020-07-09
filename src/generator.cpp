@@ -103,6 +103,7 @@ struct Generator::GeneratorImpl
     void addTrigonometricFunctionsCode();
 
     void addInterfaceCreateDeleteArrayMethodsCode();
+    void addExternalVariableMethodTypeDefinitionCode();
     void addImplementationCreateStatesArrayMethodCode();
     void addImplementationCreateVariablesArrayMethodCode();
     void addImplementationDeleteArrayMethodCode();
@@ -551,7 +552,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "8231b2fc5f72cd2ce2805953c0652f417cbab1b9";
+        res = profileContentsSha1 != "1451ad1c439666714dcb5e42c53254d473c55bfd";
 
         break;
     }
@@ -1102,6 +1103,23 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode()
     }
 
     mCode += interfaceCreateDeleteArraysCode;
+}
+
+void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
+{
+    if (mModel->hasExternalVariables()) {
+        std::string externalVariableMethodTypeDefinitionCode;
+
+        if (!mProfile->externalVariableMethodTypeDefinitionString().empty()) {
+            externalVariableMethodTypeDefinitionCode += mProfile->externalVariableMethodTypeDefinitionString();
+        }
+
+        if (!externalVariableMethodTypeDefinitionCode.empty()) {
+            mCode += "\n";
+        }
+
+        mCode += externalVariableMethodTypeDefinitionCode;
+    }
 }
 
 void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode()
@@ -1982,11 +2000,13 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
     }
 
     if (!mProfile->interfaceComputeRatesMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mProfile->interfaceComputeRatesMethodString();
+        interfaceComputeModelMethodsCode += replace(mProfile->interfaceComputeRatesMethodString(),
+                                                    "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!mProfile->interfaceComputeVariablesMethodString().empty()) {
-        interfaceComputeModelMethodsCode += mProfile->interfaceComputeVariablesMethodString();
+        interfaceComputeModelMethodsCode += replace(mProfile->interfaceComputeVariablesMethodString(),
+                                                    "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : "");
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
@@ -2061,7 +2081,8 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             }
         }
 
-        mCode += replace(mProfile->implementationComputeRatesMethodString(),
+        mCode += replace(replace(mProfile->implementationComputeRatesMethodString(),
+                                 "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : ""),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -2085,7 +2106,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             }
         }
 
-        mCode += replace(mProfile->implementationComputeVariablesMethodString(),
+        mCode += replace(replace(mProfile->implementationComputeVariablesMethodString(),
+                                 "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : ""),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -2158,6 +2180,10 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
     // Add code for the interface to create and delete arrays.
 
     mPimpl->addInterfaceCreateDeleteArrayMethodsCode();
+
+    // Add code for the external variable method type definition.
+
+    mPimpl->addExternalVariableMethodTypeDefinitionCode();
 
     // Add code for the interface to compute the model.
 
