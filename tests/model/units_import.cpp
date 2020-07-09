@@ -215,3 +215,62 @@ TEST(UnitsImport, importModifyAndParse)
     // check units count
     EXPECT_EQ(size_t(5), model->unitsCount());
 }
+
+
+TEST(UnitsImport, importSourceUnitsMethods)
+{
+    auto model = libcellml::Model::create("so_much_importing");
+
+    // Add units to model, then import to units:
+    auto imp1 = libcellml::ImportSource::create();
+    std::string url1 = "http://www.example.com#hello";
+    imp1->setUrl(url1);
+
+    auto units1 = libcellml::Units::create("importUnits1");
+    model->addUnits(units1);
+    units1->setImportSource(imp1);
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(imp1, model->importSource(0));
+    EXPECT_EQ(imp1, model->importSource(url1));
+
+    // Add import to units, then units to model:
+    auto imp2 = libcellml::ImportSource::create();
+    std::string url2 = "http://www.example.com#bonjour";
+    imp2->setUrl(url2);
+
+    auto units2 = libcellml::Units::create("importUnits2");
+    units2->setImportSource(imp2);
+    model->addUnits(units2);
+
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(imp2, model->importSource(1));
+    EXPECT_EQ(imp2, model->importSource(url2));
+
+    // Add import to model directly:
+    auto imp3 = libcellml::ImportSource::create();
+    std::string url3 = "http://www.example.com#dag";
+    imp3->setUrl(url3);
+    EXPECT_TRUE(model->addImportSource(imp3));
+
+    EXPECT_EQ(size_t(3), model->importSourceCount());
+    EXPECT_EQ(imp3, model->importSource(2));
+    EXPECT_EQ(imp3, model->importSource(url3));
+
+    // Reuse an import source in another units:
+    auto units4 = libcellml::Units::create("importUnits4");
+    units4->setImportSource(imp2);
+    model->addUnits(units4);
+
+    EXPECT_EQ(size_t(3), model->importSourceCount());
+    EXPECT_EQ(imp2, model->units("importUnits2")->importSource());
+    EXPECT_EQ(imp2, model->units("importUnits4")->importSource());
+
+    // Add an already-present import source:
+    EXPECT_FALSE(model->addImportSource(imp3));
+
+    // Add a new import source with a url that's already in the list:
+    auto imp4 = libcellml::ImportSource::create();
+    imp4->setUrl(url1);
+    EXPECT_FALSE(model->addImportSource(imp4));
+}
