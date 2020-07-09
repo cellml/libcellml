@@ -499,6 +499,10 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->ratesArrayString()
                        + mProfile->variablesArrayString();
 
+    profileContents += mProfile->externalVariableMethodTypeDefinitionString()
+                       + mProfile->externalVariableMethodParameterString()
+                       + mProfile->externalVariableMethodString();
+
     profileContents += mProfile->interfaceCreateStatesArrayMethodString()
                        + mProfile->implementationCreateStatesArrayMethodString();
 
@@ -543,11 +547,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "4298cdaabd6b374270ace3012a919116a057e3ca";
+        res = profileContentsSha1 != "c628c131d71b7b4acc5c3a35440abd2a1e04fe04";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "59fdd1a7470d57ea668e58d171f2e09faf190858";
+        res = profileContentsSha1 != "8231b2fc5f72cd2ce2805953c0652f417cbab1b9";
 
         break;
     }
