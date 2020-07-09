@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -110,7 +111,24 @@ bool Component::doAddComponent(const ComponentPtr &component)
         return false;
     }
     component->setParent(shared_from_this());
+
+    if (component->isImport()) {
+        auto model = owningModel(shared_from_this());
+        if (model != nullptr) {
+            model->addImportSource(component->importSource());
+        }
+    }
+
     return ComponentEntity::doAddComponent(component);
+}
+
+void Component::setImportSource(const ImportSourcePtr &importSource)
+{
+    auto model = owningModel(shared_from_this());
+    if (model != nullptr) {
+        model->addImportSource(importSource);
+    }
+    ImportedEntity::setImportSource(importSource);
 }
 
 void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)

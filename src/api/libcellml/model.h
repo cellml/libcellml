@@ -366,6 +366,16 @@ public:
      */
     bool fixVariableInterfaces();
 
+    // KRM docstrings needed.
+    bool addImportSource(const ImportSourcePtr &imp);
+    size_t importSourceCount() const;
+    ImportSourcePtr importSource(size_t index) const;
+    ImportSourcePtr importSource(const std::string &url) const;
+    bool removeImportSource(size_t index);
+    bool removeImportSource(const ImportSourcePtr &imp);
+    bool hasImportSource(const std::string &url) const;
+    bool hasImportSource(const ImportSourcePtr &imp) const;
+
 private:
     Model(); /**< Constructor */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
