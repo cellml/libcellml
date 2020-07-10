@@ -1473,21 +1473,12 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         // Carry on only if there are no errors (i.e. warnings are fine).
 
         if (mAnalyser->errorCount() == 0) {
-            // Scale our equations' AST, i.e. take into account the fact that we
-            // may have mapped variables that use compatible units rather than
-            // equivalent ones.
-
-            for (const auto &internalEquation : mInternalEquations) {
-                scaleEquationAst(internalEquation->mAst);
-            }
-
             // Make it known through our API whether the model has some external
             // variables.
 
             mModel->mPimpl->mHasExternalVariables = !mExternalVariables.empty();
 
-            // Sort our internal variables and equations and make them available
-            // through our API.
+            // Sort our internal variables and equations.
 
             std::sort(mInternalVariables.begin(), mInternalVariables.end(),
                       compareVariablesByTypeAndIndex);
@@ -1500,6 +1491,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
             for (const auto &internalEquation : mInternalEquations) {
                 equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
             }
+
+            // Make our internal variables available through our API.
 
             auto stateIndex = MAX_SIZE_T;
             auto variableIndex = MAX_SIZE_T;
@@ -1548,6 +1541,11 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 }
             }
 
+            // Make our internal equations available through our API.
+            // Note: we scale our internal equation's AST to take into account the
+            //       fact that we may have mapped variables that use compatible
+            //       units rather than equivalent ones.
+
             for (const auto &internalEquation : mInternalEquations) {
                 if (!isExternalVariable(internalEquation->mVariable->mVariable)) {
                     AnalyserEquation::Type type;
@@ -1561,6 +1559,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                     } else {
                         type = AnalyserEquation::Type::ALGEBRAIC;
                     }
+
+                    scaleEquationAst(internalEquation->mAst);
 
                     std::vector<AnalyserEquationPtr> dependencies;
 
