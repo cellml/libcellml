@@ -346,8 +346,6 @@ struct Analyser::AnalyserImpl
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
 
-    std::vector<AnalyserVariablePtr> mVariables;
-
     explicit AnalyserImpl(Analyser *analyser);
 
     static bool compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
@@ -366,7 +364,6 @@ struct Analyser::AnalyserImpl
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     AnalyserInternalVariablePtr analyserInternalVariable(const VariablePtr &variable);
-    AnalyserVariablePtr analyserVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
                                    const ComponentPtr &component);
@@ -503,29 +500,6 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserInternalVariable(con
     mInternalVariables.push_back(internalVariable);
 
     return internalVariable;
-}
-
-AnalyserVariablePtr Analyser::AnalyserImpl::analyserVariable(const VariablePtr &variable)
-{
-    // Find and return, if there is one, the analyser variable associated with
-    // the given variable.
-
-    for (const auto &analyserVariable : mVariables) {
-        if (isSameOrEquivalentVariable(variable, analyserVariable->mPimpl->mVariable)) {
-            return analyserVariable;
-        }
-    }
-
-    // No analyser variable exists for the given variable, so create one, track
-    // it and return it.
-
-    auto analyserVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-
-    analyserVariable->mPimpl->populate(variable);
-
-    mVariables.push_back(analyserVariable);
-
-    return analyserVariable;
 }
 
 VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variable,
@@ -1078,7 +1052,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                     }
 
                     if (!isVoiInitialised) {
-                        mModel->mPimpl->mVoi = analyserVariable(voi);
+                        mModel->mPimpl->mVoi = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
 
                         mModel->mPimpl->mVoi->mPimpl->populate(AnalyserVariable::Type::VARIABLE_OF_INTEGRATION,
                                                                0, nullptr, voi, nullptr);
@@ -1391,7 +1365,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 continue;
             }
 
-            auto stateOrVariable = analyserVariable(internalVariable->mVariable);
+            auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
             auto equation = equationMappings[internalVariable->mEquation.lock()];
 
             stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,

@@ -33,7 +33,6 @@ struct AnalyserVariable::AnalyserVariableImpl
     VariablePtr mVariable;
     AnalyserEquationWeakPtr mEquation;
 
-    void populate(const VariablePtr &variable);
     void populate(AnalyserVariable::Type type, size_t index,
                   const VariablePtr &initialisingVariable,
                   const VariablePtr &variable,
