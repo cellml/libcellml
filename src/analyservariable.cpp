@@ -20,11 +20,6 @@ limitations under the License.
 
 namespace libcellml {
 
-void AnalyserVariable::AnalyserVariableImpl::populate(const VariablePtr &variable)
-{
-    mVariable = variable;
-}
-
 void AnalyserVariable::AnalyserVariableImpl::populate(AnalyserVariable::Type type,
                                                       size_t index,
                                                       const VariablePtr &initialisingVariable,
