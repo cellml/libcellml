@@ -483,8 +483,8 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserInternalVariable(const VariablePtr &variable)
 {
-    // Find and return, if there is one, the analyser variable associated with
-    // the given variable.
+    // Find and return, if there is one, the analyser internal variable
+    // associated with the given variable.
 
     for (const auto &internalVariable : mInternalVariables) {
         if (isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
@@ -492,8 +492,8 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserInternalVariable(con
         }
     }
 
-    // No analyser variable exists for the given variable, so create one, track
-    // it and return it.
+    // No analyser internal variable exists for the given variable, so create
+    // one, track it and return it.
 
     auto internalVariable = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
 
