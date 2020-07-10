@@ -1331,16 +1331,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
 
     if ((mModel->mPimpl->mType == AnalyserModel::Type::ODE)
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
-        // Scale our equations' AST, i.e. take into account the fact that we may
-        // have mapped variables that use compatible units rather than
-        // equivalent ones.
-
-        for (const auto &internalEquation : mInternalEquations) {
-            scaleEquationAst(internalEquation->mAst);
-        }
-
-        // Sort our internal variables and equations and make them available
-        // through our API.
+        // Sort our internal variables and equations.
 
         std::sort(mInternalVariables.begin(), mInternalVariables.end(),
                   compareVariablesByTypeAndIndex);
@@ -1353,6 +1344,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
         for (const auto &internalEquation : mInternalEquations) {
             equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
         }
+
+        // Make our internal variables available through our API.
 
         for (const auto &internalVariable : mInternalVariables) {
             AnalyserVariable::Type type;
@@ -1391,6 +1384,11 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             }
         }
 
+        // Make our internal equations available through our API.
+        // Note: we scale our internal equation's AST to take into account the
+        //       fact that we may have mapped variables that use compatible
+        //       units rather than equivalent ones.
+
         for (const auto &internalEquation : mInternalEquations) {
             AnalyserEquation::Type type;
 
@@ -1403,6 +1401,8 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
             } else {
                 type = AnalyserEquation::Type::ALGEBRAIC;
             }
+
+            scaleEquationAst(internalEquation->mAst);
 
             std::vector<AnalyserEquationPtr> dependencies;
 
