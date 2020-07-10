@@ -922,13 +922,13 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
                 // Create and keep track of the equation associated with the
                 // given node.
 
-                auto equation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
+                auto internalEquation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
 
-                mInternalEquations.push_back(equation);
+                mInternalEquations.push_back(internalEquation);
 
-                // Actually process the node
+                // Actually process the node.
 
-                processNode(node, equation->mAst, equation->mAst->mPimpl->mParent.lock(), component, equation);
+                processNode(node, internalEquation->mAst, internalEquation->mAst->mPimpl->mParent.lock(), component, internalEquation);
             }
         }
     }
