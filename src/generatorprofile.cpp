@@ -817,7 +817,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mExternalVariableMethodTypeDefinitionString = "";
         mExternalVariableMethodParameterString = ", external_variable";
-        mExternalVariableMethodString = "externalVariable";
+        mExternalVariableMethodString = "external_variable";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
