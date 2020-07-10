@@ -553,7 +553,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "1451ad1c439666714dcb5e42c53254d473c55bfd";
+        res = profileContentsSha1 != "adaeff82a613a0c7ce94943824fb0f3645d22361";
 
         break;
     }
