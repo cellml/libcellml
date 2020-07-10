@@ -1501,6 +1501,9 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                 equationMappings[internalEquation] = std::shared_ptr<AnalyserEquation> {new AnalyserEquation {}};
             }
 
+            auto stateIndex = MAX_SIZE_T;
+            auto variableIndex = MAX_SIZE_T;
+
             for (const auto &internalVariable : mInternalVariables) {
                 AnalyserVariable::Type type;
 
@@ -1526,7 +1529,10 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                                     nullptr :
                                     equationMappings[internalVariable->mEquation.lock()];
 
-                stateOrVariable->mPimpl->populate(type, internalVariable->mIndex,
+                stateOrVariable->mPimpl->populate(type,
+                                                  (type == AnalyserVariable::Type::STATE) ?
+                                                      ++stateIndex :
+                                                      ++variableIndex,
                                                   internalVariable->mInitialisingVariable,
                                                   internalVariable->mVariable,
                                                   equation);
