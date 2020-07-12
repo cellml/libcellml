@@ -2109,5 +2109,4 @@ TEST(Parser, parseAndPrintSeparateAndCombinedImports)
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
     EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
-
 }
