@@ -614,11 +614,11 @@ TEST(Model, removeComponentInsensitiveToOrder)
 
     // If the order of operations is switched the behaviour is the same:
 
-    // Get a pointer to the second componet in the parsed model
+    // Get a pointer to the second component in the parsed model.
     auto c2Parsed = modelParsed->component("c2");
-    // Remove it from the parsed model
+    // Remove it from the parsed model.
     modelParsed->removeComponent(c2Parsed);
-    // Add it to the api model
+    // Add it to the api model.
     modelApi->addComponent(c2Parsed);
 
     EXPECT_EQ(size_t(0), modelParsed->componentCount());
