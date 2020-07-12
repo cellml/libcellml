@@ -602,6 +602,8 @@ TEST(Analyser, coverage)
 
     EXPECT_EQ(nullptr, analyserModel->voi());
 
+    EXPECT_FALSE(analyserModel->hasExternalVariables());
+
     EXPECT_EQ(size_t(0), analyserModel->stateCount());
     EXPECT_EQ(size_t(0), analyserModel->states().size());
 
