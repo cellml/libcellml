@@ -893,6 +893,12 @@ TEST(Model, importSourceDetailsCoverage)
 
     EXPECT_EQ(nullptr, imp->units(99));
 
+    EXPECT_TRUE(model->removeImportSource(0));
+    EXPECT_FALSE(model->removeImportSource(0));
+    model->addImportSource(imp);
+    EXPECT_TRUE(model->removeImportSource(imp));
+    EXPECT_FALSE(model->removeImportSource(imp));
+
     // TODO Not sure whether it should be a two-way street between the ImportSource
     // and the thing added/removed.  Should removing a component from an import source
     // also remove the import source from the component? ditto imports? and adding?
