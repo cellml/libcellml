@@ -163,6 +163,8 @@ TEST(ComponentImport, multipleImportAndParse)
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
         "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -179,6 +181,7 @@ TEST(ComponentImport, multipleImportAndParse)
     c2->setSourceComponent(imp, "cc2");
     m->addComponent(c2);
 
+    // These have the same url but a different ImportSource object, so should be separated.
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
     imp2->setUrl("some-other-model.xml");
     libcellml::ComponentPtr c3 = libcellml::Component::create();
@@ -332,7 +335,7 @@ TEST(ComponentImport, importSourceComponentMethods)
 
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    EXPECT_EQ(imp1, model->importSource(url1));
+    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add import to component, then component to model:
     auto imp2 = libcellml::ImportSource::create();
@@ -345,7 +348,7 @@ TEST(ComponentImport, importSourceComponentMethods)
 
     EXPECT_EQ(size_t(2), model->importSourceCount());
     EXPECT_EQ(imp2, model->importSource(1));
-    EXPECT_EQ(imp2, model->importSource(url2));
+    // EXPECT_EQ(imp2, model->importSource(url2));
 
     // Add import to model directly:
     auto imp3 = libcellml::ImportSource::create();
@@ -355,7 +358,7 @@ TEST(ComponentImport, importSourceComponentMethods)
 
     EXPECT_EQ(size_t(3), model->importSourceCount());
     EXPECT_EQ(imp3, model->importSource(2));
-    EXPECT_EQ(imp3, model->importSource(url3));
+    // EXPECT_EQ(imp3, model->importSource(url3));
 
     // Reuse an import source in another component:
     auto component4 = libcellml::Component::create("importComponent4");
@@ -370,7 +373,11 @@ TEST(ComponentImport, importSourceComponentMethods)
     EXPECT_FALSE(model->addImportSource(imp3));
 
     // Add a new import source with a url that's already in the list:
+    // NB This has changed so that the new import source
+    // object will trigger an additional import block, even though the
+    // url (and therefore the imported object) already exists.
     auto imp4 = libcellml::ImportSource::create();
     imp4->setUrl(url1);
-    EXPECT_FALSE(model->addImportSource(imp4));
+    EXPECT_TRUE(model->addImportSource(imp4));
+    EXPECT_EQ(size_t(4), model->importSourceCount());
 }

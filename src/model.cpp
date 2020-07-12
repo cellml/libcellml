@@ -256,28 +256,28 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl)
-{
-    return std::find_if(mImports.begin(), mImports.end(),
-                        [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl; });
-}
+// std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl)
+// {
+//     return std::find_if(mImports.begin(), mImports.end(),
+//                         [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl; });
+// }
 
-std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl, const std::string &inId)
-{
-    return std::find_if(mImports.begin(), mImports.end(),
-                        [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl && u->id() == inId; });
-}
+// std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl, const std::string &inId)
+// {
+//     return std::find_if(mImports.begin(), mImports.end(),
+//                         [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl && u->id() == inId; });
+// }
 
-bool Model::hasImportSource(const std::string &url) const
-{
-    return mPimpl->findImportSource(url) != mPimpl->mImports.end();
-}
+// bool Model::hasImportSource(const std::string &url) const
+// {
+//     return mPimpl->findImportSource(url) != mPimpl->mImports.end();
+// }
 
 bool Model::hasImportSource(const ImportSourcePtr &imp) const
 {
-    bool hasPointer = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end();
-    bool hasUrl = hasImportSource(imp->url());
-    return hasPointer || hasUrl;
+    return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end();
+    // bool hasUrl = hasImportSource(imp->url());
+    // return hasPointer || hasUrl;
 }
 
 bool Model::addImportSource(const ImportSourcePtr &imp)
@@ -286,10 +286,7 @@ bool Model::addImportSource(const ImportSourcePtr &imp)
         return false;
     }
 
-    // Prevent adding multiple times to list.
-    // TODO Should also check for IDs here, so that people can have import sources with different comments on
-    // if they so choose, and so that the ids aren't lost.
-    auto it = mPimpl->findImportSource(imp->url(), imp->id());
+    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp);
 
     if (it != mPimpl->mImports.end()) {
         // Add any child entities of this imp to the one already in the model.
@@ -321,16 +318,16 @@ ImportSourcePtr Model::importSource(size_t index) const
     return imp;
 }
 
-ImportSourcePtr Model::importSource(const std::string &url) const
-{
-    ImportSourcePtr imp = nullptr;
-    auto result = mPimpl->findImportSource(url);
-    if (result != mPimpl->mImports.end()) {
-        imp = *result;
-    }
+// ImportSourcePtr Model::importSource(const std::string &url) const
+// {
+//     ImportSourcePtr imp = nullptr;
+//     auto result = mPimpl->findImportSource(url);
+//     if (result != mPimpl->mImports.end()) {
+//         imp = *result;
+//     }
 
-    return imp;
-}
+//     return imp;
+// }
 
 bool Model::removeImportSource(size_t index)
 {

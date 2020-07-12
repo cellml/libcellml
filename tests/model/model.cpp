@@ -807,22 +807,22 @@ TEST(Model, importSourceBasics)
     EXPECT_TRUE(model->addImportSource(imp1));
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    EXPECT_EQ(imp1, model->importSource(url1));
+    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add the same one again:
     EXPECT_FALSE(model->addImportSource(imp1));
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    EXPECT_EQ(imp1, model->importSource(url1));
+    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add another with the same url:
     auto imp2 = libcellml::ImportSource::create();
     imp2->setUrl(url1);
 
-    EXPECT_FALSE(model->addImportSource(imp2));
-    EXPECT_EQ(size_t(1), model->importSourceCount());
-    EXPECT_EQ(imp1, model->importSource(0));
-    EXPECT_EQ(imp1, model->importSource(url1));
+    EXPECT_TRUE(model->addImportSource(imp2));
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(imp2, model->importSource(1));
+    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add another with a new url:
     auto imp3 = libcellml::ImportSource::create();
@@ -830,7 +830,7 @@ TEST(Model, importSourceBasics)
     imp3->setUrl(url3);
 
     EXPECT_TRUE(model->addImportSource(imp3));
-    EXPECT_EQ(size_t(2), model->importSourceCount());
-    EXPECT_EQ(imp3, model->importSource(1));
-    EXPECT_EQ(imp3, model->importSource(url3));
+    EXPECT_EQ(size_t(3), model->importSourceCount());
+    EXPECT_EQ(imp3, model->importSource(2));
+    // EXPECT_EQ(imp3, model->importSource(url3));
 }
