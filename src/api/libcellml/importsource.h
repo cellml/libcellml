@@ -109,15 +109,127 @@ public:
      */
     ImportSourcePtr clone() const;
 
-    // KRM docstrings
+    /**
+     * @brief Add a component to this import source item.
+     *
+     * The added @p component will be treated as an import, and
+     * will be sourced from the combination of url of this import source
+     * item, and the component's own import reference.
+     *
+     * @param component The @c ComponentPtr to add.
+     *
+     * @return @c true if the component was added successfully, @c false
+     * if it already exists in this import.
+     */
     bool addComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Remove the component at the given @p index.
+     *
+     * Remove the component from this import source at the given @p index.
+     * @p index must be in the range [0, \#component).
+     *
+     * @param index The index of the component to remove.
+     *
+     * @return True if the component was removed, false otherwise.
+     */
     bool removeComponent(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the component with the given pointer.
+     *
+     * Remove the component with the pointer @p component.
+     *
+     * @param component The pointer to the component to remove.
+     *
+     * @return True if the component was removed, false otherwise.
+     */
+    bool removeComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Get the number of components accessed by this import source.
+     *
+     * @return The number of components.
+     */
     size_t componentCount() const;
+
+    /**
+     * @brief Get the component item at the given @p index.
+     *
+     * Returns a reference to the component at the given @p index imported
+     * by this import source.  If the @p index is not valid a @c nullptr is
+     * returned, the range of valid values for the index is [0, \#components).
+     *
+     * @param index The index of the component to return.
+     *
+     * @return A reference to the component at the given @p index on success, @c nullptr otherwise.
+     */
     ComponentPtr component(size_t index) const;
 
+    /**
+     * @brief Add a units item to this import source item.
+     *
+     * The added @p units will be treated as an import, and
+     * will be sourced from the combination of url of this import source
+     * item, and the units' own import reference.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p units pointer already exists in this import; or
+     *  - The @p units is @c nullptr.
+     *
+     * @param units The @c UnitsPtr to add.
+     *
+     * @return True if the units item was added successfully, false otherwise.
+     */
     bool addUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Remove the units at the given @p index.
+     *
+     * Remove the units from this import source at the given @p index.
+     * @p index must be in the range [0, \#units).
+     *
+     * @param index The index of the units to remove.
+     *
+     * @return True if the units were removed, false otherwise.
+     */
     bool removeUnits(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the units with the given pointer.
+     *
+     * Remove the units with the pointer @p units.
+     *
+     * @param units The pointer to the units to remove.
+     *
+     * @return True if the units were removed, false otherwise.
+     */
+    bool removeUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Get the number of units accessed by this import source.
+     *
+     * Returns the number of units imported by this import source.
+     *
+     * @return The number of units.
+     */
     size_t unitsCount() const;
+
+    /**
+     * @brief Get the units item at the given @p index.
+     *
+     * Returns a reference to a units at the given @p index imported by this import source.
+     * If the @p index is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, \#units).
+     *
+     * @param index The index of the units to return.
+     *
+     * @return A reference to the units at the given @p index on success, @c nullptr otherwise.
+     */
     UnitsPtr units(size_t index) const;
 
 private:

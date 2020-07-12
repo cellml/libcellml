@@ -17,10 +17,12 @@ limitations under the License.
 #include <algorithm> // Adding because Ubuntu build complained?
 #include <vector>
 
+#include "libcellml/component.h"
 #include "libcellml/importedentity.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/types.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -122,6 +124,19 @@ bool ImportSource::removeComponent(size_t index)
     return false;
 }
 
+bool ImportSource::removeComponent(const ComponentPtr &component)
+{
+    ImportSourcePtr empty = nullptr;
+    auto result = std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component);
+    if (result != mPimpl->mComponents.end()) {
+        mPimpl->mComponents.erase(result);
+        component->setImportSource(empty);
+        return true;
+    }
+
+    return false;
+}
+
 bool ImportSource::addUnits(const UnitsPtr &units)
 {
     if (std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units) != mPimpl->mUnits.end()) {
@@ -149,6 +164,19 @@ bool ImportSource::removeUnits(size_t index)
     if (index < mPimpl->mUnits.size()) {
         auto units = mPimpl->mUnits[index];
         mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
+        return true;
+    }
+
+    return false;
+}
+
+bool ImportSource::removeUnits(const UnitsPtr &units)
+{
+    ImportSourcePtr empty = nullptr;
+    auto result = std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units);
+    if (result != mPimpl->mUnits.end()) {
+        mPimpl->mUnits.erase(result);
+        units->setImportSource(empty);
         return true;
     }
 

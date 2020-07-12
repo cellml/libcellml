@@ -73,7 +73,7 @@ public:
      * and the previous model's units list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p units pointer already exists in this model; and
+     *  - The @p units pointer already exists in this model; or
      *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
@@ -90,7 +90,7 @@ public:
      *
      * @param index The index of the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(size_t index);
 
@@ -103,7 +103,7 @@ public:
      *
      * @param name The name of the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(const std::string &name);
 
@@ -116,7 +116,7 @@ public:
      *
      * @param units The pointer to the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(const UnitsPtr &units);
 
@@ -157,7 +157,7 @@ public:
     bool hasUnits(const UnitsPtr &units) const;
 
     /**
-     * @brief Get a units at the given @p index.
+     * @brief Get the units item at the given @p index.
      *
      * Returns a reference to a units at the given @p index.  If the @p index
      * is not valid a @c nullptr is returned, the range of valid values for the
