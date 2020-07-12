@@ -128,7 +128,7 @@ struct Generator::GeneratorImpl
     std::string generateCode(const AnalyserEquationAstPtr &ast);
 
     std::string generateInitializationCode(const AnalyserVariablePtr &variable);
-    std::string generateExternalCode(const AnalyserVariablePtr &variable);
+    std::string generateExternalCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
@@ -1963,7 +1963,7 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
     return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateExternalCode(const AnalyserVariablePtr &variable)
+std::string Generator::GeneratorImpl::generateExternalCode(const AnalyserVariablePtr &variable) const
 {
     std::ostringstream index;
 

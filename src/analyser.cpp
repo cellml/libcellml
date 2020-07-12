@@ -1426,7 +1426,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
                             description += (i != equivalentVariableCount - 1) ? ", " : " and ";
                         }
 
-                        std::string variableString = ((i == 0) && (equivalentVariableCount != 2)) ? "Variable" : "variable";
+                        auto variableString = ((i == 0) && (equivalentVariableCount != 2)) ? std::string("Variable") : std::string("variable");
 
                         description += variableString + " '" + primaryExternalVariable.second[i]->name()
                                        + "' in component '" + owningComponent(primaryExternalVariable.second[i])->name()
