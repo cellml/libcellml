@@ -49,7 +49,7 @@ unset).";
 %feature("docstring") libcellml::ImportSource::removeUnits
 "Remove a Units item from this ImportSource's dependency list.";
 
-%feature("docstring") libcellml::ImportSource::unitsCount()
+%feature("docstring") libcellml::ImportSource::unitsCount
 "Return the number of Units items imported from this ImportSource.";
 
 %feature("docstring") libcellml::ImportSource::units
