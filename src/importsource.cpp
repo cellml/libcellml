@@ -115,9 +115,14 @@ size_t ImportSource::componentCount() const
 
 bool ImportSource::removeComponent(size_t index)
 {
+    // TODO Not sure whether it should be a two-way street between the ImportSource
+    // and the thing added/removed.  Should removing a component from an import source
+    // also remove the import source from the component? ditto imports?
+    // ImportSourcePtr empty = nullptr;
     if (index < mPimpl->mComponents.size()) {
         auto component = mPimpl->mComponents[index];
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
+        // component->setImportSource(empty);
         return true;
     }
 
@@ -126,11 +131,11 @@ bool ImportSource::removeComponent(size_t index)
 
 bool ImportSource::removeComponent(const ComponentPtr &component)
 {
-    ImportSourcePtr empty = nullptr;
+    // ImportSourcePtr empty = nullptr;
     auto result = std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component);
     if (result != mPimpl->mComponents.end()) {
         mPimpl->mComponents.erase(result);
-        component->setImportSource(empty);
+        // component->setImportSource(empty);
         return true;
     }
 

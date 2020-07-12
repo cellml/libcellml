@@ -807,13 +807,11 @@ TEST(Model, importSourceBasics)
     EXPECT_TRUE(model->addImportSource(imp1));
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add the same one again:
     EXPECT_FALSE(model->addImportSource(imp1));
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add another with the same url:
     auto imp2 = libcellml::ImportSource::create();
@@ -822,7 +820,6 @@ TEST(Model, importSourceBasics)
     EXPECT_TRUE(model->addImportSource(imp2));
     EXPECT_EQ(size_t(2), model->importSourceCount());
     EXPECT_EQ(imp2, model->importSource(1));
-    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add another with a new url:
     auto imp3 = libcellml::ImportSource::create();
@@ -832,5 +829,71 @@ TEST(Model, importSourceBasics)
     EXPECT_TRUE(model->addImportSource(imp3));
     EXPECT_EQ(size_t(3), model->importSourceCount());
     EXPECT_EQ(imp3, model->importSource(2));
-    // EXPECT_EQ(imp3, model->importSource(url3));
+}
+
+TEST(Model, importSourceDetailsCoverage)
+{
+    auto model = libcellml::Model::create("importing_model");
+    auto imp = libcellml::ImportSource::create();
+    auto component1 = libcellml::Component::create("Bart");
+    auto component2 = libcellml::Component::create("Lisa");
+    auto units1 = libcellml::Units::create("Maggie");
+    auto units2 = libcellml::Units::create("Marge");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    model->addUnits(units1);
+    model->addUnits(units2);
+
+    model->addImportSource(imp);
+    EXPECT_TRUE(model->hasImportSource(imp));
+
+    // Set up component so it's an import.
+    component1->setImportSource(imp);
+
+    EXPECT_EQ(size_t(1), imp->componentCount());
+    EXPECT_EQ(component1, imp->component(0));
+    EXPECT_EQ(nullptr, imp->component(99));
+
+    // Remove a component from the import source by index.
+    EXPECT_TRUE(imp->removeComponent(0));
+    EXPECT_EQ(size_t(0), imp->componentCount());
+
+    // Add the other component so it's an import.
+    component2->setImportSource(imp);
+
+    EXPECT_TRUE(component2->isImport());
+    EXPECT_EQ(size_t(1), imp->componentCount());
+    EXPECT_EQ(component2, imp->component(0));
+
+    // Remove component by pointer.
+    EXPECT_TRUE(imp->removeComponent(component2));
+
+    // Remove a component that doesn't exist by index.
+    EXPECT_FALSE(imp->removeComponent(0));
+    EXPECT_FALSE(imp->removeComponent(component2));
+    EXPECT_FALSE(imp->removeComponent(nullptr));
+
+    // Ditto for units.
+    units1->setImportSource(imp);
+    EXPECT_EQ(size_t(1), imp->unitsCount());
+    EXPECT_EQ(units1, imp->units(0));
+
+    EXPECT_TRUE(imp->removeUnits(0));
+    EXPECT_EQ(size_t(0), imp->unitsCount());
+    EXPECT_FALSE(imp->removeUnits(99));
+
+    units2->setImportSource(imp);
+    EXPECT_EQ(size_t(1), imp->unitsCount());
+    EXPECT_EQ(units2, imp->units(0));
+
+    EXPECT_TRUE(imp->removeUnits(units2));
+    EXPECT_EQ(size_t(0), imp->unitsCount());
+    EXPECT_FALSE(imp->removeUnits(nullptr));
+
+    EXPECT_EQ(nullptr, imp->units(99));
+
+    // TODO Not sure whether it should be a two-way street between the ImportSource
+    // and the thing added/removed.  Should removing a component from an import source
+    // also remove the import source from the component? ditto imports? and adding?
 }
