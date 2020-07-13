@@ -15,6 +15,7 @@ class VariableType(Enum):
     CONSTANT = 1
     COMPUTED_CONSTANT = 2
     ALGEBRAIC = 3
+    EXTERNAL = 4
 
 
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
