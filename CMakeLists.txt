@@ -41,7 +41,7 @@ endif()
 if(DEFINED CLANG_TIDY AND CLANG_TIDY_AVAILABLE)
   set(LIBCELLML_CLANG_TIDY "${CLANG_TIDY}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(CLANG_TIDY)
-  message(WARNING "LLVM coverage testing requested but llvm-profdata or llvm-cov not found!")
+  message(WARNING "Clang-Tidy is requested but not found!")
 endif()
 unset(CLANG_TIDY CACHE)
 
