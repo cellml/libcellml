@@ -13,7 +13,8 @@ extern const size_t VARIABLE_COUNT;
 typedef enum {
     CONSTANT,
     COMPUTED_CONSTANT,
-    ALGEBRAIC
+    ALGEBRAIC,
+    EXTERNAL
 } VariableType;
 
 typedef struct {
