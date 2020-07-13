@@ -1286,11 +1286,14 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.external.h");
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h"), generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"), generator->implementationCode(analyserModel));
 
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
