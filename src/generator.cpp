@@ -128,7 +128,7 @@ struct Generator::GeneratorImpl
     std::string generateCode(const AnalyserEquationAstPtr &ast);
 
     std::string generateInitializationCode(const AnalyserVariablePtr &variable);
-    std::string generateExternalCode(const AnalyserVariablePtr &variable) const;
+    std::string generateComputeExternalVariablesCode() const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
@@ -501,9 +501,9 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->ratesArrayString()
                        + mProfile->variablesArrayString();
 
-    profileContents += mProfile->externalVariableMethodTypeDefinitionString()
-                       + mProfile->externalVariableMethodParameterString()
-                       + mProfile->externalVariableMethodString();
+    profileContents += mProfile->computeExternalVariablesMethodTypeDefinitionString()
+                       + mProfile->computeExternalVariablesMethodParameterString()
+                       + mProfile->computeExternalVariablesMethodString();
 
     profileContents += mProfile->interfaceCreateStatesArrayMethodString()
                        + mProfile->implementationCreateStatesArrayMethodString();
@@ -549,11 +549,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "c628c131d71b7b4acc5c3a35440abd2a1e04fe04";
+        res = profileContentsSha1 != "997289bb2edd8909f5649a37853b95ab22f00059";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "adaeff82a613a0c7ce94943824fb0f3645d22361";
+        res = profileContentsSha1 != "66a36e13c43c02348adc9fded0f154c44ec0e210";
 
         break;
     }
@@ -1111,8 +1111,8 @@ void Generator::GeneratorImpl::addExternalVariableMethodTypeDefinitionCode()
     if (mModel->hasExternalVariables()) {
         std::string externalVariableMethodTypeDefinitionCode;
 
-        if (!mProfile->externalVariableMethodTypeDefinitionString().empty()) {
-            externalVariableMethodTypeDefinitionCode += mProfile->externalVariableMethodTypeDefinitionString();
+        if (!mProfile->computeExternalVariablesMethodTypeDefinitionString().empty()) {
+            externalVariableMethodTypeDefinitionCode += mProfile->computeExternalVariablesMethodTypeDefinitionString();
         }
 
         if (!externalVariableMethodTypeDefinitionCode.empty()) {
@@ -1963,13 +1963,13 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
     return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateExternalCode(const AnalyserVariablePtr &variable) const
+std::string Generator::GeneratorImpl::generateComputeExternalVariablesCode() const
 {
-    std::ostringstream index;
-
-    index << variable->index();
-
-    return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + mProfile->externalVariableMethodString() + "(" + mProfile->voiString() + ", " + mProfile->statesArrayString() + ", " + mProfile->ratesArrayString() + ", " + mProfile->variablesArrayString() + ", " + index.str() + ")" + mProfile->commandSeparatorString() + "\n";
+    if (mModel->hasExternalVariables()) {
+        return mProfile->indentString() + mProfile->computeExternalVariablesMethodString() + "(" + mProfile->voiString() + ", " + mProfile->statesArrayString() + ", " + mProfile->ratesArrayString() + ", " + mProfile->variablesArrayString() + ")" + mProfile->commandSeparatorString() + "\n";
+    } else {
+        return {};
+    }
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
@@ -2011,12 +2011,12 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
 
     if (!mProfile->interfaceComputeRatesMethodString().empty()) {
         interfaceComputeModelMethodsCode += replace(mProfile->interfaceComputeRatesMethodString(),
-                                                    "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : "");
+                                                    "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->computeExternalVariablesMethodParameterString() : "");
     }
 
     if (!mProfile->interfaceComputeVariablesMethodString().empty()) {
         interfaceComputeModelMethodsCode += replace(mProfile->interfaceComputeVariablesMethodString(),
-                                                    "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : "");
+                                                    "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->computeExternalVariablesMethodParameterString() : "");
     }
 
     if (!interfaceComputeModelMethodsCode.empty()) {
@@ -2083,13 +2083,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
             mCode += "\n";
         }
 
-        std::string methodBody;
-
-        for (const auto &variable : mModel->variables()) {
-            if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
-                methodBody += generateExternalCode(variable);
-            }
-        }
+        std::string methodBody = generateComputeExternalVariablesCode();
 
         for (const auto &equation : mModel->equations()) {
             if (equation->type() == AnalyserEquation::Type::RATE) {
@@ -2098,7 +2092,7 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
         }
 
         mCode += replace(replace(mProfile->implementationComputeRatesMethodString(),
-                                 "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : ""),
+                                 "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->computeExternalVariablesMethodParameterString() : ""),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -2110,13 +2104,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             mCode += "\n";
         }
 
-        std::string methodBody;
-
-        for (const auto &variable : mModel->variables()) {
-            if (variable->type() == AnalyserVariable::Type::EXTERNAL) {
-                methodBody += generateExternalCode(variable);
-            }
-        }
+        std::string methodBody = generateComputeExternalVariablesCode();
 
         auto equations = mModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
@@ -2130,7 +2118,7 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         }
 
         mCode += replace(replace(mProfile->implementationComputeVariablesMethodString(),
-                                 "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->externalVariableMethodParameterString() : ""),
+                                 "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->computeExternalVariablesMethodParameterString() : ""),
                          "<CODE>", generateMethodBodyCode(methodBody));
     }
 }

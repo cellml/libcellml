@@ -331,9 +331,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, int index);\n", generatorProfile->externalVariableMethodTypeDefinitionString());
-    EXPECT_EQ(", ExternalVariable externalVariable", generatorProfile->externalVariableMethodParameterString());
-    EXPECT_EQ("externalVariable", generatorProfile->externalVariableMethodString());
+    EXPECT_EQ("typedef void (* ComputeExternalVariables)(double voi, double *states, double *rates, double *variables);\n", generatorProfile->computeExternalVariablesMethodTypeDefinitionString());
+    EXPECT_EQ(", ComputeExternalVariables computeExternalVariables", generatorProfile->computeExternalVariablesMethodParameterString());
+    EXPECT_EQ("computeExternalVariables", generatorProfile->computeExternalVariablesMethodString());
 
     EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
@@ -745,9 +745,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
-    generatorProfile->setExternalVariableMethodTypeDefinitionString(value);
-    generatorProfile->setExternalVariableMethodParameterString(value);
-    generatorProfile->setExternalVariableMethodString(value);
+    generatorProfile->setComputeExternalVariablesMethodTypeDefinitionString(value);
+    generatorProfile->setComputeExternalVariablesMethodParameterString(value);
+    generatorProfile->setComputeExternalVariablesMethodString(value);
 
     generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
     generatorProfile->setImplementationCreateStatesArrayMethodString(value);
@@ -834,9 +834,9 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodTypeDefinitionString());
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodParameterString());
-    EXPECT_EQ(value, generatorProfile->externalVariableMethodString());
+    EXPECT_EQ(value, generatorProfile->computeExternalVariablesMethodTypeDefinitionString());
+    EXPECT_EQ(value, generatorProfile->computeExternalVariablesMethodParameterString());
+    EXPECT_EQ(value, generatorProfile->computeExternalVariablesMethodString());
 
     EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
