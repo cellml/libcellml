@@ -1319,9 +1319,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
     computeRates(0, states, rates, variables, computeExternalVariables);
     computeVariables(0, states, rates, variables, computeExternalVariables);
 
-    EXPECT_EQ(123.0, variables[0]);
-    EXPECT_EQ(123.0, variables[10]);
-    EXPECT_EQ(123.0, variables[17]);
+    ASSERT_DOUBLE_EQ(123.0, variables[0]);
+    ASSERT_DOUBLE_EQ(123.0, variables[10]);
+    ASSERT_DOUBLE_EQ(123.0, variables[17]);
 
     deleteArray(states);
     deleteArray(rates);
