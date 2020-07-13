@@ -214,125 +214,125 @@ AnyItem Annotator::item(const std::string &id)
     return mPimpl->mIdList[id];
 }
 
-// ComponentPtr Annotator::component(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<ComponentPtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+ComponentPtr Annotator::component(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ComponentPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// VariablePtr Annotator::variable(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<VariablePtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+VariablePtr Annotator::variable(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<VariablePtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// ModelPtr Annotator::model(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<ModelPtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+ModelPtr Annotator::model(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ModelPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// UnitsPtr Annotator::units(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<UnitsPtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+UnitsPtr Annotator::units(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<UnitsPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// ImportSourcePtr Annotator::import(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<ImportSourcePtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+ImportSourcePtr Annotator::import(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ImportSourcePtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// ResetPtr Annotator::reset(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<ResetPtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+ResetPtr Annotator::reset(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ResetPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// VariablePair Annotator::connection(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<VariablePair>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return std::make_pair(nullptr, nullptr);
-//     }
-// }
+VariablePair Annotator::connection(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<VariablePair>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return std::make_pair(nullptr, nullptr);
+    }
+}
 
-// VariablePair Annotator::map_variables(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<VariablePair>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return std::make_pair(nullptr, nullptr);
-//     }
-// }
+VariablePair Annotator::map_variables(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<VariablePair>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return std::make_pair(nullptr, nullptr);
+    }
+}
 
-// UnitItem Annotator::unit(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<UnitItem>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return std::make_pair(nullptr, -1);
-//     }
-// }
+UnitItem Annotator::unit(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<UnitItem>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return std::make_pair(nullptr, -1);
+    }
+}
 
-// ComponentPtr Annotator::component_ref(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<ComponentPtr>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return nullptr;
-//     }
-// }
+ComponentPtr Annotator::component_ref(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ComponentPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
 // std::string Annotator::math(const std::string &id)
 // {
@@ -346,133 +346,145 @@ AnyItem Annotator::item(const std::string &id)
 //     }
 // }
 
-// std::string Annotator::test_value(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<std::string>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return "";
-//     }
-// }
+ResetPtr Annotator::test_value(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ResetPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
-// std::string Annotator::reset_value(const std::string &id)
-// {
-//     auto i = item(id);
-//     try {
-//         auto j = std::any_cast<std::string>(i.second);
-//         return j;
-//     } catch (std::bad_any_cast &e) {
-//         (void)e;
-//         return "";
-//     }
-// }
+ResetPtr Annotator::reset_value(const std::string &id)
+{
+    auto i = item(id);
+    try {
+        auto j = std::any_cast<ResetPtr>(i.second);
+        return j;
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
 
 int componentIndex(const ModelPtr &model, const ComponentPtr &component)
 {
-    if (model == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        if (model->component(i) == component) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (model != nullptr) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            if (model->component(i) == component) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
 int componentIndex(const ComponentPtr &parent, const ComponentPtr &component)
 {
-    if (parent == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < parent->componentCount(); ++i) {
-        if (parent->component(i) == component) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (parent != nullptr) {
+        for (size_t i = 0; i < parent->componentCount(); ++i) {
+            if (parent->component(i) == component) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
 int variableIndex(const ComponentPtr &component, const VariablePtr &variable)
 {
-    if (component == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < component->variableCount(); ++i) {
-        if (component->variable(i) == variable) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (component != nullptr) {
+        for (size_t i = 0; i < component->variableCount(); ++i) {
+            if (component->variable(i) == variable) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
 int equivalentVariableIndex(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (variable1 == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < variable1->equivalentVariableCount(); ++i) {
-        if (variable1->equivalentVariable(i) == variable2) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (variable1 != nullptr) {
+        for (size_t i = 0; i < variable1->equivalentVariableCount(); ++i) {
+            if (variable1->equivalentVariable(i) == variable2) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
 int resetIndex(const ComponentPtr &component, const ResetPtr &reset)
 {
-    if (component == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < component->resetCount(); ++i) {
-        if (component->reset(i) == reset) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (component != nullptr) {
+        for (size_t i = 0; i < component->resetCount(); ++i) {
+            if (component->reset(i) == reset) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
 int unitsIndex(const ModelPtr &model, const UnitsPtr &units)
 {
-    if (model == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < model->unitsCount(); ++i) {
-        if (model->units(i) == units) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (model != nullptr) {
+        for (size_t i = 0; i < model->unitsCount(); ++i) {
+            if (model->units(i) == units) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
 int issueIndex(const Annotator *annotator, const IssuePtr &issue)
 {
-    if (annotator == nullptr) {
-        return -1;
-    }
-    for (size_t i = 0; i < annotator->issueCount(); ++i) {
-        if (annotator->issue(i) == issue) {
-            return static_cast<int>(i);
+    int index = -1;
+    if (annotator != nullptr) {
+        for (size_t i = 0; i < annotator->issueCount(); ++i) {
+            if (annotator->issue(i) == issue) {
+                index = static_cast<int>(i);
+                break;
+            }
         }
     }
-    return -1;
+    return index;
 }
 
-void traceComponentAncestry(const ModelPtr &model, const ComponentPtr &component, std::vector<size_t> &indexList);
-void traceComponentIndices(const ModelPtr &model, const ComponentPtr &component, std::vector<size_t> &indexList);
-
-void traceComponentAncestry(const ModelPtr &model, const ComponentPtr &component, std::vector<size_t> &indexList)
+void traceComponentIndices(const ModelPtr &model, const ComponentPtr &component, std::vector<size_t> &indexList)
 {
-    auto parent = owningComponent(component);
-    int index = componentIndex(parent, component);
-    if (index < 0) {
-        traceComponentAncestry(model, parent, indexList);
-    } else {
-        indexList.push_back(static_cast<size_t>(index));
-        // Now have to go the other way ...
+    ComponentPtr c;
+    if (model->containsComponent(component, true)) {
+        c = component;
+        do {
+            auto p = c->parent();
+            if (p == model) {
+                auto index = componentIndex(model, c);
+                indexList.push_back(static_cast<size_t>(index));
+                c = nullptr;
+            } else {
+                auto index = componentIndex(owningComponent(c), c);
+                indexList.push_back(static_cast<size_t>(index));
+                c = owningComponent(c);
+            }
+        } while (c != nullptr);
     }
 }
 
@@ -483,29 +495,17 @@ void traceVariableIndices(const ModelPtr &model, const VariablePtr &variable, st
     if (index >= 0) {
         indexList.push_back(static_cast<size_t>(index));
         traceComponentIndices(model, component, indexList);
-    } else {
-        std::vector<size_t>().swap(indexList);
     }
 }
 
 void traceResetIndices(const ModelPtr &model, const ResetPtr &reset, std::vector<size_t> &indexList)
 {
     auto component = owningComponent(reset);
-    if (owningModel(component) != model) {
-        // Error:
-        std::vector<size_t>().swap(indexList);
-        return;
-    }
-
     auto index = resetIndex(component, reset);
-    if (index < 0) {
-        // Error: reset not found in this component, messed up parentage
-        std::vector<size_t>().swap(indexList);
-        return;
+    if (index >= 0) {
+        indexList.push_back(static_cast<size_t>(index));
+        traceComponentIndices(model, component, indexList);
     }
-
-    indexList.push_back(static_cast<size_t>(index));
-    traceComponentIndices(model, component, indexList);
 }
 
 void traceUnitsIndices(const ModelPtr &model, const UnitsPtr &units, std::vector<size_t> &indexList)
@@ -513,8 +513,6 @@ void traceUnitsIndices(const ModelPtr &model, const UnitsPtr &units, std::vector
     int index = unitsIndex(model, units);
     if (index >= 0) {
         indexList.push_back(static_cast<size_t>(index));
-    } else {
-        std::vector<size_t>().swap(indexList);
     }
 }
 
@@ -524,8 +522,6 @@ void traceUnitIndices(const ModelPtr &model, const UnitItem &units, std::vector<
     int index = unitsIndex(model, units.first);
     if (index >= 0) {
         indexList.push_back(static_cast<size_t>(index));
-    } else {
-        std::vector<size_t>().swap(indexList);
     }
 }
 
@@ -535,32 +531,7 @@ void traceMapVariablesIndices(const ModelPtr &model, const VariablePair &p, std:
     int index = equivalentVariableIndex(p.first, p.second);
     if (index >= 0) {
         indexList.push_back(static_cast<size_t>(index));
-    } else {
-        std::vector<size_t>().swap(indexList);
     }
-}
-
-void traceComponentIndices(const ModelPtr &model, const ComponentPtr &component, std::vector<size_t> &indexList)
-{
-    ComponentPtr c;
-    if (!model->containsComponent(component, true)) {
-        // Component does not exist in model anywhere, return empty list.
-        std::vector<size_t>().swap(indexList);
-        return;
-    }
-    c = component;
-    do {
-        auto p = c->parent();
-        if (p == model) {
-            auto index = componentIndex(model, c);
-            indexList.push_back(static_cast<size_t>(index));
-            c = nullptr;
-        } else {
-            auto index = componentIndex(owningComponent(c), c);
-            indexList.push_back(static_cast<size_t>(index));
-            c = owningComponent(c);
-        }
-    } while (c != nullptr);
 }
 
 std::pair<Annotator::Type, std::vector<size_t>> Annotator::indicesToItem(const std::string &id)

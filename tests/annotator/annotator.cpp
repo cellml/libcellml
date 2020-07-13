@@ -184,112 +184,113 @@ TEST(Annotator, errorHandling)
     }
 }
 
-// TEST(Annotator, getItemByIdSpecific)
-// {
-//     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
-//                      "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
-//                      "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
-//                      "  </import>\n"
-//                      "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
-//                      "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
-//                      "  </import>\n"
-//                      "  <units name=\"units2\" id=\"units_2\">\n"
-//                      "    <unit units=\"second\" id=\"unit_1\"/>\n"
-//                      "  </units>\n"
-//                      "  <units name=\"units3\" id=\"units_3\"/>\n"
-//                      "  <units name=\"blob\" id=\"units_4\"/>\n"
-//                      "  <component name=\"component2\" id=\"component_2\">\n"
-//                      "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"variable_1\"/>\n"
-//                      "    <variable name=\"variable2\" units=\"units2\" id=\"variable_2\"/>\n"
-//                      "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"reset_1\">\n"
-//                      "      <test_value id=\"test_value_1\">\n"
-//                      "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_1\">\n"
-//                      "          <apply id=\"apply_1\">\n"
-//                      "            <eq id=\"eq_1\"/>\n"
-//                      "            <ci id=\"ci_1\">variable1</ci>\n"
-//                      "            <cn cellml:units=\"units2\" id=\"cn_1\">3.4</cn>\n"
-//                      "          </apply>\n"
-//                      "        </math>\n"
-//                      "      </test_value>\n"
-//                      "      <reset_value id=\"reset_value_1\">\n"
-//                      "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_2\">\n"
-//                      "          <apply id=\"apply_2\">\n"
-//                      "            <eq id=\"eq_2\"/>\n"
-//                      "            <ci id=\"ci_2\">variable1</ci>\n"
-//                      "            <cn cellml:units=\"units2\" id=\"cn_2\">9.0</cn>\n"
-//                      "          </apply>\n"
-//                      "        </math>\n"
-//                      "      </reset_value>\n"
-//                      "    </reset>\n"
-//                      "  </component>\n"
-//                      "  <component name=\"component3\" id=\"component_3\">\n"
-//                      "    <variable name=\"variable4\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
-//                      "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"variable_4\"/>\n"
-//                      "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_3\">\n"
-//                      "      <apply id=\"apply_3\">\n"
-//                      "        <eq id=\"eq_3\"/>\n"
-//                      "        <ci id=\"ci_3\">variable4</ci>\n"
-//                      "        <cn cellml:units=\"units2\" id=\"cn_3\">9.0</cn>\n"
-//                      "      </apply>\n"
-//                      "    </math>\n"
-//                      "  </component>\n"
-//                      "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
-//                      "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"map_variables_1\"/>\n"
-//                      "    <map_variables variable_1=\"variable1\" variable_2=\"variable4\" id=\"map_variables_2\"/>\n"
-//                      "  </connection>\n"
-//                      "  <encapsulation id=\"encapsulation_1\">\n"
-//                      "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
-//                      "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
-//                      "    </component_ref>\n"
-//                      "  </encapsulation>\n"
-//                      "</model>\n";
+TEST(Annotator, getItemByIdSpecific)
+{
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                     "  </import>\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                     "  </import>\n"
+                     "  <units name=\"units2\" id=\"units_2\">\n"
+                     "    <unit units=\"second\" id=\"unit_1\"/>\n"
+                     "  </units>\n"
+                     "  <units name=\"units3\" id=\"units_3\"/>\n"
+                     "  <units name=\"blob\" id=\"units_4\"/>\n"
+                     "  <component name=\"component2\" id=\"component_2\">\n"
+                     "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"variable_1\"/>\n"
+                     "    <variable name=\"variable2\" units=\"units2\" id=\"variable_2\"/>\n"
+                     "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"reset_1\">\n"
+                     "      <test_value id=\"test_value_1\">\n"
+                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_1\">\n"
+                     "          <apply id=\"apply_1\">\n"
+                     "            <eq id=\"eq_1\"/>\n"
+                     "            <ci id=\"ci_1\">variable1</ci>\n"
+                     "            <cn cellml:units=\"units2\" id=\"cn_1\">3.4</cn>\n"
+                     "          </apply>\n"
+                     "        </math>\n"
+                     "      </test_value>\n"
+                     "      <reset_value id=\"reset_value_1\">\n"
+                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_2\">\n"
+                     "          <apply id=\"apply_2\">\n"
+                     "            <eq id=\"eq_2\"/>\n"
+                     "            <ci id=\"ci_2\">variable1</ci>\n"
+                     "            <cn cellml:units=\"units2\" id=\"cn_2\">9.0</cn>\n"
+                     "          </apply>\n"
+                     "        </math>\n"
+                     "      </reset_value>\n"
+                     "    </reset>\n"
+                     "  </component>\n"
+                     "  <component name=\"component3\" id=\"component_3\">\n"
+                     "    <variable name=\"variable4\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
+                     "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"variable_4\"/>\n"
+                     "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_3\">\n"
+                     "      <apply id=\"apply_3\">\n"
+                     "        <eq id=\"eq_3\"/>\n"
+                     "        <ci id=\"ci_3\">variable4</ci>\n"
+                     "        <cn cellml:units=\"units2\" id=\"cn_3\">9.0</cn>\n"
+                     "      </apply>\n"
+                     "    </math>\n"
+                     "  </component>\n"
+                     "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
+                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"map_variables_1\"/>\n"
+                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable4\" id=\"map_variables_2\"/>\n"
+                     "  </connection>\n"
+                     "  <encapsulation id=\"encapsulation_1\">\n"
+                     "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
+                     "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
+                     "    </component_ref>\n"
+                     "  </encapsulation>\n"
+                     "</model>\n";
 
-//     auto parser = libcellml::Parser::create();
-//     auto model = parser->parseModel(in);
-//     auto annotator = libcellml::Annotator::create();
-//     auto v1v2 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable2"));
-//     auto v1v4 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable4"));
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto annotator = libcellml::Annotator::create();
+    auto v1v2 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable2"));
+    auto v1v4 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable4"));
 
-//     annotator->build(model);
+    annotator->build(model);
 
-//     EXPECT_EQ(model, annotator->model("model_1"));
-//     EXPECT_EQ(model->component("component1"), annotator->component("component_1"));
-//     EXPECT_EQ(model->component("component2"), annotator->component("component_2"));
-//     EXPECT_EQ(model->component("component2"), annotator->component("component_ref_1"));
-//     EXPECT_EQ(model->component("component2")->component("component3"), annotator->component("component_3"));
-//     EXPECT_EQ(model->component("component2")->component("component3"), annotator->component_ref("component_ref_2"));
-//     EXPECT_EQ(model->component("component1")->importSource(), annotator->import("import_1"));
-//     EXPECT_EQ(model->units("units1"), annotator->units("units_1"));
-//     EXPECT_EQ(model->units("units1")->importSource(), annotator->import("import_2"));
-//     EXPECT_EQ(model->units("units2"), annotator->units("units_2"));
-//     EXPECT_EQ(model->units("units2"), annotator->unit("unit_1").first);
-//     EXPECT_EQ(size_t(0), annotator->unit("unit_1").second);
-//     EXPECT_EQ(model->component("component2")->variable("variable1"), annotator->variable("variable_1"));
-//     EXPECT_EQ(model->component("component2")->variable("variable2"), annotator->variable("variable_2"));
-//     EXPECT_EQ(model->component("component2")->reset(0), annotator->reset("reset_1"));
-//     EXPECT_EQ(model->component("component2")->reset(0), annotator->test_value("test_value_1"));
-//     EXPECT_EQ(model->component("component2")->reset(0), annotator->reset_value("reset_value_1"));
-//     EXPECT_EQ(model->component("component2")->component("component3")->variable("variable4"), annotator->variable("variable_3"));
-//     EXPECT_EQ(model->component("component2")->component("component3")->variable("variable2"), annotator->variable("variable_4"));
-//     EXPECT_EQ(v1v2, annotator->connection("connection_1"));
-//     EXPECT_EQ(v1v2, annotator->map_variables("map_variables_1"));
-//     EXPECT_EQ(v1v4, annotator->map_variables("map_variables_2"));
+    EXPECT_EQ(model, annotator->model("model_1"));
+    EXPECT_EQ(model->component("component1"), annotator->component("component_1"));
+    EXPECT_EQ(model->component("component2"), annotator->component("component_2"));
+    EXPECT_EQ(model->component("component2"), annotator->component("component_ref_1"));
+    EXPECT_EQ(model->component("component2")->component("component3"), annotator->component("component_3"));
+    EXPECT_EQ(model->component("component2")->component("component3"), annotator->component_ref("component_ref_2"));
+    EXPECT_EQ(model->component("component1")->importSource(), annotator->import("import_1"));
+    EXPECT_EQ(model->units("units1"), annotator->units("units_1"));
+    EXPECT_EQ(model->units("units1")->importSource(), annotator->import("import_2"));
+    EXPECT_EQ(model->units("units2"), annotator->units("units_2"));
+    EXPECT_EQ(model->units("units2"), annotator->unit("unit_1").first);
+    EXPECT_EQ(size_t(0), annotator->unit("unit_1").second);
+    EXPECT_EQ(model->component("component2")->variable("variable1"), annotator->variable("variable_1"));
+    EXPECT_EQ(model->component("component2")->variable("variable2"), annotator->variable("variable_2"));
+    EXPECT_EQ(model->component("component2")->reset(0), annotator->reset("reset_1"));
+    EXPECT_EQ(model->component("component2")->reset(0), annotator->test_value("test_value_1"));
+    EXPECT_EQ(model->component("component2")->reset(0), annotator->reset_value("reset_value_1"));
+    EXPECT_EQ(model->component("component2")->component("component3")->variable("variable4"), annotator->variable("variable_3"));
+    EXPECT_EQ(model->component("component2")->component("component3")->variable("variable2"), annotator->variable("variable_4"));
+    EXPECT_EQ(v1v2, annotator->connection("connection_1"));
+    EXPECT_EQ(v1v2, annotator->map_variables("map_variables_1"));
+    EXPECT_EQ(v1v4, annotator->map_variables("map_variables_2"));
 
-//     EXPECT_EQ(nullptr, annotator->model("i_dont_exist"));
-//     EXPECT_EQ(nullptr, annotator->component("i_dont_exist"));
-//     EXPECT_EQ(nullptr, annotator->variable("i_dont_exist"));
-//     EXPECT_EQ(nullptr, annotator->units("i_dont_exist"));
-//     EXPECT_EQ(nullptr, annotator->unit("i_dont_exist").first);
-//     EXPECT_EQ(nullptr, annotator->reset("i_dont_exist"));
-//     EXPECT_EQ("", annotator->reset_value("i_dont_exist"));
-//     EXPECT_EQ("", annotator->test_value("i_dont_exist"));
-//     EXPECT_EQ(nullptr, annotator->component_ref("i_dont_exist"));
-//     EXPECT_EQ(nullptr, annotator->connection("i_dont_exist").first);
-//     EXPECT_EQ(nullptr, annotator->connection("i_dont_exist").second);
-//     EXPECT_EQ(nullptr, annotator->map_variables("i_dont_exist").first);
-//     EXPECT_EQ(nullptr, annotator->map_variables("i_dont_exist").second);
-// }
+    EXPECT_EQ(nullptr, annotator->model("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->component("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->variable("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->units("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->unit("i_dont_exist").first);
+    EXPECT_EQ(nullptr, annotator->reset("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->reset_value("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->test_value("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->component_ref("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->connection("i_dont_exist").first);
+    EXPECT_EQ(nullptr, annotator->connection("i_dont_exist").second);
+    EXPECT_EQ(nullptr, annotator->map_variables("i_dont_exist").first);
+    EXPECT_EQ(nullptr, annotator->map_variables("i_dont_exist").second);
+    EXPECT_EQ(nullptr, annotator->import("i_dont_exist"));
+}
 
 TEST(Annotator, castingOnRetrieval)
 {
@@ -397,6 +398,10 @@ TEST(Annotator, getItemByIndexList)
                      "        </math>\n"
                      "      </reset_value>\n"
                      "    </reset>\n"
+                     "    <reset variable=\"variable2\" test_variable=\"variable1\" order=\"1\" id=\"reset_2\">\n"
+                     "      <test_value id=\"test_value_2\"/>\n"
+                     "      <reset_value id=\"reset_value_2\"/>\n"
+                     "    </reset>\n"
                      "  </component>\n"
                      "  <component name=\"component3\" id=\"component_3\">\n"
                      "    <variable name=\"variable3\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
@@ -409,13 +414,15 @@ TEST(Annotator, getItemByIndexList)
                      "      </apply>\n"
                      "    </math>\n"
                      "  </component>\n"
+                     "  <component name=\"component4\" id=\"component_4\"/>\n"
                      "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
                      "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\" id=\"map_variables_1\"/>\n"
-                     "    <map_variables variable_1=\"variable2\" variable_2=\"variable4\" id=\"map_variables_2\"/>\n"
+                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable4\" id=\"map_variables_2\"/>\n"
                      "  </connection>\n"
                      "  <encapsulation id=\"encapsulation_1\">\n"
                      "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
                      "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
+                     "      <component_ref component=\"component4\" id=\"component_ref_3\"/>\n"
                      "    </component_ref>\n"
                      "  </encapsulation>\n"
                      "</model>\n";
@@ -436,13 +443,17 @@ TEST(Annotator, getItemByIndexList)
         "reset_1",
         "reset_value_1",
         "test_value_1",
+        "reset_2",
+        "reset_value_2",
+        "test_value_2",
         "component_ref_1",
         "component_ref_2",
+        "component_ref_3",
         "encapsulation_1",
         "import_1",
         "import_2",
         "doesnt_exist_will_cause_an_issue",
-    };
+        "doesnt_exist_will_cause_a_second_issue"};
     std::vector<std::vector<size_t>> expectedIndices = {
         {},
         {0},
@@ -460,12 +471,17 @@ TEST(Annotator, getItemByIndexList)
         {1, 0},
         {1, 0},
         {1, 0},
+        {1, 1},
+        {1, 1},
+        {1, 1},
         {1},
         {1, 0},
+        {1, 1},
         {},
         {},
         {},
-        {0}};
+        {0},
+        {1}};
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
@@ -482,7 +498,7 @@ TEST(Annotator, getItemByIndexList)
 
     // Map variables 2.
     indexList = annotator->indicesToItem("map_variables_2");
-    std::vector<size_t> c = {0, 1, 1};
+    std::vector<size_t> c = {1, 1, 0};
     std::vector<size_t> d = {1, 0, 1, 0};
     EXPECT_TRUE((c == indexList.second) || (d == indexList.second));
 
@@ -626,3 +642,131 @@ TEST(Annotator, getItemByInstructions)
         i++;
     }
 }
+
+// TEST(Annotator, getItemByNamedInstructions)
+// {
+//     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+//                      "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+//                      "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+//                      "  </import>\n"
+//                      "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+//                      "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+//                      "  </import>\n"
+//                      "  <units name=\"units2\" id=\"units_2\">\n"
+//                      "    <unit units=\"second\" id=\"unit_1\"/>\n"
+//                      "  </units>\n"
+//                      "  <units name=\"units3\" id=\"units_3\"/>\n"
+//                      "  <units name=\"blob\" id=\"units_4\"/>\n"
+//                      "  <component name=\"component2\" id=\"component_2\">\n"
+//                      "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"variable_1\"/>\n"
+//                      "    <variable name=\"variable2\" units=\"units2\" id=\"variable_2\"/>\n"
+//                      "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"reset_1\">\n"
+//                      "      <test_value id=\"test_value_1\">\n"
+//                      "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_1\">\n"
+//                      "          <apply id=\"apply_1\">\n"
+//                      "            <eq id=\"eq_1\"/>\n"
+//                      "            <ci id=\"ci_1\">variable1</ci>\n"
+//                      "            <cn cellml:units=\"units2\" id=\"cn_1\">3.4</cn>\n"
+//                      "          </apply>\n"
+//                      "        </math>\n"
+//                      "      </test_value>\n"
+//                      "      <reset_value id=\"reset_value_1\">\n"
+//                      "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_2\">\n"
+//                      "          <apply id=\"apply_2\">\n"
+//                      "            <eq id=\"eq_2\"/>\n"
+//                      "            <ci id=\"ci_2\">variable1</ci>\n"
+//                      "            <cn cellml:units=\"units2\" id=\"cn_2\">9.0</cn>\n"
+//                      "          </apply>\n"
+//                      "        </math>\n"
+//                      "      </reset_value>\n"
+//                      "    </reset>\n"
+//                      "  </component>\n"
+//                      "  <component name=\"component3\" id=\"component_3\">\n"
+//                      "    <variable name=\"variable3\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
+//                      "    <variable name=\"variable4\" units=\"units2\" interface=\"public\" id=\"variable_4\"/>\n"
+//                      "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_3\">\n"
+//                      "      <apply id=\"apply_3\">\n"
+//                      "        <eq id=\"eq_3\"/>\n"
+//                      "        <ci id=\"ci_3\">variable4</ci>\n"
+//                      "        <cn cellml:units=\"units2\" id=\"cn_3\">9.0</cn>\n"
+//                      "      </apply>\n"
+//                      "    </math>\n"
+//                      "  </component>\n"
+//                      "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
+//                      "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\" id=\"map_variables_1\"/>\n"
+//                      "    <map_variables variable_1=\"variable2\" variable_2=\"variable4\" id=\"map_variables_2\"/>\n"
+//                      "  </connection>\n"
+//                      "  <encapsulation id=\"encapsulation_1\">\n"
+//                      "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
+//                      "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
+//                      "    </component_ref>\n"
+//                      "  </encapsulation>\n"
+//                      "</model>\n";
+//     std::vector<std::string> ids = {
+//         "model_1",
+//         "units_1",
+//         "units_2",
+//         "units_3",
+//         "units_4",
+//         "unit_1",
+//         "component_1",
+//         "component_2",
+//         "component_3",
+//         "variable_1",
+//         "variable_2",
+//         "variable_3",
+//         "variable_4",
+//         "reset_1",
+//         "reset_value_1",
+//         "test_value_1",
+//         "component_ref_1",
+//         "component_ref_2",
+//         "encapsulation_1",
+//         "import_1",
+//         "import_2",
+//         "doesnt_exist_will_cause_an_issue",
+//         "map_variables_1",
+//         "map_variables_2",
+//         "connection_1",
+//     };
+//     std::vector<std::string> expectedInstructions = {
+//         "Model",
+//         "Units: model->units(0)",
+//         "Units: model->units(1)",
+//         "Units: model->units(2)",
+//         "Units: model->units(3)",
+//         "Unit in Units: model->units(1)->unit(0)",
+//         "Component: model->component(0)",
+//         "Component: model->component(1)",
+//         "Component: model->component(1)->component(0)",
+//         "Variable: model->component(1)->variable(0)",
+//         "Variable: model->component(1)->variable(1)",
+//         "Variable: model->component(1)->component(0)->variable(0)",
+//         "Variable: model->component(1)->component(0)->variable(1)",
+//         "Reset: model->component(1)->reset(0)",
+//         "Reset value: model->component(1)->reset(0)->resetValue()",
+//         "Test value: model->component(1)->reset(0)->testValue()",
+//         "Component position in encapsulation hierarchy: model->component(1)",
+//         "Component position in encapsulation hierarchy: model->component(1)->component(0)",
+//         "Model encapsulation",
+//         "Can't deal with imports yet.",
+//         "Can't deal with imports yet.",
+//         "Could not find an item with id='doesnt_exist_will_cause_an_issue' in the model.",
+//         "Variable equivalence between: \n  model->component(1)->variable(0)\n  model->component(1)->component(0)->component(0)->variable(1)",
+//         "Variable equivalence between: \n  model->component(1)->variable(1)\n  model->component(1)->component(0)->component(1)->variable(1)",
+//         "Connection caused by the variable equivalence between: \n  model->component(1)->variable(0)\n  model->component(1)->component(0)->component(0)->variable(1)",
+//     };
+
+//     auto parser = libcellml::Parser::create();
+//     auto model = parser->parseModel(in);
+//     auto annotator = libcellml::Annotator::create();
+
+//     annotator->build(model);
+
+//     size_t i = 0;
+//     for (const auto &id : ids) {
+//         EXPECT_EQ(expectedInstructions.at(i), annotator->instructions(id));
+//         i++;
+//     }
+// }
