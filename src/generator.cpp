@@ -2013,12 +2013,16 @@ void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode()
         interfaceComputeModelMethodsCode += mProfile->interfaceComputeComputedConstantsMethodString();
     }
 
-    if (!mProfile->interfaceComputeRatesMethodString().empty()) {
+    if (!mProfile->interfaceComputeRatesMethodString().empty()
+        && ((mModel->hasExternalVariables() && !mProfile->computeExternalVariablesMethodParameterString().empty())
+            || !mModel->hasExternalVariables())) {
         interfaceComputeModelMethodsCode += replace(mProfile->interfaceComputeRatesMethodString(),
                                                     "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->computeExternalVariablesMethodParameterString() : "");
     }
 
-    if (!mProfile->interfaceComputeVariablesMethodString().empty()) {
+    if (!mProfile->interfaceComputeVariablesMethodString().empty()
+        && ((mModel->hasExternalVariables() && !mProfile->computeExternalVariablesMethodParameterString().empty())
+            || !mModel->hasExternalVariables())) {
         interfaceComputeModelMethodsCode += replace(mProfile->interfaceComputeVariablesMethodString(),
                                                     "<OPTIONAL_PARAMETER>", mModel->hasExternalVariables() ? mProfile->computeExternalVariablesMethodParameterString() : "");
     }
@@ -2082,7 +2086,9 @@ void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCo
 
 void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (!mProfile->implementationComputeRatesMethodString().empty()) {
+    if (!mProfile->implementationComputeRatesMethodString().empty()
+        && ((mModel->hasExternalVariables() && !mProfile->computeExternalVariablesMethodParameterString().empty())
+            || !mModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
@@ -2103,7 +2109,9 @@ void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::vect
 
 void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations)
 {
-    if (!mProfile->implementationComputeVariablesMethodString().empty()) {
+    if (!mProfile->implementationComputeVariablesMethodString().empty()
+        && ((mModel->hasExternalVariables() && !mProfile->computeExternalVariablesMethodParameterString().empty())
+            || !mModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
