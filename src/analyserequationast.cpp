@@ -45,16 +45,6 @@ void AnalyserEquationAst::AnalyserEquationAstImpl::populate(Type type,
     mParent = parent;
 }
 
-void AnalyserEquationAst::AnalyserEquationAstImpl::populate(const AnalyserEquationAstPtr &ast,
-                                                            const AnalyserEquationAstPtr &parent)
-{
-    mType = ast->mPimpl->mType;
-    mVariable = ast->mPimpl->mVariable;
-    mParent = parent;
-    mLeftChild = ast->mPimpl->mLeftChild;
-    mRightChild = ast->mPimpl->mRightChild;
-}
-
 AnalyserEquationAst::AnalyserEquationAst()
     : mPimpl(new AnalyserEquationAstImpl())
 {

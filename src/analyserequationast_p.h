@@ -40,8 +40,6 @@ struct AnalyserEquationAst::AnalyserEquationAstImpl
                   const AnalyserEquationAstPtr &parent);
     void populate(AnalyserEquationAst::Type type, const VariablePtr &variable,
                   const AnalyserEquationAstPtr &parent);
-    void populate(const AnalyserEquationAstPtr &ast,
-                  const AnalyserEquationAstPtr &parent);
 };
 
 } // namespace libcellml
