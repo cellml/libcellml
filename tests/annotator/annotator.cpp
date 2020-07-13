@@ -179,7 +179,8 @@ TEST(Annotator, errorHandling)
     } catch (const std::bad_any_cast &e) {
         std::stringstream s;
         s << e.what();
-        EXPECT_EQ("bad any cast", s.str());
+        // MacOS, Windows, Ubuntu cast messages differ:
+        EXPECT_TRUE(("bad any cast" == s.str()) || ("Bad any_cast" == s.str()) || ("bad any_cast" == s.str()));
     }
 }
 
