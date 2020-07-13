@@ -91,7 +91,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
   if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
      OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # The full list of diagnostic flags in Clang can be found at
-    # https://clang.llvm.org/docs/DiagnosticsReference.html
+    # https://clang.llvm.org/docs/DiagnosticsReference.html.
     set(_COMPILE_OPTIONS
       -Weverything
       -Wno-c++98-compat
@@ -130,7 +130,7 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
     endif()
 
     # The full list of Clang-Tidy checks can be found at
-    # https://clang.llvm.org/extra/clang-tidy/checks/list.html
+    # https://clang.llvm.org/extra/clang-tidy/checks/list.html.
     set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
@@ -197,8 +197,8 @@ function(configure_clang_and_clang_tidy_settings _TARGET)
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
 
     if(MSVC)
-      # Extra argument for Clang-Tidy when used with cl
-      # https://gitlab.kitware.com/cmake/cmake/-/issues/20512#note_722771
+      # Extra argument for Clang-Tidy when used with cl.
+      # See https://gitlab.kitware.com/cmake/cmake/-/issues/20512#note_722771.
       set(_EXTRA_ARG ";--extra-arg=/EHsc")
     endif()
 
