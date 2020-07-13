@@ -335,7 +335,6 @@ TEST(ComponentImport, importSourceComponentMethods)
 
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add import to component, then component to model:
     auto imp2 = libcellml::ImportSource::create();
@@ -348,7 +347,6 @@ TEST(ComponentImport, importSourceComponentMethods)
 
     EXPECT_EQ(size_t(2), model->importSourceCount());
     EXPECT_EQ(imp2, model->importSource(1));
-    // EXPECT_EQ(imp2, model->importSource(url2));
 
     // Add import to model directly:
     auto imp3 = libcellml::ImportSource::create();
@@ -358,7 +356,6 @@ TEST(ComponentImport, importSourceComponentMethods)
 
     EXPECT_EQ(size_t(3), model->importSourceCount());
     EXPECT_EQ(imp3, model->importSource(2));
-    // EXPECT_EQ(imp3, model->importSource(url3));
 
     // Reuse an import source in another component:
     auto component4 = libcellml::Component::create("importComponent4");
