@@ -33,6 +33,32 @@ include(environmentchecks)
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
+# CLCACHE ==> LIBCELLML_CLCACHE or
+# CCACHE ==> LIBCELLML_CCACHE
+if(WIN32)
+  set(_PARAM_ANNOTATION "Enable clcache.")
+  if(CLCACHE_AVAILABLE)
+    set(LIBCELLML_CLCACHE ON CACHE BOOL ${_PARAM_ANNOTATION})
+  endif()
+  if(DEFINED CLCACHE AND CLCACHE_AVAILABLE)
+    set(LIBCELLML_CLCACHE "${CLCACHE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+  elseif(CLCACHE)
+    message(WARNING "clcache is requested but not found!")
+  endif()
+  unset(CLCACHE CACHE)
+else()
+  set(_PARAM_ANNOTATION "Enable ccache.")
+  if(CCACHE_AVAILABLE)
+    set(LIBCELLML_CCACHE ON CACHE BOOL ${_PARAM_ANNOTATION})
+  endif()
+  if(DEFINED CCACHE AND CCACHE_AVAILABLE)
+    set(LIBCELLML_CCACHE "${CCACHE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+  elseif(CCACHE)
+    message(WARNING "ccache is requested but not found!")
+  endif()
+  unset(CCACHE CACHE)
+endif()
+
 # CLANG_TIDY ==> LIBCELLML_CLANG_TIDY
 set(_PARAM_ANNOTATION "Enable Clang-Tidy.")
 if(CLANG_TIDY_AVAILABLE)
@@ -149,6 +175,22 @@ if(DEFINED BUILD_SHARED)
   set(LIBCELLML_BUILD_SHARED ${BUILD_SHARED} CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(BUILD_SHARED CACHE)
+
+# If available and wanted, use clcache/ccache.
+if(WIN32)
+  if(CLCACHE_EXE AND LIBCELLML_CLCACHE)
+    set(CLCACHEWRAPPER ${CMAKE_CURRENT_BINARY_DIR}/clcachewrapper)
+    execute_process(COMMAND ${CMAKE_C_COMPILER} /O2 /Fe${CLCACHEWRAPPER} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/clcachewrapper.c
+                    RESULT_VARIABLE RESULT OUTPUT_QUIET ERROR_QUIET)
+    if(RESULT EQUAL 0)
+      set(CMAKE_CXX_COMPILER_LAUNCHER ${CLCACHEWRAPPER})
+    endif()
+  endif()
+else()
+  if(CCACHE_EXE AND LIBCELLML_CCACHE)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXE})
+  endif()
+endif()
 
 # Uninstall target
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.in.cmake"
