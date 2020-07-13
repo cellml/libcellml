@@ -325,13 +325,11 @@ std::string Issue::referenceHeading() const
     }
     return {};
 }
+
 std::string Issue::url() const
 {
-    if (referenceRule() == Issue::ReferenceRule::UNDEFINED) {
-        return {};
-    }
     auto search = ruleToInformation.find(referenceRule());
-    if (search != ruleToInformation.end()) {
+    if (referenceRule() != Issue::ReferenceRule::UNDEFINED && search != ruleToInformation.end()) {
         return search->second[1] + search->second[2] + ".html?issue=" + search->second[0];
     }
     return {};
