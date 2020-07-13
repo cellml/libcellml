@@ -784,11 +784,11 @@ TEST(Model, removeComponentInsensitiveToOrder)
 
     // If the order of operations is switched the behaviour is the same:
 
-    // Get a pointer to the second componet in the parsed model
+    // Get a pointer to the second component in the parsed model.
     auto c2Parsed = modelParsed->component("c2");
-    // Remove it from the parsed model
+    // Remove it from the parsed model.
     modelParsed->removeComponent(c2Parsed);
-    // Add it to the api model
+    // Add it to the api model.
     modelApi->addComponent(c2Parsed);
 
     EXPECT_EQ(size_t(0), modelParsed->componentCount());
@@ -851,6 +851,7 @@ TEST(Model, importSourceDetailsCoverage)
     // Set up component so it's an import.
     component1->setImportSource(imp);
 
+    EXPECT_TRUE(component1->isImport());
     EXPECT_EQ(size_t(1), imp->componentCount());
     EXPECT_EQ(component1, imp->component(0));
     EXPECT_EQ(nullptr, imp->component(99));
@@ -858,6 +859,7 @@ TEST(Model, importSourceDetailsCoverage)
     // Remove a component from the import source by index.
     EXPECT_TRUE(imp->removeComponent(0));
     EXPECT_EQ(size_t(0), imp->componentCount());
+    EXPECT_FALSE(component1->isImport());
 
     // Add the other component so it's an import.
     component2->setImportSource(imp);
@@ -868,6 +870,7 @@ TEST(Model, importSourceDetailsCoverage)
 
     // Remove component by pointer.
     EXPECT_TRUE(imp->removeComponent(component2));
+    EXPECT_FALSE(component2->isImport());
 
     // Remove a component that doesn't exist by index.
     EXPECT_FALSE(imp->removeComponent(0));
@@ -876,18 +879,23 @@ TEST(Model, importSourceDetailsCoverage)
 
     // Ditto for units.
     units1->setImportSource(imp);
+    EXPECT_TRUE(units1->isImport());
+
     EXPECT_EQ(size_t(1), imp->unitsCount());
     EXPECT_EQ(units1, imp->units(0));
 
     EXPECT_TRUE(imp->removeUnits(0));
+    EXPECT_FALSE(units1->isImport());
     EXPECT_EQ(size_t(0), imp->unitsCount());
     EXPECT_FALSE(imp->removeUnits(99));
 
     units2->setImportSource(imp);
+    EXPECT_TRUE(units2->isImport());
     EXPECT_EQ(size_t(1), imp->unitsCount());
     EXPECT_EQ(units2, imp->units(0));
 
     EXPECT_TRUE(imp->removeUnits(units2));
+    EXPECT_FALSE(units2->isImport());
     EXPECT_EQ(size_t(0), imp->unitsCount());
     EXPECT_FALSE(imp->removeUnits(nullptr));
 

@@ -30,6 +30,10 @@ namespace libcellml {
  * that imported source.
  */
 class LIBCELLML_EXPORT ImportSource: public Entity
+#ifndef SWIG
+    ,
+                                     public std::enable_shared_from_this<ImportSource>
+#endif
 {
 public:
     ~ImportSource() override; /**< Destructor */

@@ -96,7 +96,9 @@ bool ImportSource::addComponent(const ComponentPtr &component)
     if (std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component) != mPimpl->mComponents.end()) {
         return false;
     }
+    auto imp = shared_from_this();
     mPimpl->mComponents.push_back(component);
+    component->setImportSource(imp);
     return true;
 }
 
@@ -115,30 +117,25 @@ size_t ImportSource::componentCount() const
 
 bool ImportSource::removeComponent(size_t index)
 {
-    // TODO Not sure whether it should be a two-way street between the ImportSource
-    // and the thing added/removed.  Should removing a component from an import source
-    // also remove the import source from the component? ditto imports?
-    // ImportSourcePtr empty = nullptr;
     if (index < mPimpl->mComponents.size()) {
+        ImportSourcePtr empty = nullptr;
         auto component = mPimpl->mComponents[index];
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
-        // component->setImportSource(empty);
+        component->setImportSource(empty);
         return true;
     }
-
     return false;
 }
 
 bool ImportSource::removeComponent(const ComponentPtr &component)
 {
-    // ImportSourcePtr empty = nullptr;
     auto result = std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component);
     if (result != mPimpl->mComponents.end()) {
+        ImportSourcePtr empty = nullptr;
         mPimpl->mComponents.erase(result);
-        // component->setImportSource(empty);
+        component->setImportSource(empty);
         return true;
     }
-
     return false;
 }
 
@@ -148,6 +145,8 @@ bool ImportSource::addUnits(const UnitsPtr &units)
         return false;
     }
     mPimpl->mUnits.push_back(units);
+    auto imp = shared_from_this();
+    units->setImportSource(imp);
     return true;
 }
 
@@ -168,6 +167,8 @@ bool ImportSource::removeUnits(size_t index)
 {
     if (index < mPimpl->mUnits.size()) {
         auto units = mPimpl->mUnits[index];
+        ImportSourcePtr empty = nullptr;
+        units->setImportSource(empty);
         mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         return true;
     }
