@@ -133,19 +133,19 @@ public:
     AnyItem item(const std::string &id);
 
     // KRM reinstating specific return types
-    // ComponentPtr component(const std::string &id);
-    // VariablePtr variable(const std::string &id);
-    // ResetPtr reset(const std::string &id);
-    // ModelPtr model(const std::string &id);
-    // ImportSourcePtr import(const std::string &id);
-    // UnitsPtr units(const std::string &id);
-    // VariablePair connection(const std::string &id);
-    // VariablePair map_variables(const std::string &id);
-    // UnitItem unit(const std::string &id);
-    // ComponentPtr component_ref(const std::string &id);
-    // std::string math(const std::string &id);
-    // std::string test_value(const std::string &id);
-    // std::string reset_value(const std::string &id);
+    ComponentPtr component(const std::string &id);
+    VariablePtr variable(const std::string &id);
+    ResetPtr reset(const std::string &id);
+    ModelPtr model(const std::string &id);
+    ImportSourcePtr import(const std::string &id);
+    UnitsPtr units(const std::string &id);
+    VariablePair connection(const std::string &id);
+    VariablePair map_variables(const std::string &id);
+    UnitItem unit(const std::string &id);
+    ComponentPtr component_ref(const std::string &id);
+    // std::string math(const std::string &id); // This could return a ComponentPtr the same way reset_value returns a ResetPtr?
+    ResetPtr test_value(const std::string &id);
+    ResetPtr reset_value(const std::string &id);
 
     std::pair<Annotator::Type, std::vector<std::size_t>> indicesToItem(const std::string &id);
     std::string instructions(const std::string &id);
