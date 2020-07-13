@@ -188,6 +188,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mImplementationVariableCountString;
 
     std::string mVariableTypeObjectString;
+    std::string mVariableTypeObjectExternalTypeString;
 
     std::string mConstantVariableTypeString;
     std::string mComputedConstantVariableTypeString;
@@ -471,8 +472,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableTypeObjectString = "typedef enum {\n"
                                     "    CONSTANT,\n"
                                     "    COMPUTED_CONSTANT,\n"
-                                    "    ALGEBRAIC\n"
+                                    "    ALGEBRAIC<OPTIONAL_TYPE>\n"
                                     "} VariableType;\n";
+        mVariableTypeObjectExternalTypeString = ",\n    EXTERNAL";
 
         mConstantVariableTypeString = "CONSTANT";
         mComputedConstantVariableTypeString = "COMPUTED_CONSTANT";
@@ -782,8 +784,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "class VariableType(Enum):\n"
                                     "    CONSTANT = 1\n"
                                     "    COMPUTED_CONSTANT = 2\n"
-                                    "    ALGEBRAIC = 3\n"
+                                    "    ALGEBRAIC = 3<OPTIONAL_TYPE>\n"
                                     "\n";
+        mVariableTypeObjectExternalTypeString = "\n    EXTERNAL = 4";
 
         mConstantVariableTypeString = "VariableType.CONSTANT";
         mComputedConstantVariableTypeString = "VariableType.COMPUTED_CONSTANT";
@@ -2014,6 +2017,16 @@ std::string GeneratorProfile::variableTypeObjectString() const
 void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTypeObjectString)
 {
     mPimpl->mVariableTypeObjectString = variableTypeObjectString;
+}
+
+std::string GeneratorProfile::variableTypeObjectExternalTypeString() const
+{
+    return mPimpl->mVariableTypeObjectExternalTypeString;
+}
+
+void GeneratorProfile::setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString)
+{
+    mPimpl->mVariableTypeObjectExternalTypeString = variableTypeObjectExternalTypeString;
 }
 
 std::string GeneratorProfile::constantVariableTypeString() const

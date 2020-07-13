@@ -2278,12 +2278,38 @@ public:
      * type object.
      *
      * Set this @c std::string for the data structure for the variable
-     * type object.
+     * type object. To be useful, the string should contain the <OPTIONAL_TYPE>
+     * tag, which will be replaced with a type for the external variable type,
+     * if needed.
      *
      * @param variableTypeObjectString The @c std::string to use for the data
      * structure for the variable type object.
      */
     void setVariableTypeObjectString(const std::string &variableTypeObjectString);
+
+    /**
+     * @brief Get the @c std::string for the external type for the data
+     * structure for the variable type object.
+     *
+     * Return the @c std::string for the external type for the data structure
+     * for the variable type object.
+     *
+     * @return The @c std::string for the external type for the data structure
+     * for the variable type object.
+     */
+    std::string variableTypeObjectExternalTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the external type for the data
+     * structure for the variable type object.
+     *
+     * Set this @c std::string for the external type for the data structure for
+     * the variable type object.
+     *
+     * @param variableTypeObjectExternalTypeString The @c std::string to use for
+     * the external type for the data structure for the variable type object.
+     */
+    void setVariableTypeObjectExternalTypeString(const std::string &variableTypeObjectExternalTypeString);
 
     /**
      * @brief Get the @c std::string for the name of the constant variable type.

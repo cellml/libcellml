@@ -1480,6 +1480,7 @@ TEST(Generator, coverage)
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");
@@ -1552,6 +1553,7 @@ TEST(Generator, coverage)
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
+    profile->setVariableTypeObjectExternalTypeString("");
 
     profile->setConstantVariableTypeString("");
     profile->setComputedConstantVariableTypeString("");

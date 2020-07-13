@@ -284,9 +284,10 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
               "    COMPUTED_CONSTANT,\n"
-              "    ALGEBRAIC\n"
+              "    ALGEBRAIC<OPTIONAL_TYPE>\n"
               "} VariableType;\n",
               generatorProfile->variableTypeObjectString());
+    EXPECT_EQ(",\n    EXTERNAL", generatorProfile->variableTypeObjectExternalTypeString());
 
     EXPECT_EQ("CONSTANT", generatorProfile->constantVariableTypeString());
     EXPECT_EQ("COMPUTED_CONSTANT", generatorProfile->computedConstantVariableTypeString());
@@ -718,6 +719,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setImplementationVariableCountString(value);
 
     generatorProfile->setVariableTypeObjectString(value);
+    generatorProfile->setVariableTypeObjectExternalTypeString(value);
 
     generatorProfile->setConstantVariableTypeString(value);
     generatorProfile->setComputedConstantVariableTypeString(value);
@@ -807,6 +809,7 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectExternalTypeString());
 
     EXPECT_EQ(value, generatorProfile->constantVariableTypeString());
     EXPECT_EQ(value, generatorProfile->computedConstantVariableTypeString());
