@@ -2703,68 +2703,76 @@ public:
     void setVariablesArrayString(const std::string &variablesArrayString);
 
     /**
-     * @brief Get the @c std::string for the type definition of an external
-     * variable method.
+     * @brief Get the @c std::string for the type definition of a compute
+     * external variables method.
      *
-     * Return the @c std::string for the type definition of an external variable
+     * Return the @c std::string for the type definition of a compute external
+     * variables method.
+     *
+     * @return The @c std::string for the type definition of a compute external
+     * variables method.
+     */
+    std::string computeExternalVariablesMethodTypeDefinitionString() const;
+
+    /**
+     * @brief Set the @c std::string for the type definition of a compute
+     * external variables method.
+     *
+     * Set this @c std::string for the type definition of a compute external
+     * variables method.
+     *
+     * @param computeExternalVariablesMethodTypeDefinitionString The @c std::string to
+     * use for the type definition of a compute external variables method.
+     */
+    void setComputeExternalVariablesMethodTypeDefinitionString(const std::string &computeExternalVariablesMethodTypeDefinitionString);
+
+    /**
+     * @brief Get the @c std::string for the compute external variables method
+     * parameter.
+     *
+     * Return the @c std::string for the compute external variables method
+     * parameter.
+     *
+     * @return The @c std::string for the compute external variables method
+     * parameter.
+     */
+    std::string computeExternalVariablesMethodParameterString() const;
+
+    /**
+     * @brief Set the @c std::string for the compute external variables method
+     * parameter.
+     *
+     * Set this @c std::string for the compute external variables method
+     * parameter.
+     *
+     * @param computeExternalVariablesMethodParameterString The @c std::string
+     * to use for the compute external variables method parameter.
+     */
+    void setComputeExternalVariablesMethodParameterString(const std::string &computeExternalVariablesMethodParameterString);
+
+    /**
+     * @brief Get the @c std::string for the name of the compute external
+     * variables method.
+     *
+     * Return the @c std::string for the name of the compute external variables
      * method.
      *
-     * @return The @c std::string for the type definition of an external
-     * variable method.
+     * @return The @c std::string for the name of the compute external variables
+     * method.
      */
-    std::string externalVariableMethodTypeDefinitionString() const;
+    std::string computeExternalVariablesMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the type definition of an external
-     * variable method.
+     * @brief Set the @c std::string for the name of the compute external
+     * variables method.
      *
-     * Set this @c std::string for the type definition of an external variable
+     * Set this @c std::string for the name of the compute external variables
      * method.
      *
-     * @param externalVariableMethodTypeDefinitionString The @c std::string to
-     * use for the type definition of an external variable method.
+     * @param computeExternalVariablesMethodString The @c std::string to use for
+     * the name of the compute external variables method.
      */
-    void setExternalVariableMethodTypeDefinitionString(const std::string &externalVariableMethodTypeDefinitionString);
-
-    /**
-     * @brief Get the @c std::string for the external variable method parameter.
-     *
-     * Return the @c std::string for the external variable method parameter.
-     *
-     * @return The @c std::string for the external variable method parameter.
-     */
-    std::string externalVariableMethodParameterString() const;
-
-    /**
-     * @brief Set the @c std::string for the external variable method parameter.
-     *
-     * Set this @c std::string for the external variable method parameter.
-     *
-     * @param externalVariableMethodParameterString The @c std::string to use
-     * for the external variable method parameter.
-     */
-    void setExternalVariableMethodParameterString(const std::string &externalVariableMethodParameterString);
-
-    /**
-     * @brief Get the @c std::string for the name of the external variable
-     * method.
-     *
-     * Return the @c std::string for the name of the external variable method.
-     *
-     * @return The @c std::string for the name of the external variable method.
-     */
-    std::string externalVariableMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the name of the external variable
-     * method.
-     *
-     * Set this @c std::string for the name of the external variable method.
-     *
-     * @param externalVariableMethodString The @c std::string to use for the
-     * name of the external variable method.
-     */
-    void setExternalVariableMethodString(const std::string &externalVariableMethodString);
+    void setComputeExternalVariablesMethodString(const std::string &computeExternalVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for the interface to create the states
