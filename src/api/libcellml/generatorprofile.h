@@ -3016,8 +3016,8 @@ public:
      *
      * Set this @c std::string for the interface to compute rates. To be
      * useful, the string should contain the <OPTIONAL_PARAMETER> tag, which
-     * will be replaced with a parameter for the external variable method, if
-     * needed.
+     * will be replaced with a parameter for the compute external variables
+     * method, if needed.
      *
      * @param interfaceComputeRatesMethodString The @c std::string to use for
      * the interface to compute rates.
@@ -3038,9 +3038,9 @@ public:
      *
      * Set this @c std::string for the implementation to compute rates. To be
      * useful, the string should contain both the <OPTIONAL_PARAMETER> and
-     * <CODE> tags, which will be replaced with a parameter for the external
-     * variable method, if needed, and with some code to compute rates,
-     * respectively.
+     * <CODE> tags, which will be replaced with a parameter for the compute
+     * external variables method, if needed, and with some code to compute
+     * rates, respectively.
      *
      * @param implementationComputeRatesMethodString The @c std::string to use
      * for the implementation to compute rates.
@@ -3061,8 +3061,8 @@ public:
      *
      * Set this @c std::string for the interface to compute variables. To be
      * useful, the string should contain the <OPTIONAL_PARAMETER> tag, which
-     * will be replaced with a parameter for the external variable method, if
-     * needed.
+     * will be replaced with a parameter for the compute external variables
+     * method, if needed.
      *
      * @param interfaceComputeVariablesMethodString The @c std::string to use
      * for the interface to compute variables.
@@ -3085,9 +3085,9 @@ public:
      *
      * Set this @c std::string for the implementation to compute variables. To
      * be useful, the string should contain both the <OPTIONAL_PARAMETER> and
-     * <CODE> tags, which will be replaced with a parameter for the external
-     * variable method, if needed, and with some code to compute rates,
-     * respectively.
+     * <CODE> tags, which will be replaced with a parameter for the compute
+     * external variables method, if needed, and with some code to compute
+     * rates, respectively.
      *
      * @param implementationComputeVariablesMethodString The @c std::string to
      * use for the implementation to compute variables.
