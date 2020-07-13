@@ -109,7 +109,7 @@ However, subsequent compilations will be significantly faster.
 
 `clcache <https://github.com/frerich/clcache>`_ can be downloaded and installed from `here <https://github.com/frerich/clcache/releases/>`_.
 Note that it will only work with paths that do *not* contain spaces.
-So, if you installed the recommended implementation of `LibXml2 <http://xmlsoft.org/>`_, you will need to move it to a location that does not contain spaces.
+So, if you installed the recommended implementation of `LibXml2 <http://xmlsoft.org/>`_, you will need to move it to a location that does not contain spaces and update your `PATH` accordingly (or uninstall LibXml2 and reinstall it in a `PATH` that does not contain spaces).
 
 On `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions), `ccache <https://ccache.dev/>`_ can be installed using the package manager with the command ``sudo apt install ccache``.
 Alternatively, you can get the latest version from `here <https://ccache.dev/download.html>`_, and build it and install it yourself::
