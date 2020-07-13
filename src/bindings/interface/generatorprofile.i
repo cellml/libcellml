@@ -702,6 +702,14 @@ replaced with the number of states in the model.";
 %feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectString
 "Set the string for the data structure for the variable type object.";
 
+%feature("docstring") libcellml::GeneratorProfile::variableTypeObjectExternalTypeString
+"Return the string for the external type for the data structure for the variable
+type object.";
+
+%feature("docstring") libcellml::GeneratorProfile::setVariableTypeObjectExternalTypeString
+"Set the string for the external type for the data structure for the variable
+type object.";
+
 %feature("docstring") libcellml::GeneratorProfile::constantVariableTypeString
 "Return the string for the name of the constant variable type.";
 

@@ -474,6 +474,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mProfile->implementationVariableCountString();
 
     profileContents += mProfile->variableTypeObjectString();
+    profileContents += mProfile->variableTypeObjectExternalTypeString();
 
     profileContents += mProfile->constantVariableTypeString()
                        + mProfile->computedConstantVariableTypeString()
@@ -549,11 +550,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "997289bb2edd8909f5649a37853b95ab22f00059";
+        res = profileContentsSha1 != "792fdd4ceabb3dd194591a905396eac11b9ef995";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "66a36e13c43c02348adc9fded0f154c44ec0e210";
+        res = profileContentsSha1 != "3e67682ad1752cb35fcbdf25e45e1f0f0ecbbd27";
 
         break;
     }
@@ -673,12 +674,15 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(bool interface)
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode()
 {
-    if (!mProfile->variableTypeObjectString().empty()) {
+    if (!mProfile->variableTypeObjectString().empty()
+        && ((mModel->hasExternalVariables() && !mProfile->variableTypeObjectExternalTypeString().empty())
+            || !mModel->hasExternalVariables())) {
         if (!mCode.empty()) {
             mCode += "\n";
         }
 
-        mCode += mProfile->variableTypeObjectString();
+        mCode += replace(mProfile->variableTypeObjectString(),
+                         "<OPTIONAL_TYPE>", mModel->hasExternalVariables() ? mProfile->variableTypeObjectExternalTypeString() : "");
     }
 }
 
