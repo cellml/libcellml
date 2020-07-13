@@ -17,6 +17,10 @@ UNIT_TESTS     ON           Enable tests.
 MEMCHECK       ON           Enable memcheck testing (if available).
 -------------- ------------ -----------------------------------------
 COVERAGE       ON           Enable coverage testing (if available).
+-------------- ------------ -----------------------------------------
+CCACHE         ON           Enable ccache (if available).
+-------------- ------------ -----------------------------------------
+CLCACHE        ON           Enable clcache (if available).
 ============== ============ =========================================
 
 :sup:`*` In CMake GUI Configuration applications this option is given in full ``LIBCELLML_TREAT_WARNINGS_AS_ERRORS``
@@ -39,4 +43,8 @@ COVERAGE       ON           Enable coverage testing (if available).
 .. LIBCELLML_MEMCHECK                 MEMCHECK       Enable memcheck testing. (if available)
 .. ---------------------------------- -------------- -----------------------------------------
 .. LIBCELML_COVERAGE                  COVERAGE       Enable coverage testing. (if available)
+.. ---------------------------------- -------------- -----------------------------------------
+.. LIBCELML_CCACHE                    CCACHE         Enable ccache. (if available)
+.. ---------------------------------- -------------- -----------------------------------------
+.. LIBCELML_CLCACHE                   CLCACHE        Enable clcache. (if available)
 .. ================================== ============== =========================================
