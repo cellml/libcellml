@@ -1967,9 +1967,9 @@ std::string Generator::GeneratorImpl::generateComputeExternalVariablesCode() con
 {
     if (mModel->hasExternalVariables()) {
         return mProfile->indentString() + mProfile->computeExternalVariablesMethodString() + "(" + mProfile->voiString() + ", " + mProfile->statesArrayString() + ", " + mProfile->ratesArrayString() + ", " + mProfile->variablesArrayString() + ")" + mProfile->commandSeparatorString() + "\n";
-    } else {
-        return {};
     }
+
+    return {};
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
