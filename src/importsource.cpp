@@ -35,8 +35,11 @@ struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
     ModelPtr mModel;
-    std::vector<ComponentPtr> mComponents;
-    std::vector<UnitsPtr> mUnits;
+    std::vector<size_t> mComponents;
+    std::vector<size_t> mUnits;
+    std::vector<ImportedEntityPtr> mImports;
+
+    bool removeItem(ImportedEntityPtr &item);
 };
 
 ImportSource::ImportSource()
@@ -91,71 +94,56 @@ ImportSourcePtr ImportSource::clone() const
     return i;
 }
 
-bool ImportSource::addComponent(const ComponentPtr &component)
-{
-    if (std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component) != mPimpl->mComponents.end()) {
-        return false;
-    }
-    auto imp = shared_from_this();
-    mPimpl->mComponents.push_back(component);
-    component->setImportSource(imp);
-    return true;
-}
-
-ComponentPtr ImportSource::component(size_t index) const
-{
-    if (index < mPimpl->mComponents.size()) {
-        return mPimpl->mComponents.at(index);
-    }
-    return nullptr;
-}
-
 size_t ImportSource::componentCount() const
 {
     return mPimpl->mComponents.size();
 }
 
-bool ImportSource::removeComponent(size_t index)
+ComponentPtr ImportSource::component(size_t index) const
 {
+    ImportedEntityPtr import = nullptr;
     if (index < mPimpl->mComponents.size()) {
-        ImportSourcePtr empty = nullptr;
-        auto component = mPimpl->mComponents[index];
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
-        component->setImportSource(empty);
-        return true;
+        import = mPimpl->mImports.at(mPimpl->mComponents.at(index));
     }
-    return false;
+    return std::dynamic_pointer_cast<Component>(import);
 }
 
-bool ImportSource::removeComponent(const ComponentPtr &component)
+bool ImportSource::addComponent(const ComponentPtr &component)
 {
-    auto result = std::find(mPimpl->mComponents.begin(), mPimpl->mComponents.end(), component);
-    if (result != mPimpl->mComponents.end()) {
-        ImportSourcePtr empty = nullptr;
-        mPimpl->mComponents.erase(result);
-        component->setImportSource(empty);
-        return true;
-    }
-    return false;
-}
-
-bool ImportSource::addUnits(const UnitsPtr &units)
-{
-    if (std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units) != mPimpl->mUnits.end()) {
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(component);
+    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import) != mPimpl->mImports.end()) {
         return false;
     }
-    mPimpl->mUnits.push_back(units);
-    auto imp = shared_from_this();
-    units->setImportSource(imp);
+
+    size_t index = mPimpl->mImports.size();
+    mPimpl->mImports.push_back(import);
+    mPimpl->mComponents.push_back(index);
     return true;
 }
 
-UnitsPtr ImportSource::units(size_t index) const
+bool ImportSource::removeComponent(ComponentPtr &component)
 {
-    if (index < mPimpl->mUnits.size()) {
-        return mPimpl->mUnits.at(index);
+    if (component == nullptr) {
+        return false;
     }
-    return nullptr;
+
+    ImportSourcePtr empty = nullptr;
+    component->setImportSource(empty);
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(component);
+    return mPimpl->removeItem(import);
+}
+
+bool ImportSource::removeComponent(size_t index)
+{
+    if (index >= mPimpl->mComponents.size()) {
+        return false;
+    }
+
+    auto c = component(index);
+    ImportSourcePtr empty = nullptr;
+    c->setImportSource(empty);
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(c);
+    return mPimpl->removeItem(import);
 }
 
 size_t ImportSource::unitsCount() const
@@ -163,30 +151,87 @@ size_t ImportSource::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-bool ImportSource::removeUnits(size_t index)
+UnitsPtr ImportSource::units(size_t index) const
 {
+    ImportedEntityPtr import = nullptr;
     if (index < mPimpl->mUnits.size()) {
-        auto units = mPimpl->mUnits[index];
-        ImportSourcePtr empty = nullptr;
-        units->setImportSource(empty);
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
-        return true;
+        import = mPimpl->mImports.at(mPimpl->mUnits.at(index));
     }
-
-    return false;
+    return std::dynamic_pointer_cast<Units>(import);
 }
 
-bool ImportSource::removeUnits(const UnitsPtr &units)
+bool ImportSource::addUnits(const UnitsPtr &units)
 {
-    ImportSourcePtr empty = nullptr;
-    auto result = std::find(mPimpl->mUnits.begin(), mPimpl->mUnits.end(), units);
-    if (result != mPimpl->mUnits.end()) {
-        mPimpl->mUnits.erase(result);
-        units->setImportSource(empty);
-        return true;
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
+    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import) != mPimpl->mImports.end()) {
+        return false;
+    }
+    size_t index = mPimpl->mImports.size();
+    mPimpl->mImports.push_back(import);
+    mPimpl->mUnits.push_back(index);
+    return true;
+}
+
+bool ImportSource::removeUnits(UnitsPtr &units)
+{
+    if (units == nullptr) {
+        return false;
     }
 
-    return false;
+    ImportSourcePtr empty = nullptr;
+    units->setImportSource(empty);
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
+    return mPimpl->removeItem(import);
+}
+
+bool ImportSource::removeUnits(size_t index)
+{
+    if (index >= mPimpl->mUnits.size()) {
+        return false;
+    }
+
+    auto u = units(index);
+    ImportSourcePtr empty = nullptr;
+    u->setImportSource(empty);
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(u);
+    return mPimpl->removeItem(import);
+}
+
+bool ImportSource::ImportSourceImpl::removeItem(ImportedEntityPtr &item)
+{
+    auto it = std::find(mImports.begin(), mImports.end(), item);
+    if (it == mImports.end()) {
+        return false;
+    }
+
+    // Find current index for the item to remove.
+    auto index = int(std::distance(mImports.begin(), it));
+    auto itU = std::find(mUnits.begin(), mUnits.end(), index);
+    if (itU != mUnits.end()) {
+        mUnits.erase(itU);
+    } else {
+        auto itC = std::find(mComponents.begin(), mComponents.end(), index);
+        if (itC != mComponents.end()) {
+            mComponents.erase(itC);
+        }
+    }
+
+    // Iterate through components index vector and decrement all indices above the importIndex.
+    auto i = int(mComponents.size() - 1);
+    while ((i >= 0) && (int(mComponents[size_t(i)]) > index)) {
+        mComponents[size_t(i)]--;
+        i--;
+    }
+    // Loop through units vector and decrease its indices too.
+    i = int(mUnits.size() - 1);
+    while ((i >= 0) && (int(mUnits[size_t(i)]) > index)) {
+        mUnits[size_t(i)]--;
+        i--;
+    }
+    // Remove the item from the imports.
+    mImports.erase(it);
+
+    return true;
 }
 
 } // namespace libcellml
