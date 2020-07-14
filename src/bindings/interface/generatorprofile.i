@@ -862,10 +862,10 @@ name and units of a variable.";
 %feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodParameterString
 "Set the string for the compute external variables method parameter.";
 
-%feature("docstring") libcellml::GeneratorProfile::computeExternalVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::computeExternalVariablesMethodCallString
 "Return the string for the call to the compute external variables method.";
 
-%feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodString
+%feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodCallString
 "Set the string for the call to the compute external variables method.";
 
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString

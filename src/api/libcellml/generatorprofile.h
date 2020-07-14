@@ -2786,7 +2786,7 @@ public:
      * @return The @c std::string for the call to the compute external variables
      * method.
      */
-    std::string computeExternalVariablesMethodString() const;
+    std::string computeExternalVariablesMethodCallString() const;
 
     /**
      * @brief Set the @c std::string for the call to the compute external
@@ -2795,10 +2795,10 @@ public:
      * Set this @c std::string for the call to the compute external variables
      * method.
      *
-     * @param computeExternalVariablesMethodString The @c std::string to use for
-     * the call to the compute external variables method.
+     * @param computeExternalVariablesMethodCallString The @c std::string to use
+     * for the call to the compute external variables method.
      */
-    void setComputeExternalVariablesMethodString(const std::string &computeExternalVariablesMethodString);
+    void setComputeExternalVariablesMethodCallString(const std::string &computeExternalVariablesMethodCallString);
 
     /**
      * @brief Get the @c std::string for the interface to create the states

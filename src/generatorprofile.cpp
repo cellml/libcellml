@@ -218,7 +218,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mComputeExternalVariablesMethodTypeDefinitionString;
     std::string mComputeExternalVariablesMethodParameterString;
-    std::string mComputeExternalVariablesMethodString;
+    std::string mComputeExternalVariablesMethodCallString;
 
     std::string mInterfaceCreateStatesArrayMethodString;
     std::string mImplementationCreateStatesArrayMethodString;
@@ -517,7 +517,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mComputeExternalVariablesMethodTypeDefinitionString = "typedef void (* ComputeExternalVariables)(double voi, double *states, double *rates, double *variables);\n";
         mComputeExternalVariablesMethodParameterString = ", ComputeExternalVariables computeExternalVariables";
-        mComputeExternalVariablesMethodString = "computeExternalVariables(voi, states, rates, variables)";
+        mComputeExternalVariablesMethodCallString = "computeExternalVariables(voi, states, rates, variables)";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -820,7 +820,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mComputeExternalVariablesMethodTypeDefinitionString = "";
         mComputeExternalVariablesMethodParameterString = ", compute_external_variables";
-        mComputeExternalVariablesMethodString = "compute_external_variables(voi, states, rates, variables)";
+        mComputeExternalVariablesMethodCallString = "compute_external_variables(voi, states, rates, variables)";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"
@@ -2229,14 +2229,14 @@ void GeneratorProfile::setComputeExternalVariablesMethodParameterString(const st
     mPimpl->mComputeExternalVariablesMethodParameterString = computeExternalVariablesMethodParameterString;
 }
 
-std::string GeneratorProfile::computeExternalVariablesMethodString() const
+std::string GeneratorProfile::computeExternalVariablesMethodCallString() const
 {
-    return mPimpl->mComputeExternalVariablesMethodString;
+    return mPimpl->mComputeExternalVariablesMethodCallString;
 }
 
-void GeneratorProfile::setComputeExternalVariablesMethodString(const std::string &computeExternalVariablesMethodString)
+void GeneratorProfile::setComputeExternalVariablesMethodCallString(const std::string &computeExternalVariablesMethodCallString)
 {
-    mPimpl->mComputeExternalVariablesMethodString = computeExternalVariablesMethodString;
+    mPimpl->mComputeExternalVariablesMethodCallString = computeExternalVariablesMethodCallString;
 }
 
 std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
