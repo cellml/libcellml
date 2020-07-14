@@ -517,7 +517,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mComputeExternalVariablesMethodTypeDefinitionString = "typedef void (* ComputeExternalVariables)(double voi, double *states, double *rates, double *variables);\n";
         mComputeExternalVariablesMethodParameterString = ", ComputeExternalVariables computeExternalVariables";
-        mComputeExternalVariablesMethodString = "computeExternalVariables";
+        mComputeExternalVariablesMethodString = "computeExternalVariables(voi, states, rates, variables)";
 
         mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
@@ -820,7 +820,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mComputeExternalVariablesMethodTypeDefinitionString = "";
         mComputeExternalVariablesMethodParameterString = ", compute_external_variables";
-        mComputeExternalVariablesMethodString = "compute_external_variables";
+        mComputeExternalVariablesMethodString = "compute_external_variables(voi, states, rates, variables)";
 
         mInterfaceCreateStatesArrayMethodString = "";
         mImplementationCreateStatesArrayMethodString = "\n"

@@ -550,11 +550,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsSha1 != "792fdd4ceabb3dd194591a905396eac11b9ef995";
+        res = profileContentsSha1 != "31dd681faae3491f4f8415405a195350c06c86af";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsSha1 != "3e67682ad1752cb35fcbdf25e45e1f0f0ecbbd27";
+        res = profileContentsSha1 != "080ee068c444028594e8778cd69ee0c6952cd99e";
 
         break;
     }
@@ -1970,7 +1970,7 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
 std::string Generator::GeneratorImpl::generateComputeExternalVariablesCode() const
 {
     if (mModel->hasExternalVariables()) {
-        return mProfile->indentString() + mProfile->computeExternalVariablesMethodString() + "(" + mProfile->voiString() + ", " + mProfile->statesArrayString() + ", " + mProfile->ratesArrayString() + ", " + mProfile->variablesArrayString() + ")" + mProfile->commandSeparatorString() + "\n";
+        return mProfile->indentString() + mProfile->computeExternalVariablesMethodString() + mProfile->commandSeparatorString() + "\n";
     }
 
     return {};

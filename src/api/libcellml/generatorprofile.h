@@ -2777,26 +2777,26 @@ public:
     void setComputeExternalVariablesMethodParameterString(const std::string &computeExternalVariablesMethodParameterString);
 
     /**
-     * @brief Get the @c std::string for the name of the compute external
+     * @brief Get the @c std::string for the call to the compute external
      * variables method.
      *
-     * Return the @c std::string for the name of the compute external variables
+     * Return the @c std::string for the call to the compute external variables
      * method.
      *
-     * @return The @c std::string for the name of the compute external variables
+     * @return The @c std::string for the call to the compute external variables
      * method.
      */
     std::string computeExternalVariablesMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the name of the compute external
+     * @brief Set the @c std::string for the call to the compute external
      * variables method.
      *
-     * Set this @c std::string for the name of the compute external variables
+     * Set this @c std::string for the call to the compute external variables
      * method.
      *
      * @param computeExternalVariablesMethodString The @c std::string to use for
-     * the name of the compute external variables method.
+     * the call to the compute external variables method.
      */
     void setComputeExternalVariablesMethodString(const std::string &computeExternalVariablesMethodString);
 
