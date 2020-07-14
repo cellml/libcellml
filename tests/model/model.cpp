@@ -920,3 +920,27 @@ TEST(Model, importSourceDetailsCoverage)
     EXPECT_TRUE(model->removeImportSource(imp));
     EXPECT_FALSE(model->removeImportSource(imp));
 }
+
+TEST(Model, importSourceMove)
+{
+    auto m1 = libcellml::Model::create("m1");
+    auto imp = libcellml::ImportSource::create();
+
+    EXPECT_TRUE(m1->addImportSource(imp));
+    EXPECT_EQ(m1, imp->parent());
+
+    // Add import source to another model.
+    auto m2 = libcellml::Model::create("m2");
+    EXPECT_TRUE(m2->addImportSource(imp));
+    EXPECT_EQ(m2, imp->parent());
+
+    // Expect that we can't delete from first model any more.
+    EXPECT_EQ(size_t(0), m1->importSourceCount());
+    EXPECT_FALSE(m1->removeImportSource(imp));
+
+    // ... but that we can get it and remove it from the second.
+    EXPECT_EQ(size_t(1), m2->importSourceCount());
+    EXPECT_EQ(imp, m2->importSource(0));
+    EXPECT_TRUE(m2->removeImportSource(imp));
+    EXPECT_EQ(nullptr, imp->parent());
+}
