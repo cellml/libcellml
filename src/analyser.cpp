@@ -936,6 +936,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
                                   + "' and variable '" + analyserVariable->mVariable->name()
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
+            issue->setCause(Issue::Cause::VARIABLE);
 
             mAnalyser->addIssue(issue);
         }
@@ -961,6 +962,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
                                       + "' in component '" + component->name()
                                       + "' is initialised using variable '" + analyserVariable->mVariable->initialValue()
                                       + "', but it is not a constant.");
+                issue->setCause(Issue::Cause::VARIABLE);
 
                 mAnalyser->addIssue(issue);
             }
@@ -1044,6 +1046,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                             issue->setDescription("Variable '" + voiEquivalentVariable->name()
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
+                            issue->setCause(Issue::Cause::VARIABLE);
 
                             mAnalyser->addIssue(issue);
 
@@ -1069,6 +1072,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' cannot both be the variable of integration.");
+            issue->setCause(Issue::Cause::VARIABLE);
 
             mAnalyser->addIssue(issue);
         }
@@ -1089,6 +1093,7 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' must be of the first order.");
+            issue->setCause(Issue::Cause::MATHML);
 
             mAnalyser->addIssue(issue);
         }
@@ -1293,6 +1298,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model)
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' " + issueType + ".");
+                issue->setCause(Issue::Cause::VARIABLE);
 
                 mAnalyser->addIssue(issue);
             }
