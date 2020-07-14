@@ -104,7 +104,6 @@ bool Model::doAddComponent(const ComponentPtr &component)
 
     if (component->isImport()) {
         auto importSource = component->importSource();
-
         addImportSource(importSource);
     }
     return ComponentEntity::doAddComponent(component);
@@ -256,23 +255,6 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-// std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl)
-// {
-//     return std::find_if(mImports.begin(), mImports.end(),
-//                         [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl; });
-// }
-
-// std::vector<ImportSourcePtr>::iterator Model::ModelImpl::findImportSource(const std::string &inUrl, const std::string &inId)
-// {
-//     return std::find_if(mImports.begin(), mImports.end(),
-//                         [=](const ImportSourcePtr &u) -> bool { return u->url() == inUrl && u->id() == inId; });
-// }
-
-// bool Model::hasImportSource(const std::string &url) const
-// {
-//     return mPimpl->findImportSource(url) != mPimpl->mImports.end();
-// }
-
 bool Model::hasImportSource(const ImportSourcePtr &imp) const
 {
     return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end();
@@ -286,19 +268,9 @@ bool Model::addImportSource(const ImportSourcePtr &imp)
         return false;
     }
 
-    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp);
-
-    if (it != mPimpl->mImports.end()) {
-        // Add any child entities of this imp to the one already in the model.
-        for (size_t c = 0; c < imp->componentCount(); ++c) {
-            (*it)->addComponent(imp->component(c));
-        }
-        for (size_t u = 0; u < imp->unitsCount(); ++u) {
-            (*it)->addUnits(imp->units(u));
-        }
+    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end()) {
         return false;
     }
-
     mPimpl->mImports.push_back(imp);
     return true;
 }
@@ -317,17 +289,6 @@ ImportSourcePtr Model::importSource(size_t index) const
 
     return imp;
 }
-
-// ImportSourcePtr Model::importSource(const std::string &url) const
-// {
-//     ImportSourcePtr imp = nullptr;
-//     auto result = mPimpl->findImportSource(url);
-//     if (result != mPimpl->mImports.end()) {
-//         imp = *result;
-//     }
-
-//     return imp;
-// }
 
 bool Model::removeImportSource(size_t index)
 {

@@ -154,7 +154,7 @@ public:
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(const ComponentPtr &component);
+    bool removeComponent(ComponentPtr &component);
 
     /**
      * @brief Get the number of components accessed by this import source.
@@ -216,7 +216,7 @@ public:
      *
      * @return True if the units were removed, false otherwise.
      */
-    bool removeUnits(const UnitsPtr &units);
+    bool removeUnits(UnitsPtr &units);
 
     /**
      * @brief Get the number of units accessed by this import source.

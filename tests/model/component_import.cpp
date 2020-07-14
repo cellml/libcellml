@@ -42,20 +42,20 @@ TEST(ComponentImport, basics)
     imp->setUrl("a-model.xml");
 
     libcellml::ComponentPtr c = libcellml::Component::create();
-
-    EXPECT_EQ(c->importSource(), nullptr);
-    EXPECT_EQ(c->importReference(), "");
+    EXPECT_EQ(nullptr, c->importSource());
+    EXPECT_EQ("", c->importReference());
 
     c->setImportSource(imp);
     c->setImportReference("bob");
 
-    EXPECT_EQ(c->importSource(), imp);
-    EXPECT_EQ(c->importReference(), "bob");
+    EXPECT_EQ(imp, c->importSource());
+    EXPECT_EQ("bob", c->importReference());
 
     m->addComponent(c);
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(m);
+
     EXPECT_EQ(e, a);
 }
 
