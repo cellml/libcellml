@@ -90,6 +90,7 @@ ImportSourcePtr ImportSource::clone() const
     i->setId(id());
     i->setUrl(url());
     i->setModel(model());
+    // KRM Do *not* duplicate stored imports (mComponents, mUnits, mImports) here.
 
     return i;
 }
