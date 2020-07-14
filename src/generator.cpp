@@ -504,7 +504,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     profileContents += mProfile->computeExternalVariablesMethodTypeDefinitionString()
                        + mProfile->computeExternalVariablesMethodParameterString()
-                       + mProfile->computeExternalVariablesMethodString();
+                       + mProfile->computeExternalVariablesMethodCallString();
 
     profileContents += mProfile->interfaceCreateStatesArrayMethodString()
                        + mProfile->implementationCreateStatesArrayMethodString();
@@ -1970,7 +1970,7 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
 std::string Generator::GeneratorImpl::generateComputeExternalVariablesCode() const
 {
     if (mModel->hasExternalVariables()) {
-        return mProfile->indentString() + mProfile->computeExternalVariablesMethodString() + mProfile->commandSeparatorString() + "\n";
+        return mProfile->indentString() + mProfile->computeExternalVariablesMethodCallString() + mProfile->commandSeparatorString() + "\n";
     }
 
     return {};
