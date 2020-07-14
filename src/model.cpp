@@ -51,9 +51,6 @@ struct Model::ModelImpl
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-
-    std::vector<ImportSourcePtr>::iterator findImportSource(const std::string &inUrl);
-    std::vector<ImportSourcePtr>::iterator findImportSource(const std::string &inUrl, const std::string &inId);
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -258,8 +255,6 @@ size_t Model::unitsCount() const
 bool Model::hasImportSource(const ImportSourcePtr &imp) const
 {
     return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end();
-    // bool hasUrl = hasImportSource(imp->url());
-    // return hasPointer || hasUrl;
 }
 
 bool Model::addImportSource(const ImportSourcePtr &imp)
@@ -267,10 +262,14 @@ bool Model::addImportSource(const ImportSourcePtr &imp)
     if (imp == nullptr) {
         return false;
     }
-
-    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end()) {
+    if (hasImportSource(imp)) {
         return false;
     }
+    auto otherModel = owningModel(imp);
+    if (otherModel != nullptr) {
+       otherModel->removeImportSource(imp);
+    }
+    imp->setParent(shared_from_this());
     mPimpl->mImports.push_back(imp);
     return true;
 }
@@ -293,13 +292,8 @@ ImportSourcePtr Model::importSource(size_t index) const
 bool Model::removeImportSource(size_t index)
 {
     bool status = false;
-    if (index < mPimpl->mImports.size()) {
-        auto imp = *(mPimpl->mImports.begin() + int64_t(index));
-        imp->removeParent();
-        mPimpl->mImports.erase(mPimpl->mImports.begin() + int64_t(index));
-        status = true;
-    }
-
+    auto imp = importSource(index);
+    status = removeImportSource(imp);
     return status;
 }
 
@@ -312,7 +306,6 @@ bool Model::removeImportSource(const ImportSourcePtr &imp)
         mPimpl->mImports.erase(result);
         status = true;
     }
-
     return status;
 }
 
