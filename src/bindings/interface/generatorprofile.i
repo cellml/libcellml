@@ -863,10 +863,10 @@ name and units of a variable.";
 "Set the string for the compute external variables method parameter.";
 
 %feature("docstring") libcellml::GeneratorProfile::computeExternalVariablesMethodString
-"Return the string for the name of the compute external variables method.";
+"Return the string for the call to the compute external variables method.";
 
 %feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodString
-"Set the string for the name of the compute external variables method.";
+"Set the string for the call to the compute external variables method.";
 
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString
 "Set the string for returning a created array. To be useful, the string should
