@@ -262,7 +262,7 @@ UnitsPtr Annotator::units(const std::string &id)
     }
 }
 
-ImportSourcePtr Annotator::import(const std::string &id)
+ImportSourcePtr Annotator::importSource(const std::string &id)
 {
     auto i = item(id);
     try {
@@ -298,7 +298,7 @@ VariablePair Annotator::connection(const std::string &id)
     }
 }
 
-VariablePair Annotator::map_variables(const std::string &id)
+VariablePair Annotator::mapVariables(const std::string &id)
 {
     auto i = item(id);
     try {
@@ -322,7 +322,7 @@ UnitItem Annotator::unit(const std::string &id)
     }
 }
 
-ComponentPtr Annotator::component_ref(const std::string &id)
+ComponentPtr Annotator::componentRef(const std::string &id)
 {
     auto i = item(id);
     try {
@@ -346,7 +346,7 @@ ComponentPtr Annotator::component_ref(const std::string &id)
 //     }
 // }
 
-ResetPtr Annotator::test_value(const std::string &id)
+ResetPtr Annotator::testValue(const std::string &id)
 {
     auto i = item(id);
     try {
@@ -358,7 +358,7 @@ ResetPtr Annotator::test_value(const std::string &id)
     }
 }
 
-ResetPtr Annotator::reset_value(const std::string &id)
+ResetPtr Annotator::resetValue(const std::string &id)
 {
     auto i = item(id);
     try {

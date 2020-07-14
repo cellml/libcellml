@@ -258,23 +258,23 @@ TEST(Annotator, getItemByIdSpecific)
     EXPECT_EQ(model->component("component2"), annotator->component("component_2"));
     EXPECT_EQ(model->component("component2"), annotator->component("component_ref_1"));
     EXPECT_EQ(model->component("component2")->component("component3"), annotator->component("component_3"));
-    EXPECT_EQ(model->component("component2")->component("component3"), annotator->component_ref("component_ref_2"));
-    EXPECT_EQ(model->component("component1")->importSource(), annotator->import("import_1"));
+    EXPECT_EQ(model->component("component2")->component("component3"), annotator->componentRef("component_ref_2"));
+    EXPECT_EQ(model->component("component1")->importSource(), annotator->importSource("import_1"));
     EXPECT_EQ(model->units("units1"), annotator->units("units_1"));
-    EXPECT_EQ(model->units("units1")->importSource(), annotator->import("import_2"));
+    EXPECT_EQ(model->units("units1")->importSource(), annotator->importSource("import_2"));
     EXPECT_EQ(model->units("units2"), annotator->units("units_2"));
     EXPECT_EQ(model->units("units2"), annotator->unit("unit_1").first);
     EXPECT_EQ(size_t(0), annotator->unit("unit_1").second);
     EXPECT_EQ(model->component("component2")->variable("variable1"), annotator->variable("variable_1"));
     EXPECT_EQ(model->component("component2")->variable("variable2"), annotator->variable("variable_2"));
     EXPECT_EQ(model->component("component2")->reset(0), annotator->reset("reset_1"));
-    EXPECT_EQ(model->component("component2")->reset(0), annotator->test_value("test_value_1"));
-    EXPECT_EQ(model->component("component2")->reset(0), annotator->reset_value("reset_value_1"));
+    EXPECT_EQ(model->component("component2")->reset(0), annotator->testValue("test_value_1"));
+    EXPECT_EQ(model->component("component2")->reset(0), annotator->resetValue("reset_value_1"));
     EXPECT_EQ(model->component("component2")->component("component3")->variable("variable4"), annotator->variable("variable_3"));
     EXPECT_EQ(model->component("component2")->component("component3")->variable("variable2"), annotator->variable("variable_4"));
     EXPECT_EQ(v1v2, annotator->connection("connection_1"));
-    EXPECT_EQ(v1v2, annotator->map_variables("map_variables_1"));
-    EXPECT_EQ(v1v4, annotator->map_variables("map_variables_2"));
+    EXPECT_EQ(v1v2, annotator->mapVariables("map_variables_1"));
+    EXPECT_EQ(v1v4, annotator->mapVariables("map_variables_2"));
 
     EXPECT_EQ(nullptr, annotator->model("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->component("i_dont_exist"));
@@ -282,14 +282,14 @@ TEST(Annotator, getItemByIdSpecific)
     EXPECT_EQ(nullptr, annotator->units("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->unit("i_dont_exist").first);
     EXPECT_EQ(nullptr, annotator->reset("i_dont_exist"));
-    EXPECT_EQ(nullptr, annotator->reset_value("i_dont_exist"));
-    EXPECT_EQ(nullptr, annotator->test_value("i_dont_exist"));
-    EXPECT_EQ(nullptr, annotator->component_ref("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->resetValue("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->testValue("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->componentRef("i_dont_exist"));
     EXPECT_EQ(nullptr, annotator->connection("i_dont_exist").first);
     EXPECT_EQ(nullptr, annotator->connection("i_dont_exist").second);
-    EXPECT_EQ(nullptr, annotator->map_variables("i_dont_exist").first);
-    EXPECT_EQ(nullptr, annotator->map_variables("i_dont_exist").second);
-    EXPECT_EQ(nullptr, annotator->import("i_dont_exist"));
+    EXPECT_EQ(nullptr, annotator->mapVariables("i_dont_exist").first);
+    EXPECT_EQ(nullptr, annotator->mapVariables("i_dont_exist").second);
+    EXPECT_EQ(nullptr, annotator->importSource("i_dont_exist"));
 }
 
 TEST(Annotator, castingOnRetrieval)
