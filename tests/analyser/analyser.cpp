@@ -30,12 +30,15 @@ TEST(Analyser, initialisedVariableOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -50,12 +53,15 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'environment' cannot be both a variable of integration and initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -70,12 +76,15 @@ TEST(Analyser, twoVariablesOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -92,12 +101,17 @@ TEST(Analyser, nonFirstOrderOdes)
         "The differential equation for variable 'y' in component 'sub' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::MATHML,
+        libcellml::Issue::Cause::MATHML,
+        libcellml::Issue::Cause::MATHML,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -113,12 +127,16 @@ TEST(Analyser, undefinedVariables)
         "MathML ci element has the child text 'a' which does not correspond with any variable names present in component 'my_component'.",
         "MathML ci element has the child text 'b' which does not correspond with any variable names present in component 'my_component'.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::MATHML,
+        libcellml::Issue::Cause::MATHML,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -133,12 +151,15 @@ TEST(Analyser, variableInitialisedTwice)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -153,12 +174,15 @@ TEST(Analyser, nonConstantInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -173,12 +197,15 @@ TEST(Analyser, nonExistingInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' has an invalid initial value 'k'. Initial values must be a real number string or a variable reference.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -193,12 +220,15 @@ TEST(Analyser, nonInitialisedState)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -213,12 +243,15 @@ TEST(Analyser, underconstrained)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is not computed.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -233,12 +266,15 @@ TEST(Analyser, overconstrained)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is computed more than once.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -254,12 +290,16 @@ TEST(Analyser, unsuitablyConstrained)
         "Variable 'x' in component 'my_component' is not computed.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }
