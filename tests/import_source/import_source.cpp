@@ -20,9 +20,197 @@ limitations under the License.
 
 #include <libcellml>
 
+void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
+{
+    EXPECT_EQ(u1->unitCount(), u2->unitCount());
+
+    std::string reference1;
+    std::string prefix1;
+    std::string id1;
+    std::string reference2;
+    std::string prefix2;
+    std::string id2;
+    double exponent1;
+    double multiplier1;
+    double exponent2;
+    double multiplier2;
+    for (size_t index = 0; index < u1->unitCount(); ++index) {
+        u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
+        u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
+
+        EXPECT_EQ(reference1, reference2);
+        EXPECT_EQ(prefix1, prefix2);
+        EXPECT_EQ(exponent1, exponent2);
+        EXPECT_EQ(multiplier1, multiplier2);
+        EXPECT_EQ(id1, id2);
+    }
+}
+
+void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr)
+{
+    EXPECT_EQ(u1->id(), u2->id());
+    EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
+    EXPECT_EQ(u1->isImport(), u2->isImport());
+    EXPECT_EQ(u1->importReference(), u2->importReference());
+    EXPECT_EQ(u1->name(), u2->name());
+    EXPECT_EQ(expectedParent, u2->parent());
+
+    compareUnit(u1, u2);
+}
+
 TEST(ImportSource, createImportSource)
 {
     auto imp1 = libcellml::ImportSource::create();
+}
+
+TEST(ImportSource, addToModel)
+{
+    auto model = libcellml::Model::create("so_much_importing");
+
+    // Add component to model, then import to component:
+    auto imp1 = libcellml::ImportSource::create();
+    std::string url1 = "http://www.example.com#hello";
+    imp1->setUrl(url1);
+
+    EXPECT_TRUE(model->addImportSource(imp1));
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(imp1, model->importSource(0));
+
+    // Add the same one again:
+    EXPECT_FALSE(model->addImportSource(imp1));
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+    EXPECT_EQ(imp1, model->importSource(0));
+
+    // Add another with the same url:
+    auto imp2 = libcellml::ImportSource::create();
+    imp2->setUrl(url1);
+
+    EXPECT_TRUE(model->addImportSource(imp2));
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+    EXPECT_EQ(imp2, model->importSource(1));
+
+    // Add another with a new url:
+    auto imp3 = libcellml::ImportSource::create();
+    auto url3 = "http://www.example.com#bonjour";
+    imp3->setUrl(url3);
+
+    EXPECT_TRUE(model->addImportSource(imp3));
+    EXPECT_EQ(size_t(3), model->importSourceCount());
+    EXPECT_EQ(imp3, model->importSource(2));
+}
+
+TEST(ImportSource, importSourceDetailsCoverage)
+{
+    auto model = libcellml::Model::create("importing_model");
+    auto imp = libcellml::ImportSource::create();
+    auto component1 = libcellml::Component::create("Bart");
+    auto component2 = libcellml::Component::create("Lisa");
+    auto units1 = libcellml::Units::create("Maggie");
+    auto units2 = libcellml::Units::create("Marge");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    model->addUnits(units1);
+    model->addUnits(units2);
+
+    model->addImportSource(imp);
+    EXPECT_TRUE(model->hasImportSource(imp));
+
+    // Set up component so it's an import.
+    component1->setImportSource(imp);
+
+    EXPECT_TRUE(component1->isImport());
+    EXPECT_EQ(size_t(1), imp->componentCount());
+    EXPECT_EQ(component1, imp->component(0));
+    EXPECT_EQ(nullptr, imp->component(99));
+
+    // Add the other direction, expect false as it's already there.
+    EXPECT_FALSE(imp->addComponent(component1));
+
+    // Add the other component so it's an import.
+    component2->setImportSource(imp);
+
+    EXPECT_TRUE(component2->isImport());
+    EXPECT_EQ(size_t(2), imp->componentCount());
+    EXPECT_EQ(component2, imp->component(1));
+
+    // Remove a component from the import source by index.
+    EXPECT_TRUE(imp->removeComponent(0));
+    EXPECT_EQ(size_t(1), imp->componentCount());
+    EXPECT_FALSE(component1->isImport());
+
+    // Remove component by pointer.
+    EXPECT_TRUE(imp->removeComponent(component2));
+    EXPECT_FALSE(component2->isImport());
+
+    // Remove a component that doesn't exist by index.
+    EXPECT_FALSE(imp->removeComponent(0));
+    EXPECT_FALSE(imp->removeComponent(component2));
+    libcellml::ComponentPtr nullComponent = nullptr;
+    EXPECT_FALSE(imp->removeComponent(nullComponent));
+
+    // Set up units so it's an import.
+    units1->setImportSource(imp);
+
+    EXPECT_TRUE(units1->isImport());
+    EXPECT_EQ(size_t(1), imp->unitsCount());
+    EXPECT_EQ(units1, imp->units(0));
+    EXPECT_EQ(nullptr, imp->units(99));
+
+    // Add the other direction, expect false as it's already there.
+    EXPECT_FALSE(imp->addUnits(units1));
+
+    // Add the other units so it's an import.
+    units2->setImportSource(imp);
+
+    EXPECT_TRUE(units2->isImport());
+    EXPECT_EQ(size_t(2), imp->unitsCount());
+    EXPECT_EQ(units2, imp->units(1));
+
+    // Remove a units from the import source by index.
+    EXPECT_TRUE(imp->removeUnits(0));
+    EXPECT_EQ(size_t(1), imp->unitsCount());
+    EXPECT_FALSE(units1->isImport());
+
+    // Remove units by pointer.
+    EXPECT_TRUE(imp->removeUnits(units2));
+    EXPECT_FALSE(units2->isImport());
+
+    // Remove a units that doesn't exist by index.
+    EXPECT_FALSE(imp->removeUnits(0));
+    EXPECT_FALSE(imp->removeUnits(units2));
+    libcellml::UnitsPtr nullUnits = nullptr;
+    EXPECT_FALSE(imp->removeUnits(nullUnits));
+
+    EXPECT_TRUE(model->removeImportSource(0));
+    EXPECT_FALSE(model->removeImportSource(0));
+    model->addImportSource(imp);
+    EXPECT_TRUE(model->removeImportSource(imp));
+    EXPECT_FALSE(model->removeImportSource(imp));
+}
+
+TEST(ImportSource, importSourceMove)
+{
+    auto m1 = libcellml::Model::create("m1");
+    auto imp = libcellml::ImportSource::create();
+
+    EXPECT_TRUE(m1->addImportSource(imp));
+    EXPECT_EQ(m1, imp->parent());
+
+    // Add import source to another model.
+    auto m2 = libcellml::Model::create("m2");
+    EXPECT_TRUE(m2->addImportSource(imp));
+    EXPECT_EQ(m2, imp->parent());
+
+    // Expect that we can't delete from first model any more.
+    EXPECT_EQ(size_t(0), m1->importSourceCount());
+    EXPECT_FALSE(m1->removeImportSource(imp));
+
+    // ... but that we can get it and remove it from the second.
+    EXPECT_EQ(size_t(1), m2->importSourceCount());
+    EXPECT_EQ(imp, m2->importSource(0));
+    EXPECT_TRUE(m2->removeImportSource(imp));
+    EXPECT_EQ(nullptr, imp->parent());
 }
 
 TEST(ImportSource, addRemoveFromModel)
@@ -71,7 +259,7 @@ TEST(ImportSource, cloneEmpty)
     EXPECT_EQ(imp->id(), cloned->id());
 }
 
-TEST(ImportSource, cloneLinkedSingle)
+TEST(ImportSource, cloneImportedComponent)
 {
     auto model = libcellml::Model::create();
     auto c = libcellml::Component::create("c");
@@ -90,6 +278,62 @@ TEST(ImportSource, cloneLinkedSingle)
     EXPECT_EQ(imp->id(), cloned->id());
 
     // Not sure whether the cloned import source should be added to this model?
+}
+
+TEST(ImportSource, cloneImportedUnits)
+{
+    auto model = libcellml::Model::create();
+    auto u = libcellml::Units::create("c");
+
+    auto imp = libcellml::ImportSource::create();
+    imp->setId("myId");
+    imp->setUrl("myUrl");
+
+    model->addUnits(u);
+    u->setImportSource(imp);
+    u->setImportReference("myRef");
+
+    auto cloned = imp->clone();
+
+    EXPECT_EQ(imp->url(), cloned->url());
+    EXPECT_EQ(imp->id(), cloned->id());
+
+    // Not sure whether the cloned import source should be added to this model?
+}
+
+TEST(Clone, unitsImportedUnits_setSource)
+{
+    auto u = libcellml::Units::create();
+
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("some-other-model.xml");
+
+    u->setId("unique_id");
+    u->setName("units");
+
+    u->setSourceUnits(import, "imported_units_name");
+
+    auto uClone = u->clone();
+
+    compareUnits(u, uClone);
+}
+
+TEST(Clone, unitsImportedUnits)
+{
+    auto u = libcellml::Units::create();
+
+    auto import = libcellml::ImportSource::create();
+    import->setUrl("some-other-model.xml");
+
+    u->setId("unique_id");
+    u->setName("units");
+
+    u->setImportSource(import);
+    u->setImportReference("imported_units_name");
+
+    auto uClone = u->clone();
+
+    compareUnits(u, uClone);
 }
 
 TEST(ImportSource, createLinkedMultiple)
