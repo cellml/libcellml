@@ -31,7 +31,7 @@
 %feature("docstring") libcellml::Annotator::variable
 "Return the variable with the given id."
 
-%feature("docstring") libcellml::Annotator::import
+%feature("docstring") libcellml::Annotator::importSource
 "Return the import source with the given id."
 
 %feature("docstring") libcellml::Annotator::units
@@ -43,7 +43,7 @@
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair representing the connection with the given id."
 
-%feature("docstring") libcellml::Annotator::map_variables
+%feature("docstring") libcellml::Annotator::mapVariables
 "Return a VariablePair representing the map_variables with the given id."
 
 %feature("docstring") libcellml::Annotator::unit
@@ -53,13 +53,13 @@
 // %feature("docstring") libcellml::Annotator::math
 // "Return the math string with the given id."
 
-%feature("docstring") libcellml::Annotator::test_value
+%feature("docstring") libcellml::Annotator::testValue
 "Return the ResetPtr whose test_value has the given id."
 
-%feature("docstring") libcellml::Annotator::reset_value
+%feature("docstring") libcellml::Annotator::resetValue
 "Return the ResetPtr whose reset_value has the given id."
 
-%feature("docstring") libcellml::Annotator::component_ref
+%feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref id."
 
 %{
