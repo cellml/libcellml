@@ -246,96 +246,6 @@ TEST(ImportSource, moveToAnotherModel)
     EXPECT_EQ(model2, imp->parent());
 }
 
-TEST(ImportSource, cloneEmpty)
-{
-    auto imp = libcellml::ImportSource::create();
-
-    imp->setUrl("http://example.com");
-    imp->setId("mySuperDooperId");
-
-    auto cloned = imp->clone();
-
-    EXPECT_EQ(imp->url(), cloned->url());
-    EXPECT_EQ(imp->id(), cloned->id());
-}
-
-TEST(ImportSource, cloneImportedComponent)
-{
-    auto model = libcellml::Model::create();
-    auto c = libcellml::Component::create("c");
-
-    auto imp = libcellml::ImportSource::create();
-    imp->setId("myId");
-    imp->setUrl("myUrl");
-
-    model->addComponent(c);
-    c->setImportSource(imp);
-    c->setImportReference("myRef");
-
-    auto cloned = imp->clone();
-
-    EXPECT_EQ(imp->url(), cloned->url());
-    EXPECT_EQ(imp->id(), cloned->id());
-
-    // Not sure whether the cloned import source should be added to this model?
-}
-
-TEST(ImportSource, cloneImportedUnits)
-{
-    auto model = libcellml::Model::create();
-    auto u = libcellml::Units::create("c");
-
-    auto imp = libcellml::ImportSource::create();
-    imp->setId("myId");
-    imp->setUrl("myUrl");
-
-    model->addUnits(u);
-    u->setImportSource(imp);
-    u->setImportReference("myRef");
-
-    auto cloned = imp->clone();
-
-    EXPECT_EQ(imp->url(), cloned->url());
-    EXPECT_EQ(imp->id(), cloned->id());
-
-    // Not sure whether the cloned import source should be added to this model?
-}
-
-TEST(Clone, unitsImportedUnits_setSource)
-{
-    auto u = libcellml::Units::create();
-
-    auto import = libcellml::ImportSource::create();
-    import->setUrl("some-other-model.xml");
-
-    u->setId("unique_id");
-    u->setName("units");
-
-    u->setSourceUnits(import, "imported_units_name");
-
-    auto uClone = u->clone();
-
-    compareUnits(u, uClone);
-}
-
-TEST(Clone, unitsImportedUnits)
-{
-    auto u = libcellml::Units::create();
-
-    auto import = libcellml::ImportSource::create();
-    import->setUrl("some-other-model.xml");
-
-    u->setId("unique_id");
-    u->setName("units");
-
-    u->setImportSource(import);
-    u->setImportReference("imported_units_name");
-
-    auto uClone = u->clone();
-
-    compareUnits(u, uClone);
-}
-
 TEST(ImportSource, createLinkedMultiple)
 {
     auto model = libcellml::Model::create();
@@ -358,4 +268,15 @@ TEST(ImportSource, createLinkedMultiple)
     EXPECT_EQ(size_t(2), imp->componentCount());
     EXPECT_EQ(size_t(2), imp->unitsCount());
     EXPECT_EQ(size_t(1), model->importSourceCount());
+
+    // Change to another import source:
+    auto imp2 = libcellml::ImportSource::create();
+    c2->setImportSource(imp2);
+    u2->setImportSource(imp2);
+
+    EXPECT_EQ(size_t(1), imp->componentCount());
+    EXPECT_EQ(size_t(1), imp->unitsCount());
+    EXPECT_EQ(size_t(1), imp2->componentCount());
+    EXPECT_EQ(size_t(1), imp2->unitsCount());
+    EXPECT_EQ(size_t(2), model->importSourceCount());
 }
