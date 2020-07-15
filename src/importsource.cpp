@@ -39,7 +39,7 @@ struct ImportSource::ImportSourceImpl
     std::vector<size_t> mUnits;
     std::vector<ImportedEntityPtr> mImports;
 
-    bool removeItem(ImportedEntityPtr &item);
+    void removeItem(std::vector<ImportedEntityPtr>::iterator &it);
 };
 
 ImportSource::ImportSource()
@@ -122,29 +122,47 @@ bool ImportSource::addComponent(const ComponentPtr &component)
     return true;
 }
 
-bool ImportSource::removeComponent(ComponentPtr &component)
+bool ImportSource::removeComponent(ComponentPtr &component, bool setEmpty)
 {
     if (component == nullptr) {
         return false;
     }
 
-    ImportSourcePtr empty = nullptr;
-    component->setImportSource(empty);
     auto import = std::dynamic_pointer_cast<ImportedEntity>(component);
-    return mPimpl->removeItem(import);
+    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    if (it == mPimpl->mImports.end()) {
+        return false;
+    }
+    mPimpl->removeItem(it);
+
+    if (setEmpty) {
+        ImportSourcePtr empty = nullptr;
+        component->setImportSource(empty);
+    }
+
+    return true;
 }
 
-bool ImportSource::removeComponent(size_t index)
+bool ImportSource::removeComponent(size_t index, bool setEmpty)
 {
     if (index >= mPimpl->mComponents.size()) {
         return false;
     }
-
     auto c = component(index);
-    ImportSourcePtr empty = nullptr;
-    c->setImportSource(empty);
+
     auto import = std::dynamic_pointer_cast<ImportedEntity>(c);
-    return mPimpl->removeItem(import);
+    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    if (it == mPimpl->mImports.end()) {
+        return false;
+    }
+    mPimpl->removeItem(it);
+
+    if (setEmpty) {
+        ImportSourcePtr empty = nullptr;
+        c->setImportSource(empty);
+    }
+
+    return true;
 }
 
 size_t ImportSource::unitsCount() const
@@ -173,38 +191,52 @@ bool ImportSource::addUnits(const UnitsPtr &units)
     return true;
 }
 
-bool ImportSource::removeUnits(UnitsPtr &units)
+bool ImportSource::removeUnits(UnitsPtr &units, bool setEmpty)
 {
     if (units == nullptr) {
         return false;
     }
 
-    ImportSourcePtr empty = nullptr;
-    units->setImportSource(empty);
     auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
-    return mPimpl->removeItem(import);
+    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    if (it == mPimpl->mImports.end()) {
+        return false;
+    }
+    mPimpl->removeItem(it);
+
+    if (setEmpty) {
+        ImportSourcePtr empty = nullptr;
+        units->setImportSource(empty);
+    }
+
+    return true;
 }
 
-bool ImportSource::removeUnits(size_t index)
+bool ImportSource::removeUnits(size_t index, bool setEmpty)
 {
     if (index >= mPimpl->mUnits.size()) {
         return false;
     }
 
     auto u = units(index);
-    ImportSourcePtr empty = nullptr;
-    u->setImportSource(empty);
-    auto import = std::dynamic_pointer_cast<ImportedEntity>(u);
-    return mPimpl->removeItem(import);
-}
 
-bool ImportSource::ImportSourceImpl::removeItem(ImportedEntityPtr &item)
-{
-    auto it = std::find(mImports.begin(), mImports.end(), item);
-    if (it == mImports.end()) {
+    auto import = std::dynamic_pointer_cast<ImportedEntity>(u);
+    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    if (it == mPimpl->mImports.end()) {
         return false;
     }
+    mPimpl->removeItem(it);
 
+    if (setEmpty) {
+        ImportSourcePtr empty = nullptr;
+        u->setImportSource(empty);
+    }
+
+    return true;
+}
+
+void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityPtr>::iterator &it)
+{
     // Find current index for the item to remove.
     auto index = int(std::distance(mImports.begin(), it));
     auto itU = std::find(mUnits.begin(), mUnits.end(), index);
@@ -231,8 +263,6 @@ bool ImportSource::ImportSourceImpl::removeItem(ImportedEntityPtr &item)
     }
     // Remove the item from the imports.
     mImports.erase(it);
-
-    return true;
 }
 
 } // namespace libcellml

@@ -416,11 +416,18 @@ void Units::removeAllUnits()
 void Units::setImportSource(ImportSourcePtr &importSource)
 {
     auto model = owningModel(shared_from_this());
+    auto units = shared_from_this();
+
+    auto oldImportSource = units->importSource();
+
     if (model != nullptr) {
         model->addImportSource(importSource);
     }
     if (importSource != nullptr) {
-        importSource->addUnits(shared_from_this());
+        importSource->addUnits(units);
+    }
+    if (oldImportSource != nullptr) {
+        oldImportSource->removeUnits(units, false);
     }
     ImportedEntity::setImportSource(importSource);
 }
