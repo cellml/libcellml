@@ -133,23 +133,151 @@ public:
      */
     AnyItem item(const std::string &id);
 
-    // KRM reinstating specific return types
+    /**
+     * @brief Retrieve a @c ComponentPtr with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ComponentPtr.
+     */
     ComponentPtr component(const std::string &id);
-    VariablePtr variable(const std::string &id);
-    ResetPtr reset(const std::string &id);
-    ModelPtr model(const std::string &id);
-    ImportSourcePtr importSource(const std::string &id);
-    UnitsPtr units(const std::string &id);
-    VariablePair connection(const std::string &id);
-    VariablePair mapVariables(const std::string &id);
-    UnitItem unit(const std::string &id);
-    ComponentPtr componentRef(const std::string &id);
-    // std::string math(const std::string &id); // This could return a ComponentPtr the same way reset_value returns a ResetPtr?
-    ResetPtr testValue(const std::string &id);
-    ResetPtr resetValue(const std::string &id);
 
-    std::pair<Annotator::Type, std::vector<std::size_t>> indicesToItem(const std::string &id);
-    std::string instructions(const std::string &id);
+    /**
+     * @brief Retrieve a @c VariablePtr with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c VariablePtr.
+     */
+    VariablePtr variable(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c ResetPtr with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ResetPtr.
+     */
+    ResetPtr reset(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c ModelPtr with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ModelPtr.
+     */
+    ModelPtr model(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c ImportSourcePtr with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ImportSourcePtr.
+     */
+    ImportSourcePtr importSource(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c UnitsPtr with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c UnitsPtr.
+     */
+    UnitsPtr units(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c VariablePair item containing the two @c Variables
+     *        whose connection has the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c VariablePair.
+     */
+    VariablePair connection(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c VariablePair item containing the two @c Variables
+     *        whose mapping has the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c VariablePair.
+     */
+    VariablePair mapVariables(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c UnitItem with the given @p id.
+     *
+     * The @c UnitItem is a pair containg a @c UnitsPtr to the parent Units item, and
+     * the index to the Unit item with this id.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c UnitItem.
+     */
+    UnitItem unit(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c ComponentPtr to the component_ref with the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ComponentPtr.
+     */
+    ComponentPtr componentRef(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c ResetPtr whose test_value has the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ResetPtr.
+     */
+    ResetPtr testValue(const std::string &id);
+
+    /**
+     * @brief Retrieve a @c ResetPtr whose reset_value has the given @p id.
+     *
+     *        If an item with the id is not found, or has another type, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ResetPtr.
+     */
+    ResetPtr resetValue(const std::string &id);
 
 private:
     Annotator(); /**< Constructor */
