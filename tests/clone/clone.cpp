@@ -593,7 +593,7 @@ TEST(Clone, generateFromClonedModel)
 
     libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
 
-    analyser->processModel(clonedModel);
+    analyser->analyseModel(clonedModel);
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 

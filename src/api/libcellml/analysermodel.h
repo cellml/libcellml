@@ -60,7 +60,7 @@ public:
     /**
      * @brief Get the @c Type of the @c Model.
      *
-     * Return the @c Type of the @c Model processed by an @c Analyser.
+     * Return the @c Type of the @c Model analysed by an @c Analyser.
      *
      * @return The @c Type.
      */
@@ -69,7 +69,7 @@ public:
     /**
      * @brief Get the @c Variable of integration of the @c Model.
      *
-     * Return the @c Variable of integration of the @c Model processed by this
+     * Return the @c Variable of integration of the @c Model analysed by this
      * @c Analyser.
      *
      * @return The @c Variable of integration.
@@ -79,8 +79,7 @@ public:
     /**
      * @brief Get the number of states in the @c Model.
      *
-     * Return the number of states in the @c Model processed by this
-     * @c Analyser.
+     * Return the number of states in the @c Model analysed by this @c Analyser.
      *
      * @return The number of states.
      */
@@ -89,7 +88,7 @@ public:
     /**
      * @brief Get the states in the @c Model.
      *
-     * Return the states in the @c Model processed by this @c Analyser.
+     * Return the states in the @c Model analysed by this @c Analyser.
      *
      * @return The states.
      */
@@ -98,7 +97,7 @@ public:
     /**
      * @brief Get the state at @p index.
      *
-     * Return the state at the index @p index for the @c Model processed by this
+     * Return the state at the index @p index for the @c Model analysed by this
      * @c Analyser.
      *
      * @param index The index of the state to return.
@@ -108,7 +107,7 @@ public:
     /**
      * @brief Get the number of variables in the @c Model.
      *
-     * Return the number of variables in the @c Model processed by this
+     * Return the number of variables in the @c Model analysed by this
      * @c Analyser.
      *
      * @return The number of variables.
@@ -118,7 +117,7 @@ public:
     /**
      * @brief Get the variables in the @c Model.
      *
-     * Return the variables in the @c Model processed by this @c Analyser.
+     * Return the variables in the @c Model analysed by this @c Analyser.
      *
      * @return The variables.
      */
@@ -127,7 +126,7 @@ public:
     /**
      * @brief Get the variable at @p index.
      *
-     * Return the variable at the index @p index for the @c Model processed by
+     * Return the variable at the index @p index for the @c Model analysed by
      * this @c Analyser.
      *
      * @param index The index of the variable to return.
@@ -137,7 +136,7 @@ public:
     /**
      * @brief Get the number of equations in the @c Model.
      *
-     * Return the number of equations in the @c Model processed by this
+     * Return the number of equations in the @c Model analysed by this
      * @c Analyser.
      *
      * @return The number of equations.
@@ -147,7 +146,7 @@ public:
     /**
      * @brief Get the equations in the @c Model.
      *
-     * Return the equations in the @c Model processed by this @c Analyser.
+     * Return the equations in the @c Model analysed by this @c Analyser.
      *
      * @return The equations.
      */
@@ -156,7 +155,7 @@ public:
     /**
      * @brief Get the equation at @p index.
      *
-     * Return the equation at the index @p index for the @c Model processed by
+     * Return the equation at the index @p index for the @c Model analysed by
      * this @c Analyser.
      *
      * @param index The index of the equation to return.

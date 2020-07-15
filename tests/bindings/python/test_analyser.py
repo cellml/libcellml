@@ -26,17 +26,18 @@ class AnalyserTestCase(unittest.TestCase):
         x.addIssue(libcellml.Issue())
         self.assertEqual(x.issueCount(), 1)
 
-    def test_process_model(self):
+    def test_analyse_model(self):
         from libcellml import Analyser
         from libcellml import AnalyserModel
         from libcellml import Model
 
-        # Process an empty model and make sure that we get no errors and an UNKNOWN type for the analyser model.
+        # Analyse an empty model and make sure that we get no errors and an
+        # UNKNOWN type for the analyser model.
 
         m = Model('my_model')
         a = Analyser()
 
-        a.processModel(m)
+        a.analyseModel(m)
 
         self.assertEqual(0, a.errorCount())
         self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
