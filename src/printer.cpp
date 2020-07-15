@@ -385,7 +385,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset) const
 std::string Printer::PrinterImpl::printImports(const ModelPtr &model) const
 {
     std::string repr;
-    // TODO KRM Should empty import sources be printed or not?
+
     for (size_t i = 0; i < model->importSourceCount(); ++i) {
         auto importSource = model->importSource(i);
 
