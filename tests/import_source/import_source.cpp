@@ -144,7 +144,7 @@ TEST(ImportSource, importSourceDetailsCoverage)
     EXPECT_EQ(size_t(0), imp->componentCount());
 
     // Remove a component that doesn't exist.
-    EXPECT_FALSE(imp->removeComponent(0));
+    EXPECT_FALSE(imp->removeComponent(99));
     EXPECT_FALSE(imp->removeComponent(component2));
     libcellml::ComponentPtr nullComponent = nullptr;
     EXPECT_FALSE(imp->removeComponent(nullComponent));
@@ -153,8 +153,7 @@ TEST(ImportSource, importSourceDetailsCoverage)
     units1->setImportSource(imp);
 
     EXPECT_TRUE(units1->isImport());
-    make
-        EXPECT_EQ(size_t(1), imp->unitsCount());
+    EXPECT_EQ(size_t(1), imp->unitsCount());
     EXPECT_EQ(units1, imp->units(0));
     EXPECT_EQ(nullptr, imp->units(99));
 
@@ -177,8 +176,8 @@ TEST(ImportSource, importSourceDetailsCoverage)
     EXPECT_TRUE(imp->removeUnits(units2));
     EXPECT_FALSE(units2->isImport());
 
-    // Remove a units that doesn't exist by index.
-    EXPECT_FALSE(imp->removeUnits(0));
+    // Remove a units that doesn't exist.
+    EXPECT_FALSE(imp->removeUnits(99));
     EXPECT_FALSE(imp->removeUnits(units2));
     libcellml::UnitsPtr nullUnits = nullptr;
     EXPECT_FALSE(imp->removeUnits(nullUnits));
