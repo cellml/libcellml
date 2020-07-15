@@ -1499,7 +1499,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             for (const auto &internalVariable : mInternalVariables) {
                 AnalyserVariable::Type type;
 
-                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalVariable->mVariable) == mExternalVariables.end()) {
+                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalVariable->mVariable) != mExternalVariables.end()) {
                     type = AnalyserVariable::Type::EXTERNAL;
                 } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
                     type = AnalyserVariable::Type::STATE;
@@ -1546,7 +1546,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             //       units rather than equivalent ones.
 
             for (const auto &internalEquation : mInternalEquations) {
-                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalEquation->mVariable->mVariable) != mExternalVariables.end()) {
+                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalEquation->mVariable->mVariable) == mExternalVariables.end()) {
                     AnalyserEquation::Type type;
 
                     if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
