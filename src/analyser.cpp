@@ -369,17 +369,17 @@ struct Analyser::AnalyserImpl
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
                                    const ComponentPtr &component);
 
-    void processNode(const XmlNodePtr &node, AnalyserEquationAstPtr &ast,
+    void analyseNode(const XmlNodePtr &node, AnalyserEquationAstPtr &ast,
                      const AnalyserEquationAstPtr &astParent,
                      const ComponentPtr &component,
                      const AnalyserInternalEquationPtr &equation);
-    void processComponent(const ComponentPtr &component);
+    void analyseComponent(const ComponentPtr &component);
 
     void doEquivalentVariables(const VariablePtr &variable,
                                std::vector<VariablePtr> &equivalentVariables) const;
     std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
 
-    void processEquationAst(const AnalyserEquationAstPtr &ast);
+    void analyseEquationAst(const AnalyserEquationAstPtr &ast);
 
     double scalingFactor(const VariablePtr &variable);
 
@@ -390,7 +390,7 @@ struct Analyser::AnalyserImpl
 
     bool isExternalVariable(const VariablePtr &variable);
 
-    void processModel(const ModelPtr &model,
+    void analyseModel(const ModelPtr &model,
                       const std::vector<VariablePtr> &externalVariables);
 };
 
@@ -529,7 +529,7 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
     return voi;
 }
 
-void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
+void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
                                          AnalyserEquationAstPtr &ast,
                                          const AnalyserEquationAstPtr &astParent,
                                          const ComponentPtr &component,
@@ -572,20 +572,20 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
         auto childCount = mathmlChildCount(node);
 
-        processNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
+        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mLeftChild, ast, component, equation);
 
         if (childCount >= 3) {
             AnalyserEquationAstPtr astRightChild;
             AnalyserEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
+            analyseNode(mathmlChildNode(node, childCount - 1), astRightChild, nullptr, component, equation);
 
             for (auto i = childCount - 2; i > 1; --i) {
                 tempAst = AnalyserEquationAst::create();
 
-                processNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
+                analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
+                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
                 astRightChild->mPimpl->mParent = tempAst;
 
@@ -776,20 +776,20 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
         if (childCount >= 2) {
             AnalyserEquationAstPtr astRight;
             AnalyserEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
+            analyseNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
             for (auto i = childCount - 2; i > 0; --i) {
                 tempAst = AnalyserEquationAst::create();
 
                 tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-                processNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
+                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
 
                 astRight->mPimpl->mParent = tempAst;
 
@@ -804,12 +804,12 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("piece")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->mPimpl->mRightChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mRightChild, ast, component, equation);
     } else if (node->isMathmlElement("otherwise")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::OTHERWISE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
         // Token elements.
 
@@ -849,20 +849,20 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("degree")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::DEGREE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("logbase")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::LOGBASE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("bvar")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::BVAR, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
 
         auto rightNode = mathmlChildNode(node, 1);
 
         if (rightNode != nullptr) {
-            processNode(rightNode, ast->mPimpl->mRightChild, ast, component, equation);
+            analyseNode(rightNode, ast->mPimpl->mRightChild, ast, component, equation);
         }
 
         // Constants.
@@ -882,9 +882,9 @@ void Analyser::AnalyserImpl::processNode(const XmlNodePtr &node,
     }
 }
 
-void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
+void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
 {
-    // Retrieve the math string associated with the given component and process
+    // Retrieve the math string associated with the given component and analyse
     // it, one equation at a time.
 
     auto xmlDoc = std::make_shared<XmlDoc>();
@@ -904,9 +904,9 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
 
                 mInternalEquations.push_back(internalEquation);
 
-                // Actually process the node.
+                // Actually analyse the node.
 
-                processNode(node, internalEquation->mAst, internalEquation->mAst->mPimpl->mParent.lock(), component, internalEquation);
+                analyseNode(node, internalEquation->mAst, internalEquation->mAst->mPimpl->mParent.lock(), component, internalEquation);
             }
         }
     }
@@ -976,7 +976,7 @@ void Analyser::AnalyserImpl::processComponent(const ComponentPtr &component)
     // Do the same for the components encapsulated by the given component.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        processComponent(component->component(i));
+        analyseComponent(component->component(i));
     }
 }
 
@@ -1003,7 +1003,7 @@ std::vector<VariablePtr> Analyser::AnalyserImpl::equivalentVariables(const Varia
     return res;
 }
 
-void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &ast)
+void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &ast)
 {
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
@@ -1113,11 +1113,11 @@ void Analyser::AnalyserImpl::processEquationAst(const AnalyserEquationAstPtr &as
     // Recursively check the given AST's children.
 
     if (ast->mPimpl->mLeftChild != nullptr) {
-        processEquationAst(ast->mPimpl->mLeftChild);
+        analyseEquationAst(ast->mPimpl->mLeftChild);
     }
 
     if (ast->mPimpl->mRightChild != nullptr) {
-        processEquationAst(ast->mPimpl->mRightChild);
+        analyseEquationAst(ast->mPimpl->mRightChild);
     }
 }
 
@@ -1226,10 +1226,10 @@ bool Analyser::AnalyserImpl::isExternalVariable(const VariablePtr &variable)
            != mExternalVariables.end();
 }
 
-void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
+void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
                                           const std::vector<VariablePtr> &externalVariables)
 {
-    // Reset a few things in case this analyser was to be used to process more
+    // Reset a few things in case this analyser was to be used to analyse more
     // than one model.
 
     mAnalyser->removeAllIssues();
@@ -1240,27 +1240,27 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
     mInternalVariables.clear();
     mInternalEquations.clear();
 
-    // Recursively process the model's components, so that we end up with an AST
+    // Recursively analyse the model's components, so that we end up with an AST
     // for each of the model's equations.
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        processComponent(model->component(i));
+        analyseComponent(model->component(i));
     }
 
-    // Some more processing is needed, but it can only be done if we didn't come
-    // across any errors during the processing of our components.
+    // Some more analysis is needed, but it can only be done if we didn't come
+    // across any errors during the analysis of our components.
 
     if (mAnalyser->errorCount() == 0) {
-        // Process our different equations' AST to determine the type of our
+        // Analyse our different equations' AST to determine the type of our
         // variables.
 
         for (const auto &internalEquation : mInternalEquations) {
-            processEquationAst(internalEquation->mAst);
+            analyseEquationAst(internalEquation->mAst);
         }
     }
 
-    // Some post-processing is now needed, but it can only be done if we didn't
-    // come across any errors during the processing of our equations' AST.
+    // Some post-analysis is now needed, but it can only be done if we didn't
+    // come across any errors during the analysis of our equations' AST.
 
     if (mAnalyser->errorCount() == 0) {
         // Sort our variables, determine the index of our constant variables and
@@ -1346,7 +1346,7 @@ void Analyser::AnalyserImpl::processModel(const ModelPtr &model,
         mModel->mPimpl->mType = AnalyserModel::Type::INVALID;
     }
 
-    // Some final post-processing is now needed, if we have a valid model.
+    // Some final post-analysis is now needed, if we have a valid model.
 
     if ((mModel->mPimpl->mType == AnalyserModel::Type::ODE)
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
@@ -1605,10 +1605,10 @@ AnalyserPtr Analyser::create() noexcept
     return std::shared_ptr<Analyser> {new Analyser {}};
 }
 
-void Analyser::processModel(const ModelPtr &model,
+void Analyser::analyseModel(const ModelPtr &model,
                             const std::vector<VariablePtr> &externalVariables)
 {
-    // Make sure that the model is valid before processing it.
+    // Make sure that the model is valid before analysis it.
 
     auto validator = Validator::create();
 
@@ -1627,9 +1627,9 @@ void Analyser::processModel(const ModelPtr &model,
         return;
     }
 
-    // Process the model.
+    // Analyse the model.
 
-    mPimpl->processModel(model, externalVariables);
+    mPimpl->analyseModel(model, externalVariables);
 }
 
 AnalyserModelPtr Analyser::model() const
