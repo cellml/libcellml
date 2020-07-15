@@ -280,3 +280,38 @@ TEST(ImportSource, createLinkedMultiple)
     EXPECT_EQ(size_t(1), imp2->unitsCount());
     EXPECT_EQ(size_t(2), model->importSourceCount());
 }
+
+TEST(ImportSource, consolidateImports){
+    auto model = libcellml::Model::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+
+    auto imp1 = libcellml::ImportSource::create();
+    auto imp2 = libcellml::ImportSource::create();
+    auto imp3 = libcellml::ImportSource::create();
+    auto imp4 = libcellml::ImportSource::create();
+
+    auto url = "http://www.example.com";
+    imp1->setUrl(url);
+    imp2->setUrl(url);
+    imp3->setUrl(url);
+    imp4->setUrl(url);
+
+    model->addComponent(c1);
+    model->addComponent(c2);
+    model->addUnits(u1);
+    model->addUnits(u2);
+
+    c1->setImportSource(imp1);
+    c2->setImportSource(imp2);
+    u1->setImportSource(imp3);
+    u2->setImportSource(imp4);
+
+    EXPECT_EQ(size_t(4), model->importSourceCount());
+
+    model = model->consolidateImports();
+
+    EXPECT_EQ(size_t(1), model->importSourceCount());
+}
