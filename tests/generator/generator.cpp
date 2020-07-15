@@ -1265,7 +1265,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
     externalVariables.push_back(model->component("potassium_channel_n_gate")->variable("alpha_n"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ(size_t(0), analyser->issueCount());
 
