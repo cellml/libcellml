@@ -30,12 +30,18 @@ TEST(Analyser, initialisedVariableOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'my_component' cannot be both a variable of integration and initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -50,12 +56,18 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'environment' cannot be both a variable of integration and initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -70,12 +82,18 @@ TEST(Analyser, twoVariablesOfIntegration)
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'main' and variable 'other_time' in component 'sub_sub_sub' cannot both be the variable of integration.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -92,12 +110,22 @@ TEST(Analyser, nonFirstOrderOdes)
         "The differential equation for variable 'y' in component 'sub' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' must be of the first order.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::MATHML,
+        libcellml::Issue::Cause::MATHML,
+        libcellml::Issue::Cause::MATHML,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -113,12 +141,20 @@ TEST(Analyser, undefinedVariables)
         "MathML ci element has the child text 'a' which does not correspond with any variable names present in component 'my_component'.",
         "MathML ci element has the child text 'b' which does not correspond with any variable names present in component 'my_component'.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::MATHML,
+        libcellml::Issue::Cause::MATHML,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -133,12 +169,18 @@ TEST(Analyser, variableInitialisedTwice)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'sub' and variable 'x' in component 'main' are equivalent and cannot therefore both be initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -153,12 +195,18 @@ TEST(Analyser, nonConstantInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'main' is initialised using variable 'k2', but it is not a constant.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -173,12 +221,18 @@ TEST(Analyser, nonExistingInitialisingVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' has an invalid initial value 'k'. Initial values must be a real number string or a variable reference.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -193,12 +247,18 @@ TEST(Analyser, nonInitialisedState)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is used in an ODE, but it is not initialised.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -213,12 +273,18 @@ TEST(Analyser, underconstrained)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is not computed.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -233,12 +299,18 @@ TEST(Analyser, overconstrained)
     const std::vector<std::string> expectedIssues = {
         "Variable 'x' in component 'my_component' is computed more than once.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -254,12 +326,20 @@ TEST(Analyser, unsuitablyConstrained)
         "Variable 'x' in component 'my_component' is not computed.",
         "Variable 'y' in component 'my_component' is computed more than once.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->processModel(model);
 
-    EXPECT_EQ_ISSUES(expectedIssues, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }
@@ -276,6 +356,12 @@ TEST(Analyser, exactSameExternalVariables)
         "Variable 'time' in component 'environment' is marked as an external variable more than once.",
         "Variable 'i_Na' in component 'sodium_channel' is marked as an external variable more than once.",
         "Variable 'time' in component 'environment' is marked as an external variable, but it is the variable of integration which cannot be marked as an external variable.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
@@ -299,7 +385,7 @@ TEST(Analyser, exactSameExternalVariables)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, onePrimaryVoiExternalVariable)
@@ -354,6 +440,9 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     const std::vector<std::string> expectedIssues = {
         "Both variable 'time' in component 'environment' and variable 'time' in component 'membrane' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
     };
@@ -366,7 +455,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
@@ -379,6 +468,9 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     const std::vector<std::string> expectedIssues = {
         "Both variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
     };
@@ -391,7 +483,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
@@ -403,6 +495,9 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'environment', variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
@@ -417,7 +512,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
@@ -429,6 +524,9 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'time' in component 'membrane', variable 'time' in component 'sodium_channel' and variable 'time' in component 'potassium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
@@ -443,7 +541,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, onePrimaryExternalVariable)
@@ -473,6 +571,9 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
     const std::vector<std::string> expectedIssues = {
         "Variable 'V' in component 'sodium_channel' is marked as an external variable, but it is not a primary variable. Variable 'V' in component 'membrane' is its corresponding primary variable and will therefore be the one marked as an external variable.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
     };
@@ -484,7 +585,7 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
@@ -497,6 +598,9 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
     const std::vector<std::string> expectedIssues = {
         "Both variable 'V' in component 'membrane' and variable 'V' in component 'sodium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one marked as an external variable.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
     };
@@ -509,7 +613,7 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
@@ -522,6 +626,9 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
     const std::vector<std::string> expectedIssues = {
         "Both variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one marked as an external variable.",
     };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
     };
@@ -534,7 +641,7 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
@@ -546,6 +653,9 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'V' in component 'membrane', variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one marked as an external variable.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
@@ -560,7 +670,7 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
@@ -572,6 +682,9 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
 
     const std::vector<std::string> expectedIssues = {
         "Variable 'V' in component 'sodium_channel', variable 'V' in component 'potassium_channel' and variable 'V' in component 'leakage_current' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one marked as an external variable.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::WARNING,
@@ -586,7 +699,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
 
     analyser->processModel(model, externalVariables);
 
-    EXPECT_EQ_ISSUES_LEVELS(expectedIssues, expectedLevels, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
 TEST(Analyser, coverage)
