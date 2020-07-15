@@ -309,6 +309,16 @@ bool Model::removeImportSource(const ImportSourcePtr &imp)
     return status;
 }
 
+bool Model::removeAllImportSources()
+{
+    bool status = true;
+    for (const auto &imp : mPimpl->mImports) {
+        imp->removeParent();
+    }
+    mPimpl->mImports.clear();
+    return status;
+}
+
 void linkComponentVariableUnits(const ComponentPtr &component)
 {
     for (size_t index = 0; index < component->variableCount(); ++index) {
