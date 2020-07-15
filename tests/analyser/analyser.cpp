@@ -383,7 +383,7 @@ TEST(Analyser, exactSameExternalVariables)
     externalVariables.push_back(model->component("membrane")->variable("V"));
     externalVariables.push_back(model->component("environment")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -404,7 +404,7 @@ TEST(Analyser, onePrimaryVoiExternalVariable)
 
     externalVariables.push_back(model->component("environment")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
@@ -425,7 +425,7 @@ TEST(Analyser, oneNonPrimaryVoiExternalVariable)
 
     externalVariables.push_back(model->component("membrane")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
@@ -453,7 +453,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     externalVariables.push_back(model->component("environment")->variable("time"));
     externalVariables.push_back(model->component("membrane")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -481,7 +481,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     externalVariables.push_back(model->component("membrane")->variable("time"));
     externalVariables.push_back(model->component("sodium_channel")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -510,7 +510,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     externalVariables.push_back(model->component("membrane")->variable("time"));
     externalVariables.push_back(model->component("sodium_channel")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -539,7 +539,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     externalVariables.push_back(model->component("sodium_channel")->variable("time"));
     externalVariables.push_back(model->component("potassium_channel")->variable("time"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -556,7 +556,7 @@ TEST(Analyser, onePrimaryExternalVariable)
 
     externalVariables.push_back(model->component("membrane")->variable("V"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ(size_t(0), analyser->issueCount());
 }
@@ -583,7 +583,7 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
 
     externalVariables.push_back(model->component("sodium_channel")->variable("V"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -611,7 +611,7 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
     externalVariables.push_back(model->component("membrane")->variable("V"));
     externalVariables.push_back(model->component("sodium_channel")->variable("V"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -639,7 +639,7 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
     externalVariables.push_back(model->component("sodium_channel")->variable("V"));
     externalVariables.push_back(model->component("potassium_channel")->variable("V"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -668,7 +668,7 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
     externalVariables.push_back(model->component("sodium_channel")->variable("V"));
     externalVariables.push_back(model->component("potassium_channel")->variable("V"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -697,7 +697,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
     externalVariables.push_back(model->component("potassium_channel")->variable("V"));
     externalVariables.push_back(model->component("leakage_current")->variable("V"));
 
-    analyser->processModel(model, externalVariables);
+    analyser->analyseModel(model, externalVariables);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
