@@ -148,13 +148,10 @@ bool ImportSource::removeComponent(size_t index, bool setEmpty)
     if (index >= mPimpl->mComponents.size()) {
         return false;
     }
-    auto c = component(index);
 
+    auto c = component(index);
     auto import = std::dynamic_pointer_cast<ImportedEntity>(c);
     auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
-    if (it == mPimpl->mImports.end()) {
-        return false;
-    }
     mPimpl->removeItem(it);
 
     if (setEmpty) {
@@ -219,12 +216,8 @@ bool ImportSource::removeUnits(size_t index, bool setEmpty)
     }
 
     auto u = units(index);
-
     auto import = std::dynamic_pointer_cast<ImportedEntity>(u);
     auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
-    if (it == mPimpl->mImports.end()) {
-        return false;
-    }
     mPimpl->removeItem(it);
 
     if (setEmpty) {
