@@ -374,6 +374,9 @@ public:
     bool removeImportSource(const ImportSourcePtr &imp);
     bool hasImportSource(const ImportSourcePtr &imp) const;
 
+    // KRM to be moved into the Importer class when either PR is merged ...
+    ModelPtr consolidateImports();
+
 private:
     Model(); /**< Constructor */
     explicit Model(const std::string &name); /**< Constructor with std::string parameter*/
