@@ -388,8 +388,6 @@ struct Analyser::AnalyserImpl
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
-    bool isExternalVariable(const VariablePtr &variable);
-
     void analyseModel(const ModelPtr &model,
                       const std::vector<VariablePtr> &externalVariables);
 };
@@ -1219,13 +1217,6 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
     }
 }
 
-bool Analyser::AnalyserImpl::isExternalVariable(const VariablePtr &variable)
-{
-    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v == variable; })
-           != mExternalVariables.end();
-}
-
 void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
                                           const std::vector<VariablePtr> &externalVariables)
 {
@@ -1508,7 +1499,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             for (const auto &internalVariable : mInternalVariables) {
                 AnalyserVariable::Type type;
 
-                if (isExternalVariable(internalVariable->mVariable)) {
+                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalVariable->mVariable) == mExternalVariables.end()) {
                     type = AnalyserVariable::Type::EXTERNAL;
                 } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
                     type = AnalyserVariable::Type::STATE;
@@ -1555,7 +1546,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             //       units rather than equivalent ones.
 
             for (const auto &internalEquation : mInternalEquations) {
-                if (!isExternalVariable(internalEquation->mVariable->mVariable)) {
+                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalEquation->mVariable->mVariable) != mExternalVariables.end()) {
                     AnalyserEquation::Type type;
 
                     if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
