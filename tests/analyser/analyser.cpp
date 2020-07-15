@@ -36,7 +36,7 @@ TEST(Analyser, initialisedVariableOfIntegration)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -59,7 +59,7 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -82,7 +82,7 @@ TEST(Analyser, twoVariablesOfIntegration)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -109,7 +109,7 @@ TEST(Analyser, nonFirstOrderOdes)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -134,7 +134,7 @@ TEST(Analyser, undefinedVariables)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -157,7 +157,7 @@ TEST(Analyser, variableInitialisedTwice)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -180,7 +180,7 @@ TEST(Analyser, nonConstantInitialisingVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -203,7 +203,7 @@ TEST(Analyser, nonExistingInitialisingVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -226,7 +226,7 @@ TEST(Analyser, nonInitialisedState)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -249,7 +249,7 @@ TEST(Analyser, underconstrained)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -272,7 +272,7 @@ TEST(Analyser, overconstrained)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -297,7 +297,7 @@ TEST(Analyser, unsuitablyConstrained)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
 
@@ -309,7 +309,7 @@ TEST(Analyser, coverage)
     auto model = libcellml::Model::create("empty_model");
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     EXPECT_EQ(size_t(0), analyser->issueCount());
 

@@ -45,19 +45,18 @@ public:
     static AnalyserPtr create() noexcept;
 
     /**
-     * @brief Process the @c Model.
+     * @brief Analyse the @c Model.
      *
-     * Process the @c Model using this @c Analyser.
+     * Analyse the @c Model using this @c Analyser.
      *
-     * @param model The @c Model to process.
+     * @param model The @c Model to analyse.
      */
-    void processModel(const ModelPtr &model);
+    void analyseModel(const ModelPtr &model);
 
     /**
      * @brief Get the analysed model.
      *
-     * @return The analysed model for the @c Model processed by this
-     * @c Analyser.
+     * @return The analysed model for the @c Model analysed by this @c Analyser.
      */
     AnalyserModelPtr model() const;
 
