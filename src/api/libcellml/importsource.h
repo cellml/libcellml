@@ -138,10 +138,12 @@ public:
      * @p index must be in the range [0, \#component).
      *
      * @param index The index of the component to remove.
+     * @param setEmpty Whether or not to set the removed Component's
+     *        importSource to nullptr.  True by default.
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(size_t index);
+    bool removeComponent(size_t index, bool setEmpty = true);
 
     /**
      * @overload
@@ -151,10 +153,12 @@ public:
      * Remove the component with the pointer @p component.
      *
      * @param component The pointer to the component to remove.
+     * @param setEmpty Whether or not to set the removed Component's
+     *        importSource to nullptr.  True by default.
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(ComponentPtr &component);
+    bool removeComponent(ComponentPtr &component, bool setEmpty = true);
 
     /**
      * @brief Get the number of components accessed by this import source.
@@ -200,10 +204,12 @@ public:
      * @p index must be in the range [0, \#units).
      *
      * @param index The index of the units to remove.
+     * @param setEmpty Whether or not to set the removed Units'
+     *        importSource to nullptr.  True by default.
      *
      * @return True if the units were removed, false otherwise.
      */
-    bool removeUnits(size_t index);
+    bool removeUnits(size_t index, bool setEmpty = true);
 
     /**
      * @overload
@@ -213,10 +219,12 @@ public:
      * Remove the units with the pointer @p units.
      *
      * @param units The pointer to the units to remove.
+     * @param setEmpty Whether or not to set the removed Units'
+     *        importSource to nullptr.  True by default.
      *
      * @return True if the units were removed, false otherwise.
      */
-    bool removeUnits(UnitsPtr &units);
+    bool removeUnits(UnitsPtr &units, bool setEmpty = true);
 
     /**
      * @brief Get the number of units accessed by this import source.

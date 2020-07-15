@@ -126,6 +126,7 @@ bool Component::doAddComponent(const ComponentPtr &component)
 void Component::setImportSource(ImportSourcePtr &importSource)
 {
     auto component = shared_from_this();
+    auto oldImportSource = component->importSource();
 
     if (importSource != nullptr) {
         importSource->addComponent(component);
@@ -134,6 +135,10 @@ void Component::setImportSource(ImportSourcePtr &importSource)
     auto model = owningModel(component);
     if (model != nullptr) {
         model->addImportSource(importSource);
+    }
+
+    if (oldImportSource != nullptr) {
+        oldImportSource->removeComponent(component, false);
     }
 
     ImportedEntity::setImportSource(importSource);

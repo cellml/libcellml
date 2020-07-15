@@ -267,7 +267,7 @@ bool Model::addImportSource(const ImportSourcePtr &imp)
     }
     auto otherModel = owningModel(imp);
     if (otherModel != nullptr) {
-       otherModel->removeImportSource(imp);
+        otherModel->removeImportSource(imp);
     }
     imp->setParent(shared_from_this());
     mPimpl->mImports.push_back(imp);

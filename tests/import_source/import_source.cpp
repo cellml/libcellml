@@ -129,7 +129,6 @@ TEST(ImportSource, importSourceDetailsCoverage)
 
     // Add the other component so it's an import.
     component2->setImportSource(imp);
-
     EXPECT_TRUE(component2->isImport());
     EXPECT_EQ(size_t(2), imp->componentCount());
     EXPECT_EQ(component2, imp->component(1));
@@ -142,8 +141,9 @@ TEST(ImportSource, importSourceDetailsCoverage)
     // Remove component by pointer.
     EXPECT_TRUE(imp->removeComponent(component2));
     EXPECT_FALSE(component2->isImport());
+    EXPECT_EQ(size_t(0), imp->componentCount());
 
-    // Remove a component that doesn't exist by index.
+    // Remove a component that doesn't exist.
     EXPECT_FALSE(imp->removeComponent(0));
     EXPECT_FALSE(imp->removeComponent(component2));
     libcellml::ComponentPtr nullComponent = nullptr;
@@ -153,7 +153,8 @@ TEST(ImportSource, importSourceDetailsCoverage)
     units1->setImportSource(imp);
 
     EXPECT_TRUE(units1->isImport());
-    EXPECT_EQ(size_t(1), imp->unitsCount());
+    make
+        EXPECT_EQ(size_t(1), imp->unitsCount());
     EXPECT_EQ(units1, imp->units(0));
     EXPECT_EQ(nullptr, imp->units(99));
 
