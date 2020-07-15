@@ -206,7 +206,7 @@ TEST(Generator, isolatedFirstOrderModel)
     //          - modelType() returns "ODE".
 
     libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     //  5.b   Check whether the generator has encountered any issues.
     EXPECT_EQ(size_t(0), analyser->issueCount());

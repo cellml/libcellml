@@ -66,10 +66,10 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
-     * @brief Get the interface code for the @c Model.
+     * @brief Get the interface code for the @c AnalyserModel.
      *
-     * Return the interface code for the @c Model processed by this
-     * @c Generator, using its @c GeneratorProfile.
+     * Return the interface code for the @c AnalyserModel, using its
+     * @c GeneratorProfile.
      *
      * @param model The @AnalyserModel for which interface code is to be
      * generated.
@@ -79,10 +79,10 @@ public:
     std::string interfaceCode(const AnalyserModelPtr &model) const;
 
     /**
-     * @brief Get the implementation code for the @c Model.
+     * @brief Get the implementation code for the @c AnalyserModel.
      *
-     * Return the implementation code for the @c Model processed by this
-     * @c Generator, using its @c GeneratorProfile.
+     * Return the implementation code for the @c AnalyserModel, using its
+     * @c GeneratorProfile.
      *
      * @param model The @AnalyserModel for which implementation code is to be
      * generated.

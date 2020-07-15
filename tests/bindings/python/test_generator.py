@@ -24,7 +24,7 @@ class GeneratorTestCase(unittest.TestCase):
         m = p.parseModel(file_contents('generator/algebraic_eqn_computed_var_on_rhs/model.cellml'))
 
         a = Analyser()
-        a.processModel(m)
+        a.analyseModel(m)
 
         am = a.model()
 

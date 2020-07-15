@@ -701,7 +701,7 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->processModel(model);
+    analyser->analyseModel(model);
 
     auto generator = libcellml::Generator::create();
 
