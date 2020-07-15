@@ -225,6 +225,37 @@ TEST(ImportSource, addRemoveFromModel)
     model->removeImportSource(imp);
     EXPECT_EQ(size_t(0), model->importSourceCount());
     EXPECT_EQ(nullptr, model->importSource(0));
+
+    auto imp1 = libcellml::ImportSource::create();
+    auto imp2 = libcellml::ImportSource::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+
+    c1->setSourceComponent(imp1, "cc1");
+    c2->setSourceComponent(imp1, "cc2");
+    u1->setSourceUnits(imp2, "uu1");
+    u2->setSourceUnits(imp2, "uu2");
+
+    EXPECT_TRUE(c1->isImport());
+    EXPECT_TRUE(c2->isImport());
+    EXPECT_TRUE(u1->isImport());
+    EXPECT_TRUE(u2->isImport());
+
+    model->addImportSource(imp1);
+    model->addImportSource(imp2);
+
+    EXPECT_EQ(size_t(2), model->importSourceCount());
+
+    model->removeAllImportSources();
+
+    EXPECT_EQ(size_t(0), model->importSourceCount());
+
+    EXPECT_TRUE(c1->isImport());
+    EXPECT_TRUE(c2->isImport());
+    EXPECT_TRUE(u1->isImport());
+    EXPECT_TRUE(u2->isImport());
 }
 
 TEST(ImportSource, moveToAnotherModel)
@@ -279,6 +310,13 @@ TEST(ImportSource, createLinkedMultiple)
     EXPECT_EQ(size_t(1), imp2->componentCount());
     EXPECT_EQ(size_t(1), imp2->unitsCount());
     EXPECT_EQ(size_t(2), model->importSourceCount());
+
+    imp->removeAllComponents();
+    imp->removeAllUnits();
+    EXPECT_EQ(size_t(0), imp->componentCount());
+    EXPECT_EQ(size_t(0), imp->unitsCount());
+    EXPECT_FALSE(c1->isImport());
+    EXPECT_FALSE(u1->isImport());
 }
 
 TEST(ImportSource, consolidateImports){

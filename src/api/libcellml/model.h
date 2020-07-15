@@ -372,6 +372,7 @@ public:
     ImportSourcePtr importSource(size_t index) const;
     bool removeImportSource(size_t index);
     bool removeImportSource(const ImportSourcePtr &imp);
+    bool removeAllImportSources();
     bool hasImportSource(const ImportSourcePtr &imp) const;
 
     // KRM to be moved into the Importer class when either PR is merged ...

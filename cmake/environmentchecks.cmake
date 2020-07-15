@@ -18,6 +18,11 @@ get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 
 find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
+if(WIN32)
+  find_program(CLCACHE_EXE clcache)
+else()
+  find_program(CCACHE_EXE ccache)
+endif()
 find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
 find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
@@ -41,6 +46,11 @@ check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_F
 
 set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
+if(WIN32)
+  mark_as_advanced(CLCACHE_EXE)
+else()
+  mark_as_advanced(CCACHE_EXE)
+endif()
 mark_as_advanced(
   CLANG_TIDY_EXE
   CLANG_FORMAT_EXE
@@ -81,6 +91,16 @@ if(MSVC)
   endif()
 else()
   find_package(LibXml2 REQUIRED)
+endif()
+
+if(WIN32)
+  if(CLCACHE_EXE)
+    set(CLCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
+  endif()
+else()
+  if(CCACHE_EXE)
+    set(CCACHE_AVAILABLE TRUE CACHE INTERNAL "Executable required to cache compilations.")
+  endif()
 endif()
 
 if(CLANG_FORMAT_EXE AND GIT_EXE)

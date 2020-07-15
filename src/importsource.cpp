@@ -162,6 +162,15 @@ bool ImportSource::removeComponent(size_t index, bool setEmpty)
     return true;
 }
 
+bool ImportSource::removeAllComponents()
+{
+    bool status = true;
+    for (size_t c = mPimpl->mComponents.size() - 1; c <= 0; --c) {
+        status = status && removeComponent(c);
+    }
+    return status;
+}
+
 size_t ImportSource::unitsCount() const
 {
     return mPimpl->mUnits.size();
@@ -226,6 +235,15 @@ bool ImportSource::removeUnits(size_t index, bool setEmpty)
     }
 
     return true;
+}
+
+bool ImportSource::removeAllUnits()
+{
+    bool status = true;
+    for (size_t u = mPimpl->mUnits.size() - 1; u <= 0; --u) {
+        status = status && removeUnits(u);
+    }
+    return status;
 }
 
 void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityPtr>::iterator &it)

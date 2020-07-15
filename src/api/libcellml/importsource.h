@@ -161,6 +161,18 @@ public:
     bool removeComponent(ComponentPtr &component, bool setEmpty = true);
 
     /**
+     * @brief Remove all components from the import source.
+     *
+     * Note that components which are removed from the import will have their
+     * import source cleared.  They thus become locally
+     * concrete instances in the model, and will return @c false to the
+     * function isImport().
+     *
+     * @return True if the components are removed, false otherwise.
+     */
+    bool removeAllComponents();
+
+    /**
      * @brief Get the number of components accessed by this import source.
      *
      * @return The number of components.
@@ -225,6 +237,18 @@ public:
      * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(UnitsPtr &units, bool setEmpty = true);
+
+    /**
+     * @brief Remove all units from the import source.
+     *
+     * Note that units which are removed from the import have their import
+     * source cleared.  They therefore become locally
+     * concrete instances in the model, and will return @c false to the
+     * function isImport().
+     *
+     * @return True if the units are removed, false otherwise.
+     */
+    bool removeAllUnits();
 
     /**
      * @brief Get the number of units accessed by this import source.
