@@ -114,6 +114,14 @@ public:
     bool removeExternalVariable(const VariablePtr &variable);
 
     /**
+     * @brief Remove all external @c Variable items from this @c Analyser.
+     *
+     * Clears all external @c Variable items that have been added to this
+     * @c Analyser.
+     */
+    void removeAllExternalVariables();
+
+    /**
      * @brief Get the number of external @c Variable items in this @c Analyser.
      *
      * Returns the number of external @c Variable items the @c Analyser

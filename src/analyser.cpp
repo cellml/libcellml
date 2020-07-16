@@ -1673,6 +1673,11 @@ bool Analyser::removeExternalVariable(const VariablePtr &variable)
     return false;
 }
 
+void Analyser::removeAllExternalVariables()
+{
+    mPimpl->mExternalVariables.clear();
+}
+
 size_t Analyser::externalVariableCount() const
 {
     return mPimpl->mExternalVariables.size();

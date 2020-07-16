@@ -451,6 +451,26 @@ TEST(Analyser, removeExternalVariableByPointer)
     EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
 }
 
+TEST(Analyser, removeAllExternalVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
+
+    EXPECT_EQ(size_t(3), analyser->externalVariableCount());
+
+    analyser->removeAllExternalVariables();
+
+    EXPECT_EQ(size_t(0), analyser->externalVariableCount());
+}
+
 TEST(Analyser, onePrimaryVoiExternalVariable)
 {
     auto parser = libcellml::Parser::create();
