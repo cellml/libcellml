@@ -16,7 +16,7 @@
 "Adds a variable as an external variable to this analyser.";
 
 %feature("docstring") libcellml::Analyser::externalVariableCount
-"Returns the number of external variables this analyser contains.  ";
+"Returns the number of external variables this analyser contains.";
 
 %feature("docstring") libcellml::Analyser::model
 "Returns the :class:`AnalysedModel` object which results from the analysis of a"
