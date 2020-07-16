@@ -344,48 +344,24 @@ TEST(Analyser, unsuitablyConstrained)
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }
 
-TEST(Analyser, exactSameExternalVariables)
+TEST(Analyser, addSameExternalVariable)
 {
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'V' in component 'membrane' is marked as an external variable more than once.",
-        "Variable 'time' in component 'environment' is marked as an external variable more than once.",
-        "Variable 'i_Na' in component 'sodium_channel' is marked as an external variable more than once.",
-        "Variable 'time' in component 'environment' is marked as an external variable, but it is the variable of integration which cannot be marked as an external variable.",
-    };
-    const std::vector<libcellml::Issue::Cause> expectedCauses = {
-        libcellml::Issue::Cause::VARIABLE,
-        libcellml::Issue::Cause::VARIABLE,
-        libcellml::Issue::Cause::VARIABLE,
-        libcellml::Issue::Cause::VARIABLE,
-    };
-    const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-        libcellml::Issue::Level::WARNING,
-    };
-
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("environment")->variable("time"));
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("environment")->variable("time"));
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("environment")->variable("time"));
+    EXPECT_EQ(size_t(0), analyser->externalVariableCount());
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
 
-    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ(size_t(1), analyser->externalVariableCount());
+
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+
+    EXPECT_EQ(size_t(1), analyser->externalVariableCount());
 }
 
 TEST(Analyser, onePrimaryVoiExternalVariable)
@@ -400,11 +376,10 @@ TEST(Analyser, onePrimaryVoiExternalVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("environment")->variable("time"));
+    analyser->addExternalVariable(model->component("environment")->variable("time"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
@@ -421,11 +396,10 @@ TEST(Analyser, oneNonPrimaryVoiExternalVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(model->component("membrane")->variable("time"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES(expectedIssues, analyser);
 }
@@ -448,12 +422,11 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("environment")->variable("time"));
-    externalVariables.push_back(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(model->component("environment")->variable("time"));
+    analyser->addExternalVariable(model->component("membrane")->variable("time"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -476,12 +449,11 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("time"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("time"));
+    analyser->addExternalVariable(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("time"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -504,13 +476,12 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("environment")->variable("time"));
-    externalVariables.push_back(model->component("membrane")->variable("time"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("time"));
+    analyser->addExternalVariable(model->component("environment")->variable("time"));
+    analyser->addExternalVariable(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("time"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -533,13 +504,12 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("time"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("time"));
-    externalVariables.push_back(model->component("potassium_channel")->variable("time"));
+    analyser->addExternalVariable(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("time"));
+    analyser->addExternalVariable(model->component("potassium_channel")->variable("time"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -552,11 +522,10 @@ TEST(Analyser, onePrimaryExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ(size_t(0), analyser->issueCount());
 }
@@ -579,11 +548,10 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -606,12 +574,11 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -634,12 +601,11 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
-    externalVariables.push_back(model->component("potassium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -662,13 +628,12 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
-    externalVariables.push_back(model->component("potassium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
@@ -691,13 +656,12 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
     };
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("sodium_channel")->variable("V"));
-    externalVariables.push_back(model->component("potassium_channel")->variable("V"));
-    externalVariables.push_back(model->component("leakage_current")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
+    analyser->addExternalVariable(model->component("leakage_current")->variable("V"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
