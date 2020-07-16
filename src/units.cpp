@@ -628,8 +628,11 @@ UnitsPtr Units::clone() const
     units->setId(id());
     units->setName(name());
 
-    auto i = importSource();
-    units->setImportSource(i);
+    if (isImport()) {
+        auto imp = importSource()->clone();
+        units->setImportSource(imp);
+    }
+
     units->setImportReference(importReference());
 
     std::string reference;
