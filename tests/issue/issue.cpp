@@ -480,3 +480,10 @@ TEST(Issue, isHint)
     e->setLevel(libcellml::Issue::Level::HINT);
     EXPECT_EQ(e->level(), libcellml::Issue::Level::HINT);
 }
+
+TEST(Issue, isInformation)
+{
+    auto e = libcellml::Issue::create();
+    e->setLevel(libcellml::Issue::Level::INFORMATION);
+    EXPECT_EQ(e->level(), libcellml::Issue::Level::INFORMATION);
+}
