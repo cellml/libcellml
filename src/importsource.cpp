@@ -26,6 +26,8 @@ limitations under the License.
 
 namespace libcellml {
 
+using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
+
 /**
  * @brief The ImportSource::ImportSourceImpl struct.
  *
@@ -37,9 +39,9 @@ struct ImportSource::ImportSourceImpl
     ModelPtr mModel;
     std::vector<size_t> mComponents;
     std::vector<size_t> mUnits;
-    std::vector<ImportedEntityPtr> mImports;
+    std::vector<ImportedEntityWeakPtr> mImports;
 
-    void removeItem(std::vector<ImportedEntityPtr>::iterator &it);
+    void removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it);
 };
 
 ImportSource::ImportSource()
@@ -90,7 +92,6 @@ ImportSourcePtr ImportSource::clone() const
     i->setId(id());
     i->setUrl(url());
     i->setModel(model());
-    // KRM Do *not* duplicate stored imports (mComponents, mUnits, mImports) here.
 
     return i;
 }
@@ -104,7 +105,7 @@ ComponentPtr ImportSource::component(size_t index) const
 {
     ImportedEntityPtr import = nullptr;
     if (index < mPimpl->mComponents.size()) {
-        import = mPimpl->mImports.at(mPimpl->mComponents.at(index));
+        import = mPimpl->mImports.at(mPimpl->mComponents.at(index)).lock();
     }
     return std::dynamic_pointer_cast<Component>(import);
 }
@@ -112,7 +113,12 @@ ComponentPtr ImportSource::component(size_t index) const
 bool ImportSource::addComponent(const ComponentPtr &component)
 {
     auto import = std::dynamic_pointer_cast<ImportedEntity>(component);
-    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import) != mPimpl->mImports.end()) {
+
+    const auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](const std::weak_ptr<ImportedEntity> &p) {
+        return p.lock() == import;
+    });
+
+    if (it != mPimpl->mImports.end()) {
         return false;
     }
 
@@ -129,10 +135,14 @@ bool ImportSource::removeComponent(ComponentPtr &component, bool setEmpty)
     }
 
     auto import = std::dynamic_pointer_cast<ImportedEntity>(component);
-    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
+        return p.lock() == import;
+    });
+
     if (it == mPimpl->mImports.end()) {
         return false;
     }
+
     mPimpl->removeItem(it);
 
     if (setEmpty) {
@@ -150,8 +160,16 @@ bool ImportSource::removeComponent(size_t index, bool setEmpty)
     }
 
     auto c = component(index);
+
     auto import = std::dynamic_pointer_cast<ImportedEntity>(c);
-    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
+        return p.lock() == import;
+    });
+
+    if (it == mPimpl->mImports.end()) {
+        return false;
+    }
+
     mPimpl->removeItem(it);
 
     if (setEmpty) {
@@ -180,17 +198,23 @@ UnitsPtr ImportSource::units(size_t index) const
 {
     ImportedEntityPtr import = nullptr;
     if (index < mPimpl->mUnits.size()) {
-        import = mPimpl->mImports.at(mPimpl->mUnits.at(index));
+        import = mPimpl->mImports.at(mPimpl->mUnits.at(index)).lock();
     }
     return std::dynamic_pointer_cast<Units>(import);
 }
 
 bool ImportSource::addUnits(const UnitsPtr &units)
 {
+
     auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
-    if (std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import) != mPimpl->mImports.end()) {
+    const auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](const std::weak_ptr<ImportedEntity> &p) {
+        return p.lock() == import;
+    });
+
+    if (it != mPimpl->mImports.end()) {
         return false;
     }
+
     size_t index = mPimpl->mImports.size();
     mPimpl->mImports.push_back(import);
     mPimpl->mUnits.push_back(index);
@@ -204,10 +228,14 @@ bool ImportSource::removeUnits(UnitsPtr &units, bool setEmpty)
     }
 
     auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
-    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
+        return p.lock() == import;
+    });
+
     if (it == mPimpl->mImports.end()) {
         return false;
     }
+
     mPimpl->removeItem(it);
 
     if (setEmpty) {
@@ -225,8 +253,16 @@ bool ImportSource::removeUnits(size_t index, bool setEmpty)
     }
 
     auto u = units(index);
+
     auto import = std::dynamic_pointer_cast<ImportedEntity>(u);
-    auto it = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), import);
+    auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
+        return p.lock() == import;
+    });
+
+    if (it == mPimpl->mImports.end()) {
+        return false;
+    }
+
     mPimpl->removeItem(it);
 
     if (setEmpty) {
@@ -246,7 +282,7 @@ bool ImportSource::removeAllUnits()
     return status;
 }
 
-void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityPtr>::iterator &it)
+void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
 {
     // Find current index for the item to remove.
     auto index = int(std::distance(mImports.begin(), it));

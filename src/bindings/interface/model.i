@@ -91,6 +91,9 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::hasImportSource
 "Test whether this Model already contains the given ImportSource, by reference or url.";
 
+%feature("docstring") libcellml::Model::consolidateImports
+"Merge import sources with identical URLs.";
+
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)

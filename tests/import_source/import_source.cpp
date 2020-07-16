@@ -58,6 +58,57 @@ void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, 
     compareUnit(u1, u2);
 }
 
+void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr)
+{
+    EXPECT_EQ(c1->name(), c2->name());
+    EXPECT_EQ(c1->id(), c2->id());
+    EXPECT_EQ(c1->isImport(), c2->isImport());
+    if (c1->isImport() && c2->isImport()) {
+        EXPECT_EQ(c1->importSource()->url(), c2->importSource()->url());
+        EXPECT_EQ(c1->importSource()->id(), c2->importSource()->id());
+    }
+    EXPECT_EQ(c1->importReference(), c2->importReference());
+    EXPECT_EQ(c1->componentCount(), c2->componentCount());
+    EXPECT_EQ(c1->resetCount(), c2->resetCount());
+    EXPECT_EQ(c1->variableCount(), c2->variableCount());
+    EXPECT_EQ(expectedParent, c2->parent());
+    for (size_t index = 0; index < c1->componentCount(); ++index) {
+        auto c1i = c1->component(index);
+        auto c2i = c2->component(index);
+        compareComponent(c1i, c2i, c2);
+    }
+    for (size_t index = 0; index < c2->resetCount(); ++index) {
+        auto r = c2->reset(index);
+        if (r->variable() != nullptr) {
+            EXPECT_TRUE(c2->hasVariable(r->variable()));
+        }
+        if (r->testVariable() != nullptr) {
+            EXPECT_TRUE(c2->hasVariable(r->testVariable()));
+        }
+    }
+}
+
+void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
+{
+    EXPECT_EQ(m1->id(), m2->id());
+    EXPECT_EQ(m1->name(), m2->name());
+
+    EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
+    EXPECT_EQ(m1->componentCount(), m2->componentCount());
+
+    for (size_t index = 0; index < m1->unitsCount(); ++index) {
+        auto u1 = m1->units(index);
+        auto u2 = m2->units(index);
+        compareUnits(u1, u2, m2);
+    }
+
+    for (size_t index = 0; index < m1->componentCount(); ++index) {
+        auto c1 = m1->component(index);
+        auto c2 = m2->component(index);
+        compareComponent(c1, c2, m2);
+    }
+}
+
 TEST(ImportSource, createImportSource)
 {
     auto imp1 = libcellml::ImportSource::create();
@@ -191,6 +242,35 @@ TEST(ImportSource, importSourceDetailsCoverage)
 
 TEST(ImportSource, importSourceMove)
 {
+    auto imp1 = libcellml::ImportSource::create();
+    auto imp2 = libcellml::ImportSource::create();
+
+    auto component = libcellml::Component::create("component");
+    auto units = libcellml::Units::create("units");
+
+    EXPECT_FALSE(component->isImport());
+    EXPECT_FALSE(units->isImport());
+
+    component->setSourceComponent(imp1, "other_component");
+    units->setSourceUnits(imp1, "other_units");
+
+    EXPECT_TRUE(component->isImport());
+    EXPECT_TRUE(units->isImport());
+    EXPECT_EQ(size_t(1), imp1->componentCount());
+    EXPECT_EQ(size_t(1), imp1->componentCount());
+
+    component->setImportSource(imp2);
+    units->setImportSource(imp2);
+    EXPECT_EQ(size_t(0), imp1->componentCount());
+    EXPECT_EQ(size_t(0), imp1->componentCount());
+    EXPECT_EQ(size_t(1), imp2->componentCount());
+    EXPECT_EQ(size_t(1), imp2->componentCount());
+    EXPECT_TRUE(component->isImport());
+    EXPECT_TRUE(units->isImport());
+}
+
+TEST(ImportSource, importSourceMoveModels)
+{
     auto m1 = libcellml::Model::create("m1");
     auto imp = libcellml::ImportSource::create();
 
@@ -319,8 +399,9 @@ TEST(ImportSource, createLinkedMultiple)
     EXPECT_FALSE(u1->isImport());
 }
 
-TEST(ImportSource, consolidateImports){
-    auto model = libcellml::Model::create();
+TEST(ImportSource, consolidateImports)
+{
+    auto original = libcellml::Model::create();
     auto c1 = libcellml::Component::create("c1");
     auto c2 = libcellml::Component::create("c2");
     auto u1 = libcellml::Units::create("u1");
@@ -337,19 +418,62 @@ TEST(ImportSource, consolidateImports){
     imp3->setUrl(url);
     imp4->setUrl(url);
 
-    model->addComponent(c1);
-    model->addComponent(c2);
-    model->addUnits(u1);
-    model->addUnits(u2);
+    original->addComponent(c1);
+    original->addComponent(c2);
+    original->addUnits(u1);
+    original->addUnits(u2);
 
-    c1->setImportSource(imp1);
-    c2->setImportSource(imp2);
-    u1->setImportSource(imp3);
-    u2->setImportSource(imp4);
+    c1->setSourceComponent(imp1, "cc1");
+    c2->setSourceComponent(imp2, "cc2");
+    u1->setSourceUnits(imp3, "uu1");
+    u2->setSourceUnits(imp4, "uu2");
 
-    EXPECT_EQ(size_t(4), model->importSourceCount());
-
-    model = model->consolidateImports();
-
+    EXPECT_EQ(size_t(4), original->importSourceCount());
+    auto model = original->consolidateImports();
     EXPECT_EQ(size_t(1), model->importSourceCount());
+    compareModel(model, original);
+}
+
+TEST(ImportSource, parseAndPrintConsolidatedImports)
+{
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                     "  </import>\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                     "  </import>\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_3\">\n"
+                     "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
+                     "  </import>\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_4\">\n"
+                     "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
+                     "  </import>\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-different-model.xml\" id=\"import_5\">\n"
+                     "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                     "  </import>\n"
+                     "</model>\n";
+
+    std::string expectedOutput = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                 "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                                 "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+                                 "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
+                                 "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                                 "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                                 "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
+                                 "  </import>\n"
+                                 "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-different-model.xml\" id=\"import_5\">\n"
+                                 "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                                 "  </import>\n"
+                                 "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto printer = libcellml::Printer::create();
+
+    EXPECT_EQ(size_t(5), model->importSourceCount());
+    auto solid = model->consolidateImports();
+    EXPECT_EQ(size_t(2), solid->importSourceCount());
+    EXPECT_EQ(expectedOutput, printer->printModel(solid));
 }

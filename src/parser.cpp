@@ -1176,7 +1176,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = Component::create();
-            importedComponent->setImportSource(importSource);
+            // importedComponent->setImportSource(importSource);
 
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
@@ -1186,7 +1186,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                 } else if (childAttribute->isType("id")) {
                     importedComponent->setId(childAttribute->value());
                 } else if (childAttribute->isType("component_ref")) {
-                    importedComponent->setImportReference(childAttribute->value());
+                    importedComponent->setSourceComponent(importSource, childAttribute->value());
                 } else {
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Import of component '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->name() + "'.");
@@ -1201,7 +1201,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
             }
         } else if (childNode->isCellmlElement("units")) {
             UnitsPtr importedUnits = Units::create();
-            importedUnits->setImportSource(importSource);
+            // importedUnits->setImportSource(importSource);
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
@@ -1210,7 +1210,7 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                 } else if (childAttribute->isType("id")) {
                     importedUnits->setId(childAttribute->value());
                 } else if (childAttribute->isType("units_ref")) {
-                    importedUnits->setImportReference(childAttribute->value());
+                    importedUnits->setSourceUnits(importSource, childAttribute->value());
                 } else {
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Import of units '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->name() + "'.");
