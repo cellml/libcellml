@@ -67,6 +67,53 @@ public:
     bool addExternalVariable(const VariablePtr &variable);
 
     /**
+     * @brief Remove the external @c Variable at the given @p index.
+     *
+     * Remove the external @c Variable with the given @p index. @p index must
+     * be in the range [0, \#externalVariables).
+     *
+     * @param index The index of the external @c Variable to remove.
+     *
+     * @return True if the external @c Variable was removed, false otherwise.
+     */
+    bool removeExternalVariable(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the external @c Variable with the given @p variableName in
+     * the @c Component with the given @p componentName in the given @p model.
+     *
+     * Remove the external @c Variable found that matches the given
+     * @p variableName in the @c Component with the given @p componentName in
+     * the given @p model.
+     *
+     * @param model The pointer to the @c Model which contains the external
+     * @c Variable to remove.
+     * @param componentName The name of the @c Component which contains the
+     * external @c Variable to remove.
+     * @param variableName The name of the external @c Variable to remove.
+     *
+     * @return True if the external @c Variable was removed, false otherwise.
+     */
+    bool removeExternalVariable(const ModelPtr &model,
+                                const std::string &componentName,
+                                const std::string &variableName);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the external @c Variable with the given pointer.
+     *
+     * Remove the external @c Variable with the pointer @p variable.
+     *
+     * @param variable The pointer to the external @c Variable to remove.
+     *
+     * @return True if the external @c Variable was removed, false otherwise.
+     */
+    bool removeExternalVariable(const VariablePtr &variable);
+
+    /**
      * @brief Get the number of external @c Variable items in this @c Analyser.
      *
      * Returns the number of external @c Variable items the @c Analyser

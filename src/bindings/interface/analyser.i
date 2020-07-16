@@ -15,6 +15,10 @@
 %feature("docstring") libcellml::Analyser::addExternalVariable
 "Adds a variable as an external variable to this analyser.";
 
+%feature("docstring") libcellml::ComponentEntity::removeExternalVariable
+"Removes an external variable, specified by an index, name, or with a"
+":class:`Variable` object. Returns `True` on success.";
+
 %feature("docstring") libcellml::Analyser::externalVariableCount
 "Returns the number of external variables this analyser contains.";
 
