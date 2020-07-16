@@ -372,7 +372,7 @@ TEST(Analyser, onePrimaryVoiExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'environment' is marked as an external variable, but it is the variable of integration which cannot be marked as an external variable.",
+        "Variable 'time' in component 'environment' is marked as an external variable, but it is the variable of integration which cannot be used as an external variable.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -392,7 +392,7 @@ TEST(Analyser, oneNonPrimaryVoiExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'membrane' is marked as an external variable, but it is equivalent to the primary variable of integration which cannot be marked as an external variable.",
+        "Variable 'time' in component 'membrane' is marked as an external variable, but it is equivalent to the primary variable of integration which cannot be used as an external variable.",
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -412,7 +412,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Both variable 'time' in component 'environment' and variable 'time' in component 'membrane' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
+        "Both variable 'time' in component 'environment' and variable 'time' in component 'membrane' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -439,7 +439,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Both variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
+        "Both variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -466,7 +466,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'environment', variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
+        "Variable 'time' in component 'environment', variable 'time' in component 'membrane' and variable 'time' in component 'sodium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -494,7 +494,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'time' in component 'membrane', variable 'time' in component 'sodium_channel' and variable 'time' in component 'potassium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be marked as an external variable.",
+        "Variable 'time' in component 'membrane', variable 'time' in component 'sodium_channel' and variable 'time' in component 'potassium_channel' are marked as external variables, but they are equivalent to the primary variable of integration which cannot be used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -538,7 +538,7 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'V' in component 'sodium_channel' is marked as an external variable, but it is not a primary variable. Variable 'V' in component 'membrane' is its corresponding primary variable and will therefore be the one marked as an external variable.",
+        "Variable 'V' in component 'sodium_channel' is marked as an external variable, but it is not a primary variable. Variable 'V' in component 'membrane' is its corresponding primary variable and will therefore be the one used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -564,7 +564,7 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Both variable 'V' in component 'membrane' and variable 'V' in component 'sodium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one marked as an external variable.",
+        "Both variable 'V' in component 'membrane' and variable 'V' in component 'sodium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -591,7 +591,7 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Both variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one marked as an external variable.",
+        "Both variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -618,7 +618,7 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'V' in component 'membrane', variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one marked as an external variable.",
+        "Variable 'V' in component 'membrane', variable 'V' in component 'sodium_channel' and variable 'V' in component 'potassium_channel' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is the primary variable and will therefore be the one used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
@@ -646,7 +646,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'V' in component 'sodium_channel', variable 'V' in component 'potassium_channel' and variable 'V' in component 'leakage_current' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one marked as an external variable.",
+        "Variable 'V' in component 'sodium_channel', variable 'V' in component 'potassium_channel' and variable 'V' in component 'leakage_current' are marked as external variables, but they are all equivalent. Variable 'V' in component 'membrane' is their corresponding primary variable and will therefore be the one used as an external variable.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
