@@ -850,23 +850,23 @@ name and units of a variable.";
 %feature("docstring") libcellml::GeneratorProfile::setVariablesArrayString
 "Set the string for the name of the variables array.";
 
-%feature("docstring") libcellml::GeneratorProfile::computeExternalVariablesMethodTypeDefinitionString
-"Return the string for the type definition of a compute external variables method.";
+%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodTypeDefinitionString
+"Return the string for the type definition of an external variable method.";
 
-%feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodTypeDefinitionString
-"Set the string for the type definition of a compute external variables method.";
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodTypeDefinitionString
+"Set the string for the type definition of an external variable method.";
 
-%feature("docstring") libcellml::GeneratorProfile::computeExternalVariablesMethodParameterString
-"Return the string for the compute external variables method parameter.";
+%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodParameterString
+"Return the string for the external variable method parameter.";
 
-%feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodParameterString
-"Set the string for the compute external variables method parameter.";
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodParameterString
+"Set the string for the external variable method parameter.";
 
-%feature("docstring") libcellml::GeneratorProfile::computeExternalVariablesMethodCallString
-"Return the string for the call to the compute external variables method.";
+%feature("docstring") libcellml::GeneratorProfile::externalVariableMethodCallString
+"Return the string for the call to the external variable method.";
 
-%feature("docstring") libcellml::GeneratorProfile::setComputeExternalVariablesMethodCallString
-"Set the string for the call to the compute external variables method.";
+%feature("docstring") libcellml::GeneratorProfile::setExternalVariableMethodCallString
+"Set the string for the call to the external variable method.";
 
 %feature("docstring") libcellml::GeneratorProfile::setReturnCreatedArrayString
 "Set the string for returning a created array. To be useful, the string should

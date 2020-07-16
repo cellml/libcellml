@@ -38,9 +38,9 @@ double * createStatesArray();
 double * createVariablesArray();
 void deleteArray(double *array);
 
-typedef void (* ComputeExternalVariables)(double voi, double *states, double *rates, double *variables);
+typedef double (* ExternalVariable)(double voi, double *states, double *rates, double *variables, size_t index);
 
 void initialiseStatesAndConstants(double *states, double *variables);
 void computeComputedConstants(double *variables);
-void computeRates(double voi, double *states, double *rates, double *variables, ComputeExternalVariables computeExternalVariables);
-void computeVariables(double voi, double *states, double *rates, double *variables, ComputeExternalVariables computeExternalVariables);
+void computeRates(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);
+void computeVariables(double voi, double *states, double *rates, double *variables, ExternalVariable externalVariable);
