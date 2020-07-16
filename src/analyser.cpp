@@ -1404,7 +1404,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         description += ((equivalentVariableCount == 1) && hasPrimaryVariable) ?
                                            " the" :
                                            " equivalent to the primary";
-                        description += " variable of integration which cannot be marked as an external variable.";
+                        description += " variable of integration which cannot be used as an external variable.";
                     } else {
                         description += (equivalentVariableCount == 1) ?
                                            " is marked as an external variable, but it is not a primary variable." :
@@ -1419,7 +1419,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                            (equivalentVariableCount == 1) ?
                                            " its corresponding" :
                                            " their corresponding";
-                        description += " primary variable and will therefore be the one marked as an external variable.";
+                        description += " primary variable and will therefore be the one used as an external variable.";
                     }
                 }
 
