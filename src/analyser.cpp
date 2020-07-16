@@ -1428,7 +1428,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                     issue->setDescription(description);
                     issue->setCause(Issue::Cause::VARIABLE);
-                    issue->setLevel(Issue::Level::WARNING);
+                    issue->setLevel(Issue::Level::INFORMATION);
 
                     mAnalyser->addIssue(issue);
                 }
