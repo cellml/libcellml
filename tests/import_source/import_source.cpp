@@ -434,6 +434,40 @@ TEST(ImportSource, consolidateImports)
     compareModel(model, original);
 }
 
+TEST(ImportSource, consolidateImportsNoDuplicates)
+{
+    auto original = libcellml::Model::create();
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+
+    auto imp1 = libcellml::ImportSource::create();
+    auto imp2 = libcellml::ImportSource::create();
+    auto imp3 = libcellml::ImportSource::create();
+    auto imp4 = libcellml::ImportSource::create();
+
+    imp1->setUrl("http://www.example.com/1");
+    imp2->setUrl("http://www.example.com/2");
+    imp3->setUrl("http://www.example.com/3");
+    imp4->setUrl("http://www.example.com/4");
+
+    original->addComponent(c1);
+    original->addComponent(c2);
+    original->addUnits(u1);
+    original->addUnits(u2);
+
+    c1->setSourceComponent(imp1, "cc1");
+    c2->setSourceComponent(imp2, "cc2");
+    u1->setSourceUnits(imp3, "uu1");
+    u2->setSourceUnits(imp4, "uu2");
+
+    EXPECT_EQ(size_t(4), original->importSourceCount());
+    auto model = original->consolidateImports();
+    EXPECT_EQ(size_t(4), model->importSourceCount());
+    compareModel(model, original);
+}
+
 TEST(ImportSource, parseAndPrintConsolidatedImports)
 {
     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
