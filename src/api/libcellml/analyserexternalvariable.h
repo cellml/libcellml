@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -35,8 +36,21 @@ public:
     AnalyserExternalVariable(AnalyserExternalVariable &&rhs) noexcept = delete; /**< Move constructor */
     AnalyserExternalVariable &operator=(AnalyserExternalVariable rhs) = delete; /**< Assignment operator */
 
+    /**
+     * @brief Create a @c AnalyserExternalVariable object.
+     *
+     * Factory method to create an @c AnalyserExternalVariable. Create an
+     * analyser external variable with::
+     *
+     *   VariablePtr variable = libcellml::Variable::create();
+     *   AnalyserExternalVariablePtr analyserExternalVariable = libcellml::AnalyserExternalVariable::create(variable);
+     *
+     * @return A smart pointer to a @c AnalyserExternalVariable object.
+     */
+    static AnalyserExternalVariablePtr create(const VariablePtr &variable) noexcept;
+
 private:
-    AnalyserExternalVariable(); /**< Constructor */
+    explicit AnalyserExternalVariable(const VariablePtr &variable); /**< Constructor */
 
     struct AnalyserExternalVariableImpl;
     AnalyserExternalVariableImpl *mPimpl;

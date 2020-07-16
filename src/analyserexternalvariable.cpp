@@ -25,16 +25,29 @@ namespace libcellml {
  */
 struct AnalyserExternalVariable::AnalyserExternalVariableImpl
 {
+    VariablePtr mVariable;
+
+    explicit AnalyserExternalVariableImpl(const VariablePtr &variable);
 };
 
-AnalyserExternalVariable::AnalyserExternalVariable()
-    : mPimpl(new AnalyserExternalVariableImpl())
+AnalyserExternalVariable::AnalyserExternalVariableImpl::AnalyserExternalVariableImpl(const VariablePtr &variable)
+    : mVariable(variable)
+{
+}
+
+AnalyserExternalVariable::AnalyserExternalVariable(const VariablePtr &variable)
+    : mPimpl(new AnalyserExternalVariableImpl(variable))
 {
 }
 
 AnalyserExternalVariable::~AnalyserExternalVariable()
 {
     delete mPimpl;
+}
+
+AnalyserExternalVariablePtr AnalyserExternalVariable::create(const VariablePtr &variable) noexcept
+{
+    return std::shared_ptr<AnalyserExternalVariable> {new AnalyserExternalVariable {variable}};
 }
 
 } // namespace libcellml
