@@ -395,10 +395,12 @@ ComponentPtr Component::clone() const
     c->setId(id());
     c->setName(name());
     c->setMath(math());
+
     if (isImport()) {
-        auto i = importSource()->clone();
-        c->setImportSource(i);
+        auto imp = importSource()->clone();
+        c->setImportSource(imp);
     }
+
     c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
