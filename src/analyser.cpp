@@ -1345,7 +1345,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         std::vector<VariablePtr> actualExternalVariables;
 
         if (!mExternalVariables.empty()) {
-            // Check whether a variable is marked as an external variable more
+            // Check whether an external variable belongs to the model being
+            // analysed, or whether it is marked as an external variable more
             // than once through equivalence or is (equivalent to) the variable
             // of integration.
 
@@ -1353,20 +1354,32 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
 
             for (const auto &externalVariable : mExternalVariables) {
-                for (const auto &internalVariable : mInternalVariables) {
-                    if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
-                        primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
+                if (owningModel(externalVariable) != model) {
+                    auto issue = Issue::create();
 
-                        if (((mModel->mPimpl->mVoi == nullptr)
-                             || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
-                            && (std::find(uniqueExternalVariables.begin(),
-                                          uniqueExternalVariables.end(),
-                                          internalVariable->mVariable)
-                                == uniqueExternalVariables.end())) {
-                            uniqueExternalVariables.push_back(internalVariable->mVariable);
+                    issue->setDescription("Variable '" + externalVariable->name()
+                                          + "' in component '" + owningComponent(externalVariable)->name()
+                                          + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
+                    issue->setCause(Issue::Cause::VARIABLE);
+                    issue->setLevel(Issue::Level::INFORMATION);
+
+                    mAnalyser->addIssue(issue);
+                } else {
+                    for (const auto &internalVariable : mInternalVariables) {
+                        if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
+                            primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
+
+                            if (((mModel->mPimpl->mVoi == nullptr)
+                                 || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
+                                && (std::find(uniqueExternalVariables.begin(),
+                                              uniqueExternalVariables.end(),
+                                              internalVariable->mVariable)
+                                    == uniqueExternalVariables.end())) {
+                                uniqueExternalVariables.push_back(internalVariable->mVariable);
+                            }
+
+                            break;
                         }
-
-                        break;
                     }
                 }
             }
