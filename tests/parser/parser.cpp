@@ -1356,9 +1356,7 @@ TEST(Parser, invalidImportsAndGetIssue)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
-        "    <component component_ref=\"\" name=\"frank\"/>\n" // KRM added this line
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
-        "    <units units_ref=\"\" name=\"fido\"/>\n" // KRM added this line
         "  </import>\n"
         "</model>\n";
 
