@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/importsource.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -365,7 +366,10 @@ ComponentPtr Component::clone() const
     c->setName(name());
     c->setMath(math());
 
-    c->setImportSource(importSource());
+    if (isImport()) {
+        auto imp = importSource()->clone();
+        c->setImportSource(imp);
+    }
     c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
