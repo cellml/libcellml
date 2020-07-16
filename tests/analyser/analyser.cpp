@@ -355,11 +355,13 @@ TEST(Analyser, addSameExternalVariable)
 
     EXPECT_EQ(size_t(0), analyser->externalVariableCount());
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    auto externalVariable = model->component("membrane")->variable("V");
+
+    analyser->addExternalVariable(externalVariable);
 
     EXPECT_EQ(size_t(1), analyser->externalVariableCount());
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(externalVariable);
 
     EXPECT_EQ(size_t(1), analyser->externalVariableCount());
 }
