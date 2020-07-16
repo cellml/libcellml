@@ -22,6 +22,10 @@
 %feature("docstring") libcellml::Analyser::removeAllExternalVariables
 "Removes all external variables from this analyser.";
 
+%feature("docstring") libcellml::Analyser::containsExternalVariable
+"Tests if an external variable, specified by a name, or with a"
+":class:`Variable` object, is contained within this analyser.";
+
 %feature("docstring") libcellml::Analyser::externalVariableCount
 "Returns the number of external variables this analyser contains.";
 

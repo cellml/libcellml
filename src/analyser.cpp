@@ -1678,6 +1678,18 @@ void Analyser::removeAllExternalVariables()
     mPimpl->mExternalVariables.clear();
 }
 
+bool Analyser::containsExternalVariable(const ModelPtr &model,
+                                        const std::string &componentName,
+                                        const std::string &variableName) const
+{
+    return mPimpl->findExternalVariable(model, componentName, variableName) != mPimpl->mExternalVariables.end();
+}
+
+bool Analyser::containsExternalVariable(const VariablePtr &variable) const
+{
+    return mPimpl->findExternalVariable(variable) != mPimpl->mExternalVariables.end();
+}
+
 size_t Analyser::externalVariableCount() const
 {
     return mPimpl->mExternalVariables.size();
