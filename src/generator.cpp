@@ -66,7 +66,7 @@ struct Generator::GeneratorImpl
     bool isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const;
 
     std::string replace(std::string string, const std::string &from,
-                        const std::string &to);
+                        const std::string &to) const;
 
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
@@ -110,28 +110,28 @@ struct Generator::GeneratorImpl
 
     std::string generateMethodBodyCode(const std::string &methodBody) const;
 
-    std::string generateDoubleCode(const std::string &value);
-    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable);
+    std::string generateDoubleCode(const std::string &value) const;
+    std::string generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const;
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          const AnalyserEquationAstPtr &ast = nullptr) const;
 
     std::string generateOperatorCode(const std::string &op,
-                                     const AnalyserEquationAstPtr &ast);
-    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast);
+                                     const AnalyserEquationAstPtr &ast) const;
+    std::string generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const;
     std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast);
+                                                 const AnalyserEquationAstPtr &ast) const;
     std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const AnalyserEquationAstPtr &ast);
+                                                 const AnalyserEquationAstPtr &ast) const;
     std::string generatePiecewiseIfCode(const std::string &condition,
-                                        const std::string &value);
-    std::string generatePiecewiseElseCode(const std::string &value);
-    std::string generateCode(const AnalyserEquationAstPtr &ast);
+                                        const std::string &value) const;
+    std::string generatePiecewiseElseCode(const std::string &value) const;
+    std::string generateCode(const AnalyserEquationAstPtr &ast) const;
 
-    std::string generateInitializationCode(const AnalyserVariablePtr &variable);
     std::string generateComputeExternalVariablesCode() const;
+    std::string generateInitializationCode(const AnalyserVariablePtr &variable) const;
     std::string generateEquationCode(const AnalyserEquationPtr &equation,
                                      std::vector<AnalyserEquationPtr> &remainingEquations,
-                                     bool onlyStateRateBasedEquations = false);
+                                     bool onlyStateRateBasedEquations = false) const;
 
     void addInterfaceComputeModelMethodsCode();
     void addImplementationInitialiseStatesAndConstantsMethodCode(std::vector<AnalyserEquationPtr> &remainingEquations);
@@ -268,7 +268,7 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const AnalyserEquationAstPtr
 
 std::string Generator::GeneratorImpl::replace(std::string string,
                                               const std::string &from,
-                                              const std::string &to)
+                                              const std::string &to) const
 {
     auto index = string.find(from);
 
@@ -1169,7 +1169,7 @@ std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &
                methodBody;
 }
 
-std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
+std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value) const
 {
     if (value.find('.') != std::string::npos) {
         return value;
@@ -1184,7 +1184,7 @@ std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &valu
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable)
+std::string Generator::GeneratorImpl::generateDoubleOrConstantVariableNameCode(const VariablePtr &variable) const
 {
     if (isCellMLReal(variable->initialValue())) {
         return generateDoubleCode(variable->initialValue());
@@ -1226,7 +1226,7 @@ std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
-                                                           const AnalyserEquationAstPtr &ast)
+                                                           const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left and right branches of the given AST.
 
@@ -1498,7 +1498,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     return leftChild + op + rightChild;
 }
 
-std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the left branch of the given AST.
 
@@ -1518,19 +1518,19 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const AnalyserEquat
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
-                                                                       const AnalyserEquationAstPtr &ast)
+                                                                       const AnalyserEquationAstPtr &ast) const
 {
     return function + "(" + generateCode(ast->leftChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
-                                                                       const AnalyserEquationAstPtr &ast)
+                                                                       const AnalyserEquationAstPtr &ast) const
 {
     return function + "(" + generateCode(ast->leftChild()) + ", " + generateCode(ast->rightChild()) + ")";
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
-                                                              const std::string &value)
+                                                              const std::string &value) const
 {
     return replace(replace(mProfile->hasConditionalOperator() ?
                                mProfile->conditionalOperatorIfString() :
@@ -1539,7 +1539,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string 
                    "<IF_STATEMENT>", value);
 }
 
-std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value)
+std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value) const
 {
     return replace(mProfile->hasConditionalOperator() ?
                        mProfile->conditionalOperatorElseString() :
@@ -1547,7 +1547,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
                    "<ELSE_STATEMENT>", value);
 }
 
-std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr &ast) const
 {
     // Generate the code for the given AST.
 
@@ -1955,7 +1955,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable)
+std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserVariablePtr &variable) const
 {
     std::string scalingFactorCode;
     auto scalingFactor = Generator::GeneratorImpl::scalingFactor(variable->initialisingVariable());
@@ -1978,7 +1978,7 @@ std::string Generator::GeneratorImpl::generateComputeExternalVariablesCode() con
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
                                                            std::vector<AnalyserEquationPtr> &remainingEquations,
-                                                           bool onlyStateRateBasedEquations)
+                                                           bool onlyStateRateBasedEquations) const
 {
     std::string res;
 
