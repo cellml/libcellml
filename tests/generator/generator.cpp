@@ -1302,9 +1302,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"
 
-void computeExternalVariables(double, double *, double *, double *variables)
+double externalVariable(double, double *, double *, double *, size_t index)
 {
-    variables[0] = variables[10] = variables[17] = 123.0;
+    return 123.0 + index;
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
@@ -1315,12 +1315,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
 
     initialiseStatesAndConstants(states, variables);
     computeComputedConstants(variables);
-    computeRates(0, states, rates, variables, computeExternalVariables);
-    computeVariables(0, states, rates, variables, computeExternalVariables);
+    computeRates(0, states, rates, variables, externalVariable);
+    computeVariables(0, states, rates, variables, externalVariable);
 
     ASSERT_DOUBLE_EQ(123.0, variables[0]);
-    ASSERT_DOUBLE_EQ(123.0, variables[10]);
-    ASSERT_DOUBLE_EQ(123.0, variables[17]);
+    ASSERT_DOUBLE_EQ(133.0, variables[10]);
+    ASSERT_DOUBLE_EQ(140.0, variables[17]);
 
     deleteArray(states);
     deleteArray(rates);
