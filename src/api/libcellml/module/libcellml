@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/analyser.h"
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
+#include "libcellml/analyserexternalvariable.h"
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
