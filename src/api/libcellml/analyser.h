@@ -132,10 +132,10 @@ public:
      * if the external @c Variable is in the @c Analyser and @c false otherwise.
      *
      * @param model The pointer to the @c Model which contains the external
-     * @c Variable to remove.
+     * @c Variable to test.
      * @param componentName The name of the @c Component which contains the
-     * external @c Variable to remove.
-     * @param variableName The name of the external @c Variable to remove.
+     * external @c Variable to test.
+     * @param variableName The name of the external @c Variable to test.
      *
      * @return @c true if the external @c Variable is in this @c Analyser and
      * @c false otherwise.
@@ -160,6 +160,43 @@ public:
      * @c false otherwise.
      */
     bool containsExternalVariable(const VariablePtr &variable) const;
+
+    /**
+     * @brief Get a external @c Variable at the given @p index.
+     *
+     * Returns a reference to the external @c Variable at the given @p index.
+     * @p index must be in the range [0, \#externalVariables).
+     *
+     * @param index The index of the external @c Variable to return.
+     *
+     * @return The external @c Variable at the given @p index on success,
+     * @c nullptr on failure.
+     */
+    VariablePtr externalVariable(size_t index) const;
+
+    /**
+     * @overload
+     *
+     * @brief Get a external @c Variable with the given @p name.
+     *
+     * Returns the external @c Variable with the given @p variableName in the
+     * @c Component with the given @p componentName in the given @p model. If no
+     * such external @c Variable is contained withing the @c Analyser, a
+     * @c nullptr is returned.
+     *
+     * @param model The pointer to the @c Model which contains the external
+     * @c Variable to retrieve.
+     * @param componentName The name of the @c Component which contains the
+     * external @c Variable to retrieve.
+     * @param variableName The name of the external @c Variable to retrieve.
+     *
+     * @return The external @c Variable with the given @p variableName in the
+     * @c Component with the given @p componentName in the given @p model on
+     * success, @c nullptr on failure.
+     */
+    VariablePtr externalVariable(const ModelPtr &model,
+                                 const std::string &componentName,
+                                 const std::string &variableName) const;
 
     /**
      * @brief Get the number of external @c Variable items in this @c Analyser.
