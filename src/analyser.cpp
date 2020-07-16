@@ -1690,6 +1690,28 @@ bool Analyser::containsExternalVariable(const VariablePtr &variable) const
     return mPimpl->findExternalVariable(variable) != mPimpl->mExternalVariables.end();
 }
 
+VariablePtr Analyser::externalVariable(size_t index) const
+{
+    if (index < mPimpl->mExternalVariables.size()) {
+        return mPimpl->mExternalVariables.at(index);
+    }
+
+    return nullptr;
+}
+
+VariablePtr Analyser::externalVariable(const ModelPtr &model,
+                                       const std::string &componentName,
+                                       const std::string &variableName) const
+{
+    auto result = mPimpl->findExternalVariable(model, componentName, variableName);
+
+    if (result != mPimpl->mExternalVariables.end()) {
+        return *result;
+    }
+
+    return nullptr;
+}
+
 size_t Analyser::externalVariableCount() const
 {
     return mPimpl->mExternalVariables.size();
