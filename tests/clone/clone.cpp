@@ -51,6 +51,10 @@ void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, 
     EXPECT_EQ(u1->id(), u2->id());
     EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
     EXPECT_EQ(u1->isImport(), u2->isImport());
+    if (u1->isImport() && u2->isImport()) {
+        EXPECT_EQ(u1->importSource()->url(), u2->importSource()->url());
+        EXPECT_EQ(u1->importSource()->id(), u2->importSource()->id());
+    }
     EXPECT_EQ(u1->importReference(), u2->importReference());
     EXPECT_EQ(u1->name(), u2->name());
     EXPECT_EQ(expectedParent, u2->parent());
@@ -299,7 +303,10 @@ void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::Compon
     EXPECT_EQ(c1->name(), c2->name());
     EXPECT_EQ(c1->id(), c2->id());
     EXPECT_EQ(c1->isImport(), c2->isImport());
-    EXPECT_EQ(c1->importSource(), c2->importSource());
+    if (c1->isImport() && c2->isImport()) {
+        EXPECT_EQ(c1->importSource()->url(), c2->importSource()->url());
+        EXPECT_EQ(c1->importSource()->id(), c2->importSource()->id());
+    }
     EXPECT_EQ(c1->importReference(), c2->importReference());
     EXPECT_EQ(c1->componentCount(), c2->componentCount());
     EXPECT_EQ(c1->resetCount(), c2->resetCount());
