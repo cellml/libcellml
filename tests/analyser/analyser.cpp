@@ -471,6 +471,37 @@ TEST(Analyser, removeAllExternalVariables)
     EXPECT_EQ(size_t(0), analyser->externalVariableCount());
 }
 
+TEST(Analyser, containsExternalVariableByName)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+
+    EXPECT_TRUE(analyser->containsExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->containsExternalVariable(model, "membrane", "X"));
+}
+
+TEST(Analyser, containsExternalVariableByPointer)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto variable = model->component("membrane")->variable("V");
+
+    analyser->addExternalVariable(variable);
+
+    EXPECT_TRUE(analyser->containsExternalVariable(variable));
+    EXPECT_FALSE(analyser->containsExternalVariable(nullptr));
+}
+
 TEST(Analyser, onePrimaryVoiExternalVariable)
 {
     auto parser = libcellml::Parser::create();

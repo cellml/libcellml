@@ -122,6 +122,46 @@ public:
     void removeAllExternalVariables();
 
     /**
+     * @brief Tests to see if the external @c Variable with the given
+     * @p variableName in the @c Component with the given @p componentName in
+     * the given @p model is contained within this @c Analyser.
+     *
+     * Tests to see if the external @c Variable with the the given
+     * @p variableName in the @c Component with the given @p componentName in
+     * the given @p model is contained within this @c Analyser. Returns @c true
+     * if the external @c Variable is in the @c Analyser and @c false otherwise.
+     *
+     * @param model The pointer to the @c Model which contains the external
+     * @c Variable to remove.
+     * @param componentName The name of the @c Component which contains the
+     * external @c Variable to remove.
+     * @param variableName The name of the external @c Variable to remove.
+     *
+     * @return @c true if the external @c Variable is in this @c Analyser and
+     * @c false otherwise.
+     */
+    bool containsExternalVariable(const ModelPtr &model,
+                                  const std::string &componentName,
+                                  const std::string &variableName) const;
+
+    /**
+     * @overload
+     *
+     * @brief Tests to see if the external @c Variable Variable with the given
+     * pointer is contained within this @c Analyser.
+     *
+     * Tests to see if the external @c Variable with the given pointer is
+     * contained within this @c Analyser. Returns @c true if the external
+     * @c Variable is in the @c Analyser and @c false otherwise.
+     *
+     * @param variable The pointer to the external @c Variable to remove.
+     *
+     * @return @c true if the external @c Variable is in this @c Analyser and
+     * @c false otherwise.
+     */
+    bool containsExternalVariable(const VariablePtr &variable) const;
+
+    /**
      * @brief Get the number of external @c Variable items in this @c Analyser.
      *
      * Returns the number of external @c Variable items the @c Analyser
