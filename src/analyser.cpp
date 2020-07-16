@@ -389,8 +389,6 @@ struct Analyser::AnalyserImpl
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
     void analyseModel(const ModelPtr &model);
-
-    bool addExternalVariable(const VariablePtr &variable);
 };
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
@@ -1561,17 +1559,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
-bool Analyser::AnalyserImpl::addExternalVariable(const VariablePtr &variable)
-{
-    if (std::find(mExternalVariables.begin(), mExternalVariables.end(), variable) == mExternalVariables.end()) {
-        mExternalVariables.push_back(variable);
-
-        return true;
-    }
-
-    return false;
-}
-
 Analyser::Analyser()
     : mPimpl(new AnalyserImpl {this})
 {
@@ -1615,7 +1602,13 @@ void Analyser::analyseModel(const ModelPtr &model)
 
 bool Analyser::addExternalVariable(const VariablePtr &variable)
 {
-    return mPimpl->addExternalVariable(variable);
+    if (std::find(mPimpl->mExternalVariables.begin(), mPimpl->mExternalVariables.end(), variable) == mPimpl->mExternalVariables.end()) {
+        mPimpl->mExternalVariables.push_back(variable);
+
+        return true;
+    }
+
+    return false;
 }
 
 size_t Analyser::externalVariableCount() const
