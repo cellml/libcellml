@@ -166,10 +166,6 @@ bool ImportSource::removeComponent(size_t index, bool setEmpty)
         return p.lock() == import;
     });
 
-    if (it == mPimpl->mImports.end()) {
-        return false;
-    }
-
     mPimpl->removeItem(it);
 
     if (setEmpty) {
@@ -258,10 +254,6 @@ bool ImportSource::removeUnits(size_t index, bool setEmpty)
     auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](std::weak_ptr<ImportedEntity> &p) {
         return p.lock() == import;
     });
-
-    if (it == mPimpl->mImports.end()) {
-        return false;
-    }
 
     mPimpl->removeItem(it);
 

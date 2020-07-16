@@ -88,6 +88,9 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::removeImportSource
 "Remove an ImportSource from the Model by index or reference.";
 
+%feature("docstring") libcellml::Model::removeAllImportSources
+"Remove all ImportSource items from the Model.";
+
 %feature("docstring") libcellml::Model::hasImportSource
 "Test whether this Model already contains the given ImportSource, by reference or url.";
 
