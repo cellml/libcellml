@@ -399,6 +399,58 @@ TEST(Analyser, addExternalVariableFromDifferentModels)
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 }
 
+TEST(Analyser, removeExternalVariableByIndex)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_FALSE(analyser->removeExternalVariable(0));
+
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+
+    EXPECT_TRUE(analyser->removeExternalVariable(0));
+    EXPECT_FALSE(analyser->removeExternalVariable(1));
+}
+
+TEST(Analyser, removeExternalVariableByName)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "V"));
+
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+
+    EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
+    EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "X"));
+}
+
+TEST(Analyser, removeExternalVariableByPointer)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto variable = model->component("membrane")->variable("V");
+
+    EXPECT_FALSE(analyser->removeExternalVariable(variable));
+
+    analyser->addExternalVariable(variable);
+
+    EXPECT_TRUE(analyser->removeExternalVariable(variable));
+    EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
+}
+
 TEST(Analyser, onePrimaryVoiExternalVariable)
 {
     auto parser = libcellml::Parser::create();

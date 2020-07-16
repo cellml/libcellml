@@ -389,6 +389,11 @@ struct Analyser::AnalyserImpl
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
     void analyseModel(const ModelPtr &model);
+
+    std::vector<VariablePtr>::iterator findExternalVariable(const ModelPtr &model,
+                                                            const std::string &componentName,
+                                                            const std::string &variableName);
+    std::vector<VariablePtr>::iterator findExternalVariable(const VariablePtr &variable);
 };
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
@@ -1559,6 +1564,24 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
+std::vector<VariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
+                                                                                const std::string &componentName,
+                                                                                const std::string &variableName)
+{
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const VariablePtr &v) {
+        return (owningModel(v) == model)
+               && (owningComponent(v)->name() == componentName)
+               && (v->name() == variableName);
+    });
+}
+
+std::vector<VariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const VariablePtr &variable)
+{
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const VariablePtr &v) {
+        return v == variable;
+    });
+}
+
 Analyser::Analyser()
     : mPimpl(new AnalyserImpl {this})
 {
@@ -1604,6 +1627,45 @@ bool Analyser::addExternalVariable(const VariablePtr &variable)
 {
     if (std::find(mPimpl->mExternalVariables.begin(), mPimpl->mExternalVariables.end(), variable) == mPimpl->mExternalVariables.end()) {
         mPimpl->mExternalVariables.push_back(variable);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool Analyser::removeExternalVariable(size_t index)
+{
+    if (index < mPimpl->mExternalVariables.size()) {
+        mPimpl->mExternalVariables.erase(mPimpl->mExternalVariables.begin() + int64_t(index));
+
+        return true;
+    }
+
+    return false;
+}
+
+bool Analyser::removeExternalVariable(const ModelPtr &model,
+                                      const std::string &componentName,
+                                      const std::string &variableName)
+{
+    auto result = mPimpl->findExternalVariable(model, componentName, variableName);
+
+    if (result != mPimpl->mExternalVariables.end()) {
+        mPimpl->mExternalVariables.erase(result);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool Analyser::removeExternalVariable(const VariablePtr &variable)
+{
+    auto result = mPimpl->findExternalVariable(variable);
+
+    if (result != mPimpl->mExternalVariables.end()) {
+        mPimpl->mExternalVariables.erase(result);
 
         return true;
     }
