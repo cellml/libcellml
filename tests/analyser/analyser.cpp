@@ -364,6 +364,41 @@ TEST(Analyser, addSameExternalVariable)
     EXPECT_EQ(size_t(1), analyser->externalVariableCount());
 }
 
+TEST(Analyser, addExternalVariableFromDifferentModels)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto other_model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    const std::vector<std::string> expectedIssues = {
+        "Variable 'V' in component 'membrane' is marked as an external variable, but it belongs to a different model and will therefore be ignored.",
+    };
+    const std::vector<libcellml::Issue::Cause> expectedCauses = {
+        libcellml::Issue::Cause::VARIABLE,
+    };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::INFORMATION,
+    };
+
+    auto analyser = libcellml::Analyser::create();
+
+    EXPECT_EQ(size_t(0), analyser->externalVariableCount());
+
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(other_model->component("membrane")->variable("V"));
+
+    EXPECT_EQ(size_t(2), analyser->externalVariableCount());
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+}
+
 TEST(Analyser, onePrimaryVoiExternalVariable)
 {
     auto parser = libcellml::Parser::create();
