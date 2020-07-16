@@ -1346,7 +1346,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
         if (!mExternalVariables.empty()) {
             // Check whether a variable is marked as an external variable more
-            // than once through equivalence.
+            // than once through equivalence or is (equivalent to) the variable
+            // of integration.
 
             std::vector<VariablePtr> uniqueExternalVariables;
             std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
