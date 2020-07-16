@@ -352,9 +352,6 @@ TEST(Analyser, addSameExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-
-    EXPECT_EQ(size_t(0), analyser->externalVariableCount());
-
     auto externalVariable = model->component("membrane")->variable("V");
 
     analyser->addExternalVariable(externalVariable);
@@ -388,8 +385,6 @@ TEST(Analyser, addExternalVariableFromDifferentModels)
     };
 
     auto analyser = libcellml::Analyser::create();
-
-    EXPECT_EQ(size_t(0), analyser->externalVariableCount());
 
     analyser->addExternalVariable(model->component("membrane")->variable("V"));
     analyser->addExternalVariable(other_model->component("membrane")->variable("V"));
