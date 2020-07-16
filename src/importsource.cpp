@@ -201,7 +201,6 @@ UnitsPtr ImportSource::units(size_t index) const
 
 bool ImportSource::addUnits(const UnitsPtr &units)
 {
-
     auto import = std::dynamic_pointer_cast<ImportedEntity>(units);
     const auto it = std::find_if(mPimpl->mImports.begin(), mPimpl->mImports.end(), [&import](const std::weak_ptr<ImportedEntity> &p) {
         return p.lock() == import;
