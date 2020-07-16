@@ -388,8 +388,9 @@ struct Analyser::AnalyserImpl
                   double scalingFactor);
     void scaleEquationAst(const AnalyserEquationAstPtr &ast);
 
-    void analyseModel(const ModelPtr &model,
-                      const std::vector<VariablePtr> &externalVariables);
+    void analyseModel(const ModelPtr &model);
+
+    bool addExternalVariable(const VariablePtr &variable);
 };
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
@@ -1217,8 +1218,7 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
     }
 }
 
-void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
-                                          const std::vector<VariablePtr> &externalVariables)
+void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 {
     // Reset a few things in case this analyser was to be used to analyse more
     // than one model.
@@ -1226,7 +1226,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
     mAnalyser->removeAllIssues();
 
     mModel = std::shared_ptr<AnalyserModel> {new AnalyserModel {}};
-    mExternalVariables = externalVariables;
 
     mInternalVariables.clear();
     mInternalEquations.clear();
@@ -1343,47 +1342,14 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
         // Mark some variables as external variables, if needed.
 
-        if (!externalVariables.empty()) {
-            // Check whether a variable is marked as an external variable more
-            // than once.
+        std::vector<VariablePtr> actualExternalVariables;
 
-            std::vector<VariablePtr> uniqueExternalVariables;
-            std::vector<VariablePtr> multipleExternalVariables;
-
-            for (const auto &externalVariable : externalVariables) {
-                if (std::find(uniqueExternalVariables.begin(),
-                              uniqueExternalVariables.end(),
-                              externalVariable)
-                    == uniqueExternalVariables.end()) {
-                    uniqueExternalVariables.push_back(externalVariable);
-                } else if (std::find(multipleExternalVariables.begin(),
-                                     multipleExternalVariables.end(),
-                                     externalVariable)
-                           == multipleExternalVariables.end()) {
-                    multipleExternalVariables.push_back(externalVariable);
-                }
-            }
-
-            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
-
-            for (const auto &multipleExternalVariable : multipleExternalVariables) {
-                auto issue = Issue::create();
-
-                issue->setDescription("Variable '" + multipleExternalVariable->name()
-                                      + "' in component '" + owningComponent(multipleExternalVariable)->name()
-                                      + "' is marked as an external variable more than once.");
-                issue->setCause(Issue::Cause::VARIABLE);
-                issue->setLevel(Issue::Level::WARNING);
-
-                mAnalyser->addIssue(issue);
-            }
-
+        if (!mExternalVariables.empty()) {
             // Check whether a variable is marked as an external variable more
             // than once through equivalence.
 
+            std::vector<VariablePtr> uniqueExternalVariables;
             std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
-
-            uniqueExternalVariables.clear();
 
             for (const auto &externalVariable : mExternalVariables) {
                 for (const auto &internalVariable : mInternalVariables) {
@@ -1404,7 +1370,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
                 }
             }
 
-            mExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
+            actualExternalVariables.assign(uniqueExternalVariables.begin(), uniqueExternalVariables.end());
 
             for (const auto &primaryExternalVariable : primaryExternalVariables) {
                 std::string description;
@@ -1475,7 +1441,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             // Make it known through our API whether the model has some external
             // variables.
 
-            mModel->mPimpl->mHasExternalVariables = !mExternalVariables.empty();
+            mModel->mPimpl->mHasExternalVariables = !actualExternalVariables.empty();
 
             // Sort our internal variables and equations.
 
@@ -1499,7 +1465,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             for (const auto &internalVariable : mInternalVariables) {
                 AnalyserVariable::Type type;
 
-                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalVariable->mVariable) != mExternalVariables.end()) {
+                if (std::find(actualExternalVariables.begin(), actualExternalVariables.end(), internalVariable->mVariable) != actualExternalVariables.end()) {
                     type = AnalyserVariable::Type::EXTERNAL;
                 } else if (internalVariable->mType == AnalyserInternalVariable::Type::STATE) {
                     type = AnalyserVariable::Type::STATE;
@@ -1546,7 +1512,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
             //       units rather than equivalent ones.
 
             for (const auto &internalEquation : mInternalEquations) {
-                if (std::find(mExternalVariables.begin(), mExternalVariables.end(), internalEquation->mVariable->mVariable) == mExternalVariables.end()) {
+                if (std::find(actualExternalVariables.begin(), actualExternalVariables.end(), internalEquation->mVariable->mVariable) == actualExternalVariables.end()) {
                     AnalyserEquation::Type type;
 
                     if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
@@ -1581,6 +1547,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model,
     }
 }
 
+bool Analyser::AnalyserImpl::addExternalVariable(const VariablePtr &variable)
+{
+    if (std::find(mExternalVariables.begin(), mExternalVariables.end(), variable) == mExternalVariables.end()) {
+        mExternalVariables.push_back(variable);
+
+        return true;
+    }
+
+    return false;
+}
+
 Analyser::Analyser()
     : mPimpl(new AnalyserImpl {this})
 {
@@ -1596,8 +1573,7 @@ AnalyserPtr Analyser::create() noexcept
     return std::shared_ptr<Analyser> {new Analyser {}};
 }
 
-void Analyser::analyseModel(const ModelPtr &model,
-                            const std::vector<VariablePtr> &externalVariables)
+void Analyser::analyseModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before analysis it.
 
@@ -1620,7 +1596,17 @@ void Analyser::analyseModel(const ModelPtr &model,
 
     // Analyse the model.
 
-    mPimpl->analyseModel(model, externalVariables);
+    mPimpl->analyseModel(model);
+}
+
+bool Analyser::addExternalVariable(const VariablePtr &variable)
+{
+    return mPimpl->addExternalVariable(variable);
+}
+
+size_t Analyser::externalVariableCount() const
+{
+    return mPimpl->mExternalVariables.size();
 }
 
 AnalyserModelPtr Analyser::model() const

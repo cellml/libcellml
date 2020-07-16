@@ -1259,13 +1259,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    std::vector<libcellml::VariablePtr> externalVariables;
 
-    externalVariables.push_back(model->component("membrane")->variable("V"));
-    externalVariables.push_back(model->component("sodium_channel")->variable("i_Na"));
-    externalVariables.push_back(model->component("potassium_channel_n_gate")->variable("alpha_n"));
+    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(model->component("sodium_channel")->variable("i_Na"));
+    analyser->addExternalVariable(model->component("potassium_channel_n_gate")->variable("alpha_n"));
 
-    analyser->analyseModel(model, externalVariables);
+    analyser->analyseModel(model);
 
     EXPECT_EQ(size_t(0), analyser->issueCount());
 

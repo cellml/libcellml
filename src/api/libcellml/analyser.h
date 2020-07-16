@@ -50,11 +50,31 @@ public:
      * Analyse the @c Model using this @c Analyser.
      *
      * @param model The @c Model to analyse.
-     * @param externalVariables The set of @c Variable items that are externally
-     * evaluated.
      */
-    void analyseModel(const ModelPtr &model,
-                      const std::vector<VariablePtr> &externalVariables = {});
+    void analyseModel(const ModelPtr &model);
+
+    /**
+     * @brief Add an external @c Variable to this @c Analyser.
+     *
+     * Add the given @c Variable as an external @c Variable of this @c Analyser,
+     * but only if the given @c Variable or its primary equivalent has not
+     * already been added.
+     *
+     * @param variable The @c Variable to add as an external @c Variable.
+     *
+     * @return True if the variable was added, false otherwise.
+     */
+    bool addExternalVariable(const VariablePtr &variable);
+
+    /**
+     * @brief Get the number of external @c Variable items in this @c Analyser.
+     *
+     * Returns the number of external @c Variable items the @c Analyser
+     * contains.
+     *
+     * @return The number of external @c Variable items.
+     */
+    size_t externalVariableCount() const;
 
     /**
      * @brief Get the analysed model.
