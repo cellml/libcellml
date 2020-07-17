@@ -102,11 +102,11 @@ TEST(AnalyserExternalVariable, removeDependencyByName)
 
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    EXPECT_FALSE(externalVariable->removeDependency(model, "membrane", "V"));
+    EXPECT_FALSE(externalVariable->removeDependency(model, "membrane", "Cm"));
 
-    externalVariable->addDependency(model->component("membrane")->variable("V"));
+    externalVariable->addDependency(model->component("membrane")->variable("Cm"));
 
-    EXPECT_TRUE(externalVariable->removeDependency(model, "membrane", "V"));
+    EXPECT_TRUE(externalVariable->removeDependency(model, "membrane", "Cm"));
     EXPECT_FALSE(externalVariable->removeDependency(model, "membrane", "X"));
 }
 
@@ -118,7 +118,7 @@ TEST(AnalyserExternalVariable, removeDependencyByPointer)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
-    auto dummy = model->component("membrane")->variable("V");
+    auto dummy = model->component("membrane")->variable("Cm");
 
     EXPECT_FALSE(externalVariable->removeDependency(dummy));
 
@@ -137,9 +137,9 @@ TEST(AnalyserExternalVariable, removeAllDependencies)
 
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    externalVariable->addDependency(model->component("membrane")->variable("V"));
-    externalVariable->addDependency(model->component("sodium_channel")->variable("V"));
-    externalVariable->addDependency(model->component("potassium_channel")->variable("V"));
+    externalVariable->addDependency(model->component("membrane")->variable("i_Na"));
+    externalVariable->addDependency(model->component("membrane")->variable("i_K"));
+    externalVariable->addDependency(model->component("membrane")->variable("i_L"));
 
     EXPECT_EQ(size_t(3), externalVariable->dependencyCount());
 
@@ -157,9 +157,9 @@ TEST(AnalyserExternalVariable, containsDependencyByName)
 
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    externalVariable->addDependency(model->component("membrane")->variable("V"));
+    externalVariable->addDependency(model->component("membrane")->variable("Cm"));
 
-    EXPECT_TRUE(externalVariable->containsDependency(model, "membrane", "V"));
+    EXPECT_TRUE(externalVariable->containsDependency(model, "membrane", "Cm"));
     EXPECT_FALSE(externalVariable->containsDependency(model, "membrane", "X"));
 }
 
@@ -171,7 +171,7 @@ TEST(AnalyserExternalVariable, containsDependencyByPointer)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
-    auto dependency = model->component("membrane")->variable("V");
+    auto dependency = model->component("membrane")->variable("Cm");
 
     externalVariable->addDependency(dependency);
 
@@ -190,7 +190,7 @@ TEST(AnalyserExternalVariable, dependencyByIndex)
 
     EXPECT_EQ(nullptr, externalVariable->dependency(0));
 
-    auto dependency = model->component("membrane")->variable("V");
+    auto dependency = model->component("membrane")->variable("Cm");
 
     externalVariable->addDependency(dependency);
 
@@ -207,12 +207,12 @@ TEST(AnalyserExternalVariable, dependencyByName)
 
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    EXPECT_EQ(nullptr, externalVariable->dependency(model, "membrane", "V"));
+    EXPECT_EQ(nullptr, externalVariable->dependency(model, "membrane", "Cm"));
 
-    auto dependency = model->component("membrane")->variable("V");
+    auto dependency = model->component("membrane")->variable("Cm");
 
     externalVariable->addDependency(dependency);
 
-    EXPECT_EQ(dependency, externalVariable->dependency(model, "membrane", "V"));
+    EXPECT_EQ(dependency, externalVariable->dependency(model, "membrane", "Cm"));
     EXPECT_EQ(nullptr, externalVariable->dependency(model, "membrane", "X"));
 }
