@@ -147,8 +147,8 @@ public:
     /**
      * @overload
      *
-     * @brief Tests to see if the external @c Variable Variable with the given
-     * pointer is contained within this @c Analyser.
+     * @brief Tests to see if the external @c Variable with the given pointer is
+     * contained within this @c Analyser.
      *
      * Tests to see if the external @c Variable with the given pointer is
      * contained within this @c Analyser. Returns @c true if the external
@@ -162,7 +162,7 @@ public:
     bool containsExternalVariable(const VariablePtr &variable) const;
 
     /**
-     * @brief Get a external @c Variable at the given @p index.
+     * @brief Get the external @c Variable at the given @p index.
      *
      * Returns a reference to the external @c Variable at the given @p index.
      * @p index must be in the range [0, \#externalVariables).
@@ -177,7 +177,7 @@ public:
     /**
      * @overload
      *
-     * @brief Get a external @c Variable with the given @p name.
+     * @brief Get the external @c Variable with the given @p name.
      *
      * Returns the external @c Variable with the given @p variableName in the
      * @c Component with the given @p componentName in the given @p model. If no

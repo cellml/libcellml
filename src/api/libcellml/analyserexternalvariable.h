@@ -37,7 +37,7 @@ public:
     AnalyserExternalVariable &operator=(AnalyserExternalVariable rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Create a @c AnalyserExternalVariable object.
+     * @brief Create an @c AnalyserExternalVariable object.
      *
      * Factory method to create an @c AnalyserExternalVariable. Create an
      * analyser external variable with::
