@@ -70,7 +70,7 @@ struct Generator::GeneratorImpl
 
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
-                                 const AnalyserVariablePtr &variable);
+                                 const AnalyserVariablePtr &variable) const;
 
     bool modifiedProfile() const;
 
@@ -85,14 +85,14 @@ struct Generator::GeneratorImpl
 
     void addVariableTypeObjectCode();
 
-    std::string generateVariableInfoObjectCode(const std::string &objectString);
+    std::string generateVariableInfoObjectCode(const std::string &objectString) const;
 
     void addVariableInfoObjectCode();
     void addVariableInfoWithTypeObjectCode();
 
     std::string generateVariableInfoEntryCode(const std::string &name,
                                               const std::string &units,
-                                              const std::string &component);
+                                              const std::string &component) const;
 
     void addInterfaceVoiStateAndVariableInfoCode();
     void addImplementationVoiInfoCode();
@@ -280,7 +280,7 @@ std::string Generator::GeneratorImpl::replace(std::string string,
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &nameSize,
                                                        size_t &unitsSize,
-                                                       const AnalyserVariablePtr &variable)
+                                                       const AnalyserVariablePtr &variable) const
 {
     auto variableComponentSize = owningComponent(variable->variable())->name().length() + 1;
     auto variableNameSize = variable->variable()->name().length() + 1;
@@ -686,7 +686,7 @@ void Generator::GeneratorImpl::addVariableTypeObjectCode()
     }
 }
 
-std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::string &objectString)
+std::string Generator::GeneratorImpl::generateVariableInfoObjectCode(const std::string &objectString) const
 {
     size_t componentSize = 0;
     size_t nameSize = 0;
@@ -734,7 +734,7 @@ void Generator::GeneratorImpl::addVariableInfoWithTypeObjectCode()
 
 std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &name,
                                                                     const std::string &units,
-                                                                    const std::string &component)
+                                                                    const std::string &component) const
 {
     return replace(replace(replace(mProfile->variableInfoEntryString(),
                                    "<NAME>", name),
