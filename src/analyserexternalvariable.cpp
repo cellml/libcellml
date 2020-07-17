@@ -80,7 +80,9 @@ AnalyserExternalVariablePtr AnalyserExternalVariable::create(const VariablePtr &
 
 bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
 {
-    if (std::find(mPimpl->mDependencies.begin(), mPimpl->mDependencies.end(), variable) == mPimpl->mDependencies.end()) {
+    if (!isSameOrEquivalentVariable(variable, mPimpl->mVariable)
+        && (owningModel(variable) == owningModel(mPimpl->mVariable))
+        && std::find(mPimpl->mDependencies.begin(), mPimpl->mDependencies.end(), variable) == mPimpl->mDependencies.end()) {
         mPimpl->mDependencies.push_back(variable);
 
         return true;
