@@ -1304,7 +1304,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 
 double externalVariable(double, double *, double *, double *, size_t index)
 {
-    return 123.0 + index;
+    return 123.0 + double(index);
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
