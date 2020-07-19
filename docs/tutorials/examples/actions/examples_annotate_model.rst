@@ -141,8 +141,8 @@ There is only one encapsulation in a model, and its :code:`id` attribute is acce
 
 Some items are most readily accessed through their entity-type parents, these being:
 
-- :code:`unit` items, a collection of which defines a :code:`Units` item;
-- :code:`test_value` and :code:`reset_value` children of :code:`Reset` items; and ... **TODO**
+- :code:`unit` items, a collection of which defines a :code:`Units` item; and
+- :code:`test_value` and :code:`reset_value` children of :code:`Reset` items.
 
 Unit children of :code:`Units` items can be accessed through the :code:`unitAttributes` family of functions.
 Note that there are several overloads of the arguments for this function; please see the complete documentation on the :api:`Units functions API page<Units>`.

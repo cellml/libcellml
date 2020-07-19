@@ -3,8 +3,29 @@
 View the contents of a ``Model``
 ================================
 
-All CellML entities exist in an hierarchical structure as shown below.
+All CellML entities exist in a hierarchical structure as shown below.
 In some circumstances additional links are made between items (equivalent variables, for example), but on the whole it follows a basic tree structure.
+
+.. code:: text
+
+  Model
+    │
+    ├─ Units item(s)
+    │   └─ Unit item(s)
+    │
+    └─ Component item(s)
+        │
+        ├─ Variable item(s)
+        │
+        ├─ Reset item(s)
+        │   ├─ ResetValue item
+        │   └─ TestValue item
+        │
+        ├─ Math item
+        ╎
+        └─ Child Component item(s)
+             ╎
+             └─ Grandchild Component item(s)
 
 Within the structure each item has two parts:
 
@@ -56,7 +77,7 @@ In other words, get the child item of type :code:`xyz` using the camelCase funct
 
 .. container:: gotcha
 
-    Before accessing a collection item using an index, you can use the :code:`countXyz()` function to return the number of items in the collection.
+    Before accessing a collection item using an index, you can use the :code:`xyzCount()` function to return the number of items in the collection.
 
 The following example shows how all variables in a component can be listed.
 

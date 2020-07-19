@@ -14,7 +14,7 @@
     .. code-tab:: c++
 
       // This example assumes you already have a component defined.
-      // You will need to include <unordered_set> in your #include statements.
+      // You will need to #include <unordered_set> in your #include statements.
       std::unordered_set<std::string> unitsNames;
 
       // Iterate through the variables in this component, and add their units' names to the set.
