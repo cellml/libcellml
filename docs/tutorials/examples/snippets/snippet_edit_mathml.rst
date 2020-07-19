@@ -9,9 +9,9 @@
   MathML is stored as a single string within a component.
   Retrieving it is simple enough using the :code:`math()` function, but any manipulation (change units used, changing variable names, adding additional relationships, etc) are a little more complicated.
 
-..
+  ..
 
-  TODO: Need more examples of useful mathml manipulation. Variable names? Need to remove whitespace first?
+    TODO: Need more examples of useful mathml manipulation. Variable names? Need to remove whitespace first?
 
   .. tabs::
 
