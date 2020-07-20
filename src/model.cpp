@@ -24,8 +24,6 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
-#include <iostream> // KRM
-
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
@@ -1056,40 +1054,6 @@ bool Model::fixVariableInterfaces()
     }
 
     return allOk;
-}
-
-ModelPtr Model::consolidateImports()
-{
-    auto model = shared_from_this()->clone();
-
-    std::map<std::string, std::vector<size_t>> indexMap;
-
-    for (size_t i = 0; i < model->importSourceCount(); ++i) {
-        auto imp = model->importSource(i);
-        indexMap[imp->url()].push_back(i);
-    }
-
-    if (indexMap.size() == model->importSourceCount()) {
-        // No duplicate URLs in the ImportSource list.
-        return model;
-    }
-
-    // Merge duplicated import sources:
-    for (auto const &[url, indices] : indexMap) {
-        auto uniqueImportSource = model->importSource(indices[0]);
-        for (size_t i = indices.size() - 1; i > 0; --i) {
-            auto dupImportSouce = model->importSource(indices[i]);
-            // Merge all into the final index:
-            for (size_t c = 0; c < dupImportSouce->componentCount(); ++c) {
-                dupImportSouce->component(c)->setImportSource(uniqueImportSource);
-            }
-            for (size_t u = 0; u < dupImportSouce->unitsCount(); ++u) {
-                dupImportSouce->units(u)->setImportSource(uniqueImportSource);
-            }
-            model->removeImportSource(indices[i]);
-        }
-    }
-    return model;
 }
 
 } // namespace libcellml

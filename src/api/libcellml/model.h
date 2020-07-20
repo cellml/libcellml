@@ -366,17 +366,88 @@ public:
      */
     bool fixVariableInterfaces();
 
-    // TODO KRM docstrings needed: not sure whether these should be in the api or not?
+    /**
+     * @brief Add an import source item to this model.
+     *
+     * Add import source by reference to the model. If the import
+     * source item was previously in a different model, it is moved
+     * to this one, and the previous model's import source list is updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p imp pointer already exists in this model; or
+     *  - The @p imp is @c nullptr.
+     *
+     * @param imp The import source to add.
+     *
+     * @return @c true if the import source item is added or @c false otherwise.
+     */
     bool addImportSource(const ImportSourcePtr &imp);
-    size_t importSourceCount() const;
-    ImportSourcePtr importSource(size_t index) const;
-    bool removeImportSource(size_t index);
-    bool removeImportSource(const ImportSourcePtr &imp);
-    bool removeAllImportSources();
-    bool hasImportSource(const ImportSourcePtr &imp) const;
 
-    // KRM to be moved into the Importer class when either PR is merged ...
-    ModelPtr consolidateImports();
+    /**
+     * @brief Get the number of import source items in the model.
+     *
+     * Returns the number of import source items the model contains.
+     *
+     * @return The number of import source items.
+     */
+    size_t importSourceCount() const;
+
+    /**
+     * @brief Get the import source item at the given @p index.
+     *
+     * Returns a reference to an import source at the given @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, \#import sources).
+     *
+     * @param index The index of the import source to return.
+     *
+     * @return A reference to the import source at the given @p index on success, @c nullptr otherwise.
+     */
+    ImportSourcePtr importSource(size_t index) const;
+
+    /**
+     * @brief Remove the import source at the given @p index.
+     *
+     * Remove the import source from this model at the given @p index.
+     * @p index must be in the range [0, \#import sources).
+     *
+     * @param index The index of the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the import source with the given pointer.
+     *
+     * Remove the import source with the pointer @p imp.
+     *
+     * @param units The pointer to the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(const ImportSourcePtr &imp);
+
+    /**
+     * @brief Remove all import sources stored in this model.
+     *
+     * Clears all import sources that have been added to this model.
+     */
+    bool removeAllImportSources();
+
+    /**
+     * @brief Tests to see if the import source is within this model.
+     *
+     * Tests to see if the given import source is contained within this model.
+     * Returns @c true if the import source is in the model and @c false otherwise.
+     *
+     * @param imp The import source to test for existence in this model.
+     *
+     * @return @c true if the import source is in the model and @c false otherwise.
+     */
+    bool hasImportSource(const ImportSourcePtr &imp) const;
 
 private:
     Model(); /**< Constructor */
