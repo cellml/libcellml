@@ -188,9 +188,10 @@ AnyItem Annotator::item(const std::string &id)
         return item;
     }
     if (mPimpl->mIdList.empty()) {
+        // Setting the error message to be the same as below.
         auto issue = libcellml::Issue::create();
-        issue->setDescription("The id map is empty; the supplied model has no id attributes.");
-        issue->setLevel(libcellml::Issue::Level::HINT);
+        issue->setDescription("Could not find an item with id='" + id + "' in the model.");
+        issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
         item = std::make_pair(Annotator::Type::ISSUE, issue);
         return item;
