@@ -88,7 +88,7 @@
       my_variable = annotator.variable("myVariableId")
       my_reset = annotator.reset("myResetId")
       my_units = annotator.units("myUnitsId")
-      my_importSource = annotator.importSource("myImportSourceId")
+      my_import_source = annotator.importSource("myImportSourceId")
       my_model = annotator.model("myModelId")
 
       # Retrieve non-entity items of known type using their id attribute.
@@ -125,8 +125,8 @@
       my_reset_value_parent = annotator.resetValue("myResetValueId")
       # Their values can then be retrieved using the test_value() and
       # reset_value() functions on that Reset item parent.
-      my_test_value = my_TestValueParent.test_value()
-      my_reset_value = my_ResetValueParent.reset_value()
+      my_test_value = my_test_value_parent.test_value()
+      my_reset_value = my_reset_value_parent.reset_value()
 
       # An encapsulation item is returned as a pointer to its parent model.
       my_encapsulated_model = annotator.encapsulation("myEncapsulationId")
