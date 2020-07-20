@@ -211,22 +211,6 @@ static const std::map<Variable::InterfaceType, const std::string> interfaceTypeT
     {Variable::InterfaceType::PUBLIC, "public"},
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
-// static const std::map<Annotator::Type, const std::string> annotatorTypeToString = {
-//     {Annotator::Type::COMPONENT, "component"},
-//     {Annotator::Type::COMPONENT_REF, "component_ref"},
-//     {Annotator::Type::IMPORT, "import"},
-//     {Annotator::Type::VARIABLE, "variable"},
-//     {Annotator::Type::MODEL, "model"},
-//     {Annotator::Type::CONNECTION, "connection"},
-//     {Annotator::Type::UNITS, "units"},
-//     {Annotator::Type::UNIT, "unit"},
-//     {Annotator::Type::RESET, "reset"},
-//     {Annotator::Type::RESET_VALUE, "reset_value"},
-//     {Annotator::Type::TEST_VALUE, "test_value"},
-//     {Annotator::Type::MAP_VARIABLES, "map_variables"},
-//     {Annotator::Type::ENCAPSULATION, "encapsulation"},
-// };
-
 /**
  * @brief Convert the @p in @c std::string to the @p out @c double.
  *
