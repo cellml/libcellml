@@ -559,7 +559,7 @@ static inline std::string trimCopy(std::string s)
  * @brief Collect all existing id attributes within the given model.
  *
  * @param model The @c ModelPtr to interrogate.
- * and their child elements.
+ *
  * @return An @c IdList collection of existing ids.
  */
 IdList listIds(const ModelPtr &model);
