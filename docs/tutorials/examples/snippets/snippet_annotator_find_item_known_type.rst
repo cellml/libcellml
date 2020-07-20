@@ -1,19 +1,11 @@
-.. _snippet_annotator_find_item:
+.. _snippet_annotator_find_item_known_type:
 
 .. container:: toggle
 
   .. container:: header-left
 
-    Find an item by id
+    Retrieve an item of known type by id
 
-  The :code:`AnyItem` type is a :code:`std::pair` containing:
-
-  - first: an enumerated value representing the kind of item retrieved; and
-  - second: the item itself, stored in a :code:`std::any` container.
-
-  Depending on whether you know the kind of item you're going to retrieve or not, you can use two different approaches.
-
-  **You know the type of the item already**
   Where you know the type of item (eg: :code:`Component`, :code:`Variable` etc) before retrieving it, a collection of helper functions exist, as demonstrated below.
   Where the known type is an entity type, a pointer to the item is returned.
   Where the type is a non-entity type, pointers to significant related items are returned, as discussed earlier.
@@ -80,6 +72,9 @@
       auto myTestValue = myTestValueParent->test_value();
       auto myResetValue = myResetValueParent->reset_value();
 
+      // An encapsulation item is returned as a pointer to its parent model.
+      auto myEncapsulatedModel = annotator->encapsulation("myEncapsulationId");
+
     .. code-tab:: python
 
       # Create an Annotator.
@@ -132,3 +127,6 @@
       # reset_value() functions on that Reset item parent.
       my_test_value = my_TestValueParent.test_value()
       my_reset_value = my_ResetValueParent.reset_value()
+
+      # An encapsulation item is returned as a pointer to its parent model.
+      my_encapsulated_model = annotator.encapsulation("myEncapsulationId")

@@ -224,4 +224,6 @@ Useful snippets
 
 .. todo :: ../snippets/snippet_annotator_auto_ids.rst
 
-.. include:: ../snippets/snippet_annotator_find_item.rst
+.. include:: ../snippets/snippet_annotator_find_item_known_type.rst
+
+.. include:: ../snippets/snippet_annotator_find_item_unknown_type.rst
