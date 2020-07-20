@@ -54,47 +54,51 @@ public:
     void analyseModel(const ModelPtr &model);
 
     /**
-     * @brief Add an external @c Variable to this @c Analyser.
+     * @brief Add an @c AnalyserExternalVariable to this @c Analyser.
      *
-     * Add the given @c Variable as an external @c Variable of this @c Analyser,
-     * but only if the given @c Variable or its primary equivalent has not
-     * already been added.
+     * Add the given @c AnalyserExternalVariable to this @c Analyser, but only
+     * if the given @c AnalyserExternalVariable or its primary equivalent has
+     * not already been added.
      *
-     * @param variable The @c Variable to add as an external @c Variable.
+     * @param variable The @c AnalyserExternalVariable to add.
      *
      * @return True if the variable was added, false otherwise.
      */
-    bool addExternalVariable(const VariablePtr &variable);
+    bool addExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
 
     /**
-     * @brief Remove the external @c Variable at the given @p index.
+     * @brief Remove the @c AnalyserExternalVariable at the given @p index.
      *
-     * Remove the external @c Variable with the given @p index. @p index must
-     * be in the range [0, \#externalVariables).
+     * Remove the @c AnalyserExternalVariable with the given @p index. @p index
+     * must be in the range [0, \#externalVariables).
      *
-     * @param index The index of the external @c Variable to remove.
+     * @param index The index of the @c AnalyserExternalVariable to remove.
      *
-     * @return True if the external @c Variable was removed, false otherwise.
+     * @return True if the @c AnalyserExternalVariable was removed, false
+     * otherwise.
      */
     bool removeExternalVariable(size_t index);
 
     /**
      * @overload
      *
-     * @brief Remove the external @c Variable with the given @p variableName in
-     * the @c Component with the given @p componentName in the given @p model.
-     *
-     * Remove the external @c Variable found that matches the given
+     * @brief Remove the @c AnalyserExternalVariable with the given
      * @p variableName in the @c Component with the given @p componentName in
      * the given @p model.
      *
-     * @param model The pointer to the @c Model which contains the external
-     * @c Variable to remove.
-     * @param componentName The name of the @c Component which contains the
-     * external @c Variable to remove.
-     * @param variableName The name of the external @c Variable to remove.
+     * Remove the @c AnalyserExternalVariable found that matches the given
+     * @p variableName in the @c Component with the given @p componentName in
+     * the given @p model.
      *
-     * @return True if the external @c Variable was removed, false otherwise.
+     * @param model The pointer to the @c Model which contains the
+     * @c AnalyserExternalVariable to remove.
+     * @param componentName The name of the @c Component which contains the
+     * @c AnalyserExternalVariable to remove.
+     * @param variableName The name of the @c AnalyserExternalVariable to
+     * remove.
+     *
+     * @return True if the @c AnalyserExternalVariable was removed, false
+     * otherwise.
      */
     bool removeExternalVariable(const ModelPtr &model,
                                 const std::string &componentName,
@@ -103,42 +107,46 @@ public:
     /**
      * @overload
      *
-     * @brief Remove the external @c Variable with the given pointer.
+     * @brief Remove the @c AnalyserExternalVariable with the given pointer.
      *
-     * Remove the external @c Variable with the pointer @p variable.
+     * Remove the @c AnalyserExternalVariable with the pointer
+     * @p externalVariable.
      *
-     * @param variable The pointer to the external @c Variable to remove.
+     * @param variable The pointer to the @c AnalyserExternalVariable to remove.
      *
-     * @return True if the external @c Variable was removed, false otherwise.
+     * @return True if the @c AnalyserExternalVariable was removed, false
+     * otherwise.
      */
-    bool removeExternalVariable(const VariablePtr &variable);
+    bool removeExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
 
     /**
-     * @brief Remove all external @c Variable items from this @c Analyser.
+     * @brief Remove all @c AnalyserExternalVariable items from this
+     * @c Analyser.
      *
-     * Clears all external @c Variable items that have been added to this
+     * Clears all @c AnalyserExternalVariable items that have been added to this
      * @c Analyser.
      */
     void removeAllExternalVariables();
 
     /**
-     * @brief Tests to see if the external @c Variable with the given
+     * @brief Tests to see if the @c AnalyserExternalVariable with the given
      * @p variableName in the @c Component with the given @p componentName in
      * the given @p model is contained within this @c Analyser.
      *
-     * Tests to see if the external @c Variable with the the given
+     * Tests to see if the @c AnalyserExternalVariable with the the given
      * @p variableName in the @c Component with the given @p componentName in
      * the given @p model is contained within this @c Analyser. Returns @c true
-     * if the external @c Variable is in the @c Analyser and @c false otherwise.
+     * if the @c AnalyserExternalVariable is in the @c Analyser and @c false
+     * otherwise.
      *
-     * @param model The pointer to the @c Model which contains the external
-     * @c Variable to test.
+     * @param model The pointer to the @c Model which contains the
+     * @c AnalyserExternalVariable to test.
      * @param componentName The name of the @c Component which contains the
-     * external @c Variable to test.
-     * @param variableName The name of the external @c Variable to test.
+     * @c AnalyserExternalVariable to test.
+     * @param variableName The name of the @c AnalyserExternalVariable to test.
      *
-     * @return @c true if the external @c Variable is in this @c Analyser and
-     * @c false otherwise.
+     * @return @c true if the @c AnalyserExternalVariable is in this @c Analyser
+     * and @c false otherwise.
      */
     bool containsExternalVariable(const ModelPtr &model,
                                   const std::string &componentName,
@@ -147,64 +155,66 @@ public:
     /**
      * @overload
      *
-     * @brief Tests to see if the external @c Variable with the given pointer is
-     * contained within this @c Analyser.
+     * @brief Tests to see if the @c AnalyserExternalVariable with the given
+     * pointer is contained within this @c Analyser.
      *
-     * Tests to see if the external @c Variable with the given pointer is
-     * contained within this @c Analyser. Returns @c true if the external
-     * @c Variable is in the @c Analyser and @c false otherwise.
+     * Tests to see if the @c AnalyserExternalVariable with the given pointer is
+     * contained within this @c Analyser. Returns @c true if the
+     * @c AnalyserExternalVariable is in the @c Analyser and @c false otherwise.
      *
-     * @param variable The pointer to the external @c Variable to remove.
+     * @param variable The pointer to the @c AnalyserExternalVariable to remove.
      *
-     * @return @c true if the external @c Variable is in this @c Analyser and
-     * @c false otherwise.
+     * @return @c true if the @c AnalyserExternalVariable is in this @c Analyser
+     * and @c false otherwise.
      */
-    bool containsExternalVariable(const VariablePtr &variable) const;
+    bool containsExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const;
 
     /**
-     * @brief Get the external @c Variable at the given @p index.
+     * @brief Get the @c AnalyserExternalVariable at the given @p index.
      *
-     * Returns a reference to the external @c Variable at the given @p index.
-     * @p index must be in the range [0, \#externalVariables).
+     * Returns a reference to the @c AnalyserExternalVariable at the given
+     * @p index. @p index must be in the range [0, \#externalVariables).
      *
-     * @param index The index of the external @c Variable to return.
+     * @param index The index of the @c AnalyserExternalVariable to return.
      *
-     * @return The external @c Variable at the given @p index on success,
+     * @return The @c AnalyserExternalVariable at the given @p index on success,
      * @c nullptr on failure.
      */
-    VariablePtr externalVariable(size_t index) const;
+    AnalyserExternalVariablePtr externalVariable(size_t index) const;
 
     /**
      * @overload
      *
-     * @brief Get the external @c Variable with the given @p name.
+     * @brief Get the @c AnalyserExternalVariable with the given @p name.
      *
-     * Returns the external @c Variable with the given @p variableName in the
-     * @c Component with the given @p componentName in the given @p model. If no
-     * such external @c Variable is contained withing the @c Analyser, a
-     * @c nullptr is returned.
+     * Returns the @c AnalyserExternalVariable with the given @p variableName in
+     * the @c Component with the given @p componentName in the given @p model.
+     * If no such @c AnalyserExternalVariable is contained withing the
+     * @c Analyser, a @c nullptr is returned.
      *
-     * @param model The pointer to the @c Model which contains the external
-     * @c Variable to retrieve.
+     * @param model The pointer to the @c Model which contains the
+     * @c AnalyserExternalVariable to retrieve.
      * @param componentName The name of the @c Component which contains the
-     * external @c Variable to retrieve.
-     * @param variableName The name of the external @c Variable to retrieve.
+     * @c AnalyserExternalVariable to retrieve.
+     * @param variableName The name of the @c AnalyserExternalVariable to
+     * retrieve.
      *
-     * @return The external @c Variable with the given @p variableName in the
-     * @c Component with the given @p componentName in the given @p model on
+     * @return The @c AnalyserExternalVariable with the given @p variableName in
+     * the @c Component with the given @p componentName in the given @p model on
      * success, @c nullptr on failure.
      */
-    VariablePtr externalVariable(const ModelPtr &model,
-                                 const std::string &componentName,
-                                 const std::string &variableName) const;
+    AnalyserExternalVariablePtr externalVariable(const ModelPtr &model,
+                                                 const std::string &componentName,
+                                                 const std::string &variableName) const;
 
     /**
-     * @brief Get the number of external @c Variable items in this @c Analyser.
+     * @brief Get the number of @c AnalyserExternalVariable items in this
+     * @c Analyser.
      *
-     * Returns the number of external @c Variable items the @c Analyser
+     * Returns the number of @c AnalyserExternalVariable items the @c Analyser
      * contains.
      *
-     * @return The number of external @c Variable items.
+     * @return The number of @c AnalyserExternalVariable items.
      */
     size_t externalVariableCount() const;
 

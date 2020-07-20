@@ -352,7 +352,7 @@ TEST(Analyser, addSameExternalVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    auto externalVariable = model->component("membrane")->variable("V");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
     analyser->addExternalVariable(externalVariable);
 
@@ -386,8 +386,8 @@ TEST(Analyser, addExternalVariableFromDifferentModels)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
-    analyser->addExternalVariable(other_model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(other_model->component("membrane")->variable("V")));
 
     EXPECT_EQ(size_t(2), analyser->externalVariableCount());
 
@@ -407,7 +407,7 @@ TEST(Analyser, removeExternalVariableByIndex)
 
     EXPECT_FALSE(analyser->removeExternalVariable(0));
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
     EXPECT_TRUE(analyser->removeExternalVariable(0));
     EXPECT_FALSE(analyser->removeExternalVariable(1));
@@ -424,7 +424,7 @@ TEST(Analyser, removeExternalVariableByName)
 
     EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "V"));
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
     EXPECT_TRUE(analyser->removeExternalVariable(model, "membrane", "V"));
     EXPECT_FALSE(analyser->removeExternalVariable(model, "membrane", "X"));
@@ -438,13 +438,13 @@ TEST(Analyser, removeExternalVariableByPointer)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    auto variable = model->component("membrane")->variable("V");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    EXPECT_FALSE(analyser->removeExternalVariable(variable));
+    EXPECT_FALSE(analyser->removeExternalVariable(externalVariable));
 
-    analyser->addExternalVariable(variable);
+    analyser->addExternalVariable(externalVariable);
 
-    EXPECT_TRUE(analyser->removeExternalVariable(variable));
+    EXPECT_TRUE(analyser->removeExternalVariable(externalVariable));
     EXPECT_FALSE(analyser->removeExternalVariable(nullptr));
 }
 
@@ -457,9 +457,9 @@ TEST(Analyser, removeAllExternalVariables)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
-    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
 
     EXPECT_EQ(size_t(3), analyser->externalVariableCount());
 
@@ -477,7 +477,7 @@ TEST(Analyser, containsExternalVariableByName)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
     EXPECT_TRUE(analyser->containsExternalVariable(model, "membrane", "V"));
     EXPECT_FALSE(analyser->containsExternalVariable(model, "membrane", "X"));
@@ -491,11 +491,11 @@ TEST(Analyser, containsExternalVariableByPointer)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    auto variable = model->component("membrane")->variable("V");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    analyser->addExternalVariable(variable);
+    analyser->addExternalVariable(externalVariable);
 
-    EXPECT_TRUE(analyser->containsExternalVariable(variable));
+    EXPECT_TRUE(analyser->containsExternalVariable(externalVariable));
     EXPECT_FALSE(analyser->containsExternalVariable(nullptr));
 }
 
@@ -510,11 +510,11 @@ TEST(Analyser, externalVariableByIndex)
 
     EXPECT_EQ(nullptr, analyser->externalVariable(0));
 
-    auto variable = model->component("membrane")->variable("V");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    analyser->addExternalVariable(variable);
+    analyser->addExternalVariable(externalVariable);
 
-    EXPECT_EQ(variable, analyser->externalVariable(0));
+    EXPECT_EQ(externalVariable, analyser->externalVariable(0));
     EXPECT_EQ(nullptr, analyser->externalVariable(1));
 }
 
@@ -529,11 +529,11 @@ TEST(Analyser, externalVariableByName)
 
     EXPECT_EQ(nullptr, analyser->externalVariable(model, "membrane", "V"));
 
-    auto variable = model->component("membrane")->variable("V");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
 
-    analyser->addExternalVariable(variable);
+    analyser->addExternalVariable(externalVariable);
 
-    EXPECT_EQ(variable, analyser->externalVariable(model, "membrane", "V"));
+    EXPECT_EQ(externalVariable, analyser->externalVariable(model, "membrane", "V"));
     EXPECT_EQ(nullptr, analyser->externalVariable(model, "membrane", "X"));
 }
 
@@ -550,7 +550,7 @@ TEST(Analyser, onePrimaryVoiExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("environment")->variable("time"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("environment")->variable("time")));
 
     analyser->analyseModel(model);
 
@@ -570,7 +570,7 @@ TEST(Analyser, oneNonPrimaryVoiExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
 
     analyser->analyseModel(model);
 
@@ -596,8 +596,8 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("environment")->variable("time"));
-    analyser->addExternalVariable(model->component("membrane")->variable("time"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("environment")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
 
     analyser->analyseModel(model);
 
@@ -623,8 +623,8 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("time"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("time"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("time")));
 
     analyser->analyseModel(model);
 
@@ -650,9 +650,9 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("environment")->variable("time"));
-    analyser->addExternalVariable(model->component("membrane")->variable("time"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("time"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("environment")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("time")));
 
     analyser->analyseModel(model);
 
@@ -678,9 +678,9 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("time"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("time"));
-    analyser->addExternalVariable(model->component("potassium_channel")->variable("time"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("time")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("time")));
 
     analyser->analyseModel(model);
 
@@ -696,7 +696,7 @@ TEST(Analyser, onePrimaryExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
 
     analyser->analyseModel(model);
 
@@ -722,7 +722,7 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
 
     analyser->analyseModel(model);
 
@@ -748,8 +748,8 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
 
     analyser->analyseModel(model);
 
@@ -775,8 +775,8 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
-    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
 
     analyser->analyseModel(model);
 
@@ -802,9 +802,9 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
-    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
 
     analyser->analyseModel(model);
 
@@ -830,9 +830,9 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("V"));
-    analyser->addExternalVariable(model->component("potassium_channel")->variable("V"));
-    analyser->addExternalVariable(model->component("leakage_current")->variable("V"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("leakage_current")->variable("V")));
 
     analyser->analyseModel(model);
 

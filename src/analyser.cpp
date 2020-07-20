@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "libcellml/analyserequation.h"
 #include "libcellml/analyserequationast.h"
+#include "libcellml/analyserexternalvariable.h"
 #include "libcellml/analysermodel.h"
 #include "libcellml/analyservariable.h"
 #include "libcellml/component.h"
@@ -28,6 +29,7 @@ limitations under the License.
 
 #include "analyserequation_p.h"
 #include "analyserequationast_p.h"
+#include "analyserexternalvariable_p.h"
 #include "analysermodel_p.h"
 #include "analyservariable_p.h"
 #include "utilities.h"
@@ -342,7 +344,7 @@ struct Analyser::AnalyserImpl
     Analyser *mAnalyser = nullptr;
 
     AnalyserModelPtr mModel = nullptr;
-    std::vector<VariablePtr> mExternalVariables;
+    std::vector<AnalyserExternalVariablePtr> mExternalVariables;
 
     std::vector<AnalyserInternalVariablePtr> mInternalVariables;
     std::vector<AnalyserInternalEquationPtr> mInternalEquations;
@@ -390,10 +392,10 @@ struct Analyser::AnalyserImpl
 
     void analyseModel(const ModelPtr &model);
 
-    std::vector<VariablePtr>::iterator findExternalVariable(const ModelPtr &model,
-                                                            const std::string &componentName,
-                                                            const std::string &variableName);
-    std::vector<VariablePtr>::iterator findExternalVariable(const VariablePtr &variable);
+    std::vector<AnalyserExternalVariablePtr>::iterator findExternalVariable(const ModelPtr &model,
+                                                                            const std::string &componentName,
+                                                                            const std::string &variableName);
+    std::vector<AnalyserExternalVariablePtr>::iterator findExternalVariable(const AnalyserExternalVariablePtr &externalVariable);
 };
 
 Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
@@ -1357,11 +1359,11 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             std::map<VariablePtr, std::vector<VariablePtr>> primaryExternalVariables;
 
             for (const auto &externalVariable : mExternalVariables) {
-                if (owningModel(externalVariable) != model) {
+                if (owningModel(externalVariable->mPimpl->mVariable) != model) {
                     auto issue = Issue::create();
 
-                    issue->setDescription("Variable '" + externalVariable->name()
-                                          + "' in component '" + owningComponent(externalVariable)->name()
+                    issue->setDescription("Variable '" + externalVariable->mPimpl->mVariable->name()
+                                          + "' in component '" + owningComponent(externalVariable->mPimpl->mVariable)->name()
                                           + "' is marked as an external variable, but it belongs to a different model and will therefore be ignored.");
                     issue->setCause(Issue::Cause::VARIABLE);
                     issue->setLevel(Issue::Level::INFORMATION);
@@ -1369,8 +1371,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     mAnalyser->addIssue(issue);
                 } else {
                     for (const auto &internalVariable : mInternalVariables) {
-                        if (isSameOrEquivalentVariable(externalVariable, internalVariable->mVariable)) {
-                            primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable);
+                        if (isSameOrEquivalentVariable(externalVariable->mPimpl->mVariable, internalVariable->mVariable)) {
+                            primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable->mPimpl->mVariable);
 
                             if (((mModel->mPimpl->mVoi == nullptr)
                                  || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
@@ -1564,21 +1566,21 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
     }
 }
 
-std::vector<VariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
-                                                                                const std::string &componentName,
-                                                                                const std::string &variableName)
+std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const ModelPtr &model,
+                                                                                                const std::string &componentName,
+                                                                                                const std::string &variableName)
 {
-    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const VariablePtr &v) {
-        return (owningModel(v) == model)
-               && (owningComponent(v)->name() == componentName)
-               && (v->name() == variableName);
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
+        return (owningModel(ev->mPimpl->mVariable) == model)
+               && (owningComponent(ev->mPimpl->mVariable)->name() == componentName)
+               && (ev->mPimpl->mVariable->name() == variableName);
     });
 }
 
-std::vector<VariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const VariablePtr &variable)
+std::vector<AnalyserExternalVariablePtr>::iterator Analyser::AnalyserImpl::findExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const VariablePtr &v) {
-        return v == variable;
+    return std::find_if(mExternalVariables.begin(), mExternalVariables.end(), [=](const AnalyserExternalVariablePtr &ev) {
+        return ev == externalVariable;
     });
 }
 
@@ -1623,10 +1625,10 @@ void Analyser::analyseModel(const ModelPtr &model)
     mPimpl->analyseModel(model);
 }
 
-bool Analyser::addExternalVariable(const VariablePtr &variable)
+bool Analyser::addExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    if (std::find(mPimpl->mExternalVariables.begin(), mPimpl->mExternalVariables.end(), variable) == mPimpl->mExternalVariables.end()) {
-        mPimpl->mExternalVariables.push_back(variable);
+    if (std::find(mPimpl->mExternalVariables.begin(), mPimpl->mExternalVariables.end(), externalVariable) == mPimpl->mExternalVariables.end()) {
+        mPimpl->mExternalVariables.push_back(externalVariable);
 
         return true;
     }
@@ -1660,9 +1662,9 @@ bool Analyser::removeExternalVariable(const ModelPtr &model,
     return false;
 }
 
-bool Analyser::removeExternalVariable(const VariablePtr &variable)
+bool Analyser::removeExternalVariable(const AnalyserExternalVariablePtr &externalVariable)
 {
-    auto result = mPimpl->findExternalVariable(variable);
+    auto result = mPimpl->findExternalVariable(externalVariable);
 
     if (result != mPimpl->mExternalVariables.end()) {
         mPimpl->mExternalVariables.erase(result);
@@ -1685,12 +1687,12 @@ bool Analyser::containsExternalVariable(const ModelPtr &model,
     return mPimpl->findExternalVariable(model, componentName, variableName) != mPimpl->mExternalVariables.end();
 }
 
-bool Analyser::containsExternalVariable(const VariablePtr &variable) const
+bool Analyser::containsExternalVariable(const AnalyserExternalVariablePtr &externalVariable) const
 {
-    return mPimpl->findExternalVariable(variable) != mPimpl->mExternalVariables.end();
+    return mPimpl->findExternalVariable(externalVariable) != mPimpl->mExternalVariables.end();
 }
 
-VariablePtr Analyser::externalVariable(size_t index) const
+AnalyserExternalVariablePtr Analyser::externalVariable(size_t index) const
 {
     if (index < mPimpl->mExternalVariables.size()) {
         return mPimpl->mExternalVariables.at(index);
@@ -1699,9 +1701,9 @@ VariablePtr Analyser::externalVariable(size_t index) const
     return nullptr;
 }
 
-VariablePtr Analyser::externalVariable(const ModelPtr &model,
-                                       const std::string &componentName,
-                                       const std::string &variableName) const
+AnalyserExternalVariablePtr Analyser::externalVariable(const ModelPtr &model,
+                                                       const std::string &componentName,
+                                                       const std::string &variableName) const
 {
     auto result = mPimpl->findExternalVariable(model, componentName, variableName);
 

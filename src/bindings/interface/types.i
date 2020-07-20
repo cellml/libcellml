@@ -8,6 +8,7 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)
 %shared_ptr(libcellml::AnalyserEquationAst)
+%shared_ptr(libcellml::AnalyserExternalVariable)
 %shared_ptr(libcellml::AnalyserModel)
 %shared_ptr(libcellml::AnalyserVariable)
 %shared_ptr(libcellml::Component)
