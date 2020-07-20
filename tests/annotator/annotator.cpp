@@ -158,7 +158,7 @@ TEST(Annotator, errorHandling)
     annotator->build(model);
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, annotator->item("i_dont_exist").first);
     EXPECT_EQ(size_t(1), annotator->issueCount());
-    EXPECT_EQ(annotator->issue(0)->description(), "The id map is empty; the supplied model has no id attributes.");
+    EXPECT_EQ(annotator->issue(0)->description(), "Could not find an item with id='i_dont_exist' in the model.");
 
     model->setId("model_id"); // Add an id into the model and rebuild.
     annotator->build(model);
