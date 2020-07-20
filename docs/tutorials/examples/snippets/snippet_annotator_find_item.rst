@@ -1,4 +1,4 @@
-.. _snippet_add_thing:
+.. _snippet_annotator_find_item:
 
 .. container:: toggle
 

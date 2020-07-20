@@ -222,6 +222,6 @@ Note that there are several overloads of the arguments for this function; please
 Useful snippets
 ===============
 
-.. include:: ../snippets/snippet_annotate_auto_ids.rst
+.. todo :: ../snippets/snippet_annotator_auto_ids.rst
 
-.. .. include:: ../snippets/snippet_annotate_find_item.rst
+.. include:: ../snippets/snippet_annotator_find_item.rst
