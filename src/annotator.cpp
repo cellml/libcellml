@@ -64,7 +64,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
 {
     std::string id = component->id();
     if (!id.empty()) {
-        idList.insert(std::make_pair(id, std::make_pair(0, component)));
+        idList.insert(std::make_pair(id, std::make_pair(Annotator::Type::COMPONENT, component)));
     }
     // Imports.
     if (component->isImport() && component->importSource() != nullptr) {
@@ -190,7 +190,7 @@ AnyItem Annotator::item(const std::string &id)
     if (mPimpl->mIdList.empty()) {
         auto issue = libcellml::Issue::create();
         issue->setDescription("The id map is empty; the supplied model has no id attributes.");
-        issue->setLevel(libcellml::Issue::Level::ERROR);
+        issue->setLevel(libcellml::Issue::Level::HINT);
         addIssue(issue);
         item = std::make_pair(Annotator::Type::ISSUE, issue);
         return item;
