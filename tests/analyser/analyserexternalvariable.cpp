@@ -20,6 +20,19 @@ limitations under the License.
 
 #include <libcellml>
 
+TEST(AnalyserExternalVariable, createExternalVariable)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto variable = model->component("membrane")->variable("V");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(variable);
+
+    EXPECT_EQ(variable, externalVariable->variable());
+}
+
 TEST(AnalyserExternalVariable, addSelfAsDependency)
 {
     auto parser = libcellml::Parser::create();

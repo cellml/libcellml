@@ -1260,9 +1260,9 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(model->component("membrane")->variable("V"));
-    analyser->addExternalVariable(model->component("sodium_channel")->variable("i_Na"));
-    analyser->addExternalVariable(model->component("potassium_channel_n_gate")->variable("alpha_n"));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("potassium_channel_n_gate")->variable("alpha_n")));
 
     analyser->analyseModel(model);
 

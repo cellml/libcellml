@@ -14,6 +14,7 @@
 
 set(TEST_SRCS
   test_analyser_equation_ast.py
+  test_analyser_external_variable.py
   test_analyser.py
   test_component.py
   test_generator.py

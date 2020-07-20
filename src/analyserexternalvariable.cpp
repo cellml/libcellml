@@ -18,27 +18,10 @@ limitations under the License.
 
 #include "libcellml/component.h"
 
+#include "analyserexternalvariable_p.h"
 #include "utilities.h"
 
 namespace libcellml {
-
-/**
- * @brief The AnalyserExternalVariable::AnalyserExternalVariableImpl struct.
- *
- * The private implementation for the AnalyserExternalVariable class.
- */
-struct AnalyserExternalVariable::AnalyserExternalVariableImpl
-{
-    VariablePtr mVariable;
-    std::vector<VariablePtr> mDependencies;
-
-    explicit AnalyserExternalVariableImpl(const VariablePtr &variable);
-
-    std::vector<VariablePtr>::iterator findDependency(const ModelPtr &model,
-                                                      const std::string &componentName,
-                                                      const std::string &variableName);
-    std::vector<VariablePtr>::iterator findDependency(const VariablePtr &variable);
-};
 
 AnalyserExternalVariable::AnalyserExternalVariableImpl::AnalyserExternalVariableImpl(const VariablePtr &variable)
     : mVariable(variable)
@@ -76,6 +59,11 @@ AnalyserExternalVariable::~AnalyserExternalVariable()
 AnalyserExternalVariablePtr AnalyserExternalVariable::create(const VariablePtr &variable) noexcept
 {
     return std::shared_ptr<AnalyserExternalVariable> {new AnalyserExternalVariable {variable}};
+}
+
+VariablePtr AnalyserExternalVariable::variable() const
+{
+    return mPimpl->mVariable;
 }
 
 bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)

@@ -30,6 +30,8 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT AnalyserExternalVariable
 {
+    friend class Analyser;
+
 public:
     ~AnalyserExternalVariable(); /**< Destructor */
     AnalyserExternalVariable(const AnalyserExternalVariable &rhs) = delete; /**< Copy constructor */
@@ -48,6 +50,15 @@ public:
      * @return A smart pointer to a @c AnalyserExternalVariable object.
      */
     static AnalyserExternalVariablePtr create(const VariablePtr &variable) noexcept;
+
+    /**
+     * @brief Get the variable.
+     *
+     * Returns a reference to the variable.
+     *
+     * @return The variable.
+     */
+    VariablePtr variable() const;
 
     /**
      * @brief Add a dependency to this external @c Variable.
