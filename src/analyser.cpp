@@ -1510,7 +1510,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                                   (type == AnalyserVariable::Type::STATE) ?
                                                       ++stateIndex :
                                                       ++variableIndex,
-                                                  internalVariable->mInitialisingVariable,
+                                                  (type == AnalyserVariable::Type::EXTERNAL) ?
+                                                      nullptr :
+                                                      internalVariable->mInitialisingVariable,
                                                   internalVariable->mVariable,
                                                   equation);
 
