@@ -1526,9 +1526,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             }
 
             // Make our internal equations available through our API.
-            // Note: we scale our internal equation's AST to take into account the
-            //       fact that we may have mapped variables that use compatible
-            //       units rather than equivalent ones.
+            // Note: we scale our internal equation's AST to take into account
+            //       the fact that we may have mapped variables that use
+            //       compatible units rather than equivalent ones.
 
             for (const auto &internalEquation : mInternalEquations) {
                 if (std::find(actualExternalVariables.begin(), actualExternalVariables.end(), internalEquation->mVariable->mVariable) == actualExternalVariables.end()) {
