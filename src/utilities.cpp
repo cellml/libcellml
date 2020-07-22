@@ -615,7 +615,7 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
         }
     }
 
-    // TODO MathML ids on component math blocks and reset blocks are not yet included.
+    // NB ids on component and reset MathML blocks and their children are not yet included.
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
         listComponentIds(component->component(c), idList);
@@ -675,7 +675,7 @@ IdList listIds(const ModelPtr &model)
 
 std::string makeUniqueId(IdList &idList)
 {
-    // Because the counter starts high enough that it will always have a letter as the first character,
+    // Because the hexadecimal counter starts high enough that it will always have a letter as the first character,
     // we don't need to prefix it with any other string to be valid.
     int counter = 0xb4da55;
     std::stringstream stream;
@@ -684,7 +684,7 @@ std::string makeUniqueId(IdList &idList)
     stream.str(std::string());
 
     while (idList.count(id) != 0) {
-        counter++;
+        ++counter;
         stream << std::hex << counter;
         id = stream.str();
         stream.str(std::string());
