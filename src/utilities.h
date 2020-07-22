@@ -560,4 +560,22 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
+/**
+ * @brief Collect all existing id attributes within the given model.
+ *
+ * @param model The @c ModelPtr to interrogate.
+ *
+ * @return An @c IdList collection of existing ids.
+ */
+IdList listIds(const ModelPtr &model);
+
+/**
+ * @brief Creates an id string for a "type" object, unique in the context of @p idList.
+ *
+ * The id format is a 6-digit hexadecimal string.
+ *
+ * @return A string representing a unique id.
+ */
+std::string makeUniqueId(IdList &idList);
+
 } // namespace libcellml
