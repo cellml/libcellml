@@ -181,7 +181,7 @@ TEST(ComponentImport, multipleImportAndParse)
     c2->setSourceComponent(imp, "cc2");
     m->addComponent(c2);
 
-    // These have the same url but a different ImportSource object, so should be separated.
+    // These have the same URL but a different ImportSource object, so should be separated.
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
     imp2->setUrl("some-other-model.xml");
     libcellml::ComponentPtr c3 = libcellml::Component::create();
@@ -369,10 +369,10 @@ TEST(ComponentImport, importSourceComponentMethods)
     // Add an already-present import source:
     EXPECT_FALSE(model->addImportSource(imp3));
 
-    // Add a new import source with a url that's already in the list:
+    // Add a new import source with a URL that's already in the list:
     // NB This has changed so that the new import source
     // object will trigger an additional import block, even though the
-    // url (and therefore the imported object) already exists.
+    // URL (and therefore the imported object) already exists.
     auto imp4 = libcellml::ImportSource::create();
     imp4->setUrl(url1);
     EXPECT_TRUE(model->addImportSource(imp4));

@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <algorithm> // Adding because Ubuntu build complained?
+#include "libcellml/importsource.h"
+
+#include <algorithm>
 #include <vector>
 
 #include "libcellml/component.h"
 #include "libcellml/importedentity.h"
-#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
