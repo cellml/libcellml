@@ -17,6 +17,8 @@ limitations under the License.
 #pragma once
 
 #include <map>
+
+#include <unordered_set>
 #include <vector>
 
 #include "libcellml/variable.h"
@@ -45,4 +47,5 @@ using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::Interface
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
 using IdMap = std::map<std::string, std::pair<int, std::string>>; /**< Type definition for map of IDs in Validator. **/
+using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 } // namespace libcellml
