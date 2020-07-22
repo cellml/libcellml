@@ -559,57 +559,6 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
-IdList listIds(const ModelPtr &model)
-{
-    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
-    // invalid models (with duplicated ids) too.
-
-    std::unordered_set<std::string> idList;
-    // Model.
-    std::string id = model->id();
-    if (!id.empty()) {
-        idList.insert(id);
-    }
-    // Units.
-    for (size_t u = 0; u < model->unitsCount(); ++u) {
-        auto units = model->units(u);
-        id = units->id();
-        if (!id.empty()) {
-            idList.insert(id);
-        }
-        // Imports.
-        if (units->isImport()) {
-            if (units->importSource() != nullptr) {
-                id = units->importSource()->id();
-                if (!id.empty()) {
-                    idList.insert(id);
-                }
-            }
-        }
-        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
-            std::string prefix;
-            std::string reference;
-            double exponent;
-            double multiplier;
-            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
-            if (!id.empty()) {
-                idList.insert(id);
-            }
-        }
-    }
-    // Components.
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        listComponentIds(model->component(c), idList);
-    }
-    // Encapsulation.
-    id = model->encapsulationId();
-    if (!id.empty()) {
-        idList.insert(id);
-    }
-
-    return idList;
-}
-
 void listComponentIds(const ComponentPtr &component, IdList &idList)
 {
     std::string id = component->id();
@@ -671,6 +620,57 @@ void listComponentIds(const ComponentPtr &component, IdList &idList)
     for (size_t c = 0; c < component->componentCount(); ++c) {
         listComponentIds(component->component(c), idList);
     }
+}
+
+IdList listIds(const ModelPtr &model)
+{
+    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
+    // invalid models (with duplicated ids) too.
+
+    std::unordered_set<std::string> idList;
+    // Model.
+    std::string id = model->id();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Units.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        auto units = model->units(u);
+        id = units->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        // Imports.
+        if (units->isImport()) {
+            if (units->importSource() != nullptr) {
+                id = units->importSource()->id();
+                if (!id.empty()) {
+                    idList.insert(id);
+                }
+            }
+        }
+        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+            std::string prefix;
+            std::string reference;
+            double exponent;
+            double multiplier;
+            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Components.
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        listComponentIds(model->component(c), idList);
+    }
+    // Encapsulation.
+    id = model->encapsulationId();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+
+    return idList;
 }
 
 std::string makeUniqueId(IdList &idList)

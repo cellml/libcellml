@@ -565,14 +565,6 @@ static inline std::string trimCopy(std::string s)
 IdList listIds(const ModelPtr &model);
 
 /**
- * @brief Utility class to iterate through components to collect ids.
- *
- * @param component The @c ComponentPtr to interrogate.
- * @param idList @c IdList collection of found ids.
- */
-void listComponentIds(const ComponentPtr &component, IdList &idList);
-
-/**
  * @brief Creates an id string for a "type" object, unique in the context of @p idList.
  *
  * The id format is a 6-digit hexadecimal string.
