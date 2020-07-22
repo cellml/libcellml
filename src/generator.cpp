@@ -40,6 +40,8 @@ limitations under the License.
 #    undef FALSE
 #endif
 
+#undef NAN
+
 namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
