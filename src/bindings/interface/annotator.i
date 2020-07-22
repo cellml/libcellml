@@ -140,33 +140,33 @@
         def item(self, id):
             r"""Retrieve the item with the given id."""
             type = _annotator.Annotator_itemTypeForPython(self, id)
-            if type == 0:
+            if type == Annotator.Type.COMPONENT:
                 return (type, _annotator.Annotator_component(self, id))
-            elif type == 1:
+            elif type == Annotator.Type.COMPONENT_REF:
                 return (type, _annotator.Annotator_componentRef(self, id))
-            elif type == 2:
+            elif type == Annotator.Type.CONNECTION:
                 return (type, _annotator.Annotator_connection(self, id))
-            elif type == 3:
+            elif type == Annotator.Type.ENCAPSULATION:
                 return (type, _annotator.Annotator_encapsulation(self, id))
-            elif type == 4:
+            elif type == Annotator.Type.IMPORT:
                 return (type, _annotator.Annotator_import(self, id))
-            elif type == 5:
+            elif type == Annotator.Type.ISSUE:
                 return (type, _annotator.Annotator_issue(self, id))
-            elif type == 6:
+            elif type == Annotator.Type.MAP_VARIABLES:
                 return (type, _annotator.Annotator_mapVariables(self, id))
-            elif type == 7:
+            elif type == Annotator.Type.MODEL:
                 return (type, _annotator.Annotator_model(self, id))
-            elif type == 8:
+            elif type == Annotator.Type.RESET:
                 return (type, _annotator.Annotator_reset(self, id))
-            elif type == 9:
+            elif type == Annotator.Type.RESET_VALUE:
                 return (type, _annotator.Annotator_resetValue(self, id))
-            elif type == 10:
+            elif type == Annotator.Type.TEST_VALUE:
                 return (type, _annotator.Annotator_testValue(self, id)) 
-            elif type == 11:
+            elif type == Annotator.Type.UNIT:
                 return (type, _annotator.Annotator_unit(self, id))
-            elif type == 12:
+            elif type == Annotator.Type.UNITS:
                 return (type, _annotator.Annotator_units(self, id))
-            elif type == 13:
+            elif type == Annotator.Type.VARIABLE:
                 return (type, _annotator.Annotator_variable(self, id))
             return (-1, None)
         %}
