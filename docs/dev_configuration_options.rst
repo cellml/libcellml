@@ -8,9 +8,7 @@ BUILD_SHARED   ON           Build shared libraries (so, dylib, DLLs).
 -------------- ------------ -----------------------------------------
 BUILD_TYPE     Release      The type of build Release, Debug, etc.
 -------------- ------------ -----------------------------------------
-CCACHE         ON           Enable ccache (if available).
--------------- ------------ -----------------------------------------
-CLCACHE        ON           Enable clcache (if available).
+COMPILER_CACHE ON           Enable compiler cache (if available).
 -------------- ------------ -----------------------------------------
 COVERAGE       ON           Enable coverage testing (if available).
 -------------- ------------ -----------------------------------------
@@ -34,9 +32,7 @@ UNIT_TESTS     ON           Enable tests.
 .. ---------------------------------- -------------- -----------------------------------------
 .. LIBCELLML_BUILD_TYPE               BUILD_TYPE     The type of build Release, Debug, etc.
 .. ---------------------------------- -------------- -----------------------------------------
-.. LIBCELML_CLCACHE                   CLCACHE        Enable clcache (if available).
-.. ---------------------------------- -------------- -----------------------------------------
-.. LIBCELML_CCACHE                    CCACHE         Enable ccache (if available).
+.. LIBCELML_COMPILER_CACHE            COMPILER_CACHE Enable compiler cache (if available).
 .. ---------------------------------- -------------- -----------------------------------------
 .. LIBCELML_COVERAGE                  COVERAGE       Enable coverage testing (if available).
 .. ---------------------------------- -------------- -----------------------------------------
