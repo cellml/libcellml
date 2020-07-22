@@ -19,12 +19,6 @@ class PrinterTestCase(unittest.TestCase):
         p = Printer()
         self.assertIsInstance(p.printModel(Model()), str)
 
-        # std::string printModel(Model model)
-        # This method shadows printModel(ModelPtr) so wasn't added
-
-        # std::string printModel(Model *model)
-        # This method shadows printModel(ModelPtr) so wasn't added
-
 
 if __name__ == '__main__':
     unittest.main()
