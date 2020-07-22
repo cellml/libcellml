@@ -1502,9 +1502,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 }
 
                 auto stateOrVariable = std::shared_ptr<AnalyserVariable> {new AnalyserVariable {}};
-                auto equation = (type == AnalyserVariable::Type::EXTERNAL) ?
-                                    nullptr :
-                                    equationMappings[internalVariable->mEquation.lock()];
+                auto equation = equationMappings[internalVariable->mEquation.lock()];
 
                 stateOrVariable->mPimpl->populate(type,
                                                   (type == AnalyserVariable::Type::STATE) ?
@@ -1516,9 +1514,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                                   internalVariable->mVariable,
                                                   equation);
 
-                if (equation != nullptr) {
-                    variableMappings[equation] = stateOrVariable;
-                }
+                variableMappings[equation] = stateOrVariable;
 
                 if (type == AnalyserVariable::Type::STATE) {
                     mModel->mPimpl->mStates.push_back(stateOrVariable);
@@ -1533,36 +1529,46 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
             //       compatible units rather than equivalent ones.
 
             for (const auto &internalEquation : mInternalEquations) {
-                if (std::find(actualExternalVariables.begin(), actualExternalVariables.end(), internalEquation->mVariable->mVariable) == actualExternalVariables.end()) {
-                    AnalyserEquation::Type type;
+                auto equation = equationMappings[internalEquation];
+                auto stateOrVariable = variableMappings[equation];
+                AnalyserEquation::Type type;
 
-                    if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
-                        type = AnalyserEquation::Type::TRUE_CONSTANT;
-                    } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
-                        type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
-                    } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
-                        type = AnalyserEquation::Type::RATE;
-                    } else {
-                        type = AnalyserEquation::Type::ALGEBRAIC;
-                    }
+                if (stateOrVariable->type() == AnalyserVariable::Type::EXTERNAL) {
+                    type = AnalyserEquation::Type::EXTERNAL;
+                } else if (internalEquation->mType == AnalyserInternalEquation::Type::TRUE_CONSTANT) {
+                    type = AnalyserEquation::Type::TRUE_CONSTANT;
+                } else if (internalEquation->mType == AnalyserInternalEquation::Type::VARIABLE_BASED_CONSTANT) {
+                    type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
+                } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
+                    type = AnalyserEquation::Type::RATE;
+                } else {
+                    type = AnalyserEquation::Type::ALGEBRAIC;
+                }
 
-                    scaleEquationAst(internalEquation->mAst);
+                scaleEquationAst(internalEquation->mAst);
 
-                    std::vector<AnalyserEquationPtr> dependencies;
+                std::vector<AnalyserEquationPtr> dependencies;
+                auto isStateRateBased = internalEquation->mIsStateRateBased;
 
+                if (type == AnalyserEquation::Type::EXTERNAL) {
+//ISSUE627: Need to populate `dependencies` by retrieving the equation of the
+//          different dependencies of our external variable, as well as set
+//          `isStateRateBased`...
+                } else {
                     for (const auto &dependency : internalEquation->mDependencies) {
                         dependencies.push_back(equationMappings[dependency]);
                     }
-
-                    auto equation = equationMappings[internalEquation];
-
-                    equation->mPimpl->populate(type,
-                                               internalEquation->mAst, dependencies,
-                                               internalEquation->mIsStateRateBased,
-                                               variableMappings[equation]);
-
-                    mModel->mPimpl->mEquations.push_back(equation);
                 }
+
+                equation->mPimpl->populate(type,
+                                           (type == AnalyserEquation::Type::EXTERNAL) ?
+                                               nullptr :
+                                               internalEquation->mAst,
+                                           dependencies,
+                                           isStateRateBased,
+                                           stateOrVariable);
+
+                mModel->mPimpl->mEquations.push_back(equation);
             }
         }
     }

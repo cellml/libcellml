@@ -1287,7 +1287,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 
     EXPECT_EQ(size_t(3), analyserModel->stateCount());
     EXPECT_EQ(size_t(19), analyserModel->variableCount());
-    EXPECT_EQ(size_t(14), analyserModel->equationCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
 
     EXPECT_NE(nullptr, analyserModel->voi());
     EXPECT_NE(nullptr, analyserModel->state(0));
