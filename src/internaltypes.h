@@ -51,7 +51,7 @@ using IdList = std::unordered_set<std::string>; /**< Type definition for list of
 
 using VariablePair = std::pair<VariablePtr, VariablePtr>;
 using UnitItem = std::pair<UnitsPtr, size_t>;
-using AnyItem = std::pair<std::uint64_t, std::any>; // Clang-tidy suggested this type instead of the Annotator::TIDY enum.
+using AnyItem = std::pair<std::uint64_t, std::any>; // Clang-tidy suggested this type instead of the Annotator::Type enum.
 using ItemList = std::map<std::string, AnyItem>;
 
 } // namespace libcellml

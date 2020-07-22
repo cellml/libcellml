@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "test_utils.h"
 
-using AnyItem = std::pair<std::string, std::any>;
-
 TEST(Annotator, getEntityFromId)
 {
     auto model = libcellml::Model::create("model");
