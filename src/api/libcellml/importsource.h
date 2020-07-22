@@ -121,7 +121,7 @@ public:
      * @brief Add a component to this import source item.
      *
      * The added @p component will be treated as an import, and
-     * will be sourced from the combination of url of this import source
+     * will be sourced from the combination of URL of this import source
      * item, and the component's own import reference.
      *
      * @param component The @c ComponentPtr to add.
@@ -196,7 +196,7 @@ public:
      * @brief Add a units item to this import source item.
      *
      * The added @p units will be treated as an import, and
-     * will be sourced from the combination of url of this import source
+     * will be sourced from the combination of URL of this import source
      * item, and the units' own import reference.
      *
      * The function will return @c false and no action is taken if:

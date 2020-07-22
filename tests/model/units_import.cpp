@@ -268,7 +268,7 @@ TEST(UnitsImport, importSourceUnitsMethods)
     // Add an already-present import source:
     EXPECT_FALSE(model->addImportSource(imp3));
 
-    // Add a new import source with a url that's already in the list.
+    // Add a new import source with a URL that's already in the list.
     // This should add another import source, even though it means duplicating
     // the url, and therefore also parsing/storing the source model more than once
     // when it's imported.
