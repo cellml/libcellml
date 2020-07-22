@@ -13,6 +13,7 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 set(TEST_SRCS
+  test_annotator.py
   test_component.py
   test_generator.py
   test_generator_profile.py

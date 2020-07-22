@@ -555,7 +555,7 @@ static inline std::string trimCopy(std::string s)
     return s;
 }
 
-// KRM need docstrings.
+// KRM need docstrings (done in other PR)
 IdList listIds(const ModelPtr &model, bool mathIds);
 void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList);
 std::string makeUniqueId(const std::string &type, IdList &idList);
