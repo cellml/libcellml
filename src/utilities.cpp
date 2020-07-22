@@ -562,7 +562,17 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
-// Moved out of the model.cpp file so that these can be shared by the importer
+NameList findCnUnitsNames(const XmlNodePtr &node);
+NameList findComponentCnUnitsNames(const ComponentPtr &component);
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable);
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
+void componentNames(const ComponentPtr &component, NameList &names);
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
 
 NameList findCnUnitsNames(const XmlNodePtr &node)
 {
@@ -1025,7 +1035,6 @@ std::string makeUniqueId(IdList &idList)
     }
     idList.insert(id);
     return id;
-
 }
 
 } // namespace libcellml
