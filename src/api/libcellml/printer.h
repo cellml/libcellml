@@ -57,7 +57,7 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(const ModelPtr &model) const;
+    std::string printModel(const ModelPtr &model, bool autoIds = false) const;
 
 private:
     Printer(); /**< Constructor */
