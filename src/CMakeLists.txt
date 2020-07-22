@@ -45,6 +45,7 @@ configure_file(
 )
 
 set(SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/annotator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
@@ -71,6 +72,7 @@ set(SOURCE_FILES
 )
 
 set(GIT_API_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/annotator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h

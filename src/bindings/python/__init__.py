@@ -8,6 +8,7 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
+from libcellml.annotator import Annotator
 from libcellml.component import Component
 from libcellml.generator import Generator
 from libcellml.generator import GeneratorVariable
@@ -49,6 +50,22 @@ def convert(base, enum, variables, new_base=None):
         setattr(base if new_base is None else new_base, enum, obj)
 
 
+convert(Annotator, 'Type', [
+        'COMPONENT',
+        'COMPONENT_REF',
+        'CONNECTION',
+        'ENCAPSULATION',
+        'IMPORT',
+        'ISSUE',
+        'MAP_VARIABLES',
+        'MODEL',
+        'RESET',
+        'RESET_VALUE',
+        'TEST_VALUE',
+        'UNIT',
+        'UNITS',
+        'VARIABLE'
+        ])
 convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',

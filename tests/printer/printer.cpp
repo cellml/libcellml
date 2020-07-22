@@ -313,7 +313,7 @@ TEST(Printer, printModelWithAutomaticIdsNoMaths)
                            "    <variable name=\"variable1\" units=\"units2\" interface=\"private\"/>\n"
                            "    <variable name=\"variable2\" units=\"units2\"/>\n"
                            "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
-                           "      <test_value id=\"test_value_1\">\n"
+                           "      <test_value>\n"
                            "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
                            "          <apply>\n"
                            "            <eq/>\n"
