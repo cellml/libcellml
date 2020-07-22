@@ -12,13 +12,13 @@
 %include <stdint.i>
 
 %feature("docstring") libcellml::Annotator
-"Interacs with CellML objects using their id attribute.";
+"Interacts with CellML objects using their id attribute.";
 
 %feature("docstring") libcellml::Annotator::build
 "Construct a searchable map of items in the model."
 
 %feature("docstring") libcellml::Annotator::item
-"Retrieve the item with the given id."
+"Return the item with the given id."
 
 %feature("docstring") libcellml::Annotator::component
 "Return the component with the given id."
