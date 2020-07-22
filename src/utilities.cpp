@@ -559,45 +559,7 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
-IdList listIds(const ModelPtr &model, bool mathIds)
-{
-    std::unordered_set<std::string> idList;
-    // Model.
-    std::string id = model->id();
-    if (!id.empty()) {
-        idList.insert(id);
-    }
-    // Units.
-    for (size_t u = 0; u < model->unitsCount(); ++u) {
-        id = model->units(u)->id();
-        if (!id.empty()) {
-            idList.insert(id);
-        }
-        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
-            std::string prefix;
-            std::string reference;
-            double exponent;
-            double multiplier;
-            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
-            if (!id.empty()) {
-                idList.insert(id);
-            }
-        }
-    }
-    // Components.
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        listComponentIds(model->component(c), mathIds, idList);
-    }
-    // Encapsulation.
-    id = model->encapsulationId();
-    if (!id.empty()) {
-        idList.insert(id);
-    }
-
-    return idList;
-}
-
-void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idList)
+void listComponentIds(const ComponentPtr &component, IdList &idList)
 {
     std::string id = component->id();
     if (!id.empty()) {
@@ -651,27 +613,81 @@ void listComponentIds(const ComponentPtr &component, bool mathIds, IdList &idLis
         if (!id.empty()) {
             idList.insert(id);
         }
-        // if(mathIds){
-        //     // TODO
-        // }
     }
 
-    // Maths
-    // TODO
+    // NB ids on component and reset MathML blocks and their children are not yet included.
 
     for (size_t c = 0; c < component->componentCount(); ++c) {
-        listComponentIds(component->component(c), mathIds, idList);
+        listComponentIds(component->component(c), idList);
     }
 }
 
-std::string makeUniqueId(const std::string &type, IdList &idList)
+IdList listIds(const ModelPtr &model)
 {
-    // Construct a unique id appropriate to the type, and add it to the idList.
-    int counter = 1;
-    std::string id = type + "_" + std::to_string(counter);
+    // Collect all existing ids in a list and return. NB can't use a map or a set as we need to be able to print
+    // invalid models (with duplicated ids) too.
+
+    std::unordered_set<std::string> idList;
+    // Model.
+    std::string id = model->id();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+    // Units.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        auto units = model->units(u);
+        id = units->id();
+        if (!id.empty()) {
+            idList.insert(id);
+        }
+        // Imports.
+        if (units->isImport()) {
+            if (units->importSource() != nullptr) {
+                id = units->importSource()->id();
+                if (!id.empty()) {
+                    idList.insert(id);
+                }
+            }
+        }
+        for (size_t i = 0; i < model->units(u)->unitCount(); ++i) {
+            std::string prefix;
+            std::string reference;
+            double exponent;
+            double multiplier;
+            model->units(u)->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            if (!id.empty()) {
+                idList.insert(id);
+            }
+        }
+    }
+    // Components.
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        listComponentIds(model->component(c), idList);
+    }
+    // Encapsulation.
+    id = model->encapsulationId();
+    if (!id.empty()) {
+        idList.insert(id);
+    }
+
+    return idList;
+}
+
+std::string makeUniqueId(IdList &idList)
+{
+    // Because the hexadecimal counter starts high enough that it will always have a letter as the first character,
+    // we don't need to prefix it with any other string to be valid.
+    int counter = 0xb4da55;
+    std::stringstream stream;
+    stream << std::hex << counter;
+    std::string id = stream.str();
+    stream.str(std::string());
+
     while (idList.count(id) != 0) {
-        counter++;
-        id = type + "_" + std::to_string(counter);
+        ++counter;
+        stream << std::hex << counter;
+        id = stream.str();
+        stream.str(std::string());
     }
     idList.insert(id);
     return id;
