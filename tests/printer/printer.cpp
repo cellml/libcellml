@@ -660,7 +660,11 @@ TEST(Printer, printMultipleChildrenOfImportsMixedOrder)
                       "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
                       "  </import>\n"
                       "</model>\n";
-    EXPECT_EQ(in, printer->printModel(model, true));
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(out, printer->printModel(model));
 }
 
 TEST(Printer, noChangeToManualIds)

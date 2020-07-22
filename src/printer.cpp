@@ -43,7 +43,7 @@ namespace libcellml {
  */
 struct Printer::PrinterImpl
 {
-    std::string printImports(const ModelPtr &model) const;
+    std::string printImports(const ModelPtr &model, IdList &idList, bool autoIds);
     std::string printUnits(const UnitsPtr &units, IdList &idList, bool autoIds);
     std::string printComponent(const ComponentPtr &component, IdList &idList, bool autoIds);
     std::string printEncapsulation(const ComponentPtr &component, IdList &idList, bool autoIds);
@@ -401,7 +401,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idLi
     return repr;
 }
 
-std::string Printer::PrinterImpl::printImports(const ModelPtr &model) const
+std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &idList, bool autoIds)
 {
     std::string repr;
 
@@ -411,6 +411,8 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model) const
         repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
         if (!importSource->id().empty()) {
             repr += " id=\"" + importSource->id() + "\"";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         repr += ">";
 
@@ -419,6 +421,8 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model) const
             repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
             if (!component->id().empty()) {
                 repr += " id=\"" + component->id() + "\"";
+            } else if (autoIds) {
+                repr += " id=\"" + makeUniqueId(idList) + "\"";
             }
             repr += "/>";
         }
@@ -428,6 +432,8 @@ std::string Printer::PrinterImpl::printImports(const ModelPtr &model) const
             repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
             if (!units->id().empty()) {
                 repr += " id=\"" + units->id() + "\"";
+            } else if (autoIds) {
+                repr += " id=\"" + makeUniqueId(idList) + "\"";
             }
             repr += "/>";
         }
@@ -457,6 +463,11 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     if (model == nullptr) {
         return "";
     }
+    // Automatic ids.
+    IdList idList;
+    if (autoIds) {
+        idList = listIds(model);
+    }
 
     std::string repr;
     repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?><model xmlns=\"http://www.cellml.org/cellml/2.0#\"";
@@ -476,7 +487,7 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     }
 
     if (model->hasImports()) {
-        repr += mPimpl->printImports(model);
+        repr += mPimpl->printImports(model, idList, autoIds);
     }
 
     for (size_t i = 0; i < model->unitsCount(); ++i) {
