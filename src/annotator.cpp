@@ -219,8 +219,7 @@ ComponentPtr Annotator::component(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ComponentPtr>(i.second);
-        return j;
+        return std::any_cast<ComponentPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -231,8 +230,7 @@ VariablePtr Annotator::variable(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<VariablePtr>(i.second);
-        return j;
+        return std::any_cast<VariablePtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -243,8 +241,7 @@ ModelPtr Annotator::model(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ModelPtr>(i.second);
-        return j;
+        return std::any_cast<ModelPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -255,8 +252,7 @@ UnitsPtr Annotator::units(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<UnitsPtr>(i.second);
-        return j;
+        return std::any_cast<UnitsPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -267,8 +263,7 @@ ImportSourcePtr Annotator::importSource(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ImportSourcePtr>(i.second);
-        return j;
+        return std::any_cast<ImportSourcePtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -279,8 +274,7 @@ ResetPtr Annotator::reset(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ResetPtr>(i.second);
-        return j;
+        return std::any_cast<ResetPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -291,8 +285,7 @@ VariablePair Annotator::connection(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<VariablePair>(i.second);
-        return j;
+        return std::any_cast<VariablePair>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return std::make_pair(nullptr, nullptr);
@@ -303,8 +296,7 @@ VariablePair Annotator::mapVariables(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<VariablePair>(i.second);
-        return j;
+        return std::any_cast<VariablePair>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return std::make_pair(nullptr, nullptr);
@@ -315,8 +307,7 @@ UnitItem Annotator::unit(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<UnitItem>(i.second);
-        return j;
+        return std::any_cast<UnitItem>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return std::make_pair(nullptr, -1);
@@ -327,8 +318,7 @@ ComponentPtr Annotator::componentRef(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ComponentPtr>(i.second);
-        return j;
+        return std::any_cast<ComponentPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -339,8 +329,7 @@ ResetPtr Annotator::testValue(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ResetPtr>(i.second);
-        return j;
+        return std::any_cast<ResetPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
@@ -351,8 +340,7 @@ ResetPtr Annotator::resetValue(const std::string &id)
 {
     auto i = item(id);
     try {
-        auto j = std::any_cast<ResetPtr>(i.second);
-        return j;
+        return std::any_cast<ResetPtr>(i.second);
     } catch (std::bad_any_cast &e) {
         (void)e;
         return nullptr;
