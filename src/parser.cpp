@@ -126,7 +126,7 @@ struct Parser::ParserImpl
      * components or units to the @p model. If any attributes exist in @p import source
      * with names matching those in @p node, they will be overwritten. Likewise,
      * any imported components or units of the same name already in @p model will
-     * be overwritten by those parsed from @p node.cmake
+     * be overwritten by those parsed from @p node.
      *
      * @param importSource The @c ImportSourcePtr to update.
      * @param model The @c ModelPtr to add imported components/units to.

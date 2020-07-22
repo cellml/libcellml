@@ -112,6 +112,7 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 TEST(ImportSource, createImportSource)
 {
     auto imp1 = libcellml::ImportSource::create();
+    EXPECT_NE(nullptr, imp1);
 }
 
 TEST(ImportSource, addToModel)

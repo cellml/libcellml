@@ -18,8 +18,6 @@ limitations under the License.
 
 namespace libcellml {
 
-// using ImportSourceWeakPtr = std::weak_ptr<ImportSource>;
-
 /**
  * @brief The ImportedEntity::ImportedEntityImpl struct.
  *
@@ -45,13 +43,11 @@ ImportedEntity::~ImportedEntity()
 
 bool ImportedEntity::isImport() const
 {
-    // return !mPimpl->mImportSource.expired();
     return mPimpl->mImportSource != nullptr;
 }
 
 ImportSourcePtr ImportedEntity::importSource() const
 {
-    // return mPimpl->mImportSource.lock();
     return mPimpl->mImportSource;
 }
 
