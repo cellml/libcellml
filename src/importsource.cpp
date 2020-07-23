@@ -277,7 +277,7 @@ bool ImportSource::removeAllUnits()
 void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPtr>::iterator &it)
 {
     // Find current index for the item to remove.
-    auto index = int(std::distance(mImports.begin(), it));
+    auto index = size_t(std::distance(mImports.begin(), it));
     auto itU = std::find(mUnits.begin(), mUnits.end(), index);
     if (itU != mUnits.end()) {
         mUnits.erase(itU);
@@ -288,17 +288,14 @@ void ImportSource::ImportSourceImpl::removeItem(std::vector<ImportedEntityWeakPt
         }
     }
 
-    // Iterate through components index vector and decrement all indices above the importIndex.
-    auto i = int(mComponents.size() - 1);
-    while ((i >= 0) && (int(mComponents[size_t(i)]) > index)) {
-        mComponents[size_t(i)]--;
-        i--;
+    // Iterate through components index vector and decrement all indices above the item's index.
+    static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+    for (size_t i = mComponents.size() - 1; (i != MAX_SIZE_T) && (mComponents[i] > index); --i) {
+        --mComponents[i];
     }
     // Loop through units vector and decrease its indices too.
-    i = int(mUnits.size() - 1);
-    while ((i >= 0) && (int(mUnits[size_t(i)]) > index)) {
-        mUnits[size_t(i)]--;
-        i--;
+    for (size_t i = mUnits.size() - 1; (i != MAX_SIZE_T) && (mUnits[i] > index); --i) {
+        --mUnits[i];
     }
     // Remove the item from the imports.
     mImports.erase(it);
