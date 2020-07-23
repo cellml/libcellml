@@ -116,7 +116,7 @@ TEST(ComponentImport, singleImportB)
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, nonExistentURLAndParse)
+TEST(ComponentImport, nonExistentUrlAndParse)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

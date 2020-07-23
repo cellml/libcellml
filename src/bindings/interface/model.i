@@ -83,7 +83,7 @@ determine the full path to the source model relative to this one.";
 "Return the number of ImportSource items in the Model.";
 
 %feature("docstring") libcellml::Model::importSource
-"Retrieve an ImportSource by index or url.";
+"Retrieve an ImportSource by index.";
 
 %feature("docstring") libcellml::Model::removeImportSource
 "Remove an ImportSource from the Model by index or reference.";
@@ -92,7 +92,7 @@ determine the full path to the source model relative to this one.";
 "Remove all ImportSource items from the Model.";
 
 %feature("docstring") libcellml::Model::hasImportSource
-"Test whether this Model already contains the given ImportSource, by reference or url.";
+"Test whether this Model already contains the given ImportSource.";
 
 
 #if defined(SWIGPYTHON)

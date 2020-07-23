@@ -114,7 +114,7 @@ TEST(UnitsImport, importInvalidName)
     EXPECT_EQ(e, a);
 }
 
-TEST(UnitsImport, nonExistentURL)
+TEST(UnitsImport, nonExistentUrl)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -231,7 +231,6 @@ TEST(UnitsImport, importSourceUnitsMethods)
 
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
-    // EXPECT_EQ(imp1, model->importSource(url1));
 
     // Add import to units, then units to model:
     auto imp2 = libcellml::ImportSource::create();
@@ -244,7 +243,6 @@ TEST(UnitsImport, importSourceUnitsMethods)
 
     EXPECT_EQ(size_t(2), model->importSourceCount());
     EXPECT_EQ(imp2, model->importSource(1));
-    // EXPECT_EQ(imp2, model->importSource(url2));
 
     // Add import to model directly:
     auto imp3 = libcellml::ImportSource::create();
@@ -254,7 +252,6 @@ TEST(UnitsImport, importSourceUnitsMethods)
 
     EXPECT_EQ(size_t(3), model->importSourceCount());
     EXPECT_EQ(imp3, model->importSource(2));
-    // EXPECT_EQ(imp3, model->importSource(url3));
 
     // Reuse an import source in another units:
     auto units4 = libcellml::Units::create("importUnits4");
@@ -270,7 +267,7 @@ TEST(UnitsImport, importSourceUnitsMethods)
 
     // Add a new import source with a URL that's already in the list.
     // This should add another import source, even though it means duplicating
-    // the url, and therefore also parsing/storing the source model more than once
+    // the URL, and therefore also parsing/storing the source model more than once
     // when it's imported.
     auto imp4 = libcellml::ImportSource::create();
     imp4->setUrl(url1);

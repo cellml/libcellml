@@ -20,95 +20,6 @@ limitations under the License.
 
 #include <libcellml>
 
-void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
-{
-    EXPECT_EQ(u1->unitCount(), u2->unitCount());
-
-    std::string reference1;
-    std::string prefix1;
-    std::string id1;
-    std::string reference2;
-    std::string prefix2;
-    std::string id2;
-    double exponent1;
-    double multiplier1;
-    double exponent2;
-    double multiplier2;
-    for (size_t index = 0; index < u1->unitCount(); ++index) {
-        u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
-        u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
-
-        EXPECT_EQ(reference1, reference2);
-        EXPECT_EQ(prefix1, prefix2);
-        EXPECT_EQ(exponent1, exponent2);
-        EXPECT_EQ(multiplier1, multiplier2);
-        EXPECT_EQ(id1, id2);
-    }
-}
-
-void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr)
-{
-    EXPECT_EQ(u1->id(), u2->id());
-    EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
-    EXPECT_EQ(u1->isImport(), u2->isImport());
-    EXPECT_EQ(u1->importReference(), u2->importReference());
-    EXPECT_EQ(u1->name(), u2->name());
-    EXPECT_EQ(expectedParent, u2->parent());
-
-    compareUnit(u1, u2);
-}
-
-void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr)
-{
-    EXPECT_EQ(c1->name(), c2->name());
-    EXPECT_EQ(c1->id(), c2->id());
-    EXPECT_EQ(c1->isImport(), c2->isImport());
-    if (c1->isImport() && c2->isImport()) {
-        EXPECT_EQ(c1->importSource()->url(), c2->importSource()->url());
-        EXPECT_EQ(c1->importSource()->id(), c2->importSource()->id());
-    }
-    EXPECT_EQ(c1->importReference(), c2->importReference());
-    EXPECT_EQ(c1->componentCount(), c2->componentCount());
-    EXPECT_EQ(c1->resetCount(), c2->resetCount());
-    EXPECT_EQ(c1->variableCount(), c2->variableCount());
-    EXPECT_EQ(expectedParent, c2->parent());
-    for (size_t index = 0; index < c1->componentCount(); ++index) {
-        auto c1i = c1->component(index);
-        auto c2i = c2->component(index);
-        compareComponent(c1i, c2i, c2);
-    }
-    for (size_t index = 0; index < c2->resetCount(); ++index) {
-        auto r = c2->reset(index);
-        if (r->variable() != nullptr) {
-            EXPECT_TRUE(c2->hasVariable(r->variable()));
-        }
-        if (r->testVariable() != nullptr) {
-            EXPECT_TRUE(c2->hasVariable(r->testVariable()));
-        }
-    }
-}
-
-void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
-{
-    EXPECT_EQ(m1->id(), m2->id());
-    EXPECT_EQ(m1->name(), m2->name());
-
-    EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
-    EXPECT_EQ(m1->componentCount(), m2->componentCount());
-
-    for (size_t index = 0; index < m1->unitsCount(); ++index) {
-        auto u1 = m1->units(index);
-        auto u2 = m2->units(index);
-        compareUnits(u1, u2, m2);
-    }
-
-    for (size_t index = 0; index < m1->componentCount(); ++index) {
-        auto c1 = m1->component(index);
-        auto c2 = m2->component(index);
-        compareComponent(c1, c2, m2);
-    }
-}
-
 TEST(ImportSource, createImportSource)
 {
     auto imp1 = libcellml::ImportSource::create();
@@ -133,7 +44,7 @@ TEST(ImportSource, addToModel)
     EXPECT_EQ(size_t(1), model->importSourceCount());
     EXPECT_EQ(imp1, model->importSource(0));
 
-    // Add another with the same url:
+    // Add another with the same URL:
     auto imp2 = libcellml::ImportSource::create();
     imp2->setUrl(url1);
 
@@ -141,7 +52,7 @@ TEST(ImportSource, addToModel)
     EXPECT_EQ(size_t(2), model->importSourceCount());
     EXPECT_EQ(imp2, model->importSource(1));
 
-    // Add another with a new url:
+    // Add another with a new URL:
     auto imp3 = libcellml::ImportSource::create();
     auto url3 = "http://www.example.com#bonjour";
     imp3->setUrl(url3);
@@ -214,7 +125,6 @@ TEST(ImportSource, importSourceDetailsCoverage)
 
     // Add the other units so it's an import.
     units2->setImportSource(imp);
-
     EXPECT_TRUE(units2->isImport());
     EXPECT_EQ(size_t(2), imp->unitsCount());
     EXPECT_EQ(units2, imp->units(1));
@@ -258,14 +168,14 @@ TEST(ImportSource, importSourceMove)
     EXPECT_TRUE(component->isImport());
     EXPECT_TRUE(units->isImport());
     EXPECT_EQ(size_t(1), imp1->componentCount());
-    EXPECT_EQ(size_t(1), imp1->componentCount());
+    EXPECT_EQ(size_t(1), imp1->unitsCount());
 
     component->setImportSource(imp2);
     units->setImportSource(imp2);
     EXPECT_EQ(size_t(0), imp1->componentCount());
-    EXPECT_EQ(size_t(0), imp1->componentCount());
+    EXPECT_EQ(size_t(0), imp1->unitsCount());
     EXPECT_EQ(size_t(1), imp2->componentCount());
-    EXPECT_EQ(size_t(1), imp2->componentCount());
+    EXPECT_EQ(size_t(1), imp2->unitsCount());
     EXPECT_TRUE(component->isImport());
     EXPECT_TRUE(units->isImport());
 }
@@ -283,7 +193,7 @@ TEST(ImportSource, importSourceMoveModels)
     EXPECT_TRUE(m2->addImportSource(imp));
     EXPECT_EQ(m2, imp->parent());
 
-    // Expect that we can't delete from first model any more.
+    // Expect that we can't delete from first model any more ...
     EXPECT_EQ(size_t(0), m1->importSourceCount());
     EXPECT_FALSE(m1->removeImportSource(imp));
 

@@ -20,48 +20,6 @@ limitations under the License.
 
 #include "test_utils.h"
 
-void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)
-{
-    EXPECT_EQ(u1->unitCount(), u2->unitCount());
-
-    std::string reference1;
-    std::string prefix1;
-    std::string id1;
-    std::string reference2;
-    std::string prefix2;
-    std::string id2;
-    double exponent1;
-    double multiplier1;
-    double exponent2;
-    double multiplier2;
-    for (size_t index = 0; index < u1->unitCount(); ++index) {
-        u1->unitAttributes(index, reference1, prefix1, exponent1, multiplier1, id1);
-        u2->unitAttributes(index, reference2, prefix2, exponent2, multiplier2, id2);
-
-        EXPECT_EQ(reference1, reference2);
-        EXPECT_EQ(prefix1, prefix2);
-        EXPECT_EQ(exponent1, exponent2);
-        EXPECT_EQ(multiplier1, multiplier2);
-        EXPECT_EQ(id1, id2);
-    }
-}
-
-void compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr)
-{
-    EXPECT_EQ(u1->id(), u2->id());
-    EXPECT_EQ(u1->isBaseUnit(), u2->isBaseUnit());
-    EXPECT_EQ(u1->isImport(), u2->isImport());
-    if (u1->isImport() && u2->isImport()) {
-        EXPECT_EQ(u1->importSource()->url(), u2->importSource()->url());
-        EXPECT_EQ(u1->importSource()->id(), u2->importSource()->id());
-    }
-    EXPECT_EQ(u1->importReference(), u2->importReference());
-    EXPECT_EQ(u1->name(), u2->name());
-    EXPECT_EQ(expectedParent, u2->parent());
-
-    compareUnit(u1, u2);
-}
-
 TEST(Clone, importSource)
 {
     auto i = libcellml::ImportSource::create();
@@ -224,20 +182,6 @@ TEST(Clone, variableInModel)
     EXPECT_EQ(nullptr, vClone->units()->parent());
 }
 
-void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
-{
-    EXPECT_EQ(r1->id(), r2->id());
-    EXPECT_EQ(r1->order(), r2->order());
-    if (r1->variable() != nullptr) {
-        EXPECT_NE(r1->variable(), r2->variable());
-        EXPECT_EQ(r1->variable()->name(), r2->variable()->name());
-    }
-    if (r1->testVariable() != nullptr) {
-        EXPECT_NE(r1->testVariable(), r2->testVariable());
-        EXPECT_EQ(r1->testVariable()->name(), r2->testVariable()->name());
-    }
-}
-
 TEST(Clone, reset)
 {
     auto r = libcellml::Reset::create();
@@ -300,36 +244,6 @@ TEST(Clone, resetAllIdsSet)
     auto rClone = r->clone();
 
     compareReset(r, rClone);
-}
-
-void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr)
-{
-    EXPECT_EQ(c1->name(), c2->name());
-    EXPECT_EQ(c1->id(), c2->id());
-    EXPECT_EQ(c1->isImport(), c2->isImport());
-    if (c1->isImport() && c2->isImport()) {
-        EXPECT_EQ(c1->importSource()->url(), c2->importSource()->url());
-        EXPECT_EQ(c1->importSource()->id(), c2->importSource()->id());
-    }
-    EXPECT_EQ(c1->importReference(), c2->importReference());
-    EXPECT_EQ(c1->componentCount(), c2->componentCount());
-    EXPECT_EQ(c1->resetCount(), c2->resetCount());
-    EXPECT_EQ(c1->variableCount(), c2->variableCount());
-    EXPECT_EQ(expectedParent, c2->parent());
-    for (size_t index = 0; index < c1->componentCount(); ++index) {
-        auto c1i = c1->component(index);
-        auto c2i = c2->component(index);
-        compareComponent(c1i, c2i, c2);
-    }
-    for (size_t index = 0; index < c2->resetCount(); ++index) {
-        auto r = c2->reset(index);
-        if (r->variable() != nullptr) {
-            EXPECT_TRUE(c2->hasVariable(r->variable()));
-        }
-        if (r->testVariable() != nullptr) {
-            EXPECT_TRUE(c2->hasVariable(r->testVariable()));
-        }
-    }
 }
 
 TEST(Clone, component)
@@ -473,27 +387,6 @@ TEST(Clone, componentWithImportAndChildren)
     auto cClone = c->clone();
 
     compareComponent(c, cClone);
-}
-
-void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
-{
-    EXPECT_EQ(m1->id(), m2->id());
-    EXPECT_EQ(m1->name(), m2->name());
-
-    EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
-    EXPECT_EQ(m1->componentCount(), m2->componentCount());
-
-    for (size_t index = 0; index < m1->unitsCount(); ++index) {
-        auto u1 = m1->units(index);
-        auto u2 = m2->units(index);
-        compareUnits(u1, u2, m2);
-    }
-
-    for (size_t index = 0; index < m1->componentCount(); ++index) {
-        auto c1 = m1->component(index);
-        auto c2 = m2->component(index);
-        compareComponent(c1, c2, m2);
-    }
 }
 
 TEST(Clone, model)
