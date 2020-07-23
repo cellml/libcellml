@@ -1356,8 +1356,6 @@ TEST(Parser, invalidImportsAndGetIssue)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
         "  </import>\n"
         "</model>\n";
@@ -2074,4 +2072,38 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     std::string output2 = printer->printModel(model2);
 
     EXPECT_EQ(in, output2);
+}
+
+TEST(Parser, parseAndPrintSeparateAndCombinedImports)
+{
+    const std::string separateInString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    const std::string combinedInString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto modelSeparate = parser->parseModel(separateInString);
+    auto modelCombined = parser->parseModel(combinedInString);
+
+    EXPECT_EQ(size_t(2), modelSeparate->importSourceCount());
+    EXPECT_EQ(size_t(1), modelCombined->importSourceCount());
+
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
+    EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
 }

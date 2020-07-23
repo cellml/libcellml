@@ -32,7 +32,7 @@ struct ImportedEntity::ImportedEntityImpl
 ImportedEntity::ImportedEntity()
     : mPimpl(new ImportedEntityImpl())
 {
-    mPimpl->mImportSource = nullptr;
+    mPimpl->mImportSource.reset();
     mPimpl->mImportReference = "";
 }
 
