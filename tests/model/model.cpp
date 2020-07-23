@@ -484,11 +484,11 @@ TEST(Model, setAndCheckIdsAllEntities)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-different-model.xml\" id=\"i2id\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
+        "  </import>\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
-        "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
         "  </import>\n"
         "  <units name=\"u2name\" id=\"u2id\"/>\n"
         "  <units name=\"u3name\" id=\"u3id\"/>\n"
@@ -515,7 +515,7 @@ TEST(Model, setAndCheckIdsAllEntities)
     i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
 
-    i2->setUrl("some-other-model.xml");
+    i2->setUrl("some-other-different-model.xml");
     u1->setSourceUnits(i2, "a_units_in_that_model");
 
     m->setName("mname");
