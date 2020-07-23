@@ -19,6 +19,7 @@ limitations under the License.
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
+#include "libcellml/importsource.h"
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Component>;
@@ -79,12 +80,13 @@ public:
      * @brief Set the source component for this component.
      *
      * Make this component an imported component by defining an import model
-     * from which to extract the named component from.
+     * from which to extract the named component.  The component will be added to the
+     * importSource's list of dependent entities.
      *
      * @param importSource The import source from which the named component originates.
      * @param name The name of the component in the imported model to use.
      */
-    void setSourceComponent(const ImportSourcePtr &importSource, const std::string &name);
+    void setSourceComponent(ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Appends the argument to the math string for this component.
@@ -413,6 +415,16 @@ public:
      * @return a new @c ComponentPtr to the cloned component.
      */
     ComponentPtr clone() const;
+
+    /**
+     * @brief Set the import source of this component.
+     *
+     * If this component is already located in a Model instance, then the
+     * import source is added to the Model too.
+     *
+     * @param importSource The @c ImportSourcePtr to add to this @c Component.
+     */
+    void setImportSource(ImportSourcePtr &importSource);
 
 private:
     Component(); /**< Constructor @private*/
