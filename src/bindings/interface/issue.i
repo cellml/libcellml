@@ -37,7 +37,7 @@ Level::ERROR will be returned.";
 "Sets the :class:`ReferenceRule` for this issue.";
 
 %feature("docstring") libcellml::Issue::url
-"Get the url for more information about this issue.";
+"Get the URL for more information about this issue.";
 
 %feature("docstring") libcellml::Issue::referenceHeading
 "Returns the CellML 2.0 Specification heading associated with the
