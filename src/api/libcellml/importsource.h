@@ -135,7 +135,7 @@ public:
      * @brief Remove the component at the given @p index.
      *
      * Remove the component from this import source at the given @p index.
-     * @p index must be in the range [0, \#component).
+     * @p index must be in the range [0, \#components).
      *
      * @param index The index of the component to remove.
      * @param setEmpty Whether or not to set the removed Component's

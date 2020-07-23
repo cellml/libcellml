@@ -397,7 +397,7 @@ public:
      *
      * Returns a reference to an import source at the given @p index.  If the @p index
      * is not valid a @c nullptr is returned, the range of valid values for the
-     * index is [0, \#import sources).
+     * index is [0, \#importSources).
      *
      * @param index The index of the import source to return.
      *
@@ -409,7 +409,7 @@ public:
      * @brief Remove the import source at the given @p index.
      *
      * Remove the import source from this model at the given @p index.
-     * @p index must be in the range [0, \#import sources).
+     * @p index must be in the range [0, \#importSources).
      *
      * @param index The index of the import source to remove.
      *
@@ -420,9 +420,7 @@ public:
     /**
      * @overload
      *
-     * @brief Remove the import source with the given pointer.
-     *
-     * Remove the import source with the pointer @p imp.
+     * @brief Remove the import source at the given reference.
      *
      * @param units The pointer to the import source to remove.
      *
