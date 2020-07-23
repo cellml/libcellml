@@ -1176,7 +1176,6 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = Component::create();
-            // bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedComponent->setImportSource(importSource);
             while (childAttribute) {
@@ -1191,16 +1190,12 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                     issue->setDescription("Import of component '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->name() + "'.");
                     issue->setImportSource(importSource);
                     mParser->addIssue(issue);
-                    // errorOccurred = true;
                 }
                 childAttribute = childAttribute->next();
             }
-            // if (!errorOccurred) {
-                model->addComponent(importedComponent);
-            // }
+            model->addComponent(importedComponent);
         } else if (childNode->isCellmlElement("units")) {
             UnitsPtr importedUnits = Units::create();
-            // bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             importedUnits->setImportSource(importSource);
             while (childAttribute) {
@@ -1215,13 +1210,10 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
                     issue->setDescription("Import of units '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->name() + "'.");
                     issue->setImportSource(importSource);
                     mParser->addIssue(issue);
-                    // errorOccurred = true;
                 }
                 childAttribute = childAttribute->next();
             }
-            // if (!errorOccurred) {
-                model->addUnits(importedUnits);
-            // }
+            model->addUnits(importedUnits);
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
