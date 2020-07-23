@@ -413,7 +413,26 @@ void Units::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
-void Units::setSourceUnits(const ImportSourcePtr &importSource, const std::string &name)
+void Units::setImportSource(ImportSourcePtr &importSource)
+{
+    auto model = owningModel(shared_from_this());
+    auto units = shared_from_this();
+
+    auto oldImportSource = units->importSource();
+
+    if (model != nullptr) {
+        model->addImportSource(importSource);
+    }
+    if (importSource != nullptr) {
+        importSource->addUnits(units);
+    }
+    if (oldImportSource != nullptr) {
+        oldImportSource->removeUnits(units, false);
+    }
+    ImportedEntity::setImportSource(importSource);
+}
+
+void Units::setSourceUnits(ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
     setImportReference(name);
@@ -608,10 +627,12 @@ UnitsPtr Units::clone() const
 
     units->setId(id());
     units->setName(name());
+
     if (isImport()) {
         auto imp = importSource()->clone();
         units->setImportSource(imp);
     }
+
     units->setImportReference(importReference());
 
     std::string reference;
