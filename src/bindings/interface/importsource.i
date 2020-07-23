@@ -31,6 +31,36 @@ unset).";
 %feature("docstring") libcellml::ImportSource::clone
 "Create a copy of this import source.";
 
+%feature("docstring") libcellml::ImportSource::addComponent
+"Add a Component to this ImportSource.";
+
+%feature("docstring") libcellml::ImportSource::removeComponent
+"Remove a Component from this ImportSource's dependency list.";
+
+%feature("docstring") libcellml::ImportSource::componentCount
+"Return the number of imported Components from this ImportSource.";
+
+%feature("docstring") libcellml::ImportSource::removeAllComponents
+"Remove all of the imported Components from this ImportSource.";
+
+%feature("docstring") libcellml::ImportSource::component
+"Retrieve the imported Component at the given index.";
+
+%feature("docstring") libcellml::ImportSource::addUnits
+"Add a Units item to this ImportSource.";
+
+%feature("docstring") libcellml::ImportSource::removeUnits
+"Remove a Units item from this ImportSource's dependency list.";
+
+%feature("docstring") libcellml::ImportSource::removeAllUnits
+"Remove all of the imported Units from this ImportSource.";
+
+%feature("docstring") libcellml::ImportSource::unitsCount
+"Return the number of Units items imported from this ImportSource.";
+
+%feature("docstring") libcellml::ImportSource::units
+"Retrieve the imported Units item at the given index.";
+
 %{
 #include "libcellml/importsource.h"
 %}
