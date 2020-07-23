@@ -252,25 +252,25 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-bool Model::hasImportSource(const ImportSourcePtr &imp) const
+bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
 {
-    return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp) != mPimpl->mImports.end();
+    return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end();
 }
 
-bool Model::addImportSource(const ImportSourcePtr &imp)
+bool Model::addImportSource(const ImportSourcePtr &importSrc)
 {
-    if (imp == nullptr) {
+    if (importSrc == nullptr) {
         return false;
     }
-    if (hasImportSource(imp)) {
+    if (hasImportSource(importSrc)) {
         return false;
     }
-    auto otherModel = owningModel(imp);
+    auto otherModel = owningModel(importSrc);
     if (otherModel != nullptr) {
-        otherModel->removeImportSource(imp);
+        otherModel->removeImportSource(importSrc);
     }
-    imp->setParent(shared_from_this());
-    mPimpl->mImports.push_back(imp);
+    importSrc->setParent(shared_from_this());
+    mPimpl->mImports.push_back(importSrc);
     return true;
 }
 
@@ -281,28 +281,28 @@ size_t Model::importSourceCount() const
 
 ImportSourcePtr Model::importSource(size_t index) const
 {
-    ImportSourcePtr imp = nullptr;
+    ImportSourcePtr importSrc = nullptr;
     if (index < mPimpl->mImports.size()) {
-        imp = mPimpl->mImports.at(index);
+        importSrc = mPimpl->mImports.at(index);
     }
 
-    return imp;
+    return importSrc;
 }
 
 bool Model::removeImportSource(size_t index)
 {
     bool status = false;
-    auto imp = importSource(index);
-    status = removeImportSource(imp);
+    auto importSrc = importSource(index);
+    status = removeImportSource(importSrc);
     return status;
 }
 
-bool Model::removeImportSource(const ImportSourcePtr &imp)
+bool Model::removeImportSource(const ImportSourcePtr &importSrc)
 {
     bool status = false;
-    auto result = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), imp);
+    auto result = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc);
     if (result != mPimpl->mImports.end()) {
-        imp->removeParent();
+        importSrc->removeParent();
         mPimpl->mImports.erase(result);
         status = true;
     }
