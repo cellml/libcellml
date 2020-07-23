@@ -32,7 +32,7 @@ unset).";
 "Create a copy of this import source.";
 
 %feature("docstring") libcellml::ImportSource::addComponent
-"Add a dependent Component to this ImportSource.";
+"Add a Component to this ImportSource.";
 
 %feature("docstring") libcellml::ImportSource::removeComponent
 "Remove a Component from this ImportSource's dependency list.";
@@ -47,7 +47,7 @@ unset).";
 "Retrieve the imported Component at the given index.";
 
 %feature("docstring") libcellml::ImportSource::addUnits
-"Add a dependent Units item to this ImportSource.";
+"Add a Units item to this ImportSource.";
 
 %feature("docstring") libcellml::ImportSource::removeUnits
 "Remove a Units item from this ImportSource's dependency list.";
