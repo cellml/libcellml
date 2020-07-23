@@ -1176,8 +1176,6 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = Component::create();
-            // importedComponent->setImportSource(importSource);
-
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
@@ -1201,7 +1199,6 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
             }
         } else if (childNode->isCellmlElement("units")) {
             UnitsPtr importedUnits = Units::create();
-            // importedUnits->setImportSource(importSource);
             bool errorOccurred = false;
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
