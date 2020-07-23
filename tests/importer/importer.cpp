@@ -23,6 +23,7 @@ limitations under the License->
 TEST(Importer, create)
 {
     auto importer = libcellml::Importer::create();
+    EXPECT_NE(nullptr, importer);
 }
 
 TEST(Importer, noWarningForkedImport)
