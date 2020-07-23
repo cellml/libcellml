@@ -1251,6 +1251,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode(analyserModel));
 }
 
+/*
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 {
     auto parser = libcellml::Parser::create();
@@ -1339,6 +1340,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
     deleteArray(rates);
     deleteArray(variables);
 }
+*/
 
 TEST(Generator, nobleModel1962)
 {
