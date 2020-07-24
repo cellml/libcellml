@@ -1253,6 +1253,38 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator->implementationCode(analyserModel));
 }
 
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateAsExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVariable)
+{
+}
+
+TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsExternalVariable)
+{
+}
+
 /*
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 {
