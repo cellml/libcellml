@@ -21,6 +21,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -111,10 +112,39 @@ bool Component::doAddComponent(const ComponentPtr &component)
         return false;
     }
     component->setParent(shared_from_this());
+
+    if (component->isImport()) {
+        auto model = owningModel(shared_from_this());
+        if (model != nullptr) {
+            model->addImportSource(component->importSource());
+        }
+    }
+
     return ComponentEntity::doAddComponent(component);
 }
 
-void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)
+void Component::setImportSource(ImportSourcePtr &importSource)
+{
+    auto component = shared_from_this();
+    auto oldImportSource = component->importSource();
+
+    if (importSource != nullptr) {
+        importSource->addComponent(component);
+    }
+
+    auto model = owningModel(component);
+    if (model != nullptr) {
+        model->addImportSource(importSource);
+    }
+
+    if (oldImportSource != nullptr) {
+        oldImportSource->removeComponent(component, false);
+    }
+
+    ImportedEntity::setImportSource(importSource);
+}
+
+void Component::setSourceComponent(ImportSourcePtr &importSource, const std::string &name)
 {
     setImportSource(importSource);
     setImportReference(name);
@@ -370,6 +400,7 @@ ComponentPtr Component::clone() const
         auto imp = importSource()->clone();
         c->setImportSource(imp);
     }
+
     c->setImportReference(importReference());
 
     for (size_t index = 0; index < variableCount(); ++index) {
