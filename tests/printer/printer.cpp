@@ -615,7 +615,56 @@ TEST(Printer, noChangeToAutoIds)
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
     auto printer = libcellml::Printer::create();
-    EXPECT_EQ(in, printer->printModel(model, true));
+    EXPECT_EQ(in, printer->printModel(model));
+}
+
+TEST(Printer, printMultipleChildrenOfImports)
+{
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                     "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
+                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                     "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
+                     "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                     "  </import>\n"
+                     "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(in, printer->printModel(model));
+}
+
+TEST(Printer, printMultipleChildrenOfImportsMixedOrder)
+{
+    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                     "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
+                     "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
+                     "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                     "  </import>\n"
+                     "</model>\n";
+
+    std::string out = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                      "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+                      "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                      "    <component component_ref=\"another_component_in_that_model\" name=\"component2\" id=\"component_2\"/>\n"
+                      "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                      "    <units units_ref=\"another_units_in_that_model\" name=\"units2\" id=\"units_2\"/>\n"
+                      "    <units units_ref=\"yet_another_units_in_that_model\" name=\"units3\" id=\"units_3\"/>\n"
+                      "  </import>\n"
+                      "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(out, printer->printModel(model));
 }
 
 TEST(Printer, noChangeToManualIds)
