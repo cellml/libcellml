@@ -374,14 +374,14 @@ public:
      * to this one, and the previous model's import source list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p imp pointer already exists in this model; or
-     *  - The @p imp is @c nullptr.
+     *  - The @p importSrc pointer already exists in this model; or
+     *  - The @p importSrc is @c nullptr.
      *
-     * @param imp The import source to add.
+     * @param importSrc The import source to add.
      *
      * @return @c true if the import source item is added or @c false otherwise.
      */
-    bool addImportSource(const ImportSourcePtr &imp);
+    bool addImportSource(const ImportSourcePtr &importSrc);
 
     /**
      * @brief Get the number of import source items in the model.
@@ -422,11 +422,11 @@ public:
      *
      * @brief Remove the import source at the given reference.
      *
-     * @param units The pointer to the import source to remove.
+     * @param importSrc The pointer to the import source to remove.
      *
      * @return @c true if the import source was removed, @c false otherwise.
      */
-    bool removeImportSource(const ImportSourcePtr &imp);
+    bool removeImportSource(const ImportSourcePtr &importSrc);
 
     /**
      * @brief Remove all import sources stored in this model.
@@ -441,11 +441,11 @@ public:
      * Tests to see if the given import source is contained within this model.
      * Returns @c true if the import source is in the model and @c false otherwise.
      *
-     * @param imp The import source to test for existence in this model.
+     * @param importSrc The import source to test for existence in this model.
      *
      * @return @c true if the import source is in the model and @c false otherwise.
      */
-    bool hasImportSource(const ImportSourcePtr &imp) const;
+    bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
 private:
     Model(); /**< Constructor */
