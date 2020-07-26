@@ -244,7 +244,8 @@ libcellml::ComponentPtr createImportInModel(const libcellml::ModelPtr &model,
                                             const std::string &importReference)
 {
     model->addComponent(libcellml::Component::create(componentName));
-    model->component(componentName)->setImportSource(libcellml::ImportSource::create());
+    auto imp = libcellml::ImportSource::create();
+    model->component(componentName)->setImportSource(imp);
     model->component(componentName)->importSource()->setUrl(importSourceUrl);
     model->component(componentName)->setImportReference(importReference);
     return model->component(componentName);
@@ -256,7 +257,8 @@ libcellml::ComponentPtr createImportInComponent(const libcellml::ComponentPtr &c
                                                 const std::string &importReference)
 {
     component->addComponent(libcellml::Component::create(componentName));
-    component->component(componentName)->setImportSource(libcellml::ImportSource::create());
+    auto imp = libcellml::ImportSource::create();
+    component->component(componentName)->setImportSource(imp);
     component->component(componentName)->importSource()->setUrl(importSourceUrl);
     component->component(componentName)->setImportReference(importReference);
     return component->component(componentName);
