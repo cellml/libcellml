@@ -370,7 +370,7 @@ TEST(Validator, importComponents)
     v->validateModel(m);
     EXPECT_EQ(size_t(5), v->issueCount());
 
-    // Invalid: component_ref url is not valid html
+    // Invalid: component_ref URL is not valid html
     libcellml::ImportSourcePtr imp9 = libcellml::ImportSource::create();
     imp9->setUrl("not @ valid url");
     libcellml::ComponentPtr importedComponent9 = libcellml::Component::create();

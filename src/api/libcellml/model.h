@@ -73,7 +73,7 @@ public:
      * and the previous model's units list is updated.
      *
      * The function will return @c false and no action is taken if:
-     *  - The @p units pointer already exists in this model; and
+     *  - The @p units pointer already exists in this model; or
      *  - The @p units is @c nullptr.
      *
      * @param units The units to add.
@@ -90,7 +90,7 @@ public:
      *
      * @param index The index of the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(size_t index);
 
@@ -103,7 +103,7 @@ public:
      *
      * @param name The name of the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(const std::string &name);
 
@@ -116,7 +116,7 @@ public:
      *
      * @param units The pointer to the units to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the units were removed, false otherwise.
      */
     bool removeUnits(const UnitsPtr &units);
 
@@ -157,7 +157,7 @@ public:
     bool hasUnits(const UnitsPtr &units) const;
 
     /**
-     * @brief Get a units at the given @p index.
+     * @brief Get the units item at the given @p index.
      *
      * Returns a reference to a units at the given @p index.  If the @p index
      * is not valid a @c nullptr is returned, the range of valid values for the
@@ -365,6 +365,87 @@ public:
      * @c false otherwise.
      */
     bool fixVariableInterfaces();
+
+    /**
+     * @brief Add an import source item to this model.
+     *
+     * Add import source by reference to the model. If the import
+     * source item was previously in a different model, it is moved
+     * to this one, and the previous model's import source list is updated.
+     *
+     * The function will return @c false and no action is taken if:
+     *  - The @p importSrc pointer already exists in this model; or
+     *  - The @p importSrc is @c nullptr.
+     *
+     * @param importSrc The import source to add.
+     *
+     * @return @c true if the import source item is added or @c false otherwise.
+     */
+    bool addImportSource(const ImportSourcePtr &importSrc);
+
+    /**
+     * @brief Get the number of import source items in the model.
+     *
+     * Returns the number of import source items the model contains.
+     *
+     * @return The number of import source items.
+     */
+    size_t importSourceCount() const;
+
+    /**
+     * @brief Get the import source item at the given @p index.
+     *
+     * Returns a reference to an import source at the given @p index.  If the @p index
+     * is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, \#importSources).
+     *
+     * @param index The index of the import source to return.
+     *
+     * @return A reference to the import source at the given @p index on success, @c nullptr otherwise.
+     */
+    ImportSourcePtr importSource(size_t index) const;
+
+    /**
+     * @brief Remove the import source at the given @p index.
+     *
+     * Remove the import source from this model at the given @p index.
+     * @p index must be in the range [0, \#importSources).
+     *
+     * @param index The index of the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(size_t index);
+
+    /**
+     * @overload
+     *
+     * @brief Remove the import source at the given reference.
+     *
+     * @param importSrc The pointer to the import source to remove.
+     *
+     * @return @c true if the import source was removed, @c false otherwise.
+     */
+    bool removeImportSource(const ImportSourcePtr &importSrc);
+
+    /**
+     * @brief Remove all import sources stored in this model.
+     *
+     * Clears all import sources that have been added to this model.
+     */
+    bool removeAllImportSources();
+
+    /**
+     * @brief Tests to see if the import source is within this model.
+     *
+     * Tests to see if the given import source is contained within this model.
+     * Returns @c true if the import source is in the model and @c false otherwise.
+     *
+     * @param importSrc The import source to test for existence in this model.
+     *
+     * @return @c true if the import source is in the model and @c false otherwise.
+     */
+    bool hasImportSource(const ImportSourcePtr &importSrc) const;
 
 private:
     Model(); /**< Constructor */
