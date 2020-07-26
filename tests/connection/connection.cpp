@@ -1105,7 +1105,8 @@ TEST(Connection, importedComponentConnectionAndParse)
     m->addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
-    EXPECT_EQ(componentImported->variable(0), variableImported);
+    EXPECT_EQ(variableImported, componentImported->variable(0));
+
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string a = printer->printModel(m);
