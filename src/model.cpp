@@ -47,6 +47,7 @@ namespace libcellml {
 struct Model::ModelImpl
 {
     std::vector<UnitsPtr> mUnits;
+    std::vector<ImportSourcePtr> mImports;
 
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
@@ -97,6 +98,11 @@ bool Model::doAddComponent(const ComponentPtr &component)
         removeComponentFromEntity(parent, component);
     }
     component->setParent(shared_from_this());
+
+    if (component->isImport()) {
+        auto importSource = component->importSource();
+        addImportSource(importSource);
+    }
     return ComponentEntity::doAddComponent(component);
 }
 
@@ -118,6 +124,10 @@ bool Model::addUnits(const UnitsPtr &units)
     }
     mPimpl->mUnits.push_back(units);
     units->setParent(shared_from_this());
+
+    if (units->isImport()) {
+        addImportSource(units->importSource());
+    }
     return true;
 }
 
@@ -240,6 +250,73 @@ bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 size_t Model::unitsCount() const
 {
     return mPimpl->mUnits.size();
+}
+
+bool Model::hasImportSource(const ImportSourcePtr &importSrc) const
+{
+    return std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc) != mPimpl->mImports.end();
+}
+
+bool Model::addImportSource(const ImportSourcePtr &importSrc)
+{
+    if (importSrc == nullptr) {
+        return false;
+    }
+    if (hasImportSource(importSrc)) {
+        return false;
+    }
+    auto otherModel = owningModel(importSrc);
+    if (otherModel != nullptr) {
+        otherModel->removeImportSource(importSrc);
+    }
+    importSrc->setParent(shared_from_this());
+    mPimpl->mImports.push_back(importSrc);
+    return true;
+}
+
+size_t Model::importSourceCount() const
+{
+    return mPimpl->mImports.size();
+}
+
+ImportSourcePtr Model::importSource(size_t index) const
+{
+    ImportSourcePtr importSrc = nullptr;
+    if (index < mPimpl->mImports.size()) {
+        importSrc = mPimpl->mImports.at(index);
+    }
+
+    return importSrc;
+}
+
+bool Model::removeImportSource(size_t index)
+{
+    bool status = false;
+    auto importSrc = importSource(index);
+    status = removeImportSource(importSrc);
+    return status;
+}
+
+bool Model::removeImportSource(const ImportSourcePtr &importSrc)
+{
+    bool status = false;
+    auto result = std::find(mPimpl->mImports.begin(), mPimpl->mImports.end(), importSrc);
+    if (result != mPimpl->mImports.end()) {
+        importSrc->removeParent();
+        mPimpl->mImports.erase(result);
+        status = true;
+    }
+    return status;
+}
+
+bool Model::removeAllImportSources()
+{
+    bool status = true;
+    for (const auto &imp : mPimpl->mImports) {
+        imp->removeParent();
+    }
+    mPimpl->mImports.clear();
+    return status;
 }
 
 void linkComponentVariableUnits(const ComponentPtr &component)
