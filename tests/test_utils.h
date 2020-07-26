@@ -94,6 +94,12 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
 libcellml::ComponentPtr TEST_EXPORT createImportInModel(const libcellml::ModelPtr &model, const std::string &componentName, const std::string &importSourceUrl, const std::string &importReference);
 libcellml::ComponentPtr TEST_EXPORT createImportInComponent(const libcellml::ComponentPtr &component, const std::string &componentName, const std::string &importSourceUrl, const std::string &importReference);
 
+void TEST_EXPORT compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2);
+void TEST_EXPORT compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr);
+void TEST_EXPORT compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr);
+void TEST_EXPORT compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2);
+void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2);
+
 #define EXPECT_EQ_ISSUES(issues, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssues(issues, logger)
