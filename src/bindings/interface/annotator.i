@@ -15,59 +15,55 @@
 "Interacts with CellML objects using their id attribute.";
 
 %feature("docstring") libcellml::Annotator::build
-"Construct a searchable map of items in the model."
+"Construct a searchable map of items in the model.";
 
 %feature("docstring") libcellml::Annotator::item
-"Return the item with the given id."
+"Return the item with the given id.";
 
 %feature("docstring") libcellml::Annotator::component
-"Return the component with the given id."
+"Return the component with the given id.";
 
 %feature("docstring") libcellml::Annotator::model
-"Return the model with the given id."
+"Return the model with the given id.";
 
 %feature("docstring") libcellml::Annotator::variable
-"Return the variable with the given id."
+"Return the variable with the given id.";
 
 %feature("docstring") libcellml::Annotator::importSource
-"Return the import source with the given id."
+"Return the import source with the given id.";
 
 %feature("docstring") libcellml::Annotator::units
-"Return the units with the given id."
+"Return the units with the given id.";
 
 %feature("docstring") libcellml::Annotator::reset
-"Return the reset with the given id."
+"Return the reset with the given id.";
 
 %feature("docstring") libcellml::Annotator::testValue
-"Return the ResetPtr whose test_value has the given id."
+"Return the ResetPtr whose test_value has the given id.";
 
 %feature("docstring") libcellml::Annotator::resetValue
-"Return the ResetPtr whose reset_value has the given id."
+"Return the ResetPtr whose reset_value has the given id.";
 
 %feature("docstring") libcellml::Annotator::componentRef
-"Return the ComponentPtr with the given component_ref id."
-
-// %feature("docstring") libcellml::Annotator::setAutomaticIds
-// "Sets automatically generated id strings for all items in the model 
-// (if no argument is given), or for all items of the given Annotator::Type."
+"Return the ComponentPtr with the given component_ref id.";
 
 %feature("docstring") libcellml::Annotator::itemForPython
-"Private: Utility function to retrieve item based on id."
+"Private: Utility function to retrieve item based on id.";
 
 %feature("docstring") libcellml::Annotator::itemTypeForPython
-"Private: Utility function to retrieve item type integer based on id."
+"Private: Utility function to retrieve item type integer based on id.";
 
 %feature("docstring") libcellml::Annotator::unitIndexForPython
-"Private: Utility function to retrieve index of Unit item within parent Units item based on given id."
+"Private: Utility function to retrieve index of Unit item within parent Units item based on given id.";
 
 %feature("docstring") libcellml::Annotator::unitParentForPython
-"Private: Utility function to retrieve UnitsPtr parent for Unit item with given id."
+"Private: Utility function to retrieve UnitsPtr parent for Unit item with given id.";
 
 %feature("docstring") libcellml::Annotator::connectionForPython
-"Private: Utility function to retrieve one of VariablePtrs connection with given id."
+"Private: Utility function to retrieve one of VariablePtrs connection with given id.";
 
 %feature("docstring") libcellml::Annotator::mapVariablesForPython
-"Private: Utility function to retrieve one of VariablePtrs map_variables with given id."
+"Private: Utility function to retrieve one of VariablePtrs map_variables with given id.";
 
 %{
 #include "libcellml/annotator.h"
