@@ -1998,7 +1998,6 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
                    + replace(mProfile->externalVariableMethodCallString(),
                              "<INDEX>", index.str())
                    + mProfile->commandSeparatorString() + "\n";
-
         } else {
             res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
         }
