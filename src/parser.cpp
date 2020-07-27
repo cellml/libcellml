@@ -234,7 +234,7 @@ ModelPtr Parser::parseModel(const std::string &input)
     ModelPtr model = Model::create();
     if (input.empty()) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Model is empty.");
+        issue->setDescription("Model is empty."); // KRM: Change message, the input string is empty, not the model!
         issue->setCause(Issue::Cause::XML);
         issue->setModel(model);
         addIssue(issue);

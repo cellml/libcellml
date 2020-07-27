@@ -47,6 +47,10 @@
 %feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref id."
 
+// %feature("docstring") libcellml::Annotator::setAutomaticIds
+// "Sets automatically generated id strings for all items in the model 
+// (if no argument is given), or for all items of the given Annotator::Type."
+
 %feature("docstring") libcellml::Annotator::itemForPython
 "Private: Utility function to retrieve item based on id."
 

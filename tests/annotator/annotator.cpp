@@ -357,3 +357,560 @@ TEST(Annotator, castingOnRetrieval)
         break;
     }
 }
+
+TEST(Annotator, automaticIdsOnEverything)
+{
+    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
+                           "  </import>\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+                           "  </import>\n"
+                           "  <units name=\"units2\">\n"
+                           "    <unit units=\"second\"/>\n"
+                           "  </units>\n"
+                           "  <units name=\"units3\"/>\n"
+                           "  <units name=\"blob\"/>\n"
+                           "  <component name=\"component2\">\n"
+                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\"/>\n"
+                           "    <variable name=\"variable2\" units=\"units2\"/>\n"
+                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
+                           "      <test_value>\n"
+                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                           "          <apply>\n"
+                           "            <eq/>\n"
+                           "            <ci>variable1</ci>\n"
+                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
+                           "          </apply>\n"
+                           "        </math>\n"
+                           "      </test_value>\n"
+                           "      <reset_value>\n"
+                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                           "          <apply>\n"
+                           "            <eq/>\n"
+                           "            <ci>variable1</ci>\n"
+                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
+                           "          </apply>\n"
+                           "        </math>\n"
+                           "      </reset_value>\n"
+                           "    </reset>\n"
+                           "  </component>\n"
+                           "  <component name=\"component3\">\n"
+                           "    <variable name=\"variable4\" units=\"units2\" interface=\"public\"/>\n"
+                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"/>\n"
+                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                           "      <apply>\n"
+                           "        <eq/>\n"
+                           "        <ci>variable4</ci>\n"
+                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                           "      </apply>\n"
+                           "    </math>\n"
+                           "  </component>\n"
+                           "  <connection component_1=\"component2\" component_2=\"component3\">\n"
+                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable4\"/>\n"
+                           "  </connection>\n"
+                           "  <encapsulation>\n"
+                           "    <component_ref component=\"component2\">\n"
+                           "      <component_ref component=\"component3\"/>\n"
+                           "    </component_ref>\n"
+                           "  </encapsulation>\n"
+                           "</model>\n";
+
+    auto expectedError = "Please call the Annotator::build function before attempting to automatically create id strings.";
+    auto annotator = libcellml::Annotator::create();
+    auto parser = libcellml::Parser::create();
+    auto printer = libcellml::Printer::create();
+    auto model = parser->parseModel(in);
+
+    annotator->setAutomaticIds();
+    EXPECT_EQ(size_t(1), annotator->errorCount());
+    EXPECT_EQ(expectedError, annotator->error(0)->description());
+
+    annotator->build(model);
+    annotator->setAutomaticIds();
+
+    EXPECT_EQ("b4da55", model->id());
+    EXPECT_EQ("b4da56", model->importSource(0)->id());
+    EXPECT_EQ("b4da57", model->importSource(1)->id());
+    EXPECT_EQ("b4da58", model->units(0)->id());
+    EXPECT_EQ("b4da59", model->units(1)->id());
+    EXPECT_EQ("b4da5a", model->units(2)->id());
+    EXPECT_EQ("b4da5b", model->units(3)->id());
+    EXPECT_EQ("b4da5c", model->units(1)->unitId(0));
+    EXPECT_EQ("b4da5d", model->component(0)->id());
+    EXPECT_EQ("b4da5e", model->component(1)->id());
+    EXPECT_EQ("b4da5f", model->component(1)->component(0)->id());
+    EXPECT_EQ("b4da60", model->component(1)->variable(0)->id());
+    EXPECT_EQ("b4da61", model->component(1)->variable(1)->id());
+    EXPECT_EQ("b4da62", model->component(1)->component(0)->variable(0)->id());
+    EXPECT_EQ("b4da63", model->component(1)->component(0)->variable(1)->id());
+
+    EXPECT_EQ("b4da64", model->component(1)->reset(0)->id());
+    EXPECT_EQ("b4da65", model->component(1)->reset(0)->resetValueId());
+    EXPECT_EQ("b4da66", model->component(1)->reset(0)->testValueId());
+
+    auto c2v1 = model->component("component2")->variable("variable1");
+    auto c2v2 = model->component("component2")->variable("variable2");
+    auto c3v4 = model->component("component3")->variable("variable4");
+    auto c3v2 = model->component("component3")->variable("variable2");
+    EXPECT_EQ("b4da67", libcellml::Variable::equivalenceConnectionId(c2v1, c3v2));
+    EXPECT_EQ("b4da68", libcellml::Variable::equivalenceConnectionId(c2v1, c3v4));
+    EXPECT_EQ("b4da69", libcellml::Variable::equivalenceMappingId(c2v1, c3v2));
+    EXPECT_EQ("b4da6a", libcellml::Variable::equivalenceMappingId(c2v1, c3v4));
+    EXPECT_EQ("b4da6b", model->component("component2")->encapsulationId());
+    EXPECT_EQ("b4da6c", model->component("component3")->encapsulationId());
+    EXPECT_EQ("b4da6d", model->encapsulationId());
+}
+
+TEST(Annotator, automaticIdsComponents)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto component3 = libcellml::Component::create("c3");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    component2->addComponent(component3);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::COMPONENT);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("b4da55", component1->id());
+    EXPECT_EQ("b4da56", component2->id());
+    EXPECT_EQ("b4da57", component3->id());
+}
+
+TEST(Annotator, automaticIdsComponentRefs)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto component3 = libcellml::Component::create("c3");
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    component2->addComponent(component3);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", component1->encapsulationId());
+    EXPECT_EQ("", component2->encapsulationId());
+    EXPECT_EQ("", component3->encapsulationId());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::COMPONENT_REF);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", component1->encapsulationId());
+    EXPECT_EQ("b4da55", component2->encapsulationId());
+    EXPECT_EQ("b4da56", component3->encapsulationId());
+}
+
+TEST(Annotator, automaticIdsConnection)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto variable1 = libcellml::Variable::create("v1");
+    auto variable2 = libcellml::Variable::create("v2");
+    auto variable3 = libcellml::Variable::create("v3");
+    auto variable4 = libcellml::Variable::create("v4");
+    component1->addVariable(variable1);
+    component1->addVariable(variable2);
+    component2->addVariable(variable3);
+    component2->addVariable(variable4);
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+
+    libcellml::Variable::addEquivalence(variable1, variable3);
+    libcellml::Variable::addEquivalence(variable2, variable4);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", variable1->id());
+    EXPECT_EQ("", variable2->id());
+    EXPECT_EQ("", variable3->id());
+    EXPECT_EQ("", variable4->id());
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable1, variable3));
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable2, variable4));
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::CONNECTION);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", variable1->id());
+    EXPECT_EQ("", variable2->id());
+    EXPECT_EQ("", variable3->id());
+    EXPECT_EQ("", variable4->id());
+    EXPECT_EQ("b4da55", libcellml::Variable::equivalenceConnectionId(variable1, variable3));
+    EXPECT_EQ("b4da56", libcellml::Variable::equivalenceConnectionId(variable2, variable4));
+}
+
+TEST(Annotator, automaticIdsEncapsulation)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->encapsulationId());
+    annotator->setAutomaticIds(libcellml::Annotator::Type::ENCAPSULATION);
+    EXPECT_EQ("b4da55", model->encapsulationId());
+}
+
+TEST(Annotator, automaticIdsImportSource)
+{
+    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
+                           "  </import>\n"
+                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+                           "  </import>\n"
+                           "</model>";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    auto annotator = libcellml::Annotator::create();
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", model->importSource(0)->id());
+    EXPECT_EQ("", model->importSource(1)->id());
+    EXPECT_EQ("", model->units(0)->id());
+    EXPECT_EQ("", model->component(0)->id());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::IMPORT);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("b4da55", model->importSource(0)->id());
+    EXPECT_EQ("b4da56", model->importSource(1)->id());
+    EXPECT_EQ("", model->units(0)->id());
+    EXPECT_EQ("", model->component(0)->id());
+}
+
+TEST(Annotator, automaticIdsMapVariables)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto variable1 = libcellml::Variable::create("v1");
+    auto variable2 = libcellml::Variable::create("v2");
+    auto variable3 = libcellml::Variable::create("v3");
+    auto variable4 = libcellml::Variable::create("v4");
+    component1->addVariable(variable1);
+    component1->addVariable(variable2);
+    component2->addVariable(variable3);
+    component2->addVariable(variable4);
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+
+    libcellml::Variable::addEquivalence(variable1, variable3);
+    libcellml::Variable::addEquivalence(variable2, variable4);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", variable1->id());
+    EXPECT_EQ("", variable2->id());
+    EXPECT_EQ("", variable3->id());
+    EXPECT_EQ("", variable4->id());
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable1, variable3));
+    EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable2, variable4));
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::MAP_VARIABLES);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", variable1->id());
+    EXPECT_EQ("", variable2->id());
+    EXPECT_EQ("", variable3->id());
+    EXPECT_EQ("", variable4->id());
+    EXPECT_EQ("b4da55", libcellml::Variable::equivalenceMappingId(variable1, variable3));
+    EXPECT_EQ("b4da56", libcellml::Variable::equivalenceMappingId(variable2, variable4));
+}
+
+TEST(Annotator, automaticIdsModel)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    annotator->setAutomaticIds(libcellml::Annotator::Type::MODEL);
+    EXPECT_EQ("b4da55", model->id());
+}
+
+TEST(Annotator, automaticIdsResets)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto component3 = libcellml::Component::create("c3");
+    auto reset1 = libcellml::Reset::create();
+    auto reset2 = libcellml::Reset::create();
+    auto reset3 = libcellml::Reset::create();
+
+    component1->addReset(reset1);
+    component2->addReset(reset2);
+    component3->addReset(reset3);
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    component2->addComponent(component3);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", reset1->id());
+    EXPECT_EQ("", reset2->id());
+    EXPECT_EQ("", reset3->id());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::RESET);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("b4da55", reset1->id());
+    EXPECT_EQ("b4da56", reset2->id());
+    EXPECT_EQ("b4da57", reset3->id());
+}
+
+TEST(Annotator, automaticIdsResetValues)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto component3 = libcellml::Component::create("c3");
+    auto reset1 = libcellml::Reset::create();
+    auto reset2 = libcellml::Reset::create();
+    auto reset3 = libcellml::Reset::create();
+    reset1->setResetValue(NON_EMPTY_MATH);
+    reset2->setResetValue(NON_EMPTY_MATH);
+    reset3->setResetValue(NON_EMPTY_MATH);
+
+    component1->addReset(reset1);
+    component2->addReset(reset2);
+    component3->addReset(reset3);
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    component2->addComponent(component3);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", reset1->id());
+    EXPECT_EQ("", reset2->id());
+    EXPECT_EQ("", reset3->id());
+    EXPECT_EQ("", reset1->resetValueId());
+    EXPECT_EQ("", reset2->resetValueId());
+    EXPECT_EQ("", reset3->resetValueId());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::RESET_VALUE);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", reset1->id());
+    EXPECT_EQ("", reset2->id());
+    EXPECT_EQ("", reset3->id());
+    EXPECT_EQ("b4da55", reset1->resetValueId());
+    EXPECT_EQ("b4da56", reset2->resetValueId());
+    EXPECT_EQ("b4da57", reset3->resetValueId());
+}
+
+TEST(Annotator, automaticIdsTestValues)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto component3 = libcellml::Component::create("c3");
+    auto reset1 = libcellml::Reset::create();
+    auto reset2 = libcellml::Reset::create();
+    auto reset3 = libcellml::Reset::create();
+    reset1->setTestValue(NON_EMPTY_MATH);
+    reset2->setTestValue(NON_EMPTY_MATH);
+    reset3->setTestValue(NON_EMPTY_MATH);
+
+    component1->addReset(reset1);
+    component2->addReset(reset2);
+    component3->addReset(reset3);
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+    component2->addComponent(component3);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", reset1->id());
+    EXPECT_EQ("", reset2->id());
+    EXPECT_EQ("", reset3->id());
+    EXPECT_EQ("", reset1->testValueId());
+    EXPECT_EQ("", reset2->testValueId());
+    EXPECT_EQ("", reset3->testValueId());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::TEST_VALUE);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", component3->id());
+    EXPECT_EQ("", reset1->id());
+    EXPECT_EQ("", reset2->id());
+    EXPECT_EQ("", reset3->id());
+    EXPECT_EQ("b4da55", reset1->testValueId());
+    EXPECT_EQ("b4da56", reset2->testValueId());
+    EXPECT_EQ("b4da57", reset3->testValueId());
+}
+
+TEST(Annotator, automaticIdsUnitItems)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto units = libcellml::Units::create();
+
+    units->addUnit("second");
+    units->addUnit("metre");
+
+    model->addUnits(units);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", units->id());
+    EXPECT_EQ("", units->unitId(0));
+    EXPECT_EQ("", units->unitId(1));
+    annotator->setAutomaticIds(libcellml::Annotator::Type::UNIT);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", units->id());
+    EXPECT_EQ("b4da55", units->unitId(0));
+    EXPECT_EQ("b4da56", units->unitId(1));
+}
+
+TEST(Annotator, automaticIdsUnitsItems)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto units1 = libcellml::Units::create("u1");
+    auto units2 = libcellml::Units::create("u2");
+
+    units1->addUnit("second");
+    units1->addUnit("metre");
+
+    model->addUnits(units1);
+    model->addUnits(units2);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", units1->id());
+    EXPECT_EQ("", units1->unitId(0));
+    EXPECT_EQ("", units1->unitId(1));
+    EXPECT_EQ("", units1->id());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::UNITS);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("b4da55", units1->id());
+    EXPECT_EQ("", units1->unitId(0));
+    EXPECT_EQ("", units1->unitId(1));
+    EXPECT_EQ("b4da56", units2->id());
+}
+
+TEST(Annotator, automaticIdsVariables)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+    auto component1 = libcellml::Component::create("c1");
+    auto component2 = libcellml::Component::create("c2");
+    auto variable1 = libcellml::Variable::create("v1");
+    auto variable2 = libcellml::Variable::create("v2");
+    auto variable3 = libcellml::Variable::create("v3");
+    auto variable4 = libcellml::Variable::create("v4");
+    component1->addVariable(variable1);
+    component1->addVariable(variable2);
+    component2->addVariable(variable3);
+    component2->addVariable(variable4);
+
+    model->addComponent(component1);
+    model->addComponent(component2);
+
+    annotator->build(model);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("", variable1->id());
+    EXPECT_EQ("", variable2->id());
+    EXPECT_EQ("", variable3->id());
+    EXPECT_EQ("", variable4->id());
+
+    annotator->setAutomaticIds(libcellml::Annotator::Type::VARIABLE);
+
+    EXPECT_EQ("", model->id());
+    EXPECT_EQ("", component1->id());
+    EXPECT_EQ("", component2->id());
+    EXPECT_EQ("b4da55", variable1->id());
+    EXPECT_EQ("b4da56", variable2->id());
+    EXPECT_EQ("b4da57", variable3->id());
+    EXPECT_EQ("b4da58", variable4->id());
+}
+
+TEST(Annotator, automaticIdsIssue)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto model = libcellml::Model::create();
+
+    annotator->build(model);
+
+    EXPECT_FALSE(annotator->setAutomaticIds(libcellml::Annotator::Type::ISSUE));
+}
