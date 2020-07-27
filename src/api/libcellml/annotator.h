@@ -279,6 +279,10 @@ public:
      */
     ResetPtr resetValue(const std::string &id);
 
+    // KRM docstrings
+    bool setAutomaticIds();
+    bool setAutomaticIds(Annotator::Type type);
+
 private:
     Annotator(); /**< Constructor */
 

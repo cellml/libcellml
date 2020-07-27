@@ -502,6 +502,10 @@ public:
      */
     void setImportSource(ImportSourcePtr &importSource);
 
+    // KRM docstrings
+    bool setUnitId(size_t index, std::string &id) const;
+    std::string unitId(size_t index);
+
 private:
     Units(); /**< Constructor */
     explicit Units(const std::string &name); /**< Constructor with std::string parameter*/

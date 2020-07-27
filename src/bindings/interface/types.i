@@ -121,5 +121,3 @@ Only meant to be included, shouldn't be passed to cmake as a module!
     $1 = %static_cast(val,$basetype);
   }
 }
-
-
