@@ -122,7 +122,8 @@ public:
     {
         ERROR,
         WARNING,
-        HINT
+        HINT,
+        INFORMATION
     };
 
     /**
