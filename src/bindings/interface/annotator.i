@@ -73,6 +73,8 @@
 %ignore libcellml::Annotator::unit;
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
+%ignore libcellml::Annotator::setAutomaticIds;
+%ignore libcellml::Annotator::setAutomaticId;
 
 %create_constructor(Annotator)
 

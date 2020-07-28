@@ -328,3 +328,20 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
         EXPECT_EQ(r1->testVariable()->name(), r2->testVariable()->name());
     }
 }
+
+libcellml::ModelPtr owningModel(const libcellml::EntityConstPtr &entity)
+{
+    auto model = std::dynamic_pointer_cast<libcellml::Model>(entity->parent());
+    auto component = owningComponent(entity);
+    while ((model == nullptr) && (component != nullptr) && component->parent()) {
+        model = std::dynamic_pointer_cast<libcellml::Model>(component->parent());
+        component = owningComponent(component);
+    }
+
+    return model;
+}
+
+libcellml::ComponentPtr owningComponent(const libcellml::EntityConstPtr &entity)
+{
+    return std::dynamic_pointer_cast<libcellml::Component>(entity->parent());
+}
