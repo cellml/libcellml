@@ -103,6 +103,12 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
       target_compile_definitions(${MODULE_TARGET} PRIVATE $<$<CONFIG:Debug>:SWIG_PYTHON_INTERPRETER_NO_DEBUG>)
     endif()
   endif()
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
+     OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    set_target_properties(${MODULE_TARGET} PROPERTIES
+      COMPILE_OPTIONS "-Wno-deprecated-declarations"
+    )
+  endif()
   set_target_properties(${MODULE_TARGET} PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     FOLDER bindings/python
