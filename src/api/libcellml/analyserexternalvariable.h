@@ -30,8 +30,6 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT AnalyserExternalVariable
 {
-    friend class Analyser;
-
 public:
     ~AnalyserExternalVariable(); /**< Destructor */
     AnalyserExternalVariable(const AnalyserExternalVariable &rhs) = delete; /**< Copy constructor */
@@ -203,6 +201,16 @@ public:
     VariablePtr dependency(const ModelPtr &model,
                            const std::string &componentName,
                            const std::string &variableName) const;
+
+    /**
+     * @brief Get the list of @c Variable dependencies.
+     *
+     * Return the list of @c Variable items on which this
+     * @c AnalyserExternalVariable depend.
+     *
+     * @return The list of @c Variable dependencies.
+     */
+    std::vector<VariablePtr> dependencies() const;
 
     /**
      * @brief Get the number of dependencies in this external @c Variable.

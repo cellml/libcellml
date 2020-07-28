@@ -157,6 +157,11 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
     return nullptr;
 }
 
+std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
+{
+    return mPimpl->mDependencies;
+}
+
 size_t AnalyserExternalVariable::dependencyCount() const
 {
     return mPimpl->mDependencies.size();
