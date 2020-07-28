@@ -1978,17 +1978,19 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 {
     std::string res;
 
-    for (const auto &dependency : equation->dependencies()) {
-        if (!onlyStateRateBasedEquations
-            || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
-                && dependency->isStateRateBased())) {
-            res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
+    if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
+        if ((equation->type() == AnalyserEquation::Type::RATE)
+            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)) {
+            for (const auto &dependency : equation->dependencies()) {
+                if ((dependency->type() != AnalyserEquation::Type::RATE)
+                    && (!onlyStateRateBasedEquations
+                        || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                            && dependency->isStateRateBased()))) {
+                    res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
+                }
+            }
         }
-    }
 
-    auto equationIter = std::find(remainingEquations.begin(), remainingEquations.end(), equation);
-
-    if (equationIter != remainingEquations.end()) {
         if (equation->type() == AnalyserEquation::Type::EXTERNAL) {
             std::ostringstream index;
 
@@ -2002,7 +2004,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
             res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
         }
 
-        remainingEquations.erase(equationIter);
+        remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
     }
 
     return res;
@@ -2130,7 +2132,8 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-                || ((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+                || (((equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+                     || (equation->type() == AnalyserEquation::Type::EXTERNAL))
                     && equation->isStateRateBased())) {
                 methodBody += generateEquationCode(equation, newRemainingEquations, true);
             }
