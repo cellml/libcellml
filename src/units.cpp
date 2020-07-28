@@ -396,7 +396,7 @@ std::string Units::unitId(size_t index)
 {
     if (index < mPimpl->mUnits.size()) {
         return mPimpl->mUnits.at(index).mId;
-    } 
+    }
     return "";
 }
 

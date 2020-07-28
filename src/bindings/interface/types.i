@@ -118,6 +118,6 @@ Only meant to be included, shouldn't be passed to cmake as a module!
     if (val < %static_cast(libcellml::Annotator::Type::COMPONENT, int) || %static_cast(libcellml::Annotator::Type::VARIABLE, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
-    $1 = %static_cast(val,$basetype);
+    $1 = %static_cast(val, $basetype);
   }
 }

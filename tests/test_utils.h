@@ -97,6 +97,9 @@ void TEST_EXPORT compareComponent(const libcellml::ComponentPtr &c1, const libce
 void TEST_EXPORT compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2);
 void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2);
 
+libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::EntityConstPtr &entity);
+libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::EntityConstPtr &entity);
+
 #define EXPECT_EQ_ISSUES(issues, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssues(issues, logger)

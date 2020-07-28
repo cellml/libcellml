@@ -30,7 +30,7 @@ namespace libcellml {
 using VariablePair = std::pair<VariablePtr, VariablePtr>;
 using UnitItem = std::pair<UnitsPtr, size_t>;
 using AnyItem = std::pair<std::uint64_t, std::any>;
-using ItemList = std::map<std::string, AnyItem>;
+using ItemList = std::multimap<std::string, AnyItem>;
 /**
  * @brief The Annotator class.
  *
@@ -282,6 +282,10 @@ public:
     // KRM docstrings
     bool setAutomaticIds();
     bool setAutomaticIds(Annotator::Type type);
+    bool repairNonUniqueIds();
+    // bool setAutomaticId(ModelPtr &in);
+    // bool setAutomaticId(ComponentPtr &in);
+    bool setAutomaticId(AnyItem &item);
 
 private:
     Annotator(); /**< Constructor */
