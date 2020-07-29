@@ -148,6 +148,7 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     bool mComputedVariableBasedConstant = true;
 
     explicit AnalyserInternalEquation(const ComponentPtr &component);
+    explicit AnalyserInternalEquation(const AnalyserInternalVariablePtr &variable);
 
     void addVariable(const AnalyserInternalVariablePtr &variable);
     void addOdeVariable(const AnalyserInternalVariablePtr &odeVariable);
@@ -164,6 +165,12 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
 AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
     : mAst(AnalyserEquationAst::create())
     , mComponent(component)
+{
+}
+
+AnalyserInternalEquation::AnalyserInternalEquation(const AnalyserInternalVariablePtr &variable)
+    : mVariable(variable)
+    , mComponent(owningComponent(variable->mVariable))
 {
 }
 
@@ -1151,6 +1158,12 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
 
 void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 {
+    // Make sure that we an AST to scale.
+
+    if (ast == nullptr) {
+        return;
+    }
+
     // Recursively scale the given AST's children.
 
     if (ast->mPimpl->mLeftChild != nullptr) {
@@ -1358,6 +1371,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
     if ((mModel->mPimpl->mType == AnalyserModel::Type::ODE)
         || (mModel->mPimpl->mType == AnalyserModel::Type::ALGEBRAIC)) {
+        // Add a dummy equation for each of our true (i.e. non-computed)
+        // constants.
+        // Note: this is only so that we can mark a constant as an external
+        //       variable.
+
+        for (const auto &internalVariable : mInternalVariables) {
+            if (internalVariable->mType == AnalyserInternalVariable::Type::CONSTANT) {
+                mInternalEquations.push_back(std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {internalVariable}});
+            }
+        }
+
         // Mark some variables as external variables, if needed.
 
         std::map<AnalyserInternalVariablePtr, std::vector<VariablePtr>> externalVariables;
@@ -1551,8 +1575,16 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     type = AnalyserEquation::Type::VARIABLE_BASED_CONSTANT;
                 } else if (internalEquation->mType == AnalyserInternalEquation::Type::RATE) {
                     type = AnalyserEquation::Type::RATE;
-                } else {
+                } else if (internalEquation->mType == AnalyserInternalEquation::Type::ALGEBRAIC) {
                     type = AnalyserEquation::Type::ALGEBRAIC;
+                } else {
+                    // The equation type is unknown, which means that it is a
+                    // dummy equation for a true (i.e. non-computed) constant
+                    // (so that it could have been marked as an external
+                    // variable), so we skip it since the constant wasn't marked
+                    // as an external variable.
+
+                    continue;
                 }
 
                 // Scale our internal equation's AST to take into account the
