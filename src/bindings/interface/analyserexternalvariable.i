@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_vector.i>
+
 %import "types.i"
 
 %feature("docstring") libcellml::AnalyserExternalVariable
