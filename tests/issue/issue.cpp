@@ -69,178 +69,217 @@ TEST(Issue, createResetIssue)
 void testReferenceRule(const libcellml::IssuePtr &e)
 {
     switch (e->referenceRule()) {
-    case libcellml::Issue::ReferenceRule::COMPONENT_CHILD:
-        EXPECT_EQ("10.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::COMPONENT_NAME:
-        EXPECT_EQ("10.1.1", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::COMPONENT_REF_CHILD:
-        EXPECT_EQ("16.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE:
-        EXPECT_EQ("16.1.1", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::COMPONENT_REF_ENCAPSULATION:
-        EXPECT_EQ("16.1.3", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT1:
-        EXPECT_EQ("17.1.1", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT2:
-        EXPECT_EQ("17.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::CONNECTION_UNIQUE_TRANSITIVE:
-        EXPECT_EQ("17.1.3", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::CONNECTION_MAP_VARIABLES:
-        EXPECT_EQ("17.1.4", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM:
-        EXPECT_EQ("3.1.3", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM:
-        EXPECT_EQ("3.1.4", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL:
-        EXPECT_EQ("3.1.5", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM:
-        EXPECT_EQ("3.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::UNDEFINED:
+        EXPECT_EQ("", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE:
-        EXPECT_EQ("3.1.1", e->referenceHeading());
+        EXPECT_EQ("1.3.1.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::DATA_REPR_NNEG_INT_BASE10:
-        EXPECT_EQ("3.2.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM:
+        EXPECT_EQ("1.3.1.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::DATA_REPR_NNEG_INT_EURO_NUM:
-        EXPECT_EQ("3.2.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM:
+        EXPECT_EQ("1.3.1.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::ENCAPSULATION_COMPONENT_REF:
-        EXPECT_EQ("15.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM:
+        EXPECT_EQ("1.3.1.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_CHILD:
-        EXPECT_EQ("5.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL:
+        EXPECT_EQ("1.3.1.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_CIRCULAR:
-        EXPECT_EQ("5.1.3", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_INT_BASE10:
+        EXPECT_EQ("1.3.2.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME:
-        EXPECT_EQ("7.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_INT_SIGN:
+        EXPECT_EQ("1.3.2.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_REF:
-        EXPECT_EQ("7.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_INT_DIGIT:
+        EXPECT_EQ("1.3.2.3", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_HREF:
-        EXPECT_EQ("5.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_BASE10:
+        EXPECT_EQ("1.3.3.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME:
-        EXPECT_EQ("6.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_SIGN:
+        EXPECT_EQ("1.3.3.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::IMPORT_UNITS_REF:
-        EXPECT_EQ("6.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_DECIMAL:
+        EXPECT_EQ("1.3.3.3", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
-        EXPECT_EQ("16.1.3", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_DIGIT:
+        EXPECT_EQ("1.3.3.4", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_UNIQUE:
-        EXPECT_EQ("18.1.3", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_REAL_BASE10:
+        EXPECT_EQ("1.3.4.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1:
-        EXPECT_EQ("18.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_REAL_SIGNIFICAND:
+        EXPECT_EQ("1.3.4.3", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2:
-        EXPECT_EQ("18.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::MATH_CHILD:
-        EXPECT_EQ("14.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REFERENCE:
-        EXPECT_EQ("14.1.3", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::MATH_CN_UNITS_ATTRIBUTE:
-        EXPECT_EQ("14.1.4", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::MATH_MATHML:
-        EXPECT_EQ("14.1.1", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::MODEL_CHILD:
-        EXPECT_EQ("4.2.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::DATA_REPR_REAL_EXPONENT:
+        EXPECT_EQ("1.3.4.4", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MODEL_ELEMENT:
-        EXPECT_EQ("4.1", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION:
-        EXPECT_EQ("4.2.3", e->referenceHeading());
+        EXPECT_EQ("2.1", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MODEL_NAME:
-        EXPECT_EQ("4.2.1", e->referenceHeading());
+        EXPECT_EQ("2.1.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::RESET_CHILD:
-        EXPECT_EQ("12.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::MODEL_CHILD:
+        EXPECT_EQ("2.1.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::RESET_VARIABLE_REFERENCE:
-        EXPECT_EQ("12.1.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION:
+        EXPECT_EQ("2.1.3", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE:
-        EXPECT_EQ("12.1.1.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::IMPORT_HREF:
+        EXPECT_EQ("2.2.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::RESET_ORDER:
-        EXPECT_EQ("12.1.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::IMPORT_CHILD:
+        EXPECT_EQ("2.2.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::RESET_TEST_VALUE:
-        EXPECT_EQ("12.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::IMPORT_EQUIVALENT:
+        EXPECT_EQ("2.2.3", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::RESET_RESET_VALUE:
-        EXPECT_EQ("12.1.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME:
+        EXPECT_EQ("2.3.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::UNITS_CHILD:
-        EXPECT_EQ("8.1.4", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME_UNIQUE:
+        EXPECT_EQ("2.3.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::IMPORT_UNITS_REF:
+        EXPECT_EQ("2.3.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME:
+        EXPECT_EQ("2.4.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME_UNIQUE:
+        EXPECT_EQ("2.4.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF:
+        EXPECT_EQ("2.4.2", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::UNITS_NAME:
-        EXPECT_EQ("8.1.1", e->referenceHeading());
+        EXPECT_EQ("2.5.1", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::UNITS_NAME_UNIQUE:
-        EXPECT_EQ("8.1.2", e->referenceHeading());
+        EXPECT_EQ("2.5.1", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::UNITS_STANDARD:
-        EXPECT_EQ("8.1.3", e->referenceHeading());
+        EXPECT_EQ("2.5.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE:
-        EXPECT_EQ("9.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::UNIT_CIRCULAR_REF:
-        EXPECT_EQ("9.1.1.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::UNIT_DIGRAPH:
-        EXPECT_EQ("9.1.1.1", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::UNIT_EXPONENT:
-        EXPECT_EQ("9.1.2.3", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::UNIT_MULTIPLIER:
-        EXPECT_EQ("9.1.2.2", e->referenceHeading());
-        break;
-    case libcellml::Issue::ReferenceRule::UNIT_PREFIX:
-        EXPECT_EQ("9.1.2.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::UNITS_CHILD:
+        EXPECT_EQ("2.5.3", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::UNIT_UNITS_REF:
-        EXPECT_EQ("9.1.1", e->referenceHeading());
+        EXPECT_EQ("2.6.1", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE:
-        EXPECT_EQ("11.1.2.2", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::UNIT_CIRCULAR_REF:
+        EXPECT_EQ("2.6.1.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::VARIABLE_INTERFACE:
-        EXPECT_EQ("11.1.2.1", e->referenceHeading());
+    case libcellml::Issue::ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE:
+        EXPECT_EQ("2.6.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::UNIT_PREFIX:
+        EXPECT_EQ("2.6.2.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::UNIT_MULTIPLIER:
+        EXPECT_EQ("2.6.2.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::UNIT_EXPONENT:
+        EXPECT_EQ("2.6.2.3", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::COMPONENT_NAME:
+        EXPECT_EQ("2.7.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::COMPONENT_NAME_UNIQUE:
+        EXPECT_EQ("2.7.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::COMPONENT_CHILD:
+        EXPECT_EQ("2.7.2", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::VARIABLE_NAME:
-        EXPECT_EQ("11.1.1.1", e->referenceHeading());
+        EXPECT_EQ("2.8.1.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::VARIABLE_NAME_UNIQUE:
+        EXPECT_EQ("2.8.1.1", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::VARIABLE_UNITS:
-        EXPECT_EQ("11.1.1.2", e->referenceHeading());
+        EXPECT_EQ("2.8.1.2", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::UNDEFINED:
+    case libcellml::Issue::ReferenceRule::VARIABLE_INTERFACE:
+        EXPECT_EQ("2.8.2.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE:
+        EXPECT_EQ("2.8.2.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::RESET_VARIABLE_REF:
+        EXPECT_EQ("2.9.1.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::RESET_TEST_VARIABLE_REF:
+        EXPECT_EQ("2.9.1.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::RESET_ORDER:
+        EXPECT_EQ("2.9.1.3", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::RESET_CHILD:
+        EXPECT_EQ("2.9.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::RESET_TEST_VALUE:
+        EXPECT_EQ("2.10", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::RESET_RESET_VALUE:
+        EXPECT_EQ("2.11", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MATH_MATHML:
+        EXPECT_EQ("2.12.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MATH_CHILD:
+        EXPECT_EQ("2.12.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REF:
+        EXPECT_EQ("2.12.3", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MATH_CN_UNITS:
+        EXPECT_EQ("2.13.4", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MATH_CN_BASE10:
+        EXPECT_EQ("2.13.5", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MATH_CN_FORMAT:
+        EXPECT_EQ("2.13.5", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::ENCAPSULATION_CHILD:
+        EXPECT_EQ("2.13.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::COMPONENT_REF_COMPONENT:
+        EXPECT_EQ("2.14.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::COMPONENT_REF_CHILD:
+        EXPECT_EQ("2.14.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT1:
+        EXPECT_EQ("2.15.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT2:
+        EXPECT_EQ("2.15.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::CONNECTION_EXCLUDE_SELF:
+        EXPECT_EQ("2.15.3", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::CONNECTION_UNIQUE:
+        EXPECT_EQ("2.15.4", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::CONNECTION_CHILD:
+        EXPECT_EQ("2.15.5", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1:
+        EXPECT_EQ("2.16.1", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2:
+        EXPECT_EQ("2.16.2", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_UNIQUE:
+        EXPECT_EQ("2.16.3", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
         EXPECT_EQ("", e->referenceHeading());
         break;
     }
@@ -253,31 +292,10 @@ TEST(Issue, referenceRule)
     e->setReferenceRule(libcellml::Issue::ReferenceRule::UNDEFINED);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_CHILD);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_NAME);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_REF_CHILD);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_REF_ENCAPSULATION);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT1);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT2);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_UNIQUE_TRANSITIVE);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_MAP_VARIABLES);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
     ++count;
     testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
@@ -289,76 +307,73 @@ TEST(Issue, referenceRule)
     e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_INT_BASE10);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_IDENTIFIER_UNICODE);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_INT_SIGN);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_NNEG_INT_BASE10);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_INT_DIGIT);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_NNEG_INT_EURO_NUM);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_BASE10);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::ENCAPSULATION_COMPONENT_REF);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_SIGN);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_CHILD);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_DECIMAL);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_CIRCULAR);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_BASIC_REAL_DIGIT);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_REAL_BASE10);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_REF);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_REAL_SIGNIFICAND);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_HREF);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_UNITS_REF);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_UNIQUE);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_CHILD);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::DATA_REPR_REAL_EXPONENT);
     ++count;
     testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_ELEMENT);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
-    ++count;
-    testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_CHILD);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_CHILD);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_HREF);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_ORDER);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_CHILD);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNITS_CHILD);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_EQUIVALENT);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_UNITS_NAME_UNIQUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_UNITS_REF);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_NAME_UNIQUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
     ++count;
     testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::UNITS_NAME);
@@ -370,40 +385,124 @@ TEST(Issue, referenceRule)
     e->setReferenceRule(libcellml::Issue::ReferenceRule::UNITS_STANDARD);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_CIRCULAR_REF);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_DIGRAPH);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_EXPONENT);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_MULTIPLIER);
-    ++count;
-    testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_PREFIX);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNITS_CHILD);
     ++count;
     testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_UNITS_REF);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_CIRCULAR_REF);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_INTERFACE);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_OPTIONAL_ATTRIBUTE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_PREFIX);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_MULTIPLIER);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNIT_EXPONENT);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_NAME);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_NAME_UNIQUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_CHILD);
     ++count;
     testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_NAME);
     ++count;
     testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_NAME_UNIQUE);
+    ++count;
+    testReferenceRule(e);
     e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_UNITS);
     ++count;
     testReferenceRule(e);
-    EXPECT_EQ(size_t(51), count);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_INTERFACE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::VARIABLE_INITIAL_VALUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_VARIABLE_REF);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_ORDER);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_CHILD);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_TEST_VALUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::RESET_RESET_VALUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MATH_MATHML);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MATH_CHILD);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MATH_CI_VARIABLE_REF);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MATH_CN_UNITS);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MATH_CN_BASE10);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MATH_CN_FORMAT);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::ENCAPSULATION_CHILD);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::COMPONENT_REF_CHILD);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT1);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_COMPONENT2);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_EXCLUDE_SELF);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_UNIQUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_CHILD);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_UNIQUE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
+    ++count;
+    testReferenceRule(e);
+    EXPECT_EQ(size_t(71), count);
 }
 
 TEST(Issue, createModelWarning)
@@ -486,4 +585,22 @@ TEST(Issue, isInformation)
     auto e = libcellml::Issue::create();
     e->setLevel(libcellml::Issue::Level::INFORMATION);
     EXPECT_EQ(e->level(), libcellml::Issue::Level::INFORMATION);
+}
+
+TEST(Issue, url)
+{
+    auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=2.1.1";
+
+    auto issue = libcellml::Issue::create();
+    issue->setReferenceRule(libcellml::Issue::ReferenceRule::MODEL_NAME);
+    EXPECT_EQ(expectedUrl, issue->url());
+}
+
+TEST(Issue, undefinedIssueUrl)
+{
+    std::string e;
+    e = "";
+    auto issue = libcellml::Issue::create();
+    EXPECT_EQ(e, issue->url());
+    EXPECT_EQ(e, issue->referenceHeading());
 }
