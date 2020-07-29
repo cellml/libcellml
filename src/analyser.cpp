@@ -1,4 +1,3 @@
-#include <iostream>
 /*
 Copyright libCellML Contributors
 
@@ -30,7 +29,6 @@ limitations under the License.
 
 #include "analyserequation_p.h"
 #include "analyserequationast_p.h"
-#include "analyserexternalvariable_p.h"
 #include "analysermodel_p.h"
 #include "analyservariable_p.h"
 #include "utilities.h"
