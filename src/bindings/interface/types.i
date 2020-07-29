@@ -67,7 +67,7 @@ Only meant to be included, shouldn't be passed to cmake as a module!
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
-    if (val < %static_cast($type::ERROR, int) || %static_cast($type::INFORMATION, int) < val) {
+    if (val < %static_cast($type::ERROR, int) || %static_cast($type::MESSAGE, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val,$basetype);
