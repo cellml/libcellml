@@ -348,7 +348,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 issue->setDescription("Encapsulation in model '" + model->name() + "' does not contain any child elements.");
                 issue->setModel(model);
                 issue->setCause(Issue::Cause::ENCAPSULATION);
-                issue->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_COMPONENT_REF);
+                issue->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
                 issue->setLevel(libcellml::Issue::Level::WARNING);
                 mParser->addIssue(issue);
             }
@@ -796,7 +796,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         issue->setDescription(des);
         issue->setModel(model);
         issue->setCause(Issue::Cause::CONNECTION);
-        issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_MAP_VARIABLES);
+        issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
         issue->setLevel(libcellml::Issue::Level::WARNING);
         mParser->addIssue(issue);
         return;
@@ -993,7 +993,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         issue->setDescription("Connection in model '" + model->name() + "' does not have a map_variables element.");
         issue->setModel(model);
         issue->setCause(Issue::Cause::CONNECTION);
-        issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_MAP_VARIABLES);
+        issue->setReferenceRule(Issue::ReferenceRule::CONNECTION_CHILD);
         mParser->addIssue(issue);
     }
 }
@@ -1016,7 +1016,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
                 issue->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
                 issue->setModel(model);
                 issue->setCause(Issue::Cause::ENCAPSULATION);
-                issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+                issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
                 mParser->addIssue(issue);
             }
         } else if (attribute->isType("id")) {
@@ -1026,7 +1026,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             issue->setDescription("Encapsulation in model '" + model->name() + "' has an invalid component_ref attribute '" + attribute->name() + "'.");
             issue->setModel(model);
             issue->setCause(Issue::Cause::ENCAPSULATION);
-            issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+            issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
             mParser->addIssue(issue);
         }
         attribute = attribute->next();
@@ -1036,7 +1036,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
         issue->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
         issue->setModel(model);
         issue->setCause(Issue::Cause::ENCAPSULATION);
-        issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+        issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_REF_COMPONENT);
         mParser->addIssue(issue);
     } else if (parentComponent) {
         parentComponent->setEncapsulationId(encapsulationId);
@@ -1113,7 +1113,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             issue->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");
             issue->setModel(model);
             issue->setCause(Issue::Cause::ENCAPSULATION);
-            issue->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_COMPONENT_REF);
+            issue->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
             mParser->addIssue(issue);
         }
 
@@ -1348,7 +1348,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
                 issue->setReset(reset);
-                issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
+                issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
                 mParser->addIssue(issue);
             } else {
                 reset->setVariable(referencedVariable);
@@ -1360,7 +1360,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
                 issue->setReset(reset);
-                issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+                issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
                 mParser->addIssue(issue);
             } else {
                 reset->setTestVariable(testVariable);
