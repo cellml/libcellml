@@ -580,11 +580,11 @@ TEST(Issue, isHint)
     EXPECT_EQ(e->level(), libcellml::Issue::Level::HINT);
 }
 
-TEST(Issue, isInformation)
+TEST(Issue, isMessage)
 {
     auto e = libcellml::Issue::create();
-    e->setLevel(libcellml::Issue::Level::INFORMATION);
-    EXPECT_EQ(e->level(), libcellml::Issue::Level::INFORMATION);
+    e->setLevel(libcellml::Issue::Level::MESSAGE);
+    EXPECT_EQ(e->level(), libcellml::Issue::Level::MESSAGE);
 }
 
 TEST(Issue, url)
