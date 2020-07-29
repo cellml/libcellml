@@ -1380,7 +1380,19 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                             if (((mModel->mPimpl->mVoi == nullptr)
                                  || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
                                 && (externalVariables.count(internalVariable) == 0)) {
-                                externalVariables[internalVariable] = externalVariable->dependencies();
+                                std::vector <VariablePtr> dependencies;
+
+                                for (const auto &dependency : externalVariable->dependencies()) {
+                                    for (const auto &internalVariable : mInternalVariables) {
+                                        if (isSameOrEquivalentVariable(dependency, internalVariable->mVariable)) {
+                                            dependencies.push_back(internalVariable->mVariable);
+
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                externalVariables[internalVariable] = dependencies;
                             }
 
                             break;
