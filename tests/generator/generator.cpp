@@ -1315,7 +1315,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariabl
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V"));
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("V"));
 
     externalVariable->addDependency(model->component("sodium_channel")->variable("m"));
 
