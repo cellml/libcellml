@@ -381,7 +381,7 @@ TEST(Analyser, addExternalVariableFromDifferentModels)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -591,7 +591,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -618,7 +618,7 @@ TEST(Analyser, twoEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -645,7 +645,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -673,7 +673,7 @@ TEST(Analyser, threeEquivalentVoiExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -717,7 +717,7 @@ TEST(Analyser, oneNonPrimaryExternalVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -743,7 +743,7 @@ TEST(Analyser, twoEquivalentExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -770,7 +770,7 @@ TEST(Analyser, twoEquivalentExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -797,7 +797,7 @@ TEST(Analyser, threeEquivalentExternalVariablesIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
@@ -825,7 +825,7 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
         libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
-        libcellml::Issue::Level::INFORMATION,
+        libcellml::Issue::Level::MESSAGE,
     };
 
     auto analyser = libcellml::Analyser::create();
