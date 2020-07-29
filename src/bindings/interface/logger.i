@@ -37,11 +37,11 @@
 %feature("docstring") libcellml::Logger::hintCount
 "Returns the number of issues of level HINT currently stored in the logger.";
 
-%feature("docstring") libcellml::Logger::information
-"Returns the issue of level INFORMATION at the specified ``index``.";
+%feature("docstring") libcellml::Logger::message
+"Returns the issue of level MESSAGE at the specified ``index``.";
 
-%feature("docstring") libcellml::Logger::informationCount
-"Returns the number of issues of level INFORMATION currently stored in the logger.";
+%feature("docstring") libcellml::Logger::messageCount
+"Returns the number of issues of level MESSAGE currently stored in the logger.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
