@@ -97,7 +97,7 @@ convert(Issue, 'Level', [
     'ERROR',
     'WARNING',
     'HINT',
-    'INFORMATION',
+    'MESSAGE',
 ])
 convert(Issue, 'ReferenceRule', [
     'UNDEFINED',

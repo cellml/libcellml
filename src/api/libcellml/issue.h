@@ -124,7 +124,7 @@ public:
         ERROR,
         WARNING,
         HINT,
-        INFORMATION
+        MESSAGE
     };
 
     /**
