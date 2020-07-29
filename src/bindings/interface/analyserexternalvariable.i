@@ -31,6 +31,10 @@
 %feature("docstring") libcellml::AnalyserExternalVariable::dependency
 "Returns the dependency, specified by an index or name.";
 
+%feature("docstring") libcellml::AnalyserExternalVariable::dependencies
+"Returns the list of :class:`Variable` objects on which this"
+":class:`AnalyserExternalVariable` depends.";
+
 %feature("docstring") libcellml::AnalyserExternalVariable::dependencyCount
 "Returns the number of dependencies this external variable contains.";
 
