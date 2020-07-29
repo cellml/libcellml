@@ -29,6 +29,7 @@ TEST(Logger, addError)
     EXPECT_EQ(size_t(1), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());
     EXPECT_EQ(size_t(0), logger->hintCount());
+    EXPECT_EQ(size_t(0), logger->informationCount());
     EXPECT_EQ(logger->error(0), issue);
     EXPECT_EQ(logger->issue(0), issue);
 }
@@ -44,6 +45,7 @@ TEST(Logger, addWarning)
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(1), logger->warningCount());
     EXPECT_EQ(size_t(0), logger->hintCount());
+    EXPECT_EQ(size_t(0), logger->informationCount());
     EXPECT_EQ(logger->warning(0), issue);
     EXPECT_EQ(logger->issue(0), issue);
 }
@@ -59,6 +61,7 @@ TEST(Logger, addHint)
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());
     EXPECT_EQ(size_t(1), logger->hintCount());
+    EXPECT_EQ(size_t(0), logger->informationCount());
     EXPECT_EQ(logger->hint(0), issue);
     EXPECT_EQ(logger->issue(0), issue);
 }
@@ -73,6 +76,7 @@ TEST(Logger, addInformation)
     EXPECT_EQ(size_t(1), logger->issueCount());
     EXPECT_EQ(size_t(0), logger->errorCount());
     EXPECT_EQ(size_t(0), logger->warningCount());
+    EXPECT_EQ(size_t(0), logger->hintCount());
     EXPECT_EQ(size_t(1), logger->informationCount());
     EXPECT_EQ(logger->information(0), issue);
     EXPECT_EQ(logger->issue(0), issue);
@@ -138,7 +142,7 @@ TEST(Logger, getIssueByLevelFunction)
     EXPECT_EQ(hint1, validator->hint(0));
     EXPECT_EQ(hint2, validator->hint(1));
 
-    // Expect to call hint(0-1) and get the INFORMATION level issues only
+    // Expect to call information(0-1) and get the INFORMATION level issues only
     EXPECT_EQ(information1, validator->information(0));
     EXPECT_EQ(information2, validator->information(1));
 }
