@@ -156,7 +156,7 @@ public:
      *
      * Returns a message at the @p index.  If the @p index is not valid a
      * @c nullptr is returned, the valid range for the @p index is
-     * [0, \#messagess).
+     * [0, \#messages).
      *
      * @param index The index of the message to return.
      *
