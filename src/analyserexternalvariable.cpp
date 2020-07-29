@@ -18,8 +18,6 @@ limitations under the License.
 
 #include "libcellml/component.h"
 
-#include <vector>
-
 #include "analyserexternalvariable_p.h"
 #include "utilities.h"
 
