@@ -47,10 +47,10 @@
 %feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref id.";
 
-%feature("docstring") libcellml::Annotator::setAutomaticIds
+%feature("docstring") libcellml::Annotator::assignAutomaticIds
 "Traverses the stored model and sets any blank id fields to an automatically generated id.";
 
-%feature("docstring") libcellml::Annotator::setAutomaticId
+%feature("docstring") libcellml::Annotator::assignId
 "Sets the given item's id to an automatically generated string, if it is non-unique or blank.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
@@ -83,7 +83,7 @@
 %ignore libcellml::Annotator::unit;
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
-%ignore libcellml::Annotator::setAutomaticId;
+%ignore libcellml::Annotator::assignId;
 
 %create_constructor(Annotator)
 
@@ -135,50 +135,50 @@
         return vPair.second;
     }
 
-    bool setConnectionIdForPython(VariablePtr &item, VariablePtr &item2){
+    bool assignConnectionIdForPython(VariablePtr &item, VariablePtr &item2){
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
-        return $self->setConnectionId(variablePair);
+        return $self->assignConnectionId(variablePair);
     }
 
-    bool setMapVariablesIdForPython(VariablePtr &item, VariablePtr &item2){
+    bool assignMapVariablesIdForPython(VariablePtr &item, VariablePtr &item2){
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
-        return $self->setMapVariablesId(variablePair);
+        return $self->assignMapVariablesId(variablePair);
     }
 
-    bool setUnitIdForPython(UnitsPtr &item, size_t index){
+    bool assignUnitIdForPython(UnitsPtr &item, size_t index){
         libcellml::UnitItem unitItem = std::make_pair(item, index);
-        return $self->setUnitId(unitItem);
+        return $self->assignUnitId(unitItem);
     }
 
     %pythoncode %{
-        def setAutomaticId(self, type, item, item2=None):
+        def assignId(self, type, item, item2=None):
             if type == Annotator.Type.COMPONENT:
-                return _annotator.Annotator_setComponentId(self, item)
+                return _annotator.Annotator_assignComponentId(self, item)
             elif type == Annotator.Type.COMPONENT_REF:
-                return _annotator.Annotator_setComponentRefId(self, item)
+                return _annotator.Annotator_assignComponentRefId(self, item)
             elif type == Annotator.Type.ENCAPSULATION:
-                return _annotator.Annotator_setEncapsulationId(self, item)
+                return _annotator.Annotator_assignEncapsulationId(self, item)
             elif type == Annotator.Type.IMPORT:
-                return _annotator.Annotator_setImportSourceId(self, item)
+                return _annotator.Annotator_assignImportSourceId(self, item)
             elif type == Annotator.Type.MODEL:
-                return _annotator.Annotator_setModelId(self, item)
+                return _annotator.Annotator_assignModelId(self, item)
             elif type == Annotator.Type.RESET:
-                return _annotator.Annotator_setResetId(self, item)
+                return _annotator.Annotator_assignResetId(self, item)
             elif type == Annotator.Type.RESET_VALUE:
-                return _annotator.Annotator_setResetValueId(self, item)
+                return _annotator.Annotator_assignResetValueId(self, item)
             elif type == Annotator.Type.TEST_VALUE:
-                return _annotator.Annotator_setTestValueId(self, item)
+                return _annotator.Annotator_assignTestValueId(self, item)
             elif type == Annotator.Type.UNITS:
-                return _annotator.Annotator_setUnitsId(self, item)
+                return _annotator.Annotator_assignUnitsId(self, item)
             elif type == Annotator.Type.VARIABLE:
-                return _annotator.Annotator_setVariableId(self, item)
+                return _annotator.Annotator_assignVariableId(self, item)
 
             if type == Annotator.Type.CONNECTION:
-                return _annotator.Annotator_setConnectionIdForPython(self, item, item2)
+                return _annotator.Annotator_assignConnectionIdForPython(self, item, item2)
             elif type == Annotator.Type.MAP_VARIABLES:
-                return _annotator.Annotator_setMapVariablesIdForPython(self, item, item2)
+                return _annotator.Annotator_assignMapVariablesIdForPython(self, item, item2)
             elif type == Annotator.Type.UNIT:
-                return _annotator.Annotator_setUnitIdForPython(self, item, item2)
+                return _annotator.Annotator_assignUnitIdForPython(self, item, item2)
             return false
        
         def unit(self, id):

@@ -352,17 +352,17 @@ class AnnotatorTestCase(unittest.TestCase):
 
         annotator.build(model)
 
-        self.assertTrue(annotator.setAutomaticId(
+        self.assertTrue(annotator.assignId(
             Annotator.Type.COMPONENT, model.component(0)))
         self.assertEqual("b4da55", model.component(0).id())
 
         print(model.component(1).encapsulationId())
-        self.assertTrue(annotator.setAutomaticId(
+        self.assertTrue(annotator.assignId(
             Annotator.Type.COMPONENT_REF, model.component("component2")))
         self.assertEqual("b4da56", model.component("component2").encapsulationId())
         print(model.component("component2").encapsulationId()) 
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.CONNECTION,
+        self.assertTrue(annotator.assignId(Annotator.Type.CONNECTION,
                                                  model.component("component2").variable(
                                                      "variable1"),
                                                  model.component("component2").variable("variable1").equivalentVariable(0)))
@@ -370,11 +370,11 @@ class AnnotatorTestCase(unittest.TestCase):
             model.component("component2").variable("variable1"),
             model.component("component2").variable("variable1").equivalentVariable(0)))
 
-        self.assertTrue(annotator.setAutomaticId(
+        self.assertTrue(annotator.assignId(
             Annotator.Type.IMPORT, model.importSource(0)))
         self.assertEqual("b4da58", model.importSource(0).id())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.MAP_VARIABLES,
+        self.assertTrue(annotator.assignId(Annotator.Type.MAP_VARIABLES,
                                                  model.component("component2").variable(
                                                      "variable2"),
                                                  model.component("component2").variable("variable2").equivalentVariable(0)))
@@ -382,34 +382,34 @@ class AnnotatorTestCase(unittest.TestCase):
             "b4da59", Variable.equivalenceMappingId(model.component("component2").variable("variable2"),
                                                     model.component("component2").variable("variable2").equivalentVariable(0)))
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.MODEL, model))
+        self.assertTrue(annotator.assignId(Annotator.Type.MODEL, model))
         self.assertEqual("b4da5a", model.id())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.RESET,
+        self.assertTrue(annotator.assignId(Annotator.Type.RESET,
                                                  model.component(1).reset(0)))
         self.assertEqual("b4da5b", model.component(1).reset(0).id())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.RESET_VALUE,
+        self.assertTrue(annotator.assignId(Annotator.Type.RESET_VALUE,
                                                  model.component(1).reset(0)))
         self.assertEqual("b4da5c", model.component(1).reset(0).resetValueId())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.TEST_VALUE,
+        self.assertTrue(annotator.assignId(Annotator.Type.TEST_VALUE,
                                                  model.component(1).reset(0)))
         self.assertEqual("b4da5d", model.component(1).reset(0).testValueId())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.UNIT,
+        self.assertTrue(annotator.assignId(Annotator.Type.UNIT,
                                                  model.units(1), 0))
         self.assertEqual("b4da5e", model.units(1).unitId(0))
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.UNITS,
+        self.assertTrue(annotator.assignId(Annotator.Type.UNITS,
                                                  model.units(1)))
         self.assertEqual("b4da5f", model.units(1).id())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.VARIABLE,
+        self.assertTrue(annotator.assignId(Annotator.Type.VARIABLE,
                                                  model.component(1).variable(0)))
         self.assertEqual("b4da60", model.component(1).variable(0).id())
 
-        self.assertTrue(annotator.setAutomaticId(Annotator.Type.ENCAPSULATION,
+        self.assertTrue(annotator.assignId(Annotator.Type.ENCAPSULATION,
                                                  model))
         self.assertEqual("b4da61", model.encapsulationId())
 
