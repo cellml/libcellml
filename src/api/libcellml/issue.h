@@ -103,6 +103,7 @@ public:
         COMPONENT,
         CONNECTION,
         ENCAPSULATION,
+        GENERATOR,
         IMPORT,
         MATHML,
         MODEL,
@@ -110,8 +111,7 @@ public:
         UNDEFINED,
         UNITS,
         VARIABLE,
-        XML,
-        GENERATOR
+        XML
     };
 
     /**
@@ -123,7 +123,8 @@ public:
     {
         ERROR,
         WARNING,
-        HINT
+        HINT,
+        INFORMATION
     };
 
     /**

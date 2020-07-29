@@ -19,7 +19,6 @@ Topic :: Software Development :: Libraries :: Python Modules
 from setuptools import setup
 from setuptools.dist import Distribution
 
-
 doclines = __doc__.split("\n")
 
 
