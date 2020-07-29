@@ -143,26 +143,27 @@ public:
     IssuePtr hint(size_t index) const;
 
     /**
-     * @brief Get the number of issues with level of INFORMATION.
+     * @brief Get the number of issues with level of MESSAGE.
      *
-     * Return the number of pieces of information currently stored in the logger.
+     * Return the number of messages currently stored in the logger.
      *
-     * @return The number of pieces of information.
+     * @return The number of messages.
      */
-    size_t informationCount() const;
+    size_t messageCount() const;
 
     /**
-     * @brief Get issue of level INFORMATION at the specified @p index.
+     * @brief Get issue of level MESSAGE at the specified @p index.
      *
-     * Returns a piece of information at the @p index.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#informations).
+     * Returns a message at the @p index.  If the @p index is not valid a
+     * @c nullptr is returned, the valid range for the @p index is
+     * [0, \#messages).
      *
-     * @param index The index of the piece of information to return.
+     * @param index The index of the message to return.
      *
-     * @return A reference to the piece of information at the given index on success, @c nullptr otherwise.
+     * @return A reference to the message at the given index on success,
+     * @c nullptr otherwise.
      */
-    IssuePtr information(size_t index) const;
+    IssuePtr message(size_t index) const;
 
 protected:
     Logger(); /**< Constructor */
