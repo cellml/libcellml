@@ -283,9 +283,31 @@ public:
     bool setAutomaticIds();
     bool setAutomaticIds(Annotator::Type type);
     bool repairNonUniqueIds();
-    // bool setAutomaticId(ModelPtr &in);
-    // bool setAutomaticId(ComponentPtr &in);
-    bool setAutomaticId(AnyItem &item);
+    bool setAutomaticId(const AnyItem &item);
+    bool setAutomaticId(Annotator::Type type, const ModelPtr &item);
+    bool setAutomaticId(Annotator::Type type, const ComponentPtr &item);
+    bool setAutomaticId(Annotator::Type type, const ImportSourcePtr &item);
+    bool setAutomaticId(Annotator::Type type, const ResetPtr &item);
+    bool setAutomaticId(Annotator::Type type, const UnitsPtr &item);
+    bool setAutomaticId(Annotator::Type type, const UnitItem &item);
+    bool setAutomaticId(Annotator::Type type, const VariablePtr &item);
+    bool setAutomaticId(Annotator::Type type, const VariablePair &item);
+    bool setAutomaticId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2);
+    bool setAutomaticId(Annotator::Type type, const UnitsPtr &units, size_t index);
+
+    bool setComponentId(const ComponentPtr &component);
+    bool setComponentRefId(const ComponentPtr &component);
+    bool setConnectionId(const VariablePair &variablePair);
+    bool setEncapsulationId(const ModelPtr &model);
+    bool setImportSourceId(const ImportSourcePtr &importSource);
+    bool setMapVariablesId(const VariablePair &variablePair);
+    bool setModelId(const ModelPtr &model);
+    bool setResetId(const ResetPtr &reset);
+    bool setResetValueId(const ResetPtr &reset);
+    bool setTestValueId(const ResetPtr &reset);
+    bool setUnitId(const UnitItem &unitItem);
+    bool setUnitsId(const UnitsPtr &units);
+    bool setVariableId(const VariablePtr &variable);
 
 private:
     Annotator(); /**< Constructor */
