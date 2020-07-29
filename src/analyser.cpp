@@ -344,6 +344,8 @@ struct Analyser::AnalyserImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
+    AnalyserInternalVariablePtr primaryInternalVariable(const VariablePtr &variable);
+
     AnalyserInternalVariablePtr analyserInternalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
@@ -470,21 +472,32 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
     return res;
 }
 
-AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserInternalVariable(const VariablePtr &variable)
+AnalyserInternalVariablePtr Analyser::AnalyserImpl::primaryInternalVariable(const VariablePtr &variable)
 {
-    // Find and return, if there is one, the analyser internal variable
-    // associated with the given variable.
-
     for (const auto &internalVariable : mInternalVariables) {
         if (isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
             return internalVariable;
         }
     }
 
+    return nullptr;
+}
+
+AnalyserInternalVariablePtr Analyser::AnalyserImpl::analyserInternalVariable(const VariablePtr &variable)
+{
+    // Find and return, if there is one, the analyser internal variable
+    // associated with the given variable.
+
+    auto internalVariable = primaryInternalVariable(variable);
+
+    if (internalVariable != nullptr) {
+        return internalVariable;
+    }
+
     // No analyser internal variable exists for the given variable, so create
     // one, track it and return it.
 
-    auto internalVariable = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
+    internalVariable = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
 
     mInternalVariables.push_back(internalVariable);
 
@@ -1371,30 +1384,20 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
                     mAnalyser->addIssue(issue);
                 } else {
-                    for (const auto &internalVariable : mInternalVariables) {
-                        if (isSameOrEquivalentVariable(externalVariable->variable(), internalVariable->mVariable)) {
-                            primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable->variable());
+                    auto internalVariable = primaryInternalVariable(externalVariable->variable());
 
-                            if (((mModel->mPimpl->mVoi == nullptr)
-                                 || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
-                                && (externalVariables.count(internalVariable) == 0)) {
-                                std::vector <VariablePtr> dependencies;
+                    primaryExternalVariables[internalVariable->mVariable].push_back(externalVariable->variable());
 
-                                for (const auto &dependency : externalVariable->dependencies()) {
-                                    for (const auto &internalVariable2 : mInternalVariables) {
-                                        if (isSameOrEquivalentVariable(dependency, internalVariable2->mVariable)) {
-                                            dependencies.push_back(internalVariable2->mVariable);
+                    if (((mModel->mPimpl->mVoi == nullptr)
+                         || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
+                        && (externalVariables.count(internalVariable) == 0)) {
+                        std::vector <VariablePtr> dependencies;
 
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                externalVariables[internalVariable] = dependencies;
-                            }
-
-                            break;
+                        for (const auto &dependency : externalVariable->dependencies()) {
+                            dependencies.push_back(primaryInternalVariable(dependency)->mVariable);
                         }
+
+                        externalVariables[internalVariable] = dependencies;
                     }
                 }
             }
