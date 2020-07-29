@@ -1381,9 +1381,9 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                 std::vector <VariablePtr> dependencies;
 
                                 for (const auto &dependency : externalVariable->dependencies()) {
-                                    for (const auto &internalVariable : mInternalVariables) {
-                                        if (isSameOrEquivalentVariable(dependency, internalVariable->mVariable)) {
-                                            dependencies.push_back(internalVariable->mVariable);
+                                    for (const auto &internalVariable2 : mInternalVariables) {
+                                        if (isSameOrEquivalentVariable(dependency, internalVariable2->mVariable)) {
+                                            dependencies.push_back(internalVariable2->mVariable);
 
                                             break;
                                         }
@@ -1574,10 +1574,10 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 }
 
                 for (const auto &variableDependency : variableDependencies) {
-                    auto equation = equationMappings[variableDependency];
+                    auto equationDependency = equationMappings[variableDependency];
 
-                    if (equation != nullptr) {
-                        equationDependencies.push_back(equation);
+                    if (equationDependency != nullptr) {
+                        equationDependencies.push_back(equationDependency);
                     }
                 }
 
