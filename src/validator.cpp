@@ -500,7 +500,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         IssuePtr issue = Issue::create();
         issue->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
         issue->setComponent(component);
-        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_REF);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
         mValidator->addIssue(issue);
     }
     if (importSource.empty()) {
@@ -778,14 +778,14 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not reference a variable.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (noTestVariable) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not reference a test_variable.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (noTestValue) {
@@ -806,14 +806,14 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (testVarOutsideComponent) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
 }
