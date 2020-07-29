@@ -206,7 +206,7 @@ public:
      * @brief Get the list of @c Variable dependencies.
      *
      * Return the list of @c Variable items on which this
-     * @c AnalyserExternalVariable depend.
+     * @c AnalyserExternalVariable depends.
      *
      * @return The list of @c Variable dependencies.
      */
