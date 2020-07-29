@@ -47,6 +47,14 @@
 %feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref id.";
 
+%feature("docstring") libcellml::Annotator::setAutomaticIds
+"Traverses the stored model and sets any blank id fields to an automatically generated id.";
+
+%feature("docstring") libcellml::Annotator::setAutomaticId
+"Sets the given item's id to an automatically generated string, if it is non-unique or blank.";
+
+// PRIVATE: Functions only written to support bindings. They are not 
+// intended to be called from anywhere.
 %feature("docstring") libcellml::Annotator::itemForPython
 "Private: Utility function to retrieve item based on id.";
 
@@ -65,6 +73,8 @@
 %feature("docstring") libcellml::Annotator::mapVariablesForPython
 "Private: Utility function to retrieve one of VariablePtrs map_variables with given id.";
 
+
+
 %{
 #include "libcellml/annotator.h"
 %}
@@ -73,7 +83,6 @@
 %ignore libcellml::Annotator::unit;
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
-%ignore libcellml::Annotator::setAutomaticIds;
 %ignore libcellml::Annotator::setAutomaticId;
 
 %create_constructor(Annotator)
@@ -126,7 +135,52 @@
         return vPair.second;
     }
 
+    bool setConnectionIdForPython(VariablePtr &item, VariablePtr &item2){
+        libcellml::VariablePair variablePair = std::make_pair(item, item2);
+        return $self->setConnectionId(variablePair);
+    }
+
+    bool setMapVariablesIdForPython(VariablePtr &item, VariablePtr &item2){
+        libcellml::VariablePair variablePair = std::make_pair(item, item2);
+        return $self->setMapVariablesId(variablePair);
+    }
+
+    bool setUnitIdForPython(UnitsPtr &item, size_t index){
+        libcellml::UnitItem unitItem = std::make_pair(item, index);
+        return $self->setUnitId(unitItem);
+    }
+
     %pythoncode %{
+        def setAutomaticId(self, type, item, item2=None):
+            if type == Annotator.Type.COMPONENT:
+                return _annotator.Annotator_setComponentId(self, item)
+            elif type == Annotator.Type.COMPONENT_REF:
+                return _annotator.Annotator_setComponentRefId(self, item)
+            elif type == Annotator.Type.ENCAPSULATION:
+                return _annotator.Annotator_setEncapsulationId(self, item)
+            elif type == Annotator.Type.IMPORT:
+                return _annotator.Annotator_setImportSourceId(self, item)
+            elif type == Annotator.Type.MODEL:
+                return _annotator.Annotator_setModelId(self, item)
+            elif type == Annotator.Type.RESET:
+                return _annotator.Annotator_setResetId(self, item)
+            elif type == Annotator.Type.RESET_VALUE:
+                return _annotator.Annotator_setResetValueId(self, item)
+            elif type == Annotator.Type.TEST_VALUE:
+                return _annotator.Annotator_setTestValueId(self, item)
+            elif type == Annotator.Type.UNITS:
+                return _annotator.Annotator_setUnitsId(self, item)
+            elif type == Annotator.Type.VARIABLE:
+                return _annotator.Annotator_setVariableId(self, item)
+
+            if type == Annotator.Type.CONNECTION:
+                return _annotator.Annotator_setConnectionIdForPython(self, item, item2)
+            elif type == Annotator.Type.MAP_VARIABLES:
+                return _annotator.Annotator_setMapVariablesIdForPython(self, item, item2)
+            elif type == Annotator.Type.UNIT:
+                return _annotator.Annotator_setUnitIdForPython(self, item, item2)
+            return false
+       
         def unit(self, id):
             r"""Return the UnitItem with the given id.  The first item is the parent UnitsPtr item, the second is the index of this unit."""
             return (_annotator.Annotator_unitParentForPython(self, id), _annotator.Annotator_unitIndexForPython(self, id))
