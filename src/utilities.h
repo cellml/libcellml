@@ -32,9 +32,14 @@ limitations under the License.
 namespace libcellml {
 
 /**
+ * Base URLs of specification and example sites from which the Issue::url() will be constructed.
+ */
+static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
+
+/**
  * Vector of base units.
  */
-const std::vector<std::string> baseUnitsList = {
+static const std::vector<std::string> baseUnitsList = {
     "ampere",
     "candela",
     "dimensionless",
@@ -47,7 +52,7 @@ const std::vector<std::string> baseUnitsList = {
 /**
  *  Map connecting standard built-in units to their base unit components and their exponents.
  */
-const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
+static const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"ampere", {{"ampere", 1.0}}},
     {"becquerel", {{"second", -1.0}}},
     {"candela", {{"candela", 1.0}}},
@@ -83,7 +88,7 @@ const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
 /**
  * Map connecting standard built-in units to the multiplier exponent of their base unit components.
  */
-const std::map<std::string, double> standardMultiplierList = {
+static const std::map<std::string, double> standardMultiplierList = {
     {"ampere", 0.0},
     {"becquerel", 0.0},
     {"candela", 0.0},
@@ -119,7 +124,7 @@ const std::map<std::string, double> standardMultiplierList = {
 /**
  * Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
  */
-const std::map<std::string, int> standardPrefixList = {
+static const std::map<std::string, int> standardPrefixList = {
     {"yotta", 24},
     {"zetta", 21},
     {"exa", 18},
@@ -194,7 +199,7 @@ const std::map<std::string, int> standardPrefixList = {
 /**
  * List of MathML elements supported by CellML.
  */
-const std::vector<std::string> supportedMathMLElements = {
+static const std::vector<std::string> supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
@@ -207,7 +212,7 @@ const std::vector<std::string> supportedMathMLElements = {
  *
  * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
-static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
+static const std::map<Variable::InterfaceType, std::string> interfaceTypeToString = {
     {Variable::InterfaceType::NONE, "none"},
     {Variable::InterfaceType::PRIVATE, "private"},
     {Variable::InterfaceType::PUBLIC, "public"},
