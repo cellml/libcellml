@@ -427,7 +427,7 @@ ResetPtr Annotator::resetValue(const std::string &id)
     }
 }
 
-bool Annotator::setAutomaticIds()
+bool Annotator::assignAutomaticIds()
 {
     // Add automatically generated id strings to every item (excepting MathML) in the model which
     // can be annotated.
@@ -442,7 +442,7 @@ bool Annotator::setAutomaticIds()
     return true;
 }
 
-bool Annotator::setAutomaticIds(Annotator::Type type)
+bool Annotator::assignAutomaticIds(Annotator::Type type)
 {
     bool changed = false;
     switch (type) {
@@ -879,7 +879,7 @@ bool Annotator::repairNonUniqueIds()
     return changed;
 }
 
-bool Annotator::setComponentId(const ComponentPtr &component)
+bool Annotator::assignComponentId(const ComponentPtr &component)
 {
     auto oldId = component->id();
     auto type = Annotator::Type::COMPONENT;
@@ -910,7 +910,7 @@ bool Annotator::setComponentId(const ComponentPtr &component)
     return false;
 }
 
-bool Annotator::setComponentRefId(const ComponentPtr &component)
+bool Annotator::assignComponentRefId(const ComponentPtr &component)
 {
     auto oldId = component->encapsulationId();
     auto type = Annotator::Type::COMPONENT_REF;
@@ -941,7 +941,7 @@ bool Annotator::setComponentRefId(const ComponentPtr &component)
     return false;
 }
 
-bool Annotator::setConnectionId(const VariablePair &variablePair)
+bool Annotator::assignConnectionId(const VariablePair &variablePair)
 {
     auto oldId = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
     auto type = Annotator::Type::CONNECTION;
@@ -978,7 +978,7 @@ bool Annotator::setConnectionId(const VariablePair &variablePair)
     return false;
 }
 
-bool Annotator::setEncapsulationId(const ModelPtr &model)
+bool Annotator::assignEncapsulationId(const ModelPtr &model)
 {
     auto oldId = model->encapsulationId();
     auto type = Annotator::Type::ENCAPSULATION;
@@ -1009,7 +1009,7 @@ bool Annotator::setEncapsulationId(const ModelPtr &model)
     return false;
 }
 
-bool Annotator::setImportSourceId(const ImportSourcePtr &importSource)
+bool Annotator::assignImportSourceId(const ImportSourcePtr &importSource)
 {
     auto oldId = importSource->id();
     auto type = Annotator::Type::IMPORT;
@@ -1040,7 +1040,7 @@ bool Annotator::setImportSourceId(const ImportSourcePtr &importSource)
     return false;
 }
 
-bool Annotator::setMapVariablesId(const VariablePair &variablePair)
+bool Annotator::assignMapVariablesId(const VariablePair &variablePair)
 {
     auto oldId = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
     auto type = Annotator::Type::MAP_VARIABLES;
@@ -1074,7 +1074,7 @@ bool Annotator::setMapVariablesId(const VariablePair &variablePair)
     return false;
 }
 
-bool Annotator::setModelId(const ModelPtr &model)
+bool Annotator::assignModelId(const ModelPtr &model)
 {
     auto oldId = model->id();
     auto type = Annotator::Type::MODEL;
@@ -1105,7 +1105,7 @@ bool Annotator::setModelId(const ModelPtr &model)
     return false;
 }
 
-bool Annotator::setResetId(const ResetPtr &reset)
+bool Annotator::assignResetId(const ResetPtr &reset)
 {
     auto oldId = reset->id();
     auto type = Annotator::Type::RESET;
@@ -1136,7 +1136,7 @@ bool Annotator::setResetId(const ResetPtr &reset)
     return false;
 }
 
-bool Annotator::setResetValueId(const ResetPtr &reset)
+bool Annotator::assignResetValueId(const ResetPtr &reset)
 {
     auto oldId = reset->resetValueId();
     auto type = Annotator::Type::RESET_VALUE;
@@ -1167,7 +1167,7 @@ bool Annotator::setResetValueId(const ResetPtr &reset)
     return false;
 }
 
-bool Annotator::setTestValueId(const ResetPtr &reset)
+bool Annotator::assignTestValueId(const ResetPtr &reset)
 {
     auto oldId = reset->testValueId();
     auto type = Annotator::Type::TEST_VALUE;
@@ -1198,7 +1198,7 @@ bool Annotator::setTestValueId(const ResetPtr &reset)
     return false;
 }
 
-bool Annotator::setUnitId(const UnitItem &unitItem)
+bool Annotator::assignUnitId(const UnitItem &unitItem)
 {
     auto oldId = unitItem.first->unitId(unitItem.second);
     auto type = Annotator::Type::UNIT;
@@ -1229,7 +1229,7 @@ bool Annotator::setUnitId(const UnitItem &unitItem)
     return false;
 }
 
-bool Annotator::setUnitsId(const UnitsPtr &units)
+bool Annotator::assignUnitsId(const UnitsPtr &units)
 {
     auto oldId = units->id();
     auto type = Annotator::Type::UNITS;
@@ -1260,7 +1260,7 @@ bool Annotator::setUnitsId(const UnitsPtr &units)
     return false;
 }
 
-bool Annotator::setVariableId(const VariablePtr &variable)
+bool Annotator::assignVariableId(const VariablePtr &variable)
 {
     auto oldId = variable->id();
     auto type = Annotator::Type::VARIABLE;
@@ -1291,13 +1291,8 @@ bool Annotator::setVariableId(const VariablePtr &variable)
     return false;
 }
 
-bool Annotator::setAutomaticId(const AnyItem &item)
+bool Annotator::assignId(const AnyItem &item)
 {
-    // Checks that the item doesn't already have a unique id.  If not,
-    // generates a unique one, adds to the item, and updates the
-    // stored idList accordingly.  Also checks that this item is in
-    // the model.
-
     ComponentPtr component;
     ModelPtr model;
     ImportSourcePtr importSource;
@@ -1312,165 +1307,165 @@ bool Annotator::setAutomaticId(const AnyItem &item)
     switch (item.first) {
     case Annotator::Type::COMPONENT:
         component = std::any_cast<ComponentPtr>(item.second);
-        return setComponentId(component);
+        return assignComponentId(component);
 
     case Annotator::Type::COMPONENT_REF:
         component = std::any_cast<ComponentPtr>(item.second);
-        return setComponentRefId(component);
+        return assignComponentRefId(component);
 
     case Annotator::Type::CONNECTION:
         variablePair = std::any_cast<VariablePair>(item.second);
-        return setConnectionId(variablePair);
+        return assignConnectionId(variablePair);
 
     case Annotator::Type::ENCAPSULATION:
         model = std::any_cast<ModelPtr>(item.second);
-        return setEncapsulationId(model);
+        return assignEncapsulationId(model);
 
     case Annotator::Type::IMPORT:
         importSource = std::any_cast<ImportSourcePtr>(item.second);
-        return setImportSourceId(importSource);
+        return assignImportSourceId(importSource);
 
     case Annotator::Type::MAP_VARIABLES:
         variablePair = std::any_cast<VariablePair>(item.second);
-        return setMapVariablesId(variablePair);
+        return assignMapVariablesId(variablePair);
 
     case Annotator::Type::MODEL:
         model = std::any_cast<ModelPtr>(item.second);
-        return setModelId(model);
+        return assignModelId(model);
 
     case Annotator::Type::RESET:
         reset = std::any_cast<ResetPtr>(item.second);
-        return setResetId(reset);
+        return assignResetId(reset);
 
     case Annotator::Type::RESET_VALUE:
         reset = std::any_cast<ResetPtr>(item.second);
-        return setResetValueId(reset);
+        return assignResetValueId(reset);
 
     case Annotator::Type::TEST_VALUE:
         reset = std::any_cast<ResetPtr>(item.second);
-        return setTestValueId(reset);
+        return assignTestValueId(reset);
 
     case Annotator::Type::UNIT:
         unitItem = std::any_cast<UnitItem>(item.second);
-        return setUnitId(unitItem);
+        return assignUnitId(unitItem);
 
     case Annotator::Type::UNITS:
         units = std::any_cast<UnitsPtr>(item.second);
-        return setUnitsId(units);
+        return assignUnitsId(units);
 
     case Annotator::Type::VARIABLE:
         variable = std::any_cast<VariablePtr>(item.second);
-        return setVariableId(variable);
+        return assignVariableId(variable);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const ModelPtr &item)
+bool Annotator::assignId(Annotator::Type type, const ModelPtr &item)
 {
     if (type == Annotator::Type::MODEL) {
-        return setModelId(item);
+        return assignModelId(item);
     }
     if (type == Annotator::Type::ENCAPSULATION) {
-        return setEncapsulationId(item);
+        return assignEncapsulationId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const ComponentPtr &item)
+bool Annotator::assignId(Annotator::Type type, const ComponentPtr &item)
 {
     if (type == Annotator::Type::COMPONENT) {
-        return setComponentId(item);
+        return assignComponentId(item);
     }
     if (type == Annotator::Type::COMPONENT_REF) {
-        return setComponentRefId(item);
+        return assignComponentRefId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const ResetPtr &item)
+bool Annotator::assignId(Annotator::Type type, const ResetPtr &item)
 {
     if (type == Annotator::Type::RESET) {
-        return setResetId(item);
+        return assignResetId(item);
     }
 
     if (type == Annotator::Type::RESET_VALUE) {
-        return setResetValueId(item);
+        return assignResetValueId(item);
     }
 
     if (type == Annotator::Type::TEST_VALUE) {
-        return setTestValueId(item);
+        return assignTestValueId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const UnitsPtr &item)
+bool Annotator::assignId(Annotator::Type type, const UnitsPtr &item)
 {
     if (type == Annotator::Type::UNITS) {
-        return setUnitsId(item);
+        return assignUnitsId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const ImportSourcePtr &item)
+bool Annotator::assignId(Annotator::Type type, const ImportSourcePtr &item)
 {
     if (type == Annotator::Type::IMPORT) {
-        return setImportSourceId(item);
+        return assignImportSourceId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const UnitsPtr &units, size_t index)
+bool Annotator::assignId(Annotator::Type type, const UnitsPtr &units, size_t index)
 {
     // Overloaded so that bindings work better.
     if (type == Annotator::Type::UNIT) {
         UnitItem item;
         item.first = units;
         item.second = index;
-        return setUnitId(item);
+        return assignUnitId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const UnitItem &item)
+bool Annotator::assignId(Annotator::Type type, const UnitItem &item)
 {
     if (type == Annotator::Type::UNIT) {
-        return setUnitId(item);
+        return assignUnitId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const VariablePtr &item)
+bool Annotator::assignId(Annotator::Type type, const VariablePtr &item)
 {
     if (type == Annotator::Type::VARIABLE) {
-        return setVariableId(item);
+        return assignVariableId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const VariablePair &item)
+bool Annotator::assignId(Annotator::Type type, const VariablePair &item)
 {
     if (type == Annotator::Type::MAP_VARIABLES) {
-        return setMapVariablesId(item);
+        return assignMapVariablesId(item);
     }
     if (type == Annotator::Type::CONNECTION) {
-        return setConnectionId(item);
+        return assignConnectionId(item);
     }
     return false;
 }
 
-bool Annotator::setAutomaticId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2)
+bool Annotator::assignId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2)
 {
     // Overloaded so that bindings work better.
     VariablePair item;
     if (type == Annotator::Type::MAP_VARIABLES) {
         item.first = item1;
         item.second = item2;
-        return setMapVariablesId(item);
+        return assignMapVariablesId(item);
     }
     if (type == Annotator::Type::CONNECTION) {
         item.first = item1;
         item.second = item2;
-        return setConnectionId(item);
+        return assignConnectionId(item);
     }
     return false;
 }

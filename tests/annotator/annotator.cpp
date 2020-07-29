@@ -551,12 +551,12 @@ TEST(Annotator, automaticIdsOnEverything)
     auto printer = libcellml::Printer::create();
     auto model = parser->parseModel(in);
 
-    annotator->setAutomaticIds();
+    annotator->assignAutomaticIds();
     EXPECT_EQ(size_t(1), annotator->errorCount());
     EXPECT_EQ(expectedError, annotator->error(0)->description());
 
     annotator->build(model);
-    annotator->setAutomaticIds();
+    annotator->assignAutomaticIds();
 
     EXPECT_EQ("b4da55", model->id());
     EXPECT_EQ("b4da56", model->importSource(0)->id());
@@ -610,7 +610,7 @@ TEST(Annotator, automaticIdsComponents)
     EXPECT_EQ("", component2->id());
     EXPECT_EQ("", component3->id());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::COMPONENT);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::COMPONENT);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("b4da55", component1->id());
@@ -640,7 +640,7 @@ TEST(Annotator, automaticIdsComponentRefs)
     EXPECT_EQ("", component2->encapsulationId());
     EXPECT_EQ("", component3->encapsulationId());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::COMPONENT_REF);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::COMPONENT_REF);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -684,7 +684,7 @@ TEST(Annotator, automaticIdsConnection)
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable1, variable3));
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable4, variable2));
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::CONNECTION);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::CONNECTION);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -705,7 +705,7 @@ TEST(Annotator, automaticIdsEncapsulation)
     annotator->build(model);
 
     EXPECT_EQ("", model->encapsulationId());
-    annotator->setAutomaticIds(libcellml::Annotator::Type::ENCAPSULATION);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::ENCAPSULATION);
     EXPECT_EQ("b4da55", model->encapsulationId());
 }
 
@@ -732,7 +732,7 @@ TEST(Annotator, automaticIdsImportSource)
     EXPECT_EQ("", model->units(0)->id());
     EXPECT_EQ("", model->component(0)->id());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::IMPORT);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::IMPORT);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("b4da55", model->importSource(0)->id());
@@ -774,7 +774,7 @@ TEST(Annotator, automaticIdsMapVariables)
     EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable1, variable3));
     EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable2, variable4));
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::MAP_VARIABLES);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::MAP_VARIABLES);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -795,7 +795,7 @@ TEST(Annotator, automaticIdsModel)
     annotator->build(model);
 
     EXPECT_EQ("", model->id());
-    annotator->setAutomaticIds(libcellml::Annotator::Type::MODEL);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::MODEL);
     EXPECT_EQ("b4da55", model->id());
 }
 
@@ -828,7 +828,7 @@ TEST(Annotator, automaticIdsResets)
     EXPECT_EQ("", reset2->id());
     EXPECT_EQ("", reset3->id());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::RESET);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::RESET);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -874,7 +874,7 @@ TEST(Annotator, automaticIdsResetValues)
     EXPECT_EQ("", reset2->resetValueId());
     EXPECT_EQ("", reset3->resetValueId());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::RESET_VALUE);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::RESET_VALUE);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -923,7 +923,7 @@ TEST(Annotator, automaticIdsTestValues)
     EXPECT_EQ("", reset2->testValueId());
     EXPECT_EQ("", reset3->testValueId());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::TEST_VALUE);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::TEST_VALUE);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -954,7 +954,7 @@ TEST(Annotator, automaticIdsUnitItems)
     EXPECT_EQ("", units->id());
     EXPECT_EQ("", units->unitId(0));
     EXPECT_EQ("", units->unitId(1));
-    annotator->setAutomaticIds(libcellml::Annotator::Type::UNIT);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::UNIT);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", units->id());
@@ -983,7 +983,7 @@ TEST(Annotator, automaticIdsUnitsItems)
     EXPECT_EQ("", units1->unitId(1));
     EXPECT_EQ("", units1->id());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::UNITS);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::UNITS);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("b4da55", units1->id());
@@ -1020,7 +1020,7 @@ TEST(Annotator, automaticIdsVariables)
     EXPECT_EQ("", variable3->id());
     EXPECT_EQ("", variable4->id());
 
-    annotator->setAutomaticIds(libcellml::Annotator::Type::VARIABLE);
+    annotator->assignAutomaticIds(libcellml::Annotator::Type::VARIABLE);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1038,7 +1038,7 @@ TEST(Annotator, automaticIdsIssue)
 
     annotator->build(model);
 
-    EXPECT_FALSE(annotator->setAutomaticIds(libcellml::Annotator::Type::ISSUE));
+    EXPECT_FALSE(annotator->assignAutomaticIds(libcellml::Annotator::Type::ISSUE));
 }
 
 TEST(Annotator, automaticIdAllItemsNoId)
@@ -1142,19 +1142,19 @@ TEST(Annotator, automaticIdAllItemsNoId)
     annotator->build(model);
 
     // Expect each have had a change of id.
-    EXPECT_TRUE(annotator->setAutomaticId(itemComponent));
-    EXPECT_TRUE(annotator->setAutomaticId(itemComponentRef));
-    EXPECT_TRUE(annotator->setAutomaticId(itemConnection));
-    EXPECT_TRUE(annotator->setAutomaticId(itemImportSource));
-    EXPECT_TRUE(annotator->setAutomaticId(itemMapVariables));
-    EXPECT_TRUE(annotator->setAutomaticId(itemModel));
-    EXPECT_TRUE(annotator->setAutomaticId(itemReset));
-    EXPECT_TRUE(annotator->setAutomaticId(itemResetValue));
-    EXPECT_TRUE(annotator->setAutomaticId(itemTestValue));
-    EXPECT_TRUE(annotator->setAutomaticId(itemUnit));
-    EXPECT_TRUE(annotator->setAutomaticId(itemUnits));
-    EXPECT_TRUE(annotator->setAutomaticId(itemVariable));
-    EXPECT_TRUE(annotator->setAutomaticId(itemEncapsulation));
+    EXPECT_TRUE(annotator->assignId(itemComponent));
+    EXPECT_TRUE(annotator->assignId(itemComponentRef));
+    EXPECT_TRUE(annotator->assignId(itemConnection));
+    EXPECT_TRUE(annotator->assignId(itemImportSource));
+    EXPECT_TRUE(annotator->assignId(itemMapVariables));
+    EXPECT_TRUE(annotator->assignId(itemModel));
+    EXPECT_TRUE(annotator->assignId(itemReset));
+    EXPECT_TRUE(annotator->assignId(itemResetValue));
+    EXPECT_TRUE(annotator->assignId(itemTestValue));
+    EXPECT_TRUE(annotator->assignId(itemUnit));
+    EXPECT_TRUE(annotator->assignId(itemUnits));
+    EXPECT_TRUE(annotator->assignId(itemVariable));
+    EXPECT_TRUE(annotator->assignId(itemEncapsulation));
 
     EXPECT_EQ("b4da55", model->component(0)->id());
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
@@ -1175,8 +1175,8 @@ TEST(Annotator, automaticIdAllItemsNoId)
     libcellml::VariablePair r2 = std::make_pair(model->component("component2")->variable("variable2"), model->component("component4")->variable("variable2"));
     libcellml::AnyItem itemConnection2 = std::make_pair(libcellml::Annotator::Type::CONNECTION, r1);
     libcellml::AnyItem itemMapVariables2 = std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, r2);
-    EXPECT_TRUE(annotator->setAutomaticId(itemConnection2));
-    EXPECT_TRUE(annotator->setAutomaticId(itemMapVariables2));
+    EXPECT_TRUE(annotator->assignId(itemConnection2));
+    EXPECT_TRUE(annotator->assignId(itemMapVariables2));
 }
 
 TEST(Annotator, automaticIdAllItemsAllDuplicated)
@@ -1296,19 +1296,19 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePtr>(itemVariable.second)));
 
     // Expect each have had a change of id since the old one is duplicated.
-    EXPECT_TRUE(annotator->setAutomaticId(itemComponent));
-    EXPECT_TRUE(annotator->setAutomaticId(itemComponentRef));
-    EXPECT_TRUE(annotator->setAutomaticId(itemConnection));
-    EXPECT_TRUE(annotator->setAutomaticId(itemImportSource));
-    EXPECT_TRUE(annotator->setAutomaticId(itemMapVariables));
-    EXPECT_TRUE(annotator->setAutomaticId(itemModel));
-    EXPECT_TRUE(annotator->setAutomaticId(itemReset));
-    EXPECT_TRUE(annotator->setAutomaticId(itemResetValue));
-    EXPECT_TRUE(annotator->setAutomaticId(itemTestValue));
-    EXPECT_TRUE(annotator->setAutomaticId(itemUnit));
-    EXPECT_TRUE(annotator->setAutomaticId(itemUnits));
-    EXPECT_TRUE(annotator->setAutomaticId(itemVariable));
-    EXPECT_TRUE(annotator->setAutomaticId(itemEncapsulation));
+    EXPECT_TRUE(annotator->assignId(itemComponent));
+    EXPECT_TRUE(annotator->assignId(itemComponentRef));
+    EXPECT_TRUE(annotator->assignId(itemConnection));
+    EXPECT_TRUE(annotator->assignId(itemImportSource));
+    EXPECT_TRUE(annotator->assignId(itemMapVariables));
+    EXPECT_TRUE(annotator->assignId(itemModel));
+    EXPECT_TRUE(annotator->assignId(itemReset));
+    EXPECT_TRUE(annotator->assignId(itemResetValue));
+    EXPECT_TRUE(annotator->assignId(itemTestValue));
+    EXPECT_TRUE(annotator->assignId(itemUnit));
+    EXPECT_TRUE(annotator->assignId(itemUnits));
+    EXPECT_TRUE(annotator->assignId(itemVariable));
+    EXPECT_TRUE(annotator->assignId(itemEncapsulation));
 
     EXPECT_EQ("b4da55", model->component(0)->id());
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
@@ -1324,13 +1324,25 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     EXPECT_EQ("b4da60", model->component("component2")->variable(0)->id());
     EXPECT_EQ("b4da61", model->encapsulationId());
 
-    // Doing the extra set of connections and mappings.
-    libcellml::VariablePair r1 = std::make_pair(model->component("component4")->variable("variable1"), model->component("component2")->variable("variable1"));
-    libcellml::VariablePair r2 = std::make_pair(model->component("component4")->variable("variable2"), model->component("component2")->variable("variable2"));
-    libcellml::AnyItem itemConnection2 = std::make_pair(libcellml::Annotator::Type::CONNECTION, r1);
-    libcellml::AnyItem itemMapVariables2 = std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, r2);
-    EXPECT_TRUE(annotator->setAutomaticId(itemConnection2));
-    EXPECT_TRUE(annotator->setAutomaticId(itemMapVariables2));
+    // For coverage doing the other pair combo too.
+    libcellml::Variable::setEquivalenceConnectionId(connection.first, connection.second, "duplicateId");
+    libcellml::Variable::setEquivalenceMappingId(mapping.first, mapping.second, "duplicateId");
+
+    libcellml::VariablePair connection2 = std::make_pair(
+        model->component("component2")->variable("variable1")->equivalentVariable(0),
+        model->component("component2")->variable("variable1"));
+    libcellml::VariablePair mapping2 = std::make_pair(
+        model->component("component2")->variable("variable2")->equivalentVariable(0),
+        model->component("component2")->variable("variable2"));
+
+    libcellml::AnyItem itemConnection2 = std::make_pair(libcellml::Annotator::Type::CONNECTION, connection2);
+    libcellml::AnyItem itemMapVariables2 = std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, mapping2);
+
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::CONNECTION, connection2));
+    EXPECT_EQ("b4da62", libcellml::Variable::equivalenceConnectionId(connection2.first, connection2.second));
+
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::MAP_VARIABLES, mapping2));
+    EXPECT_EQ("b4da63", libcellml::Variable::equivalenceMappingId(mapping2.first, mapping2.second));
 }
 
 TEST(Annotator, automaticIdAllItemsNoneDuplicated)
@@ -1435,19 +1447,19 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::VariablePtr>(itemVariable.second)));
 
     // Expect each have no change, since the existing ids are fine.
-    EXPECT_FALSE(annotator->setAutomaticId(itemComponent));
-    EXPECT_FALSE(annotator->setAutomaticId(itemComponentRef));
-    EXPECT_FALSE(annotator->setAutomaticId(itemConnection));
-    EXPECT_FALSE(annotator->setAutomaticId(itemEncapsulation));
-    EXPECT_FALSE(annotator->setAutomaticId(itemImportSource));
-    EXPECT_FALSE(annotator->setAutomaticId(itemMapVariables));
-    EXPECT_FALSE(annotator->setAutomaticId(itemModel));
-    EXPECT_FALSE(annotator->setAutomaticId(itemReset));
-    EXPECT_FALSE(annotator->setAutomaticId(itemResetValue));
-    EXPECT_FALSE(annotator->setAutomaticId(itemTestValue));
-    EXPECT_FALSE(annotator->setAutomaticId(itemUnit));
-    EXPECT_FALSE(annotator->setAutomaticId(itemUnits));
-    EXPECT_FALSE(annotator->setAutomaticId(itemVariable));
+    EXPECT_FALSE(annotator->assignId(itemComponent));
+    EXPECT_FALSE(annotator->assignId(itemComponentRef));
+    EXPECT_FALSE(annotator->assignId(itemConnection));
+    EXPECT_FALSE(annotator->assignId(itemEncapsulation));
+    EXPECT_FALSE(annotator->assignId(itemImportSource));
+    EXPECT_FALSE(annotator->assignId(itemMapVariables));
+    EXPECT_FALSE(annotator->assignId(itemModel));
+    EXPECT_FALSE(annotator->assignId(itemReset));
+    EXPECT_FALSE(annotator->assignId(itemResetValue));
+    EXPECT_FALSE(annotator->assignId(itemTestValue));
+    EXPECT_FALSE(annotator->assignId(itemUnit));
+    EXPECT_FALSE(annotator->assignId(itemUnits));
+    EXPECT_FALSE(annotator->assignId(itemVariable));
 }
 
 TEST(Annotator, automaticIdAllItemsWrongModel)
@@ -1542,19 +1554,19 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
     annotator->build(model2);
 
     // Expect each have no change, since they are in a different model.
-    EXPECT_FALSE(annotator->setAutomaticId(itemComponent));
-    EXPECT_FALSE(annotator->setAutomaticId(itemComponentRef));
-    EXPECT_FALSE(annotator->setAutomaticId(itemConnection));
-    EXPECT_FALSE(annotator->setAutomaticId(itemEncapsulation));
-    EXPECT_FALSE(annotator->setAutomaticId(itemImportSource));
-    EXPECT_FALSE(annotator->setAutomaticId(itemMapVariables));
-    EXPECT_FALSE(annotator->setAutomaticId(itemModel));
-    EXPECT_FALSE(annotator->setAutomaticId(itemReset));
-    EXPECT_FALSE(annotator->setAutomaticId(itemResetValue));
-    EXPECT_FALSE(annotator->setAutomaticId(itemTestValue));
-    EXPECT_FALSE(annotator->setAutomaticId(itemUnit));
-    EXPECT_FALSE(annotator->setAutomaticId(itemUnits));
-    EXPECT_FALSE(annotator->setAutomaticId(itemVariable));
+    EXPECT_FALSE(annotator->assignId(itemComponent));
+    EXPECT_FALSE(annotator->assignId(itemComponentRef));
+    EXPECT_FALSE(annotator->assignId(itemConnection));
+    EXPECT_FALSE(annotator->assignId(itemEncapsulation));
+    EXPECT_FALSE(annotator->assignId(itemImportSource));
+    EXPECT_FALSE(annotator->assignId(itemMapVariables));
+    EXPECT_FALSE(annotator->assignId(itemModel));
+    EXPECT_FALSE(annotator->assignId(itemReset));
+    EXPECT_FALSE(annotator->assignId(itemResetValue));
+    EXPECT_FALSE(annotator->assignId(itemTestValue));
+    EXPECT_FALSE(annotator->assignId(itemUnit));
+    EXPECT_FALSE(annotator->assignId(itemUnits));
+    EXPECT_FALSE(annotator->assignId(itemVariable));
 }
 
 TEST(Annotator, automaticIdAllItemsEntityType)
@@ -1633,52 +1645,59 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     annotator->build(model);
 
     // Expect each have had a change of id since the old one is duplicated.
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::COMPONENT, model->component(0)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::COMPONENT, model->component(0)));
     EXPECT_EQ("b4da55", model->component(0)->id());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::COMPONENT_REF, model->component(1)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::COMPONENT_REF, model->component(1)));
     EXPECT_EQ("b4da56", model->component(1)->encapsulationId());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::CONNECTION, connection));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::CONNECTION, connection));
     EXPECT_EQ("b4da57", libcellml::Variable::equivalenceConnectionId(connection.first, connection.second));
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::ENCAPSULATION, model));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::ENCAPSULATION, model));
     EXPECT_EQ("b4da58", model->encapsulationId());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::IMPORT, model->importSource(0)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::IMPORT, model->importSource(0)));
     EXPECT_EQ("b4da59", model->importSource(0)->id());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::MAP_VARIABLES, mapping));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::MAP_VARIABLES, mapping));
     EXPECT_EQ("b4da5a", libcellml::Variable::equivalenceMappingId(mapping.first, mapping.second));
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::MODEL, model));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::MODEL, model));
     EXPECT_EQ("b4da5b", model->id());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::RESET, model->component(1)->reset(0)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::RESET, model->component(1)->reset(0)));
     EXPECT_EQ("b4da5c", model->component(1)->reset(0)->id());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::RESET_VALUE, model->component(1)->reset(0)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::RESET_VALUE, model->component(1)->reset(0)));
     EXPECT_EQ("b4da5d", model->component(1)->reset(0)->resetValueId());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::TEST_VALUE, model->component(1)->reset(0)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::TEST_VALUE, model->component(1)->reset(0)));
     EXPECT_EQ("b4da5e", model->component(1)->reset(0)->testValueId());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::UNIT, unit));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::UNIT, unit));
     EXPECT_EQ("b4da5f", model->units(1)->unitId(0));
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::UNITS, model->units(1)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::UNITS, model->units(1)));
     EXPECT_EQ("b4da60", model->units(1)->id());
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::VARIABLE, model->component(1)->variable(0)));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::VARIABLE, model->component(1)->variable(0)));
     EXPECT_EQ("b4da61", model->component(1)->variable(0)->id());
 
     // For coverage doing the other pair combo too.
     libcellml::Variable::setEquivalenceConnectionId(connection.first, connection.second, "");
     libcellml::Variable::setEquivalenceMappingId(mapping.first, mapping.second, "");
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::CONNECTION, connection));
-    EXPECT_EQ("b4da62", libcellml::Variable::equivalenceConnectionId(connection.second, connection.first));
+    libcellml::VariablePair connection2 = std::make_pair(
+        model->component("component2")->variable("variable1")->equivalentVariable(0),
+        model->component("component2")->variable("variable1"));
+    libcellml::VariablePair mapping2 = std::make_pair(
+        model->component("component2")->variable("variable2")->equivalentVariable(0),
+        model->component("component2")->variable("variable2"));
 
-    EXPECT_TRUE(annotator->setAutomaticId(libcellml::Annotator::Type::MAP_VARIABLES, mapping));
-    EXPECT_EQ("b4da63", libcellml::Variable::equivalenceMappingId(mapping.second, mapping.first));
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::CONNECTION, connection2));
+    EXPECT_EQ("b4da62", libcellml::Variable::equivalenceConnectionId(connection2.first, connection2.second));
+
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::MAP_VARIABLES, mapping2));
+    EXPECT_EQ("b4da63", libcellml::Variable::equivalenceMappingId(mapping2.first, mapping2.second));
 }
