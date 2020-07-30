@@ -22,7 +22,6 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -1514,7 +1513,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode(analyserModel));
 }
-*/
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
 {
@@ -1678,7 +1676,6 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsE
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode(analyserModel));
 }
 
-/*
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 {
     // Generate some code for the HH52 model with sodium_channel.i_Na as an
@@ -2056,4 +2053,3 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode(analyserModel));
 }
-*/
