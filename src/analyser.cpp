@@ -479,6 +479,9 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
 
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::primaryInternalVariable(const VariablePtr &variable)
 {
+    // Find and return, if there is one, the primary internal variable for the
+    // given variable.
+
     for (const auto &internalVariable : mInternalVariables) {
         if (isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
             return internalVariable;
@@ -493,20 +496,20 @@ AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const Varia
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
-    auto internalVariable = primaryInternalVariable(variable);
+    auto res = primaryInternalVariable(variable);
 
-    if (internalVariable != nullptr) {
-        return internalVariable;
+    if (res != nullptr) {
+        return res;
     }
 
     // No internal variable exists for the given variable, so create one, track
     // it and return it.
 
-    internalVariable = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
+    res = std::shared_ptr<AnalyserInternalVariable> {new AnalyserInternalVariable {variable}};
 
-    mInternalVariables.push_back(internalVariable);
+    mInternalVariables.push_back(res);
 
-    return internalVariable;
+    return res;
 }
 
 VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variable,
@@ -516,20 +519,20 @@ VariablePtr Analyser::AnalyserImpl::voiFirstOccurrence(const VariablePtr &variab
     // given component.
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        auto localVariable = component->variable(i);
+        auto componentVariable = component->variable(i);
 
-        if (isSameOrEquivalentVariable(variable, localVariable)) {
-            return localVariable;
+        if (isSameOrEquivalentVariable(variable, componentVariable)) {
+            return componentVariable;
         }
     }
 
-    VariablePtr voi = nullptr;
+    VariablePtr res = nullptr;
 
-    for (size_t i = 0; i < component->componentCount() && voi == nullptr; ++i) {
-        voi = voiFirstOccurrence(variable, component->component(i));
+    for (size_t i = 0; i < component->componentCount() && res == nullptr; ++i) {
+        res = voiFirstOccurrence(variable, component->component(i));
     }
 
-    return voi;
+    return res;
 }
 
 void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
