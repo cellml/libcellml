@@ -1315,12 +1315,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariabl
 
     auto analyser = libcellml::Analyser::create();
     auto sodium_channel_V = model->component("sodium_channel")->variable("V");
-    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m"));
+    auto external_sodium_channel_m = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m"));
 
-    externalVariable->addDependency(sodium_channel_V);
+    external_sodium_channel_m->addDependency(sodium_channel_V);
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_V));
-    analyser->addExternalVariable(externalVariable);
+    analyser->addExternalVariable(external_sodium_channel_m);
 
     analyser->analyseModel(model);
 
@@ -1421,12 +1421,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVa
 
     auto analyser = libcellml::Analyser::create();
     auto sodium_channel_g_Na = model->component("sodium_channel")->variable("g_Na");
-    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm"));
+    auto external_sodium_channel_Cm = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm"));
 
-    externalVariable->addDependency(sodium_channel_g_Na);
+    external_sodium_channel_Cm->addDependency(sodium_channel_g_Na);
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_g_Na));
-    analyser->addExternalVariable(externalVariable);
+    analyser->addExternalVariable(external_sodium_channel_Cm);
 
     analyser->analyseModel(model);
 
@@ -1544,13 +1544,13 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 
     auto analyser = libcellml::Analyser::create();
     auto potassium_channel_n_gate_alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
-    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
+    auto external_sodium_channel_i_Na = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
 
-    externalVariable->addDependency(potassium_channel_n_gate_alpha_n);
-    externalVariable->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
+    external_sodium_channel_i_Na->addDependency(potassium_channel_n_gate_alpha_n);
+    external_sodium_channel_i_Na->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
-    analyser->addExternalVariable(externalVariable);
+    analyser->addExternalVariable(external_sodium_channel_i_Na);
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
 
     analyser->analyseModel(model);
