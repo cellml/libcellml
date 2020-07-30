@@ -23,13 +23,11 @@ namespace libcellml {
 void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type type,
                                                       const AnalyserEquationAstPtr &ast,
                                                       const std::vector<AnalyserEquationPtr> &dependencies,
-                                                      bool isStateRateBased,
                                                       const AnalyserVariablePtr &variable)
 {
     mType = type;
     mAst = ast;
     mDependencies = dependencies;
-    mIsStateRateBased = isStateRateBased;
     mVariable = variable;
 }
 
