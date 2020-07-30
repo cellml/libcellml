@@ -1413,7 +1413,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                     if (((mModel->mPimpl->mVoi == nullptr)
                          || (internalVariable->mVariable != mModel->mPimpl->mVoi->mPimpl->mVariable))
                         && (externalVariables.count(internalVariable) == 0)) {
-                        std::vector <VariablePtr> dependencies;
+                        std::vector<VariablePtr> dependencies;
 
                         for (const auto &dependency : externalVariable->dependencies()) {
                             dependencies.push_back(primaryInternalVariable(dependency)->mVariable);
