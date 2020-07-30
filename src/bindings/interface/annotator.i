@@ -47,7 +47,7 @@
 %feature("docstring") libcellml::Annotator::componentRef
 "Return the ComponentPtr with the given component_ref id.";
 
-%feature("docstring") libcellml::Annotator::assignAutomaticIds
+%feature("docstring") libcellml::Annotator::assignAllIds
 "Traverses the stored model and sets any blank id fields to an automatically generated id.";
 
 %feature("docstring") libcellml::Annotator::assignId
