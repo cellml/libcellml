@@ -22,7 +22,6 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-/*
 TEST(Generator, emptyModel)
 {
     libcellml::ModelPtr model = libcellml::Model::create("empty_model");
@@ -1209,7 +1208,6 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.py"), generator->implementationCode(analyserModel));
 }
-*/
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 {
@@ -1316,12 +1314,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariabl
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    auto variable = model->component("sodium_channel")->variable("V");
+    auto sodium_channel_V = model->component("sodium_channel")->variable("V");
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("m"));
 
-    externalVariable->addDependency(variable);
+    externalVariable->addDependency(sodium_channel_V);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(variable));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_V));
     analyser->addExternalVariable(externalVariable);
 
     analyser->analyseModel(model);
@@ -1422,12 +1420,12 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVa
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-    auto variable = model->component("sodium_channel")->variable("g_Na");
+    auto sodium_channel_g_Na = model->component("sodium_channel")->variable("g_Na");
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm"));
 
-    externalVariable->addDependency(variable);
+    externalVariable->addDependency(sodium_channel_g_Na);
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(variable));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(sodium_channel_g_Na));
     analyser->addExternalVariable(externalVariable);
 
     analyser->analyseModel(model);
@@ -1528,32 +1526,32 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsE
 {
 }
 
-/*
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
 {
+    // Generate some code for the HH52 model with sodium_channel.i_Na as an
+    // external variable which has a dependency on
+    // potassium_channel_n_gate.alpha_n, another external variable (which is
+    // going to be declared after i_Na, so that it ends up with a higher index,
+    // meaning that it would normally be computed after i_Na if there was no
+    // such a dependency), and on sodium_channel_h_gate.h, a state variable, so
+    // that i_Na ends up being computed both in the computeRates() and
+    // computeVariables() methods.
+
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     auto analyser = libcellml::Analyser::create();
-
-    // Create an external variable for i_Na with a dependency on alpha_n,
-    // another external variable (which is going to be declared after i_Na, so
-    // that it ends up with a higher index, meaning that it would normally be
-    // computed after i_Na if there was no such a dependency), and on h, a state
-    // variable, so that i_Na ends up being computed both in the computeRates()
-    // and computeVariables() methods.
-
-    auto alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
+    auto potassium_channel_n_gate_alpha_n = model->component("potassium_channel_n_gate")->variable("alpha_n");
     auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("i_Na"));
 
-    externalVariable->addDependency(alpha_n);
+    externalVariable->addDependency(potassium_channel_n_gate_alpha_n);
     externalVariable->addDependency(model->component("sodium_channel_h_gate")->variable("h"));
 
     analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("V")));
     analyser->addExternalVariable(externalVariable);
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(alpha_n));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_alpha_n));
 
     analyser->analyseModel(model);
 
@@ -1617,9 +1615,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariablesUse)
     deleteArray(rates);
     deleteArray(variables);
 }
-*/
 
-/*
 TEST(Generator, nobleModel1962)
 {
     auto parser = libcellml::Parser::create();
@@ -1907,4 +1903,3 @@ TEST(Generator, coverage)
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator->implementationCode(analyserModel));
 }
-*/
