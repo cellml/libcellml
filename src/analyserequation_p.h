@@ -36,7 +36,7 @@ struct AnalyserEquation::AnalyserEquationImpl
     void populate(AnalyserEquation::Type type,
                   const AnalyserEquationAstPtr &ast,
                   const std::vector<AnalyserEquationPtr> &dependencies,
-                  bool isStateRateBased, const AnalyserVariablePtr &variable);
+                  const AnalyserVariablePtr &variable);
 };
 
 } // namespace libcellml

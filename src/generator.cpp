@@ -1937,7 +1937,9 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const AnalyserV
         scalingFactorCode = generateDoubleCode(convertToString(1.0 / scalingFactor)) + mProfile->timesString();
     }
 
-    return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = " + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->variable()) + " = "
+           + scalingFactorCode + generateDoubleOrConstantVariableNameCode(variable->initialisingVariable())
+           + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquationPtr &equation,
@@ -1946,20 +1948,22 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 {
     std::string res;
 
-    for (const auto &dependency : equation->dependencies()) {
-        if (!onlyStateRateBasedEquations
-            || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
-                && dependency->isStateRateBased())) {
-            res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
+    if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
+        if ((equation->type() == AnalyserEquation::Type::RATE)
+            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)) {
+            for (const auto &dependency : equation->dependencies()) {
+                if ((dependency->type() != AnalyserEquation::Type::RATE)
+                    && (!onlyStateRateBasedEquations
+                        || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                            && dependency->isStateRateBased()))) {
+                    res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
+                }
+            }
         }
-    }
 
-    auto equationIter = std::find(remainingEquations.begin(), remainingEquations.end(), equation);
-
-    if (equationIter != remainingEquations.end()) {
         res += mProfile->indentString() + generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
 
-        remainingEquations.erase(equationIter);
+        remainingEquations.erase(std::find(remainingEquations.begin(), remainingEquations.end(), equation));
     }
 
     return res;
@@ -2069,9 +2073,9 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
             mCode += "\n";
         }
 
+        std::string methodBody;
         auto equations = mModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
-        std::string methodBody;
 
         for (const auto &equation : equations) {
             if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
@@ -2142,11 +2146,9 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
 
     // Add code for the variable information related objects.
 
-    if (mPimpl->mProfile->hasInterface()) {
-        mPimpl->addVariableTypeObjectCode();
-        mPimpl->addVariableInfoObjectCode();
-        mPimpl->addVariableInfoWithTypeObjectCode();
-    }
+    mPimpl->addVariableTypeObjectCode();
+    mPimpl->addVariableInfoObjectCode();
+    mPimpl->addVariableInfoWithTypeObjectCode();
 
     // Add code for the interface of the information about the variable of
     // integration, states and (other) variables.
