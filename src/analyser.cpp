@@ -47,7 +47,6 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct AnalyserInternalEquation;
 using AnalyserInternalEquationPtr = std::shared_ptr<AnalyserInternalEquation>;
-using AnalyserInternalEquationWeakPtr = std::weak_ptr<AnalyserInternalEquation>;
 
 struct AnalyserInternalVariable
 {
