@@ -100,7 +100,7 @@ def compute_rates(voi, states, rates, variables, external_variable):
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
-    variables[10] = external_variable(voi, states, rates, variables, 10)
     variables[6] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
     variables[8] = variables[1]*(variables[0]-variables[7])
+    variables[10] = external_variable(voi, states, rates, variables, 10)
     variables[16] = variables[4]*pow(states[2], 4.0)*(variables[0]-variables[15])
