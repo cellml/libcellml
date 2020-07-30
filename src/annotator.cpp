@@ -41,6 +41,7 @@ struct Annotator::AnnotatorImpl
     ItemList mIdList;
     bool isBuilt = false;
     ModelPtr mModel = nullptr;
+    size_t mCounter = 0xb4da55;
 
     std::string makeUniqueId();
     void doSetAllAutomaticIds();
@@ -58,6 +59,7 @@ struct Annotator::AnnotatorImpl
     void doSetMapVariablesIds(const ComponentPtr &parent);
     void doSetComponentRefIds(const ComponentPtr &parent);
 
+    void doClearComponentIds(const ComponentPtr &component);
 };
 
 Annotator::Annotator()
@@ -66,6 +68,7 @@ Annotator::Annotator()
     mPimpl->mAnnotator = this;
     mPimpl->mIdList = std::multimap<std::string, AnyItem>();
     mPimpl->isBuilt = false;
+    mPimpl->mCounter = 0xb4da55;
 }
 
 Annotator::~Annotator()
@@ -236,7 +239,7 @@ void Annotator::build(const ModelPtr &model)
         auto id = it->first;
         if (mPimpl->mIdList.count(id) > 1) {
             auto issue = libcellml::Issue::create();
-            issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model. Please use the repairNonUniqueIds() function to fix them.");
+            issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model.");
             issue->setLevel(Issue::Level::WARNING);
             addIssue(issue);
         }
@@ -260,7 +263,7 @@ AnyItem Annotator::item(const std::string &id)
     if (mPimpl->mIdList.empty()) {
         // Setting the error message to be the same as below.
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Could not find an item with id='" + id + "' in the model.");
+        issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
         item = std::make_pair(Annotator::Type::ISSUE, issue);
@@ -270,7 +273,7 @@ AnyItem Annotator::item(const std::string &id)
     // Check whether the id has been duplicated in the model.
     if (mPimpl->mIdList.count(id) > 1) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model. Please use the repairNonUniqueIds() function to fix them.");
+        issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model so a unique item cannot be located.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
         item = std::make_pair(Annotator::Type::ISSUE, issue);
@@ -283,7 +286,7 @@ AnyItem Annotator::item(const std::string &id)
 
     if (it == mPimpl->mIdList.end()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Could not find an item with id='" + id + "' in the model.");
+        issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
         item = std::make_pair(Annotator::Type::ISSUE, issue);
@@ -427,22 +430,103 @@ ResetPtr Annotator::resetValue(const std::string &id)
     }
 }
 
-bool Annotator::assignAutomaticIds()
+void Annotator::clearAllIds()
+{
+    if (mPimpl->mModel == nullptr) {
+        auto issue = Issue::create();
+        issue->setDescription("The Annotator does not have a model stored; no action has been taken.");
+        issue->setLevel(Issue::Level::ERROR);
+        addIssue(issue);
+        return;
+    }
+
+    mPimpl->mModel->setId("");
+    for (size_t i = 0; i < mPimpl->mModel->importSourceCount(); ++i) {
+        mPimpl->mModel->importSource(i)->setId("");
+    }
+    for (size_t i = 0; i < mPimpl->mModel->unitsCount(); ++i) {
+        mPimpl->mModel->units(i)->setId("");
+        for (size_t j = 0; j < mPimpl->mModel->units(i)->unitCount(); ++j) {
+            mPimpl->mModel->units(i)->setUnitId(j, "");
+        }
+    }
+    for (size_t i = 0; i < mPimpl->mModel->componentCount(); ++i) {
+        mPimpl->doClearComponentIds(mPimpl->mModel->component(i));
+    }
+    mPimpl->mModel->setEncapsulationId("");
+
+    mPimpl->mIdList.clear();
+    // Set to true even though it hasn't been built, as technically the library 
+    // is up-to-date with the model, even though it's empty.
+    mPimpl->isBuilt = true;  
+    removeAllIssues();
+}
+
+void Annotator::clearAllIds(ModelPtr &model)
+{
+    // Helper function so that you don't have to build an annotation library
+    // for a model you're going to wipe anyway.
+    if (model == nullptr) {
+        return;
+    }
+    mPimpl->mModel = model;
+    clearAllIds();
+}
+
+void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component)
+{
+    component->setEncapsulationId("");
+    component->setId("");
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        component->variable(i)->setId("");
+        for (size_t j = 0; j < component->variable(i)->equivalentVariableCount(); ++j) {
+            Variable::setEquivalenceConnectionId(component->variable(i), component->variable(i)->equivalentVariable(j), "");
+            Variable::setEquivalenceMappingId(component->variable(i), component->variable(i)->equivalentVariable(j), "");
+        }
+    }
+    for (size_t i = 0; i < component->resetCount(); ++i) {
+        component->reset(i)->setId("");
+        component->reset(i)->setResetValueId("");
+        component->reset(i)->setTestValueId("");
+    }
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        doClearComponentIds(component->component(i));
+    }
+}
+
+bool Annotator::assignAllIds()
 {
     // Add automatically generated id strings to every item (excepting MathML) in the model which
     // can be annotated.
-    if (!mPimpl->isBuilt || mPimpl->mModel == nullptr) {
-        auto i = Issue::create();
-        i->setDescription("Please call the Annotator::build function before attempting to automatically create id strings.");
-        i->setLevel(Issue::Level::ERROR);
-        addIssue(i);
+    if (mPimpl->mModel == nullptr) {
+        auto issue = Issue::create();
+        issue->setDescription("The Annotator does not have any Model stored; no action has been taken.");
+        issue->setLevel(Issue::Level::ERROR);
+        addIssue(issue);
         return false;
     }
+
+    clearAllIds();
     mPimpl->doSetAllAutomaticIds();
+    build(mPimpl->mModel);
     return true;
 }
 
-bool Annotator::assignAutomaticIds(Annotator::Type type)
+bool Annotator::assignAllIds(ModelPtr &model)
+{
+    // Helper function so that the users don't have to build a model library when they're
+    // about to overwrite it all anyway.
+    if (model == nullptr) {
+        auto issue = Issue::create();
+        issue->setDescription("The Model supplied is a nullptr. No action has been taken.");
+        issue->setLevel(Issue::Level::ERROR);
+        return false;
+    }
+    mPimpl->mModel = model;
+    return assignAllIds();
+}
+
+bool Annotator::assignIds(Annotator::Type type)
 {
     bool changed = false;
     switch (type) {
@@ -709,19 +793,10 @@ void Annotator::AnnotatorImpl::doSetModelIds()
 
 void Annotator::AnnotatorImpl::doSetAllAutomaticIds()
 {
-    std::string id;
-    // Traverse the model's entities and add ids where they are currently missing.
-    // if (mModel->id().empty()) {
-    //     id = makeUniqueId();
-    //     mModel->setId(id);
-    //     mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::MODEL, mModel)));
-    // }
     doSetModelIds();
-
     doSetImportSourceIds();
     doSetUnitsIds();
     doSetUnitIds();
-
     for (size_t c = 0; c < mModel->componentCount(); ++c) {
         doSetComponentIds(mModel->component(c));
         doSetVariableIds(mModel->component(c));
@@ -732,23 +807,24 @@ void Annotator::AnnotatorImpl::doSetAllAutomaticIds()
         doSetMapVariablesIds(mModel->component(c));
         doSetComponentRefIds(mModel->component(c));
     }
-
     doSetEncapsulationIds();
 }
 
 std::string Annotator::AnnotatorImpl::makeUniqueId()
 {
     // Because the hexadecimal counter starts high enough that it will always have a letter as the first character,
-    // we don't need to prefix it with any other string to be valid.
-    int counter = 0xb4da55;
+    // we don't need to prefix it with any other string to be valid.  This is stored in the mCounter variable
+    // so that "holes" in the automatic id list are not filled; they will always build from the previous
+    // maximum value.
+
     std::stringstream stream;
-    stream << std::hex << counter;
+    stream << std::hex << mCounter;
     std::string id = stream.str();
     stream.str(std::string());
 
     while (mIdList.count(id) != 0) {
-        ++counter;
-        stream << std::hex << counter;
+        ++mCounter;
+        stream << std::hex << mCounter;
         id = stream.str();
         stream.str(std::string());
     }
@@ -757,127 +833,126 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
     return id;
 }
 
-bool Annotator::repairNonUniqueIds()
-{
-    bool changed = false;
-    ComponentPtr component;
-    ModelPtr model;
-    ImportSourcePtr importSource;
-    VariablePtr variable;
-    UnitsPtr units;
-    ResetPtr reset;
-    VariablePair variablePair;
-    UnitItem unitItem;
-
-    // Function to go through duplicated ids and rename them uniquely.
-    for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
-        auto id = i->first;
-        if (mPimpl->mIdList.count(id) > 1) {
-            auto range = mPimpl->mIdList.equal_range(id);
-            // ++range.first;
-            for (auto it = range.first; it != range.second; ++it) {
-                switch (it->second.first) {
-                case Annotator::Type::COMPONENT:
-                    component = std::any_cast<ComponentPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    component->setId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::COMPONENT, component)));
-                    changed = true;
-                    break;
-                case Annotator::Type::COMPONENT_REF:
-                    component = std::any_cast<ComponentPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    component->setEncapsulationId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::COMPONENT_REF, component)));
-                    changed = true;
-                    break;
-                case Annotator::Type::CONNECTION:
-                    variablePair = std::any_cast<VariablePair>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::CONNECTION, variablePair)));
-                    changed = true;
-                    break;
-                case Annotator::Type::ENCAPSULATION:
-                    model = std::any_cast<ModelPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    model->setEncapsulationId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::ENCAPSULATION, model)));
-                    changed = true;
-                    break;
-                case Annotator::Type::IMPORT:
-                    importSource = std::any_cast<ImportSourcePtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    importSource->setId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::IMPORT, importSource)));
-                    changed = true;
-                    break;
-                case Annotator::Type::MAP_VARIABLES:
-                    variablePair = std::any_cast<VariablePair>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::MAP_VARIABLES, variablePair)));
-                    changed = true;
-                    break;
-                case Annotator::Type::MODEL:
-                    model = std::any_cast<ModelPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    model->setId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::MODEL, model)));
-                    changed = true;
-                    break;
-                case Annotator::Type::RESET:
-                    reset = std::any_cast<ResetPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    reset->setId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::RESET_VALUE, reset)));
-                    changed = true;
-                    break;
-                case Annotator::Type::RESET_VALUE:
-                    reset = std::any_cast<ResetPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    reset->setResetValueId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::RESET_VALUE, reset)));
-                    changed = true;
-                    break;
-                case Annotator::Type::TEST_VALUE:
-                    reset = std::any_cast<ResetPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    reset->setTestValueId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::TEST_VALUE, reset)));
-                    changed = true;
-                    break;
-                case Annotator::Type::UNIT:
-                    unitItem = std::any_cast<UnitItem>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    unitItem.first->setUnitId(unitItem.second, id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::UNIT, unitItem)));
-                    changed = true;
-                    break;
-                case Annotator::Type::UNITS:
-                    units = std::any_cast<UnitsPtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    units->setId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::UNITS, units)));
-                    changed = true;
-                    break;
-                case Annotator::Type::VARIABLE:
-                    variable = std::any_cast<VariablePtr>(it->second.second);
-                    id = mPimpl->makeUniqueId();
-                    variable->setId(id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::VARIABLE, variable)));
-                    changed = true;
-                    break;
-                }
-            }
-        }
-    }
-    // Clean out records and rebuild.
-    if (changed || (issueCount() > 0)) {
-        build(mPimpl->mModel);
-    }
-    return changed;
-}
+// bool Annotator::repairNonUniqueIds()
+// {
+//     bool changed = false;
+//     ComponentPtr component;
+//     ModelPtr model;
+//     ImportSourcePtr importSource;
+//     VariablePtr variable;
+//     UnitsPtr units;
+//     ResetPtr reset;
+//     VariablePair variablePair;
+//     UnitItem unitItem;
+//     // Function to go through duplicated ids and rename them uniquely.
+//     for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
+//         auto id = i->first;
+//         if (mPimpl->mIdList.count(id) > 1) {
+//             auto range = mPimpl->mIdList.equal_range(id);
+//             // ++range.first;
+//             for (auto it = range.first; it != range.second; ++it) {
+//                 switch (it->second.first) {
+//                 case Annotator::Type::COMPONENT:
+//                     component = std::any_cast<ComponentPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     component->setId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::COMPONENT, component)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::COMPONENT_REF:
+//                     component = std::any_cast<ComponentPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     component->setEncapsulationId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::COMPONENT_REF, component)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::CONNECTION:
+//                     variablePair = std::any_cast<VariablePair>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::CONNECTION, variablePair)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::ENCAPSULATION:
+//                     model = std::any_cast<ModelPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     model->setEncapsulationId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::ENCAPSULATION, model)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::IMPORT:
+//                     importSource = std::any_cast<ImportSourcePtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     importSource->setId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::IMPORT, importSource)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::MAP_VARIABLES:
+//                     variablePair = std::any_cast<VariablePair>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::MAP_VARIABLES, variablePair)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::MODEL:
+//                     model = std::any_cast<ModelPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     model->setId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::MODEL, model)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::RESET:
+//                     reset = std::any_cast<ResetPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     reset->setId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::RESET_VALUE, reset)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::RESET_VALUE:
+//                     reset = std::any_cast<ResetPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     reset->setResetValueId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::RESET_VALUE, reset)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::TEST_VALUE:
+//                     reset = std::any_cast<ResetPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     reset->setTestValueId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::TEST_VALUE, reset)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::UNIT:
+//                     unitItem = std::any_cast<UnitItem>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     unitItem.first->setUnitId(unitItem.second, id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::UNIT, unitItem)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::UNITS:
+//                     units = std::any_cast<UnitsPtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     units->setId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::UNITS, units)));
+//                     changed = true;
+//                     break;
+//                 case Annotator::Type::VARIABLE:
+//                     variable = std::any_cast<VariablePtr>(it->second.second);
+//                     id = mPimpl->makeUniqueId();
+//                     variable->setId(id);
+//                     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(Annotator::Type::VARIABLE, variable)));
+//                     changed = true;
+//                     break;
+//                 }
+//             }
+//         }
+//     }
+//     // Clean out records and rebuild.
+//     if (changed || (issueCount() > 0)) {
+//         build(mPimpl->mModel);
+//     }
+//     return changed;
+// }
 
 bool Annotator::assignComponentId(const ComponentPtr &component)
 {
@@ -895,18 +970,18 @@ bool Annotator::assignComponentId(const ComponentPtr &component)
         return true;
     }
 
-    if (mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ComponentPtr>(it->second.second) == component)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                component->setId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, component)));
-                return true;
-            }
+    // if (mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ComponentPtr>(it->second.second) == component)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            component->setId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, component)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -926,18 +1001,18 @@ bool Annotator::assignComponentRefId(const ComponentPtr &component)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ComponentPtr>(it->second.second) == component)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                component->setEncapsulationId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, component)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ComponentPtr>(it->second.second) == component)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            component->setEncapsulationId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, component)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -957,24 +1032,21 @@ bool Annotator::assignConnectionId(const VariablePair &variablePair)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if (it->second.first == type) {
-                auto testPair = std::any_cast<VariablePair>(it->second.second);
-                if (((owningComponent(testPair.first) == owningComponent(variablePair.first))
-                     && (owningComponent(testPair.second) == owningComponent(variablePair.second)))
-                    || ((owningComponent(testPair.first) == owningComponent(variablePair.second))
-                        && (owningComponent(testPair.second) == owningComponent(variablePair.first)))) {
-                    mPimpl->mIdList.erase(it);
-                    auto id = mPimpl->makeUniqueId();
-                    Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, variablePair)));
-                    return true;
-                }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second.first == type) {
+            auto testPair = std::any_cast<VariablePair>(it->second.second);
+            if ((owningComponent(testPair.first) == owningComponent(variablePair.first) || owningComponent(testPair.first) == owningComponent(variablePair.second)) && (owningComponent(testPair.second) == owningComponent(variablePair.first) || owningComponent(testPair.second) == owningComponent(variablePair.second))) {
+                auto id = mPimpl->makeUniqueId();
+                mPimpl->mIdList.erase(it);
+                Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
+                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, variablePair)));
+                return true;
             }
         }
     }
+    // }
     return false;
 }
 
@@ -994,18 +1066,18 @@ bool Annotator::assignEncapsulationId(const ModelPtr &model)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ModelPtr>(it->second.second) == model)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                model->setEncapsulationId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, model)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ModelPtr>(it->second.second) == model)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            model->setEncapsulationId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, model)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1025,18 +1097,18 @@ bool Annotator::assignImportSourceId(const ImportSourcePtr &importSource)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ImportSourcePtr>(it->second.second) == importSource)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                importSource->setId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, importSource)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ImportSourcePtr>(it->second.second) == importSource)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            importSource->setId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, importSource)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1056,21 +1128,21 @@ bool Annotator::assignMapVariablesId(const VariablePair &variablePair)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if (it->second.first == type) {
-                auto testPair = std::any_cast<VariablePair>(it->second.second);
-                if (((testPair.first == variablePair.first) && (testPair.second == variablePair.second)) || ((testPair.first == variablePair.second) && (testPair.second == variablePair.first))) {
-                    mPimpl->mIdList.erase(it);
-                    auto id = mPimpl->makeUniqueId();
-                    Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
-                    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, variablePair)));
-                    return true;
-                }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if (it->second.first == type) {
+            auto testPair = std::any_cast<VariablePair>(it->second.second);
+            if (((testPair.first == variablePair.first) && (testPair.second == variablePair.second)) || ((testPair.first == variablePair.second) && (testPair.second == variablePair.first))) {
+                auto id = mPimpl->makeUniqueId();
+                mPimpl->mIdList.erase(it);
+                Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
+                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, variablePair)));
+                return true;
             }
         }
     }
+    // }
     return false;
 }
 
@@ -1090,18 +1162,18 @@ bool Annotator::assignModelId(const ModelPtr &model)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ModelPtr>(it->second.second) == model)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                model->setId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, model)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ModelPtr>(it->second.second) == model)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            model->setId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, model)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1121,18 +1193,18 @@ bool Annotator::assignResetId(const ResetPtr &reset)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ResetPtr>(it->second.second) == reset)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                reset->setId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, reset)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ResetPtr>(it->second.second) == reset)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            reset->setId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, reset)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1152,18 +1224,18 @@ bool Annotator::assignResetValueId(const ResetPtr &reset)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ResetPtr>(it->second.second) == reset)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                reset->setResetValueId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, reset)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ResetPtr>(it->second.second) == reset)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            reset->setResetValueId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, reset)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1183,18 +1255,18 @@ bool Annotator::assignTestValueId(const ResetPtr &reset)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<ResetPtr>(it->second.second) == reset)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                reset->setTestValueId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, reset)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<ResetPtr>(it->second.second) == reset)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            reset->setTestValueId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, reset)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1214,18 +1286,18 @@ bool Annotator::assignUnitId(const UnitItem &unitItem)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<UnitItem>(it->second.second).first == unitItem.first) && std::any_cast<UnitItem>(it->second.second).second == unitItem.second) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                unitItem.first->setUnitId(unitItem.second, id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, unitItem)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<UnitItem>(it->second.second).first == unitItem.first) && std::any_cast<UnitItem>(it->second.second).second == unitItem.second) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            unitItem.first->setUnitId(unitItem.second, id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, unitItem)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1245,18 +1317,18 @@ bool Annotator::assignUnitsId(const UnitsPtr &units)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<UnitsPtr>(it->second.second) == units)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                units->setId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, units)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<UnitsPtr>(it->second.second) == units)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            units->setId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, units)));
+            return true;
         }
     }
+    // }
     return false;
 }
 
@@ -1276,18 +1348,18 @@ bool Annotator::assignVariableId(const VariablePtr &variable)
         return true;
     }
 
-    if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && (std::any_cast<VariablePtr>(it->second.second) == variable)) {
-                mPimpl->mIdList.erase(it);
-                auto id = mPimpl->makeUniqueId();
-                variable->setId(id);
-                mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, variable)));
-                return true;
-            }
+    // if (!oldId.empty() && mPimpl->mIdList.count(oldId) > 1) {
+    auto range = mPimpl->mIdList.equal_range(oldId);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == type) && (std::any_cast<VariablePtr>(it->second.second) == variable)) {
+            auto id = mPimpl->makeUniqueId();
+            mPimpl->mIdList.erase(it);
+            variable->setId(id);
+            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, variable)));
+            return true;
         }
     }
+    // }
     return false;
 }
 

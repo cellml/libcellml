@@ -503,7 +503,7 @@ public:
     void setImportSource(ImportSourcePtr &importSource);
 
     // KRM docstrings
-    bool setUnitId(size_t index, std::string &id) const;
+    bool setUnitId(size_t index, const std::string &id) const;
     std::string unitId(size_t index);
 
 private:

@@ -280,9 +280,12 @@ public:
     ResetPtr resetValue(const std::string &id);
 
     // KRM docstrings
-    bool assignAutomaticIds();
-    bool assignAutomaticIds(Annotator::Type type);
-    bool repairNonUniqueIds();
+    bool assignAllIds();
+    bool assignAllIds(ModelPtr &model);
+    bool assignIds(Annotator::Type type);
+    void clearAllIds();
+    void clearAllIds(ModelPtr &model);
+
     bool assignId(const AnyItem &item);
     bool assignId(Annotator::Type type, const ModelPtr &item);
     bool assignId(Annotator::Type type, const ComponentPtr &item);
