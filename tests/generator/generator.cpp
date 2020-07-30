@@ -1409,6 +1409,58 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVariable)
 {
+    // Generate some code for the HH52 model with membrane.Cm as an external
+    // variable which has a dependency on sodium_channel.g_Na, another constant
+    // marked as an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto variable = model->component("sodium_channel")->variable("g_Na");
+    auto externalVariable = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm"));
+
+    externalVariable->addDependency(variable);
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(variable));
+    analyser->addExternalVariable(externalVariable);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(19), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dependent.constant.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.h"), generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.c"), generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py"), generator->implementationCode(analyserModel));
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
