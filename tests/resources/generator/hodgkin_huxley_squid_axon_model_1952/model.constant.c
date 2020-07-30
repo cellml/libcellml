@@ -22,10 +22,10 @@ const VariableInfo STATE_INFO[] = {
 
 const VariableInfoWithType VARIABLE_INFO[] = {
     {"g_L", "milliS_per_cm2", "leakage_current", CONSTANT},
-    {"Cm", "microF_per_cm2", "membrane", CONSTANT},
+    {"Cm", "microF_per_cm2", "membrane", EXTERNAL},
     {"E_R", "millivolt", "membrane", CONSTANT},
     {"g_K", "milliS_per_cm2", "potassium_channel", CONSTANT},
-    {"g_Na", "milliS_per_cm2", "sodium_channel", EXTERNAL},
+    {"g_Na", "milliS_per_cm2", "sodium_channel", CONSTANT},
     {"i_Stim", "microA_per_cm2", "membrane", ALGEBRAIC},
     {"E_L", "millivolt", "leakage_current", COMPUTED_CONSTANT},
     {"i_L", "microA_per_cm2", "leakage_current", ALGEBRAIC},
@@ -59,9 +59,9 @@ void deleteArray(double *array)
 void initialiseStatesAndConstants(double *states, double *variables)
 {
     variables[0] = 0.3;
-    variables[1] = 1.0;
     variables[2] = 0.0;
     variables[3] = 36.0;
+    variables[4] = 120.0;
     states[0] = 0.05;
     states[1] = 0.6;
     states[2] = 0.325;
@@ -87,9 +87,9 @@ void computeRates(double voi, double *states, double *rates, double *variables, 
     variables[17] = 0.125*exp(states[3]/80.0);
     rates[2] = variables[16]*(1.0-states[2])-variables[17]*states[2];
     variables[5] = ((voi >= 10.0) && (voi <= 10.5))?-20.0:0.0;
+    variables[1] = externalVariable(voi, states, rates, variables, 1);
     variables[7] = variables[0]*(states[3]-variables[6]);
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14]);
-    variables[4] = externalVariable(voi, states, rates, variables, 4);
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8]);
     rates[3] = -(-variables[5]+variables[9]+variables[15]+variables[7])/variables[1];
 }

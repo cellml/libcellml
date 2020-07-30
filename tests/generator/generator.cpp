@@ -1359,8 +1359,8 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariabl
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 {
-    // Generate some code for the HH52 model with sodium_channel.g_Na as an
-    // external variable.
+    // Generate some code for the HH52 model with membrane.Cm as an external
+    // variable.
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -1369,7 +1369,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
 
     auto analyser = libcellml::Analyser::create();
 
-    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("sodium_channel")->variable("g_Na")));
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("Cm")));
 
     analyser->analyseModel(model);
 
