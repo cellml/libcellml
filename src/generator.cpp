@@ -1980,11 +1980,13 @@ std::string Generator::GeneratorImpl::generateEquationCode(const AnalyserEquatio
 
     if (std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end()) {
         if ((equation->type() == AnalyserEquation::Type::RATE)
-            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)) {
+            || (equation->type() == AnalyserEquation::Type::ALGEBRAIC)
+            || (equation->type() == AnalyserEquation::Type::EXTERNAL)) {
             for (const auto &dependency : equation->dependencies()) {
                 if ((dependency->type() != AnalyserEquation::Type::RATE)
                     && (!onlyStateRateBasedEquations
-                        || ((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                        || (((dependency->type() == AnalyserEquation::Type::ALGEBRAIC)
+                             || (dependency->type() == AnalyserEquation::Type::EXTERNAL))
                             && dependency->isStateRateBased()))) {
                     res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
                 }
