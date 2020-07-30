@@ -1624,6 +1624,58 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsExternalVariable)
 {
+    // Generate some code for the HH52 model with membrane.i_Stim as an external
+    // variable which has a dependency on potassium_channel_n_gate.beta_n,
+    // another algebraic variable marked as an external variable.
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto analyser = libcellml::Analyser::create();
+    auto potassium_channel_n_gate_beta_n = model->component("potassium_channel_n_gate")->variable("beta_n");
+    auto membrane_i_Stime = libcellml::AnalyserExternalVariable::create(model->component("membrane")->variable("i_Stim"));
+
+    membrane_i_Stime->addDependency(potassium_channel_n_gate_beta_n);
+
+    analyser->addExternalVariable(libcellml::AnalyserExternalVariable::create(potassium_channel_n_gate_beta_n));
+    analyser->addExternalVariable(membrane_i_Stime);
+
+    analyser->analyseModel(model);
+
+    EXPECT_EQ(size_t(0), analyser->errorCount());
+
+    auto analyserModel = analyser->model();
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::ODE, analyserModel->type());
+
+    EXPECT_EQ(size_t(4), analyserModel->stateCount());
+    EXPECT_EQ(size_t(18), analyserModel->variableCount());
+    EXPECT_EQ(size_t(17), analyserModel->equationCount());
+
+    EXPECT_NE(nullptr, analyserModel->voi());
+    EXPECT_NE(nullptr, analyserModel->state(0));
+    EXPECT_EQ(nullptr, analyserModel->state(analyserModel->stateCount()));
+    EXPECT_NE(nullptr, analyserModel->variable(0));
+    EXPECT_EQ(nullptr, analyserModel->variable(analyserModel->variableCount()));
+    EXPECT_NE(nullptr, analyserModel->equation(0));
+    EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
+
+    auto generator = libcellml::Generator::create();
+    auto profile = generator->profile();
+
+    profile->setInterfaceFileNameString("model.dependent.algebraic.h");
+
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.h"), generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.c"), generator->implementationCode(analyserModel));
+
+    profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator->setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode(analyserModel));
 }
 
 /*
