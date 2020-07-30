@@ -7,8 +7,8 @@ from math import *
 __version__ = "0.1.0"
 LIBCELLML_VERSION = "0.2.0"
 
-STATE_COUNT = 3
-VARIABLE_COUNT = 19
+STATE_COUNT = 2
+VARIABLE_COUNT = 20
 
 
 class VariableType(Enum):
@@ -21,12 +21,12 @@ class VariableType(Enum):
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
     {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
     {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
 ]
 
 VARIABLE_INFO = [
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.EXTERNAL},
     {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.EXTERNAL},
     {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
     {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
@@ -70,44 +70,36 @@ def create_variables_array():
 
 
 def initialise_states_and_constants(states, variables):
-    variables[1] = 0.3
-    variables[2] = 1.0
-    variables[3] = 0.0
-    variables[4] = 36.0
-    variables[5] = 120.0
-    states[0] = 0.05
-    states[1] = 0.6
-    states[2] = 0.325
+    variables[2] = 0.3
+    variables[3] = 1.0
+    variables[4] = 0.0
+    variables[5] = 36.0
+    variables[6] = 120.0
+    states[0] = 0.6
+    states[1] = 0.325
 
 
 def compute_computed_constants(variables):
-    variables[7] = variables[3]-10.613
-    variables[9] = variables[3]-115.0
-    variables[15] = variables[3]+12.0
+    variables[8] = variables[4]-10.613
+    variables[10] = variables[4]-115.0
+    variables[16] = variables[4]+12.0
 
 
 def compute_rates(voi, states, rates, variables, external_variable):
-    variables[0] = external_variable(voi, states, rates, variables, 0)
-    variables[11] = 0.1*(variables[0]+25.0)/(exp((variables[0]+25.0)/10.0)-1.0)
-    variables[12] = 4.0*exp(variables[0]/18.0)
-    rates[0] = variables[11]*(1.0-states[0])-variables[12]*states[0]
-    variables[13] = 0.07*exp(variables[0]/20.0)
-    variables[14] = 1.0/(exp((variables[0]+30.0)/10.0)+1.0)
-    rates[1] = variables[13]*(1.0-states[1])-variables[14]*states[1]
-    variables[17] = 0.01*(variables[0]+10.0)/(exp((variables[0]+10.0)/10.0)-1.0)
-    variables[18] = 0.125*exp(variables[0]/80.0)
-    rates[2] = variables[17]*(1.0-states[2])-variables[18]*states[2]
+    variables[1] = external_variable(voi, states, rates, variables, 1)
+    variables[14] = 0.07*exp(variables[1]/20.0)
+    variables[15] = 1.0/(exp((variables[1]+30.0)/10.0)+1.0)
+    rates[0] = variables[14]*(1.0-states[0])-variables[15]*states[0]
+    variables[18] = 0.01*(variables[1]+10.0)/(exp((variables[1]+10.0)/10.0)-1.0)
+    variables[19] = 0.125*exp(variables[1]/80.0)
+    rates[1] = variables[18]*(1.0-states[1])-variables[19]*states[1]
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
     variables[0] = external_variable(voi, states, rates, variables, 0)
-    variables[6] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    variables[8] = variables[1]*(variables[0]-variables[7])
-    variables[10] = variables[5]*pow(states[0], 3.0)*states[1]*(variables[0]-variables[9])
-    variables[11] = 0.1*(variables[0]+25.0)/(exp((variables[0]+25.0)/10.0)-1.0)
-    variables[12] = 4.0*exp(variables[0]/18.0)
-    variables[13] = 0.07*exp(variables[0]/20.0)
-    variables[14] = 1.0/(exp((variables[0]+30.0)/10.0)+1.0)
-    variables[16] = variables[4]*pow(states[2], 4.0)*(variables[0]-variables[15])
-    variables[17] = 0.01*(variables[0]+10.0)/(exp((variables[0]+10.0)/10.0)-1.0)
-    variables[18] = 0.125*exp(variables[0]/80.0)
+    variables[7] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    variables[9] = variables[2]*(variables[1]-variables[8])
+    variables[11] = variables[6]*pow(variables[0], 3.0)*states[0]*(variables[1]-variables[10])
+    variables[12] = 0.1*(variables[1]+25.0)/(exp((variables[1]+25.0)/10.0)-1.0)
+    variables[13] = 4.0*exp(variables[1]/18.0)
+    variables[17] = variables[5]*pow(states[1], 4.0)*(variables[1]-variables[16])
