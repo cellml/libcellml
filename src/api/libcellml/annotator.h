@@ -286,6 +286,11 @@ public:
     void clearAllIds();
     void clearAllIds(ModelPtr &model);
 
+    bool isUnique(const std::string &id, bool raiseError);
+    std::vector<AnyItem> items(const std::string &id);
+
+    std::vector<std::string> duplicateIds();
+
     bool assignId(const AnyItem &item);
     bool assignId(Annotator::Type type, const ModelPtr &item);
     bool assignId(Annotator::Type type, const ComponentPtr &item);
@@ -311,6 +316,9 @@ public:
     bool assignUnitId(const UnitItem &unitItem);
     bool assignUnitsId(const UnitsPtr &units);
     bool assignVariableId(const VariablePtr &variable);
+
+    std::string typeString(const Annotator::Type &type);
+    std::string typeString(const std::uint64_t &type);
 
 private:
     Annotator(); /**< Constructor */

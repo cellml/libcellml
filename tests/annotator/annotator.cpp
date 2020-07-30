@@ -23,6 +23,287 @@ limitations under the License.
 
 #include "test_utils.h"
 
+const std::string modelStringDuplicateIds = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"duplicateId\" >\n"
+                                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId\">\n"
+                                            "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"duplicateId\"/>\n"
+                                            "  </import>\n"
+                                            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId\" >\n"
+                                            "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"duplicateId\" />\n"
+                                            "  </import>\n"
+                                            "  <units name=\"units2\" id=\"duplicateId\">\n"
+                                            "    <unit units=\"second\" id=\"duplicateId\"/>\n"
+                                            "  </units>\n"
+                                            "  <units name=\"units3\" id=\"duplicateId\"/>\n"
+                                            "  <units name=\"blob\" id=\"duplicateId\"/>\n"
+                                            "  <component name=\"component2\">\n"
+                                            "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"duplicateId\"/>\n"
+                                            "    <variable name=\"variable2\" units=\"units2\" id=\"duplicateId\"/>\n"
+                                            "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"duplicateId\">\n"
+                                            "      <test_value id=\"duplicateId\">\n"
+                                            "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                            "          <apply>\n"
+                                            "            <eq/>\n"
+                                            "            <ci>variable1</ci>\n"
+                                            "            <cn cellml:units=\"units2\">3.4</cn>\n"
+                                            "          </apply>\n"
+                                            "        </math>\n"
+                                            "      </test_value>\n"
+                                            "      <reset_value id=\"duplicateId\">\n"
+                                            "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                            "          <apply>\n"
+                                            "            <eq/>\n"
+                                            "            <ci>variable1</ci>\n"
+                                            "            <cn cellml:units=\"units2\">9.0</cn>\n"
+                                            "          </apply>\n"
+                                            "        </math>\n"
+                                            "      </reset_value>\n"
+                                            "    </reset>\n"
+                                            "  </component>\n"
+                                            "  <component name=\"component3\" id=\"duplicateId\">\n"
+                                            "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
+                                            "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
+                                            "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                            "      <apply>\n"
+                                            "        <eq/>\n"
+                                            "        <ci>variable4</ci>\n"
+                                            "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                                            "      </apply>\n"
+                                            "    </math>\n"
+                                            "  </component>\n"
+                                            "  <component name=\"component4\" id=\"duplicateId\">\n"
+                                            "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
+                                            "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
+                                            "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                            "      <apply>\n"
+                                            "        <eq/>\n"
+                                            "        <ci>variable4</ci>\n"
+                                            "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                                            "      </apply>\n"
+                                            "    </math>\n"
+                                            "  </component>\n"
+                                            "  <connection component_1=\"component2\" component_2=\"component3\" id=\"duplicateId\">\n"
+                                            "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId\"/>\n"
+                                            "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId\"/>\n"
+                                            "  </connection>\n"
+                                            "  <connection component_1=\"component2\" component_2=\"component4\" id=\"duplicateId\">\n"
+                                            "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId\"/>\n"
+                                            "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId\"/>\n"
+                                            "  </connection>\n"
+                                            "  <encapsulation id=\"duplicateId\">\n"
+                                            "    <component_ref component=\"component2\" id=\"duplicateId\">\n"
+                                            "      <component_ref component=\"component3\" id=\"duplicateId\"/>\n"
+                                            "    </component_ref>\n"
+                                            "  </encapsulation>\n"
+                                            "</model>\n";
+
+const std::string modelStringLotsOfDuplicateIds = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                                  "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"duplicateId2\" >\n"
+                                                  "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId1\">\n"
+                                                  "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"duplicateId4\"/>\n"
+                                                  "  </import>\n"
+                                                  "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId3\" >\n"
+                                                  "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"duplicateId2\" />\n"
+                                                  "  </import>\n"
+                                                  "  <units name=\"units2\" id=\"duplicateId1\">\n"
+                                                  "    <unit units=\"second\" id=\"duplicateId4\"/>\n"
+                                                  "  </units>\n"
+                                                  "  <units name=\"units3\" id=\"duplicateId3\"/>\n"
+                                                  "  <units name=\"blob\" id=\"duplicateId2\"/>\n"
+                                                  "  <component name=\"component2\" id=\"duplicateId1\">\n"
+                                                  "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"duplicateId4\"/>\n"
+                                                  "    <variable name=\"variable2\" units=\"units2\" id=\"duplicateId3\"/>\n"
+                                                  "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"duplicateId2\">\n"
+                                                  "      <test_value id=\"duplicateId1\">\n"
+                                                  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                                  "          <apply>\n"
+                                                  "            <eq/>\n"
+                                                  "            <ci>variable1</ci>\n"
+                                                  "            <cn cellml:units=\"units2\">3.4</cn>\n"
+                                                  "          </apply>\n"
+                                                  "        </math>\n"
+                                                  "      </test_value>\n"
+                                                  "      <reset_value id=\"duplicateId4\">\n"
+                                                  "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                                  "          <apply>\n"
+                                                  "            <eq/>\n"
+                                                  "            <ci>variable1</ci>\n"
+                                                  "            <cn cellml:units=\"units2\">9.0</cn>\n"
+                                                  "          </apply>\n"
+                                                  "        </math>\n"
+                                                  "      </reset_value>\n"
+                                                  "    </reset>\n"
+                                                  "  </component>\n"
+                                                  "  <component name=\"component3\" id=\"duplicateId3\">\n"
+                                                  "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId2\" />\n"
+                                                  "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId1\" />\n"
+                                                  "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                                  "      <apply>\n"
+                                                  "        <eq/>\n"
+                                                  "        <ci>variable4</ci>\n"
+                                                  "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                                                  "      </apply>\n"
+                                                  "    </math>\n"
+                                                  "  </component>\n"
+                                                  "  <component name=\"component4\" id=\"duplicateId4\">\n"
+                                                  "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId3\" />\n"
+                                                  "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId2\" />\n"
+                                                  "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                                  "      <apply>\n"
+                                                  "        <eq/>\n"
+                                                  "        <ci>variable4</ci>\n"
+                                                  "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                                                  "      </apply>\n"
+                                                  "    </math>\n"
+                                                  "  </component>\n"
+                                                  "  <connection component_1=\"component2\" component_2=\"component3\" id=\"duplicateId1\">\n"
+                                                  "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId4\"/>\n"
+                                                  "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId3\"/>\n"
+                                                  "  </connection>\n"
+                                                  "  <connection component_1=\"component2\" component_2=\"component4\" id=\"duplicateId2\">\n"
+                                                  "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId1\"/>\n"
+                                                  "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId4\"/>\n"
+                                                  "  </connection>\n"
+                                                  "  <encapsulation id=\"duplicateId3\">\n"
+                                                  "    <component_ref component=\"component2\" id=\"duplicateId2\">\n"
+                                                  "      <component_ref component=\"component3\" id=\"duplicateId1\"/>\n"
+                                                  "    </component_ref>\n"
+                                                  "  </encapsulation>\n"
+                                                  "</model>\n";
+
+const std::string modelStringNoIds = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+                                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+                                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
+                                     "  </import>\n"
+                                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+                                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+                                     "  </import>\n"
+                                     "  <units name=\"units2\">\n"
+                                     "    <unit units=\"second\"/>\n"
+                                     "  </units>\n"
+                                     "  <units name=\"units3\"/>\n"
+                                     "  <units name=\"blob\"/>\n"
+                                     "  <component name=\"component2\">\n"
+                                     "    <variable name=\"variable1\" units=\"units2\" interface=\"private\"/>\n"
+                                     "    <variable name=\"variable2\" units=\"units2\"/>\n"
+                                     "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
+                                     "      <test_value>\n"
+                                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                     "          <apply>\n"
+                                     "            <eq/>\n"
+                                     "            <ci>variable1</ci>\n"
+                                     "            <cn cellml:units=\"units2\">3.4</cn>\n"
+                                     "          </apply>\n"
+                                     "        </math>\n"
+                                     "      </test_value>\n"
+                                     "      <reset_value>\n"
+                                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                     "          <apply>\n"
+                                     "            <eq/>\n"
+                                     "            <ci>variable1</ci>\n"
+                                     "            <cn cellml:units=\"units2\">9.0</cn>\n"
+                                     "          </apply>\n"
+                                     "        </math>\n"
+                                     "      </reset_value>\n"
+                                     "    </reset>\n"
+                                     "  </component>\n"
+                                     "  <component name=\"component3\">\n"
+                                     "    <variable name=\"variable1\" units=\"units2\" interface=\"public\"/>\n"
+                                     "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"/>\n"
+                                     "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                     "      <apply>\n"
+                                     "        <eq/>\n"
+                                     "        <ci>variable4</ci>\n"
+                                     "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                                     "      </apply>\n"
+                                     "    </math>\n"
+                                     "  </component>\n"
+                                     "  <component name=\"component4\">\n"
+                                     "    <variable name=\"variable1\" units=\"units2\" interface=\"public\"/>\n"
+                                     "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"/>\n"
+                                     "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
+                                     "      <apply>\n"
+                                     "        <eq/>\n"
+                                     "        <ci>variable4</ci>\n"
+                                     "        <cn cellml:units=\"units2\">9.0</cn>\n"
+                                     "      </apply>\n"
+                                     "    </math>\n"
+                                     "  </component>\n"
+                                     "  <connection component_1=\"component2\" component_2=\"component3\">\n"
+                                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\"/>\n"
+                                     "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\"/>\n"
+                                     "  </connection>\n"
+                                     "  <connection component_1=\"component2\" component_2=\"component4\">\n"
+                                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\"/>\n"
+                                     "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\"/>\n"
+                                     "  </connection>\n"
+                                     "  <encapsulation>\n"
+                                     "    <component_ref component=\"component2\">\n"
+                                     "      <component_ref component=\"component3\"/>\n"
+                                     "    </component_ref>\n"
+                                     "  </encapsulation>\n"
+                                     "</model>\n";
+
+const std::string modelStringUniqueIds = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
+                                         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
+                                         "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
+                                         "  </import>\n"
+                                         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
+                                         "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
+                                         "  </import>\n"
+                                         "  <units name=\"units2\" id=\"units_2\">\n"
+                                         "    <unit units=\"second\" id=\"unit_1\"/>\n"
+                                         "  </units>\n"
+                                         "  <units name=\"units3\" id=\"units_3\"/>\n"
+                                         "  <units name=\"blob\" id=\"units_4\"/>\n"
+                                         "  <component name=\"component2\" id=\"component_2\">\n"
+                                         "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"variable_1\"/>\n"
+                                         "    <variable name=\"variable2\" units=\"units2\" id=\"variable_2\"/>\n"
+                                         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"reset_1\">\n"
+                                         "      <test_value id=\"test_value_1\">\n"
+                                         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_1\">\n"
+                                         "          <apply id=\"apply_1\">\n"
+                                         "            <eq id=\"eq_1\"/>\n"
+                                         "            <ci id=\"ci_1\">variable1</ci>\n"
+                                         "            <cn cellml:units=\"units2\" id=\"cn_1\">3.4</cn>\n"
+                                         "          </apply>\n"
+                                         "        </math>\n"
+                                         "      </test_value>\n"
+                                         "      <reset_value id=\"reset_value_1\">\n"
+                                         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_2\">\n"
+                                         "          <apply id=\"apply_2\">\n"
+                                         "            <eq id=\"eq_2\"/>\n"
+                                         "            <ci id=\"ci_2\">variable1</ci>\n"
+                                         "            <cn cellml:units=\"units2\" id=\"cn_2\">9.0</cn>\n"
+                                         "          </apply>\n"
+                                         "        </math>\n"
+                                         "      </reset_value>\n"
+                                         "    </reset>\n"
+                                         "  </component>\n"
+                                         "  <component name=\"component3\" id=\"component_3\">\n"
+                                         "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
+                                         "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"variable_4\"/>\n"
+                                         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_3\">\n"
+                                         "      <apply id=\"apply_3\">\n"
+                                         "        <eq id=\"eq_3\"/>\n"
+                                         "        <ci id=\"ci_3\">variable4</ci>\n"
+                                         "        <cn cellml:units=\"units2\" id=\"cn_3\">9.0</cn>\n"
+                                         "      </apply>\n"
+                                         "    </math>\n"
+                                         "  </component>\n"
+                                         "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
+                                         "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"map_variables_1\"/>\n"
+                                         "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"map_variables_2\"/>\n"
+                                         "  </connection>\n"
+                                         "  <encapsulation id=\"encapsulation_1\">\n"
+                                         "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
+                                         "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
+                                         "    </component_ref>\n"
+                                         "  </encapsulation>\n"
+                                         "</model>\n";
+
 TEST(Annotator, getEntityFromId)
 {
     auto model = libcellml::Model::create("model");
@@ -384,70 +665,18 @@ TEST(Annotator, castingOnRetrieval)
 
 TEST(Annotator, automaticIdsOnEverything)
 {
-    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
-                           "  </import>\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
-                           "  </import>\n"
-                           "  <units name=\"units2\">\n"
-                           "    <unit units=\"second\"/>\n"
-                           "  </units>\n"
-                           "  <units name=\"units3\"/>\n"
-                           "  <units name=\"blob\"/>\n"
-                           "  <component name=\"component2\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\"/>\n"
-                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
-                           "      <test_value>\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </test_value>\n"
-                           "      <reset_value>\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </reset_value>\n"
-                           "    </reset>\n"
-                           "  </component>\n"
-                           "  <component name=\"component3\">\n"
-                           "    <variable name=\"variable4\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component3\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable4\"/>\n"
-                           "  </connection>\n"
-                           "  <encapsulation>\n"
-                           "    <component_ref component=\"component2\">\n"
-                           "      <component_ref component=\"component3\"/>\n"
-                           "    </component_ref>\n"
-                           "  </encapsulation>\n"
-                           "</model>\n";
-
     auto expectedError = "The Annotator does not have any Model stored; no action has been taken.";
     auto annotator = libcellml::Annotator::create();
     auto parser = libcellml::Parser::create();
     auto printer = libcellml::Printer::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringNoIds);
+
+    auto c2v1 = model->component("component2")->variable("variable1");
+    auto c2v2 = model->component("component2")->variable("variable2");
+    auto c3v1 = model->component("component3")->variable("variable1");
+    auto c3v2 = model->component("component3")->variable("variable2");
+    auto c4v1 = model->component("component4")->variable("variable1");
+    auto c4v2 = model->component("component4")->variable("variable2");
 
     EXPECT_FALSE(annotator->assignAllIds());
     EXPECT_EQ(size_t(1), annotator->errorCount());
@@ -464,29 +693,23 @@ TEST(Annotator, automaticIdsOnEverything)
     EXPECT_EQ("b4da5a", model->units(2)->id());
     EXPECT_EQ("b4da5b", model->units(3)->id());
     EXPECT_EQ("b4da5c", model->units(1)->unitId(0));
-    EXPECT_EQ("b4da5d", model->component(0)->id());
-    EXPECT_EQ("b4da5e", model->component(1)->id());
-    EXPECT_EQ("b4da5f", model->component(1)->component(0)->id());
-    EXPECT_EQ("b4da60", model->component(1)->variable(0)->id());
-    EXPECT_EQ("b4da61", model->component(1)->variable(1)->id());
-    EXPECT_EQ("b4da62", model->component(1)->component(0)->variable(0)->id());
-    EXPECT_EQ("b4da63", model->component(1)->component(0)->variable(1)->id());
 
-    EXPECT_EQ("b4da64", model->component(1)->reset(0)->id());
-    EXPECT_EQ("b4da65", model->component(1)->reset(0)->resetValueId());
-    EXPECT_EQ("b4da66", model->component(1)->reset(0)->testValueId());
-
-    auto c2v1 = model->component("component2")->variable("variable1");
-    auto c2v2 = model->component("component2")->variable("variable2");
-    auto c3v4 = model->component("component3")->variable("variable4");
-    auto c3v2 = model->component("component3")->variable("variable2");
-    EXPECT_EQ("b4da67", libcellml::Variable::equivalenceConnectionId(c2v1, c3v2));
-    EXPECT_EQ("b4da68", libcellml::Variable::equivalenceConnectionId(c2v1, c3v4));
-    EXPECT_EQ("b4da69", libcellml::Variable::equivalenceMappingId(c2v1, c3v2));
-    EXPECT_EQ("b4da6a", libcellml::Variable::equivalenceMappingId(c2v1, c3v4));
-    EXPECT_EQ("b4da6b", model->component("component2")->encapsulationId());
-    EXPECT_EQ("b4da6c", model->component("component3")->encapsulationId());
-    EXPECT_EQ("b4da6d", model->encapsulationId());
+    EXPECT_EQ("b4da65", model->component("component2")->id());
+    EXPECT_EQ("b4da66", model->component("component2")->component(0)->id());
+    EXPECT_EQ("b4da67", model->component("component2")->variable(0)->id());
+    EXPECT_EQ("b4da68", model->component("component2")->variable(1)->id());
+    EXPECT_EQ("b4da69", model->component("component2")->component(0)->variable(0)->id());
+    EXPECT_EQ("b4da6a", model->component("component2")->component(0)->variable(1)->id());
+    EXPECT_EQ("b4da6b", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("b4da6c", model->component("component2")->reset(0)->resetValueId());
+    EXPECT_EQ("b4da6d", model->component("component2")->reset(0)->testValueId());
+    EXPECT_EQ("b4da6e", libcellml::Variable::equivalenceConnectionId(c2v1, c3v1));
+    EXPECT_EQ("b4da61", libcellml::Variable::equivalenceConnectionId(c2v1, c4v1));
+    EXPECT_EQ("b4da70", libcellml::Variable::equivalenceMappingId(c2v1, c3v1));
+    EXPECT_EQ("b4da71", libcellml::Variable::equivalenceMappingId(c2v2, c3v2));
+    EXPECT_EQ("b4da72", model->component("component2")->encapsulationId());
+    EXPECT_EQ("b4da73", model->component("component3")->encapsulationId());
+    EXPECT_EQ("b4da74", model->encapsulationId());
 }
 
 TEST(Annotator, automaticIdsComponents)
@@ -941,82 +1164,8 @@ TEST(Annotator, automaticIdsIssue)
 
 TEST(Annotator, automaticIdAllItemsNoId)
 {
-    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
-                           "  </import>\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
-                           "  </import>\n"
-                           "  <units name=\"units2\">\n"
-                           "    <unit units=\"second\"/>\n"
-                           "  </units>\n"
-                           "  <units name=\"units3\"/>\n"
-                           "  <units name=\"blob\"/>\n"
-                           "  <component name=\"component2\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\"/>\n"
-                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
-                           "      <test_value>\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </test_value>\n"
-                           "      <reset_value>\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </reset_value>\n"
-                           "    </reset>\n"
-                           "  </component>\n"
-                           "  <component name=\"component3\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <component name=\"component4\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"/>\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component3\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\"/>\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\"/>\n"
-                           "  </connection>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component4\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\"/>\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\"/>\n"
-                           "  </connection>\n"
-                           "  <encapsulation>\n"
-                           "    <component_ref component=\"component2\">\n"
-                           "      <component_ref component=\"component3\"/>\n"
-                           "    </component_ref>\n"
-                           "  </encapsulation>\n"
-                           "</model>\n";
-
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringNoIds);
     auto annotator = libcellml::Annotator::create();
     libcellml::VariablePair p1 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable1"));
     libcellml::VariablePair p2 = std::make_pair(model->component("component2")->variable("variable2"), model->component("component2")->component("component3")->variable("variable2"));
@@ -1079,82 +1228,8 @@ TEST(Annotator, automaticIdAllItemsNoId)
 
 TEST(Annotator, automaticIdAllItemsAllDuplicated)
 {
-    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"duplicateId\" >\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId\">\n"
-                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"duplicateId\"/>\n"
-                           "  </import>\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId\" >\n"
-                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"duplicateId\" />\n"
-                           "  </import>\n"
-                           "  <units name=\"units2\" id=\"duplicateId\">\n"
-                           "    <unit units=\"second\" id=\"duplicateId\"/>\n"
-                           "  </units>\n"
-                           "  <units name=\"units3\" id=\"duplicateId\"/>\n"
-                           "  <units name=\"blob\" id=\"duplicateId\"/>\n"
-                           "  <component name=\"component2\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"duplicateId\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\" id=\"duplicateId\"/>\n"
-                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"duplicateId\">\n"
-                           "      <test_value id=\"duplicateId\">\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </test_value>\n"
-                           "      <reset_value id=\"duplicateId\">\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </reset_value>\n"
-                           "    </reset>\n"
-                           "  </component>\n"
-                           "  <component name=\"component3\" id=\"duplicateId\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <component name=\"component4\" id=\"duplicateId\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component3\" id=\"duplicateId\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId\"/>\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId\"/>\n"
-                           "  </connection>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component4\" id=\"duplicateId\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId\"/>\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId\"/>\n"
-                           "  </connection>\n"
-                           "  <encapsulation id=\"duplicateId\">\n"
-                           "    <component_ref component=\"component2\" id=\"duplicateId\">\n"
-                           "      <component_ref component=\"component3\" id=\"duplicateId\"/>\n"
-                           "    </component_ref>\n"
-                           "  </encapsulation>\n"
-                           "</model>\n";
-
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringDuplicateIds);
     auto annotator = libcellml::Annotator::create();
 
     libcellml::VariablePair connection = std::make_pair(
@@ -1241,90 +1316,31 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
 
 TEST(Annotator, automaticIdAllItemsNoneDuplicated)
 {
-    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
-                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
-                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
-                     "  </import>\n"
-                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
-                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
-                     "  </import>\n"
-                     "  <units name=\"units2\" id=\"units_2\">\n"
-                     "    <unit units=\"second\" id=\"unit_1\"/>\n"
-                     "  </units>\n"
-                     "  <units name=\"units3\" id=\"units_3\"/>\n"
-                     "  <units name=\"blob\" id=\"units_4\"/>\n"
-                     "  <component name=\"component2\" id=\"component_2\">\n"
-                     "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"variable_1\"/>\n"
-                     "    <variable name=\"variable2\" units=\"units2\" id=\"variable_2\"/>\n"
-                     "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"reset_1\">\n"
-                     "      <test_value id=\"test_value_1\">\n"
-                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_1\">\n"
-                     "          <apply id=\"apply_1\">\n"
-                     "            <eq id=\"eq_1\"/>\n"
-                     "            <ci id=\"ci_1\">variable1</ci>\n"
-                     "            <cn cellml:units=\"units2\" id=\"cn_1\">3.4</cn>\n"
-                     "          </apply>\n"
-                     "        </math>\n"
-                     "      </test_value>\n"
-                     "      <reset_value id=\"reset_value_1\">\n"
-                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_2\">\n"
-                     "          <apply id=\"apply_2\">\n"
-                     "            <eq id=\"eq_2\"/>\n"
-                     "            <ci id=\"ci_2\">variable1</ci>\n"
-                     "            <cn cellml:units=\"units2\" id=\"cn_2\">9.0</cn>\n"
-                     "          </apply>\n"
-                     "        </math>\n"
-                     "      </reset_value>\n"
-                     "    </reset>\n"
-                     "  </component>\n"
-                     "  <component name=\"component3\" id=\"component_3\">\n"
-                     "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
-                     "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"variable_4\"/>\n"
-                     "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_3\">\n"
-                     "      <apply id=\"apply_3\">\n"
-                     "        <eq id=\"eq_3\"/>\n"
-                     "        <ci id=\"ci_3\">variable4</ci>\n"
-                     "        <cn cellml:units=\"units2\" id=\"cn_3\">9.0</cn>\n"
-                     "      </apply>\n"
-                     "    </math>\n"
-                     "  </component>\n"
-                     "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
-                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"map_variables_1\"/>\n"
-                     "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"map_variables_2\"/>\n"
-                     "  </connection>\n"
-                     "  <encapsulation id=\"encapsulation_1\">\n"
-                     "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
-                     "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
-                     "    </component_ref>\n"
-                     "  </encapsulation>\n"
-                     "</model>\n";
-
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
     libcellml::VariablePair connection = std::make_pair(
-        model->component(1)->variable(0),
-        model->component(1)->variable(0)->equivalentVariable(0));
+        model->component("component2")->variable(0),
+        model->component("component2")->variable(0)->equivalentVariable(0));
     libcellml::VariablePair mapping = std::make_pair(
-        model->component(1)->variable(1),
-        model->component(1)->variable(1)->equivalentVariable(0));
+        model->component("component2")->variable(1),
+        model->component("component2")->variable(1)->equivalentVariable(0));
     libcellml::UnitItem unit = std::make_pair(model->units(1), 0);
 
     libcellml::AnyItem itemComponent = std::make_pair(libcellml::Annotator::Type::COMPONENT, model->component(0));
-    libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::Annotator::Type::COMPONENT_REF, model->component(1));
+    libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::Annotator::Type::COMPONENT_REF, model->component("component2"));
     libcellml::AnyItem itemConnection = std::make_pair(libcellml::Annotator::Type::CONNECTION, connection);
     libcellml::AnyItem itemEncapsulation = std::make_pair(libcellml::Annotator::Type::ENCAPSULATION, model);
     libcellml::AnyItem itemImportSource = std::make_pair(libcellml::Annotator::Type::IMPORT, model->importSource(0));
     libcellml::AnyItem itemMapVariables = std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, mapping);
     libcellml::AnyItem itemModel = std::make_pair(libcellml::Annotator::Type::MODEL, model);
-    libcellml::AnyItem itemReset = std::make_pair(libcellml::Annotator::Type::RESET, model->component(1)->reset(0));
-    libcellml::AnyItem itemResetValue = std::make_pair(libcellml::Annotator::Type::RESET_VALUE, model->component(1)->reset(0));
-    libcellml::AnyItem itemTestValue = std::make_pair(libcellml::Annotator::Type::TEST_VALUE, model->component(1)->reset(0));
+    libcellml::AnyItem itemReset = std::make_pair(libcellml::Annotator::Type::RESET, model->component("component2")->reset(0));
+    libcellml::AnyItem itemResetValue = std::make_pair(libcellml::Annotator::Type::RESET_VALUE, model->component("component2")->reset(0));
+    libcellml::AnyItem itemTestValue = std::make_pair(libcellml::Annotator::Type::TEST_VALUE, model->component("component2")->reset(0));
     libcellml::AnyItem itemUnit = std::make_pair(libcellml::Annotator::Type::UNIT, unit);
     libcellml::AnyItem itemUnits = std::make_pair(libcellml::Annotator::Type::UNITS, model->units(1));
-    libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component(1)->variable(0));
+    libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0));
 
     annotator->build(model);
 
@@ -1358,90 +1374,31 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
 
 TEST(Annotator, automaticIdAllItemsWrongModel)
 {
-    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
-                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_1\">\n"
-                     "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"component_1\"/>\n"
-                     "  </import>\n"
-                     "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"import_2\">\n"
-                     "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"units_1\"/>\n"
-                     "  </import>\n"
-                     "  <units name=\"units2\" id=\"units_2\">\n"
-                     "    <unit units=\"second\" id=\"unit_1\"/>\n"
-                     "  </units>\n"
-                     "  <units name=\"units3\" id=\"units_3\"/>\n"
-                     "  <units name=\"blob\" id=\"units_4\"/>\n"
-                     "  <component name=\"component2\" id=\"component_2\">\n"
-                     "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"variable_1\"/>\n"
-                     "    <variable name=\"variable2\" units=\"units2\" id=\"variable_2\"/>\n"
-                     "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"reset_1\">\n"
-                     "      <test_value id=\"test_value_1\">\n"
-                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_1\">\n"
-                     "          <apply id=\"apply_1\">\n"
-                     "            <eq id=\"eq_1\"/>\n"
-                     "            <ci id=\"ci_1\">variable1</ci>\n"
-                     "            <cn cellml:units=\"units2\" id=\"cn_1\">3.4</cn>\n"
-                     "          </apply>\n"
-                     "        </math>\n"
-                     "      </test_value>\n"
-                     "      <reset_value id=\"reset_value_1\">\n"
-                     "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_2\">\n"
-                     "          <apply id=\"apply_2\">\n"
-                     "            <eq id=\"eq_2\"/>\n"
-                     "            <ci id=\"ci_2\">variable1</ci>\n"
-                     "            <cn cellml:units=\"units2\" id=\"cn_2\">9.0</cn>\n"
-                     "          </apply>\n"
-                     "        </math>\n"
-                     "      </reset_value>\n"
-                     "    </reset>\n"
-                     "  </component>\n"
-                     "  <component name=\"component3\" id=\"component_3\">\n"
-                     "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"variable_3\"/>\n"
-                     "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"variable_4\"/>\n"
-                     "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" id=\"math_3\">\n"
-                     "      <apply id=\"apply_3\">\n"
-                     "        <eq id=\"eq_3\"/>\n"
-                     "        <ci id=\"ci_3\">variable4</ci>\n"
-                     "        <cn cellml:units=\"units2\" id=\"cn_3\">9.0</cn>\n"
-                     "      </apply>\n"
-                     "    </math>\n"
-                     "  </component>\n"
-                     "  <connection component_1=\"component2\" component_2=\"component3\" id=\"connection_1\">\n"
-                     "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"map_variables_1\"/>\n"
-                     "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"map_variables_2\"/>\n"
-                     "  </connection>\n"
-                     "  <encapsulation id=\"encapsulation_1\">\n"
-                     "    <component_ref component=\"component2\" id=\"component_ref_1\">\n"
-                     "      <component_ref component=\"component3\" id=\"component_ref_2\"/>\n"
-                     "    </component_ref>\n"
-                     "  </encapsulation>\n"
-                     "</model>\n";
-
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
     libcellml::VariablePair connection = std::make_pair(
-        model->component(1)->variable(0)->equivalentVariable(0),
-        model->component(1)->variable(0));
+        model->component("component2")->variable(0)->equivalentVariable(0),
+        model->component("component2")->variable(0));
     libcellml::VariablePair mapping = std::make_pair(
-        model->component(1)->variable(1),
-        model->component(1)->variable(1)->equivalentVariable(0));
+        model->component("component2")->variable(1),
+        model->component("component2")->variable(1)->equivalentVariable(0));
     libcellml::UnitItem unit = std::make_pair(model->units(1), 0);
 
     libcellml::AnyItem itemComponent = std::make_pair(libcellml::Annotator::Type::COMPONENT, model->component(0));
-    libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::Annotator::Type::COMPONENT_REF, model->component(1));
+    libcellml::AnyItem itemComponentRef = std::make_pair(libcellml::Annotator::Type::COMPONENT_REF, model->component("component2"));
     libcellml::AnyItem itemConnection = std::make_pair(libcellml::Annotator::Type::CONNECTION, connection);
     libcellml::AnyItem itemEncapsulation = std::make_pair(libcellml::Annotator::Type::ENCAPSULATION, model);
     libcellml::AnyItem itemImportSource = std::make_pair(libcellml::Annotator::Type::IMPORT, model->importSource(0));
     libcellml::AnyItem itemMapVariables = std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, mapping);
     libcellml::AnyItem itemModel = std::make_pair(libcellml::Annotator::Type::MODEL, model);
-    libcellml::AnyItem itemReset = std::make_pair(libcellml::Annotator::Type::RESET, model->component(1)->reset(0));
-    libcellml::AnyItem itemResetValue = std::make_pair(libcellml::Annotator::Type::RESET_VALUE, model->component(1)->reset(0));
-    libcellml::AnyItem itemTestValue = std::make_pair(libcellml::Annotator::Type::TEST_VALUE, model->component(1)->reset(0));
+    libcellml::AnyItem itemReset = std::make_pair(libcellml::Annotator::Type::RESET, model->component("component2")->reset(0));
+    libcellml::AnyItem itemResetValue = std::make_pair(libcellml::Annotator::Type::RESET_VALUE, model->component("component2")->reset(0));
+    libcellml::AnyItem itemTestValue = std::make_pair(libcellml::Annotator::Type::TEST_VALUE, model->component("component2")->reset(0));
     libcellml::AnyItem itemUnit = std::make_pair(libcellml::Annotator::Type::UNIT, unit);
     libcellml::AnyItem itemUnits = std::make_pair(libcellml::Annotator::Type::UNITS, model->units(1));
-    libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component(1)->variable(0));
+    libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0));
 
     // Make a different model and build the annotator around that.
     auto model2 = libcellml::Model::create();
@@ -1465,67 +1422,8 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
 
 TEST(Annotator, automaticIdAllItemsEntityType)
 {
-    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\"  >\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" >\n"
-                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
-                           "  </import>\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\"  >\n"
-                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"  />\n"
-                           "  </import>\n"
-                           "  <units name=\"units2\" >\n"
-                           "    <unit units=\"second\" />\n"
-                           "  </units>\n"
-                           "  <units name=\"units3\" />\n"
-                           "  <units name=\"blob\" />\n"
-                           "  <component name=\"component2\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" />\n"
-                           "    <variable name=\"variable2\" units=\"units2\" />\n"
-                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" >\n"
-                           "      <test_value >\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </test_value>\n"
-                           "      <reset_value >\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </reset_value>\n"
-                           "    </reset>\n"
-                           "  </component>\n"
-                           "  <component name=\"component3\" >\n"
-                           "    <variable name=\"variable4\" units=\"units2\" interface=\"public\"  />\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\"  />\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component3\" >\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" />\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable4\" />\n"
-                           "  </connection>\n"
-                           "  <encapsulation >\n"
-                           "    <component_ref component=\"component2\" >\n"
-                           "      <component_ref component=\"component3\" />\n"
-                           "    </component_ref>\n"
-                           "  </encapsulation>\n"
-                           "</model>\n";
-
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringNoIds);
     auto annotator = libcellml::Annotator::create();
 
     libcellml::VariablePair connection = std::make_pair(
@@ -1542,8 +1440,8 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::COMPONENT, model->component(0)));
     EXPECT_EQ("b4da55", model->component(0)->id());
 
-    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::COMPONENT_REF, model->component(1)));
-    EXPECT_EQ("b4da56", model->component(1)->encapsulationId());
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::COMPONENT_REF, model->component("component2")));
+    EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
 
     EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::CONNECTION, connection));
     EXPECT_EQ("b4da57", libcellml::Variable::equivalenceConnectionId(connection.first, connection.second));
@@ -1560,14 +1458,14 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::MODEL, model));
     EXPECT_EQ("b4da5b", model->id());
 
-    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::RESET, model->component(1)->reset(0)));
-    EXPECT_EQ("b4da5c", model->component(1)->reset(0)->id());
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::RESET, model->component("component2")->reset(0)));
+    EXPECT_EQ("b4da5c", model->component("component2")->reset(0)->id());
 
-    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::RESET_VALUE, model->component(1)->reset(0)));
-    EXPECT_EQ("b4da5d", model->component(1)->reset(0)->resetValueId());
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::RESET_VALUE, model->component("component2")->reset(0)));
+    EXPECT_EQ("b4da5d", model->component("component2")->reset(0)->resetValueId());
 
-    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::TEST_VALUE, model->component(1)->reset(0)));
-    EXPECT_EQ("b4da5e", model->component(1)->reset(0)->testValueId());
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::TEST_VALUE, model->component("component2")->reset(0)));
+    EXPECT_EQ("b4da5e", model->component("component2")->reset(0)->testValueId());
 
     EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::UNIT, unit));
     EXPECT_EQ("b4da5f", model->units(1)->unitId(0));
@@ -1575,8 +1473,8 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::UNITS, model->units(1)));
     EXPECT_EQ("b4da60", model->units(1)->id());
 
-    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::VARIABLE, model->component(1)->variable(0)));
-    EXPECT_EQ("b4da61", model->component(1)->variable(0)->id());
+    EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0)));
+    EXPECT_EQ("b4da61", model->component("component2")->variable(0)->id());
 
     // For coverage doing the other pair combo too.
     libcellml::Variable::setEquivalenceConnectionId(connection.first, connection.second, "");
@@ -1594,92 +1492,16 @@ TEST(Annotator, automaticIdAllItemsEntityType)
 
     EXPECT_TRUE(annotator->assignId(libcellml::Annotator::Type::MAP_VARIABLES, mapping2));
     EXPECT_EQ("b4da63", libcellml::Variable::equivalenceMappingId(mapping2.first, mapping2.second));
-
-
 }
 
-TEST(Annotator, clearAllIds){
-        const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"duplicateId\" >\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId\">\n"
-                           "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"duplicateId\"/>\n"
-                           "  </import>\n"
-                           "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"duplicateId\" >\n"
-                           "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"duplicateId\" />\n"
-                           "  </import>\n"
-                           "  <units name=\"units2\" id=\"duplicateId\">\n"
-                           "    <unit units=\"second\" id=\"duplicateId\"/>\n"
-                           "  </units>\n"
-                           "  <units name=\"units3\" id=\"duplicateId\"/>\n"
-                           "  <units name=\"blob\" id=\"duplicateId\"/>\n"
-                           "  <component name=\"component2\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"private\" id=\"duplicateId\"/>\n"
-                           "    <variable name=\"variable2\" units=\"units2\" id=\"duplicateId\"/>\n"
-                           "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"duplicateId\">\n"
-                           "      <test_value id=\"duplicateId\">\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">3.4</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </test_value>\n"
-                           "      <reset_value id=\"duplicateId\">\n"
-                           "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "          <apply>\n"
-                           "            <eq/>\n"
-                           "            <ci>variable1</ci>\n"
-                           "            <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "          </apply>\n"
-                           "        </math>\n"
-                           "      </reset_value>\n"
-                           "    </reset>\n"
-                           "  </component>\n"
-                           "  <component name=\"component3\" id=\"duplicateId\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <component name=\"component4\" id=\"duplicateId\">\n"
-                           "    <variable name=\"variable1\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <variable name=\"variable2\" units=\"units2\" interface=\"public\" id=\"duplicateId\" />\n"
-                           "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\">\n"
-                           "      <apply>\n"
-                           "        <eq/>\n"
-                           "        <ci>variable4</ci>\n"
-                           "        <cn cellml:units=\"units2\">9.0</cn>\n"
-                           "      </apply>\n"
-                           "    </math>\n"
-                           "  </component>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component3\" id=\"duplicateId\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId\"/>\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId\"/>\n"
-                           "  </connection>\n"
-                           "  <connection component_1=\"component2\" component_2=\"component4\" id=\"duplicateId\">\n"
-                           "    <map_variables variable_1=\"variable1\" variable_2=\"variable1\" id=\"duplicateId\"/>\n"
-                           "    <map_variables variable_1=\"variable2\" variable_2=\"variable2\" id=\"duplicateId\"/>\n"
-                           "  </connection>\n"
-                           "  <encapsulation id=\"duplicateId\">\n"
-                           "    <component_ref component=\"component2\" id=\"duplicateId\">\n"
-                           "      <component_ref component=\"component3\" id=\"duplicateId\"/>\n"
-                           "    </component_ref>\n"
-                           "  </encapsulation>\n"
-                           "</model>\n";
-
+TEST(Annotator, clearAllIds)
+{
     std::vector<std::string> expectedErrors = {
         "The Annotator does not have a model stored; no action has been taken.",
-        "Could not find an item with an id of 'duplicateId' in the model."
-    };
+        "Could not find an item with an id of 'duplicateId' in the model."};
 
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(in);
+    auto model = parser->parseModel(modelStringDuplicateIds);
     auto annotator = libcellml::Annotator::create();
 
     annotator->clearAllIds();
@@ -1692,5 +1514,133 @@ TEST(Annotator, clearAllIds){
     auto retrievalError = annotator->item("duplicateId");
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, retrievalError.first);
     EXPECT_EQ(expectedErrors[1], std::any_cast<libcellml::IssuePtr>(retrievalError.second)->description());
+}
 
+TEST(Annotator, listDuplicateIds)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringLotsOfDuplicateIds);
+    auto annotator = libcellml::Annotator::create();
+    std::vector<std::string> expectedIds = {"duplicateId1", "duplicateId2", "duplicateId3", "duplicateId4"};
+
+    annotator->build(model);
+    auto ids = annotator->duplicateIds();
+    EXPECT_EQ(expectedIds, ids);
+}
+
+TEST(Annotator, retrieveDuplicateIds)
+{
+    std::vector<std::string> ids = {"duplicateId1", "duplicateId2", "duplicateId3", "duplicateId4"};
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringLotsOfDuplicateIds);
+
+    auto c2v1 = model->component("component2")->variable("variable1");
+    auto c2v2 = model->component("component2")->variable("variable2");
+    auto c3v1 = model->component("component2")->component("component3")->variable("variable1");
+    auto c3v2 = model->component("component2")->component("component3")->variable("variable2");
+    auto c4v1 = model->component("component4")->variable("variable1");
+    auto c4v2 = model->component("component4")->variable("variable2");
+
+    std::map<std::string, std::vector<libcellml::AnyItem>> expectedItems = {
+        {"duplicateId1", {
+                             std::make_pair(libcellml::Annotator::Type::UNITS, std::any(model->units("units2"))),
+                             std::make_pair(libcellml::Annotator::Type::IMPORT, std::any(model->importSource(0))),
+                             std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, std::any(libcellml::VariablePair(c4v1, c2v1))),
+                             std::make_pair(libcellml::Annotator::Type::COMPONENT, std::any(model->component("component2"))),
+                             std::make_pair(libcellml::Annotator::Type::CONNECTION, std::any(libcellml::VariablePair(c2v1, c3v1))),
+                             std::make_pair(libcellml::Annotator::Type::TEST_VALUE, std::any(model->component("component2")->reset(0))),
+                             std::make_pair(libcellml::Annotator::Type::COMPONENT_REF, std::any(model->component("component2")->component("component3"))),
+                             std::make_pair(libcellml::Annotator::Type::VARIABLE, std::any(model->component("component2")->component("component3")->variable("variable2"))),
+                         }},
+        {"duplicateId2", {
+                             std::make_pair(libcellml::Annotator::Type::MODEL, std::any(model)),
+                             std::make_pair(libcellml::Annotator::Type::UNITS, std::any(model->units("units1"))),
+                             std::make_pair(libcellml::Annotator::Type::UNITS, std::any(model->units("blob"))),
+                             std::make_pair(libcellml::Annotator::Type::CONNECTION, std::any(libcellml::VariablePair(c4v2, c2v2))),
+                             std::make_pair(libcellml::Annotator::Type::VARIABLE, std::any(c4v2)),
+                             std::make_pair(libcellml::Annotator::Type::COMPONENT_REF, std::any(model->component("component2"))),
+                             std::make_pair(libcellml::Annotator::Type::RESET, std::any(model->component("component2")->reset(0))),
+                             std::make_pair(libcellml::Annotator::Type::VARIABLE, std::any(c3v1)),
+                         }},
+        {"duplicateId3", {
+                             std::make_pair(libcellml::Annotator::Type::IMPORT, std::any(model->importSource(1))),
+                             std::make_pair(libcellml::Annotator::Type::UNITS, std::any(model->units("units3"))),
+                             std::make_pair(libcellml::Annotator::Type::VARIABLE, std::any(c4v1)),
+                             std::make_pair(libcellml::Annotator::Type::VARIABLE, std::any(c2v2)),
+                             std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, std::any(libcellml::VariablePair(c2v2, c4v2))),
+                             std::make_pair(libcellml::Annotator::Type::COMPONENT, std::any(model->component("component2")->component("component3"))),
+                             std::make_pair(libcellml::Annotator::Type::ENCAPSULATION, std::any(model)),
+                         }},
+        {"duplicateId4", {
+                             std::make_pair(libcellml::Annotator::Type::UNIT, std::any(libcellml::UnitItem(std::make_pair(model->units("units2"), 0)))),
+                             std::make_pair(libcellml::Annotator::Type::COMPONENT, std::any(model->component("component1"))),
+                             std::make_pair(libcellml::Annotator::Type::COMPONENT, std::any(model->component("component4"))),
+                             std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, std::any(libcellml::VariablePair(c2v1, c3v1))),
+                             std::make_pair(libcellml::Annotator::Type::VARIABLE, std::any(c2v1)),
+                             std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, std::any(libcellml::VariablePair(c2v2, c4v2))),
+                             std::make_pair(libcellml::Annotator::Type::RESET_VALUE, std::any(model->component("component2")->reset(0))),
+                         }},
+
+    };
+
+    libcellml::VariablePair pair;
+    libcellml::VariablePair reversePair;
+    libcellml::VariablePair testPair;
+
+    auto annotator = libcellml::Annotator::create();
+    annotator->build(model);
+
+    EXPECT_EQ(ids, annotator->duplicateIds());
+
+    for (const auto &id : ids) {
+        std::vector<libcellml::AnyItem> items = annotator->items(id);
+        size_t index = 0;
+
+        for (const auto &item : items) {
+            EXPECT_EQ(expectedItems[id][index].first, item.first);
+            switch (item.first) {
+            case libcellml::Annotator::Type::COMPONENT:
+            case libcellml::Annotator::Type::COMPONENT_REF:
+                EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ComponentPtr>(item.second));
+                break;
+            case libcellml::Annotator::Type::CONNECTION:
+            case libcellml::Annotator::Type::MAP_VARIABLES:
+                pair = std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second);
+                testPair = std::any_cast<libcellml::VariablePair>(item.second);
+                // TODO not sure how best to test these.
+                // EXPECT_TRUE(((pair.first == testPair.first) && (pair.second == testPair.second)) || ((pair.second == testPair.first) && (pair.first == testPair.second)));
+
+                // EXPECT_TRUE(((std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).first == std::any_cast<libcellml::VariablePair>(item.second).first) &&
+                // (std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).second == std::any_cast<libcellml::VariablePair>(item.second).second))||
+                // ((std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).second == std::any_cast<libcellml::VariablePair>(item.second).first) &&
+                // (std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).first == std::any_cast<libcellml::VariablePair>(item.second).second)));
+                break;
+            case libcellml::Annotator::Type::ENCAPSULATION:
+                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ModelPtr>(item.second));
+                break;
+            case libcellml::Annotator::Type::IMPORT:
+                EXPECT_EQ(std::any_cast<libcellml::ImportSourcePtr>(expectedItems[id][index].second), std::any_cast<libcellml::ImportSourcePtr>(item.second));
+                break;
+            case libcellml::Annotator::Type::MODEL:
+                EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ModelPtr>(item.second));
+                break;
+            case libcellml::Annotator::Type::RESET:
+            case libcellml::Annotator::Type::RESET_VALUE:
+            case libcellml::Annotator::Type::TEST_VALUE:
+                EXPECT_EQ(std::any_cast<libcellml::ResetPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ResetPtr>(item.second));
+                break;
+            case libcellml::Annotator::Type::UNIT:
+                EXPECT_EQ(std::any_cast<libcellml::UnitItem>(expectedItems[id][index].second), std::any_cast<libcellml::UnitItem>(item.second));
+                break;
+            case libcellml::Annotator::Type::UNITS:
+                EXPECT_EQ(std::any_cast<libcellml::UnitsPtr>(expectedItems[id][index].second), std::any_cast<libcellml::UnitsPtr>(item.second));
+                break;
+            case libcellml::Annotator::Type::VARIABLE:
+                EXPECT_EQ(std::any_cast<libcellml::VariablePtr>(expectedItems[id][index].second), std::any_cast<libcellml::VariablePtr>(item.second));
+                break;
+            }
+            ++index;
+        }
+    }
 }

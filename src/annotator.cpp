@@ -271,12 +271,10 @@ AnyItem Annotator::item(const std::string &id)
     }
 
     // Check whether the id has been duplicated in the model.
-    if (mPimpl->mIdList.count(id) > 1) {
-        auto issue = libcellml::Issue::create();
-        issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model so a unique item cannot be located.");
-        issue->setLevel(libcellml::Issue::Level::WARNING);
-        addIssue(issue);
-        item = std::make_pair(Annotator::Type::ISSUE, issue);
+    if (!isUnique(id, true)) {
+        // Get the issue created inside the isUnique function and return it.
+        auto i = issue(issueCount() - 1);
+        item = std::make_pair(Annotator::Type::ISSUE, i);
         return item;
     }
 
@@ -298,8 +296,44 @@ AnyItem Annotator::item(const std::string &id)
     return it->second;
 }
 
+bool Annotator::isUnique(const std::string &id, bool raiseError = false)
+{
+    if (mPimpl->mIdList.count(id) > 1) {
+        if (raiseError) {
+            auto issue = libcellml::Issue::create();
+            issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model so a unique item cannot be located.");
+            issue->setLevel(libcellml::Issue::Level::WARNING);
+            addIssue(issue);
+        }
+        return false;
+    }
+    return true;
+}
+
+std::vector<AnyItem> Annotator::items(const std::string &id)
+{
+    std::vector<AnyItem> items;
+    auto range = mPimpl->mIdList.equal_range(id);
+    for (auto it = range.first; it != range.second; ++it) {
+        items.push_back(it->second);
+    }
+    return items;
+}
+
+std::vector<std::string> Annotator::duplicateIds()
+{
+    std::vector<std::string> ids;
+    for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
+        ids.push_back(i->first);
+    }
+    return ids;
+}
+
 ComponentPtr Annotator::component(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ComponentPtr>(i.second);
@@ -311,6 +345,9 @@ ComponentPtr Annotator::component(const std::string &id)
 
 VariablePtr Annotator::variable(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<VariablePtr>(i.second);
@@ -322,6 +359,9 @@ VariablePtr Annotator::variable(const std::string &id)
 
 ModelPtr Annotator::model(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ModelPtr>(i.second);
@@ -333,6 +373,9 @@ ModelPtr Annotator::model(const std::string &id)
 
 UnitsPtr Annotator::units(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<UnitsPtr>(i.second);
@@ -344,6 +387,9 @@ UnitsPtr Annotator::units(const std::string &id)
 
 ImportSourcePtr Annotator::importSource(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ImportSourcePtr>(i.second);
@@ -355,6 +401,9 @@ ImportSourcePtr Annotator::importSource(const std::string &id)
 
 ResetPtr Annotator::reset(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ResetPtr>(i.second);
@@ -366,6 +415,9 @@ ResetPtr Annotator::reset(const std::string &id)
 
 VariablePair Annotator::connection(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return std::make_pair(nullptr, nullptr);
+    }
     auto i = item(id);
     try {
         return std::any_cast<VariablePair>(i.second);
@@ -377,6 +429,9 @@ VariablePair Annotator::connection(const std::string &id)
 
 VariablePair Annotator::mapVariables(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return std::make_pair(nullptr, nullptr);
+    }
     auto i = item(id);
     try {
         return std::any_cast<VariablePair>(i.second);
@@ -388,6 +443,9 @@ VariablePair Annotator::mapVariables(const std::string &id)
 
 UnitItem Annotator::unit(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return std::make_pair(nullptr, 0);
+    }
     auto i = item(id);
     try {
         return std::any_cast<UnitItem>(i.second);
@@ -399,6 +457,9 @@ UnitItem Annotator::unit(const std::string &id)
 
 ComponentPtr Annotator::componentRef(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ComponentPtr>(i.second);
@@ -410,6 +471,9 @@ ComponentPtr Annotator::componentRef(const std::string &id)
 
 ResetPtr Annotator::testValue(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ResetPtr>(i.second);
@@ -421,6 +485,9 @@ ResetPtr Annotator::testValue(const std::string &id)
 
 ResetPtr Annotator::resetValue(const std::string &id)
 {
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
     auto i = item(id);
     try {
         return std::any_cast<ResetPtr>(i.second);
@@ -456,9 +523,9 @@ void Annotator::clearAllIds()
     mPimpl->mModel->setEncapsulationId("");
 
     mPimpl->mIdList.clear();
-    // Set to true even though it hasn't been built, as technically the library 
+    // Set to true even though it hasn't been built, as technically the library
     // is up-to-date with the model, even though it's empty.
-    mPimpl->isBuilt = true;  
+    mPimpl->isBuilt = true;
     removeAllIssues();
 }
 
@@ -1540,6 +1607,32 @@ bool Annotator::assignId(Annotator::Type type, const VariablePtr &item1, const V
         return assignConnectionId(item);
     }
     return false;
+}
+
+static const std::map<Annotator::Type, std::string> typeToString = {
+    {Annotator::Type::COMPONENT, "component"},
+    {Annotator::Type::COMPONENT_REF, "component_ref"},
+    {Annotator::Type::CONNECTION, "connection"},
+    {Annotator::Type::ENCAPSULATION, "encapsulation"},
+    {Annotator::Type::IMPORT, "import"},
+    {Annotator::Type::MAP_VARIABLES, "map_variables"},
+    {Annotator::Type::MODEL, "model"},
+    {Annotator::Type::RESET, "reset"},
+    {Annotator::Type::RESET_VALUE, "reset_value"},
+    {Annotator::Type::TEST_VALUE, "test_value"},
+    {Annotator::Type::UNIT, "unit"},
+    {Annotator::Type::UNITS, "units"},
+    {Annotator::Type::VARIABLE, "variable"},
+    {Annotator::Type::ISSUE, "issue"}};
+
+std::string Annotator::typeString(const Annotator::Type &type)
+{
+    return typeToString.at(type);
+}
+
+std::string Annotator::typeString(const std::uint64_t &type)
+{
+    return typeToString.at(static_cast<Annotator::Type>(type));
 }
 
 } // namespace libcellml
