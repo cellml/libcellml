@@ -1595,7 +1595,6 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 // Determine the equation's dependencies.
 
                 std::vector<VariablePtr> variableDependencies;
-                std::vector<AnalyserEquationPtr> equationDependencies;
 
                 if (type == AnalyserEquation::Type::EXTERNAL) {
                     variableDependencies = externalVariables.find(internalEquation->mVariable)->second;
@@ -1604,6 +1603,8 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                         variableDependencies.push_back(dependency->mVariable);
                     }
                 }
+
+                std::vector<AnalyserEquationPtr> equationDependencies;
 
                 for (const auto &variableDependency : variableDependencies) {
                     auto equationDependency = equationMappings[variableDependency];
