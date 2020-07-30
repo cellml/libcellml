@@ -27,11 +27,7 @@ void AnalyserEquation::AnalyserEquationImpl::populate(AnalyserEquation::Type typ
 {
     mType = type;
     mAst = ast;
-
-    for (const auto &dependency : dependencies) {
-        mDependencies.push_back(dependency);
-    }
-
+    mDependencies = dependencies;
     mVariable = variable;
 }
 
@@ -57,13 +53,7 @@ AnalyserEquationAstPtr AnalyserEquation::ast() const
 
 std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
 {
-    std::vector<AnalyserEquationPtr> res;
-
-    for (const auto &dependency : mPimpl->mDependencies) {
-        res.push_back(dependency.lock());
-    }
-
-    return res;
+    return mPimpl->mDependencies;
 }
 
 bool AnalyserEquation::isStateRateBased() const
