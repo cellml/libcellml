@@ -21,13 +21,13 @@ class VariableType(Enum):
 VOI_INFO = {"name": "time", "units": "millisecond", "component": "environment"}
 
 STATE_INFO = [
-    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate"},
     {"name": "h", "units": "dimensionless", "component": "sodium_channel_h_gate"},
-    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"}
+    {"name": "n", "units": "dimensionless", "component": "potassium_channel_n_gate"},
+    {"name": "V", "units": "millivolt", "component": "membrane"}
 ]
 
 VARIABLE_INFO = [
-    {"name": "V", "units": "millivolt", "component": "membrane", "type": VariableType.EXTERNAL},
+    {"name": "m", "units": "dimensionless", "component": "sodium_channel_m_gate", "type": VariableType.EXTERNAL},
     {"name": "g_L", "units": "milliS_per_cm2", "component": "leakage_current", "type": VariableType.CONSTANT},
     {"name": "Cm", "units": "microF_per_cm2", "component": "membrane", "type": VariableType.CONSTANT},
     {"name": "E_R", "units": "millivolt", "component": "membrane", "type": VariableType.CONSTANT},
@@ -75,9 +75,9 @@ def initialise_states_and_constants(states, variables):
     variables[3] = 0.0
     variables[4] = 36.0
     variables[5] = 120.0
-    states[0] = 0.05
-    states[1] = 0.6
-    states[2] = 0.325
+    states[0] = 0.6
+    states[1] = 0.325
+    states[2] = 0.0
 
 
 def compute_computed_constants(variables):
@@ -87,20 +87,27 @@ def compute_computed_constants(variables):
 
 
 def compute_rates(voi, states, rates, variables, external_variable):
+    variables[13] = 0.07*exp(states[2]/20.0)
+    variables[14] = 1.0/(exp((states[2]+30.0)/10.0)+1.0)
+    rates[0] = variables[13]*(1.0-states[0])-variables[14]*states[0]
+    variables[17] = 0.01*(states[2]+10.0)/(exp((states[2]+10.0)/10.0)-1.0)
+    variables[18] = 0.125*exp(states[2]/80.0)
+    rates[1] = variables[17]*(1.0-states[1])-variables[18]*states[1]
+    variables[6] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
+    variables[8] = variables[1]*(states[2]-variables[7])
+    variables[16] = variables[4]*pow(states[1], 4.0)*(states[2]-variables[15])
     variables[0] = external_variable(voi, states, rates, variables, 0)
-    variables[11] = 0.1*(variables[0]+25.0)/(exp((variables[0]+25.0)/10.0)-1.0)
-    variables[12] = 4.0*exp(variables[0]/18.0)
-    rates[0] = variables[11]*(1.0-states[0])-variables[12]*states[0]
-    variables[13] = 0.07*exp(variables[0]/20.0)
-    variables[14] = 1.0/(exp((variables[0]+30.0)/10.0)+1.0)
-    rates[1] = variables[13]*(1.0-states[1])-variables[14]*states[1]
-    variables[17] = 0.01*(variables[0]+10.0)/(exp((variables[0]+10.0)/10.0)-1.0)
-    variables[18] = 0.125*exp(variables[0]/80.0)
-    rates[2] = variables[17]*(1.0-states[2])-variables[18]*states[2]
+    variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9])
+    rates[2] = -(-variables[6]+variables[10]+variables[16]+variables[8])/variables[2]
 
 
 def compute_variables(voi, states, rates, variables, external_variable):
-    variables[6] = -20.0 if and_func(geq_func(voi, 10.0), leq_func(voi, 10.5)) else 0.0
-    variables[8] = variables[1]*(variables[0]-variables[7])
-    variables[10] = variables[5]*pow(states[0], 3.0)*states[1]*(variables[0]-variables[9])
-    variables[16] = variables[4]*pow(states[2], 4.0)*(variables[0]-variables[15])
+    variables[8] = variables[1]*(states[2]-variables[7])
+    variables[10] = variables[5]*pow(variables[0], 3.0)*states[0]*(states[2]-variables[9])
+    variables[11] = 0.1*(states[2]+25.0)/(exp((states[2]+25.0)/10.0)-1.0)
+    variables[12] = 4.0*exp(states[2]/18.0)
+    variables[13] = 0.07*exp(states[2]/20.0)
+    variables[14] = 1.0/(exp((states[2]+30.0)/10.0)+1.0)
+    variables[16] = variables[4]*pow(states[1], 4.0)*(states[2]-variables[15])
+    variables[17] = 0.01*(states[2]+10.0)/(exp((states[2]+10.0)/10.0)-1.0)
+    variables[18] = 0.125*exp(states[2]/80.0)
