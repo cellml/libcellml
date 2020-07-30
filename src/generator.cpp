@@ -2128,7 +2128,6 @@ void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::
         }
 
         std::string methodBody;
-
         auto equations = mModel->equations();
         std::vector<AnalyserEquationPtr> newRemainingEquations {std::begin(equations), std::end(equations)};
 
