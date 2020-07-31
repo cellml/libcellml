@@ -18,6 +18,7 @@ limitations under the License.
 
 namespace libcellml {
 
+using AnalyserEquationWeakPtr = std::weak_ptr<AnalyserEquation>; /**< Type definition for weak analyser equation pointer. */
 using AnalyserVariableWeakPtr = std::weak_ptr<AnalyserVariable>; /**< Type definition for weak analyser variable pointer. */
 
 /**
@@ -29,7 +30,7 @@ struct AnalyserEquation::AnalyserEquationImpl
 {
     AnalyserEquation::Type mType = AnalyserEquation::Type::ALGEBRAIC;
     AnalyserEquationAstPtr mAst;
-    std::vector<AnalyserEquationPtr> mDependencies;
+    std::vector<AnalyserEquationWeakPtr> mDependencies;
     bool mIsStateRateBased = false;
     AnalyserVariableWeakPtr mVariable;
 
