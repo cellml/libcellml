@@ -1624,6 +1624,17 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 mModel->mPimpl->mEquations.push_back(equation);
             }
 
+            // Clean up our equations' dependencies.
+            // Note: indeed, some equations may have a dependency on one or
+            //       several true (i.e. non-computed) constants, for which there
+            //       are no proper equations. So, we need to remove those
+            //       dependencies, and obviously this can only be done once all
+            //       our equations are ready.
+
+            for (const auto &equation : mModel->mPimpl->mEquations) {
+                equation->mPimpl->cleanUpDependencies();
+            }
+
             // Determine whether our equations are state/rate based.
             // Note: obviously, this can only be done once all our equations are
             //       ready.
