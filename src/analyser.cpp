@@ -132,7 +132,7 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
-    std::vector<AnalyserInternalVariablePtr> mDependencies;
+    std::vector<VariablePtr> mDependencies;
 
     AnalyserEquationAstPtr mAst;
 
@@ -246,7 +246,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
     for (const auto &variable : mVariables) {
         if (isKnownVariable(variable)) {
-            mDependencies.push_back(variable);
+            mDependencies.push_back(variable->mVariable);
         }
     }
 
@@ -1220,11 +1220,9 @@ bool Analyser::AnalyserImpl::isStateRateBased(const AnalyserEquationPtr &equatio
     checkedEquations.push_back(equation);
 
     for (const auto &dependency : equation->dependencies()) {
-        if (dependency != nullptr) {
-            if ((dependency->type() == AnalyserEquation::Type::RATE)
-                || isStateRateBased(dependency, checkedEquations)) {
-                return true;
-            }
+        if ((dependency->type() == AnalyserEquation::Type::RATE)
+            || isStateRateBased(dependency, checkedEquations)) {
+            return true;
         }
     }
 
@@ -1439,17 +1437,15 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             scaleEquationAst(internalEquation->mAst);
 
-            // Determine the equation's dependencies.
-
-            std::vector<VariablePtr> variableDependencies;
-
-            for (const auto &dependency : internalEquation->mDependencies) {
-                variableDependencies.push_back(dependency->mVariable);
-            }
+            // Determine the equation's dependencies, i.e. the equations for
+            // the variables on which this equation depends.
+            // Note: an equation may depend on the variable of integration, for
+            //       which there is no equation, hence we need to test
+            //       equationDependency against nullptr.
 
             std::vector<AnalyserEquationPtr> equationDependencies;
 
-            for (const auto &variableDependency : variableDependencies) {
+            for (const auto &variableDependency : internalEquation->mDependencies) {
                 auto equationDependency = equationMappings[variableDependency];
 
                 if (equationDependency != nullptr) {
