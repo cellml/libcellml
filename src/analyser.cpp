@@ -1626,7 +1626,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
 
             // Determine whether our equations are state/rate based.
             // Note: obviously, this can only be done once all our equations are
-            //       ready, hence we don't do this in the previous for loop.
+            //       ready.
 
             for (const auto &equation : mModel->mPimpl->mEquations) {
                 std::vector<AnalyserEquationPtr> checkedEquations;
