@@ -1160,7 +1160,7 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
 
 void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 {
-    // Make sure that we an AST to scale.
+    // Make sure that we have an AST to scale.
 
     if (ast == nullptr) {
         return;
