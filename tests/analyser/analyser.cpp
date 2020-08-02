@@ -33,12 +33,15 @@ TEST(Analyser, initialisedVariableOfIntegration)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -56,12 +59,15 @@ TEST(Analyser, initialisedVariableOfIntegrationInNonFirstComponent)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -79,12 +85,15 @@ TEST(Analyser, twoVariablesOfIntegration)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -106,12 +115,17 @@ TEST(Analyser, nonFirstOrderOdes)
         libcellml::Issue::Cause::MATHML,
         libcellml::Issue::Cause::MATHML,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -131,12 +145,16 @@ TEST(Analyser, undefinedVariables)
         libcellml::Issue::Cause::MATHML,
         libcellml::Issue::Cause::MATHML,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -154,12 +172,15 @@ TEST(Analyser, variableInitialisedTwice)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -177,12 +198,15 @@ TEST(Analyser, nonConstantInitialisingVariable)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -200,12 +224,15 @@ TEST(Analyser, nonExistingInitialisingVariable)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::INVALID, analyser->model()->type());
 }
@@ -223,12 +250,15 @@ TEST(Analyser, nonInitialisedState)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -246,12 +276,15 @@ TEST(Analyser, underconstrained)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
@@ -269,12 +302,15 @@ TEST(Analyser, overconstrained)
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::OVERCONSTRAINED, analyser->model()->type());
 }
@@ -294,12 +330,16 @@ TEST(Analyser, unsuitablyConstrained)
         libcellml::Issue::Cause::VARIABLE,
         libcellml::Issue::Cause::VARIABLE,
     };
+    const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
+    };
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ_ISSUES_CAUSES(expectedIssues, expectedCauses, analyser);
+    EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNSUITABLY_CONSTRAINED, analyser->model()->type());
 }
