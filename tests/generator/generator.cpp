@@ -29,7 +29,7 @@ TEST(Generator, emptyModel)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
@@ -49,7 +49,7 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -90,7 +90,7 @@ TEST(Generator, algebraicEqnConstVarOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -131,7 +131,7 @@ TEST(Generator, algebraicEqnConstantOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -172,7 +172,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -214,7 +214,7 @@ TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -256,7 +256,7 @@ TEST(Generator, algebraicEqnStateVarOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -298,7 +298,7 @@ TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -340,7 +340,7 @@ TEST(Generator, odeComputedVarOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -382,7 +382,7 @@ TEST(Generator, odeComputedVarOnRhsOneComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -424,7 +424,7 @@ TEST(Generator, odeConstVarOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -466,7 +466,7 @@ TEST(Generator, odeConstVarOnRhsOneComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -508,7 +508,7 @@ TEST(Generator, odeConstantOnRhs)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -549,7 +549,7 @@ TEST(Generator, odeConstantOnRhsOneComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -590,7 +590,7 @@ TEST(Generator, odeMultipleDependentOdes)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -632,7 +632,7 @@ TEST(Generator, odeMultipleDependentOdesOneComponent)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -674,7 +674,7 @@ TEST(Generator, odeMultipleOdesWithSameName)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -716,7 +716,7 @@ TEST(Generator, cellmlMappingsAndEncapsulations)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -758,7 +758,7 @@ TEST(Generator, cellmlStateInitialisedUsingVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -800,7 +800,7 @@ TEST(Generator, cellmlUnitScalingVoiIndirect)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -842,7 +842,7 @@ TEST(Generator, cellmlUnitScalingVoiDirect)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -884,7 +884,7 @@ TEST(Generator, cellmlUnitScalingConstant)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -926,7 +926,7 @@ TEST(Generator, cellmlUnitScalingState)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -968,7 +968,7 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingConstant)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1010,7 +1010,7 @@ TEST(Generator, cellmlUnitScalingStateInitialisedUsingVariable)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1052,7 +1052,7 @@ TEST(Generator, cellmlUnitScalingRate)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1094,7 +1094,7 @@ TEST(Generator, dependentEqns)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1136,7 +1136,7 @@ TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1178,7 +1178,7 @@ TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1220,7 +1220,7 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1262,7 +1262,7 @@ TEST(Generator, nobleModel1962)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1311,7 +1311,7 @@ TEST(Generator, sineImports)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
@@ -1353,7 +1353,7 @@ TEST(Generator, coverage)
 
     analyser->analyseModel(model);
 
-    EXPECT_EQ(size_t(0), analyser->issueCount());
+    EXPECT_EQ(size_t(0), analyser->errorCount());
 
     auto analyserModel = analyser->model();
 
