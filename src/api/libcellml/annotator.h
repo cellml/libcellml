@@ -270,8 +270,11 @@ public:
     /**
      * @brief Retrieve a @c ResetPtr whose reset_value has the given @p id.
      *
-     *        If an item with the id is not found, or has another type, the
-     *        @c nullptr is returned.
+     *  If an item with the id is not found, or has another type, the
+     *  @c nullptr is returned.
+     * 
+     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  before this function can be called successfully.
      *
      * @param id String representing the id of the item to retrieve.
      *
@@ -280,29 +283,270 @@ public:
     ResetPtr resetValue(const std::string &id);
 
     // KRM docstrings
+    /**
+     * @brief Assign an id string to every item in the model which is already 
+     * stored in this annotator, excluding its MathML items.
+     * 
+     * @return a boolean value indicating whether any ids have been changed.
+     */
     bool assignAllIds();
+
+    /**
+     * @brief Assign an id string to every item in the given @p model, excluding
+     *  its MathML items. 
+     * 
+     * The given @p model replaces any previously stored in this annotator.
+     * 
+     * @return a boolean value indicating whether any ids have been changed.
+     */
     bool assignAllIds(ModelPtr &model);
+
+    /**
+     * @brief Assign an id string to every item of the given @p type in the
+     *  model which is already stored in this annotator.
+     * 
+     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  before this function can be called successfully.
+     * 
+     * @return a boolean value indicating whether any ids have been changed.
+     */
     bool assignIds(Annotator::Type type);
+
+    /**
+     * @brief Clear all id strings from all items in the model which
+     *  is already stored in this annotator.
+     */
     void clearAllIds();
+
+    /**
+     * @brief Clear all id strings from all items in the given @p model.
+     * 
+     *  The given @p model also replaces the one which was previously stored 
+     *  in this annotator.
+     */
     void clearAllIds(ModelPtr &model);
 
+    // KRM
     bool isUnique(const std::string &id, bool raiseError);
+
+    /**
+     * @brief Return a @c std::vector of @c AnyItem items which have the given @p id.
+     * 
+     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  before this function can be called successfully.
+     * 
+     * @return a @c std::vector of @c AnyItem items.
+     */
     std::vector<AnyItem> items(const std::string &id);
 
+    /** 
+     * @brief Return a @c std::vector of @c std::strings representing any duplicated id
+     *  string in the stored model.
+     * 
+     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  before this function can be called successfully.
+     * 
+     * @return a @c std::vector of @c std::strings.
+     */
     std::vector<std::string> duplicateIds();
 
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p item.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(const AnyItem &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if a @c ModelPtr is 
+     *     submitted, the @p type must be @c Annotator::Type::MODEL); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const ModelPtr &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if a @c ComponentPtr is 
+     *     submitted, the @p type must be @c Annotator::Type::COMPONENT or 
+     *     @c Annotator::Type::COMPONENT_REF); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const ComponentPtr &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if an @c ImportSourcePtr is 
+     *     submitted, the @p type must be @c Annotator::Type::IMPORT); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const ImportSourcePtr &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if a @c ResetPtr is 
+     *     submitted, the @p type must be either @c Annotator::Type::RESET,  
+     *     @c Annotator::Type::RESET_VALUE, or  @c Annotator::Type::TEST_VALUE); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const ResetPtr &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if an @c UnitsPtr is 
+     *     submitted, the @p type must be @c Annotator::Type::UNITS); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const UnitsPtr &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if an @c UnitItem is 
+     *     submitted, the @p type must be @c Annotator::Type::UNIT); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const UnitItem &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if an @c VariablePtr is 
+     *     submitted, the @p type must be @c Annotator::Type::VARIABLE); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const VariablePtr &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the given @p item 
+     * which is of type @p type.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p item is not a member of the stored model; 
+     *   - the given @p item is not of the given @p type (ie: if an @c VariablePair is 
+     *     submitted, the @p type must be @c Annotator::Type::CONNECTION or 
+     *     @c Annotator::Type::MAP_VARIABLES); or
+     *   - the given @p item is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const VariablePair &item);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the item of type @p type
+     *        which is constructed from the combination of @p item1 and @p item2.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - @p item1 and/or @p item2 is not a member of the stored model; 
+     *   - @p item1 and/or @p item2 is @c nullptr;
+     *   - an item of the specified @p type does not exist in the stored model;
+     *   - the @p type is neither @c Annotator::Type::CONNECTION or @c Annotator::Type::MAP_VARIABLE.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2);
+
+    /**
+     * @overload
+     * 
+     * @brief Assign an automatically generated, unique id to the unit item at index @p index 
+     *        within units @p units.  The given @p type must be @c Annotator::Type::UNIT.
+     * 
+     *  This function will return @c true when the id has been assigned, or @c false
+     *  if not.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p units is not a member of the stored model; 
+     *   - the given @p index is beyond the valid index range for the @p units;
+     *   - the given @p type is not @c Annotator::Type::UNIT; or
+     *   - the given @p units is @c nullptr.
+     * 
+     * @return @c true if the id has been assigned, or @c false if not.
+     */
     bool assignId(Annotator::Type type, const UnitsPtr &units, size_t index);
 
+    // KRM docstrings
     bool assignComponentId(const ComponentPtr &component);
     bool assignComponentRefId(const ComponentPtr &component);
     bool assignConnectionId(const VariablePair &variablePair);

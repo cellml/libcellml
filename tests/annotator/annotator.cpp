@@ -487,7 +487,7 @@ TEST(Annotator, duplicateIdBehaviour)
     EXPECT_EQ(expectedErrors[1], annotator->issue(1)->description());
 }
 
-TEST(Annotator, getItemByIdSpecific)
+TEST(Annotator, getItemByIdSpecificType)
 {
     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"model_1\">\n"
@@ -593,6 +593,54 @@ TEST(Annotator, getItemByIdSpecific)
     EXPECT_EQ(nullptr, annotator->mapVariables("i_dont_exist").first);
     EXPECT_EQ(nullptr, annotator->mapVariables("i_dont_exist").second);
     EXPECT_EQ(nullptr, annotator->importSource("i_dont_exist"));
+}
+
+TEST(Annotator, getItemBySpecificTypeDuplicateId)
+{
+    auto parser = libcellml::Parser::create();
+    auto annotator = libcellml::Annotator::create();
+    auto model = parser->parseModel(modelStringDuplicateIds);
+
+    EXPECT_EQ(nullptr, annotator->model("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->component("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->units("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->unit("duplicateId").first);
+    EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->componentRef("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->connection("duplicateId").first);
+    EXPECT_EQ(nullptr, annotator->connection("duplicateId").second);
+    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").first);
+    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").second);
+    EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+
+    // Expect errors because the annotator library hasn't been built -> no model exists.
+    EXPECT_EQ(size_t(14), annotator->errorCount());
+
+    annotator->build(model);
+
+    // Expect that the errors have been cleared.
+    EXPECT_EQ(size_t(0), annotator->errorCount());
+
+
+    EXPECT_EQ(nullptr, annotator->model("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->component("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->variable("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->units("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->unit("duplicateId").first);
+    EXPECT_EQ(nullptr, annotator->reset("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->resetValue("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->testValue("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->componentRef("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->connection("duplicateId").first);
+    EXPECT_EQ(nullptr, annotator->connection("duplicateId").second);
+    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").first);
+    EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").second);
+    EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+
+
 }
 
 TEST(Annotator, castingOnRetrieval)
@@ -1494,6 +1542,20 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_EQ("b4da63", libcellml::Variable::equivalenceMappingId(mapping2.first, mapping2.second));
 }
 
+TEST(Annotator, assignAllIds)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringNoIds);
+    auto annotator = libcellml::Annotator::create();
+
+    annotator->assignAllIds(model);
+    EXPECT_EQ(size_t(0), annotator->errorCount());
+
+    libcellml::ModelPtr nullModel;
+    annotator->assignAllIds(nullModel);
+    EXPECT_EQ(size_t(0), annotator->errorCount());
+}
+
 TEST(Annotator, clearAllIds)
 {
     std::vector<std::string> expectedErrors = {
@@ -1507,6 +1569,10 @@ TEST(Annotator, clearAllIds)
     annotator->clearAllIds();
     EXPECT_EQ(size_t(1), annotator->errorCount());
     EXPECT_EQ(expectedErrors[0], annotator->error(0)->description());
+
+    // Coverage.
+    libcellml::ModelPtr nullModel;
+    annotator->clearAllIds(nullModel);
 
     annotator->clearAllIds(model);
     EXPECT_EQ(size_t(0), annotator->errorCount());
