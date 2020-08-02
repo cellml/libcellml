@@ -580,6 +580,13 @@ TEST(Issue, isHint)
     EXPECT_EQ(e->level(), libcellml::Issue::Level::HINT);
 }
 
+TEST(Issue, isMessage)
+{
+    auto e = libcellml::Issue::create();
+    e->setLevel(libcellml::Issue::Level::MESSAGE);
+    EXPECT_EQ(e->level(), libcellml::Issue::Level::MESSAGE);
+}
+
 TEST(Issue, url)
 {
     auto expectedUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/specB01.html?issue=2.1.1";
