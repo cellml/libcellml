@@ -278,6 +278,4 @@ void computeRates(double voi, double *states, double *rates, double *variables)
     rates[0] = 1.0;
 }
 
-// We should have computeVariables() here, but we replaced it with this comment
-// and no code template that can be replaced so that our replace() method can
-// is forced to return an empty string, ensuring 100% coverage using llvm-cov...
+// The length of this comment is such that it ensures 100% coverage in our SHA-1 utility.

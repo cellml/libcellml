@@ -1453,9 +1453,7 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodString("// We should have computeVariables() here, but we replaced it with this comment\n"
-                                                           "// and no code template that can be replaced so that our replace() method can\n"
-                                                           "// is forced to return an empty string, ensuring 100% coverage using llvm-cov...\n");
+    profile->setImplementationComputeVariablesMethodString("// The length of this comment is such that it ensures 100% coverage in our SHA-1 utility.\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode(analyserModel));
