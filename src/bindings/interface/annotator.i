@@ -141,11 +141,11 @@
 %}
 
 %ignore libcellml::Annotator::item;
+%ignore libcellml::Annotator::items;
 %ignore libcellml::Annotator::unit;
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
 %ignore libcellml::Annotator::assignId;
-%ignore libcellml::Annotator::items; // KRM Only ignoring until I can write the manual binding for it.
 
 %create_constructor(Annotator)
 
@@ -288,6 +288,11 @@
             elif type == Annotator.Type.VARIABLE:
                 return (type, _annotator.Annotator_variable(self, id))
             return (-1, None)
+
+        def items(self, id):
+            r"""TODO"""
+            return [(-1, None)]
+
         %}
     }
 
