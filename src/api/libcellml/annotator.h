@@ -282,7 +282,6 @@ public:
      */
     ResetPtr resetValue(const std::string &id);
 
-    // KRM docstrings
     /**
      * @brief Assign an id string to every item in the model which is already 
      * stored in this annotator, excluding its MathML items.
@@ -292,10 +291,12 @@ public:
     bool assignAllIds();
 
     /**
-     * @brief Assign an id string to every item in the given @p model, excluding
-     *  its MathML items. 
+     * @brief Assign a unique, automatic id string to every item in the given @p model, 
+     * excluding its MathML items. 
      * 
      * The given @p model replaces any previously stored in this annotator.
+     * 
+     * @param model The @c ModelPtr to which id strings will be assigned.
      * 
      * @return a boolean value indicating whether any ids have been changed.
      */
@@ -308,13 +309,14 @@ public:
      *  The annotator index must be built using Annotator::build(ModelPtr model)
      *  before this function can be called successfully.
      * 
+     * @param type Items of this @c Annotator::Type will all be assigned a new id.
+     * 
      * @return a boolean value indicating whether any ids have been changed.
      */
     bool assignIds(Annotator::Type type);
 
     /**
-     * @brief Clear all id strings from all items in the model which
-     *  is already stored in this annotator.
+     * @brief Clear all id strings from all items in the stored model.
      */
     void clearAllIds();
 
@@ -323,10 +325,21 @@ public:
      * 
      *  The given @p model also replaces the one which was previously stored 
      *  in this annotator.
+     * 
+     * @param model A @c ModelPtr for which all id strings will be cleared.  It will
+     *              replace the stored model in this annotator.
      */
     void clearAllIds(ModelPtr &model);
 
-    // KRM
+    /**
+     * @brief Test whether the given @p id exists uniquely within the stored model.
+     * 
+     * @param id A @c std::string to test for uniqueness amongst the set of ids in the stored model.
+     * @param raiseError A @c bool determining whether, if duplicates are found, to create an @c Issue item
+     *                   in this annotator.
+     *
+     * @return @c true if the @p id exists exactly once, @c false otherwise.
+     */
     bool isUnique(const std::string &id, bool raiseError);
 
     /**
@@ -334,6 +347,8 @@ public:
      * 
      *  The annotator index must be built using Annotator::build(ModelPtr model)
      *  before this function can be called successfully.
+     * 
+     * @param id A @c std::string used to identify the set of items to retrieve.
      * 
      * @return a @c std::vector of @c AnyItem items.
      */
@@ -353,15 +368,17 @@ public:
     /**
      * @brief Assign an automatically generated, unique id to the given @p item.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param item An @c AnyItem to which a new id will be assigned.
+     * 
+     * @return the new id string.
      */
-    bool assignId(const AnyItem &item);
+    std::string assignId(const AnyItem &item);
 
     /**
      * @overload
@@ -369,17 +386,20 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if a @c ModelPtr is 
      *     submitted, the @p type must be @c Annotator::Type::MODEL); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type An @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::MODEL.
+     * @param item A @c ModelPtr model to which the new id will be assigned.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const ModelPtr &item);
+    std::string assignId(Annotator::Type type, const ModelPtr &item);
 
     /**
      * @overload
@@ -387,8 +407,8 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if a @c ComponentPtr is 
@@ -396,9 +416,18 @@ public:
      *     @c Annotator::Type::COMPONENT_REF); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type An @c Annotator::Type enumeration.  This must be equal to:
+     *          - @c Annotator::Type::COMPONENT; or
+     *          - @c Annotator::Type::COMPONENT_REF.
+     * 
+     * @param item A @c ComponentPtr item.  The new id will be assigned to either:
+     *          - the component (COMPONENT) or
+     *          - its encapsulation reference (COMPONENT_REF)
+     *        depending on the @p type.
+     *    
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const ComponentPtr &item);
+    std::string assignId(Annotator::Type type, const ComponentPtr &item);
 
     /**
      * @overload
@@ -406,17 +435,20 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c ImportSourcePtr is 
      *     submitted, the @p type must be @c Annotator::Type::IMPORT); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type An @c Annotator::Type enum.  This must be @c Annotator::Type::IMPORT.
+     * @param item An @c ImportSourcePtr to which the new id will be assigned.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const ImportSourcePtr &item);
+    std::string assignId(Annotator::Type type, const ImportSourcePtr &item);
 
     /**
      * @overload
@@ -424,8 +456,8 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if a @c ResetPtr is 
@@ -433,9 +465,20 @@ public:
      *     @c Annotator::Type::RESET_VALUE, or  @c Annotator::Type::TEST_VALUE); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type An @c Annotator::Type enumeration.  This must be equal to:
+     *          - @c Annotator::Type::RESET; 
+     *          - @c Annotator::Type::RESET_VALUE; or
+     *          - @c Annotator::TYPE::TEST_VALUE.
+     * 
+     * @param item A @c ResetPtr item.  The new id will be assigned to either:
+     *          - the reset item itself (RESET);
+     *          - its reset value (RESET_VALUE); or
+     *          - its test value (TEST_VALUE)
+     *        depending on the @p type.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const ResetPtr &item);
+    std::string assignId(Annotator::Type type, const ResetPtr &item);
 
     /**
      * @overload
@@ -443,17 +486,20 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c UnitsPtr is 
      *     submitted, the @p type must be @c Annotator::Type::UNITS); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::UNITS.
+     * @param units A @c UnitsPtr item to which the new id is assigned.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const UnitsPtr &item);
+    std::string assignId(Annotator::Type type, const UnitsPtr &item);
 
     /**
      * @overload
@@ -461,17 +507,20 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c UnitItem is 
      *     submitted, the @p type must be @c Annotator::Type::UNIT); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::UNIT.
+     * @param units A @c UnitItem item to which the new id is assigned.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const UnitItem &item);
+    std::string assignId(Annotator::Type type, const UnitItem &item);
 
     /**
      * @overload
@@ -479,54 +528,69 @@ public:
      * @brief Assign an automatically generated, unique id to the given @p item 
      * which is of type @p type.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c VariablePtr is 
      *     submitted, the @p type must be @c Annotator::Type::VARIABLE); or
      *   - the given @p item is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::VARIABLE.
+     * @param units A @c VariablePtr item to which the new id is assigned.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const VariablePtr &item);
+    std::string assignId(Annotator::Type type, const VariablePtr &item);
 
     /**
      * @overload
      * 
-     * @brief Assign an automatically generated, unique id to the given @p item 
-     * which is of type @p type.
+     * @brief Assign an automatically generated, unique id to the given @p pair.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
-     *   - the given @p item is not a member of the stored model; 
-     *   - the given @p item is not of the given @p type (ie: if an @c VariablePair is 
-     *     submitted, the @p type must be @c Annotator::Type::CONNECTION or 
-     *     @c Annotator::Type::MAP_VARIABLES); or
-     *   - the given @p item is @c nullptr.
+     *   - either @c VariablePtr in the @p pair is not a member of the stored model; 
+     *   - either @c VariablePtr in the @p pair is @c nullptr; or
+     *   - no item of the given @p type exists in the stored model.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type A @c Annotator::Type enumeration.  This must be equal to either:
+     *             - @c Annotator::Type::CONNECTION; or
+     *             - @c Annotator::Type::MAP_VARIABLES.
+     * 
+     * @param pair A @c VariablePair item containing two @c VariablePtrs which together define either:
+     *             - a connection between parent components (CONNECTION); or
+     *             - an equivalence between two variables (MAP_VARIABLES).
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const VariablePair &item);
+    std::string assignId(Annotator::Type type, const VariablePair &pair);
 
     /**
      * @overload
      * 
      * @brief Assign an automatically generated, unique id to the item of type @p type
-     *        which is constructed from the combination of @p item1 and @p item2.
+     *        which exists between @p item1 and @p item2.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - @p item1 and/or @p item2 is not a member of the stored model; 
      *   - @p item1 and/or @p item2 is @c nullptr;
-     *   - an item of the specified @p type does not exist in the stored model;
-     *   - the @p type is neither @c Annotator::Type::CONNECTION or @c Annotator::Type::MAP_VARIABLE.
+     *   - a connection or equivalence (determined by @p type) does not exist in the stored model;
+     *   - the @p type is neither @c Annotator::Type::CONNECTION or @c Annotator::Type::MAP_VARIABLES.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type An @c Annotator::Type enumeration.  This must be equal to either:
+     *             - @c Annotator::Type::CONNECTION; or
+     *             - @c Annotator::Type::MAP_VARIABLE.
+     * 
+     * @param item1 A @c VariablePtr item related to @p item2 through a connection or equivalence.
+     * @param item2 A @c VariablePtr item related to @p item1 through a connection or equivalence.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2);
+    std::string assignId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2);
 
     /**
      * @overload
@@ -534,34 +598,249 @@ public:
      * @brief Assign an automatically generated, unique id to the unit item at index @p index 
      *        within units @p units.  The given @p type must be @c Annotator::Type::UNIT.
      * 
-     *  This function will return @c true when the id has been assigned, or @c false
-     *  if not.  The id will not be assigned if:
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p units is not a member of the stored model; 
      *   - the given @p index is beyond the valid index range for the @p units;
      *   - the given @p type is not @c Annotator::Type::UNIT; or
      *   - the given @p units is @c nullptr.
      * 
-     * @return @c true if the id has been assigned, or @c false if not.
+     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::UNIT.
+     * @param units A @c UnitsPtr containing the child unit item.
+     * @param index The index at which the child unit exists within the parent @p units item.
+     * 
+     * @return the new id string.
      */
-    bool assignId(Annotator::Type type, const UnitsPtr &units, size_t index);
+    std::string assignId(Annotator::Type type, const UnitsPtr &units, size_t index);
 
-    // KRM docstrings
-    bool assignComponentId(const ComponentPtr &component);
-    bool assignComponentRefId(const ComponentPtr &component);
-    bool assignConnectionId(const VariablePair &variablePair);
-    bool assignEncapsulationId(const ModelPtr &model);
-    bool assignImportSourceId(const ImportSourcePtr &importSource);
-    bool assignMapVariablesId(const VariablePair &variablePair);
-    bool assignModelId(const ModelPtr &model);
-    bool assignResetId(const ResetPtr &reset);
-    bool assignResetValueId(const ResetPtr &reset);
-    bool assignTestValueId(const ResetPtr &reset);
-    bool assignUnitId(const UnitItem &unitItem);
-    bool assignUnitsId(const UnitsPtr &units);
-    bool assignVariableId(const VariablePtr &variable);
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p component.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p component is not a member of the stored model; or
+     *   - the given @p component is @c nullptr.
+     * 
+     * @param component The @c ComponentPtr which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignComponentId(const ComponentPtr &component);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the encapsulation reference
+     *        attached to the given @p component.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p component is not a member of the stored model; or
+     *   - the given @p component is @c nullptr.
+     * 
+     * @param component The @c ComponentPtr whose encapsulation id will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignComponentRefId(const ComponentPtr &component);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the connection 
+     *        formed between the variables in the given @c variablePair.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the variables in the given @p variablePair are not members of the stored model; or
+     *   - either of the variables is @c nullptr; or
+     *   - no connection exists between the parent components of the variables.
+     * 
+     * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the connection 
+     *                     which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignConnectionId(const VariablePair &variablePair);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the encapsulation 
+     *        of the given @c model.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p model is not the stored model; or
+     *   - the given @p model of the variables is @c nullptr.
+     * 
+     * @param model A @c ModelPtr whose encapsulation will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignEncapsulationId(const ModelPtr &model);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p importSource.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p importSource is not a member of the stored model; or
+     *   - the given @p importSource is @c nullptr.
+     * 
+     * @param importSource An @c ImportSourcePtr which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignImportSourceId(const ImportSourcePtr &importSource);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the variable mapping 
+     *        formed between the variables in the given @c variablePair.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the variables in the given @p variablePair are not members of the stored model; or
+     *   - either of the variables is @c nullptr; or
+     *   - no variable mapping exists between the variables.
+     * 
+     * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the equivalence 
+     *                     which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignMapVariablesId(const VariablePair &variablePair);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p model.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p model is not the stored model; or
+     *   - the given @p model is @c nullptr.
+     * 
+     * @param model The @c ModelPtr which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignModelId(const ModelPtr &model);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p reset.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p reset is not a member of the stored model; or
+     *   - the given @p reset is @c nullptr.
+     * 
+     * @param reset The @c ResetPtr which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignResetId(const ResetPtr &reset);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the reset value inside the given @p reset.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p reset is not a member of the stored model; or
+     *   - the given @p reset is @c nullptr.
+     * 
+     * @param reset The @c ResetPtr whose reset value will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignResetValueId(const ResetPtr &reset);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the test value inside the given @p reset.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p reset is not a member of the stored model; or
+     *   - the given @p reset is @c nullptr.
+     * 
+     * @param reset The @c ResetPtr whose test value will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignTestValueId(const ResetPtr &reset);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p unitItem.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the units parent of the @p unitItem is not a member of the stored model; or
+     *   - the given @p unitItem cannot be constructed (its parent units is @c nullptr, 
+     *     or its index is out of the parent's range).
+     * 
+     * @param unitItem The @c UnitItem which will be assigned the new id. 
+     * 
+     * @return the new id string.
+     */
+    std::string assignUnitId(const UnitItem &unitItem);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p units.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p units is not a member of the stored model; or
+     *   - the given @p units is @c nullptr.
+     * 
+     * @param units The @c UnitsPtr which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignUnitsId(const UnitsPtr &units);
+
+    /**
+     * @brief Assign an automatically generated, unique id to the given @p variable.
+     * 
+     *  This function will return the new id that has been assigned, or an empty string
+     *  if the operation failed.  The id will not be assigned if:
+     *   - no model has been stored and/or built in this annotator;
+     *   - the given @p variable is not a member of the stored model; or
+     *   - the given @p variable is @c nullptr.
+     * 
+     * @param variable The @c VariablePtr which will be assigned the new id.
+     * 
+     * @return the new id string.
+     */
+    std::string assignVariableId(const VariablePtr &variable);
+
+    /**
+     * @overload
+     * 
+     * @brief Return a string representing the given @p type.
+     *  
+     *  The string returned is a lower-case equivalent of the @c Annotator::Type
+     *  enumeration; for example, @c Annotator::Type::COMPONENT_REF becomes "component_ref".
+     *
+     * @return a string representing the @p type.
+     */
 
     std::string typeString(const Annotator::Type &type);
+
+    /**
+     * @overload
+     * 
+     * @brief Return a string representing the given @p type.
+     *  
+     *  The string returned is a lower-case equivalent of the @c Annotator::Type
+     *  enumeration; for example, @c Annotator::Type::COMPONENT_REF becomes "component_ref".
+     *
+     * @return a string representing the @p type.
+     */
     std::string typeString(const std::uint64_t &type);
 
 private:

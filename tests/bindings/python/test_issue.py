@@ -152,7 +152,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(
             Issue.ReferenceRule.MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, int)
 
-        # Test conversion to enum #KRM not sure why this is failing?
+        # Test conversion to enum 
         e = Issue()
         e.setReferenceRule(Issue.ReferenceRule.UNDEFINED)
         self.assertRaises(RuntimeError, e.setReferenceRule,
