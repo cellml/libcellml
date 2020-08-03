@@ -133,8 +133,8 @@
 %feature("docstring") libcellml::Annotator::assignUnitIdForPython
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
 
-%feature("docstring") libcellml::Annotator::itemsForPython
-"Private: Utility function to return a collection of items with the given id.";
+// %feature("docstring") libcellml::Annotator::itemsForPython
+// "Private: Utility function to return a collection of items with the given id.";
 
 %{
 #include "libcellml/annotator.h"
