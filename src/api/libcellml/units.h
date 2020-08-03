@@ -502,8 +502,21 @@ public:
      */
     void setImportSource(ImportSourcePtr &importSource);
 
-    // KRM docstrings
+    /**
+     * @brief Set the id of the unit at the given @p index.
+     * 
+     *  The operation will return @c true if the id is assigned, or @c false
+     *  if the @p index is out of range.
+     * 
+     * @return @c true if successful, @c false otherwise.
+     */
     bool setUnitId(size_t index, const std::string &id) const;
+
+    /**
+     * @brief Return the id string of the unit at the given @p index.
+     * 
+     * @return An id string.
+     */
     std::string unitId(size_t index);
 
 private:

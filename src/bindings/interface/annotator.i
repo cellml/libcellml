@@ -50,8 +50,59 @@
 %feature("docstring") libcellml::Annotator::assignAllIds
 "Traverses the stored model and sets any blank id fields to an automatically generated id.";
 
-%feature("docstring") libcellml::Annotator::assignId
-"Sets the given item's id to an automatically generated string, if it is non-unique or blank.";
+%feature("docstring") libcellml::Annotator::assignIds
+"Sets all items of the given type in the stored model to automatically generated, unique strings.";
+
+%feature("docstring") libcellml::Annotator::clearAllIds
+"Clears all the id strings in the given or stored model.";
+
+%feature("docstring") libcellml::Annotator::isUnique
+"Returns `true` if the given string is not duplicated in the stored model, or `false` otherwise.";
+
+%feature("docstring") libcellml::Annotator::duplicateIds
+"Returns a list of id strings which are duplicated within the stored model.";
+
+%feature("docstring") libcellml::Annotator::assignComponentId
+"Assign an automatically generated, unique id to the given component.";
+
+%feature("docstring") libcellml::Annotator::assignComponentRefId
+"Assign an automatically generated, unique id to the given component's encapsulation.";
+
+%feature("docstring") libcellml::Annotator::assignConnectionId
+"Assign an automatically generated, unique id to the connection between the given variables.";
+
+%feature("docstring") libcellml::Annotator::assignEncapsulationId
+"Assign an automatically generated, unique id to the encapsulation of the given model.";
+
+%feature("docstring") libcellml::Annotator::assignImportSourceId
+"Assign an automatically generated, unique id to the given import source.";
+
+%feature("docstring") libcellml::Annotator::assignMapVariablesId
+"Assign an automatically generated, unique id to the equivalence between the given variables.";
+
+%feature("docstring") libcellml::Annotator::assignModelId
+"Assign an automatically generated, unique id to the given model.";
+
+%feature("docstring") libcellml::Annotator::assignResetId
+"Assign an automatically generated, unique id to the given reset.";
+
+%feature("docstring") libcellml::Annotator::assignResetValueId
+"Assign an automatically generated, unique id to the reset value of the given reset.";
+
+%feature("docstring") libcellml::Annotator::assignTestValueId
+"Assign an automatically generated, unique id to the test value of the given reset.";
+
+%feature("docstring") libcellml::Annotator::assignUnitId
+"Assign an automatically generated, unique id to the unit given by the units and index supplied.";
+
+%feature("docstring") libcellml::Annotator::assignUnitsId
+"Assign an automatically generated, unique id to the given units.";
+
+%feature("docstring") libcellml::Annotator::assignVariableId
+"Assign an automatically generated, unique id to the given variable.";
+
+%feature("docstring") libcellml::Annotator::typeString
+"Translates the given Annotator::Type enumeration into a string.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
 // intended to be called from anywhere.
@@ -73,7 +124,17 @@
 %feature("docstring") libcellml::Annotator::mapVariablesForPython
 "Private: Utility function to retrieve one of VariablePtrs map_variables with given id.";
 
+%feature("docstring") libcellml::Annotator::assignConnectionIdForPython
+"Private: Utility function to set a unique id for the connection between a given variable pair..";
 
+%feature("docstring") libcellml::Annotator::assignMapVariablesIdForPython
+"Private: Utility function to set a unique id for the equivalence between a given variable pair.";
+
+%feature("docstring") libcellml::Annotator::assignUnitIdForPython
+"Private: Utility function to set a unique id for the unit located by the given index and units.";
+
+%feature("docstring") libcellml::Annotator::itemsForPython
+"Private: Utility function to return a collection of items with the given id.";
 
 %{
 #include "libcellml/annotator.h"
@@ -84,6 +145,7 @@
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
 %ignore libcellml::Annotator::assignId;
+%ignore libcellml::Annotator::items; // KRM Only ignoring until I can write the manual binding for it.
 
 %create_constructor(Annotator)
 
@@ -135,23 +197,24 @@
         return vPair.second;
     }
 
-    bool assignConnectionIdForPython(VariablePtr &item, VariablePtr &item2){
+    std::string assignConnectionIdForPython(VariablePtr &item, VariablePtr &item2) {
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
         return $self->assignConnectionId(variablePair);
     }
 
-    bool assignMapVariablesIdForPython(VariablePtr &item, VariablePtr &item2){
+    std::string assignMapVariablesIdForPython(VariablePtr &item, VariablePtr &item2) {
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
         return $self->assignMapVariablesId(variablePair);
     }
 
-    bool assignUnitIdForPython(UnitsPtr &item, size_t index){
+    std::string assignUnitIdForPython(UnitsPtr &item, size_t index) {
         libcellml::UnitItem unitItem = std::make_pair(item, index);
         return $self->assignUnitId(unitItem);
     }
 
     %pythoncode %{
         def assignId(self, type, item, item2=None):
+            r"""Sets the given item's id to an automatically generated, unique string."""
             if type == Annotator.Type.COMPONENT:
                 return _annotator.Annotator_assignComponentId(self, item)
             elif type == Annotator.Type.COMPONENT_REF:
@@ -179,7 +242,7 @@
                 return _annotator.Annotator_assignMapVariablesIdForPython(self, item, item2)
             elif type == Annotator.Type.UNIT:
                 return _annotator.Annotator_assignUnitIdForPython(self, item, item2)
-            return false
+            return ""
        
         def unit(self, id):
             r"""Return the UnitItem with the given id.  The first item is the parent UnitsPtr item, the second is the index of this unit."""
