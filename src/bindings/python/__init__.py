@@ -49,6 +49,7 @@ def convert(base, enum, variables, new_base=None):
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
 
+
 convert(Annotator, 'Type', [
         'COMPONENT',
         'COMPONENT_REF',
