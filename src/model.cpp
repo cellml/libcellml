@@ -407,10 +407,9 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
         unresolvedImports = isUnresolvedImport(component);
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
-            ImportSourcePtr importedSource = component->importSource();
-
-            ModelPtr importedModel = importedSource->model();
-            ComponentPtr importedComponent = importedModel->component(component->importReference());
+            auto importedSource = component->importSource();
+            auto importedModel = importedSource->model();
+            auto importedComponent = importedModel->component(component->importReference());
             if (importedComponent == nullptr) {
                 unresolvedImports = true;
             } else {
@@ -508,9 +507,6 @@ ModelPtr Model::clone() const
     return m;
 }
 
-/*
-
-*/
 bool Model::fixVariableInterfaces()
 {
     VariablePtrs variables;
