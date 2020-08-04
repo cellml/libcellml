@@ -1,5 +1,5 @@
 #
-# Tests the Importer class bindings
+# Tests the Importer class bindings.
 #
 import unittest
 
@@ -16,11 +16,11 @@ class ValidatorTestCase(unittest.TestCase):
         import libcellml
         from libcellml import Importer
 
-        # Test inheritance
+        # Test inheritance.
         x = Importer()
         self.assertIsInstance(x, libcellml.logger.Logger)
 
-        # Test access to inherited methods
+        # Test access to inherited methods.
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(-1))
         self.assertEqual(x.issueCount(), 0)

@@ -109,7 +109,7 @@ bool checkUnitsForCycles(ModelPtr &model, std::vector<std::tuple<std::string, st
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         auto units = model->units(u);
         if (units->isImport()) {
-            ImportSourcePtr importSource = units->importSource();
+            auto importSource = units->importSource();
             auto h = std::make_tuple(units->name(), units->importReference(), importSource->url());
             if (std::find(history.begin(), history.end(), h) != history.end()) {
                 history.emplace_back(h);
@@ -124,7 +124,7 @@ bool checkComponentForCycles(ModelPtr &model, std::vector<std::tuple<std::string
     for (size_t c = 0; c < model->componentCount(); ++c) {
         auto component = model->component(c);
         if (component->isImport()) {
-            ImportSourcePtr importSource = component->importSource();
+            auto importSource = component->importSource();
             auto h = std::make_tuple(component->name(), component->importReference(), importSource->url());
             if (std::find(history.begin(), history.end(), h) != history.end()) {
                 history.emplace_back(h);
@@ -168,7 +168,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                                            std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
     if (importedEntity->isImport()) {
-        ImportSourcePtr importSource = importedEntity->importSource();
+        auto importSource = importedEntity->importSource();
         auto h = std::make_tuple(destination, importedEntity->importReference(), importSource->url());
 
         // Check for cyclical dependencies using the entire tuple contents.
@@ -221,7 +221,7 @@ bool Importer::ImporterImpl::resolveComponentImports(const ComponentEntityPtr &p
 {
     bool noErrors = true;
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->component(n);
+        auto component = parentComponentEntity->component(n);
         if (component->isImport()) {
             if (!resolveImport(component, component->name(), "component", baseFile, history)) {
                 if (!history.empty()) {
