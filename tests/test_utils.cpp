@@ -55,6 +55,9 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         case libcellml::Issue::Level::HINT:
             std::cout << "Hint " << std::setw(width) << i + 1 << ": ";
             break;
+        case libcellml::Issue::Level::MESSAGE:
+            std::cout << "Message " << std::setw(width) << i + 1 << ": ";
+            break;
         default:
             break;
         }
@@ -236,32 +239,6 @@ libcellml::ModelPtr createModelTwoComponentsWithOneVariableEach(const std::strin
     c2->addVariable(v2);
 
     return model;
-}
-
-libcellml::ComponentPtr createImportInModel(const libcellml::ModelPtr &model,
-                                            const std::string &componentName,
-                                            const std::string &importSourceUrl,
-                                            const std::string &importReference)
-{
-    model->addComponent(libcellml::Component::create(componentName));
-    auto imp = libcellml::ImportSource::create();
-    model->component(componentName)->setImportSource(imp);
-    model->component(componentName)->importSource()->setUrl(importSourceUrl);
-    model->component(componentName)->setImportReference(importReference);
-    return model->component(componentName);
-}
-
-libcellml::ComponentPtr createImportInComponent(const libcellml::ComponentPtr &component,
-                                                const std::string &componentName,
-                                                const std::string &importSourceUrl,
-                                                const std::string &importReference)
-{
-    component->addComponent(libcellml::Component::create(componentName));
-    auto imp = libcellml::ImportSource::create();
-    component->component(componentName)->setImportSource(imp);
-    component->component(componentName)->importSource()->setUrl(importSourceUrl);
-    component->component(componentName)->setImportReference(importReference);
-    return component->component(componentName);
 }
 
 void compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2)

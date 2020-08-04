@@ -91,9 +91,6 @@ libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &mode
 libcellml::VariablePtr TEST_EXPORT createVariableWithUnits(const std::string &name, const std::string &units);
 libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(const std::string &modelName = "", const std::string &c1Name = "", const std::string &c2Name = "", const std::string &v1Name = "", const std::string &v2Name = "");
 
-libcellml::ComponentPtr TEST_EXPORT createImportInModel(const libcellml::ModelPtr &model, const std::string &componentName, const std::string &importSourceUrl, const std::string &importReference);
-libcellml::ComponentPtr TEST_EXPORT createImportInComponent(const libcellml::ComponentPtr &component, const std::string &componentName, const std::string &importSourceUrl, const std::string &importReference);
-
 void TEST_EXPORT compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2);
 void TEST_EXPORT compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr);
 void TEST_EXPORT compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr);
