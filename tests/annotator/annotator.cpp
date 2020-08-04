@@ -430,7 +430,7 @@ TEST(Annotator, errorHandling)
     // Searching before the map is built should return an error.
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, annotator->item("i_dont_exist").first);
     EXPECT_EQ(size_t(1), annotator->issueCount());
-    EXPECT_EQ(annotator->issue(0)->description(), "Please call the Annotator::build function before attempting to access items by their id.");
+    EXPECT_EQ(annotator->issue(0)->description(), "The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
 
     // Building an empty model will result in an empty map and return an error.
     annotator->build(model);
@@ -1561,7 +1561,7 @@ TEST(Annotator, clearAllIds)
 {
     std::vector<std::string> expectedErrors = {
         "The Annotator does not have a model stored; no action has been taken.",
-        "Could not find an item with an id of 'duplicateId' in the model."};
+        "The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id."};
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringDuplicateIds);
@@ -1926,4 +1926,43 @@ TEST(Annotator, pythonBindingFunctionsCoverage)
         EXPECT_EQ(expectedStrings[index], annotator->typeString(type));
         ++index;
     }
+}
+
+TEST(Annotator, hashChangesAndUpdates){
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringUniqueIds);
+    auto annotator = libcellml::Annotator::create();
+
+    EXPECT_FALSE(annotator->isBuilt());
+
+    annotator->build(model);
+    EXPECT_TRUE(annotator->isBuilt());
+
+    model->setId("iHaveChangedSinceTheLastBuild");
+    EXPECT_FALSE(annotator->isBuilt());
+
+    // Shouldn't be able to retrieve anything since the build is out of date.
+    EXPECT_EQ(nullptr, annotator->model("model_1"));
+    EXPECT_EQ(nullptr, annotator->encapsulation("encapsulation_1"));
+    EXPECT_EQ(nullptr, annotator->component("component_1"));
+    EXPECT_EQ(nullptr, annotator->component("component_2"));
+    EXPECT_EQ(nullptr, annotator->component("component_ref_1"));
+    EXPECT_EQ(nullptr, annotator->component("component_3"));
+    EXPECT_EQ(nullptr, annotator->componentRef("component_ref_2"));
+    EXPECT_EQ(nullptr, annotator->importSource("import_1"));
+    EXPECT_EQ(nullptr, annotator->units("units_1"));
+    EXPECT_EQ(nullptr, annotator->importSource("import_2"));
+    EXPECT_EQ(nullptr, annotator->units("units_2"));
+    EXPECT_EQ(nullptr, annotator->unit("unit_1").first);
+    EXPECT_EQ(size_t(0), annotator->unit("unit_1").second);
+    EXPECT_EQ(nullptr, annotator->variable("variable_1"));
+    EXPECT_EQ(nullptr, annotator->variable("variable_2"));
+    EXPECT_EQ(nullptr, annotator->reset("reset_1"));
+    EXPECT_EQ(nullptr, annotator->testValue("test_value_1"));
+    EXPECT_EQ(nullptr, annotator->resetValue("reset_value_1"));
+    EXPECT_EQ(nullptr, annotator->variable("variable_3"));
+    EXPECT_EQ(nullptr, annotator->variable("variable_4"));
+    EXPECT_EQ(nullptr, annotator->connection("connection_1").first);
+    EXPECT_EQ(nullptr, annotator->mapVariables("map_variables_1").first);
+    EXPECT_EQ(nullptr, annotator->mapVariables("map_variables_2").first);
 }
