@@ -387,7 +387,7 @@ TEST(Importer, multipleModelResolution)
 TEST(Importer, addModelToLibrary)
 {
     // This test shows how a model instance can be manually added to the import library by the user,
-    // and will be used to resolve imports, rather than from an external file/url.
+    // and will be used to resolve imports, rather than from an external file/URL.
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("resolveimports/generic_no_source.cellml"));
     auto importer = libcellml::Importer::create();
@@ -401,7 +401,7 @@ TEST(Importer, addModelToLibrary)
     // Add a model manually to the library, including the URL that it will replace in future imports.
     EXPECT_TRUE(importer->addModel(sourceModel, "i_dont_exist.cellml"));
 
-    // Can't add to the same url key more than once.
+    // Can't add to the same URL key more than once.
     EXPECT_FALSE(importer->addModel(sourceModel, "i_dont_exist.cellml"));
 
     importer->resolveImports(model, "");
@@ -413,7 +413,7 @@ TEST(Importer, addModelToLibrary)
 TEST(Importer, replaceModel)
 {
     // This test shows how a model instance can be manually added to the import library by the user,
-    // and will be used to resolve imports, rather than from an external file/url.
+    // and will be used to resolve imports, rather than from an external file/URL.
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("resolveimports/generic_no_source.cellml"));
     auto importer = libcellml::Importer::create();
@@ -428,7 +428,7 @@ TEST(Importer, replaceModel)
 
     // Add a model manually to the library, including the URL that it will replace in future imports.
     EXPECT_TRUE(importer->addModel(wrongSourceModel, "i_dont_exist.cellml"));
-    // Can't add to the same url key more than once.
+    // Can't add to the same URL key more than once.
     EXPECT_FALSE(importer->addModel(rightSourceModel, "i_dont_exist.cellml"));
 
     // Use replaceModel instead.
@@ -452,8 +452,8 @@ TEST(Importer, getNonexistentModel)
 
 TEST(Importer, getListOfDependencies)
 {
-    // This test shows how a model can be interrogated to return a list of its dependencies/urls.
-    // These then become the url "keys" that must be supplied to the importer, if their actual location
+    // This test shows how a model can be interrogated to return a list of its dependencies/URLs.
+    // These then become the URL "keys" that must be supplied to the importer, if their actual location
     // should not be used or is inaccessible.
 
     // Note that in order to resolve the dependencies further than the first generation, the models will

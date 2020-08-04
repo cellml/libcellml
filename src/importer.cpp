@@ -185,7 +185,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                 url = resolvePath(importSource->url(), baseFile);
             }
             if (mLibrary.count(url) == 0) {
-                // If the url has not been resolved into a model in this library, parse it and save.
+                // If the URL has not been resolved into a model in this library, parse it and save.
                 std::ifstream file(url);
                 if (file.good()) {
                     std::stringstream buffer;
