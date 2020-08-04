@@ -42,7 +42,7 @@ public:
      * Factory method to create an @c Importer.  Create a
      * blank model with::
      *
-     *   ImporterPtr importer = libcellml::Importer::create();
+     *   auto importer = libcellml::Importer::create();
      *
      * @return A smart pointer to an @c Importer object.
      */
@@ -86,12 +86,15 @@ public:
     ModelPtr library(const std::string &key);
 
     /**
-     * @brief Retrieve the @c ModelPtr instance from the importer library which was loaded
-     *        at the given index.
+     * @brief Get a model from the library at the given @p index.
      *
-     *  The @p index must be less than libraryCount().
+     * Returns a reference to the model at the index @p index for this
+     * importer's library. If the index is not valid a @c nullptr is returned. The valid
+     * range for the index is [0, \#library items).
      *
-     * @return A @c ModelPtr instance.
+     * @param index The index of the model to return.
+     *
+     * @return A reference to the model at the given index on success, @c nullptr otherwise.
      */
     ModelPtr library(const size_t &index);
 
@@ -101,12 +104,13 @@ public:
      *
      * If the given key already exists in the library, the function will return false
      * and the library will not be changed.
-     * @sa replaceModel.
+     * 
+     * @sa replaceModel
      *
      * @param model a @c ModelPtr instance to add.
      * @param key a @c std::string representing the key to associate with the model.
      *
-     * @return boolean value, @c true if the model was added, @c false if it was not.
+     * @return @c true if the model was added, @c false if it was not.
      */
     bool addModel(const ModelPtr &model, const std::string &key);
 
@@ -125,17 +129,17 @@ public:
      * @param model a @c ModelPtr instance to replace the current one.
      * @param key a @c std::string representing the key at which to replace the model.
      *
-     * @return boolean value, @c true if the model was replaced, @c false if it was not.
+     * @return @c true if the model was replaced, @c false if it was not.
      */
     bool replaceModel(const ModelPtr &model, const std::string &key);
 
     /**
-     * @brief Retrieve the pair of url key and import reference at the given index.
+     * @brief Retrieve the pair of URL key and import reference at the given index.
      *
      * This is taken from the list of dependencies for the models which have been resolved,
      * and is what will break if those external files are ever moved or renamed.
      *
-     * The "first" attribute of the returned pair is the url at which the imported model was
+     * The "first" attribute of the returned pair is the URL at which the imported model was
      * accessed and under which it is now stored in the library as its key, and the "second" attribute
      * is the import reference.
      *
