@@ -334,9 +334,9 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         ComponentNameMap newComponentNames = createComponentNamesMap(importedComponentCopy);
         for (const auto &entry : newComponentNames) {
             std::string newName = entry.first;
-            size_t count = 1;
+            size_t count = 0;
             while (std::find(compNames.begin(), compNames.end(), newName) != compNames.end()) {
-                newName += "_" + convertToString(count++);
+                newName += "_" + convertToString(++count);
             }
             if (newName != entry.first) {
                 entry.second->setName(newName);
@@ -390,35 +390,34 @@ void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &
     }
 }
 
-ModelPtr Importer::flatten(const ModelPtr &inModel)
+ModelPtr Importer::flatten(const ModelPtr &model)
 {
-    if (inModel->hasUnresolvedImports()) {
-        // Mimicking behaviour of previous flatten() function... not sure this is the way to go?
-        return inModel;
+    if (model->hasUnresolvedImports()) {
+        return nullptr;
     }
-    auto model = inModel->clone();
+    auto flatModel = model->clone();
 
-    while (model->hasImports()) {
+    while (flatModel->hasImports()) {
         // Go through Units and instantiate any imported Units.
-        for (size_t index = 0; index < model->unitsCount(); ++index) {
-            auto u = model->units(index);
+        for (size_t index = 0; index < flatModel->unitsCount(); ++index) {
+            auto u = flatModel->units(index);
             if (u->isImport()) {
                 auto importedUnits = u->importSource()->model()->units(u->importReference());
                 auto importedUnitsCopy = importedUnits->clone();
                 importedUnitsCopy->setName(u->name());
-                model->replaceUnits(index, importedUnitsCopy);
+                flatModel->replaceUnits(index, importedUnitsCopy);
             }
         }
 
-        // Go through Components and instatiate any imported Components
-        for (size_t index = 0; index < model->componentCount(); ++index) {
-            auto c = model->component(index);
-            flattenComponentTree(model, c, index);
+        // Go through Components and instatiate any imported Components.
+        for (size_t index = 0; index < flatModel->componentCount(); ++index) {
+            auto c = flatModel->component(index);
+            flattenComponentTree(flatModel, c, index);
         }
     }
 
-    model->linkUnits();
-    return model;
+    flatModel->linkUnits();
+    return flatModel;
 }
 
 size_t Importer::libraryCount()
@@ -442,8 +441,8 @@ ModelPtr Importer::library(const size_t &index)
     auto it = mPimpl->mLibrary.begin();
     size_t i = 0;
     while (i < index) {
-        it++;
-        i++;
+        ++it;
+        ++i;
     }
     return it->second;
 }

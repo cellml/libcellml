@@ -62,10 +62,7 @@ TEST(ModelFlattening, modelWithUnresolvedImports)
     auto importer = libcellml::Importer::create();
     auto flatModel = importer->flatten(modelWithUnitsImports);
 
-    auto printer = libcellml::Printer::create();
-
-    auto a = printer->printModel(flatModel);
-    EXPECT_EQ(modelImportingUnits, a);
+    EXPECT_EQ(nullptr, flatModel);
 }
 
 TEST(ModelFlattening, importedUnits)
