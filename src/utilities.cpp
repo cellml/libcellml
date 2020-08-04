@@ -669,7 +669,7 @@ size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentPar
 {
     size_t index = 0;
     bool found = false;
-    while (index < componentParent->componentCount() && !found) {
+    while ((index < componentParent->componentCount()) && !found) {
         if (componentParent->component(index) == component) {
             found = true;
         } else {
@@ -698,7 +698,7 @@ IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originSta
     rebasedStack.resize(originStack.size(), SIZE_MAX);
     if (rebasedStack == originStack) {
         rebasedStack = destinationStack;
-        auto offsetIt = stack.begin() + static_cast<int64_t>(originStack.size());
+        auto offsetIt = stack.begin() + static_cast<int64_t>(originStack.size()); 
         rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
     } else {
         rebasedStack.clear();
@@ -796,7 +796,7 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto v = component->variable(i);
         auto u = v->units();
-        if (u != nullptr && !isStandardUnitName(u->name())) {
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
             auto requiredUnits = referencedUnits(model, u);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
             usedUnits.push_back(u);
@@ -805,7 +805,7 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
     auto componentCnUnitsNames = findComponentCnUnitsNames(component);
     for (const auto &unitsName : componentCnUnitsNames) {
         auto u = model->units(unitsName);
-        if (u != nullptr && !isStandardUnitName(u->name())) {
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
             auto requiredUnits = referencedUnits(model, u);
             usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
             usedUnits.push_back(u);

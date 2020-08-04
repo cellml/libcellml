@@ -56,8 +56,12 @@ public:
      * resources and having no imports.
      *
      * @sa clone
+     * 
+     * @param model A @c ModelPtr whose imports will be resolved.
+     * 
+     * @return If the operation is successful, a new @c ModelPtr to the flattened model; otherwise, the @c nullptr.
      */
-    ModelPtr flatten(const ModelPtr &inModel);
+    ModelPtr flatten(const ModelPtr &model);
 
     /**
      * @brief Resolve all imports in the @p model.
