@@ -196,7 +196,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
                 auto model = parser->parseModel(buffer.str());
                 importSource->setModel(model);
 
-                // Save the pair of model and url to the library map.
+                // Save the pair of model and URL to the library map.
                 mLibrary.insert(std::make_pair(url, model));
 
                 // Save the imported model to a list of external dependencies.
