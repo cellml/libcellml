@@ -191,7 +191,7 @@ public:
     AnyItem item(const std::string &id, size_t index);
 
     /**
-     * @brief Retrieve a @c ComponentPtr with the given @p id at @p index.
+     * @brief Retrieve a @c ComponentPtr with the given @p id.
      *
      *        If an item with the id is not found, has another type, or is not unique, the
      *        @c nullptr is returned.
@@ -200,7 +200,6 @@ public:
      *
      * @return A @c ComponentPtr.
      */
-
     ComponentPtr component(const std::string &id);
 
     /**
@@ -209,7 +208,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ComponentPtr; or
      *      - the annotator is not built; 
      *
@@ -220,8 +219,33 @@ public:
      */
     ComponentPtr component(const std::string &id, size_t index);
 
-    // KRM
+    /**
+     * @brief Retrieve the @c ModelPtr if its encapsulation has the given @p id.
+     *
+     *        If an item with the id is not found, has another type, or is not unique, the
+     *        @c nullptr is returned.
+     *
+     * @param id String representing the id of the item to retrieve.
+     *
+     * @return A @c ComponentPtr.
+     */
     ModelPtr encapsulation(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ModelPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
+     *      - the item stored at the @p index is not a @c ModelPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ModelPtr.
+     */
     ModelPtr encapsulation(const std::string &id, size_t index);
 
     /**
@@ -242,7 +266,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c VariablePtr; or
      *      - the annotator is not built; 
      *
@@ -271,7 +295,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ResetPtr; or
      *      - the annotator is not built; 
      *
@@ -300,7 +324,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ModelPtr; or
      *      - the annotator is not built; 
      *
@@ -329,7 +353,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ImportSourcePtr; or
      *      - the annotator is not built; 
      *
@@ -358,7 +382,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c UnitsPtr; or
      *      - the annotator is not built; 
      *
@@ -388,7 +412,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c VariablePair; or
      *      - the annotator is not built; 
      *
@@ -418,7 +442,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c VariablePair; or
      *      - the annotator is not built; 
      *
@@ -447,7 +471,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c UnitItem; or
      *      - the annotator is not built; 
      *
@@ -476,7 +500,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ComponentPtr; or
      *      - the annotator is not built; 
      *
@@ -505,7 +529,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ResetPtr; or
      *      - the annotator is not built; 
      *
@@ -537,7 +561,7 @@ public:
      *
      *  A @c nullptr will be returned if:
      *      - no item with the given @p id exists in the stored model;
-     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the given @p index is beyond the range [0, \#duplicateCount(id));
      *      - the item stored at the @p index is not a @c ResetPtr; or
      *      - the annotator is not built; 
      *
@@ -1109,8 +1133,20 @@ public:
      */
     std::string typeString(const std::uint64_t &type);
 
-    // KRM
-    size_t countIds(const std::string &id);
+    /**
+     * @brief Get the number of items with the given @p id.
+     *
+     * @param id A @c std::string for the id to find.
+     * 
+     * @return the number of items with the given @p id.
+     */
+    size_t duplicateCount(const std::string &id);
+
+    /**
+     * @brief Test whether the annotator is up-to-date with the state of the stored model.
+     *
+     * @return @c true if the annotator has been built with respect to the current model state, or @c false otherwise.
+     */
     bool isBuilt();
 
 private:

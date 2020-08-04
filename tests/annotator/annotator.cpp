@@ -1813,7 +1813,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
     EXPECT_EQ(ids, annotator->duplicateIds());
 
     for (const auto &id : ids) {
-        auto num = annotator->countIds(id);
+        auto num = annotator->duplicateCount(id);
         for (size_t index = 0; index < num; ++index) {
             libcellml::AnyItem item = annotator->item(id, index);
 
