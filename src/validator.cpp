@@ -367,7 +367,6 @@ void Validator::validateModel(const ModelPtr &model)
                             issue->setImportSource(units->importSource());
                             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
                             addIssue(issue);
-
                         } else {
                             xmlFreeURI(uri);
                         }
