@@ -37,14 +37,14 @@ public:
     Importer &operator=(Importer rhs) = delete; /**< Assignment operator */
 
     /**
-     * @brief Create a @c Importer object.
+     * @brief Create an @c Importer object.
      *
-     * Factory method to create a @c Importer.  Create a
+     * Factory method to create an @c Importer.  Create a
      * blank model with::
      *
      *   ImporterPtr importer = libcellml::Importer::create();
      *
-     * @return A smart pointer to a @c Importer object.
+     * @return A smart pointer to an @c Importer object.
      */
     static ImporterPtr create() noexcept;
 
