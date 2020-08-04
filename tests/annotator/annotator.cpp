@@ -782,6 +782,8 @@ TEST(Annotator, automaticIdsComponents)
 
     annotator->assignIds(libcellml::Annotator::Type::COMPONENT);
 
+    EXPECT_TRUE(annotator->isBuilt());
+
     EXPECT_EQ("", model->id());
     EXPECT_EQ("b4da55", component1->id());
     EXPECT_EQ("b4da56", component2->id());
@@ -811,6 +813,7 @@ TEST(Annotator, automaticIdsComponentRefs)
     EXPECT_EQ("", component3->encapsulationId());
 
     annotator->assignIds(libcellml::Annotator::Type::COMPONENT_REF);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -855,6 +858,7 @@ TEST(Annotator, automaticIdsConnection)
     EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(variable4, variable2));
 
     annotator->assignIds(libcellml::Annotator::Type::CONNECTION);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -876,6 +880,8 @@ TEST(Annotator, automaticIdsEncapsulation)
 
     EXPECT_EQ("", model->encapsulationId());
     annotator->assignIds(libcellml::Annotator::Type::ENCAPSULATION);
+    EXPECT_TRUE(annotator->isBuilt());
+
     EXPECT_EQ("b4da55", model->encapsulationId());
 }
 
@@ -903,6 +909,7 @@ TEST(Annotator, automaticIdsImportSource)
     EXPECT_EQ("", model->component(0)->id());
 
     annotator->assignIds(libcellml::Annotator::Type::IMPORT);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("b4da55", model->importSource(0)->id());
@@ -945,6 +952,7 @@ TEST(Annotator, automaticIdsMapVariables)
     EXPECT_EQ("", libcellml::Variable::equivalenceMappingId(variable2, variable4));
 
     annotator->assignIds(libcellml::Annotator::Type::MAP_VARIABLES);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -965,7 +973,10 @@ TEST(Annotator, automaticIdsModel)
     annotator->build(model);
 
     EXPECT_EQ("", model->id());
+
     annotator->assignIds(libcellml::Annotator::Type::MODEL);
+    EXPECT_TRUE(annotator->isBuilt());
+
     EXPECT_EQ("b4da55", model->id());
 }
 
@@ -999,6 +1010,7 @@ TEST(Annotator, automaticIdsResets)
     EXPECT_EQ("", reset3->id());
 
     annotator->assignIds(libcellml::Annotator::Type::RESET);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1045,6 +1057,7 @@ TEST(Annotator, automaticIdsResetValues)
     EXPECT_EQ("", reset3->resetValueId());
 
     annotator->assignIds(libcellml::Annotator::Type::RESET_VALUE);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1094,6 +1107,7 @@ TEST(Annotator, automaticIdsTestValues)
     EXPECT_EQ("", reset3->testValueId());
 
     annotator->assignIds(libcellml::Annotator::Type::TEST_VALUE);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1124,7 +1138,9 @@ TEST(Annotator, automaticIdsUnitItems)
     EXPECT_EQ("", units->id());
     EXPECT_EQ("", units->unitId(0));
     EXPECT_EQ("", units->unitId(1));
+
     annotator->assignIds(libcellml::Annotator::Type::UNIT);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", units->id());
@@ -1154,6 +1170,7 @@ TEST(Annotator, automaticIdsUnitsItems)
     EXPECT_EQ("", units1->id());
 
     annotator->assignIds(libcellml::Annotator::Type::UNITS);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("b4da55", units1->id());
@@ -1191,6 +1208,7 @@ TEST(Annotator, automaticIdsVariables)
     EXPECT_EQ("", variable4->id());
 
     annotator->assignIds(libcellml::Annotator::Type::VARIABLE);
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1209,6 +1227,7 @@ TEST(Annotator, automaticIdsIssue)
     annotator->build(model);
 
     EXPECT_FALSE(annotator->assignIds(libcellml::Annotator::Type::ISSUE));
+    EXPECT_TRUE(annotator->isBuilt());
 }
 
 TEST(Annotator, automaticIdAllItemsNoId)
@@ -1236,21 +1255,35 @@ TEST(Annotator, automaticIdAllItemsNoId)
     libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0));
 
     annotator->build(model);
+    EXPECT_TRUE(annotator->isBuilt());
 
     // Expect each have had a change of id.
     EXPECT_EQ("b4da55", annotator->assignId(itemComponent));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da56", annotator->assignId(itemComponentRef));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da57", annotator->assignId(itemConnection));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da58", annotator->assignId(itemImportSource));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da59", annotator->assignId(itemMapVariables));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da5a", annotator->assignId(itemModel));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da5b", annotator->assignId(itemReset));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da5c", annotator->assignId(itemResetValue));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da5d", annotator->assignId(itemTestValue));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da5e", annotator->assignId(itemUnit));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da5f", annotator->assignId(itemUnits));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da60", annotator->assignId(itemVariable));
+    EXPECT_TRUE(annotator->isBuilt());
     EXPECT_EQ("b4da61", annotator->assignId(itemEncapsulation));
+    EXPECT_TRUE(annotator->isBuilt());
 
     EXPECT_EQ("b4da55", model->component(0)->id());
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
@@ -1273,6 +1306,8 @@ TEST(Annotator, automaticIdAllItemsNoId)
     libcellml::AnyItem itemMapVariables2 = std::make_pair(libcellml::Annotator::Type::MAP_VARIABLES, r2);
     EXPECT_EQ("b4da62", annotator->assignId(itemConnection2));
     EXPECT_EQ("b4da63", annotator->assignId(itemMapVariables2));
+
+    EXPECT_TRUE(annotator->isBuilt());
 }
 
 TEST(Annotator, automaticIdAllItemsAllDuplicated)
@@ -1942,6 +1977,10 @@ TEST(Annotator, hashChangesAndUpdates)
     model->setId("iHaveChangedSinceTheLastBuild");
     EXPECT_FALSE(annotator->isBuilt());
 
+    // Can set id, but does not rebuild.
+    EXPECT_EQ("b4da55", annotator->assignId(libcellml::Annotator::Type::COMPONENT, model->component(0)));
+    EXPECT_FALSE(annotator->isBuilt());
+
     // Shouldn't be able to retrieve anything since the build is out of date.
     EXPECT_EQ(nullptr, annotator->model("model_1"));
     EXPECT_EQ(nullptr, annotator->encapsulation("encapsulation_1"));
@@ -1966,4 +2005,19 @@ TEST(Annotator, hashChangesAndUpdates)
     EXPECT_EQ(nullptr, annotator->connection("connection_1").first);
     EXPECT_EQ(nullptr, annotator->mapVariables("map_variables_1").first);
     EXPECT_EQ(nullptr, annotator->mapVariables("map_variables_2").first);
+}
+
+TEST(Annotator, hashUpdatedWithAllAutomaticIds)
+{
+    // Expect that using the local Annotator functionality to set automatic ids will
+    // not make the build hash out of date.
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringUniqueIds);
+    auto annotator = libcellml::Annotator::create();
+
+    annotator->build(model);
+    EXPECT_TRUE(annotator->isBuilt());
+
+    annotator->assignAllIds();
+    EXPECT_TRUE(annotator->isBuilt());
 }
