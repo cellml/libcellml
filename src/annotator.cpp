@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <sstream>
+#include <unordered_map> // Included for the hash function.
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
@@ -39,12 +40,10 @@ struct Annotator::AnnotatorImpl
 {
     Annotator *mAnnotator = nullptr;
     ItemList mIdList;
-    bool isBuilt = false;
     ModelPtr mModel = nullptr;
     size_t mCounter = 0xb4da55;
-
-    // ItemList mTemporaryItemList;
-    // std::string mTemporaryId;
+    size_t mHash = 0;
+    bool mIsBuilt = false;
 
     std::string makeUniqueId();
     void doSetAllAutomaticIds();
@@ -62,6 +61,9 @@ struct Annotator::AnnotatorImpl
     void doSetMapVariablesIds(const ComponentPtr &parent);
     void doSetComponentRefIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
+
+    size_t getHash();
+    void doUpdateComponentHash(ComponentPtr &component, std::string &idsString);
 };
 
 Annotator::Annotator()
@@ -69,8 +71,9 @@ Annotator::Annotator()
 {
     mPimpl->mAnnotator = this;
     mPimpl->mIdList = std::multimap<std::string, AnyItem>();
-    mPimpl->isBuilt = false;
     mPimpl->mCounter = 0xb4da55;
+    mPimpl->mHash = 0;
+    mPimpl->mIsBuilt = false;
 }
 
 Annotator::~Annotator()
@@ -232,7 +235,6 @@ ItemList listIdsAndItems(const ModelPtr &model)
 
 void Annotator::build(const ModelPtr &model)
 {
-    mPimpl->isBuilt = false;
     removeAllIssues();
     mPimpl->mIdList.clear();
     mPimpl->mIdList = listIdsAndItems(model);
@@ -247,16 +249,16 @@ void Annotator::build(const ModelPtr &model)
         }
     }
 
-    mPimpl->isBuilt = true;
     mPimpl->mModel = model;
+    mPimpl->mHash = mPimpl->getHash();
 }
 
 AnyItem Annotator::item(const std::string &id)
 {
     AnyItem i;
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         i = std::make_pair(Annotator::Type::ISSUE, issue);
@@ -444,9 +446,9 @@ ResetPtr Annotator::resetValue(const std::string &id)
 
 ComponentPtr Annotator::component(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -469,9 +471,9 @@ ComponentPtr Annotator::component(const std::string &id, size_t index)
 
 VariablePtr Annotator::variable(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -494,9 +496,9 @@ VariablePtr Annotator::variable(const std::string &id, size_t index)
 
 ModelPtr Annotator::model(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -527,9 +529,9 @@ ModelPtr Annotator::encapsulation(const std::string &id)
 
 ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -552,9 +554,9 @@ ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 
 UnitsPtr Annotator::units(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -577,9 +579,9 @@ UnitsPtr Annotator::units(const std::string &id, size_t index)
 
 ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -602,9 +604,9 @@ ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 
 ResetPtr Annotator::reset(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -627,9 +629,9 @@ ResetPtr Annotator::reset(const std::string &id, size_t index)
 
 VariablePair Annotator::connection(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
@@ -652,9 +654,9 @@ VariablePair Annotator::connection(const std::string &id, size_t index)
 
 VariablePair Annotator::mapVariables(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
@@ -678,9 +680,9 @@ VariablePair Annotator::mapVariables(const std::string &id, size_t index)
 
 UnitItem Annotator::unit(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return std::make_pair(nullptr, 0);
@@ -703,9 +705,9 @@ UnitItem Annotator::unit(const std::string &id, size_t index)
 
 ComponentPtr Annotator::componentRef(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -728,9 +730,9 @@ ComponentPtr Annotator::componentRef(const std::string &id, size_t index)
 
 ResetPtr Annotator::testValue(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -753,9 +755,9 @@ ResetPtr Annotator::testValue(const std::string &id, size_t index)
 
 ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 {
-    if (!mPimpl->isBuilt) {
+    if (!isBuilt()) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setDescription("The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -804,7 +806,7 @@ void Annotator::clearAllIds()
     mPimpl->mIdList.clear();
     // Set to true even though it hasn't been built, as technically the library
     // is up-to-date with the model, even though it's empty.
-    mPimpl->isBuilt = true;
+    mPimpl->mHash = 0;
     removeAllIssues();
 }
 
@@ -1922,6 +1924,71 @@ std::string Annotator::typeString(const std::uint64_t &type)
 size_t Annotator::countIds(const std::string &id)
 {
     return mPimpl->mIdList.count(id);
+}
+
+void Annotator::AnnotatorImpl::doUpdateComponentHash(ComponentPtr &component, std::string &idsString)
+{
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        idsString += "v" + std::to_string(i) + component->variable(i)->id();
+    }
+
+    for (size_t i = 0; i < component->resetCount(); ++i) {
+        auto reset = component->reset(i);
+        idsString += "r" + std::to_string(i) + reset->id() + reset->resetValueId() + reset->testValueId();
+    }
+
+    // Note that MathML ids are not yet included.
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto child = component->component(i);
+        idsString += "c" + std::to_string(i) + child->id() + child->encapsulationId();
+        doUpdateComponentHash(child, idsString);
+    }
+}
+
+size_t Annotator::AnnotatorImpl::getHash()
+{
+    // Serialise the stored model into a (very) simplified string of id-ed items, and create a hash.
+    std::string idsString;
+    idsString += "m" + mModel->id() + mModel->encapsulationId();
+
+    for (size_t u = 0; u < mModel->importSourceCount(); ++u) {
+        auto import = mModel->importSource(u);
+        idsString += "i" + std::to_string(u) + import->id();
+    }
+
+    for (size_t u = 0; u < mModel->unitsCount(); ++u) {
+        auto units = mModel->units(u);
+        idsString += "U" + std::to_string(u) + units->id();
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            idsString += "u" + std::to_string(i) + units->unitId(i);
+        }
+    }
+
+    for (size_t u = 0; u < mModel->componentCount(); ++u) {
+        auto component = mModel->component(u);
+        idsString += "c" + std::to_string(u) + component->id();
+        idsString += "cr" + std::to_string(u) + component->encapsulationId();
+        doUpdateComponentHash(component, idsString);
+    }
+
+    std::hash<std::string> hasher;
+    return hasher(idsString);
+}
+
+bool Annotator::isBuilt()
+{
+    if(mPimpl->mModel == nullptr){
+        return false;
+    }
+    // If we already know it's out of date, return false.
+    if (!mPimpl->mIsBuilt)
+    {
+        return false;
+    }
+    // If we don't know, then test the hash.
+    mPimpl->mIsBuilt = mPimpl->mHash == mPimpl->getHash(); 
+    return mPimpl->mIsBuilt;
 }
 
 } // namespace libcellml

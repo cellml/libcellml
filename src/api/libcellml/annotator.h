@@ -1111,6 +1111,7 @@ public:
 
     // KRM
     size_t countIds(const std::string &id);
+    bool isBuilt();
 
 private:
     Annotator(); /**< Constructor */
