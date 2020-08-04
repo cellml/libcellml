@@ -187,29 +187,29 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
             if (mLibrary.count(url) == 0) {
                 // If the URL has not been resolved into a model in this library, parse it and save.
                 std::ifstream file(url);
-                if (file.good()) {
-                    std::stringstream buffer;
-                    buffer << file.rdbuf();
-                    auto parser = Parser::create();
-                    auto model = parser->parseModel(buffer.str());
-                    importSource->setModel(model);
-
-                    // Save the pair of model and url to the library map.
-                    mLibrary.insert(std::make_pair(url, model));
-
-                    // Save the imported model to a list of external dependencies.
-                    mExternals.emplace_back(std::make_pair(url, importedEntity->importReference()));
-                    return doResolveImports(model, url, history);
+                if (!file.good()) {
+                    return false;
                 }
-            } else {
-                // If it has, then pass the previous model instance to the import source.
-                auto model = mLibrary[url];
+                std::stringstream buffer;
+                buffer << file.rdbuf();
+                auto parser = Parser::create();
+                auto model = parser->parseModel(buffer.str());
                 importSource->setModel(model);
-                if (typeString == "component") {
-                    return checkComponentForCycles(model, history);
-                }
-                return checkUnitsForCycles(model, history);
+
+                // Save the pair of model and url to the library map.
+                mLibrary.insert(std::make_pair(url, model));
+
+                // Save the imported model to a list of external dependencies.
+                mExternals.emplace_back(std::make_pair(url, importedEntity->importReference()));
+                return doResolveImports(model, url, history);
             }
+            // If it has, then pass the previous model instance to the import source.
+            auto model = mLibrary[url];
+            importSource->setModel(model);
+            if (typeString == "component") {
+                return checkComponentForCycles(model, history);
+            }
+            return checkUnitsForCycles(model, history);
         }
     }
     return true;
@@ -271,10 +271,11 @@ void clearComponentImports(const ComponentPtr &component)
 
 void Importer::clearImports(ModelPtr &model)
 {
-    // Clears the models from all import sources in the model.
+    // Clear the models from all import sources in the model.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
-        if (model->units(u)->isImport()) {
-            model->units(u)->importSource()->setModel(nullptr);
+        auto mu = model->units(u);
+        if (mu->isImport()) {
+            mu->importSource()->setModel(nullptr);
         }
     }
     for (size_t c = 0; c < model->componentCount(); ++c) {
