@@ -82,6 +82,7 @@ public:
     void build(const ModelPtr &model);
 
     /**
+     * @overload
      * @brief Retrieves an item with the given id string, in the model
      * for which the internal map was built using @sa build().
      *
@@ -99,7 +100,7 @@ public:
      *          connection.  Note that multiple pairs of variables could be used to identify
      *          a single connection.
      *   Annotator::Type::ENCAPSULATION
-     *          An empty string.
+     *          A ModelPtr of the model whose encapsulation id is the given id.
      *   Annotator::Type::IMPORT
      *          An ImportSourcePtr item with this id.
      *   Annotator::Type::ISSUE
@@ -134,16 +135,94 @@ public:
     AnyItem item(const std::string &id);
 
     /**
-     * @brief Retrieve a @c ComponentPtr with the given @p id.
+     * @overload
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns the item in the @p index position.
+     * 
+     * Note that the @sa Annotator::build function must be called before this can work successfully. 
      *
-     *        If an item with the id is not found, or has another type, the
+     * The item returned is a @c std::pair containing:
+     *  - an @c Annotator::Type enum, and
+     *  - an @c std::any item containing the item.
+     *
+     * Possible string labels and their corresponding items returned are:
+     *  - Annotator::Type::COMPONENT
+     *          ComponentPtr to item with this id.
+     *  - Annotator::Type::COMPONENT_REF
+     *          ComponentPtr to component which has component->componentRefId() == id.
+     *  - Annotator::Type::CONNECTION
+     *          VariablePair including two VariablePtr items which can be used to retrieve the
+     *          connection.  Note that multiple pairs of variables could be used to identify
+     *          a single connection.
+     *   Annotator::Type::ENCAPSULATION
+     *          A ModelPtr of the model whose encapsulation id is the given id.
+     *   Annotator::Type::IMPORT
+     *          An ImportSourcePtr item with this id.
+     *   Annotator::Type::ISSUE
+     *          An IssuePtr containing an error message.
+     *   Annotator::Type::MAP_VARIABLES
+     *          A VariablePair including two VariablePtr items which can be used to retrieve the
+     *          equivalence.
+     *   Annotator::Type::MODEL
+     *          A ModelPtr with this id.
+     *   Annotator::Type::RESET
+     *          A ResetPtr with this id.
+     *   Annotator::Type::RESET_VALUE
+     *          A ResetPtr which is the parent of the reset_value item found with this id.
+     *          Retrieve the reset_value MathML string using reset->resetValue().
+     *   Annotator::Type::TEST_VALUE
+     *          A ResetPtr which is the parent of the test_value item found with this id.
+     *          Retrieve the test_value MathML string using reset->testValue().
+     *   Annotator::Type::UNIT
+     *          A UnitItem pair containing:
+     *              .first: A UnitsPtr to the parent of the unit item with this id, and
+     *              .second: A size_t with the index to the Unit item.
+     *          Retrieve the unit description using Units::unitAttributes() function with
+     *   Annotator::Type::UNITS
+     *          A UnitsPtr item with this id.
+     *   Annotator::Type::VARIABLE
+     *          A VariablePtr item with this id.
+          *
+     * @param id A @c std::string representing the @p id to retrieve.
+     * @param index 
+     *
+     * @return An @c AnyItem item as described above.
+     */
+    AnyItem item(const std::string &id, size_t index);
+
+    /**
+     * @brief Retrieve a @c ComponentPtr with the given @p id at @p index.
+     *
+     *        If an item with the id is not found, has another type, or is not unique, the
      *        @c nullptr is returned.
      *
      * @param id String representing the id of the item to retrieve.
      *
      * @return A @c ComponentPtr.
      */
+
     ComponentPtr component(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ComponentPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ComponentPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ComponentPtr.
+     */
+    ComponentPtr component(const std::string &id, size_t index);
+
+    // KRM
+    ModelPtr encapsulation(const std::string &id);
+    ModelPtr encapsulation(const std::string &id, size_t index);
 
     /**
      * @brief Retrieve a @c VariablePtr with the given @p id.
@@ -158,6 +237,23 @@ public:
     VariablePtr variable(const std::string &id);
 
     /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c VariablePtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c VariablePtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c VariablePtr.
+     */
+    VariablePtr variable(const std::string &id, size_t index);
+
+    /**
      * @brief Retrieve a @c ResetPtr with the given @p id.
      *
      *        If an item with the id is not found, or has another type, the
@@ -168,6 +264,23 @@ public:
      * @return A @c ResetPtr.
      */
     ResetPtr reset(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ResetPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ResetPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ResetPtr.
+     */
+    ResetPtr reset(const std::string &id, size_t index);
 
     /**
      * @brief Retrieve a @c ModelPtr with the given @p id.
@@ -182,6 +295,23 @@ public:
     ModelPtr model(const std::string &id);
 
     /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ModelPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ModelPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ModelPtr.
+     */
+    ModelPtr model(const std::string &id, size_t index);
+
+    /**
      * @brief Retrieve a @c ImportSourcePtr with the given @p id.
      *
      *        If an item with the id is not found, or has another type, the
@@ -194,6 +324,23 @@ public:
     ImportSourcePtr importSource(const std::string &id);
 
     /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ImportSourcePtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ImportSourcePtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return An @c ImportSourcePtr.
+     */
+    ImportSourcePtr importSource(const std::string &id, size_t index);
+
+    /**
      * @brief Retrieve a @c UnitsPtr with the given @p id.
      *
      *        If an item with the id is not found, or has another type, the
@@ -204,6 +351,23 @@ public:
      * @return A @c UnitsPtr.
      */
     UnitsPtr units(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c UnitsPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c UnitsPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c UnitsPtr.
+     */
+    UnitsPtr units(const std::string &id, size_t index);
 
     /**
      * @brief Retrieve a @c VariablePair item containing the two @c Variables
@@ -219,6 +383,23 @@ public:
     VariablePair connection(const std::string &id);
 
     /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c VariablePair in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c VariablePair; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c VariablePair.
+     */
+    VariablePair connection(const std::string &id, size_t index);
+
+    /**
      * @brief Retrieve a @c VariablePair item containing the two @c Variables
      *        whose mapping has the given @p id.
      *
@@ -230,6 +411,23 @@ public:
      * @return A @c VariablePair.
      */
     VariablePair mapVariables(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c VariablePair in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c VariablePair; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c VariablePair.
+     */
+    VariablePair mapVariables(const std::string &id, size_t index);
 
     /**
      * @brief Retrieve a @c UnitItem with the given @p id.
@@ -244,6 +442,23 @@ public:
     UnitItem unit(const std::string &id);
 
     /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c UnitItem in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c UnitItem; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c UnitItem.
+     */
+    UnitItem unit(const std::string &id, size_t index);
+
+    /**
      * @brief Retrieve a @c ComponentPtr to the component_ref with the given @p id.
      *
      *        If an item with the id is not found, or has another type, the
@@ -256,6 +471,23 @@ public:
     ComponentPtr componentRef(const std::string &id);
 
     /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ComponentPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ComponentPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ComponentPtr.
+     */
+    ComponentPtr componentRef(const std::string &id, size_t index);
+
+    /**
      * @brief Retrieve a @c ResetPtr whose test_value has the given @p id.
      *
      *        If an item with the id is not found, or has another type, the
@@ -266,6 +498,23 @@ public:
      * @return A @c ResetPtr.
      */
     ResetPtr testValue(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ResetPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ResetPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ResetPtr.
+     */
+    ResetPtr testValue(const std::string &id, size_t index);
 
     /**
      * @brief Retrieve a @c ResetPtr whose reset_value has the given @p id.
@@ -281,6 +530,23 @@ public:
      * @return A @c ResetPtr.
      */
     ResetPtr resetValue(const std::string &id);
+
+    /**
+     * @brief From a list of items in the stored model with the given @p id string,
+     *        this function returns a @c ResetPtr in the @p index position, if it exists.
+     *
+     *  A @c nullptr will be returned if:
+     *      - no item with the given @p id exists in the stored model;
+     *      - the given @p index is beyond the range [0, \#countIds(id));
+     *      - the item stored at the @p index is not a @c ResetPtr; or
+     *      - the annotator is not built; 
+     *
+     * @param id A @c std::string representing the id of the item to retrieve.
+     * @param index The position of an item within the list of items with the given @p id to retrieve.
+     *
+     * @return A @c ResetPtr.
+     */
+    ResetPtr resetValue(const std::string &id, size_t index);
 
     /**
      * @brief Assign an id string to every item in the model which is already 
@@ -842,6 +1108,9 @@ public:
      * @return a string representing the @p type.
      */
     std::string typeString(const std::uint64_t &type);
+
+    // KRM
+    size_t countIds(const std::string &id);
 
 private:
     Annotator(); /**< Constructor */

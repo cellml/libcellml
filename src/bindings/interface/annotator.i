@@ -23,6 +23,9 @@
 %feature("docstring") libcellml::Annotator::component
 "Return the component with the given id.";
 
+%feature("docstring") libcellml::Annotator::encapsulation
+"Return the model with the given encapsulation id.";
+
 %feature("docstring") libcellml::Annotator::model
 "Return the model with the given id.";
 
@@ -104,10 +107,11 @@
 %feature("docstring") libcellml::Annotator::typeString
 "Translates the given Annotator::Type enumeration into a string.";
 
+%feature("docstring") libcellml::Annotator::countIds
+"Returns the number of items in the stored model with the given id.";
+
 // PRIVATE: Functions only written to support bindings. They are not 
 // intended to be called from anywhere.
-%feature("docstring") libcellml::Annotator::itemForPython
-"Private: Utility function to retrieve item based on id.";
 
 %feature("docstring") libcellml::Annotator::itemTypeForPython
 "Private: Utility function to retrieve item type integer based on id.";
@@ -133,8 +137,6 @@
 %feature("docstring") libcellml::Annotator::assignUnitIdForPython
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
 
-// %feature("docstring") libcellml::Annotator::itemsForPython
-// "Private: Utility function to return a collection of items with the given id.";
 
 %{
 #include "libcellml/annotator.h"
@@ -149,49 +151,44 @@
 
 %create_constructor(Annotator)
 
+%template(VectorOfStrings) std::vector<std::string>;
+
 %extend libcellml::Annotator {
 
-    void itemForPython(const std::string &id, int &type, std::any &itemPtr)
+    int itemTypeForPython(const std::string &id, size_t index)
     {
-        auto itemInfo = $self->item(id);
-        type = static_cast<int>(itemInfo.first);
-        itemPtr = itemInfo.second;
-    }
-
-    int itemTypeForPython(const std::string &id)
-    {
-        auto itemInfo = $self->item(id);
+        auto itemInfo = $self->item(id, index);
         return static_cast<int>(itemInfo.first);
     }
 
-    int unitIndexForPython(const std::string &id)
+    int unitIndexForPython(const std::string &id, size_t index)
     {
-        auto u = $self->unit(id);
+        auto u = $self->unit(id, index);
         if(u.first == nullptr){
             return -1;
         }
         return u.second;
     }
 
-    UnitsPtr unitParentForPython(const std::string &id)
+    UnitsPtr unitParentForPython(const std::string &id, size_t index)
     {
-        auto u = $self->unit(id);
+        auto u = $self->unit(id, index);
         return u.first;
     }
 
-    VariablePtr connectionForPython(const std::string &id, const size_t &index)
+    VariablePtr connectionForPython(const std::string &id, bool useFirst, const size_t &index)
     {
-        auto vPair = $self->connection(id);
-        if (index == 0) {
+        auto vPair = $self->connection(id, index);
+        if (useFirst) {
             return vPair.first;
         }
         return vPair.second;
     }
 
-    VariablePtr mapVariablesForPython(const std::string &id, const size_t &index)
+    VariablePtr mapVariablesForPython(const std::string &id, bool useFirst, const size_t &index)
     {
-        auto vPair = $self->mapVariables(id);
-        if (index == 0) {
+        auto vPair = $self->mapVariables(id, index);
+        if (useFirst) {
             return vPair.first;
         }
         return vPair.second;
@@ -244,54 +241,71 @@
                 return _annotator.Annotator_assignUnitIdForPython(self, item, item2)
             return ""
        
-        def unit(self, id):
+        def unit(self, id, index=0):
             r"""Return the UnitItem with the given id.  The first item is the parent UnitsPtr item, the second is the index of this unit."""
-            return (_annotator.Annotator_unitParentForPython(self, id), _annotator.Annotator_unitIndexForPython(self, id))
+            return (_annotator.Annotator_unitParentForPython(self, id, index), _annotator.Annotator_unitIndexForPython(self, id, index))
 
-        def connection(self, id):
+        def connection(self, id, index=0):
             r"""Retrieve a tuple of VariablePtr items from a connection with the given id."""
-            return (_annotator.Annotator_connectionForPython(self, id, 0), _annotator.Annotator_connectionForPython(self, id, 1))
+            return (_annotator.Annotator_connectionForPython(self, id, True, index), _annotator.Annotator_connectionForPython(self, id, False, index))
 
-        def mapVariables(self, id):
+        def mapVariables(self, id, index=0):
             r"""Retrieve a tuple of VariablePtr items from a map_variables with the given id."""
-            return (_annotator.Annotator_mapVariablesForPython(self, id, 0), _annotator.Annotator_mapVariablesForPython(self, id, 1))
+            return (_annotator.Annotator_mapVariablesForPython(self, id, True, index), _annotator.Annotator_mapVariablesForPython(self, id, False, index))
 
-        def item(self, id):
-            r"""Retrieve the item with the given id."""
-            type = _annotator.Annotator_itemTypeForPython(self, id)
+        def item(self, id, index=-1):
+            r"""Retrieve a unique item with the given id."""
+            if index == -1 and not _annotator.Annotator_isUnique(id, true):
+                return (-1, None)
+            
+            if index == -1:
+                index = 0
+
+            type = _annotator.Annotator_itemTypeForPython(self, id, index)
             if type == Annotator.Type.COMPONENT:
-                return (type, _annotator.Annotator_component(self, id))
+                return (type, _annotator.Annotator_component(self, id, index))
             elif type == Annotator.Type.COMPONENT_REF:
-                return (type, _annotator.Annotator_componentRef(self, id))
+                return (type, _annotator.Annotator_componentRef(self, id, index))
             elif type == Annotator.Type.CONNECTION:
-                return (type, _annotator.Annotator_connection(self, id))
+                first = _annotator.Annotator_connectionForPython(self, id, True, index)
+                second = _annotator.Annotator_connectionForPython(self, id, False, index)
+                return (type, (first, second))
             elif type == Annotator.Type.ENCAPSULATION:
-                return (type, _annotator.Annotator_encapsulation(self, id))
+                return (type, _annotator.Annotator_encapsulation(self, id, index))
             elif type == Annotator.Type.IMPORT:
-                return (type, _annotator.Annotator_import(self, id))
+                return (type, _annotator.Annotator_importSource(self, id, index))
             elif type == Annotator.Type.ISSUE:
-                return (type, _annotator.Annotator_issue(self, id))
+                return (type, _annotator.Annotator_issue(self, id, index))
             elif type == Annotator.Type.MAP_VARIABLES:
-                return (type, _annotator.Annotator_mapVariables(self, id))
+                first = _annotator.Annotator_mapVariablesForPython(self, id, True, index)
+                second = _annotator.Annotator_mapVariablesForPython(self, id, False, index)
+                return (type, (first, second))
             elif type == Annotator.Type.MODEL:
-                return (type, _annotator.Annotator_model(self, id))
+                return (type, _annotator.Annotator_model(self, id, index))
             elif type == Annotator.Type.RESET:
-                return (type, _annotator.Annotator_reset(self, id))
+                return (type, _annotator.Annotator_reset(self, id, index))
             elif type == Annotator.Type.RESET_VALUE:
-                return (type, _annotator.Annotator_resetValue(self, id))
+                return (type, _annotator.Annotator_resetValue(self, id, index))
             elif type == Annotator.Type.TEST_VALUE:
-                return (type, _annotator.Annotator_testValue(self, id)) 
+                return (type, _annotator.Annotator_testValue(self, id, index)) 
             elif type == Annotator.Type.UNIT:
-                return (type, _annotator.Annotator_unit(self, id))
+                first = _annotator.Annotator_unitParentForPython(self, id, index)
+                second = _annotator.Annotator_unitIndexForPython(self, id, index)
+                return (type, (first, second))
             elif type == Annotator.Type.UNITS:
-                return (type, _annotator.Annotator_units(self, id))
+                return (type, _annotator.Annotator_units(self, id, index))
             elif type == Annotator.Type.VARIABLE:
-                return (type, _annotator.Annotator_variable(self, id))
+                return (type, _annotator.Annotator_variable(self, id, index))
             return (-1, None)
 
         def items(self, id):
-            r"""TODO"""
-            return [(-1, None)]
+            r"""Returns everything with the given id as as list of (type, item) tuples."""
+            count = _annotator.Annotator_countIds(self, id)
+            itemsList = []
+            for c in range(0, count):
+                items_with_id = self.item(id, c)
+                itemsList.append(items_with_id)
+            return itemsList
 
         %}
     }
