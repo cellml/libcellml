@@ -139,8 +139,8 @@ public:
      * This is taken from the list of dependencies for the models which have been resolved,
      * and is what will break if those external files are ever moved or renamed.
      *
-     * The "first" attribute of the returned pair is the URL at which the imported model was
-     * accessed and under which it is now stored in the library as its key, and the "second" attribute
+     * The first attribute of the returned pair is the URL at which the imported model was
+     * accessed and under which it is now stored in the library as its key, and the second attribute
      * is the import reference.
      *
      * @return a @c std::pair of @c std::strings.
@@ -153,7 +153,7 @@ public:
      * Returns the number of dependencies for the models which have been resolved by this
      * importer.
      *
-     * @return the number of variables.
+     * @return the number of external dependencies.
      */
     size_t externalDependencyCount() const;
 
