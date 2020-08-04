@@ -1928,7 +1928,8 @@ TEST(Annotator, pythonBindingFunctionsCoverage)
     }
 }
 
-TEST(Annotator, hashChangesAndUpdates){
+TEST(Annotator, hashChangesAndUpdates)
+{
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
