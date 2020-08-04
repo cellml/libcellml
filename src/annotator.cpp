@@ -292,7 +292,7 @@ AnyItem Annotator::item(const std::string &id, size_t index)
     // Retrieve the item from the idList.
     if (index >= mPimpl->mIdList.count(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
         auto i = std::make_pair(Annotator::Type::ISSUE, issue);
@@ -456,9 +456,9 @@ ComponentPtr Annotator::component(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -481,9 +481,9 @@ VariablePtr Annotator::variable(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -506,9 +506,9 @@ ModelPtr Annotator::model(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -539,9 +539,9 @@ ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -564,9 +564,9 @@ UnitsPtr Annotator::units(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -589,9 +589,9 @@ ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -614,9 +614,9 @@ ResetPtr Annotator::reset(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -639,9 +639,9 @@ VariablePair Annotator::connection(const std::string &id, size_t index)
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
@@ -664,9 +664,9 @@ VariablePair Annotator::mapVariables(const std::string &id, size_t index)
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
@@ -690,9 +690,9 @@ UnitItem Annotator::unit(const std::string &id, size_t index)
         addIssue(issue);
         return std::make_pair(nullptr, 0);
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return std::make_pair(nullptr, 0);
@@ -715,9 +715,9 @@ ComponentPtr Annotator::componentRef(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -740,9 +740,9 @@ ResetPtr Annotator::testValue(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -765,9 +765,9 @@ ResetPtr Annotator::resetValue(const std::string &id, size_t index)
         addIssue(issue);
         return nullptr;
     }
-    if (index >= countIds(id)) {
+    if (index >= duplicateCount(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setDescription("There are " + std::to_string(duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
         return nullptr;
@@ -1889,7 +1889,7 @@ std::string Annotator::typeString(const std::uint64_t &type)
     return typeToString.at(static_cast<Annotator::Type>(type));
 }
 
-size_t Annotator::countIds(const std::string &id)
+size_t Annotator::duplicateCount(const std::string &id)
 {
     return mPimpl->mIdList.count(id);
 }

@@ -107,7 +107,7 @@
 %feature("docstring") libcellml::Annotator::typeString
 "Translates the given Annotator::Type enumeration into a string.";
 
-%feature("docstring") libcellml::Annotator::countIds
+%feature("docstring") libcellml::Annotator::duplicateCount
 "Returns the number of items in the stored model with the given id.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
