@@ -41,8 +41,8 @@ TEST(Validator, unnamedModel)
         "Model does not have a valid name attribute.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "3.1.3",
-        "4.2.1",
+        "1.3.1.1",
+        "2.1.1",
     };
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -65,16 +65,16 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "Component does not have a valid name attribute.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "3.1.4",
-        "4.2.1",
-        "3.1.2",
-        "10.1.1",
-        "3.1.3",
-        "10.1.1",
-        "3.1.2",
-        "10.1.1",
-        "3.1.3",
-        "10.1.1",
+        "1.3.1.1",
+        "2.1.1",
+        "1.3.1.1",
+        "2.7.1",
+        "1.3.1.1",
+        "2.7.1",
+        "1.3.1.1",
+        "2.7.1",
+        "1.3.1.1",
+        "2.7.1",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
