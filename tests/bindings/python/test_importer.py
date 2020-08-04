@@ -10,7 +10,7 @@ class ValidatorTestCase(unittest.TestCase):
         from libcellml import Importer
 
         x = Importer()
-        del(x)
+        del x
 
     def test_inheritance(self):
         import libcellml

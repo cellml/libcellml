@@ -83,26 +83,6 @@ Importer::~Importer()
     delete mPimpl;
 }
 
-/**
- * @brief Resolve the path of the given filename using the given base.
- *
- * Resolves the full path to the given @p filename using the @p base.
- *
- * This function is only intended to work with local files.  It may not
- * work with bases that use the 'file://' prefix.
- *
- * @param filename The @c std::string relative path from the base path.
- * @param base The @c std::string location on local disk for determining the full path from.
- *
- * @return The full path from the @p base location to the @p filename
- */
-std::string resolvePath(const std::string &filename, const std::string &base)
-{
-    // We can be naive here as we know what we are dealing with.
-    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
-    return path;
-}
-
 bool checkUnitsForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
     // Check through model for overlap with the current history so we can report cycles properly.
@@ -119,6 +99,7 @@ bool checkUnitsForCycles(ModelPtr &model, std::vector<std::tuple<std::string, st
     }
     return true;
 }
+
 bool checkComponentForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
     for (size_t c = 0; c < model->componentCount(); ++c) {
@@ -140,13 +121,12 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
 {
     for (size_t n = 0; n < model->unitsCount(); ++n) {
         auto units = model->units(n);
-
-        if ((!resolveImport(units, units->name(), "units", baseFile, history)) && (!history.empty())) {
+        if (!resolveImport(units, units->name(), "units", baseFile, history) && !history.empty()) {
             std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + model->name() + "'. The dependency loop is:\n";
             std::string spacer = "    ";
             for (auto &h : history) {
-                msg += spacer + "units '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
-                spacer = "',\n    ";
+                msg += spacer + "- units '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
+                spacer = "';\n    ";
             }
             msg += "'.";
             auto issue = Issue::create();
@@ -159,6 +139,26 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
         }
     }
     return resolveComponentImports(model, baseFile, history);
+}
+
+/**
+ * @brief Resolve the path of the given filename using the given base.
+ *
+ * Resolves the full path to the given @p filename using the @p base.
+ *
+ * This function is only intended to work with local files.  It may not
+ * work with bases that use the 'file://' prefix.
+ *
+ * @param filename The @c std::string relative path from the base path.
+ * @param base The @c std::string location on local disk for determining the full path from.
+ *
+ * @return The full path from the @p base location to the @p filename
+ */
+std::string resolvePath(const std::string &filename, const std::string &base)
+{
+    // We can be naive here as we know what we are dealing with.
+    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
+    return path;
 }
 
 bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEntity,
@@ -233,8 +233,8 @@ bool Importer::ImporterImpl::resolveComponentImports(const ComponentEntityPtr &p
                     msg += ". The dependency loop is:\n";
                     std::string spacer = "    ";
                     for (auto &h : history) {
-                        msg += spacer + "component '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
-                        spacer = "',\n    ";
+                        msg += spacer + "- component '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
+                        spacer = "';\n    ";
                     }
                     msg += "'.";
                     auto issue = Issue::create();
