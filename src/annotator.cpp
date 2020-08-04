@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <sstream>
-#include <unordered_map> // Included for the hash function.
+#include <unordered_map> 
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
@@ -239,6 +239,7 @@ void Annotator::build(const ModelPtr &model)
     mPimpl->mIdList.clear();
     mPimpl->mIdList = listIdsAndItems(model);
 
+    // KRM not sure that we need this now that we can handle duplicates more cleanly?
     for (auto it = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); it != end; it = mPimpl->mIdList.upper_bound(it->first)) {
         auto id = it->first;
         if (mPimpl->mIdList.count(id) > 1) {
@@ -251,6 +252,7 @@ void Annotator::build(const ModelPtr &model)
 
     mPimpl->mModel = model;
     mPimpl->mHash = mPimpl->getHash();
+    mPimpl->mIsBuilt = true;
 }
 
 AnyItem Annotator::item(const std::string &id)
@@ -1505,14 +1507,13 @@ std::string Annotator::assignModelId(const ModelPtr &model)
     }
 
     auto range = mPimpl->mIdList.equal_range(oldId);
-    for (auto it = range.first; it != range.second; ++it) {
-        if ((it->second.first == type) && (std::any_cast<ModelPtr>(it->second.second) == model)) {
-            id = mPimpl->makeUniqueId();
-            mPimpl->mIdList.erase(it);
-            model->setId(id);
-            mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, model)));
-            break;
-        }
+    auto it = range.first;
+    // There will only be one model, and it will always be the first in the list.
+    if ((it->second.first == type) && (std::any_cast<ModelPtr>(it->second.second) == model)) {
+        id = mPimpl->makeUniqueId();
+        mPimpl->mIdList.erase(it);
+        model->setId(id);
+        mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, model)));
     }
     return id;
 }
@@ -1978,16 +1979,15 @@ size_t Annotator::AnnotatorImpl::getHash()
 
 bool Annotator::isBuilt()
 {
-    if(mPimpl->mModel == nullptr){
+    if (mPimpl->mModel == nullptr) {
         return false;
     }
     // If we already know it's out of date, return false.
-    if (!mPimpl->mIsBuilt)
-    {
+    if (!mPimpl->mIsBuilt) {
         return false;
     }
     // If we don't know, then test the hash.
-    mPimpl->mIsBuilt = mPimpl->mHash == mPimpl->getHash(); 
+    mPimpl->mIsBuilt = mPimpl->mHash == mPimpl->getHash();
     return mPimpl->mIsBuilt;
 }
 
