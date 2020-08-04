@@ -43,6 +43,9 @@ struct Annotator::AnnotatorImpl
     ModelPtr mModel = nullptr;
     size_t mCounter = 0xb4da55;
 
+    // ItemList mTemporaryItemList;
+    // std::string mTemporaryId;
+
     std::string makeUniqueId();
     void doSetAllAutomaticIds();
     void doSetModelIds();
@@ -58,7 +61,6 @@ struct Annotator::AnnotatorImpl
     void doSetConnectionIds(const ComponentPtr &parent);
     void doSetMapVariablesIds(const ComponentPtr &parent);
     void doSetComponentRefIds(const ComponentPtr &parent);
-
     void doClearComponentIds(const ComponentPtr &component);
 };
 
@@ -251,14 +253,14 @@ void Annotator::build(const ModelPtr &model)
 
 AnyItem Annotator::item(const std::string &id)
 {
-    AnyItem item;
+    AnyItem i;
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
         issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
         issue->setLevel(libcellml::Issue::Level::ERROR);
         addIssue(issue);
-        item = std::make_pair(Annotator::Type::ISSUE, issue);
-        return item;
+        i = std::make_pair(Annotator::Type::ISSUE, issue);
+        return i;
     }
     if (mPimpl->mIdList.empty()) {
         // Setting the error message to be the same as below.
@@ -266,34 +268,35 @@ AnyItem Annotator::item(const std::string &id)
         issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
-        item = std::make_pair(Annotator::Type::ISSUE, issue);
-        return item;
+        i = std::make_pair(Annotator::Type::ISSUE, issue);
+        return i;
     }
 
     // Check whether the id has been duplicated in the model.
     if (!isUnique(id, true)) {
         // Get the issue created inside the isUnique function and return it.
-        auto i = issue(issueCount() - 1);
-        item = std::make_pair(Annotator::Type::ISSUE, i);
-        return item;
+        auto c = issue(issueCount() - 1);
+        i = std::make_pair(Annotator::Type::ISSUE, c);
+        return i;
     }
+    return item(id, 0);
+}
 
+AnyItem Annotator::item(const std::string &id, size_t index)
+{
     // Retrieve the item from the idList.
-    ItemList::iterator it;
-    it = mPimpl->mIdList.find(id);
-
-    if (it == mPimpl->mIdList.end()) {
+    if (index >= mPimpl->mIdList.count(id)) {
         auto issue = libcellml::Issue::create();
-        issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
         issue->setLevel(libcellml::Issue::Level::WARNING);
         addIssue(issue);
-        item = std::make_pair(Annotator::Type::ISSUE, issue);
+        auto i = std::make_pair(Annotator::Type::ISSUE, issue);
         // Adding the requested id string and this issue to the map, so that future requests (ie: to the .second)
         // will return the same IssuePtr rather than creating a new one.
-        mPimpl->mIdList.insert(std::make_pair(id, item));
-        return item;
+        mPimpl->mIdList.insert(std::make_pair(id, i));
+        return std::move(i);
     }
-    return it->second;
+    return std::move(items(id)[index]);
 }
 
 bool Annotator::isUnique(const std::string &id, bool raiseError = false)
@@ -320,6 +323,20 @@ std::vector<AnyItem> Annotator::items(const std::string &id)
     return items;
 }
 
+// For bindings, we can't use the <any> type.  This means that we have to provide
+// separate functions that will iterate through items with the same id, regardless of
+// their type.
+// void Annotator::setTemporaryIdForBindings(const std::string &id)
+// {
+//     mPimpl->mTemporaryId = id;
+//     mPimpl->mTemporaryItems = mPimpl->mIdList.equal_range(id);
+// }
+
+// void Annotator::unsetTemporaryIdForBindings(){
+//     mPimpl->mTemporaryId = "";
+//     mPimpl->mTemporaryItems = nullptr;
+// }
+
 std::vector<std::string> Annotator::duplicateIds()
 {
     std::vector<std::string> ids;
@@ -331,26 +348,101 @@ std::vector<std::string> Annotator::duplicateIds()
 
 ComponentPtr Annotator::component(const std::string &id)
 {
-    if (!mPimpl->isBuilt) {
-        auto issue = libcellml::Issue::create();
-        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
-        issue->setLevel(libcellml::Issue::Level::ERROR);
-        addIssue(issue);
-        return nullptr;
-    }
     if (!isUnique(id, true)) {
         return nullptr;
     }
-    auto i = item(id);
-    try {
-        return std::any_cast<ComponentPtr>(i.second);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return component(id, 0);
 }
 
 VariablePtr Annotator::variable(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return variable(id, 0);
+}
+
+ModelPtr Annotator::model(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return model(id, 0);
+}
+
+UnitsPtr Annotator::units(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return units(id, 0);
+}
+
+ImportSourcePtr Annotator::importSource(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return importSource(id, 0);
+}
+
+ResetPtr Annotator::reset(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return reset(id, 0);
+}
+
+VariablePair Annotator::connection(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return std::make_pair(nullptr, nullptr);
+    }
+    return connection(id, 0);
+}
+
+VariablePair Annotator::mapVariables(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return std::make_pair(nullptr, nullptr);
+    }
+    return mapVariables(id, 0);
+}
+
+UnitItem Annotator::unit(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return std::make_pair(nullptr, 0);
+    }
+    return unit(id, 0);
+}
+
+ComponentPtr Annotator::componentRef(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return componentRef(id, 0);
+}
+
+ResetPtr Annotator::testValue(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return testValue(id, 0);
+}
+
+ResetPtr Annotator::resetValue(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return resetValue(id, 0);
+}
+
+ComponentPtr Annotator::component(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -359,10 +451,39 @@ VariablePtr Annotator::variable(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
+    try {
+        return std::any_cast<ComponentPtr>(i.second);
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+VariablePtr Annotator::variable(const std::string &id, size_t index)
+{
+    if (!mPimpl->isBuilt) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
+        return nullptr;
+    }
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
+        return nullptr;
+    }
+    auto i = items(id).at(index);
     try {
         return std::any_cast<VariablePtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -371,7 +492,7 @@ VariablePtr Annotator::variable(const std::string &id)
     }
 }
 
-ModelPtr Annotator::model(const std::string &id)
+ModelPtr Annotator::model(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -380,10 +501,14 @@ ModelPtr Annotator::model(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<ModelPtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -392,7 +517,15 @@ ModelPtr Annotator::model(const std::string &id)
     }
 }
 
-UnitsPtr Annotator::units(const std::string &id)
+ModelPtr Annotator::encapsulation(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return encapsulation(id, 0);
+}
+
+ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -401,10 +534,39 @@ UnitsPtr Annotator::units(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
+    try {
+        return std::any_cast<ModelPtr>(i.second);
+    } catch (std::bad_any_cast &e) {
+        (void)e;
+        return nullptr;
+    }
+}
+
+UnitsPtr Annotator::units(const std::string &id, size_t index)
+{
+    if (!mPimpl->isBuilt) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("Please call the Annotator::build function before attempting to access items by their id.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
+        return nullptr;
+    }
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
+        return nullptr;
+    }
+    auto i = items(id).at(index);
     try {
         return std::any_cast<UnitsPtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -413,7 +575,7 @@ UnitsPtr Annotator::units(const std::string &id)
     }
 }
 
-ImportSourcePtr Annotator::importSource(const std::string &id)
+ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -422,10 +584,14 @@ ImportSourcePtr Annotator::importSource(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<ImportSourcePtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -434,7 +600,7 @@ ImportSourcePtr Annotator::importSource(const std::string &id)
     }
 }
 
-ResetPtr Annotator::reset(const std::string &id)
+ResetPtr Annotator::reset(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -443,10 +609,14 @@ ResetPtr Annotator::reset(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<ResetPtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -455,7 +625,7 @@ ResetPtr Annotator::reset(const std::string &id)
     }
 }
 
-VariablePair Annotator::connection(const std::string &id)
+VariablePair Annotator::connection(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -464,10 +634,14 @@ VariablePair Annotator::connection(const std::string &id)
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return std::make_pair(nullptr, nullptr);
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<VariablePair>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -476,7 +650,7 @@ VariablePair Annotator::connection(const std::string &id)
     }
 }
 
-VariablePair Annotator::mapVariables(const std::string &id)
+VariablePair Annotator::mapVariables(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -485,10 +659,15 @@ VariablePair Annotator::mapVariables(const std::string &id)
         addIssue(issue);
         return std::make_pair(nullptr, nullptr);
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return std::make_pair(nullptr, nullptr);
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
+
     try {
         return std::any_cast<VariablePair>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -497,7 +676,7 @@ VariablePair Annotator::mapVariables(const std::string &id)
     }
 }
 
-UnitItem Annotator::unit(const std::string &id)
+UnitItem Annotator::unit(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -506,10 +685,14 @@ UnitItem Annotator::unit(const std::string &id)
         addIssue(issue);
         return std::make_pair(nullptr, 0);
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return std::make_pair(nullptr, 0);
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<UnitItem>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -518,7 +701,7 @@ UnitItem Annotator::unit(const std::string &id)
     }
 }
 
-ComponentPtr Annotator::componentRef(const std::string &id)
+ComponentPtr Annotator::componentRef(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -527,10 +710,14 @@ ComponentPtr Annotator::componentRef(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<ComponentPtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -539,7 +726,7 @@ ComponentPtr Annotator::componentRef(const std::string &id)
     }
 }
 
-ResetPtr Annotator::testValue(const std::string &id)
+ResetPtr Annotator::testValue(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -548,10 +735,14 @@ ResetPtr Annotator::testValue(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<ResetPtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -560,7 +751,7 @@ ResetPtr Annotator::testValue(const std::string &id)
     }
 }
 
-ResetPtr Annotator::resetValue(const std::string &id)
+ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 {
     if (!mPimpl->isBuilt) {
         auto issue = libcellml::Issue::create();
@@ -569,10 +760,14 @@ ResetPtr Annotator::resetValue(const std::string &id)
         addIssue(issue);
         return nullptr;
     }
-    if (!isUnique(id, true)) {
+    if (index >= countIds(id)) {
+        auto issue = libcellml::Issue::create();
+        issue->setDescription("There are " + std::to_string(countIds(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
+        issue->setLevel(libcellml::Issue::Level::ERROR);
+        addIssue(issue);
         return nullptr;
     }
-    auto i = item(id);
+    auto i = items(id).at(index);
     try {
         return std::any_cast<ResetPtr>(i.second);
     } catch (std::bad_any_cast &e) {
@@ -1722,6 +1917,11 @@ std::string Annotator::typeString(const Annotator::Type &type)
 std::string Annotator::typeString(const std::uint64_t &type)
 {
     return typeToString.at(static_cast<Annotator::Type>(type));
+}
+
+size_t Annotator::countIds(const std::string &id)
+{
+    return mPimpl->mIdList.count(id);
 }
 
 } // namespace libcellml
