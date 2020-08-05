@@ -79,7 +79,7 @@ class AnnotatorTestCase(unittest.TestCase):
             '</model>\n'
 
         model = parser.parseModel(model_string)
-        annotator.build(model)
+        annotator.buildModelIndex(model)
 
         v1v2 = (model.component("component2").variable("variable1"), model.component(
             "component2").component("component3").variable("variable2"))
@@ -218,7 +218,7 @@ class AnnotatorTestCase(unittest.TestCase):
                        '</model>\n'
 
         model = parser.parseModel(model_string)
-        annotator.build(model)
+        annotator.buildModelIndex(model)
 
         annotator.assignAllIds()
 
@@ -272,7 +272,7 @@ class AnnotatorTestCase(unittest.TestCase):
         model.addComponent(component2)
         component2.addComponent(component3)
 
-        annotator.build(model)
+        annotator.buildModelIndex(model)
 
         self.assertEqual("", model.id())
         self.assertEqual("", component1.id())
@@ -350,7 +350,7 @@ class AnnotatorTestCase(unittest.TestCase):
             '</model>\n'
         model = parser.parseModel(model_string)
 
-        annotator.build(model)
+        annotator.buildModelIndex(model)
 
         self.assertEqual("b4da55", annotator.assignId(
             Annotator.Type.COMPONENT, model.component(0)))
@@ -491,7 +491,7 @@ class AnnotatorTestCase(unittest.TestCase):
         parser = Parser()
         annotator = Annotator()
         model = parser.parseModel(model_string)
-        annotator.build(model)
+        annotator.buildModelIndex(model)
         id_list = annotator.duplicateIds()
         expected_ids = ('duplicateId1', 'duplicateId2', 'duplicateId3', 'duplicateId4')
         self.assertEqual(expected_ids, id_list)

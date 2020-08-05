@@ -79,12 +79,12 @@ public:
      *
      * @param model A @c ModelPtr model to build map for.
      */
-    void build(const ModelPtr &model);
+    void buildModelIndex(const ModelPtr &model);
 
     /**
      * @overload
      * @brief Retrieves an item with the given id string, in the model
-     * for which the internal map was built using @sa build().
+     * for which the internal map was built using @sa buildModelIndex().
      *
      * The item returned is a @c std::pair containing:
      *  - an @c Annotator::Type enum, and
@@ -546,7 +546,7 @@ public:
      *  If an item with the id is not found, or has another type, the
      *  @c nullptr is returned.
      * 
-     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this function can be called successfully.
      *
      * @param id String representing the id of the item to retrieve.
@@ -596,7 +596,7 @@ public:
      * @brief Assign an id string to every item of the given @p type in the
      *  model which is already stored in this annotator.
      * 
-     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this function can be called successfully.
      * 
      * @param type Items of this @c Annotator::Type will all be assigned a new id.
@@ -635,7 +635,7 @@ public:
     /**
      * @brief Return a @c std::vector of @c AnyItem items which have the given @p id.
      * 
-     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this function can be called successfully.
      * 
      * @param id A @c std::string used to identify the set of items to retrieve.
@@ -648,7 +648,7 @@ public:
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id
      *  string in the stored model.
      * 
-     *  The annotator index must be built using Annotator::build(ModelPtr model)
+     *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this function can be called successfully.
      * 
      * @return a @c std::vector of @c std::strings.
