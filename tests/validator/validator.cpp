@@ -238,7 +238,7 @@ TEST(Validator, importUnits)
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
-        "Import of units 'cant_find_me' has an invalid URI in the href attribute.",
+        "Import of units 'cant_find_me' has an invalid URI in the xlink:href attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units does not have a valid name attribute.",
     };
@@ -305,7 +305,7 @@ TEST(Validator, importComponents)
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute.",
-        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute.",
+        "Import of component 'a_bad_imported_component' has an invalid URI in the xlink:href attribute.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
