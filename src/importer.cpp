@@ -122,13 +122,17 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
     for (size_t n = 0; n < model->unitsCount(); ++n) {
         auto units = model->units(n);
         if (!resolveImport(units, units->name(), "units", baseFile, history) && !history.empty()) {
-            std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '" + model->name() + "'. The dependency loop is:\n";
+            std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '"
+                              + model->name() + "'. The dependency loop is:\n";
             std::string spacer = "    ";
-            for (auto &h : history) {
-                msg += spacer + "- units '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
+            std::tuple<std::string, std::string, std::string> h;
+            for (size_t i = 0; i < history.size() - 1; ++i) {
+                h = history[i];
+                msg += spacer + "- units '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h);
                 spacer = "';\n    ";
             }
-            msg += "'.";
+            h = history[history.size() - 1];
+            msg += "'; and\n    - units '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'.";
             auto issue = Issue::create();
             issue->setDescription(msg);
             issue->setLevel(libcellml::Issue::Level::WARNING);
@@ -232,11 +236,14 @@ bool Importer::ImporterImpl::resolveComponentImports(const ComponentEntityPtr &p
                     }
                     msg += ". The dependency loop is:\n";
                     std::string spacer = "    ";
-                    for (auto &h : history) {
-                        msg += spacer + "- component '" + std::get<0>(h) + "' imports '" + std::get<1>(h) + "' from '" + std::get<2>(h);
+                    std::tuple<std::string, std::string, std::string> h;
+                    for (size_t i = 0; i < history.size() - 1; ++i) {
+                        h = history[i];
+                        msg += spacer + "- component '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h);
                         spacer = "';\n    ";
                     }
-                    msg += "'.";
+                    h = history[history.size() - 1];
+                    msg += "'; and\n    - component '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'.";
                     auto issue = Issue::create();
                     issue->setDescription(msg);
                     issue->setLevel(libcellml::Issue::Level::WARNING);
