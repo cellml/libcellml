@@ -481,8 +481,8 @@ TEST(Importer, library)
     auto model4 = libcellml::Model::create("model4");
 
     EXPECT_TRUE(importer->addModel(model1, "a_model_the_first.cellml"));
-    EXPECT_TRUE(importer->addModel(model2, "b_tweede_model.cellml"));
-    EXPECT_TRUE(importer->addModel(model3, "c_troisieme_model.cellml"));
+    EXPECT_TRUE(importer->addModel(model2, "b_tweede_voorbeeld.cellml"));
+    EXPECT_TRUE(importer->addModel(model3, "c_troisieme_modele.cellml"));
 
     // Add another under the first key, expect false.
     EXPECT_FALSE(importer->addModel(model4, "a_model_the_first.cellml"));
@@ -490,8 +490,8 @@ TEST(Importer, library)
 
     // Access library by key.
     EXPECT_EQ(model1, importer->library("a_model_the_first.cellml"));
-    EXPECT_EQ(model2, importer->library("b_tweede_model.cellml"));
-    EXPECT_EQ(model3, importer->library("c_troisieme_model.cellml"));
+    EXPECT_EQ(model2, importer->library("b_tweede_voorbeeld.cellml"));
+    EXPECT_EQ(model3, importer->library("c_troisieme_modele.cellml"));
     EXPECT_EQ(nullptr, importer->library("d_tuawha.cellml"));
 
     // Access library by index.
