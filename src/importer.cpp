@@ -434,7 +434,7 @@ size_t Importer::libraryCount()
 
 ModelPtr Importer::library(const std::string &key)
 {
-    if (mPimpl->mLibrary.count(key) > 0) {
+    if (mPimpl->mLibrary.count(key) != 0) {
         return mPimpl->mLibrary[key];
     }
     return nullptr;
@@ -456,7 +456,7 @@ ModelPtr Importer::library(const size_t &index)
 
 bool Importer::addModel(const ModelPtr &model, const std::string &key)
 {
-    if (mPimpl->mLibrary.count(key) > 0) {
+    if (mPimpl->mLibrary.count(key) != 0) {
         // If the key already exists in the library, do nothing.
         return false;
     }
