@@ -110,6 +110,9 @@
 %feature("docstring") libcellml::Annotator::duplicateCount
 "Returns the number of items in the stored model with the given id.";
 
+%feature("docstring") libcellml::Annotator::isBuilt
+"Reports whether the annotator index is up-to-date with its stored model state.";
+
 // PRIVATE: Functions only written to support bindings. They are not 
 // intended to be called from anywhere.
 
@@ -300,7 +303,7 @@
 
         def items(self, id):
             r"""Returns everything with the given id as as list of (type, item) tuples."""
-            count = _annotator.Annotator_countIds(self, id)
+            count = _annotator.Annotator_duplicateCount(self, id)
             itemsList = []
             for c in range(0, count):
                 items_with_id = self.item(id, c)
