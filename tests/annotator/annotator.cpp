@@ -2103,21 +2103,4 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     model->component("component2")->variable(0)->setId("changed");
     EXPECT_EQ("b4da61", annotator->assignId(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0)));
     EXPECT_EQ("b4da61", model->component("component2")->variable(0)->id());
-
-    // For coverage doing the other pair combo too.
-    // libcellml::Variable::setEquivalenceConnectionId(connection.first, connection.second, "");
-    // libcellml::Variable::setEquivalenceMappingId(mapping.first, mapping.second, "");
-
-    // libcellml::VariablePair connection2 = std::make_pair(
-    //     model->component("component2")->variable("variable1")->equivalentVariable(0),
-    //     model->component("component2")->variable("variable1"));
-    // libcellml::VariablePair mapping2 = std::make_pair(
-    //     model->component("component2")->variable("variable2")->equivalentVariable(0),
-    //     model->component("component2")->variable("variable2"));
-
-    // EXPECT_EQ("b4da62", annotator->assignId(libcellml::Annotator::Type::CONNECTION, connection2));
-    // EXPECT_EQ("b4da62", libcellml::Variable::equivalenceConnectionId(connection2.first, connection2.second));
-
-    // EXPECT_EQ("b4da63", annotator->assignId(libcellml::Annotator::Type::MAP_VARIABLES, mapping2));
-    // EXPECT_EQ("b4da63", libcellml::Variable::equivalenceMappingId(mapping2.first, mapping2.second));
 }
