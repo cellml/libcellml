@@ -142,9 +142,7 @@ TEST(Importer, warningUnrequiredCircularDependencyUnits)
 TEST(Model, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
-    // it have the same end result.  Previously (see #519) any units
-    // defined in the model but not used by a variable (ie: only used by <cn> tags)
-    // were not imported.
+    // it have the same end result.  
     auto validator = libcellml::Validator::create();
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
@@ -163,8 +161,6 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     EXPECT_FALSE(model->hasUnresolvedImports());
     model = importer->flatten(model);
 
-    // Confirm that the bug reported in #519 wherein units used solely by <cn> items
-    // in imported components were not being imported is now fixed.
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
