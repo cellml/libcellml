@@ -16,7 +16,7 @@ Resolves all component and units imports by loading the
 models from local disk through relative URLs. The ``baseFile`` is used to
 determine the full path to the source model relative to this one.";
 
-%feature("docstring") libcellml::Importer::flatten
+%feature("docstring") libcellml::Importer::flattenModel
 "Instantiate all imported components and units and return a self-contained model.";
 
 %feature("docstring") libcellml::Importer::libraryCount
