@@ -142,7 +142,7 @@ TEST(Importer, warningUnrequiredCircularDependencyUnits)
 TEST(Model, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
-    // it have the same end result.  
+    // it have the same end result.
     auto validator = libcellml::Validator::create();
     auto model = libcellml::Model::create("model_from_imports");
     auto c = libcellml::Component::create("c");
