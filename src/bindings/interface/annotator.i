@@ -14,7 +14,7 @@
 %feature("docstring") libcellml::Annotator
 "Interacts with CellML objects using their id attribute.";
 
-%feature("docstring") libcellml::Annotator::build
+%feature("docstring") libcellml::Annotator::buildModelIndex
 "Construct a searchable map of items in the model.";
 
 %feature("docstring") libcellml::Annotator::item
@@ -51,19 +51,19 @@
 "Return the ComponentPtr with the given component_ref id.";
 
 %feature("docstring") libcellml::Annotator::assignAllIds
-"Traverses the stored model and sets any blank id fields to an automatically generated id.";
+"Traverse the stored model and set any blank id fields to an automatically generated id.";
 
 %feature("docstring") libcellml::Annotator::assignIds
-"Sets all items of the given type in the stored model to automatically generated, unique strings.";
+"Set all items of the given type in the stored model to automatically generated, unique strings.";
 
 %feature("docstring") libcellml::Annotator::clearAllIds
-"Clears all the id strings in the given or stored model.";
+"Clear all the id strings in the given or stored model.";
 
 %feature("docstring") libcellml::Annotator::isUnique
-"Returns `true` if the given string is not duplicated in the stored model, or `false` otherwise.";
+"Return `true` if the given string is not duplicated in the stored model, or `false` otherwise.";
 
 %feature("docstring") libcellml::Annotator::duplicateIds
-"Returns a list of id strings which are duplicated within the stored model.";
+"Return a list of id strings which are duplicated within the stored model.";
 
 %feature("docstring") libcellml::Annotator::assignComponentId
 "Assign an automatically generated, unique id to the given component.";
@@ -105,13 +105,13 @@
 "Assign an automatically generated, unique id to the given variable.";
 
 %feature("docstring") libcellml::Annotator::typeString
-"Translates the given Annotator::Type enumeration into a string.";
+"Translate the given Annotator::Type enumeration into a string.";
 
 %feature("docstring") libcellml::Annotator::duplicateCount
-"Returns the number of items in the stored model with the given id.";
+"Return the number of items in the stored model with the given id.";
 
 %feature("docstring") libcellml::Annotator::isBuilt
-"Reports whether the annotator index is up-to-date with its stored model state.";
+"Report whether the annotator index is up-to-date with its stored model state.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
 // intended to be called from anywhere.

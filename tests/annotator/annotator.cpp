@@ -328,7 +328,7 @@ TEST(Annotator, getEntityFromId)
     model->addComponent(component);
     model->addUnits(units);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ(libcellml::Annotator::Type::MODEL, annotator->item("model_id").first);
     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(annotator->item("model_id").second));
@@ -387,7 +387,7 @@ TEST(Annotator, getNonEntityFromId)
     reset->setTestValueId("test_value_id");
     c1->addReset(reset);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     // Unit items are returned as name string and pair of UnitsPtr parent and index:
     EXPECT_EQ(libcellml::Annotator::Type::UNIT, annotator->item("unit1_id").first);
@@ -429,17 +429,19 @@ TEST(Annotator, errorHandling)
 
     // Searching before the map is built should return an error.
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, annotator->item("i_dont_exist").first);
-    EXPECT_EQ(size_t(1), annotator->issueCount());
-    EXPECT_EQ(annotator->issue(0)->description(), "The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id.");
+    EXPECT_EQ(size_t(2), annotator->issueCount());
+    EXPECT_EQ(annotator->issue(0)->description(), "No model is stored; no action has been taken.");
+    EXPECT_EQ(annotator->issue(1)->description(), "The model index is out-of-date.  Please (re)build it before attempting to access items by their id.");
+
 
     // Building an empty model will result in an empty map and return an error.
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, annotator->item("i_dont_exist").first);
     EXPECT_EQ(size_t(1), annotator->issueCount());
     EXPECT_EQ(annotator->issue(0)->description(), "Could not find an item with an id of 'i_dont_exist' in the model.");
 
     model->setId("model_id"); // Add an id into the model and rebuild.
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     // Test that an Issue is created and logged when an id is not found:
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, annotator->item("i_dont_exist").first);
@@ -479,7 +481,7 @@ TEST(Annotator, duplicateIdBehaviour)
     component->addVariable(variable);
     model->addComponent(component);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     auto item = annotator->item("duplicateId");
     EXPECT_EQ(size_t(2), annotator->issueCount());
@@ -554,7 +556,7 @@ TEST(Annotator, getItemByIdSpecificType)
     auto v1v2 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable2"));
     auto v1v4 = std::make_pair(model->component("component2")->variable("variable1"), model->component("component2")->component("component3")->variable("variable4"));
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ(model, annotator->model("model_1"));
     EXPECT_EQ(model, annotator->encapsulation("encapsulation_1"));
@@ -619,10 +621,10 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").second);
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
 
-    // Expect errors because the annotator library hasn't been built -> no model exists.
-    EXPECT_EQ(size_t(15), annotator->errorCount());
+    // Expect errors because the annotator library hasn't been built and no model exists.
+    EXPECT_EQ(size_t(30), annotator->errorCount());
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     // Expect that the errors have been cleared.
     EXPECT_EQ(size_t(0), annotator->errorCount());
@@ -661,7 +663,7 @@ TEST(Annotator, castingOnRetrieval)
     model->addUnits(units);
 
     auto annotator = libcellml::Annotator::create();
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     libcellml::AnyItem itemInfo = annotator->item("model_id");
 
@@ -714,7 +716,7 @@ TEST(Annotator, castingOnRetrieval)
 
 TEST(Annotator, automaticIdsOnEverything)
 {
-    auto expectedError = "The Annotator does not have any Model stored; no action has been taken.";
+    auto expectedError = "No model is stored; no action has been taken.";
     auto annotator = libcellml::Annotator::create();
     auto parser = libcellml::Parser::create();
     auto printer = libcellml::Printer::create();
@@ -731,7 +733,7 @@ TEST(Annotator, automaticIdsOnEverything)
     EXPECT_EQ(size_t(1), annotator->errorCount());
     EXPECT_EQ(expectedError, annotator->error(0)->description());
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     EXPECT_TRUE(annotator->assignAllIds());
 
     EXPECT_EQ("b4da55", model->id());
@@ -773,7 +775,7 @@ TEST(Annotator, automaticIdsComponents)
     model->addComponent(component2);
     component2->addComponent(component3);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -802,7 +804,7 @@ TEST(Annotator, automaticIdsComponentRefs)
     model->addComponent(component2);
     component2->addComponent(component3);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -845,7 +847,7 @@ TEST(Annotator, automaticIdsConnection)
     libcellml::Variable::addEquivalence(variable1, variable3);
     libcellml::Variable::addEquivalence(variable2, variable4);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -876,7 +878,7 @@ TEST(Annotator, automaticIdsEncapsulation)
     auto annotator = libcellml::Annotator::create();
     auto model = libcellml::Model::create();
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->encapsulationId());
     annotator->assignIds(libcellml::Annotator::Type::ENCAPSULATION);
@@ -900,7 +902,7 @@ TEST(Annotator, automaticIdsImportSource)
     auto model = parser->parseModel(in);
     auto annotator = libcellml::Annotator::create();
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", model->importSource(0)->id());
@@ -939,7 +941,7 @@ TEST(Annotator, automaticIdsMapVariables)
     libcellml::Variable::addEquivalence(variable1, variable3);
     libcellml::Variable::addEquivalence(variable2, variable4);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -970,7 +972,7 @@ TEST(Annotator, automaticIdsModel)
     auto annotator = libcellml::Annotator::create();
     auto model = libcellml::Model::create();
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
 
@@ -999,7 +1001,7 @@ TEST(Annotator, automaticIdsResets)
     model->addComponent(component2);
     component2->addComponent(component3);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1043,7 +1045,7 @@ TEST(Annotator, automaticIdsResetValues)
     model->addComponent(component2);
     component2->addComponent(component3);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1093,7 +1095,7 @@ TEST(Annotator, automaticIdsTestValues)
     model->addComponent(component2);
     component2->addComponent(component3);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1132,7 +1134,7 @@ TEST(Annotator, automaticIdsUnitItems)
 
     model->addUnits(units);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", units->id());
@@ -1161,7 +1163,7 @@ TEST(Annotator, automaticIdsUnitsItems)
     model->addUnits(units1);
     model->addUnits(units2);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", units1->id());
@@ -1197,7 +1199,7 @@ TEST(Annotator, automaticIdsVariables)
     model->addComponent(component1);
     model->addComponent(component2);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ("", model->id());
     EXPECT_EQ("", component1->id());
@@ -1224,7 +1226,7 @@ TEST(Annotator, automaticIdsIssue)
     auto annotator = libcellml::Annotator::create();
     auto model = libcellml::Model::create();
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_FALSE(annotator->assignIds(libcellml::Annotator::Type::ISSUE));
     EXPECT_TRUE(annotator->isBuilt());
@@ -1254,7 +1256,7 @@ TEST(Annotator, automaticIdAllItemsNoId)
     libcellml::AnyItem itemUnits = std::make_pair(libcellml::Annotator::Type::UNITS, model->units(1));
     libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0));
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     EXPECT_TRUE(annotator->isBuilt());
 
     // Expect each have had a change of id.
@@ -1338,7 +1340,7 @@ TEST(Annotator, automaticIdAllItemsAllDuplicated)
     libcellml::AnyItem itemUnits = std::make_pair(libcellml::Annotator::Type::UNITS, model->units(1));
     libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0));
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponent.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponentRef.second)));
@@ -1426,7 +1428,7 @@ TEST(Annotator, automaticIdAllItemsNoneDuplicated)
     libcellml::AnyItem itemUnits = std::make_pair(libcellml::Annotator::Type::UNITS, model->units(1));
     libcellml::AnyItem itemVariable = std::make_pair(libcellml::Annotator::Type::VARIABLE, model->component("component2")->variable(0));
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponent.second)));
     EXPECT_EQ(model, owningModel(std::any_cast<libcellml::ComponentPtr>(itemComponentRef.second)));
@@ -1486,7 +1488,7 @@ TEST(Annotator, automaticIdAllItemsWrongModel)
 
     // Make a different model and build the annotator around that.
     auto model2 = libcellml::Model::create();
-    annotator->build(model2);
+    annotator->buildModelIndex(model2);
 
     // Expect each have no change, since they are in a different model.
     EXPECT_EQ("", annotator->assignId(itemComponent));
@@ -1518,7 +1520,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
         model->component("component2")->variable("variable2")->equivalentVariable(0));
     libcellml::UnitItem unit = std::make_pair(model->units(1), 0);
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     // Expect each have had a change of id since the old one is duplicated.
     EXPECT_EQ("b4da55", annotator->assignId(libcellml::Annotator::Type::COMPONENT, model->component(0)));
@@ -1595,8 +1597,8 @@ TEST(Annotator, assignAllIds)
 TEST(Annotator, clearAllIds)
 {
     std::vector<std::string> expectedErrors = {
-        "The Annotator does not have a model stored; no action has been taken.",
-        "The Annotator is out-of-date with the stored model.  Please use the build function before attempting to access items by their id."};
+        "No model is stored; no action has been taken.",
+        "The model index is out-of-date.  Please (re)build it before attempting to access items by their id."};
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelStringDuplicateIds);
@@ -1625,7 +1627,7 @@ TEST(Annotator, listDuplicateIds)
     auto annotator = libcellml::Annotator::create();
     std::vector<std::string> expectedIds = {"duplicateId1", "duplicateId2", "duplicateId3", "duplicateId4"};
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     auto ids = annotator->duplicateIds();
     EXPECT_EQ(expectedIds, ids);
 }
@@ -1691,7 +1693,7 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
     libcellml::VariablePair testPair;
 
     auto annotator = libcellml::Annotator::create();
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ(ids, annotator->duplicateIds());
 
@@ -1808,7 +1810,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
     libcellml::VariablePair testPair;
 
     auto annotator = libcellml::Annotator::create();
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     EXPECT_EQ(ids, annotator->duplicateIds());
 
@@ -1869,7 +1871,7 @@ TEST(Annotator, badAnyCastWithIndices)
     auto parser = libcellml::Parser::create();
     auto m = parser->parseModel(modelStringDuplicateIds);
     auto annotator = libcellml::Annotator::create();
-    annotator->build(m);
+    annotator->buildModelIndex(m);
 
     // Trigger errors on all items because of miscasting:
     EXPECT_EQ(nullptr, annotator->component("duplicateId", 0));
@@ -1915,7 +1917,7 @@ TEST(Annotator, pythonBindingFunctionsCoverage)
     EXPECT_EQ("", annotator->assignId(libcellml::Annotator::Type::CONNECTION, model->component("component2")->variable("variable1"), model->component("component3")->variable("variable1")));
     EXPECT_EQ("", annotator->assignId(libcellml::Annotator::Type::MAP_VARIABLES, model->component("component2")->variable("variable1"), model->component("component3")->variable("variable1")));
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
 
     // Expect success.
     EXPECT_EQ("b4da55", annotator->assignId(libcellml::Annotator::Type::UNIT, model->units("units2"), 0));
@@ -1971,7 +1973,7 @@ TEST(Annotator, hashChangesAndUpdates)
 
     EXPECT_FALSE(annotator->isBuilt());
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     EXPECT_TRUE(annotator->isBuilt());
 
     model->setId("iHaveChangedSinceTheLastBuild");
@@ -2015,7 +2017,7 @@ TEST(Annotator, hashUpdatedWithAllAutomaticIds)
     auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     EXPECT_TRUE(annotator->isBuilt());
 
     annotator->assignAllIds();
@@ -2028,7 +2030,7 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
 
-    annotator->build(model);
+    annotator->buildModelIndex(model);
     EXPECT_TRUE(annotator->isBuilt());
 
     model->component(0)->setId("changed");
