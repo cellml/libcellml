@@ -114,30 +114,30 @@
 "Report whether the annotator index is up-to-date with its stored model state.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
-// intended to be called from anywhere.
+// intended to be called from anywhere other than this file.
 
-%feature("docstring") libcellml::Annotator::itemTypeForPython
+%feature("docstring") libcellml::Annotator::itemTypeForSWIG
 "Private: Utility function to retrieve item type integer based on id.";
 
-%feature("docstring") libcellml::Annotator::unitIndexForPython
+%feature("docstring") libcellml::Annotator::unitIndexForSWIG
 "Private: Utility function to retrieve index of Unit item within parent Units item based on given id.";
 
-%feature("docstring") libcellml::Annotator::unitParentForPython
+%feature("docstring") libcellml::Annotator::unitParentForSWIG
 "Private: Utility function to retrieve UnitsPtr parent for Unit item with given id.";
 
-%feature("docstring") libcellml::Annotator::connectionForPython
+%feature("docstring") libcellml::Annotator::connectionForSWIG
 "Private: Utility function to retrieve one of VariablePtrs connection with given id.";
 
-%feature("docstring") libcellml::Annotator::mapVariablesForPython
+%feature("docstring") libcellml::Annotator::mapVariablesForSWIG
 "Private: Utility function to retrieve one of VariablePtrs map_variables with given id.";
 
-%feature("docstring") libcellml::Annotator::assignConnectionIdForPython
+%feature("docstring") libcellml::Annotator::assignConnectionIdForSWIG
 "Private: Utility function to set a unique id for the connection between a given variable pair..";
 
-%feature("docstring") libcellml::Annotator::assignMapVariablesIdForPython
+%feature("docstring") libcellml::Annotator::assignMapVariablesIdForSWIG
 "Private: Utility function to set a unique id for the equivalence between a given variable pair.";
 
-%feature("docstring") libcellml::Annotator::assignUnitIdForPython
+%feature("docstring") libcellml::Annotator::assignUnitIdForSWIG
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
 
 
@@ -158,13 +158,13 @@
 
 %extend libcellml::Annotator {
 
-    int itemTypeForPython(const std::string &id, size_t index)
+    int itemTypeForSWIG(const std::string &id, size_t index)
     {
         auto itemInfo = $self->item(id, index);
         return static_cast<int>(itemInfo.first);
     }
 
-    int unitIndexForPython(const std::string &id, size_t index)
+    int unitIndexForSWIG(const std::string &id, size_t index)
     {
         auto u = $self->unit(id, index);
         if(u.first == nullptr){
@@ -173,13 +173,13 @@
         return u.second;
     }
 
-    UnitsPtr unitParentForPython(const std::string &id, size_t index)
+    UnitsPtr unitParentForSWIG(const std::string &id, size_t index)
     {
         auto u = $self->unit(id, index);
         return u.first;
     }
 
-    VariablePtr connectionForPython(const std::string &id, bool useFirst, const size_t &index)
+    VariablePtr connectionForSWIG(const std::string &id, bool useFirst, const size_t &index)
     {
         auto vPair = $self->connection(id, index);
         if (useFirst) {
@@ -188,7 +188,7 @@
         return vPair.second;
     }
 
-    VariablePtr mapVariablesForPython(const std::string &id, bool useFirst, const size_t &index)
+    VariablePtr mapVariablesForSWIG(const std::string &id, bool useFirst, const size_t &index)
     {
         auto vPair = $self->mapVariables(id, index);
         if (useFirst) {
@@ -197,17 +197,17 @@
         return vPair.second;
     }
 
-    std::string assignConnectionIdForPython(VariablePtr &item, VariablePtr &item2) {
+    std::string assignConnectionIdForSWIG(VariablePtr &item, VariablePtr &item2) {
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
         return $self->assignConnectionId(variablePair);
     }
 
-    std::string assignMapVariablesIdForPython(VariablePtr &item, VariablePtr &item2) {
+    std::string assignMapVariablesIdForSWIG(VariablePtr &item, VariablePtr &item2) {
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
         return $self->assignMapVariablesId(variablePair);
     }
 
-    std::string assignUnitIdForPython(UnitsPtr &item, size_t index) {
+    std::string assignUnitIdForSWIG(UnitsPtr &item, size_t index) {
         libcellml::UnitItem unitItem = std::make_pair(item, index);
         return $self->assignUnitId(unitItem);
     }
@@ -237,24 +237,24 @@
                 return _annotator.Annotator_assignVariableId(self, item)
 
             if type == Annotator.Type.CONNECTION:
-                return _annotator.Annotator_assignConnectionIdForPython(self, item, item2)
+                return _annotator.Annotator_assignConnectionIdForSWIG(self, item, item2)
             elif type == Annotator.Type.MAP_VARIABLES:
-                return _annotator.Annotator_assignMapVariablesIdForPython(self, item, item2)
+                return _annotator.Annotator_assignMapVariablesIdForSWIG(self, item, item2)
             elif type == Annotator.Type.UNIT:
-                return _annotator.Annotator_assignUnitIdForPython(self, item, item2)
+                return _annotator.Annotator_assignUnitIdForSWIG(self, item, item2)
             return ""
        
         def unit(self, id, index=0):
             r"""Return the UnitItem with the given id.  The first item is the parent UnitsPtr item, the second is the index of this unit."""
-            return (_annotator.Annotator_unitParentForPython(self, id, index), _annotator.Annotator_unitIndexForPython(self, id, index))
+            return (_annotator.Annotator_unitParentForSWIG(self, id, index), _annotator.Annotator_unitIndexForSWIG(self, id, index))
 
         def connection(self, id, index=0):
             r"""Retrieve a tuple of VariablePtr items from a connection with the given id."""
-            return (_annotator.Annotator_connectionForPython(self, id, True, index), _annotator.Annotator_connectionForPython(self, id, False, index))
+            return (_annotator.Annotator_connectionForSWIG(self, id, True, index), _annotator.Annotator_connectionForSWIG(self, id, False, index))
 
         def mapVariables(self, id, index=0):
             r"""Retrieve a tuple of VariablePtr items from a map_variables with the given id."""
-            return (_annotator.Annotator_mapVariablesForPython(self, id, True, index), _annotator.Annotator_mapVariablesForPython(self, id, False, index))
+            return (_annotator.Annotator_mapVariablesForSWIG(self, id, True, index), _annotator.Annotator_mapVariablesForSWIG(self, id, False, index))
 
         def item(self, id, index=-1):
             r"""Retrieve a unique item with the given id."""
@@ -264,14 +264,14 @@
             if index == -1:
                 index = 0
 
-            type = _annotator.Annotator_itemTypeForPython(self, id, index)
+            type = _annotator.Annotator_itemTypeForSWIG(self, id, index)
             if type == Annotator.Type.COMPONENT:
                 return (type, _annotator.Annotator_component(self, id, index))
             elif type == Annotator.Type.COMPONENT_REF:
                 return (type, _annotator.Annotator_componentRef(self, id, index))
             elif type == Annotator.Type.CONNECTION:
-                first = _annotator.Annotator_connectionForPython(self, id, True, index)
-                second = _annotator.Annotator_connectionForPython(self, id, False, index)
+                first = _annotator.Annotator_connectionForSWIG(self, id, True, index)
+                second = _annotator.Annotator_connectionForSWIG(self, id, False, index)
                 return (type, (first, second))
             elif type == Annotator.Type.ENCAPSULATION:
                 return (type, _annotator.Annotator_encapsulation(self, id, index))
@@ -280,8 +280,8 @@
             elif type == Annotator.Type.ISSUE:
                 return (type, _annotator.Annotator_issue(self, id, index))
             elif type == Annotator.Type.MAP_VARIABLES:
-                first = _annotator.Annotator_mapVariablesForPython(self, id, True, index)
-                second = _annotator.Annotator_mapVariablesForPython(self, id, False, index)
+                first = _annotator.Annotator_mapVariablesForSWIG(self, id, True, index)
+                second = _annotator.Annotator_mapVariablesForSWIG(self, id, False, index)
                 return (type, (first, second))
             elif type == Annotator.Type.MODEL:
                 return (type, _annotator.Annotator_model(self, id, index))
@@ -292,8 +292,8 @@
             elif type == Annotator.Type.TEST_VALUE:
                 return (type, _annotator.Annotator_testValue(self, id, index)) 
             elif type == Annotator.Type.UNIT:
-                first = _annotator.Annotator_unitParentForPython(self, id, index)
-                second = _annotator.Annotator_unitIndexForPython(self, id, index)
+                first = _annotator.Annotator_unitParentForSWIG(self, id, index)
+                second = _annotator.Annotator_unitIndexForSWIG(self, id, index)
                 return (type, (first, second))
             elif type == Annotator.Type.UNITS:
                 return (type, _annotator.Annotator_units(self, id, index))

@@ -433,7 +433,6 @@ TEST(Annotator, errorHandling)
     EXPECT_EQ(annotator->issue(0)->description(), "No model is stored; no action has been taken.");
     EXPECT_EQ(annotator->issue(1)->description(), "The model index is out-of-date.  Please (re)build it before attempting to access items by their id.");
 
-
     // Building an empty model will result in an empty map and return an error.
     annotator->buildModelIndex(model);
     EXPECT_EQ(libcellml::Annotator::Type::ISSUE, annotator->item("i_dont_exist").first);
