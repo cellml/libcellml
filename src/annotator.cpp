@@ -391,6 +391,14 @@ ModelPtr Annotator::model(const std::string &id)
     return model(id, 0);
 }
 
+ModelPtr Annotator::encapsulation(const std::string &id)
+{
+    if (!isUnique(id, true)) {
+        return nullptr;
+    }
+    return encapsulation(id, 0);
+}
+
 UnitsPtr Annotator::units(const std::string &id)
 {
     if (!isUnique(id, true)) {
@@ -518,14 +526,6 @@ ModelPtr Annotator::model(const std::string &id, size_t index)
         (void)e;
         return nullptr;
     }
-}
-
-ModelPtr Annotator::encapsulation(const std::string &id)
-{
-    if (!isUnique(id, true)) {
-        return nullptr;
-    }
-    return encapsulation(id, 0);
 }
 
 ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
