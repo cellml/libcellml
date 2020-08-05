@@ -47,6 +47,12 @@ namespace libcellml {
  */
 struct Importer::ImporterImpl
 {
+    enum class Type
+    {
+        UNITS,
+        COMPONENT
+    };
+
     Importer *mImporter = nullptr;
 
     ImportLibrary mLibrary;
@@ -54,8 +60,7 @@ struct Importer::ImporterImpl
     std::vector<std::pair<std::string, std::string>> mExternals;
 
     bool resolveImport(const ImportedEntityPtr &importedEntity,
-                       const std::string &destination,
-                       const std::string &typeString,
+                       const std::string &destination, Type type,
                        const std::string &baseFile,
                        std::vector<std::tuple<std::string, std::string, std::string>> &history);
 
@@ -121,7 +126,7 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
 {
     for (size_t n = 0; n < model->unitsCount(); ++n) {
         auto units = model->units(n);
-        if (!resolveImport(units, units->name(), "units", baseFile, history) && !history.empty()) {
+        if (!resolveImport(units, units->name(), Type::UNITS, baseFile, history) && !history.empty()) {
             std::string msg = "Cyclic dependencies were found when attempting to resolve units in model '"
                               + model->name() + "'. The dependency loop is:\n";
             std::string spacer = "    ";
@@ -167,7 +172,7 @@ std::string resolvePath(const std::string &filename, const std::string &base)
 
 bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEntity,
                                            const std::string &destination,
-                                           const std::string &typeString,
+                                           Type type,
                                            const std::string &baseFile,
                                            std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
@@ -210,7 +215,7 @@ bool Importer::ImporterImpl::resolveImport(const ImportedEntityPtr &importedEnti
             // If it has, then pass the previous model instance to the import source.
             auto model = mLibrary[url];
             importSource->setModel(model);
-            if (typeString == "component") {
+            if (type == Type::COMPONENT) {
                 return checkComponentForCycles(model, history);
             }
             return checkUnitsForCycles(model, history);
@@ -227,7 +232,7 @@ bool Importer::ImporterImpl::resolveComponentImports(const ComponentEntityPtr &p
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         auto component = parentComponentEntity->component(n);
         if (component->isImport()) {
-            if (!resolveImport(component, component->name(), "component", baseFile, history)) {
+            if (!resolveImport(component, component->name(), Type::COMPONENT, baseFile, history)) {
                 if (!history.empty()) {
                     std::string msg = "Cyclic dependencies were found when attempting to resolve components";
                     auto parentModel = owningModel(component);
