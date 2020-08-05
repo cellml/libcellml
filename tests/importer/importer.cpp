@@ -216,7 +216,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     validator->validateModel(importedModel);
     EXPECT_EQ(size_t(0), validator->errorCount());
 
-    // The model myModel already has myUnitsThatIUse defined.
+    // The model importedModel already has myUnitsThatIUse defined: the units here will clash.
     auto model = libcellml::Model::create("myModel");
     auto u = libcellml::Units::create("myUnitsThatIUse");
     u->addUnit("metre");
