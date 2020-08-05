@@ -477,7 +477,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         xmlURIPtr uri = xmlParseURI(importSource.c_str());
         if (uri == nullptr) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
+            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the xlink:href attribute.");
             issue->setImportSource(component->importSource());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
             mValidator->addIssue(issue);
