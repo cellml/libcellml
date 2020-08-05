@@ -244,7 +244,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     EXPECT_EQ(e, printer->printModel(model));
 }
 
-TEST(Model, importUnitsDuplicated)
+TEST(Model, importUnitsNotDuplicated)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -356,18 +356,18 @@ TEST(Importer, accessImportedModelLibrary)
 
 TEST(Importer, multipleModelResolution)
 {
-    // This test is intended to show how the Importer class can hold multitple imported models in its library, and that
+    // This test is intended to show how the Importer class can hold multiple imported models in its library, and that
     // these can be used to resolve the imports of more than one importing model.
-    // The example give has three models A, B, C, each importing the same four components, a, b, c, d from a
-    // fourth model D. We expect the that model D is parsed and instantiated just once, rather than 12 times.
+    // The example given has three models A, B, C, each importing the same four components, a, b, c, d from a
+    // fourth model D. We expect that model D is parsed and instantiated just once, rather than 12 times.
 
     auto parser = libcellml::Parser::create();
     auto modelA = parser->parseModel(fileContents("importer/generic.cellml"));
     auto modelB = parser->parseModel(fileContents("importer/generic.cellml"));
     auto modelC = parser->parseModel(fileContents("importer/generic.cellml"));
 
-    // ModelD will be imorted into the library as it's included as a dependency in the models here.
-    // Passing in one of the models for resolution will load modelD into the library.
+    // Model D will be imported into the library as it's included as a dependency in the models here.
+    // Passing in one of the models for resolution will load model D into the library.
     auto importer = libcellml::Importer::create();
     importer->resolveImports(modelA, resourcePath("importer/"));
 
@@ -408,8 +408,8 @@ TEST(Importer, addModelToLibrary)
 
 TEST(Importer, replaceModel)
 {
-    // This test shows how a model instance can be manually added to the import library by the user,
-    // and will be used to resolve imports, rather than from an external file/URL.
+    // This test shows how a model instance can be replaced in the import library by the user,
+    // and will be used to resolve imports.
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/generic_no_source.cellml"));
     auto importer = libcellml::Importer::create();
@@ -439,7 +439,6 @@ TEST(Importer, replaceModel)
 
 TEST(Importer, getNonexistentModel)
 {
-    // For coverage.
     auto importer = libcellml::Importer::create();
     auto model = libcellml::Model::create("model");
     importer->addModel(model, "howdy");
