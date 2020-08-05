@@ -1486,7 +1486,7 @@ TEST(Generator, sineImports)
 
     EXPECT_FALSE(model->hasUnresolvedImports());
 
-    model = importer->flatten(model);
+    model = importer->flattenModel(model);
 
     libcellml::GeneratorPtr generator = libcellml::Generator::create();
 

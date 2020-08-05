@@ -61,7 +61,7 @@ public:
      * 
      * @return If the operation is successful, a new @c ModelPtr to the flattened model; otherwise, the @c nullptr.
      */
-    ModelPtr flatten(const ModelPtr &model);
+    ModelPtr flattenModel(const ModelPtr &model);
 
     /**
      * @brief Resolve all imports in the @p model.
