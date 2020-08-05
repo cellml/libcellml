@@ -363,7 +363,7 @@ void Validator::validateModel(const ModelPtr &model)
                         xmlURIPtr uri = xmlParseURI(importSource.c_str());
                         if (uri == nullptr) {
                             IssuePtr issue = Issue::create();
-                            issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the href attribute.");
+                            issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the xlink:href attribute.");
                             issue->setImportSource(units->importSource());
                             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
                             addIssue(issue);
