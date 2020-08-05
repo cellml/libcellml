@@ -397,7 +397,7 @@ void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &
     }
 }
 
-ModelPtr Importer::flatten(const ModelPtr &model)
+ModelPtr Importer::flattenModel(const ModelPtr &model)
 {
     if (model->hasUnresolvedImports()) {
         return nullptr;

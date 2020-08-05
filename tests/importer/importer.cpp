@@ -159,7 +159,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
 
     importer->resolveImports(model, resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model = importer->flatten(model);
+    model = importer->flattenModel(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
@@ -233,7 +233,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model = importer->flatten(model);
+    model = importer->flattenModel(model);
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
@@ -296,7 +296,7 @@ TEST(Model, importUnitsDuplicated)
     model->addComponent(c);
 
     EXPECT_FALSE(model->hasUnresolvedImports());
-    model = importer->flatten(model);
+    model = importer->flattenModel(model);
 
     EXPECT_EQ(size_t(2), model->unitsCount());
 
@@ -585,7 +585,7 @@ TEST(Importer, tryingStuffOut)
     EXPECT_EQ(size_t(0), validator->issueCount());
 
     // ... and can be flattened as expected too.
-    auto flattenedFunkyModel = importer->flatten(funkyModel);
+    auto flattenedFunkyModel = importer->flattenModel(funkyModel);
     EXPECT_EQ(size_t(0), importer->issueCount());
     flattenedFunkyModel->setName("flattenedFunkyModel");
     validator->validateModel(flattenedFunkyModel);
@@ -621,7 +621,7 @@ TEST(Importer, resolveApiModelImports)
     importer->resolveImports(model, "");
     EXPECT_EQ(size_t(0), importer->issueCount());
     EXPECT_FALSE(model->hasUnresolvedImports());
-    auto flatModel = importer->flatten(model);
+    auto flatModel = importer->flattenModel(model);
     EXPECT_EQ("vanilla", flatModel->component(0)->variable(0)->name());
 
     // But now the flavour of the month changes, and you have a better definition for componentThatINeed
@@ -639,7 +639,7 @@ TEST(Importer, resolveApiModelImports)
     importer->resolveImports(model, "");
 
     // Check that we now have a variable called "chocolate" in the flattened model.
-    flatModel = importer->flatten(model);
+    flatModel = importer->flattenModel(model);
     EXPECT_EQ("chocolate", flatModel->component(0)->variable(0)->name());
 }
 
@@ -688,7 +688,7 @@ TEST(Importer, importEncapsulatedChildren)
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
     EXPECT_EQ(size_t(2), importer->libraryCount());
-    auto flat = importer->flatten(model);
+    auto flat = importer->flattenModel(model);
     EXPECT_EQ(flatModelString, printer->printModel(flat));
 }
 
