@@ -66,11 +66,11 @@ struct Annotator::AnnotatorImpl
     void updateHash();
     void doUpdateComponentHash(ComponentPtr &component, std::string &idsString);
 
-    IssuePtr makeIssueIsNotBuilt();
-    IssuePtr makeIssueNotFound(const std::string &id);
-    IssuePtr makeIssueOutOfRange(const std::string &id, const size_t &index);
-    IssuePtr makeIssueNonUnique(const std::string &id);
-    IssuePtr makeIssueNoModel();
+    IssuePtr makeIssueIsNotBuilt() const;
+    IssuePtr makeIssueNotFound(const std::string &id) const;
+    IssuePtr makeIssueOutOfRange(const std::string &id, const size_t &index) const;
+    IssuePtr makeIssueNonUnique(const std::string &id) const;
+    IssuePtr makeIssueNoModel() const;
 };
 
 Annotator::Annotator()
@@ -258,7 +258,7 @@ void Annotator::buildModelIndex(const ModelPtr &model)
     mPimpl->mIsBuilt = true;
 }
 
-IssuePtr Annotator::AnnotatorImpl::makeIssueIsNotBuilt()
+IssuePtr Annotator::AnnotatorImpl::makeIssueIsNotBuilt() const
 {
     auto issue = Issue::create();
     issue->setDescription("The model index is out-of-date.  Please (re)build it before attempting to access items by their id.");
@@ -267,7 +267,7 @@ IssuePtr Annotator::AnnotatorImpl::makeIssueIsNotBuilt()
     return issue;
 }
 
-IssuePtr Annotator::AnnotatorImpl::makeIssueNotFound(const std::string &id)
+IssuePtr Annotator::AnnotatorImpl::makeIssueNotFound(const std::string &id) const
 {
     auto issue = Issue::create();
     issue->setDescription("Could not find an item with an id of '" + id + "' in the model.");
@@ -276,7 +276,7 @@ IssuePtr Annotator::AnnotatorImpl::makeIssueNotFound(const std::string &id)
     return issue;
 }
 
-IssuePtr Annotator::AnnotatorImpl::makeIssueOutOfRange(const std::string &id, const size_t &index)
+IssuePtr Annotator::AnnotatorImpl::makeIssueOutOfRange(const std::string &id, const size_t &index) const
 {
     auto issue = Issue::create();
     issue->setDescription("There are " + std::to_string(mAnnotator->duplicateCount(id)) + " items with an id of '" + id + "'. The supplied index " + std::to_string(index) + " is out of range.");
@@ -285,7 +285,7 @@ IssuePtr Annotator::AnnotatorImpl::makeIssueOutOfRange(const std::string &id, co
     return issue;
 }
 
-IssuePtr Annotator::AnnotatorImpl::makeIssueNonUnique(const std::string &id)
+IssuePtr Annotator::AnnotatorImpl::makeIssueNonUnique(const std::string &id) const
 {
     auto issue = Issue::create();
     issue->setDescription("The id '" + id + "' occurs " + std::to_string(mIdList.count(id)) + " times in the model so a unique item cannot be located.");
@@ -294,7 +294,7 @@ IssuePtr Annotator::AnnotatorImpl::makeIssueNonUnique(const std::string &id)
     return issue;
 }
 
-IssuePtr Annotator::AnnotatorImpl::makeIssueNoModel()
+IssuePtr Annotator::AnnotatorImpl::makeIssueNoModel() const
 {
     auto issue = Issue::create();
     issue->setDescription("No model is stored; no action has been taken.");
