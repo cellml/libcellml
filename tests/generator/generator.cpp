@@ -1970,7 +1970,8 @@ TEST(Generator, coverage)
 
     profile->setImplementationDeleteArrayMethodString("");
 
-    profile->setImplementationComputeVariablesMethodString("// The length of this comment is such that it ensures 100% coverage in our SHA-1 utility.\n");
+    profile->setImplementationComputeVariablesMethodString("// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.\n"
+                                                           "// xxxxxxxxxxxxxxxxxxxxxxx\n");
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator->implementationCode(analyserModel));
