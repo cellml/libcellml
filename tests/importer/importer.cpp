@@ -544,11 +544,11 @@ TEST(Importer, tryingStuffOut)
     // Now create a funky model that imports from all over the place and see what happens.
     std::string funkyString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                               "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"funky\">\n"
-                              // Status quo functionality, key is local URL + base file path as the local URL doesn't exist as a key.
+                              // Status quo functionality, key is relative URL + base file path as the relative URL doesn't exist as a key.
                               "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_imported.cellml\">\n"
                               "    <units units_ref=\"units1_imported\" name=\"units1FromLibrary\"/>\n"
                               "  </import>\n"
-                              // Use the local URL for a hidden child source component.
+                              // Use the relative URL for a hidden child source component.
                               "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"components_source.cellml\">\n"
                               "    <component component_ref=\"component1\" name=\"component1FromLibrary\"/>\n"
                               "  </import>\n"
@@ -578,7 +578,7 @@ TEST(Importer, tryingStuffOut)
     EXPECT_FALSE(funkyModel->hasUnresolvedImports());
     EXPECT_EQ(size_t(0), importer->issueCount());
 
-    // Apparently funky hrefs are valid ...
+    // Funky hrefs are valid ...
     auto validator = libcellml::Validator::create();
     validator->validateModel(funkyModel);
     EXPECT_EQ(size_t(0), validator->issueCount());
