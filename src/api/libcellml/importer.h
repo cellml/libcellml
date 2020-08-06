@@ -51,7 +51,7 @@ public:
     /**
      * @brief Flatten the @p model.
      *
-     * Instantiates all imports and removes them from the @p model.
+     * Instantiate all imports and removes them from the @p model.
      * The result is a self-contained model requiring no external
      * resources and having no imports.
      *
@@ -92,7 +92,7 @@ public:
     /**
      * @brief Get a model from the library at the given @p index.
      *
-     * Returns a reference to the model at the index @p index for this
+     * Return a reference to the model at the index @p index for this
      * importer's library. If the index is not valid a @c nullptr is returned. The valid
      * range for the index is [0, \#library items).
      *
@@ -154,7 +154,7 @@ public:
     /**
      * @brief Get the number of external dependencies in the library.
      *
-     * Returns the number of dependencies for the models which have been resolved by this
+     * Return the number of dependencies for the models which have been resolved by this
      * importer.
      *
      * @return the number of external dependencies.
@@ -162,7 +162,9 @@ public:
     size_t externalDependencyCount() const;
 
     /**
-     * @brief Clears the links with other models from all import sources.
+     * @brief Clear the links with other models from all import sources.
+     * 
+     * Clear the links with other models from all import sources.
      */
     void clearImports(ModelPtr &model);
 
