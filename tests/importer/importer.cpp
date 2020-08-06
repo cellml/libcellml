@@ -501,7 +501,7 @@ TEST(Importer, library)
     EXPECT_EQ(nullptr, importer->library(999));
 }
 
-TEST(Importer, tryingStuffOut)
+TEST(Importer, rangeOfValidSituations)
 {
     // This is a test to figure out whether we need to restrict the library keys to absolute URLs, or
     // whether they could be any string.  This test creates a collection of models from different sources,
