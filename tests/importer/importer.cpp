@@ -591,7 +591,7 @@ TEST(Importer, rangeOfValidSituations)
     EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
-TEST(Importer, resolveApiModelImports)
+TEST(Importer, resolveImportsUsingDifferentAPIModels)
 {
     auto importer = libcellml::Importer::create();
 
