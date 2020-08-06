@@ -531,7 +531,7 @@ TEST(Importer, tryingStuffOut)
     // Add all the concrete models to the Importer. These don't need resolving as they have no imports of their own.
     auto importer = libcellml::Importer::create();
     importer->addModel(concreteUnits, "i_dont_exist_yet.cellml"); // add with key that's not a file (yet).
-    importer->addModel(concreteComponents, "https://www.example.com/myComponents.cellml"); // add with a key that is a remote URL
+    importer->addModel(concreteComponents, "https://www.example.com/myComponents.cellml"); // add with a key that is a remote URL.
 
     // Add models which have imports to the Importer by resolving them. They are automatically saved into the
     // Importer's library, along with any dependencies, under the names used to resolve them.
