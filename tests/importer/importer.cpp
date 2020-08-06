@@ -608,7 +608,7 @@ TEST(Importer, resolveApiModelImports)
     model->addUnits(libcellml::Units::create("unitsThatIWillImport"));
     auto imp1 = libcellml::ImportSource::create();
     imp1->setUrl("flavourOfTheMonth"); // Set URL to be an arbitrary string.
-    model->component(0)->setImportSource(imp1); // Set the same import source for both units and component
+    model->component(0)->setImportSource(imp1); // Set the same import source for both units and component.
     model->units(0)->setImportSource(imp1);
     model->component(0)->setImportReference("componentThatINeed");
     model->units(0)->setImportReference("unitsThatINeed");
