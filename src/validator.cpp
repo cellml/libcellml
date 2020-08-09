@@ -967,6 +967,15 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
             issue->setCause(Issue::Cause::MATHML);
             mValidator->addIssue(issue);
         }
+        if (childNode->name() == "degree") {
+            if ((node->name() != "root") && (node->name() != "diff") && (node->name() != "bvar")) {
+                IssuePtr issue = Issue::create();
+                issue->setDescription("Math has a 'degree' element in a parent '" + node->name() + "' element; 'degree' is supported for 'root' or 'diff' elements only.");
+                issue->setComponent(component);
+                issue->setCause(Issue::Cause::MATHML);
+                mValidator->addIssue(issue);
+            }
+        }
         validateMathMLElements(childNode, component);
     }
 
