@@ -71,8 +71,10 @@ public:
      * the full path to the source model relative to this one.
      * @param model The @c Model whose imports need resolution.
      * @param baseFile The @c std::string location on local disk of the source @c Model.
+     * 
+     * @return @c true if all imports have been resolved successfully, @c false otherwise.
      */
-    void resolveImports(ModelPtr &model, const std::string &baseFile);
+    bool resolveImports(ModelPtr &model, const std::string &baseFile);
 
     /**
      * @brief Return the number of models present in the importer's library.
@@ -136,30 +138,6 @@ public:
      * @return @c true if the model was replaced, @c false if it was not.
      */
     bool replaceModel(const ModelPtr &model, const std::string &key);
-
-    /**
-     * @brief Retrieve the pair of URL key and import reference at the given index.
-     *
-     * This is taken from the list of dependencies for the models which have been resolved,
-     * and is what will break if those external files are ever moved or renamed.
-     *
-     * The first attribute of the returned pair is the URL at which the imported model was
-     * accessed and under which it is now stored in the library as its key, and the second attribute
-     * is the import reference.
-     *
-     * @return a @c std::pair of @c std::strings.
-     */
-    std::pair<std::string, std::string> externalDependency(size_t index) const;
-
-    /**
-     * @brief Get the number of external dependencies in the library.
-     *
-     * Return the number of dependencies for the models which have been resolved by this
-     * importer.
-     *
-     * @return the number of external dependencies.
-     */
-    size_t externalDependencyCount() const;
 
     /**
      * @brief Clear the links with other models from all import sources.

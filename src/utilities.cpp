@@ -821,6 +821,18 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
     return usedUnits;
 }
 
+NameList unitsNamesUsed(const ComponentPtr &component)
+{
+    auto unitNames = findComponentCnUnitsNames(component);
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto u = component->variable(i)->units();
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+            unitNames.push_back(u->name());
+        }
+    }
+    return unitNames;
+}
+
 IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
 {
     IndexStack indexStack;
