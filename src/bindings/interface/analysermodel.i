@@ -71,7 +71,7 @@
 "Tests if this :class:`AnalyserModel` object needs an \"or\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needXorFunction
-"Tests if this :class:`AnalyserModel` object needs a \"xor\" function.";
+"Tests if this :class:`AnalyserModel` object needs a \"exclusive or\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNotFunction
 "Tests if this :class:`AnalyserModel` object needs a \"not\" function.";

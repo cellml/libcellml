@@ -275,20 +275,21 @@ public:
     void setOrString(const std::string &orString);
 
     /**
-     * @brief Get the @c std::string for the "xor" operator.
+     * @brief Get the @c std::string for the "exclusive or" operator.
      *
-     * Return the @c std::string for the "xor" operator.
+     * Return the @c std::string for the "exclusive or" operator.
      *
-     * @return The @c std::string for the "xor" operator.
+     * @return The @c std::string for the "exclusive or" operator.
      */
     std::string xorString() const;
 
     /**
-     * @brief Set the @c std::string for the "xor" operator.
+     * @brief Set the @c std::string for the "exclusive or" operator.
      *
-     * Set this @c std::string for the "xor" operator.
+     * Set this @c std::string for the "exclusive or" operator.
      *
-     * @param xorString The @c std::string to use for the "xor" operator.
+     * @param xorString The @c std::string to use for the "exclusive or"
+     * operator.
      */
     void setXorString(const std::string &xorString);
 
@@ -481,22 +482,23 @@ public:
     void setHasOrOperator(bool hasOrOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "xor" operator.
+     * @brief Test if this @c GeneratorProfile has a "exclusive or" operator.
      *
-     * Test if this @c GeneratorProfile has a "xor" operator.
+     * Test if this @c GeneratorProfile has a "exclusive or" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "xor" operator,
+     * @return @c true if the @c GeneratorProfile has a "exclusive or" operator,
      * @c false otherwise.
      */
     bool hasXorOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "xor" operator.
+     * @brief Set whether this @c GeneratorProfile has a "exclusive or"
+     * operator.
      *
-     * Set whether this @c GeneratorProfile has a "xor" operator.
+     * Set whether this @c GeneratorProfile has a "exclusive or" operator.
      *
      * @param hasXorOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "xor" operator.
+     * @c GeneratorProfile has a "exclusive or" operator.
      */
     void setHasXorOperator(bool hasXorOperator);
 
@@ -1668,20 +1670,21 @@ public:
     void setOrFunctionString(const std::string &orFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "xor" function.
+     * @brief Get the @c std::string for the "exclusive or" function.
      *
-     * Return the @c std::string for the "xor" function.
+     * Return the @c std::string for the "exclusive or" function.
      *
-     * @return The @c std::string for the "xor" function.
+     * @return The @c std::string for the "exclusive or" function.
      */
     std::string xorFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "xor" function.
+     * @brief Set the @c std::string for the "exclusive or" function.
      *
-     * Set this @c std::string for the "xor" function.
+     * Set this @c std::string for the "exclusive or" function.
      *
-     * @param xorFunctionString The @c std::string to use for the "xor" function.
+     * @param xorFunctionString The @c std::string to use for the "exclusive or"
+     * function.
      */
     void setXorFunctionString(const std::string &xorFunctionString);
 
