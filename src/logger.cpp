@@ -33,7 +33,6 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    Logger *mLogger = nullptr;
     std::vector<size_t> mErrors;
     std::vector<size_t> mWarnings;
     std::vector<size_t> mHints;
@@ -44,17 +43,11 @@ struct Logger::LoggerImpl
 Logger::Logger()
     : mPimpl(new LoggerImpl())
 {
-    mPimpl->mLogger = this;
 }
 
 Logger::~Logger()
 {
     delete mPimpl;
-}
-
-LoggerPtr Logger::create() noexcept
-{
-    return std::shared_ptr<Logger> {new Logger {}};
 }
 
 size_t Logger::errorCount() const
