@@ -61,8 +61,8 @@ struct Importer::ImporterImpl
 
     bool doResolveImports(ModelPtr &model, const std::string &baseFile);
 
-    void generateCyclicDependencyIssue(const ModelPtr &model, Type type,
-                                       std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
+    void makeIssueCyclicDependency(const ModelPtr &model, Type type,
+                                   std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
 
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history);
@@ -199,7 +199,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         url = resolvePath(importComponent->importSource()->url(), baseFile);
     }
     if (!checkComponentForCycles(mLibrary[url], history)) {
-        generateCyclicDependencyIssue(mLibrary[url], Type::COMPONENT, history);
+        makeIssueCyclicDependency(mLibrary[url], Type::COMPONENT, history);
         return false;
     }
 
@@ -269,7 +269,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         url = resolvePath(importUnits->importSource()->url(), baseFile);
     }
     if (!checkUnitsForCycles(mLibrary[url], history)) {
-        generateCyclicDependencyIssue(mLibrary[url], Type::UNITS, history);
+        makeIssueCyclicDependency(mLibrary[url], Type::UNITS, history);
         return false;
     }
 
@@ -321,30 +321,27 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     return true;
 }
 
-void Importer::ImporterImpl::generateCyclicDependencyIssue(const ModelPtr &model,
-                                                           Type type,
-                                                           std::vector<std::tuple<std::string, std::string, std::string>> &history) const
+void Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
+                                                       Type type,
+                                                       std::vector<std::tuple<std::string, std::string, std::string>> &history) const
 {
-    std::string msg = "Cyclic dependencies were found when attempting to resolve "
-                      + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
-                      + model->name() + "'. The dependency loop is:\n";
+    std::string msgStart = "Cyclic dependencies were found when attempting to resolve "
+                           + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
+                           + model->name() + "'. The dependency loop is:\n";
+    std::string msg = ".";
+    std::string end1 = "; and\n";
+    std::string end2 = ".";
     std::tuple<std::string, std::string, std::string> h;
     auto hSize = history.size();
     for (size_t i = 0; i < hSize; ++i) {
-        h = history[i];
-        msg += " - " + std::string((type == Type::UNITS) ? "units" : "component") + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
-        if (i != hSize - 1) {
-            msg += ";";
-            if (i == hSize - 2) {
-                msg += " and";
-            }
-            msg += "\n";
-        } else {
-            msg += ".";
-        }
+        h = history[hSize - i - 1];
+        msg.insert(0, end1 + " - " + std::string((type == Type::UNITS) ? "units" : "component") + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'");
+        end1 = ";\n";
+        end2 = "";
     }
+    msg.erase(0, 2);
     auto issue = Issue::create();
-    issue->setDescription(msg);
+    issue->setDescription(msgStart + msg);
     issue->setLevel(libcellml::Issue::Level::WARNING);
     issue->setCause(libcellml::Issue::Cause::IMPORT);
     mImporter->addIssue(issue);
