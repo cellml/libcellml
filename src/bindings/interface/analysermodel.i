@@ -47,7 +47,7 @@
 "Removes the equation, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::needEqFunction
-"Tests if this :class:`AnalyserModel` object needs an \"equivalence\" function.";
+"Tests if this :class:`AnalyserModel` object needs an \"equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNeqFunction
 "Tests if this :class:`AnalyserModel` object needs a \"nonequivalence\" function.";

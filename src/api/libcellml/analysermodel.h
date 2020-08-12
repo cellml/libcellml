@@ -163,13 +163,13 @@ public:
     AnalyserEquationPtr equation(size_t index) const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs an "equivalence"
+     * @brief Test to determine if @c AnalyserModel needs an "equal to"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs an "equivalence" function,
+     * Test to determine if @c AnalyserModel needs an "equal to" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs an "equivalence" function,
+     * @return @c true if @c AnalyserModel needs an "equal to" function,
      * @c false otherwise.
      */
     bool needEqFunction() const;
