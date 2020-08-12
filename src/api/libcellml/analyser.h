@@ -23,7 +23,10 @@ namespace libcellml {
 /**
  * @brief The Analyser class.
  *
- * The Analyser class is for representing a CellML Analyser.
+ * The Analyser class is for representing a CellML Analyser, which aim is to
+ * check whether a model makes mathematical sense. If a model makes mathematical
+ * sense then an @c AnalyserModel object can be retrieved, whcih can be used to
+ * generate code, for instance.
  */
 class LIBCELLML_EXPORT Analyser: public Logger
 {
