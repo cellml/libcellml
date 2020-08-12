@@ -391,6 +391,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         loadConnection(model, connectionNode);
     }
 
+    // Link units to their names.
     for (size_t index = 0; index < model->componentCount(); ++index) {
         auto c = model->component(index);
         traverseComponentTreeLinkingUnits(c, mParser->shared_from_this());

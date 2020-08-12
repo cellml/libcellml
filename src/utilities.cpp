@@ -746,19 +746,4 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
     return unlinked;
 }
 
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
-{
-    return traverseComponentTreeForUnlinkedUnits(component, nullptr);
-}
-
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component, const LoggerPtr &logger)
-{
-    bool unlinkedUnits = areComponentVariableUnitsUnlinked(component);
-    for (size_t index = 0; index < component->componentCount() && !unlinkedUnits; ++index) {
-        auto c = component->component(index);
-        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c, logger);
-    }
-    return unlinkedUnits;
-}
-
 } // namespace libcellml
