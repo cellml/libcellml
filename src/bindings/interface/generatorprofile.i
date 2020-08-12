@@ -31,16 +31,16 @@ according to this profile.";
 "Set the \"assigment\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::eqString
-"Return the \"equivalence\" operator.";
+"Return the \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEqString
-"Set the \"equivalence\" operator.";
+"Set the \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqString
-"Return the the \"nonequivalence\" operator.";
+"Return the the \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNeqString
-"Set the \"nonequivalence\" operator.";
+"Set the \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::ltString
 "Return the \"less than\" operator.";
@@ -79,10 +79,10 @@ according to this profile.";
 "Set the \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::xorString
-"Return the \"xor\" operator.";
+"Return the \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setXorString
-"Set the \"xor\" operator.";
+"Set the \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::notString
 "Return the \"not\" operator.";
@@ -91,16 +91,16 @@ according to this profile.";
 "Set the \"not\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasEqOperator
-"Test if this :class:`GeneratorProfile` has an \"equivalence\" operator.";
+"Test if this :class:`GeneratorProfile` has an \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasEqOperator
-"Set whether this :class:`GeneratorProfile` has an \"equivalence\" operator.";
+"Set whether this :class:`GeneratorProfile` has an \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNeqOperator
-"Test if this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
+"Test if this :class:`GeneratorProfile` has a \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasNeqOperator
-"Set whether this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
+"Set whether this :class:`GeneratorProfile` has a \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasLtOperator
 "Test if this :class:`GeneratorProfile` has a \"less than\" operator.";
@@ -143,10 +143,10 @@ operator.";
 "Set whether this :class:`GeneratorProfile` has an \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasXorOperator
-"Test if this :class:`GeneratorProfile` has an \"xor\" operator.";
+"Test if this :class:`GeneratorProfile` has an \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasXorOperator
-"Set whether this :class:`GeneratorProfile` has an \"xor\" operator.";
+"Set whether this :class:`GeneratorProfile` has an \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNotOperator
 "Test if this :class:`GeneratorProfile` has a \"not\" operator.";
@@ -443,10 +443,10 @@ operator.";
 "Set the string for \"false\".";
 
 %feature("docstring") libcellml::GeneratorProfile::eString
-"Return the string for the \"exponential\" constant.";
+"Return the string for Euler's number.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEString
-"Set the string for the \"exponential\" constant.";
+"Set the string for Euler's number.";
 
 %feature("docstring") libcellml::GeneratorProfile::piString
 "Return the string for pi.";
@@ -467,16 +467,16 @@ operator.";
 "Set the string for \"not-a-number\".";
 
 %feature("docstring") libcellml::GeneratorProfile::eqFunctionString
-"Return the string for the \"equivalence\" function.";
+"Return the string for the \"equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEqFunctionString
-"Set the string for the \"equivalence\" function.";
+"Set the string for the \"equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqFunctionString
-"Return the string for the \"nonequivalence\" function.";
+"Return the string for the \"not equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNeqFunctionString
-"Set the string for the \"nonequivalence\" function.";
+"Set the string for the \"not equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::ltFunctionString
 "Return the string for the \"less than\" function.";
@@ -515,10 +515,10 @@ operator.";
 "Set the string for the \"or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::xorFunctionString
-"Return the string for the \"xor\" function.";
+"Return the string for the \"exclusive or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setXorFunctionString
-"Set the string for the \"xor\" function.";
+"Set the string for the \"exclusive or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::notFunctionString
 "Return the string for the \"not\" function.";

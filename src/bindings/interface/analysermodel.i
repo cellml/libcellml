@@ -50,10 +50,10 @@
 "Removes the equation, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::needEqFunction
-"Tests if this :class:`AnalyserModel` object needs an \"equivalence\" function.";
+"Tests if this :class:`AnalyserModel` object needs an \"equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNeqFunction
-"Tests if this :class:`AnalyserModel` object needs a \"nonequivalence\" function.";
+"Tests if this :class:`AnalyserModel` object needs a \"not equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLtFunction
 "Tests if this :class:`AnalyserModel` object needs a \"less than\" function.";
@@ -74,7 +74,7 @@
 "Tests if this :class:`AnalyserModel` object needs an \"or\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needXorFunction
-"Tests if this :class:`AnalyserModel` object needs a \"xor\" function.";
+"Tests if this :class:`AnalyserModel` object needs a \"exclusive or\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNotFunction
 "Tests if this :class:`AnalyserModel` object needs a \"not\" function.";

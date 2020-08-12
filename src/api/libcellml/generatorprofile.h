@@ -125,38 +125,38 @@ public:
     // Relational and logical operators.
 
     /**
-     * @brief Get the @c std::string for the "equivalence" operator.
+     * @brief Get the @c std::string for the "equal to" operator.
      *
-     * Return the @c std::string for the "equivalence" operator.
+     * Return the @c std::string for the "equal to" operator.
      *
-     * @return The @c std::string for the "equivalence" operator.
+     * @return The @c std::string for the "equal to" operator.
      */
     std::string eqString() const;
 
     /**
-     * @brief Set the @c std::string for the "equivalence" operator.
+     * @brief Set the @c std::string for the "equal to" operator.
      *
-     * Set this @c std::string for the "equivalence" operator.
+     * Set this @c std::string for the "equal to" operator.
      *
-     * @param eqString The @c std::string to use for the "equivalence" operator.
+     * @param eqString The @c std::string to use for the "equal to" operator.
      */
     void setEqString(const std::string &eqString);
 
     /**
-     * @brief Get the @c std::string for the "nonequivalence" operator.
+     * @brief Get the @c std::string for the "not equal to" operator.
      *
-     * Return the @c std::string for the "nonequivalence" operator.
+     * Return the @c std::string for the "not equal to" operator.
      *
-     * @return The @c std::string for the "nonequivalence" operator.
+     * @return The @c std::string for the "not equal to" operator.
      */
     std::string neqString() const;
 
     /**
-     * @brief Set the @c std::string for the "nonequivalence" operator.
+     * @brief Set the @c std::string for the "not equal to" operator.
      *
-     * Set this @c std::string for the "nonequivalence" operator.
+     * Set this @c std::string for the "not equal to" operator.
      *
-     * @param neqString The @c std::string to use for the "nonequivalence"
+     * @param neqString The @c std::string to use for the "not equal to"
      * operator.
      */
     void setNeqString(const std::string &neqString);
@@ -275,20 +275,21 @@ public:
     void setOrString(const std::string &orString);
 
     /**
-     * @brief Get the @c std::string for the "xor" operator.
+     * @brief Get the @c std::string for the "exclusive or" operator.
      *
-     * Return the @c std::string for the "xor" operator.
+     * Return the @c std::string for the "exclusive or" operator.
      *
-     * @return The @c std::string for the "xor" operator.
+     * @return The @c std::string for the "exclusive or" operator.
      */
     std::string xorString() const;
 
     /**
-     * @brief Set the @c std::string for the "xor" operator.
+     * @brief Set the @c std::string for the "exclusive or" operator.
      *
-     * Set this @c std::string for the "xor" operator.
+     * Set this @c std::string for the "exclusive or" operator.
      *
-     * @param xorString The @c std::string to use for the "xor" operator.
+     * @param xorString The @c std::string to use for the "exclusive or"
+     * operator.
      */
     void setXorString(const std::string &xorString);
 
@@ -311,44 +312,43 @@ public:
     void setNotString(const std::string &notString);
 
     /**
-     * @brief Test if this @c GeneratorProfile has an "equivalence" operator.
+     * @brief Test if this @c GeneratorProfile has an "equal to" operator.
      *
-     * Test if this @c GeneratorProfile has an "equivalence" operator.
+     * Test if this @c GeneratorProfile has an "equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has an "equivalence" operator,
+     * @return @c true if the @c GeneratorProfile has an "equal to" operator,
      * @c false otherwise.
      */
     bool hasEqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has an "equivalence"
-     * operator.
+     * @brief Set whether this @c GeneratorProfile has an "equal to" operator.
      *
-     * Set whether this @c GeneratorProfile has an "equivalence" operator.
+     * Set whether this @c GeneratorProfile has an "equal to" operator.
      *
      * @param hasEqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has an "equivalence" operator.
+     * @c GeneratorProfile has an "equal to" operator.
      */
     void setHasEqOperator(bool hasEqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "nonequivalence" operator.
+     * @brief Test if this @c GeneratorProfile has a "not equal to" operator.
      *
-     * Test if this @c GeneratorProfile has a "nonequivalence" operator.
+     * Test if this @c GeneratorProfile has a "not equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "nonequivalence"
+     * @return @c true if the @c GeneratorProfile has a "not equal to"
      * operator, @c false otherwise.
      */
     bool hasNeqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "nonequivalence"
+     * @brief Set whether this @c GeneratorProfile has a "not equal to"
      * operator.
      *
-     * Set whether this @c GeneratorProfile has a "nonequivalence" operator.
+     * Set whether this @c GeneratorProfile has a "not equal to" operator.
      *
      * @param hasNeqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "nonequivalence" operator.
+     * @c GeneratorProfile has a "not equal to" operator.
      */
     void setHasNeqOperator(bool hasNeqOperator);
 
@@ -482,22 +482,23 @@ public:
     void setHasOrOperator(bool hasOrOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "xor" operator.
+     * @brief Test if this @c GeneratorProfile has a "exclusive or" operator.
      *
-     * Test if this @c GeneratorProfile has a "xor" operator.
+     * Test if this @c GeneratorProfile has a "exclusive or" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "xor" operator,
+     * @return @c true if the @c GeneratorProfile has a "exclusive or" operator,
      * @c false otherwise.
      */
     bool hasXorOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "xor" operator.
+     * @brief Set whether this @c GeneratorProfile has a "exclusive or"
+     * operator.
      *
-     * Set whether this @c GeneratorProfile has a "xor" operator.
+     * Set whether this @c GeneratorProfile has a "exclusive or" operator.
      *
      * @param hasXorOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "xor" operator.
+     * @c GeneratorProfile has a "exclusive or" operator.
      */
     void setHasXorOperator(bool hasXorOperator);
 
@@ -1443,20 +1444,20 @@ public:
     void setFalseString(const std::string &falseString);
 
     /**
-     * @brief Get the @c std::string for the "exponential" constant.
+     * @brief Get the @c std::string for Euler's number.
      *
-     * Return the @c std::string for the "exponential" constant.
+     * Return the @c std::string for Euler's number.
      *
-     * @return The @c std::string for the "exponential" constant.
+     * @return The @c std::string for Euler's number.
      */
     std::string eString() const;
 
     /**
-     * @brief Set the @c std::string for the "exponential" constant.
+     * @brief Set the @c std::string for Euler's number.
      *
-     * Set this @c std::string for the "exponential" constant.
+     * Set this @c std::string for Euler's number.
      *
-     * @param eString The @c std::string to use for the "exponential" constant.
+     * @param eString The @c std::string to use for Euler's number.
      */
     void setEString(const std::string &eString);
 
@@ -1517,40 +1518,40 @@ public:
     // Arithmetic functions.
 
     /**
-     * @brief Get the @c std::string for the "equivalence" function.
+     * @brief Get the @c std::string for the "equal to" function.
      *
-     * Return the @c std::string for the "equivalence" function.
+     * Return the @c std::string for the "equal to" function.
      *
-     * @return The @c std::string for the "equivalence" function.
+     * @return The @c std::string for the "equal to" function.
      */
     std::string eqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "equivalence" function.
+     * @brief Set the @c std::string for the "equal to" function.
      *
-     * Set this @c std::string for the "equivalence" function.
+     * Set this @c std::string for the "equal to" function.
      *
-     * @param eqFunctionString The @c std::string to use for the "equivalence"
+     * @param eqFunctionString The @c std::string to use for the "equal to"
      * function.
      */
     void setEqFunctionString(const std::string &eqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "nonequivalence" function.
+     * @brief Get the @c std::string for the "not equal to" function.
      *
-     * Return the @c std::string for the "nonequivalence" function.
+     * Return the @c std::string for the "not equal to" function.
      *
-     * @return The @c std::string for the "nonequivalence" function.
+     * @return The @c std::string for the "not equal to" function.
      */
     std::string neqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "nonequivalence" function.
+     * @brief Set the @c std::string for the "not equal to" function.
      *
-     * Set this @c std::string for the "nonequivalence" function.
+     * Set this @c std::string for the "not equal to" function.
      *
-     * @param neqFunctionString The @c std::string to use for the
-     * "nonequivalence" function.
+     * @param neqFunctionString The @c std::string to use for the "not equal to"
+     * function.
      */
     void setNeqFunctionString(const std::string &neqFunctionString);
 
@@ -1669,20 +1670,21 @@ public:
     void setOrFunctionString(const std::string &orFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "xor" function.
+     * @brief Get the @c std::string for the "exclusive or" function.
      *
-     * Return the @c std::string for the "xor" function.
+     * Return the @c std::string for the "exclusive or" function.
      *
-     * @return The @c std::string for the "xor" function.
+     * @return The @c std::string for the "exclusive or" function.
      */
     std::string xorFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "xor" function.
+     * @brief Set the @c std::string for the "exclusive or" function.
      *
-     * Set this @c std::string for the "xor" function.
+     * Set this @c std::string for the "exclusive or" function.
      *
-     * @param xorFunctionString The @c std::string to use for the "xor" function.
+     * @param xorFunctionString The @c std::string to use for the "exclusive or"
+     * function.
      */
     void setXorFunctionString(const std::string &xorFunctionString);
 
@@ -2808,7 +2810,7 @@ public:
      * @brief Set the @c std::string for the interface to create the states
      * array.
      *
-     * Set this @c std::string for the interface to create the states array.
+     * Set the @c std::string for the interface to create the states array.
      *
      * @param interfaceCreateStatesArrayMethodString The @c std::string to use
      * for the interface to create the states array.
