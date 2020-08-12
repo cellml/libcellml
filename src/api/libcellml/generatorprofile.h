@@ -143,20 +143,20 @@ public:
     void setEqString(const std::string &eqString);
 
     /**
-     * @brief Get the @c std::string for the "nonequivalence" operator.
+     * @brief Get the @c std::string for the "not equal to" operator.
      *
-     * Return the @c std::string for the "nonequivalence" operator.
+     * Return the @c std::string for the "not equal to" operator.
      *
-     * @return The @c std::string for the "nonequivalence" operator.
+     * @return The @c std::string for the "not equal to" operator.
      */
     std::string neqString() const;
 
     /**
-     * @brief Set the @c std::string for the "nonequivalence" operator.
+     * @brief Set the @c std::string for the "not equal to" operator.
      *
-     * Set this @c std::string for the "nonequivalence" operator.
+     * Set this @c std::string for the "not equal to" operator.
      *
-     * @param neqString The @c std::string to use for the "nonequivalence"
+     * @param neqString The @c std::string to use for the "not equal to"
      * operator.
      */
     void setNeqString(const std::string &neqString);
@@ -331,23 +331,23 @@ public:
     void setHasEqOperator(bool hasEqOperator);
 
     /**
-     * @brief Test if this @c GeneratorProfile has a "nonequivalence" operator.
+     * @brief Test if this @c GeneratorProfile has a "not equal to" operator.
      *
-     * Test if this @c GeneratorProfile has a "nonequivalence" operator.
+     * Test if this @c GeneratorProfile has a "not equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has a "nonequivalence"
+     * @return @c true if the @c GeneratorProfile has a "not equal to"
      * operator, @c false otherwise.
      */
     bool hasNeqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has a "nonequivalence"
+     * @brief Set whether this @c GeneratorProfile has a "not equal to"
      * operator.
      *
-     * Set whether this @c GeneratorProfile has a "nonequivalence" operator.
+     * Set whether this @c GeneratorProfile has a "not equal to" operator.
      *
      * @param hasNeqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has a "nonequivalence" operator.
+     * @c GeneratorProfile has a "not equal to" operator.
      */
     void setHasNeqOperator(bool hasNeqOperator);
 
@@ -1535,21 +1535,21 @@ public:
     void setEqFunctionString(const std::string &eqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "nonequivalence" function.
+     * @brief Get the @c std::string for the "not equal to" function.
      *
-     * Return the @c std::string for the "nonequivalence" function.
+     * Return the @c std::string for the "not equal to" function.
      *
-     * @return The @c std::string for the "nonequivalence" function.
+     * @return The @c std::string for the "not equal to" function.
      */
     std::string neqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "nonequivalence" function.
+     * @brief Set the @c std::string for the "not equal to" function.
      *
-     * Set this @c std::string for the "nonequivalence" function.
+     * Set this @c std::string for the "not equal to" function.
      *
-     * @param neqFunctionString The @c std::string to use for the
-     * "nonequivalence" function.
+     * @param neqFunctionString The @c std::string to use for the "not equal to"
+     * function.
      */
     void setNeqFunctionString(const std::string &neqFunctionString);
 

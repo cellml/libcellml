@@ -50,7 +50,7 @@
 "Tests if this :class:`AnalyserModel` object needs an \"equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needNeqFunction
-"Tests if this :class:`AnalyserModel` object needs a \"nonequivalence\" function.";
+"Tests if this :class:`AnalyserModel` object needs a \"not equal to\" function.";
 
 %feature("docstring") libcellml::AnalyserModel::needLtFunction
 "Tests if this :class:`AnalyserModel` object needs a \"less than\" function.";
