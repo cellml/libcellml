@@ -65,6 +65,8 @@ struct Importer::ImporterImpl
                                    std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
 
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
+    bool fetchImportSource(const ImportSourcePtr &importSource, Type type, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history);
+
     bool fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history);
     bool fetchUnits(const UnitsPtr &importUnits, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history);
 };
@@ -85,9 +87,8 @@ Importer::~Importer()
     delete mPimpl;
 }
 
-bool checkUnitsForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
+bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
-    // Check through model for overlap with the current history so we can report cycles properly.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         auto units = model->units(u);
         if (units->isImport()) {
@@ -99,11 +100,6 @@ bool checkUnitsForCycles(ModelPtr &model, std::vector<std::tuple<std::string, st
             }
         }
     }
-    return true;
-}
-
-bool checkComponentForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::string, std::string>> &history)
-{
     for (size_t c = 0; c < model->componentCount(); ++c) {
         auto component = model->component(c);
         if (component->isImport()) {
@@ -175,6 +171,26 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
     return true;
 }
 
+bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSource, Type type, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history)
+{
+    // If the model has never been retrieved, get it and add to library.
+    if (!importSource->hasModel()) {
+        if (!fetchModel(importSource, baseFile)) {
+            return false;
+        }
+    }
+    // Check for cycles.
+    std::string url = importSource->url();
+    if (mLibrary.count(url) == 0) {
+        url = resolvePath(url, baseFile);
+    }
+    if (!checkForCycles(mLibrary[url], history)) {
+        makeIssueCyclicDependency(mLibrary[url], type, history);
+        return false;
+    }
+    return true;
+}
+
 bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history)
 {
     // Given the importComponent, check whether it has been resolved previously.  If so, return.
@@ -185,25 +201,11 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     }
 
     history.emplace_back(std::make_tuple(importComponent->name(), importComponent->importReference(), importComponent->importSource()->url()));
-
-    // If the model has never been retrieved, get it and add to library.
-    if (!importComponent->importSource()->hasModel()) {
-        if (!fetchModel(importComponent->importSource(), baseFile)) {
-            return false;
-        }
-    }
-
-    // Check for cycles.
-    std::string url = importComponent->importSource()->url();
-    if (mLibrary.count(url) == 0) {
-        url = resolvePath(importComponent->importSource()->url(), baseFile);
-    }
-    if (!checkComponentForCycles(mLibrary[url], history)) {
-        makeIssueCyclicDependency(mLibrary[url], Type::COMPONENT, history);
+    if (!fetchImportSource(importComponent->importSource(), Type::COMPONENT, baseFile, history)) {
         return false;
     }
 
-    // Check that the model instance in the library has resolved all of the require dependencies.
+    // Check that the model instance in the library has resolved all of the required dependencies.
     auto sourceModel = importComponent->importSource()->model();
     auto sourceComponent = sourceModel->component(importComponent->importReference());
     if (sourceComponent != nullptr) {
@@ -258,18 +260,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     }
 
     history.emplace_back(std::make_tuple(importUnits->name(), importUnits->importReference(), importUnits->importSource()->url()));
-
-    if (!importUnits->importSource()->hasModel()) {
-        if (!fetchModel(importUnits->importSource(), baseFile)) {
-            return false;
-        }
-    }
-    std::string url = importUnits->importSource()->url();
-    if (mLibrary.count(url) == 0) {
-        url = resolvePath(importUnits->importSource()->url(), baseFile);
-    }
-    if (!checkUnitsForCycles(mLibrary[url], history)) {
-        makeIssueCyclicDependency(mLibrary[url], Type::UNITS, history);
+    if (!fetchImportSource(importUnits->importSource(), Type::UNITS, baseFile, history)) {
         return false;
     }
 
