@@ -578,4 +578,12 @@ IdList listIds(const ModelPtr &model);
  */
 std::string makeUniqueId(IdList &idList);
 
+// KRM docstrings
+void linkComponentVariableUnits(const ComponentPtr &component, const LoggerPtr &logger);
+void traverseComponentTreeLinkingUnits(const ComponentPtr &component);
+void traverseComponentTreeLinkingUnits(const ComponentPtr &component, const LoggerPtr &logger);
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
+bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component);
+bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component, const LoggerPtr &logger);
+
 } // namespace libcellml

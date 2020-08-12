@@ -319,23 +319,6 @@ bool Model::removeAllImportSources()
     return status;
 }
 
-void linkComponentVariableUnits(const ComponentPtr &component)
-{
-    for (size_t index = 0; index < component->variableCount(); ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-        if (u != nullptr) {
-            auto model = owningModel(u);
-            if (model == nullptr && !isStandardUnit(u)) {
-                model = owningModel(component);
-                if (model->hasUnits(u->name())) {
-                    v->setUnits(model->units(u->name()));
-                }
-            }
-        }
-    }
-}
-
 NameList findCnUnitsNames(const XmlNodePtr &node)
 {
     NameList names;
@@ -427,46 +410,12 @@ void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const S
     }
 }
 
-void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
-{
-    linkComponentVariableUnits(component);
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        auto c = component->component(index);
-        traverseComponentTreeLinkingUnits(c);
-    }
-}
-
 void Model::linkUnits()
 {
     for (size_t index = 0; index < componentCount(); ++index) {
         auto c = component(index);
         traverseComponentTreeLinkingUnits(c);
     }
-}
-
-bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
-{
-    bool unlinked = false;
-    for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-        if (u != nullptr) {
-            auto model = owningModel(u);
-            unlinked = model == nullptr && !isStandardUnit(u);
-        }
-    }
-
-    return unlinked;
-}
-
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
-{
-    bool unlinkedUnits = areComponentVariableUnitsUnlinked(component);
-    for (size_t index = 0; index < component->componentCount() && !unlinkedUnits; ++index) {
-        auto c = component->component(index);
-        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c);
-    }
-    return unlinkedUnits;
 }
 
 bool Model::hasUnlinkedUnits()

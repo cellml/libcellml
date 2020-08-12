@@ -391,7 +391,16 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         loadConnection(model, connectionNode);
     }
 
-    model->linkUnits();
+    auto logger = Logger::create();
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        auto c = model->component(index);
+        traverseComponentTreeLinkingUnits(c, logger);
+    }
+    // Copy issues into the local logger.
+    for (size_t i = 0; i < logger->issueCount(); ++i) {
+        mParser->addIssue(logger->issue(i));
+    }
+    logger->removeAllIssues();
 }
 
 std::string cleanMath(const std::string &math)

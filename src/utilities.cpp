@@ -27,6 +27,8 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
+#include "libcellml/issue.h"
+#include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/namedentity.h"
 #include "libcellml/reset.h"
@@ -691,6 +693,72 @@ std::string makeUniqueId(IdList &idList)
     }
     idList.insert(id);
     return id;
+}
+
+void linkComponentVariableUnits(const ComponentPtr &component, const LoggerPtr &logger)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            if (model == nullptr && !isStandardUnit(u)) {
+                model = owningModel(component);
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
+                } else if (logger != nullptr) {
+                    auto issue = Issue::create();
+                    issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
+                    issue->setLevel(Issue::Level::WARNING);
+                    issue->setVariable(v);
+                    logger->addIssue(issue);
+                }
+            }
+        }
+    }
+}
+
+void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
+{
+    traverseComponentTreeLinkingUnits(component, nullptr);
+}
+void traverseComponentTreeLinkingUnits(const ComponentPtr &component, const LoggerPtr &logger)
+{
+    linkComponentVariableUnits(component, logger);
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        traverseComponentTreeLinkingUnits(c, logger);
+    }
+}
+
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
+{
+    bool unlinked = false;
+    for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            unlinked = model == nullptr && !isStandardUnit(u);
+        }
+    }
+
+    return unlinked;
+}
+
+bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
+{
+    return traverseComponentTreeForUnlinkedUnits(component, nullptr);
+}
+
+bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component, const LoggerPtr &logger)
+{
+    bool unlinkedUnits = areComponentVariableUnitsUnlinked(component);
+    for (size_t index = 0; index < component->componentCount() && !unlinkedUnits; ++index) {
+        auto c = component->component(index);
+        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c, logger);
+    }
+    return unlinkedUnits;
 }
 
 } // namespace libcellml
