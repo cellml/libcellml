@@ -39,6 +39,20 @@ public:
     Logger &operator=(Logger rhs) = delete; /**< Assignment operator */
 
     /**
+     * @brief Create a @c Logger object.
+     *
+     * Factory method to create a @c Logger.  Create a
+     * blank logger with::
+     *
+     * @code
+     *   auto logger = libcellml::LOgger::create();
+     * @endcode
+     *
+     * @return A smart pointer to a @c Logger object.
+     */
+    static LoggerPtr create() noexcept;
+
+    /**
      * @brief Clear the issues from the logger.
      *
      * Clear the issues from the logger.
