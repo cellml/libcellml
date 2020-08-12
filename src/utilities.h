@@ -578,12 +578,38 @@ IdList listIds(const ModelPtr &model);
  */
 std::string makeUniqueId(IdList &idList);
 
-// KRM docstrings
 void linkComponentVariableUnits(const ComponentPtr &component, const LoggerPtr &logger);
+/**
+ * @overload
+ * 
+ *  Utility function used when linking units names to their corresponding @c Units items.
+ * 
+ * @param component The component to check.
+ * */
 void traverseComponentTreeLinkingUnits(const ComponentPtr &component);
+
+/**
+ * @overload
+ * 
+ *  Utility function used when linking units names to their corresponding @c Units items.
+ * 
+ * @param component The component to check.
+ * @param logger An optional @c Logger instance which is used to record cases of missing units.
+ * */
 void traverseComponentTreeLinkingUnits(const ComponentPtr &component, const LoggerPtr &logger);
+
+/**
+ * @brief Test whether a component contains variables naming units which have not yet 
+ *        been linked to @c Units items.
+ * 
+ * Utility function used when linking units names to their corresponding @c Units items. It
+ * will return a value of @c true when there are variables without linked units, or @c false 
+ * otherwise.
+ * 
+ * @param component The component to check.
+ * 
+ * @return @c true when unlinked variables are found, @c false otherwise.
+ */
 bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component);
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component, const LoggerPtr &logger);
 
 } // namespace libcellml
