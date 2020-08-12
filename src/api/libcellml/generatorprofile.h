@@ -2699,7 +2699,7 @@ public:
      * @brief Set the @c std::string for the interface to create the states
      * array.
      *
-     * Set this @c std::string for the interface to create the states array.
+     * Set the @c std::string for the interface to create the states array.
      *
      * @param interfaceCreateStatesArrayMethodString The @c std::string to use
      * for the interface to create the states array.
