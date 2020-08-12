@@ -780,7 +780,7 @@ TEST(Importer, resolveWithMissingChildDependentUnits)
 
 TEST(Importer, resolveWithChildUnitsImportedFromMissingModel)
 {
-    std::string e = "The attempt to resolve imports with the model at '/Users/kmoy001/libcellml/libcellml-src/tests/resources/importer/missing_file.cellml' failed: the file could not be opened.";
+    std::string e = "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "missing_file.cellml' failed: the file could not be opened.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_units_with_child_units_missing_model.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -793,7 +793,7 @@ TEST(Importer, resolveWithChildUnitsImportedFromMissingModel)
 
 TEST(Importer, resolveComponentWithUnitsMissingModel)
 {
-    std::string e = "The attempt to resolve imports with the model at '/Users/kmoy001/libcellml/libcellml-src/tests/resources/importer/missing_model.cellml' failed: the file could not be opened.";
+    std::string e = "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "missing_model.cellml' failed: the file could not be opened.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_imported_units_missing_model.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
