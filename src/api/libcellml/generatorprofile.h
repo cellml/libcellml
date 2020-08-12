@@ -125,20 +125,20 @@ public:
     // Relational and logical operators.
 
     /**
-     * @brief Get the @c std::string for the "equivalence" operator.
+     * @brief Get the @c std::string for the "equal to" operator.
      *
-     * Return the @c std::string for the "equivalence" operator.
+     * Return the @c std::string for the "equal to" operator.
      *
-     * @return The @c std::string for the "equivalence" operator.
+     * @return The @c std::string for the "equal to" operator.
      */
     std::string eqString() const;
 
     /**
-     * @brief Set the @c std::string for the "equivalence" operator.
+     * @brief Set the @c std::string for the "equal to" operator.
      *
-     * Set this @c std::string for the "equivalence" operator.
+     * Set this @c std::string for the "equal to" operator.
      *
-     * @param eqString The @c std::string to use for the "equivalence" operator.
+     * @param eqString The @c std::string to use for the "equal to" operator.
      */
     void setEqString(const std::string &eqString);
 
@@ -311,23 +311,22 @@ public:
     void setNotString(const std::string &notString);
 
     /**
-     * @brief Test if this @c GeneratorProfile has an "equivalence" operator.
+     * @brief Test if this @c GeneratorProfile has an "equal to" operator.
      *
-     * Test if this @c GeneratorProfile has an "equivalence" operator.
+     * Test if this @c GeneratorProfile has an "equal to" operator.
      *
-     * @return @c true if the @c GeneratorProfile has an "equivalence" operator,
+     * @return @c true if the @c GeneratorProfile has an "equal to" operator,
      * @c false otherwise.
      */
     bool hasEqOperator() const;
 
     /**
-     * @brief Set whether this @c GeneratorProfile has an "equivalence"
-     * operator.
+     * @brief Set whether this @c GeneratorProfile has an "equal to" operator.
      *
-     * Set whether this @c GeneratorProfile has an "equivalence" operator.
+     * Set whether this @c GeneratorProfile has an "equal to" operator.
      *
      * @param hasEqOperator A @c bool to determine whether this
-     * @c GeneratorProfile has an "equivalence" operator.
+     * @c GeneratorProfile has an "equal to" operator.
      */
     void setHasEqOperator(bool hasEqOperator);
 
@@ -1517,20 +1516,20 @@ public:
     // Arithmetic functions.
 
     /**
-     * @brief Get the @c std::string for the "equivalence" function.
+     * @brief Get the @c std::string for the "equal to" function.
      *
-     * Return the @c std::string for the "equivalence" function.
+     * Return the @c std::string for the "equal to" function.
      *
-     * @return The @c std::string for the "equivalence" function.
+     * @return The @c std::string for the "equal to" function.
      */
     std::string eqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "equivalence" function.
+     * @brief Set the @c std::string for the "equal to" function.
      *
-     * Set this @c std::string for the "equivalence" function.
+     * Set this @c std::string for the "equal to" function.
      *
-     * @param eqFunctionString The @c std::string to use for the "equivalence"
+     * @param eqFunctionString The @c std::string to use for the "equal to"
      * function.
      */
     void setEqFunctionString(const std::string &eqFunctionString);

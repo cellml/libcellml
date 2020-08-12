@@ -31,10 +31,10 @@ according to this profile.";
 "Set the \"assigment\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::eqString
-"Return the \"equivalence\" operator.";
+"Return the \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEqString
-"Set the \"equivalence\" operator.";
+"Set the \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqString
 "Return the the \"nonequivalence\" operator.";
@@ -91,10 +91,10 @@ according to this profile.";
 "Set the \"not\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasEqOperator
-"Test if this :class:`GeneratorProfile` has an \"equivalence\" operator.";
+"Test if this :class:`GeneratorProfile` has an \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasEqOperator
-"Set whether this :class:`GeneratorProfile` has an \"equivalence\" operator.";
+"Set whether this :class:`GeneratorProfile` has an \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNeqOperator
 "Test if this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
@@ -467,10 +467,10 @@ operator.";
 "Set the string for \"not-a-number\".";
 
 %feature("docstring") libcellml::GeneratorProfile::eqFunctionString
-"Return the string for the \"equivalence\" function.";
+"Return the string for the \"equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEqFunctionString
-"Set the string for the \"equivalence\" function.";
+"Set the string for the \"equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqFunctionString
 "Return the string for the \"nonequivalence\" function.";
