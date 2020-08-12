@@ -2110,3 +2110,20 @@ TEST(Parser, parseAndPrintSeparateAndCombinedImports)
     EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
     EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
 }
+
+TEST(Parser, raiseIssueMissingUnits)
+{
+    std::string modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                              "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+                              "  <units name=\"units_with_children_missing\">\n"
+                              "    <unit units=\"i_dont_exist\"/>\n"
+                              "  </units>\n"
+                              "  <component name=\"component\">\n"
+                              "    <variable name=\"my_units_are_missing\" units=\"i_dont_exist\"/>\n"
+                              "  </component>\n"
+                              "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    EXPECT_NE(size_t(0), parser->issueCount());
+}
