@@ -175,13 +175,13 @@ public:
     bool needEqFunction() const;
 
     /**
-     * @brief Test to determine if @c AnalyserModel needs a "nonequivalence"
+     * @brief Test to determine if @c AnalyserModel needs a "not equal to"
      * function.
      *
-     * Test to determine if @c AnalyserModel needs a "nonequivalence" function,
+     * Test to determine if @c AnalyserModel needs a "not equal to" function,
      * return @c true if it does and @c false otherwise.
      *
-     * @return @c true if @c AnalyserModel needs a "nonequivalence" function,
+     * @return @c true if @c AnalyserModel needs a "not equal to" function,
      * @c false otherwise.
      */
     bool needNeqFunction() const;

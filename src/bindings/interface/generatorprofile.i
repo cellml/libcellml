@@ -37,10 +37,10 @@ according to this profile.";
 "Set the \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqString
-"Return the the \"nonequivalence\" operator.";
+"Return the the \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNeqString
-"Set the \"nonequivalence\" operator.";
+"Set the \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::ltString
 "Return the \"less than\" operator.";
@@ -97,10 +97,10 @@ according to this profile.";
 "Set whether this :class:`GeneratorProfile` has an \"equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNeqOperator
-"Test if this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
+"Test if this :class:`GeneratorProfile` has a \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasNeqOperator
-"Set whether this :class:`GeneratorProfile` has a \"nonequivalence\" operator.";
+"Set whether this :class:`GeneratorProfile` has a \"not equal to\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasLtOperator
 "Test if this :class:`GeneratorProfile` has a \"less than\" operator.";
@@ -473,10 +473,10 @@ operator.";
 "Set the string for the \"equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::neqFunctionString
-"Return the string for the \"nonequivalence\" function.";
+"Return the string for the \"not equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setNeqFunctionString
-"Set the string for the \"nonequivalence\" function.";
+"Set the string for the \"not equal to\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::ltFunctionString
 "Return the string for the \"less than\" function.";
