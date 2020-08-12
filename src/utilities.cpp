@@ -713,6 +713,14 @@ void linkComponentVariableUnits(const ComponentPtr &component, const LoggerPtr &
                     issue->setVariable(v);
                     logger->addIssue(issue);
                 }
+            } else if ((model != nullptr) && (logger != nullptr)) {
+                // THIS WARNING IS UNREACHABLE because the parser logger will never involve another model, 
+                // and the user cannot supply a logger themselves?
+                auto issue = Issue::create();
+                issue->setDescription("The units '" + u->name() + "' assigned to variable '"+v->name()+"' in component '"+component->name()+"' belong to a different model, '"+model->name()+"'.");
+                issue->setLevel(Issue::Level::WARNING);
+                issue->setVariable(v);
+                logger->addIssue(issue);
             }
         }
     }

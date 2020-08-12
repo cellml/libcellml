@@ -594,6 +594,29 @@ TEST(Units, cannotLinkUnitsNotAddedToModel)
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
+TEST(Units, linkingToUnitsInAnotherModelRaisesWarning)
+{
+    auto m1 = libcellml::Model::create("m1");
+    auto m2 = libcellml::Model::create("m2");
+    auto c1 = libcellml::Component::create("c1");
+    auto u1 = libcellml::Units::create("u1");
+    auto v1 = libcellml::Variable::create("v1");
+
+
+    c1->addVariable(v1);
+    m1->addComponent(c1);
+    v1->setUnits(u1);
+
+    m2->addUnits(u1); // Units assigned to v1 exist in a different model.
+
+    m1->linkUnits();
+    EXPECT_TRUE(m1->hasUnlinkedUnits());
+
+    // So the user knows that the unit linking has failed somehow ...
+    // ... but how do they know where the problem is?
+
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
