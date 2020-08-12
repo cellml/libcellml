@@ -79,10 +79,10 @@ according to this profile.";
 "Set the \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::xorString
-"Return the \"xor\" operator.";
+"Return the \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setXorString
-"Set the \"xor\" operator.";
+"Set the \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::notString
 "Return the \"not\" operator.";
@@ -143,10 +143,10 @@ operator.";
 "Set whether this :class:`GeneratorProfile` has an \"or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasXorOperator
-"Test if this :class:`GeneratorProfile` has an \"xor\" operator.";
+"Test if this :class:`GeneratorProfile` has an \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::setHasXorOperator
-"Set whether this :class:`GeneratorProfile` has an \"xor\" operator.";
+"Set whether this :class:`GeneratorProfile` has an \"exclusive or\" operator.";
 
 %feature("docstring") libcellml::GeneratorProfile::hasNotOperator
 "Test if this :class:`GeneratorProfile` has a \"not\" operator.";
@@ -515,10 +515,10 @@ operator.";
 "Set the string for the \"or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::xorFunctionString
-"Return the string for the \"xor\" function.";
+"Return the string for the \"exclusive or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::setXorFunctionString
-"Set the string for the \"xor\" function.";
+"Set the string for the \"exclusive or\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::notFunctionString
 "Return the string for the \"not\" function.";
