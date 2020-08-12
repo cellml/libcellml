@@ -1443,20 +1443,20 @@ public:
     void setFalseString(const std::string &falseString);
 
     /**
-     * @brief Get the @c std::string for the "exponential" constant.
+     * @brief Get the @c std::string for Euler's number.
      *
-     * Return the @c std::string for the "exponential" constant.
+     * Return the @c std::string for Euler's number.
      *
-     * @return The @c std::string for the "exponential" constant.
+     * @return The @c std::string for Euler's number.
      */
     std::string eString() const;
 
     /**
-     * @brief Set the @c std::string for the "exponential" constant.
+     * @brief Set the @c std::string for Euler's number.
      *
-     * Set this @c std::string for the "exponential" constant.
+     * Set this @c std::string for Euler's number.
      *
-     * @param eString The @c std::string to use for the "exponential" constant.
+     * @param eString The @c std::string to use for Euler's number.
      */
     void setEString(const std::string &eString);
 

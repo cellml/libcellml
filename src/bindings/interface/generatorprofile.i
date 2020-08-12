@@ -443,10 +443,10 @@ operator.";
 "Set the string for \"false\".";
 
 %feature("docstring") libcellml::GeneratorProfile::eString
-"Return the string for the \"exponential\" constant.";
+"Return the string for Euler's number.";
 
 %feature("docstring") libcellml::GeneratorProfile::setEString
-"Set the string for the \"exponential\" constant.";
+"Set the string for Euler's number.";
 
 %feature("docstring") libcellml::GeneratorProfile::piString
 "Return the string for pi.";
