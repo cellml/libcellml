@@ -542,32 +542,33 @@ TEST(Importer, rangeOfValidSituations)
     EXPECT_FALSE(importedComponents->hasUnresolvedImports());
 
     // Now create a funky model that imports from all over the place and see what happens.
-    std::string funkyString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                              "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"funky\">\n"
-                              // Status quo functionality, key is relative URL + base file path as the relative URL doesn't exist as a key.
-                              "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_imported.cellml\">\n"
-                              "    <units units_ref=\"units1_imported\" name=\"units1FromLibrary\"/>\n"
-                              "  </import>\n"
-                              // Use the relative URL for a hidden child source component.
-                              "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"components_source.cellml\">\n"
-                              "    <component component_ref=\"component1\" name=\"component1FromLibrary\"/>\n"
-                              "  </import>\n"
-                              // Use the absolute URL for a hidden child source component.
-                              "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\""
-                              + resourcePath("importer/components_source.cellml")
-                              + "\">\n"
-                                "    <component component_ref=\"component2\" name=\"component2FromLibrary\"/>\n"
-                                "  </import>\n"
-                                // Remote website URL used for key.
-                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://www.example.com/myComponents.cellml\">\n"
-                                "    <component component_ref=\"component3\" name=\"component3FromLibrary\"/>\n"
-                                "  </import>\n"
-                                // Currently non-existent file used for the key. For this CellML file to function outside of the
-                                // the Importer instance, this model needs to be written to this location.
-                                "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"i_dont_exist_yet.cellml\">\n"
-                                "    <units units_ref=\"units4\" name=\"units4FromLibrary\"/>\n"
-                                "  </import>\n"
-                                "</model>";
+    const std::string funkyString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"funky\">\n"
+        // Status quo functionality, key is relative URL + base file path as the relative URL doesn't exist as a key.
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"units_imported.cellml\">\n"
+        "    <units units_ref=\"units1_imported\" name=\"units1FromLibrary\"/>\n"
+        "  </import>\n"
+        // Use the relative URL for a hidden child source component.
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"components_source.cellml\">\n"
+        "    <component component_ref=\"component1\" name=\"component1FromLibrary\"/>\n"
+        "  </import>\n"
+        // Use the absolute URL for a hidden child source component.
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\""
+        + resourcePath("importer/components_source.cellml")
+        + "\">\n"
+          "    <component component_ref=\"component2\" name=\"component2FromLibrary\"/>\n"
+          "  </import>\n"
+          // Remote website URL used for key.
+          "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://www.example.com/myComponents.cellml\">\n"
+          "    <component component_ref=\"component3\" name=\"component3FromLibrary\"/>\n"
+          "  </import>\n"
+          // Currently non-existent file used for the key. For this CellML file to function outside of the
+          // the Importer instance, this model needs to be written to this location.
+          "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"i_dont_exist_yet.cellml\">\n"
+          "    <units units_ref=\"units4\" name=\"units4FromLibrary\"/>\n"
+          "  </import>\n"
+          "</model>";
 
     auto funkyModel = parser->parseModel(funkyString);
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -646,38 +647,39 @@ TEST(Importer, importEncapsulatedChildren)
 {
     // Test to make sure that the Importer is correctly importing child components,
     // and not duplicating them.
-    std::string flatModelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                  "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"trunkModel\">\n"
-                                  "  <component name=\"branch1\"/>\n"
-                                  "  <component name=\"leaf1\"/>\n"
-                                  "  <component name=\"leaf2\"/>\n"
-                                  "  <component name=\"leaf3\"/>\n"
-                                  "  <component name=\"branch2\"/>\n"
-                                  "  <component name=\"leaf4\"/>\n"
-                                  "  <component name=\"flower1\"/>\n"
-                                  "  <component name=\"flower2\"/>\n"
-                                  "  <component name=\"branch3\"/>\n"
-                                  "  <component name=\"leaf5\"/>\n"
-                                  "  <component name=\"leaf6\"/>\n"
-                                  "  <component name=\"fruit\"/>\n"
-                                  "  <encapsulation>\n"
-                                  "    <component_ref component=\"branch1\">\n"
-                                  "      <component_ref component=\"leaf1\"/>\n"
-                                  "      <component_ref component=\"leaf2\"/>\n"
-                                  "      <component_ref component=\"leaf3\"/>\n"
-                                  "    </component_ref>\n"
-                                  "    <component_ref component=\"branch2\">\n"
-                                  "      <component_ref component=\"leaf4\"/>\n"
-                                  "      <component_ref component=\"flower1\"/>\n"
-                                  "      <component_ref component=\"flower2\"/>\n"
-                                  "    </component_ref>\n"
-                                  "    <component_ref component=\"branch3\">\n"
-                                  "      <component_ref component=\"leaf5\"/>\n"
-                                  "      <component_ref component=\"leaf6\"/>\n"
-                                  "      <component_ref component=\"fruit\"/>\n"
-                                  "    </component_ref>\n"
-                                  "  </encapsulation>\n"
-                                  "</model>\n";
+    const std::string flatModelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"trunkModel\">\n"
+        "  <component name=\"branch1\"/>\n"
+        "  <component name=\"leaf1\"/>\n"
+        "  <component name=\"leaf2\"/>\n"
+        "  <component name=\"leaf3\"/>\n"
+        "  <component name=\"branch2\"/>\n"
+        "  <component name=\"leaf4\"/>\n"
+        "  <component name=\"flower1\"/>\n"
+        "  <component name=\"flower2\"/>\n"
+        "  <component name=\"branch3\"/>\n"
+        "  <component name=\"leaf5\"/>\n"
+        "  <component name=\"leaf6\"/>\n"
+        "  <component name=\"fruit\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"branch1\">\n"
+        "      <component_ref component=\"leaf1\"/>\n"
+        "      <component_ref component=\"leaf2\"/>\n"
+        "      <component_ref component=\"leaf3\"/>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"branch2\">\n"
+        "      <component_ref component=\"leaf4\"/>\n"
+        "      <component_ref component=\"flower1\"/>\n"
+        "      <component_ref component=\"flower2\"/>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"branch3\">\n"
+        "      <component_ref component=\"leaf5\"/>\n"
+        "      <component_ref component=\"leaf6\"/>\n"
+        "      <component_ref component=\"fruit\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     auto importer = libcellml::Importer::create();
     auto parser = libcellml::Parser::create();
