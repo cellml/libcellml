@@ -1703,19 +1703,22 @@ TEST(Variable, variableInterfaceDontDowngrade)
 TEST(Variable, connectionsPersistAfterImporting)
 {
     auto model = libcellml::Model::create("model");
+    auto importer = libcellml::Importer::create();
+
     auto importedComponent = libcellml::Component::create("importedComponent");
     model->addComponent(importedComponent);
 
-    auto importer = libcellml::ImportSource::create();
-    importer->setUrl("importedModelWithMaps.cellml");
-    importedComponent->setImportSource(importer);
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("importedModelWithMaps.cellml");
+    importedComponent->setImportSource(importSource);
     importedComponent->setImportReference("importMe");
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath());
+    importer->resolveImports(model, resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 
-    model->flatten();
+    model = importer->flattenModel(model);
+
     EXPECT_NE(nullptr, model->component("importedComponent"));
     EXPECT_NE(nullptr, model->component("importedComponent")->component("child1"));
     EXPECT_NE(nullptr, model->component("importedComponent")->component("child2"));
