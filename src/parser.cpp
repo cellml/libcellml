@@ -1239,7 +1239,6 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
 
 void Parser::ParserImpl::loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node) const
 {
-    // TODO The spec. has not yet defined the test_value and reset_value specification elements.
     std::string variableName;
     std::string testVariableName;
 
