@@ -47,6 +47,7 @@ using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::Interface
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
+using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */
 using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 
 using VariablePair = std::pair<VariablePtr, VariablePtr>;
