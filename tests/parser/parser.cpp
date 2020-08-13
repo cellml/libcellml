@@ -101,7 +101,7 @@ TEST(Parser, emptyModelString)
 {
     const std::string e;
     const std::vector<std::string> expectedIssues = {
-        "Model is empty.",
+        "Model string is empty.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
