@@ -4,13 +4,13 @@ Annotate a ``Model``
 ====================
 
 libCellML does not provide annotation functionality directly, but it can help with some of the things that you might need to know in order to implement your own.
-Each annotation is attached to an unique ID locator which can be retrieved and edited.
+Each annotation is attached to a unique ID locator which can be retrieved and edited, or created automatically if you haven't already set them yourself.
 Since CellML is a subset of XML, any item may have an ID attribute, including operations within the MathML blocks, CellML entities, and CellML non-entity items (connections, encapsulations etc).
-The ID attributes themselves must follow the specification rules: please see :cellml2:`1.2.5 XML ID attributes<specA2.html?issue=1.2.5>` for details.
+These ID attributes themselves must follow the specification rules: please see :cellml2:`1.2.5 XML ID attributes<specA2.html?issue=1.2.5>` for details.
 
 .. container:: gotcha
 
-  At present, items within MathML blocks which have :code:`id` attributes are not editable by the annotation class.
+  At present, items within MathML blocks which have :code:`id` attributes are not retrieved or edited by the annotation class.
   Any editing or manipulation must be done external to libCellML.
 
 Annotation tools for entity items
@@ -87,7 +87,9 @@ Consider the simple example shown below.
     // Set the id of the mapping between variables v1 and v2.
     Variable::setEquivalentVariableId(v1, v2, "v1v2Id");
 
-    // Get the id of the mapping between variables v1 and v2.
+    // Get the id of the mapping between variables v1 and v2. Note that
+    // equivalences and connections go both ways, so the id is the same
+    // whichever order the variables are specified.
     std::string v1v2IdString = Variable::equivalentVariableId(v1, v2);
 
     // Since a connection item between two components will only exist
@@ -97,7 +99,9 @@ Consider the simple example shown below.
     Variable::setConnectionId(v1, v2, "c1c2id");
 
     // Get the id of the connection between the parent components of
-    // equivalent variable pair.
+    // equivalent variable pair. Note that equivalences and connections
+    // go both ways, so the id is the same whichever order the variables
+    // are specified.
     std::string c1c2IdString = Variable::connectionId(v1, v2);
 
   .. code-tab:: python
@@ -106,6 +110,8 @@ Consider the simple example shown below.
     Variable.setEquivalentVariableId(v1, v2, "v1v2Id")
 
     # Get the id of the mapping between variables v1 and v2.
+    # Note that equivalences and connections go both ways, so 
+    # the id is the same whichever order the variables are specified.
     v1v2_id_string = Variable.equivalentVariableId(v1, v2)
 
     # Since a connection item between two components will only exist
@@ -116,9 +122,47 @@ Consider the simple example shown below.
 
     # Get the id of the connection between the parent components
     # of equivalent variable pair.
+    # Note that equivalences and connections go both ways, so 
+    # the id is the same whichever order the variables are specified.
     c1c2IdString = Variable.connectionId(v1, v2)
 
-There is only one encapsulation in a model, and its :code:`id` attribute is accessed using the very simple functions from the model instance:
+The model's encapsulation and the component references which it contains may have ID attributes too. 
+These are accessed through the :code:`encapsulationId()` functions, as shown below.
+
+.. code:: text
+
+  model:
+    └ encapsulation:
+        └ component: grandparent
+            └ component: parent
+                └ component: child
+
+.. container:: toggle
+
+  .. container:: header
+
+    Show CellML syntax
+
+  .. code-block:: xml
+
+    <model>
+      <component name="grandparent" id="grandparentComponentId" />
+      <component name="parent" id="parentComponentId" />
+      <component name="child" id="childComponentId" />
+
+      <!-- The ids of the components in the encapsulation structure are distinct
+           from the ids on the components themselves. -->
+      <encapsulation id="encapsId">
+        <component_ref component="grandparent" id="grandparentEncapsId" >
+          <component_ref component="parent" id="parentEncapsId" >
+            <component_ref component="child" id="childEncapsId" >
+          </component_ref>
+        </component_ref>
+      </encapsulation>
+    </model>
+
+There is only one encapsulation in a model, and its :code:`id` attribute is accessed using the very simple functions from the model instance.
+The position of each component within that encapsulation structure is referenced using the same functions, but on the component instance instead.
 
 .. tabs::
 
@@ -126,17 +170,21 @@ There is only one encapsulation in a model, and its :code:`id` attribute is acce
 
     // Set the encapsulation id.
     model->setEncapsulationId("encapsId");
+    grandparentComponent->setEncapsulationId("grandparentEncapsId");
 
     // Get the encapsulation id.
-    std::string encapsulationIdString = model->encapsulationId();
+    std::string modelEncapsulationId = model->encapsulationId();
+    std::string grandparentEncapsulationId = grandparentComponent->encapsulationId(); 
 
   .. code-tab:: python
 
     # Set the encapsulation id.
     model.setEncapsulationId("encapsId")
+    grandparent_component.setEncapsulationId("grandparentEncapsId")
 
     # Get the encapsulation id.
-    encapsulation_id_string = model.encapsulationId()
+    model_encapsulation_id = model.encapsulationId()
+    grandparent_encapsulation_id = grandparent_component.encapsulationId()
 
 
 Some items are most readily accessed through their entity-type parents, these being:
@@ -144,7 +192,7 @@ Some items are most readily accessed through their entity-type parents, these be
 - :code:`unit` items, a collection of which defines a :code:`Units` item; and
 - :code:`test_value` and :code:`reset_value` children of :code:`Reset` items.
 
-Unit children of :code:`Units` items can be accessed through the :code:`unitAttributes` family of functions.
+Unit children of :code:`Units` items can be accessed either through the streamlined id-only functions :code:`unitId(index)` and :code:`setUnitId(index)`, or through the :code:`unitAttributes` family of functions.
 Note that there are several overloads of the arguments for this function; please see the complete documentation on the :api:`Units functions API page<Units>`.
 
 .. tabs::
@@ -157,16 +205,23 @@ Note that there are several overloads of the arguments for this function; please
     // Add the per second part with the id "perSecondUnitId".
     mm3PerSecond->addUnit("second", 0, -1.0, 1.0, "perSecondUnitId");
 
-    // Add the mm^3 part with with the id "millimetreCubedUnitId".
-    mm3PerSecond->addUnit("metre", "milli", 3.0, 1.0, "millimetreCubedUnitId");
+    // Add the mm^3 part with with the id "mmCubedUnitId".
+    mm3PerSecond->addUnit("metre", "milli", 3.0, 1.0, "mmCubedUnitId");
 
-    // Retrieve the unit attributes for the second (index = 1) unit item, including the id attribute:
+    // Check that the id has been assigned to the Unit children.
+    auto checkId1 = mm3PerSecond->unitId(0); // returns "perSecondUnitId".
+    auto checkId2 = mm3PerSecond->unitId(1); // returns "mmCubedUnitId".
+
+    // Change the id of the second (ie: index = 1) child to be "millimetreCubedUnitId":
+    mm3PerSecond->setUnitId(1, "millimetreCubedUnitId");
+
+    // Retrieve the unit attributes for the first (index = 0) unit item, including the id attribute:
     std::string unitReference;
     std::string unitPrefix;
     double unitExponent;
     double unitMultiplier;
     std::string unitId;
-    mm3PerSecond->unitAttributes(1, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId);
+    mm3PerSecond->unitAttributes(0, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId);
 
   .. code-tab:: python
 
@@ -176,15 +231,22 @@ Note that there are several overloads of the arguments for this function; please
     # Add the per second part with the id "perSecondUnitId".
     mm3_per_second.addUnit("second", 0, -1.0, 1.0, "perSecondUnitId")
 
-    # Add the mm^3 part with with the id "millimetreCubedUnitId".
-    mm3_per_second.addUnit("metre", "milli", 3.0, 1.0, "millimetreCubedUnitId")
+    # Add the mm^3 part with with the id "mmCubedUnitId".
+    mm3_per_second.addUnit("metre", "milli", 3.0, 1.0, "mmCubedUnitId")
 
-    # Retrieve the unit attributes for the second (index = 1) unit item, including the id attribute:
-    mm3PerSecond.unitAttributes(1, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId)
+    # Retrieve both ids from the child units.
+    check_1 = mm3_per_second.unitId(0) # returns "perSecondUnitId"
+    check_2 = mm3_per_second.unitId(1) # returns "mmCubedUnitId"
+
+    # Change the id of the second (ie: index = 1) Unit child to be "millimetreCubedUnitId".
+    mm3_per_second.setUnitId(1, "millimetreCubedUnitId")
+
+    # Retrieve the unit attributes for the second (index = 0) unit item, including the id attribute:
+    mm3PerSecond.unitAttributes(0, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId)
 
 
 +-------------------+-----------------------------------------------------------------------------------------------------+
-| enumeration value | Object type in the "any" container.                                                                                         |
+| enumeration value | Object type in the "any" container.                                                                 |
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | COMPONENT         | Pointer to a :code:`Component` with the given :code:`id`.                                           |
 +-------------------+-----------------------------------------------------------------------------------------------------+
@@ -192,7 +254,7 @@ Note that there are several overloads of the arguments for this function; please
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | CONNECTION        | :code:`VariablePair` containing pointers to two :code:`Variable` items which span the connection.   |
 +-------------------+-----------------------------------------------------------------------------------------------------+
-| ENCAPSULATION     | An empty string.  The encapsulation can be retrieved from the model itself.                         |
+| ENCAPSULATION     | Pointer to the :code:`Model` item with the given :code:`id`.                                        |
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | IMPORT            | Pointer to an :code:`ImportSource` item with the given :code:`id`.                                  |
 +-------------------+-----------------------------------------------------------------------------------------------------+
@@ -222,8 +284,12 @@ Note that there are several overloads of the arguments for this function; please
 Useful snippets
 ===============
 
-.. todo :: ../snippets/snippet_annotator_auto_ids.rst
+.. include:: ../snippets/snippet_annotator_auto_ids.rst
+
+.. todo :: ../snippets/snippet_annotator_clear_all_ids.rst
 
 .. include:: ../snippets/snippet_annotator_find_item_known_type.rst
 
 .. include:: ../snippets/snippet_annotator_find_item_unknown_type.rst
+
+.. todo :: ../snippets/snippet_find_duplicated_ids.rst

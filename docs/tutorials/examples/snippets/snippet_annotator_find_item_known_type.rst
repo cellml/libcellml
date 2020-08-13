@@ -18,7 +18,7 @@
       auto annotator = libcellml::Annotator::create();
 
       // Build the annotator to work with the model.
-      annotator->build(model);
+      annotator->buildModelIndex(model);
 
       // Retrieve entity items of known type using their id attribute.
       auto myComponent = annotator->component("myComponentId");
@@ -29,7 +29,7 @@
       auto myModel = annotator->model("myModelId");
 
       // Retrieve non-entity items of known type using their id attribute.
-      // NOTE that the type of object returned by retriving a non-entity item
+      // NOTE that the type of object returned by retrieving a non-entity item
       // is defined in the text above.
 
       // Connections are returned as a VariablePair type, where the first and second
@@ -81,7 +81,7 @@
       annotator = Annotator()
 
       # Build the annotator to work with the model.
-      annotator.build(model)
+      annotator.buildModelIndex(model)
 
       # Retrieve entity items of known type using their id attribute.
       my_component = annotator.component("myComponentId")
@@ -92,7 +92,7 @@
       my_model = annotator.model("myModelId")
 
       # Retrieve non-entity items of known type using their id attribute.
-      # NOTE that the type of object returned by retriving a non-entity item
+      # NOTE that the type of object returned by retrieving a non-entity item
       # is defined in the text above.
 
       # Connections are returned as a VariablePair type, where the first and second
