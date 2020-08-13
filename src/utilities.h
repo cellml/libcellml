@@ -26,8 +26,6 @@ limitations under the License.
 #include "libcellml/variable.h"
 
 #include "internaltypes.h"
-#include "xmldoc.h"
-#include "xmlutils.h"
 
 namespace libcellml {
 

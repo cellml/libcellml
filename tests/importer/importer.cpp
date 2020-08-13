@@ -344,11 +344,12 @@ TEST(Importer, accessImportedModelLibrary)
     // Library should contain left, right, and one instance (not two) of the point.
     EXPECT_EQ(size_t(3), importer->libraryCount());
 
+    // Access library items by their URL.
     auto left = importer->library(resourcePath("importer/diamond_left.cellml"));
     auto right = importer->library(resourcePath("importer/diamond_right.cellml"));
     auto point = importer->library(resourcePath("importer/diamond_point.cellml"));
 
-    // Access library items by their URL.
+    // Test that the library items are the same as those in the files.
     EXPECT_EQ(fileContents("importer/diamond_left.cellml"), printer->printModel(left));
     EXPECT_EQ(fileContents("importer/diamond_right.cellml"), printer->printModel(right));
     EXPECT_EQ(fileContents("importer/diamond_point.cellml"), printer->printModel(point));
@@ -358,13 +359,12 @@ TEST(Importer, multipleModelResolution)
 {
     // This test is intended to show how the Importer class can hold multiple imported models in its library, and that
     // these can be used to resolve the imports of more than one importing model.
-    // The example given has three models A, B, C, each importing the same four components, a, b, c, d from a
-    // fourth model D. We expect that model D is parsed and instantiated just once, rather than 12 times.
+    // The example given has two models A, B, each importing the same four components, a, b, c, d from a
+    // third model D. We expect that model D is parsed and instantiated just once, rather than 12 times.
 
     auto parser = libcellml::Parser::create();
     auto modelA = parser->parseModel(fileContents("importer/generic.cellml"));
     auto modelB = parser->parseModel(fileContents("importer/generic.cellml"));
-    auto modelC = parser->parseModel(fileContents("importer/generic.cellml"));
 
     // Model D will be imported into the library as it's included as a dependency in the models here.
     // Passing in one of the models for resolution will load model D into the library.
@@ -375,7 +375,6 @@ TEST(Importer, multipleModelResolution)
 
     // Now resolve the other models and expect the library contents to be unchanged.
     importer->resolveImports(modelB, resourcePath("importer/"));
-    importer->resolveImports(modelC, resourcePath("importer/"));
 
     EXPECT_EQ(size_t(1), importer->libraryCount());
 }
