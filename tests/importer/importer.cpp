@@ -360,7 +360,7 @@ TEST(Importer, multipleModelResolution)
     // This test is intended to show how the Importer class can hold multiple imported models in its library, and that
     // these can be used to resolve the imports of more than one importing model.
     // The example given has two models A, B, each importing the same four components, a, b, c, d from a
-    // third model D. We expect that model D is parsed and instantiated just once, rather than 12 times.
+    // third model D. We expect that model D is parsed and instantiated just once, rather than 8 times.
 
     auto parser = libcellml::Parser::create();
     auto modelA = parser->parseModel(fileContents("importer/generic.cellml"));
