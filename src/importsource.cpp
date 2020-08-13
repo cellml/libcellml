@@ -27,6 +27,7 @@ limitations under the License.
 
 namespace libcellml {
 
+using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
 using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
 
 /**
@@ -37,7 +38,7 @@ using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>;
 struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
-    ModelPtr mModel;
+    ModelWeakPtr mModel;
     std::vector<size_t> mComponents;
     std::vector<size_t> mUnits;
     std::vector<ImportedEntityWeakPtr> mImports;
@@ -48,7 +49,6 @@ struct ImportSource::ImportSourceImpl
 ImportSource::ImportSource()
     : mPimpl(new ImportSourceImpl())
 {
-    mPimpl->mModel = nullptr;
 }
 
 ImportSource::~ImportSource()
@@ -73,17 +73,24 @@ void ImportSource::setUrl(const std::string &url)
 
 ModelPtr ImportSource::model() const
 {
-    return mPimpl->mModel;
+    if (mPimpl->mModel.expired()) {
+        return nullptr;
+    }
+    return mPimpl->mModel.lock();
 }
 
 void ImportSource::setModel(const ModelPtr &model)
 {
-    mPimpl->mModel = model;
+    if (model == nullptr) {
+        mPimpl->mModel.reset();
+    } else {
+        mPimpl->mModel = model;
+    }
 }
 
 bool ImportSource::hasModel() const
 {
-    return mPimpl->mModel != nullptr;
+    return !mPimpl->mModel.expired();
 }
 
 ImportSourcePtr ImportSource::clone() const

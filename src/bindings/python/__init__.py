@@ -13,6 +13,7 @@ from libcellml.component import Component
 from libcellml.generator import Generator
 from libcellml.generator import GeneratorVariable
 from libcellml.generatorprofile import GeneratorProfile
+from libcellml.importer import Importer
 from libcellml.importsource import ImportSource
 from libcellml.issue import Issue
 from libcellml.model import Model
