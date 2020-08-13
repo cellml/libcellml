@@ -29,6 +29,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/entity.i
     ../interface/generator.i
     ../interface/generatorprofile.i
+    ../interface/importer.i
     ../interface/importsource.i
     ../interface/importedentity.i
     ../interface/issue.i
