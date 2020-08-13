@@ -33,12 +33,14 @@ class AnalyserModel; /**< Forward declaration of AnalyserModel class. */
 using AnalyserModelPtr = std::shared_ptr<AnalyserModel>; /**< Type definition for shared analyser model pointer. */
 class AnalyserVariable; /**< Forward declaration of AnalyserVariable class. */
 using AnalyserVariablePtr = std::shared_ptr<AnalyserVariable>; /**< Type definition for shared analyser variable pointer. */
-class Issue; /**< Forward declaration of Issue class. */
-using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
 using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
+class Importer; /**< Forward declaration of Importer class. */
+using ImporterPtr = std::shared_ptr<Importer>; /**< Type definition for shared importer pointer. */
+class Issue; /**< Forward declaration of Issue class. */
+using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
 class Logger; /**< Forward declaration of Parser class. */
 using LoggerPtr = std::shared_ptr<Logger>; /**< Type definition for shared parser pointer. */
 class Parser; /**< Forward declaration of Parser class. */
