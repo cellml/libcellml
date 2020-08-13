@@ -68,8 +68,9 @@ class ImportSourceTestCase(unittest.TestCase):
 
         # bool hasModel() const;
         x = ImportSource()
+        model = Model()
         self.assertFalse(x.hasModel())
-        x.setModel(Model())
+        x.setModel(model)
         self.assertTrue(x.hasModel())
         x.setModel(None)
         self.assertFalse(x.hasModel())

@@ -234,7 +234,7 @@ ModelPtr Parser::parseModel(const std::string &input)
     ModelPtr model = Model::create();
     if (input.empty()) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Model is empty.");
+        issue->setDescription("Model string is empty.");
         issue->setCause(Issue::Cause::XML);
         issue->setModel(model);
         addIssue(issue);
@@ -1239,7 +1239,6 @@ void Parser::ParserImpl::loadImport(ImportSourcePtr &importSource, const ModelPt
 
 void Parser::ParserImpl::loadResetChild(const std::string &childType, const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node) const
 {
-    // TODO The spec. has not yet defined the test_value and reset_value specification elements.
     std::string variableName;
     std::string testVariableName;
 
