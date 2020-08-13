@@ -60,7 +60,7 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-static const std::string INDENT = "    ";
+static const std::string FIXED_INDENT = "    ";
 
 void printComponent(const libcellml::ComponentPtr &component, size_t c, const std::string &indent, bool includeMaths)
 {
@@ -75,11 +75,11 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
     }
 
     std::cout << std::endl;
-    std::cout << indent << INDENT << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
+    std::cout << indent << FIXED_INDENT << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
 
     // Printing the variables within the component.
     for (size_t v = 0; v < component->variableCount(); ++v) {
-        std::cout << indent << INDENT << INDENT;
+        std::cout << indent << FIXED_INDENT << FIXED_INDENT;
         std::cout << "[" << v + 1 << "]: " << component->variable(v)->name();
         if (component->variable(v)->units() != nullptr) {
             std::cout << " [" << component->variable(v)->units()->name() << "]";
@@ -89,7 +89,7 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
         }
         std::cout << std::endl;
         if (component->variable(v)->equivalentVariableCount() > 0) {
-            std::cout << indent << INDENT << INDENT << INDENT;
+            std::cout << indent << FIXED_INDENT << FIXED_INDENT << FIXED_INDENT;
             std::string con = "  └──> ";
             for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
                 auto ev = component->variable(v)->equivalentVariable(e);
@@ -122,9 +122,9 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
 
     // Print the encapsulated components
     if (component->componentCount() > 0) {
-        std::cout << indent << INDENT << "CHILD COMPONENTS: " << component->componentCount()
+        std::cout << indent << FIXED_INDENT << "CHILD COMPONENTS: " << component->componentCount()
                   << " child components" << std::endl;
-        std::string newIndent = indent + INDENT + INDENT;
+        std::string newIndent = indent + FIXED_INDENT + FIXED_INDENT;
 
         for (size_t c2 = 0; c2 < component->componentCount(); ++c2) {
             auto child = component->component(c2);
@@ -146,15 +146,15 @@ void printModel(const libcellml::ModelPtr &model, bool includeMaths)
     }
     std::cout << std::endl;
 
-    std::cout << INDENT << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
+    std::cout << FIXED_INDENT << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
     for (size_t u = 0; u < model->unitsCount(); ++u) {
-        std::cout << INDENT << INDENT << "[" << u + 1 << "]: " << model->units(u)->name() << std::endl;
+        std::cout << FIXED_INDENT << FIXED_INDENT << "[" << u + 1 << "]: " << model->units(u)->name() << std::endl;
     }
 
-    std::cout << INDENT << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
+    std::cout << FIXED_INDENT << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
     for (size_t c = 0; c < model->componentCount(); ++c) {
         auto component = model->component(c);
-        printComponent(component, c, INDENT + INDENT, includeMaths);
+        printComponent(component, c, FIXED_INDENT + FIXED_INDENT, includeMaths);
     }
 }
 
