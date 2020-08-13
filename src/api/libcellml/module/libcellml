@@ -33,6 +33,7 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
+#include "libcellml/importer.h"
 #include "libcellml/importsource.h"
 #include "libcellml/issue.h"
 #include "libcellml/logger.h"
