@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" name="import_me">
-  <units name="myUnits2">
-    <unit units="metre" prefix="milli" />
-  </units>
-  <component name="importMe">
-    <variable name="x" units="myUnits2" interface="public_and_private"/>
-  </component>
-</model>
