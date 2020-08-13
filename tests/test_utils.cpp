@@ -45,7 +45,23 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
 {
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
-        std::cout << "Issue " << std::setw(width) << i + 1 << ": ";
+        switch (l->issue(i)->level()) {
+        case libcellml::Issue::Level::ERROR:
+            std::cout << "Error " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::WARNING:
+            std::cout << "Warning " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::HINT:
+            std::cout << "Hint " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::MESSAGE:
+            std::cout << "Message " << std::setw(width) << i + 1 << ": ";
+            break;
+        default:
+            break;
+        }
+
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
