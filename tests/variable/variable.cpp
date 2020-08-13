@@ -1700,6 +1700,39 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("public", v4->interfaceType());
 }
 
+TEST(Variable, connectionsPersistAfterImporting)
+{
+    auto model = libcellml::Model::create("model");
+    auto importer = libcellml::Importer::create();
+
+    auto importedComponent = libcellml::Component::create("importedComponent");
+    model->addComponent(importedComponent);
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("importedModelWithMaps.cellml");
+    importedComponent->setImportSource(importSource);
+    importedComponent->setImportReference("importMe");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+
+    EXPECT_NE(nullptr, model->component("importedComponent"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child1"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child2"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child1")->variable("x"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child2")->variable("x"));
+
+    auto x1 = model->component("importedComponent")->component("child1")->variable("x");
+    auto x2 = model->component("importedComponent")->component("child2")->variable("x");
+    EXPECT_EQ(size_t(1), x1->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), x2->equivalentVariableCount());
+    EXPECT_EQ(x1, x2->equivalentVariable(0));
+    EXPECT_EQ(x2, x1->equivalentVariable(0));
+}
+
 TEST(Variable, addVariableDuplicates)
 {
     auto model = libcellml::Model::create("model");

@@ -155,3 +155,15 @@ TEST(Parser, simpleGeneratorModel)
     std::string a = model->component("my_component")->math();
     EXPECT_EQ(e, a);
 }
+
+TEST(Parser, parseModelWithImportedEquivVariables)
+{
+    auto parser = libcellml::Parser::create();
+    auto modelContents = fileContents("importingModel.cellml");
+    auto model = parser->parseModel(modelContents);
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(modelContents, serialisedModel);
+}
