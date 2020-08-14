@@ -294,6 +294,40 @@ TEST(Printer, printModelWithStandardUnitsAdded)
     EXPECT_EQ(e, printer->printModel(model));
 }
 
+TEST(Printer, printModelImportingModelParentComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto modelContents = fileContents("importingModelParentComponent.cellml");
+    auto model = parser->parseModel(modelContents);
+    EXPECT_EQ(size_t(0), parser->errorCount());
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(modelContents, serialisedModel);
+}
+
+TEST(Printer, printModelImportingModelChildComponent)
+{
+    auto parser = libcellml::Parser::create();
+    auto modelContents = fileContents("importingModelChildComponent.cellml");
+    auto model = parser->parseModel(modelContents);
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto printer = libcellml::Printer::create();
+    auto serialisedModel = printer->printModel(model);
+
+    EXPECT_EQ(modelContents, serialisedModel);
+}
+
 TEST(Printer, printModelWithAutomaticIdsNoMaths)
 {
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
