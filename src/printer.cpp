@@ -234,40 +234,41 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idLi
 std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, IdList &idList, bool autoIds)
 {
     std::string repr;
-    if (component->isImport()) {
-        return repr;
-    }
-    repr += "<component";
-    std::string componentName = component->name();
-    if (!componentName.empty()) {
-        repr += " name=\"" + componentName + "\"";
-    }
-    if (!component->id().empty()) {
-        repr += " id=\"" + component->id() + "\"";
-    } else if (autoIds) {
-        repr += " id=\"" + makeUniqueId(idList) + "\"";
-    }
-    size_t variableCount = component->variableCount();
-    size_t resetCount = component->resetCount();
-    bool hasChildren = false;
-    if (variableCount > 0 || resetCount > 0 || !component->math().empty()) {
-        hasChildren = true;
-    }
-    if (hasChildren) {
-        repr += ">";
-        for (size_t i = 0; i < variableCount; ++i) {
-            repr += printVariable(component->variable(i), idList, autoIds);
+    if (!component->isImport()) {
+        repr += "<component";
+        std::string componentName = component->name();
+        if (!componentName.empty()) {
+            repr += " name=\"" + componentName + "\"";
         }
-        for (size_t i = 0; i < resetCount; ++i) {
-            repr += printReset(component->reset(i), idList, autoIds);
+        if (!component->id().empty()) {
+            repr += " id=\"" + component->id() + "\"";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
-        if (!component->math().empty()) {
-            repr += printMath(component->math());
+        size_t variableCount = component->variableCount();
+        size_t resetCount = component->resetCount();
+        bool hasChildren = false;
+        if (variableCount > 0 || resetCount > 0 || !component->math().empty()) {
+            hasChildren = true;
         }
-        repr += "</component>";
-    } else {
-        repr += "/>";
+        if (hasChildren) {
+            repr += ">";
+            for (size_t i = 0; i < variableCount; ++i) {
+                repr += printVariable(component->variable(i), idList, autoIds);
+            }
+            for (size_t i = 0; i < resetCount; ++i) {
+                repr += printReset(component->reset(i), idList, autoIds);
+            }
+            if (!component->math().empty()) {
+                repr += printMath(component->math());
+            }
+
+            repr += "</component>";
+        } else {
+            repr += "/>";
+        }
     }
+
     // Traverse through children of this component and add them to the representation.
     for (size_t i = 0; i < component->componentCount(); ++i) {
         repr += printComponent(component->component(i), idList, autoIds);
@@ -495,7 +496,8 @@ std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
     }
 
     std::string componentEncapsulation;
-    // Serialise components of the model, imported components have already been dealt with at this point.
+    // Serialise components of the model, imported components have already been dealt with at this point,
+    //  ... but their locally-defined children have not.
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->component(i);
         repr += mPimpl->printComponent(component, idList, autoIds);
