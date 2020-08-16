@@ -45,7 +45,23 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
 {
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
-        std::cout << "Issue " << std::setw(width) << i + 1 << ": ";
+        switch (l->issue(i)->level()) {
+        case libcellml::Issue::Level::ERROR:
+            std::cout << "Error " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::WARNING:
+            std::cout << "Warning " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::HINT:
+            std::cout << "Hint " << std::setw(width) << i + 1 << ": ";
+            break;
+        case libcellml::Issue::Level::MESSAGE:
+            std::cout << "Message " << std::setw(width) << i + 1 << ": ";
+            break;
+        default:
+            break;
+        }
+
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
@@ -60,84 +76,101 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
     }
 }
 
-void printModel(const libcellml::ModelPtr &model)
+static const std::string FIXED_INDENT = "    ";
+
+void printComponent(const libcellml::ComponentPtr &component, size_t c, const std::string &indent, bool includeMaths)
 {
-    std::cout << "The model name is: '" << model->name() << "'" << std::endl;
-    if (model->id() != "") {
-        std::cout << "The model id is: '" << model->id() << "'" << std::endl;
+    if (c == -1) {
+        std::cout << "COMPONENT: '" << component->name() << "'";
+    } else {
+        std::cout << indent << "[" << c + 1 << "]: " << component->name();
     }
 
-    // 2.a    Print any custom units of the model
-    std::cout << "The model defines " << model->unitsCount()
-              << " custom units:" << std::endl;
-    for (size_t u = 0; u < model->unitsCount(); ++u) {
-        std::cout << "  Units[" << u << "] is '" << model->units(u)->name() << "'"
-                  << std::endl;
-    }
-
-    // 2.b    Print the components of the model
-    std::cout << "The model has " << model->componentCount()
-              << " components:" << std::endl;
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        // 2.c  Printing the attributes of the component
-        auto component = model->component(c);
-        std::string spacer = "  ";
-        printComponent(component, c, spacer);
-    }
-}
-
-void printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer)
-{
-    std::cout << spacer << "Component[" << c << "] has name: '"
-              << component->name() << "'" << std::endl;
     if (component->id() != "") {
-        std::cout << spacer << "Component[" << c << "] has id: '"
-                  << component->id() << "'" << std::endl;
+        std::cout << ", id: " << component->id();
     }
 
-    std::cout << spacer << "Component[" << c << "] has "
-              << component->variableCount()
-              << " variables:" << std::endl;
+    std::cout << std::endl;
+    std::cout << indent << FIXED_INDENT << "VARIABLES: " << component->variableCount() << " variables" << std::endl;
 
-    // Printing the variables within the component
-    for (size_t vIndex = 0; vIndex < component->variableCount(); vIndex++) {
-        auto v = component->variable(vIndex);
-        std::cout << spacer << "  Variable[" << vIndex << "] has name: '"
-                  << v->name() << "'" << std::endl;
-        if (v->initialValue() != "") {
-            std::cout << spacer << "  Variable[" << vIndex << "] has initial_value: '"
-                      << v->initialValue() << "'"
-                      << std::endl;
+    // Printing the variables within the component.
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        std::cout << indent << FIXED_INDENT << FIXED_INDENT;
+        std::cout << "[" << v + 1 << "]: " << component->variable(v)->name();
+        if (component->variable(v)->units() != nullptr) {
+            std::cout << " [" << component->variable(v)->units()->name() << "]";
         }
-        if (v->units() != nullptr) {
-            std::cout << spacer << "  Variable[" << vIndex << "] has units: '"
-                      << v->units()->name() << "'" << std::endl;
-        }
-        std::cout << spacer << "  Variable[" << vIndex << "] has " << v->equivalentVariableCount() << " equivalent variable(s): ";
-        for (size_t eIndex = 0; eIndex < v->equivalentVariableCount(); ++eIndex) {
-            auto equivVariable = v->equivalentVariable(eIndex);
-            std::cout << equivVariable->name() << ", ";
+        if (component->variable(v)->initialValue() != "") {
+            std::cout << ", initial = " << component->variable(v)->initialValue();
         }
         std::cout << std::endl;
+        if (component->variable(v)->equivalentVariableCount() > 0) {
+            std::cout << indent << FIXED_INDENT << FIXED_INDENT << FIXED_INDENT;
+            std::string con = "  └──> ";
+            for (size_t e = 0; e < component->variable(v)->equivalentVariableCount(); ++e) {
+                auto ev = component->variable(v)->equivalentVariable(e);
+                if (ev == nullptr) {
+                    std::cout << "WHOOPS! Null equivalent variable!";
+                    continue;
+                }
+                libcellml::ComponentPtr ev_parent = std::dynamic_pointer_cast<libcellml::Component>(ev->parent());
+                if (ev_parent == nullptr) {
+                    std::cout << "WHOOPS! Null parent component for equivalent variable!";
+                    continue;
+                }
+                std::cout << con << ev_parent->name() << ":" << ev->name();
+                if (ev->units() != nullptr) {
+                    std::cout << " [" << ev->units()->name() << "]";
+                }
+                con = ", ";
+            }
+            std::cout << std::endl;
+        }
     }
 
-    // Print the maths within the component
-    if (component->math() != "") {
-        std::cout << spacer << "  Maths in the component is:" << std::endl;
-        std::cout << component->math() << std::endl;
+    // Print the maths within the component.
+    if (includeMaths) {
+        if (component->math() != "") {
+            std::cout << indent << "  Maths in the component is:" << std::endl;
+            std::cout << component->math() << std::endl;
+        }
     }
 
     // Print the encapsulated components
     if (component->componentCount() > 0) {
-        std::cout << spacer << "Component[" << c << "] has "
-                  << component->componentCount()
-                  << " child components:" << std::endl;
+        std::cout << indent << FIXED_INDENT << "CHILD COMPONENTS: " << component->componentCount()
+                  << " child components" << std::endl;
+        std::string newIndent = indent + FIXED_INDENT + FIXED_INDENT;
 
-        for (size_t c2 = 0; c2 < component->componentCount(); c2++) {
+        for (size_t c2 = 0; c2 < component->componentCount(); ++c2) {
             auto child = component->component(c2);
-            std::string oneMoreSpacer = spacer + "  ";
-            printComponent(child, c2, oneMoreSpacer);
+            printComponent(child, c2, newIndent, includeMaths);
         }
+    }
+}
+
+void printComponent(const libcellml::ComponentPtr &component, bool includeMaths)
+{
+    printComponent(component, -1, {}, includeMaths);
+}
+
+void printModel(const libcellml::ModelPtr &model, bool includeMaths)
+{
+    std::cout << "MODEL: '" << model->name() << "'";
+    if (model->id() != "") {
+        std::cout << ", id: '" << model->id() << "'";
+    }
+    std::cout << std::endl;
+
+    std::cout << FIXED_INDENT << "UNITS: " << model->unitsCount() << " custom units" << std::endl;
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        std::cout << FIXED_INDENT << FIXED_INDENT << "[" << u + 1 << "]: " << model->units(u)->name() << std::endl;
+    }
+
+    std::cout << FIXED_INDENT << "COMPONENTS: " << model->componentCount() << " components" << std::endl;
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        auto component = model->component(c);
+        printComponent(component, c, FIXED_INDENT + FIXED_INDENT, includeMaths);
     }
 }
 

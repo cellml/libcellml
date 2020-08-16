@@ -33,6 +33,9 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "xmldoc.h"
+#include "xmlutils.h"
+
 namespace libcellml {
 
 bool convertToDouble(const std::string &in, double &out)
@@ -559,6 +562,347 @@ void findAllVariablesWithEquivalences(const ComponentPtr &component, VariablePtr
     }
 }
 
+NameList findCnUnitsNames(const XmlNodePtr &node);
+NameList findComponentCnUnitsNames(const ComponentPtr &component);
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap);
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component);
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable);
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model);
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model);
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack);
+void componentNames(const ComponentPtr &component, NameList &names);
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units);
+
+NameList findCnUnitsNames(const XmlNodePtr &node)
+{
+    NameList names;
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement("cn")) {
+            std::string u = childNode->attribute("units");
+            if (!u.empty() && !isStandardUnitName(u)) {
+                names.push_back(u);
+            }
+        }
+        auto childNames = findCnUnitsNames(childNode);
+        names.insert(names.end(), childNames.begin(), childNames.end());
+        childNode = childNode->next();
+    }
+
+    return names;
+}
+
+NameList findComponentCnUnitsNames(const ComponentPtr &component)
+{
+    NameList names;
+    // Inspect the MathML in this component for any specified constant <cn> units.
+    std::string mathContent = component->math();
+    if (mathContent.empty()) {
+        return names;
+    }
+    std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
+    for (const auto &doc : mathDocs) {
+        auto rootNode = doc->rootNode();
+        if (rootNode->isMathmlElement("math")) {
+            auto nodesNames = findCnUnitsNames(rootNode);
+            names.insert(names.end(), nodesNames.begin(), nodesNames.end());
+        }
+    }
+
+    return names;
+}
+
+void findAndReplaceCnUnitsNames(const XmlNodePtr &node, const StringStringMap &replaceMap)
+{
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode != nullptr) {
+        if (childNode->isMathmlElement("cn")) {
+            std::string unitsName = childNode->attribute("units");
+            auto foundNameIter = replaceMap.find(unitsName);
+            if (foundNameIter != replaceMap.end()) {
+                childNode->setAttribute("units", foundNameIter->second.c_str());
+            }
+        }
+        findAndReplaceCnUnitsNames(childNode, replaceMap);
+        childNode = childNode->next();
+    }
+}
+
+void findAndReplaceComponentCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+{
+    std::string mathContent = component->math();
+    if (mathContent.empty()) {
+        return;
+    }
+    bool contentModified = false;
+    std::string newMathContent;
+    std::vector<XmlDocPtr> mathDocs = multiRootXml(mathContent);
+    for (const auto &doc : mathDocs) {
+        auto rootNode = doc->rootNode();
+        if (rootNode->isMathmlElement("math")) {
+            auto originalMath = rootNode->convertToString();
+            findAndReplaceCnUnitsNames(rootNode, replaceMap);
+            auto newMath = rootNode->convertToString();
+            newMathContent += newMath;
+            if (newMath != originalMath) {
+                contentModified = true;
+            }
+        }
+    }
+
+    if (contentModified) {
+        component->setMath(newMathContent);
+    }
+}
+
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap)
+{
+    findAndReplaceComponentCnUnitsNames(component, replaceMap);
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto childComponent = component->component(index);
+        findAndReplaceComponentCnUnitsNames(childComponent, replaceMap);
+    }
+}
+
+size_t getComponentIndexInComponentEntity(const ComponentEntityPtr &componentParent, const ComponentEntityPtr &component)
+{
+    size_t index = 0;
+    bool found = false;
+    while ((index < componentParent->componentCount()) && !found) {
+        if (componentParent->component(index) == component) {
+            found = true;
+        } else {
+            ++index;
+        }
+    }
+
+    return index;
+}
+
+IndexStack reverseEngineerIndexStack(const ComponentPtr &component)
+{
+    auto dummyVariable = Variable::create();
+    component->addVariable(dummyVariable);
+    IndexStack indexStack = reverseEngineerIndexStack(dummyVariable);
+    indexStack.pop_back();
+    component->removeVariable(dummyVariable);
+
+    return indexStack;
+}
+
+IndexStack rebaseIndexStack(const IndexStack &stack, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    auto rebasedStack = stack;
+
+    rebasedStack.resize(originStack.size(), SIZE_MAX);
+    if (rebasedStack == originStack) {
+        rebasedStack = destinationStack;
+        auto offsetIt = stack.begin() + int64_t(originStack.size());
+        rebasedStack.insert(rebasedStack.end(), offsetIt, stack.end());
+    } else {
+        rebasedStack.clear();
+    }
+
+    return rebasedStack;
+}
+
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack)
+{
+    EquivalenceMap rebasedMap;
+    for (const auto &entry : map) {
+        auto key = entry.first;
+        auto rebasedKey = rebaseIndexStack(key, originStack, destinationStack);
+        if (!rebasedKey.empty()) {
+            auto vector = entry.second;
+            std::vector<IndexStack> rebasedVector;
+            for (const auto &stack : vector) {
+                auto rebasedTarget = rebaseIndexStack(stack, originStack, destinationStack);
+                if (!rebasedTarget.empty()) {
+                    rebasedVector.push_back(rebasedTarget);
+                }
+            }
+
+            if (!rebasedVector.empty()) {
+                rebasedMap[rebasedKey] = rebasedVector;
+            }
+        }
+    }
+
+    return rebasedMap;
+}
+
+void componentNames(const ComponentPtr &component, NameList &names)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        names.push_back(c->name());
+        componentNames(c, names);
+    }
+}
+
+NameList componentNames(const ModelPtr &model)
+{
+    NameList names;
+    for (size_t index = 0; index < model->componentCount(); ++index) {
+        auto component = model->component(index);
+        names.push_back(component->name());
+        componentNames(component, names);
+    }
+    return names;
+}
+
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component)
+{
+    ComponentNameMap nameMap;
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        auto c = component->component(index);
+        nameMap[c->name()] = c;
+        ComponentNameMap childrenNameMap = createComponentNamesMap(c);
+        nameMap.insert(childrenNameMap.begin(), childrenNameMap.end());
+    }
+
+    return nameMap;
+}
+
+std::vector<UnitsPtr> referencedUnits(const ModelPtr &model, const UnitsPtr &units)
+{
+    std::vector<UnitsPtr> requiredUnits;
+
+    std::string ref;
+    std::string pre;
+    std::string id;
+    double expMult;
+    double uExp;
+
+    for (size_t index = 0; index < units->unitCount(); ++index) {
+        units->unitAttributes(index, ref, pre, uExp, expMult, id);
+        if (!isStandardUnitName(ref)) {
+            auto refUnits = model->units(ref);
+            if (refUnits != nullptr) {
+                auto requiredUnitsUnits = referencedUnits(model, refUnits);
+                requiredUnits.insert(requiredUnits.end(), requiredUnitsUnits.begin(), requiredUnitsUnits.end());
+                requiredUnits.push_back(refUnits);
+            }
+        }
+    }
+
+    return requiredUnits;
+}
+
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component)
+{
+    std::vector<UnitsPtr> usedUnits;
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto v = component->variable(i);
+        auto u = v->units();
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+    auto componentCnUnitsNames = findComponentCnUnitsNames(component);
+    for (const auto &unitsName : componentCnUnitsNames) {
+        auto u = model->units(unitsName);
+        if ((u != nullptr) && !isStandardUnitName(u->name())) {
+            auto requiredUnits = referencedUnits(model, u);
+            usedUnits.insert(usedUnits.end(), requiredUnits.begin(), requiredUnits.end());
+            usedUnits.push_back(u);
+        }
+    }
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        auto childComponent = component->component(i);
+        auto childUsedUnits = unitsUsed(model, childComponent);
+        usedUnits.insert(usedUnits.end(), childUsedUnits.begin(), childUsedUnits.end());
+    }
+
+    return usedUnits;
+}
+
+IndexStack reverseEngineerIndexStack(const VariablePtr &variable)
+{
+    IndexStack indexStack;
+    ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+    indexStack.push_back(getVariableIndexInComponent(component, variable));
+
+    ComponentEntityPtr parent = component;
+    ComponentEntityPtr grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
+    while (grandParent != nullptr) {
+        indexStack.push_back(getComponentIndexInComponentEntity(grandParent, parent));
+        parent = grandParent;
+        grandParent = std::dynamic_pointer_cast<ComponentEntity>(parent->parent());
+    }
+
+    std::reverse(std::begin(indexStack), std::end(indexStack));
+
+    return indexStack;
+}
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack)
+{
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto variable = component->variable(index);
+        for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
+            if (j == 0) {
+                indexStack.push_back(index);
+            }
+            auto equivalentVariable = variable->equivalentVariable(j);
+            auto equivalentVariableIndexStack = reverseEngineerIndexStack(equivalentVariable);
+            if (equivalenceMap.count(indexStack) == 0) {
+                equivalenceMap[indexStack] = std::vector<IndexStack>();
+            }
+            equivalenceMap[indexStack].push_back(equivalentVariableIndexStack);
+        }
+        if (variable->equivalentVariableCount() > 0) {
+            indexStack.pop_back();
+        }
+    }
+}
+
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack)
+{
+    for (size_t index = 0; index < component->componentCount(); ++index) {
+        indexStack.push_back(index);
+        auto c = component->component(index);
+        recordVariableEquivalences(c, map, indexStack);
+        generateEquivalenceMap(c, map, indexStack);
+        indexStack.pop_back();
+    }
+}
+
+VariablePtr getVariableLocatedAt(const IndexStack &stack, const ModelPtr &model)
+{
+    ComponentPtr component;
+    for (size_t index = 0; index < stack.size() - 1; ++index) {
+        if (index == 0) {
+            component = model->component(stack.at(index));
+        } else {
+            component = component->component(stack.at(index));
+        }
+    }
+
+    return component->variable(stack.back());
+}
+
+void makeEquivalence(const IndexStack &stack1, const IndexStack &stack2, const ModelPtr &model)
+{
+    auto v1 = getVariableLocatedAt(stack1, model);
+    auto v2 = getVariableLocatedAt(stack2, model);
+    Variable::addEquivalence(v1, v2);
+}
+
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model)
+{
+    for (const auto &iter : map) {
+        auto key = iter.first;
+        auto vector = iter.second;
+        for (auto vectorIter = vector.begin(); vectorIter < vector.end(); ++vectorIter) {
+            makeEquivalence(key, *vectorIter, model);
+        }
+    }
+}
 void listComponentIds(const ComponentPtr &component, IdList &idList)
 {
     std::string id = component->id();
