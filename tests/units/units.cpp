@@ -602,7 +602,6 @@ TEST(Units, linkingToUnitsInAnotherModelRaisesWarning)
     auto u1 = libcellml::Units::create("u1");
     auto v1 = libcellml::Variable::create("v1");
 
-
     c1->addVariable(v1);
     m1->addComponent(c1);
     v1->setUnits(u1);
@@ -614,7 +613,6 @@ TEST(Units, linkingToUnitsInAnotherModelRaisesWarning)
 
     // So the user knows that the unit linking has failed somehow ...
     // ... but how do they know where the problem is?
-
 }
 
 TEST(Units, multiply)
