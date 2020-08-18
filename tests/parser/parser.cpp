@@ -101,7 +101,7 @@ TEST(Parser, emptyModelString)
 {
     const std::string e;
     const std::vector<std::string> expectedIssues = {
-        "Model is empty.",
+        "Model string is empty.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -646,6 +646,7 @@ TEST(Parser, emptyEncapsulation)
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in);
     EXPECT_EQ_ISSUES(expectedIssues, p);
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, p->issue(0)->level());
 }
 
 TEST(Parser, validEncapsulation)
@@ -984,7 +985,25 @@ TEST(Parser, emptyConnections)
     const std::vector<std::string> expectedIssues = {
         "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
         "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
-        "Connection in model 'model_name' must contain one or more 'map_variables' elements.",
+        "Connection in model 'model_name' does not contain any 'map_variables' elements and will be disregarded.",
+    };
+
+    libcellml::ParserPtr p = libcellml::Parser::create();
+    p->parseModel(in);
+    EXPECT_EQ_ISSUES(expectedIssues, p);
+}
+
+TEST(Parser, emptyConnectionWithId)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <connection id=\"myId\"/>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedIssues = {
+        "Connection in model 'model_name' does not have a valid component_1 in a connection element.",
+        "Connection in model 'model_name' does not have a valid component_2 in a connection element.",
+        "Connection in model 'model_name' has an id of 'myId' but does not contain any 'map_variables' elements. The connection will be disregarded and the associated id will be lost.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1104,8 +1123,8 @@ TEST(Parser, connectionErrorNoMapVariables)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid connection attribute 'component_3'.",
-        "Connection in model '' must contain one or more 'map_variables' elements.",
-        "Connection in model '' must contain one or more 'map_variables' elements.",
+        "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
+        "Connection in model '' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1133,6 +1152,23 @@ TEST(Parser, importedComponent2Connection)
     libcellml::ParserPtr parser = libcellml::Parser::create();
     parser->parseModel(e);
     EXPECT_EQ(size_t(0), parser->issueCount());
+}
+
+TEST(Parser, emptyImportWithAndWithoutId)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <import/>"
+        "  <import id = \"import_id\" />\n"
+        "</model>\n";
+    std::vector<std::string> e = {
+        "Import from '' is empty and will be disregarded.",
+        "Import from '' has an id of 'import_id' but is empty. The import will be disregarded and the associated id will be lost.",
+    };
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    auto m = parser->parseModel(in);
+    EXPECT_EQ_ISSUES(e, parser);
 }
 
 TEST(Parser, validConnectionMapVariablesFirst)
@@ -1320,9 +1356,9 @@ TEST(Parser, invalidImportsAndGetIssue)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
         "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
-        "  </import>\n"
-        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"\" name=\"frank\"/>\n"
         "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
+        "    <units units_ref=\"\" name=\"fido\"/>\n"
         "  </import>\n"
         "</model>\n";
 
@@ -1369,6 +1405,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     const std::vector<std::string> expectedIssues = {
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
+        "Import from '' is empty and will be disregarded.",
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
@@ -1377,7 +1414,7 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
-        "Connection in model 'starwars' must contain one or more 'map_variables' elements.",
+        "Connection in model 'starwars' does not contain any 'map_variables' elements and will be disregarded.",
     };
 
     // Parse and check for CellML issues.
@@ -2038,4 +2075,38 @@ TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
     std::string output2 = printer->printModel(model2);
 
     EXPECT_EQ(in, output2);
+}
+
+TEST(Parser, parseAndPrintSeparateAndCombinedImports)
+{
+    const std::string separateInString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    const std::string combinedInString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\"/>\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto modelSeparate = parser->parseModel(separateInString);
+    auto modelCombined = parser->parseModel(combinedInString);
+
+    EXPECT_EQ(size_t(2), modelSeparate->importSourceCount());
+    EXPECT_EQ(size_t(1), modelCombined->importSourceCount());
+
+    auto printer = libcellml::Printer::create();
+    EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
+    EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
 }

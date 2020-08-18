@@ -76,8 +76,10 @@ private:
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
-void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, size_t const c, std::string const spacer);
-void TEST_EXPORT printModel(const libcellml::ModelPtr &model);
+
+void TEST_EXPORT printModel(const libcellml::ModelPtr &model, bool includeMaths = true);
+void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, bool includeMaths = true);
+
 void TEST_EXPORT expectEqualIssues(const std::vector<std::string> &issues, const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issues,
                                                         const std::vector<std::string> &specificationHeadings,
@@ -86,9 +88,16 @@ void TEST_EXPORT expectEqualIssuesCauses(const std::vector<std::string> &issues,
                                          const std::vector<libcellml::Issue::Cause> &causes,
                                          const libcellml::LoggerPtr &logger);
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
-libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");
+libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
+                                                         const std::string &componentName = "");
 libcellml::VariablePtr TEST_EXPORT createVariableWithUnits(const std::string &name, const std::string &units);
 libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(const std::string &modelName = "", const std::string &c1Name = "", const std::string &c2Name = "", const std::string &v1Name = "", const std::string &v2Name = "");
+
+void TEST_EXPORT compareUnit(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2);
+void TEST_EXPORT compareUnits(const libcellml::UnitsPtr &u1, const libcellml::UnitsPtr &u2, const libcellml::EntityPtr &expectedParent = nullptr);
+void TEST_EXPORT compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr);
+void TEST_EXPORT compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2);
+void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2);
 
 #define EXPECT_EQ_ISSUES(issues, logger) \
     SCOPED_TRACE("Issue occured here."); \
@@ -98,6 +107,6 @@ libcellml::ModelPtr TEST_EXPORT createModelTwoComponentsWithOneVariableEach(cons
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ISSUES_KINDS(issues, causes, logger) \
+#define EXPECT_EQ_ISSUES_CAUSES(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesCauses(issues, causes, logger)

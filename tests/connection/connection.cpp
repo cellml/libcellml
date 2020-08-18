@@ -1105,7 +1105,8 @@ TEST(Connection, importedComponentConnectionAndParse)
     m->addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
-    EXPECT_EQ(componentImported->variable(0), variableImported);
+    EXPECT_EQ(variableImported, componentImported->variable(0));
+
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     std::string a = printer->printModel(m);
@@ -1160,4 +1161,43 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     const std::string a = printer->printModel(model);
     EXPECT_EQ(e, a);
+}
+
+TEST(Connection, mappingId)
+{
+    const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                           "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" >\n"
+                           "  <component name=\"c1\" >\n"
+                           "    <variable name=\"v1\" units=\"units2\" interface=\"private\"/>\n"
+                           "  </component>\n"
+                           "  <component name=\"c2\">\n"
+                           "    <variable name=\"v2a\" units=\"units2\" interface=\"public\"/>\n"
+                           "    <variable name=\"v2b\" units=\"units2\" interface=\"public\"/>\n"
+                           "  </component>\n"
+                           "  <component name=\"c3\">\n"
+                           "    <variable name=\"v3\" units=\"units2\" interface=\"public\"/>\n"
+                           "  </component>\n"
+                           "  <connection component_1=\"c1\" component_2=\"c2\">\n"
+                           "    <map_variables variable_1=\"v1\" variable_2=\"v2a\" id=\"id12a\"/>\n"
+                           "    <map_variables variable_1=\"v1\" variable_2=\"v2b\" id=\"id12b\"/>\n"
+                           "  </connection>\n"
+                           "  <connection component_1=\"c1\" component_2=\"c3\">\n"
+                           "    <map_variables variable_1=\"v1\" variable_2=\"v3\" id=\"id13\"/>\n"
+                           "  </connection>\n"
+
+                           "</model>\n";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(in);
+    EXPECT_EQ("id12a",
+              libcellml::Variable::equivalenceMappingId(
+                  model->component("c1")->variable("v1"),
+                  model->component("c2")->variable("v2a")));
+    EXPECT_EQ("id12b",
+              libcellml::Variable::equivalenceMappingId(
+                  model->component("c1")->variable("v1"),
+                  model->component("c2")->variable("v2b")));
+    EXPECT_EQ("id13",
+              libcellml::Variable::equivalenceMappingId(
+                  model->component("c1")->variable("v1"),
+                  model->component("c3")->variable("v3")));
 }

@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <string>
 
-#include "libcellml/logger.h"
+#include "libcellml/exportdefinitions.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -28,10 +28,10 @@ namespace libcellml {
  *
  * The Printer class is for representing a CellML Printer.
  */
-class LIBCELLML_EXPORT Printer: public Logger
+class LIBCELLML_EXPORT Printer
 {
 public:
-    ~Printer() override; /**< Destructor */
+    ~Printer(); /**< Destructor */
     Printer(const Printer &rhs) = delete; /**< Copy constructor */
     Printer(Printer &&rhs) noexcept = delete; /**< Move constructor */
     Printer &operator=(Printer rhs) = delete; /**< Assignment operator */
@@ -57,7 +57,7 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(const ModelPtr &model) const;
+    std::string printModel(const ModelPtr &model, bool autoIds = false) const;
 
 private:
     Printer(); /**< Constructor */

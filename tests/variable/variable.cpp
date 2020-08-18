@@ -1699,3 +1699,83 @@ TEST(Variable, variableInterfaceDontDowngrade)
     EXPECT_EQ("", v3->interfaceType());
     EXPECT_EQ("public", v4->interfaceType());
 }
+
+TEST(Variable, connectionsPersistAfterImporting)
+{
+    auto model = libcellml::Model::create("model");
+    auto importer = libcellml::Importer::create();
+
+    auto importedComponent = libcellml::Component::create("importedComponent");
+    model->addComponent(importedComponent);
+
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("importedModelWithMaps.cellml");
+    importedComponent->setImportSource(importSource);
+    importedComponent->setImportReference("importMe");
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath());
+    EXPECT_FALSE(model->hasUnresolvedImports());
+
+    model = importer->flattenModel(model);
+
+    EXPECT_NE(nullptr, model->component("importedComponent"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child1"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child2"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child1")->variable("x"));
+    EXPECT_NE(nullptr, model->component("importedComponent")->component("child2")->variable("x"));
+
+    auto x1 = model->component("importedComponent")->component("child1")->variable("x");
+    auto x2 = model->component("importedComponent")->component("child2")->variable("x");
+    EXPECT_EQ(size_t(1), x1->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), x2->equivalentVariableCount());
+    EXPECT_EQ(x1, x2->equivalentVariable(0));
+    EXPECT_EQ(x2, x1->equivalentVariable(0));
+}
+
+TEST(Variable, addVariableDuplicates)
+{
+    auto model = libcellml::Model::create("model");
+    auto tomato = libcellml::Component::create("tomato");
+    auto apple = libcellml::Component::create("apple");
+    auto pip = libcellml::Variable::create("pip");
+
+    EXPECT_TRUE(model->addComponent(tomato));
+    EXPECT_TRUE(model->addComponent(apple));
+
+    // Adding a pip to the tomato.
+    EXPECT_TRUE(tomato->addVariable(pip));
+    EXPECT_EQ(size_t(1), tomato->variableCount());
+
+    // Try to add the same pip again.
+    EXPECT_FALSE(tomato->addVariable(pip));
+
+    // Add the same pip to the apple this time, which will effectively move it
+    // from the tomato to the apple.
+    EXPECT_TRUE(apple->addVariable(pip));
+
+    EXPECT_EQ(size_t(1), apple->variableCount());
+    EXPECT_EQ(size_t(0), tomato->variableCount());
+}
+
+TEST(Variable, addEquivalenceReturnsFalseProperly)
+{
+    auto m = libcellml::Model::create("m");
+    auto c1 = libcellml::Component::create("c1");
+    auto c2 = libcellml::Component::create("c2");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    EXPECT_TRUE(m->addComponent(c1));
+    EXPECT_TRUE(m->addComponent(c2));
+    EXPECT_TRUE(c1->addVariable(v1));
+    EXPECT_TRUE(c2->addVariable(v2));
+
+    // Create a connection with self variable, expect no connections have been created.
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v1, v1));
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+
+    // Create a connection with one nullptr, expect no connections have been created.
+    EXPECT_FALSE(libcellml::Variable::addEquivalence(v2, nullptr));
+    EXPECT_EQ(size_t(0), v2->equivalentVariableCount());
+}

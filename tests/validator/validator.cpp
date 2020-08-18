@@ -41,8 +41,8 @@ TEST(Validator, unnamedModel)
         "Model does not have a valid name attribute.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "3.1.3",
-        "4.2.1",
+        "1.3.1.1",
+        "2.1.1",
     };
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
     libcellml::ModelPtr model = libcellml::Model::create();
@@ -65,16 +65,16 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "Component does not have a valid name attribute.",
     };
     const std::vector<std::string> expectedSpecificationHeadings = {
-        "3.1.4",
-        "4.2.1",
-        "3.1.2",
-        "10.1.1",
-        "3.1.3",
-        "10.1.1",
-        "3.1.2",
-        "10.1.1",
-        "3.1.3",
-        "10.1.1",
+        "1.3.1.1",
+        "2.1.1",
+        "1.3.1.1",
+        "2.7.1",
+        "1.3.1.1",
+        "2.7.1",
+        "1.3.1.1",
+        "2.7.1",
+        "1.3.1.1",
+        "2.7.1",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -238,6 +238,7 @@ TEST(Validator, importUnits)
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
+        "Import of units 'cant_find_me' has an invalid URI in the xlink:href attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units does not have a valid name attribute.",
     };
@@ -246,7 +247,7 @@ TEST(Validator, importUnits)
     libcellml::ModelPtr m = libcellml::Model::create();
     m->setName("model_name");
 
-    // Valid units import
+    // Valid units import.
     libcellml::ImportSourcePtr imp = libcellml::ImportSource::create();
     imp->setUrl("some-other-model.xml");
     libcellml::UnitsPtr importedUnits = libcellml::Units::create();
@@ -256,7 +257,7 @@ TEST(Validator, importUnits)
     v->validateModel(m);
     EXPECT_EQ(size_t(0), v->issueCount());
 
-    // Invalid units import- missing refs
+    // Invalid units import - missing refs.
     libcellml::ImportSourcePtr imp2 = libcellml::ImportSource::create();
     libcellml::UnitsPtr importedUnits2 = libcellml::Units::create();
     importedUnits2->setName("invalid_imported_units_in_this_model");
@@ -265,7 +266,7 @@ TEST(Validator, importUnits)
     v->validateModel(m);
     EXPECT_EQ(size_t(3), v->issueCount());
 
-    // Invalid units import - duplicate refs
+    // Invalid units import - duplicate refs.
     libcellml::ImportSourcePtr imp3 = libcellml::ImportSource::create();
     imp3->setUrl("some-other-model.xml");
     libcellml::UnitsPtr importedUnits3 = libcellml::Units::create();
@@ -275,12 +276,21 @@ TEST(Validator, importUnits)
     v->validateModel(m);
     EXPECT_EQ(size_t(4), v->issueCount());
 
-    // Invalid units import - unnamed units
+    // Invalid units import - unnamed units.
     libcellml::ImportSourcePtr imp4 = libcellml::ImportSource::create();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::UnitsPtr importedUnits4 = libcellml::Units::create();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
+    v->validateModel(m);
+    EXPECT_EQ(size_t(6), v->issueCount());
+
+    // Invalid units import - not a valid URL.
+    libcellml::ImportSourcePtr imp5 = libcellml::ImportSource::create();
+    imp5->setUrl("Look Ma, I've got special characters!");
+    libcellml::UnitsPtr importedUnits5 = libcellml::Units::create("cant_find_me");
+    importedUnits5->setSourceUnits(imp5, "cant_find_me_anyway");
+    m->addUnits(importedUnits5);
     v->validateModel(m);
 
     // Check for expected error messages
@@ -295,7 +305,7 @@ TEST(Validator, importComponents)
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute.",
-        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute.",
+        "Import of component 'a_bad_imported_component' has an invalid URI in the xlink:href attribute.",
     };
 
     libcellml::ValidatorPtr v = libcellml::Validator::create();
@@ -370,7 +380,7 @@ TEST(Validator, importComponents)
     v->validateModel(m);
     EXPECT_EQ(size_t(5), v->issueCount());
 
-    // Invalid: component_ref url is not valid html
+    // Invalid: component_ref URL is not valid html
     libcellml::ImportSourcePtr imp9 = libcellml::ImportSource::create();
     imp9->setUrl("not @ valid url");
     libcellml::ComponentPtr importedComponent9 = libcellml::Component::create();
@@ -381,6 +391,39 @@ TEST(Validator, importComponents)
 
     // Check for expected error messages
     EXPECT_EQ_ISSUES(expectedIssues, v);
+}
+
+TEST(Validator, importsDummyVariablesNotCheckedForUnitsInterfaces)
+{
+    auto validator = libcellml::Validator::create();
+    auto model = libcellml::Model::create("model");
+
+    // Create a concrete component and variable.
+    // This should be checked for variable validity: units, interface.
+    auto component = libcellml::Component::create("component");
+    auto variable = libcellml::Variable::create("variable");
+    variable->setUnits("dimensionless");
+    variable->setInterfaceType("public");
+    component->addVariable(variable);
+    model->addComponent(component);
+
+    // Create an imported component and dummy variable.
+    // This should *not* be checked for variable validity.
+    auto importer = libcellml::ImportSource::create();
+    importer->setUrl("some-other-model.xml");
+    auto dummyComponent = libcellml::Component::create("dummy_component");
+    dummyComponent->setSourceComponent(importer, "component_in_that_model");
+    auto dummyVariable = libcellml::Variable::create("I_dont_need_units_or_interface");
+    dummyComponent->addVariable(dummyVariable);
+    model->addComponent(dummyComponent);
+
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    libcellml::Variable::addEquivalence(variable, dummyVariable);
+    validator->validateModel(model);
+
+    EXPECT_EQ(size_t(0), validator->issueCount());
 }
 
 TEST(Validator, validMath)

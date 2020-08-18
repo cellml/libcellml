@@ -351,8 +351,7 @@ void Validator::validateModel(const ModelPtr &model)
                         addIssue(issue);
                         foundImportIssue = true;
                     }
-                    // Check for a xlink:href.
-                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
+                    // Check for a xlink:href and its format.
                     if (importSource.empty()) {
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
@@ -360,12 +359,26 @@ void Validator::validateModel(const ModelPtr &model)
                         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
                         addIssue(issue);
                         foundImportIssue = true;
+                    } else {
+                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                        if (uri == nullptr) {
+                            IssuePtr issue = Issue::create();
+                            issue->setDescription("Import of units '" + unitsName + "' has an invalid URI in the xlink:href attribute.");
+                            issue->setImportSource(units->importSource());
+                            issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
+                            addIssue(issue);
+                        } else {
+                            xmlFreeURI(uri);
+                        }
                     }
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching entries at the same position in the source and ref vectors).
                     if (!unitsImportSources.empty() && (!foundImportIssue)) {
-                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
-                            == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())) {
+                        auto usedImportSource = std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource);
+                        auto usedImportSourceAt = usedImportSource - unitsImportSources.begin();
+                        auto usedUnitsRefs = std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef);
+                        auto usedUnitsRefsAt = usedUnitsRefs - unitsRefs.begin();
+                        if ((usedImportSource != unitsImportSources.end()) && (usedUnitsRefs != unitsRefs.end()) && (usedUnitsRefsAt == usedImportSourceAt)) {
                             IssuePtr issue = Issue::create();
                             issue->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
                             issue->setModel(model);
@@ -451,7 +464,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         IssuePtr issue = Issue::create();
         issue->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
         issue->setComponent(component);
-        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_REF);
+        issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_COMPONENT_REF);
         mValidator->addIssue(issue);
     }
     if (importSource.empty()) {
@@ -464,7 +477,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
         xmlURIPtr uri = xmlParseURI(importSource.c_str());
         if (uri == nullptr) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
+            issue->setDescription("Import of component '" + componentName + "' has an invalid URI in the xlink:href attribute.");
             issue->setImportSource(component->importSource());
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_HREF);
             mValidator->addIssue(issue);
@@ -620,7 +633,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
     } else if (!isStandardUnitName(unitsName)) {
-        ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+        ComponentPtr component = owningComponent(variable);
         ModelPtr model = owningModel(component);
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             IssuePtr issue = Issue::create();
@@ -683,7 +696,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     } else {
         description += "with variable '" + reset->variable()->name() + "', ";
         auto var = reset->variable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         varParentName = varParent->name();
         if (varParentName != component->name()) {
             varOutsideComponent = true;
@@ -696,7 +709,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         description += "with test_variable '" + reset->testVariable()->name() + "', ";
 
         auto var = reset->testVariable();
-        auto varParent = std::dynamic_pointer_cast<Component>(var->parent());
+        auto varParent = owningComponent(var);
         testVarParentName = varParent->name();
         if (testVarParentName != component->name()) {
             testVarOutsideComponent = true;
@@ -729,14 +742,14 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not reference a variable.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (noTestVariable) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "does not reference a test_variable.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (noTestValue) {
@@ -757,14 +770,14 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
     if (testVarOutsideComponent) {
         IssuePtr issue = Issue::create();
         issue->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
         issue->setReset(reset);
-        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REFERENCE);
+        issue->setReferenceRule(Issue::ReferenceRule::RESET_TEST_VARIABLE_REF);
         mValidator->addIssue(issue);
     }
 }
@@ -1017,12 +1030,12 @@ bool interfaceTypeIsCompatible(Variable::InterfaceType interfaceTypeMinimumRequi
 void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &variable, VariableMap &alreadyReported) const
 {
     Variable::InterfaceType interfaceType = determineInterfaceType(variable);
-    auto component = std::dynamic_pointer_cast<Component>(variable->parent());
+    auto component = owningComponent(variable);
     std::string componentName = component->name();
     if (interfaceType == Variable::InterfaceType::NONE) {
         for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
             const auto equivalentVariable = variable->equivalentVariable(index);
-            auto equivalentComponent = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
                 VariablePair reversePair = std::make_pair(equivalentVariable, variable);
                 auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
@@ -1060,19 +1073,23 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
     std::string hints;
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
+        // If the parent component of the variable is nonexistent or imported, don't check it.
+        auto equivalentComponent = owningComponent(equivalentVariable);
+        if ((equivalentComponent == nullptr) || equivalentComponent->isImport()) {
+            continue;
+        }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
             VariablePair reversePair = std::make_pair(equivalentVariable, variable);
             auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
             if (it == alreadyReported.end()) {
                 VariablePair pair = std::make_pair(variable, equivalentVariable);
-                ComponentPtr parent1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                ComponentPtr parent2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
-                err->setDescription("Variable '" + variable->name() + "' in component '" + parent1->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + parent2->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
+                err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setModel(model);
                 err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
@@ -1087,7 +1104,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
     for (size_t index = 0; index < variable->equivalentVariableCount(); ++index) {
         auto equivalentVariable = variable->equivalentVariable(index);
         if (equivalentVariable->hasEquivalentVariable(variable)) {
-            auto component = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+            auto component = owningComponent(equivalentVariable);
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
@@ -1111,6 +1128,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model) const
     }
 
     for (const VariablePtr &variable : variables) {
+        auto parentComponent = owningComponent(variable);
+        if (parentComponent->isImport()) {
+            continue;
+        }
         validateVariableInterface(variable, interfaceErrorsAlreadyReported);
         validateEquivalenceUnits(model, variable, equivalentUnitErrorsAlreadyReported);
         validateEquivalenceStructure(variable);

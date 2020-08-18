@@ -43,27 +43,30 @@ namespace libcellml {
  */
 struct Printer::PrinterImpl
 {
-    std::string printUnits(const UnitsPtr &units) const;
-    std::string printComponent(const ComponentPtr &component) const;
-    std::string printEncapsulation(const ComponentPtr &component) const;
-    std::string printVariable(const VariablePtr &variable) const;
-    std::string printReset(const ResetPtr &reset) const;
-    std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math) const;
+    std::string printImports(const ModelPtr &model, IdList &idList, bool autoIds);
+    std::string printUnits(const UnitsPtr &units, IdList &idList, bool autoIds);
+    std::string printComponent(const ComponentPtr &component, IdList &idList, bool autoIds);
+    std::string printEncapsulation(const ComponentPtr &component, IdList &idList, bool autoIds);
+    std::string printVariable(const VariablePtr &variable, IdList &idList, bool autoIds);
+    std::string printReset(const ResetPtr &reset, IdList &idList, bool autoIds);
+    std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, IdList &idList, bool autoIds);
 };
 
-std::string printMapVariables(const VariablePair &variablePair)
+std::string printMapVariables(const VariablePair &variablePair, IdList &idList, bool autoIds)
 {
     std::string mapVariables = "<map_variables variable_1=\"" + variablePair.first->name() + "\""
                                + " variable_2=\"" + variablePair.second->name() + "\"";
     std::string mappingId = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
     if (!mappingId.empty()) {
         mapVariables += " id=\"" + mappingId + "\"";
+    } else if (autoIds) {
+        mapVariables += " id=\"" + makeUniqueId(idList) + "\"";
     }
     mapVariables += "/>";
     return mapVariables;
 }
 
-std::string printConnections(const ComponentMap &componentMap, const VariableMap &variableMap)
+std::string printConnections(const ComponentMap &componentMap, const VariableMap &variableMap, IdList &idList, bool autoIds)
 {
     std::string connections;
     ComponentMap serialisedComponentMap;
@@ -89,7 +92,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         std::string mappingVariables;
         VariablePair variablePair = variableMap.at(componentMapIndex1);
         std::string connectionId = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
-        mappingVariables += printMapVariables(variablePair);
+        mappingVariables += printMapVariables(variablePair, idList, autoIds);
         // Check for subsequent variable equivalence pairs with the same parent components.
         size_t componentMapIndex2 = componentMapIndex1 + 1;
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
@@ -97,7 +100,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             ComponentPtr nextComponent2 = iterPair2->second;
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
-                mappingVariables += printMapVariables(variablePair2);
+                mappingVariables += printMapVariables(variablePair2, idList, autoIds);
                 connectionId = Variable::equivalenceConnectionId(variablePair2.first, variablePair2.second);
             }
             ++componentMapIndex2;
@@ -112,6 +115,8 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         }
         if (!connectionId.empty()) {
             connections += " id=\"" + connectionId + "\"";
+        } else if (autoIds) {
+            connections += " id=\"" + makeUniqueId(idList) + "\"";
         }
         connections += ">" + mappingVariables + "</connection>";
         serialisedComponentMap.push_back(currentComponentPair);
@@ -150,8 +155,8 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
                 }
                 if (!pairFound) {
                     // Get parent components.
-                    ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
-                    ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                    ComponentPtr component1 = owningComponent(variable);
+                    ComponentPtr component2 = owningComponent(equivalentVariable);
                     // Add new unique variable equivalence pair to the VariableMap.
                     variableMap.push_back(variablePair);
                     // Also create a component map pair corresponding with the variable map pair.
@@ -172,22 +177,10 @@ void buildMaps(const ComponentEntityPtr &componentEntity, ComponentMap &componen
     }
 }
 
-std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
+std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, IdList &idList, bool autoIds)
 {
     std::string repr;
-    if (units->isImport()) {
-        repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + units->importSource()->url() + "\"";
-        if (!units->importSource()->id().empty()) {
-            repr += " id=\"" + units->importSource()->id() + "\"";
-        }
-        repr += "><units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
-        if (!units->id().empty()) {
-            repr += " id=\"" + units->id() + "\"";
-        }
-        repr += "/></import>";
-    } else if (isStandardUnit(units)) {
-        // Do nothing.
-    } else {
+    if (!units->isImport() && !isStandardUnit(units)) {
         bool endTag = false;
         repr += "<units";
         std::string unitsName = units->name();
@@ -196,6 +189,8 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
         }
         if (!units->id().empty()) {
             repr += " id=\"" + units->id() + "\"";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         if (units->unitCount() > 0) {
             endTag = true;
@@ -220,6 +215,8 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
                 repr += " units=\"" + reference + "\"";
                 if (!id.empty()) {
                     repr += " id=\"" + id + "\"";
+                } else if (autoIds) {
+                    repr += " id=\"" + makeUniqueId(idList) + "\"";
                 }
                 repr += "/>";
             }
@@ -234,50 +231,53 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units) const
     return repr;
 }
 
-std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component) const
+std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, IdList &idList, bool autoIds)
 {
     std::string repr;
-    if (component->isImport()) {
-        return repr;
-    }
-    repr += "<component";
-    std::string componentName = component->name();
-    if (!componentName.empty()) {
-        repr += " name=\"" + componentName + "\"";
-    }
-    if (!component->id().empty()) {
-        repr += " id=\"" + component->id() + "\"";
-    }
-    size_t variableCount = component->variableCount();
-    size_t resetCount = component->resetCount();
-    bool hasChildren = false;
-    if (variableCount > 0 || resetCount > 0 || !component->math().empty()) {
-        hasChildren = true;
-    }
-    if (hasChildren) {
-        repr += ">";
-        for (size_t i = 0; i < variableCount; ++i) {
-            repr += printVariable(component->variable(i));
+    if (!component->isImport()) {
+        repr += "<component";
+        std::string componentName = component->name();
+        if (!componentName.empty()) {
+            repr += " name=\"" + componentName + "\"";
         }
-        for (size_t i = 0; i < resetCount; ++i) {
-            repr += printReset(component->reset(i));
+        if (!component->id().empty()) {
+            repr += " id=\"" + component->id() + "\"";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
-        if (!component->math().empty()) {
-            repr += printMath(component->math());
+        size_t variableCount = component->variableCount();
+        size_t resetCount = component->resetCount();
+        bool hasChildren = false;
+        if (variableCount > 0 || resetCount > 0 || !component->math().empty()) {
+            hasChildren = true;
         }
-        repr += "</component>";
-    } else {
-        repr += "/>";
+        if (hasChildren) {
+            repr += ">";
+            for (size_t i = 0; i < variableCount; ++i) {
+                repr += printVariable(component->variable(i), idList, autoIds);
+            }
+            for (size_t i = 0; i < resetCount; ++i) {
+                repr += printReset(component->reset(i), idList, autoIds);
+            }
+            if (!component->math().empty()) {
+                repr += printMath(component->math());
+            }
+
+            repr += "</component>";
+        } else {
+            repr += "/>";
+        }
     }
+
     // Traverse through children of this component and add them to the representation.
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        repr += printComponent(component->component(i));
+        repr += printComponent(component->component(i), idList, autoIds);
     }
 
     return repr;
 }
 
-std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &component) const
+std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &component, IdList &idList, bool autoIds)
 {
     std::string componentName = component->name();
     std::string repr = "<component_ref";
@@ -286,6 +286,8 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
     }
     if (!component->encapsulationId().empty()) {
         repr += " id=\"" + component->encapsulationId() + "\"";
+    } else if (autoIds) {
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
     size_t componentCount = component->componentCount();
     if (componentCount > 0) {
@@ -294,7 +296,7 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
         repr += "/>";
     }
     for (size_t i = 0; i < componentCount; ++i) {
-        repr += printEncapsulation(component->component(i));
+        repr += printEncapsulation(component->component(i), idList, autoIds);
     }
     if (componentCount > 0) {
         repr += "</component_ref>";
@@ -302,7 +304,7 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
     return repr;
 }
 
-std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable) const
+std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, IdList &idList, bool autoIds)
 {
     std::string repr;
     repr += "<variable";
@@ -325,13 +327,16 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable) con
     }
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
+    } else if (autoIds) {
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
 
     repr += "/>";
     return repr;
 }
 
-std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math) const
+std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel, const std::string &childId,
+                                                  const std::string &math, IdList &idList, bool autoIds)
 {
     std::string repr;
 
@@ -339,6 +344,8 @@ std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel,
         repr += "<" + childLabel;
         if (!childId.empty()) {
             repr += " id=\"" + childId + "\"";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
         }
         if (math.empty()) {
             repr += "/>";
@@ -350,7 +357,7 @@ std::string Printer::PrinterImpl::printResetChild(const std::string &childLabel,
     return repr;
 }
 
-std::string Printer::PrinterImpl::printReset(const ResetPtr &reset) const
+std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, IdList &idList, bool autoIds)
 {
     std::string repr = "<reset";
     std::string rid = reset->id();
@@ -370,14 +377,16 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset) const
     }
     if (!rid.empty()) {
         repr += " id=\"" + rid + "\"";
+    } else if (autoIds) {
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
 
-    std::string testValue = printResetChild("test_value", reset->testValueId(), reset->testValue());
+    std::string testValue = printResetChild("test_value", reset->testValueId(), reset->testValue(), idList, autoIds);
     if (!testValue.empty()) {
         repr += ">" + testValue;
         hasChild = true;
     }
-    std::string resetValue = printResetChild("reset_value", reset->resetValueId(), reset->resetValue());
+    std::string resetValue = printResetChild("reset_value", reset->resetValueId(), reset->resetValue(), idList, autoIds);
     if (!resetValue.empty()) {
         if (!hasChild) {
             repr += ">";
@@ -390,6 +399,48 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset) const
     } else {
         repr += "/>";
     }
+    return repr;
+}
+
+std::string Printer::PrinterImpl::printImports(const ModelPtr &model, IdList &idList, bool autoIds)
+{
+    std::string repr;
+
+    for (size_t i = 0; i < model->importSourceCount(); ++i) {
+        auto importSource = model->importSource(i);
+
+        repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
+        if (!importSource->id().empty()) {
+            repr += " id=\"" + importSource->id() + "\"";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\"";
+        }
+        repr += ">";
+
+        for (size_t c = 0; c < importSource->componentCount(); ++c) {
+            auto component = importSource->component(c);
+            repr += "<component component_ref=\"" + component->importReference() + "\" name=\"" + component->name() + "\"";
+            if (!component->id().empty()) {
+                repr += " id=\"" + component->id() + "\"";
+            } else if (autoIds) {
+                repr += " id=\"" + makeUniqueId(idList) + "\"";
+            }
+            repr += "/>";
+        }
+
+        for (size_t u = 0; u < importSource->unitsCount(); ++u) {
+            auto units = importSource->units(u);
+            repr += "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->name() + "\"";
+            if (!units->id().empty()) {
+                repr += " id=\"" + units->id() + "\"";
+            } else if (autoIds) {
+                repr += " id=\"" + makeUniqueId(idList) + "\"";
+            }
+            repr += "/>";
+        }
+        repr += "</import>";
+    }
+
     return repr;
 }
 
@@ -408,50 +459,15 @@ PrinterPtr Printer::create() noexcept
     return std::shared_ptr<Printer> {new Printer {}};
 }
 
-std::string Printer::printModel(const ModelPtr &model) const
+std::string Printer::printModel(const ModelPtr &model, bool autoIds) const
 {
     if (model == nullptr) {
         return "";
     }
-
-    // ImportMap
-    using ImportPair = std::pair<std::string, ComponentPtr>;
-    using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
-    using ImportOrder = std::vector<ImportSourcePtr>;
-    ImportMap importMap;
-    ImportOrder importOrder;
-    VariableMap variableMap;
-    ComponentMap componentMap;
-
-    // Gather all imports.
-    std::list<ComponentPtr> componentStack;
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        ComponentPtr comp = model->component(i);
-        while (comp) {
-            if (comp->isImport()) {
-                ImportPair pair = std::make_pair(comp->importReference(), comp);
-                ImportSourcePtr importSource = comp->importSource();
-                if (importMap.count(importSource) == 0) {
-                    importMap[importSource] = std::vector<ImportPair>();
-                    // We track the order to make the testing easier. The alternative
-                    // is to implement a weak ordering method on the ImportSource class.
-                    importOrder.push_back(importSource);
-                }
-                importMap[importSource].push_back(pair);
-            } else {
-                for (size_t j = 0; j < comp->componentCount(); ++j) {
-                    auto childComponent = comp->component(j);
-                    componentStack.push_back(childComponent);
-                }
-            }
-
-            if (componentStack.empty()) {
-                comp = nullptr;
-            } else {
-                comp = componentStack.front();
-                componentStack.pop_front();
-            }
-        }
+    // Automatic ids.
+    IdList idList;
+    if (autoIds) {
+        idList = listIds(model);
     }
 
     std::string repr;
@@ -461,55 +477,48 @@ std::string Printer::printModel(const ModelPtr &model) const
     }
     if (!model->id().empty()) {
         repr += " id=\"" + model->id() + "\"";
+    } else if (autoIds) {
+        repr += " id=\"" + makeUniqueId(idList) + "\"";
     }
+
     bool endTag = false;
-    if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
+    if ((model->componentCount() > 0) || (model->unitsCount() > 0)) {
         endTag = true;
         repr += ">";
     }
 
-    for (const auto &importSource : importOrder) {
-        repr += "<import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"" + importSource->url() + "\"";
-        if (!importSource->id().empty()) {
-            repr += " id=\"" + importSource->id() + "\"";
-        }
-        repr += ">";
-        const auto &importVector = importMap[importSource];
-        for (const auto &entry : importVector) {
-            const auto &reference = entry.first;
-            const auto &localComponent = entry.second;
-            repr += "<component component_ref=\"" + reference + "\" name=\"" + localComponent->name() + "\"";
-            if (!localComponent->id().empty()) {
-                repr += " id=\"" + localComponent->id() + "\"";
-            }
-            repr += "/>";
-        }
-        repr += "</import>";
+    if (model->hasImports()) {
+        repr += mPimpl->printImports(model, idList, autoIds);
     }
 
     for (size_t i = 0; i < model->unitsCount(); ++i) {
-        repr += mPimpl->printUnits(model->units(i));
+        repr += mPimpl->printUnits(model->units(i), idList, autoIds);
     }
 
     std::string componentEncapsulation;
-    // Serialise components of the model, imported components have already been dealt with at this point.
+    // Serialise components of the model, imported components have already been dealt with at this point,
+    //  ... but their locally-defined children have not.
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->component(i);
-        repr += mPimpl->printComponent(component);
+        repr += mPimpl->printComponent(component, idList, autoIds);
         if (component->componentCount() > 0) {
-            componentEncapsulation += mPimpl->printEncapsulation(component);
+            componentEncapsulation += mPimpl->printEncapsulation(component, idList, autoIds);
         }
     }
 
+    VariableMap variableMap;
+    ComponentMap componentMap;
     // Build unique variable equivalence pairs (ComponentMap, VariableMap) for connections.
     buildMaps(model, componentMap, variableMap);
     // Serialise connections of the model.
-    repr += printConnections(componentMap, variableMap);
+    repr += printConnections(componentMap, variableMap, idList, autoIds);
 
     if (!componentEncapsulation.empty()) {
         repr += "<encapsulation";
         if (!model->encapsulationId().empty()) {
             repr += " id=\"" + model->encapsulationId() + "\">";
+        } else if (autoIds) {
+            repr += " id=\"" + makeUniqueId(idList) + "\">";
         } else {
             repr += ">";
         }
@@ -522,11 +531,8 @@ std::string Printer::printModel(const ModelPtr &model) const
     }
 
     // Generate a pretty-print version of the model using libxml2.
-
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-
     xmlDoc->parse(repr);
-
     return xmlDoc->prettyPrint();
 }
 

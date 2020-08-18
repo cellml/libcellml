@@ -48,13 +48,6 @@ Only the first matching Units is removed and returned.";
 %feature("docstring") libcellml::Model::unitsCount
 "Returns the number of units this model contains.";
 
-%feature("docstring") libcellml::Model::resolveImports
-"Resolves all imports in this model.
-
-Resolves all :class:`Component` and :class:`Units` imports by loading the
-models from local disk through relative urls. The ``baseFile`` is used to
-determine the full path to the source model relative to this one.";
-
 %feature("docstring") libcellml::Model::hasUnresolvedImports
 "Tests if this model has unresolved imports.";
 
@@ -70,11 +63,27 @@ determine the full path to the source model relative to this one.";
 %feature("docstring") libcellml::Model::hasImports
 "Determine if any Component or Units is an import.";
 
-%feature("docstring") libcellml::Model::flatten
-"Instantiate all imported Components and Units to make this model self-contained.";
-
 %feature("docstring") libcellml::Model::fixVariableInterfaces
 "Fix variable interfaces throughout the model.";
+
+%feature("docstring") libcellml::Model::addImportSource
+"Manually add an ImportSource to the Model.";
+
+%feature("docstring") libcellml::Model::importSourceCount
+"Return the number of ImportSource items in the Model.";
+
+%feature("docstring") libcellml::Model::importSource
+"Retrieve an ImportSource by index.";
+
+%feature("docstring") libcellml::Model::removeImportSource
+"Remove an ImportSource from the Model by index or reference.";
+
+%feature("docstring") libcellml::Model::removeAllImportSources
+"Remove all ImportSource items from the Model.";
+
+%feature("docstring") libcellml::Model::hasImportSource
+"Test whether this Model already contains the given ImportSource.";
+
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)

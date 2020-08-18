@@ -51,6 +51,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/importer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/issue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
@@ -77,6 +78,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/issue.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
@@ -162,7 +164,7 @@ else()
 endif()
 
 # Use target compile features to propogate features to consuming projects.
-target_compile_features(cellml PUBLIC cxx_std_11)
+target_compile_features(cellml PUBLIC cxx_std_17)
 
 set_target_properties(cellml PROPERTIES
   CXX_VISIBILITY_PRESET hidden
@@ -183,7 +185,7 @@ set(DEBUG_HEADER_FILES
 
 add_library(cellml_debug_utilities STATIC ${DEBUG_SOURCE_FILES} ${DEBUG_HEADER_FILES})
 
-target_compile_features(cellml_debug_utilities PUBLIC cxx_std_11)
+target_compile_features(cellml_debug_utilities PUBLIC cxx_std_17)
 
 target_include_directories(cellml_debug_utilities
   PUBLIC
@@ -198,7 +200,9 @@ group_source_to_dir_structure(
   ${DEBUG_HEADER_FILES}
 )
 
-configure_clang_and_clang_tidy_settings(cellml)
+if(LIBCELLML_CLANG_TIDY)
+  configure_clang_and_clang_tidy_settings(cellml)
+endif()
 
 if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
   set_target_properties(cellml PROPERTIES

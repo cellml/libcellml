@@ -30,9 +30,14 @@ limitations under the License.
 namespace libcellml {
 
 /**
+ * Base URLs of specification and example sites from which the Issue::url() will be constructed.
+ */
+static const std::string baseSpecificationUrl = "https://cellml-specification.readthedocs.io/en/latest/reference/formal_and_informative/";
+
+/**
  * Vector of base units.
  */
-const std::vector<std::string> baseUnitsList = {
+static const std::vector<std::string> baseUnitsList = {
     "ampere",
     "candela",
     "dimensionless",
@@ -45,7 +50,7 @@ const std::vector<std::string> baseUnitsList = {
 /**
  *  Map connecting standard built-in units to their base unit components and their exponents.
  */
-const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
+static const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
     {"ampere", {{"ampere", 1.0}}},
     {"becquerel", {{"second", -1.0}}},
     {"candela", {{"candela", 1.0}}},
@@ -81,7 +86,7 @@ const std::map<std::string, std::map<std::string, double>> standardUnitsList = {
 /**
  * Map connecting standard built-in units to the multiplier exponent of their base unit components.
  */
-const std::map<std::string, double> standardMultiplierList = {
+static const std::map<std::string, double> standardMultiplierList = {
     {"ampere", 0.0},
     {"becquerel", 0.0},
     {"candela", 0.0},
@@ -117,7 +122,7 @@ const std::map<std::string, double> standardMultiplierList = {
 /**
  * Map connecting prefix strings to their exponent (eg: "kilo" -> 10^3).
  */
-const std::map<std::string, int> standardPrefixList = {
+static const std::map<std::string, int> standardPrefixList = {
     {"yotta", 24},
     {"zetta", 21},
     {"exa", 18},
@@ -192,7 +197,7 @@ const std::map<std::string, int> standardPrefixList = {
 /**
  * List of MathML elements supported by CellML.
  */
-const std::vector<std::string> supportedMathMLElements = {
+static const std::vector<std::string> supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
@@ -205,7 +210,7 @@ const std::vector<std::string> supportedMathMLElements = {
  *
  * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
-static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
+static const std::map<Variable::InterfaceType, std::string> interfaceTypeToString = {
     {Variable::InterfaceType::NONE, "none"},
     {Variable::InterfaceType::PRIVATE, "private"},
     {Variable::InterfaceType::PUBLIC, "public"},
@@ -358,18 +363,6 @@ bool areEqual(double value1, double value2);
 std::string sha1(const std::string &string);
 
 /**
- * @brief Get the name of the entity.
- *
- * If the entity is a @c NamedEntity then the name of the entity will
- * be returned (which could be the empty string).  If the entity is not
- * a @c NamedEntity then the empty string will be returned.
- *
- * @param entity The entity to get the name for.
- * @return The @c std::string name of the entity.
- */
-std::string entityName(const EntityPtr &entity);
-
-/**
  * @brief Get the @c Model that the entity is owned by.
  *
  * Travel up the entities hierarchy to find the owning model. If
@@ -378,7 +371,17 @@ std::string entityName(const EntityPtr &entity);
  * @param entity The entity to get the owning model for.
  * @return The owning @c Model or the @c nullptr if no model owns this entity.
  */
-ModelPtr owningModel(const EntityPtr &entity);
+ModelPtr owningModel(const EntityConstPtr &entity);
+
+/**
+ * @brief Get the @c Component that the variable is owned by.
+ *
+ * Return the owning component for this variable.
+ *
+ * @param entity The entity to get the owning component for.
+ * @return The owning @c Component of this entity.
+ */
+ComponentPtr owningComponent(const EntityConstPtr &entity);
 
 /**
  * @brief Remove the given component from the given entity.
@@ -556,5 +559,33 @@ static inline std::string trimCopy(std::string s)
     trim(s);
     return s;
 }
+
+/**
+ * @brief Collect all existing id attributes within the given model.
+ *
+ * @param model The @c ModelPtr to interrogate.
+ *
+ * @return An @c IdList collection of existing ids.
+ */
+IdList listIds(const ModelPtr &model);
+
+/**
+ * @brief Creates an id string for a "type" object, unique in the context of @p idList.
+ *
+ * The id format is a 6-digit hexadecimal string.
+ *
+ * @return A string representing a unique id.
+ */
+std::string makeUniqueId(IdList &idList);
+
+void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
+void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
+void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
+NameList componentNames(const ModelPtr &model);
+IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
+EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
+std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
+ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
+void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 
 } // namespace libcellml

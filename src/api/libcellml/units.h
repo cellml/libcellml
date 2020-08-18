@@ -30,6 +30,10 @@ limitations under the License.
 // information.)
 #undef PASCAL
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Units>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -37,6 +41,10 @@ namespace libcellml {
  * Class for Units.
  */
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
+#ifndef SWIG
+    ,
+                              public std::enable_shared_from_this<Units>
+#endif
 {
 public:
     ~Units() override; /**< Destructor */
@@ -401,12 +409,13 @@ public:
      * @brief Set the source of the units for this Units.
      *
      * Make this Units an imported units by defining an import model
-     * from which to extract the named Units from.
+     * from which to extract the named Units.  This Units will be added to the
+     * importSource's list of dependent entities.
      *
      * @param importSource The import source from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
-    void setSourceUnits(const ImportSourcePtr &importSource, const std::string &name);
+    void setSourceUnits(ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Get the number of units that compose this units.
@@ -420,8 +429,10 @@ public:
     /**
      * @brief Check whether there are any imported child @c Units.
      *
-     * @return @c true when these @c Units rely on @c Units which are imported,
-     * or @c false otherwise.
+     * Test to determine whether this units has any imported units.
+     *
+     * @return @c true when this @c Units relies on @c Units which are imported,
+     * @c false otherwise.
      */
     bool requiresImports() const;
 
@@ -480,6 +491,16 @@ public:
      * @return a new @c UnitsPtr to the cloned units.
      */
     UnitsPtr clone() const;
+
+    /**
+     * @brief Set the import source of these units.
+     *
+     * If these units are already located in a Model instance, then the
+     * import source is added to the Model too.
+     *
+     * @param importSource The @c ImportSourcePtr to add to this @c Units item.
+     */
+    void setImportSource(ImportSourcePtr &importSource);
 
 private:
     Units(); /**< Constructor */
