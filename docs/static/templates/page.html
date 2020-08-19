@@ -15,6 +15,7 @@
         });
 
         $(".toggle .header-left").show();
+        $('.toggle .header-left > p').contents().unwrap();
         $(".toggle .header-left").click(function () {
             $(this).parent().children().not(".header-left").toggle(400);
             $(this).parent().children(".header-left").toggleClass("open");
