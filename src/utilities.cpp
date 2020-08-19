@@ -1040,49 +1040,58 @@ std::string makeUniqueId(IdList &idList)
     return id;
 }
 
-void linkComponentVariableUnits(const ComponentPtr &component, const LoggerPtr &logger)
+bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
 {
+    bool status = true;
     for (size_t index = 0; index < component->variableCount(); ++index) {
         auto v = component->variable(index);
         auto u = v->units();
+
         if (u != nullptr) {
             auto model = owningModel(u);
+            if (model == owningModel(v)) {
+                // Units are already linked, and exist in this model.
+                continue;
+            }
             if (model == nullptr && !isStandardUnit(u)) {
                 model = owningModel(component);
                 if (model->hasUnits(u->name())) {
                     v->setUnits(model->units(u->name()));
-                } else if (logger != nullptr) {
+                } else {
                     auto issue = Issue::create();
                     issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
                     issue->setLevel(Issue::Level::WARNING);
                     issue->setVariable(v);
-                    logger->addIssue(issue);
+                    issueList.push_back(issue);
+                    status = false;
                 }
-            } else if ((model != nullptr) && (logger != nullptr)) {
-                // THIS WARNING IS UNREACHABLE because the parser logger will never involve another model,
-                // and the user cannot supply a logger themselves?
+            } else if (model != nullptr) {
                 auto issue = Issue::create();
                 issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
                 issue->setLevel(Issue::Level::WARNING);
                 issue->setVariable(v);
-                logger->addIssue(issue);
+                issueList.push_back(issue);
+                status = false;
             }
         }
     }
+    return status;
 }
 
-void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
+bool traverseComponentTreeLinkingUnits(const ComponentPtr &component)
 {
-    traverseComponentTreeLinkingUnits(component, nullptr);
+    std::vector<IssuePtr> issueList;
+    return traverseComponentTreeLinkingUnits(component, issueList);
 }
 
-void traverseComponentTreeLinkingUnits(const ComponentPtr &component, const LoggerPtr &logger)
+bool traverseComponentTreeLinkingUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
 {
-    linkComponentVariableUnits(component, logger);
+    bool status = linkComponentVariableUnits(component, issueList);
     for (size_t index = 0; index < component->componentCount(); ++index) {
         auto c = component->component(index);
-        traverseComponentTreeLinkingUnits(c, logger);
+        status = status && traverseComponentTreeLinkingUnits(c, issueList);
     }
+    return status;
 }
 
 bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
@@ -1093,10 +1102,9 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
         auto u = v->units();
         if (u != nullptr) {
             auto model = owningModel(u);
-            unlinked = model == nullptr && !isStandardUnit(u);
+            unlinked = ((model == nullptr) && !isStandardUnit(u)) || (owningModel(component) != model);
         }
     }
-
     return unlinked;
 }
 

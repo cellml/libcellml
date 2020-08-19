@@ -392,10 +392,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
 
     // Link units to their names.
+    std::vector<IssuePtr> issueList;
+    bool status = true;
     for (size_t index = 0; index < model->componentCount(); ++index) {
         auto c = model->component(index);
-        traverseComponentTreeLinkingUnits(c, mParser->shared_from_this());
+        status = traverseComponentTreeLinkingUnits(c, issueList);
     }
+    mParser->addIssues(issueList);
 }
 
 std::string cleanMath(const std::string &math)
