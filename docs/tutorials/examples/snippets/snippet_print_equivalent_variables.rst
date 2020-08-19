@@ -131,7 +131,7 @@
           }
       }
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       from libcellml import Parser
 

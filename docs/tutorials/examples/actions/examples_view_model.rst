@@ -106,7 +106,7 @@ The following example shows how all variables in a component can be listed.
       // This will cause a segfault as myMissingVariable is null:
       auto myMissingName = myMissingVariable->name();
 
-  .. code-tab:: python
+  .. code-tab:: py
 
       # Loop through variables in the component myComponent and retrieve their names.
       #    NOTE that indexing starts from zero:
@@ -178,7 +178,7 @@ This can be confusing if the simple :code:`componentCount()` function on a model
 
 .. tabs::
 
-  .. code-tab:: cpp
+  .. code-tab:: c++
 
       // The number of components owned by the grandfather model refers *only* to its direct children:
       auto grandfatherHasTwoKids = grandfather->componentCount(); // returns 2
@@ -188,7 +188,7 @@ This can be confusing if the simple :code:`componentCount()` function on a model
       auto uncleHasNoKids = grandfather->component(0)->componentCount();          // returns 0
       auto motherHasTwoKids = grandfather->component("Mother")->componentCount(); // returns 2
 
-  .. code-tab:: python
+  .. code-tab:: py
 
       # The number of components owned by the grandfather model refers *only* to its direct children:
       grandfather_has_two_kids = grandfather->componentCount() # returns 2

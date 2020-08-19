@@ -81,7 +81,7 @@ Please see the :api:`API Variable<Variable>` page for details of these functions
     // Remove a pre-existing equivalence between variables C and D.
     auto isCdisconnectedFromD = libcellml::Variable::removeEquivalence(C, D);
 
-  .. code-tab:: python
+  .. code-tab:: py
 
     # Assuming that variables A and B are in different components, and that those components are
     # available for connection with one another (parent-child, or sibling relationship).

@@ -42,7 +42,7 @@
       // Now duplicateIdList is a vector of strings of the ids which are duplicated.
       // In this example it will contain "duplicateId", and "anotherDuplicateId".
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       # Create an Annotator instance.
       annotator = Annotator()

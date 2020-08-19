@@ -53,7 +53,7 @@
       assert(myVariable->parent() == myOtherComponent);
       assert(myComponent->variableCount() == 0);
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       my_variable = Variable()
       my_variable.setName("myVariable")

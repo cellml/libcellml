@@ -18,7 +18,7 @@ The following code will read a file called :code:`quickstart.cellml` and deseria
         // Deserialise the CellML contents of the parsed file into a Model.
         auto model = parser->parseModel(inFileContents.str());
 
-    .. code-tab:: python
+    .. code-tab:: py
 
         from libcellml import Parser
 

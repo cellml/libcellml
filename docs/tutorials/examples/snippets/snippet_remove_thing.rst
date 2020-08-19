@@ -67,6 +67,6 @@
       success = component->removeVariable(nullptr);
       assert(success == false);
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       # TODO

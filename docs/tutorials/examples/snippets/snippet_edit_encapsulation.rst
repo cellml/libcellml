@@ -56,7 +56,7 @@
           printEncapsulationStructureToTerminal(model);
       }
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       from libcellml import Parser
       from tutorial_utilities import print_encapsulation_structure_to_terminal

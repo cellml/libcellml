@@ -83,6 +83,6 @@
           std::cout << e.what() << std::endl;
       }
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       # TODO

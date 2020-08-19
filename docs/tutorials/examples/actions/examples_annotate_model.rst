@@ -37,7 +37,7 @@ The :code:`id` attribute for each of these entity types can be retrieved using t
     // Retrieve the ID attribute from a Model item.
     std::string myModelIdString = model->id();
 
-  .. code-tab:: python
+  .. code-tab:: py
 
     # Set the ID attribute for a Model item.
     model.setId("myModelId")
@@ -104,7 +104,7 @@ Consider the simple example shown below.
     // are specified.
     std::string c1c2IdString = Variable::connectionId(v1, v2);
 
-  .. code-tab:: python
+  .. code-tab:: py
 
     # Set the ID of the mapping between variables v1 and v2.
     Variable.setEquivalentVariableId(v1, v2, "v1v2Id")
@@ -176,7 +176,7 @@ The position of each component within that encapsulation structure is referenced
     std::string modelEncapsulationId = model->encapsulationId();
     std::string grandparentEncapsulationId = grandparentComponent->encapsulationId(); 
 
-  .. code-tab:: python
+  .. code-tab:: py
 
     # Set the encapsulation ID.
     model.setEncapsulationId("encapsId")
@@ -223,7 +223,7 @@ Note that there are several overloads of the arguments for this function; please
     std::string unitId;
     mm3PerSecond->unitAttributes(0, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId);
 
-  .. code-tab:: python
+  .. code-tab:: py
 
     # Create a Units item representing millimetre^3 per second.
     mm3_per_second = Units.create("mm3PerSecond")

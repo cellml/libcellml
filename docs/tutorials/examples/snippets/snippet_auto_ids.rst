@@ -27,7 +27,7 @@
 
       // The outString will have the same model contents, but with id attributes set throughout.
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       # Create a Parser to deserialise a CellML (in_string) string into a model.
       parser = libcellml.Parser()

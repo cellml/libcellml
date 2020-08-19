@@ -127,7 +127,7 @@ We can see this results of this classification process in the generated code ret
 
 .. tabs::
 
-  .. code-tab:: cpp
+  .. code-tab:: c++
 
     // Defines the VOI variable of integration, its units and the name of its parent component.
     const VariableInfo VOI_INFO = {"time", "dimensionless", "shark_fish_interaction"};
@@ -146,7 +146,7 @@ We can see this results of this classification process in the generated code ret
         {"d", "dimensionless", "shark_fish_interaction", COMPUTED_CONSTANT}
     };
 
-  .. code-tab:: python
+  .. code-tab:: py
 
     # Defines the VOI variable of integration, its units and the name of its parent component.
     VOI_INFO = {"name": "time", "units": "dimensionless", "component": "shark_fish_interaction"}

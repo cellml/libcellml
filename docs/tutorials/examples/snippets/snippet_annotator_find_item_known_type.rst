@@ -75,7 +75,7 @@
       // An encapsulation item is returned as a pointer to its parent model.
       auto myEncapsulatedModel = annotator->encapsulation("myEncapsulationId");
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       # Create an Annotator.
       annotator = Annotator()

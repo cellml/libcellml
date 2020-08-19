@@ -25,7 +25,7 @@ As with the :code:`Parser` and the :code:`Validator`, the :code:`Printer` also r
         outFile << serialisedModelString;
         outFile.close();
 
-    .. code-tab:: python
+    .. code-tab:: py
 
         from libcellml import Printer
 

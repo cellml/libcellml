@@ -124,7 +124,7 @@ For practical information about how they are used, please see the :ref:`Viewing 
         // the model's collection will no longer contain the component AND the entire contents of that component
         // will be permanently deleted.
 
-      .. code-tab:: python
+      .. code-tab:: py
 
         # Consider the case where we already have a model containing a component named "myComponent" at index 0.
 

@@ -23,7 +23,7 @@
       // attribute is an Annotator::Type enum, and the second is an std::any cast
       // of the item.
 
-    .. code-tab:: python
+    .. code-tab:: py
 
       # Create an Annotator instance.
       annotator = Annotator()
