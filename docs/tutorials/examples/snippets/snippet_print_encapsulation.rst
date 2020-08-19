@@ -37,7 +37,7 @@
             }
         }
 
-    .. code-tab:: py
+    .. code-tab:: python
 
       # Prints the encapsulation structure of the model to the terminal.  This
       # function intitiates the recursion through the encapsulation structure.

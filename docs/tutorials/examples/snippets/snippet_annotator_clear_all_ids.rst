@@ -33,7 +33,7 @@
       annotator->buildModelIndex(model2);
       annotator->clearAllIds();  // This will clear ids in model2, the model stored in the annotator.
 
-    .. code-tabs:: python
+    .. code-tab:: python
 
       # Assuming we have two models, with references model1, and model2.
 

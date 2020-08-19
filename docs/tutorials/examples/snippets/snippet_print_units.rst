@@ -59,7 +59,7 @@
           std::cout << "  - " << name << std::endl;
       }
 
-    .. code-tab:: py
+    .. code-tab:: python
 
         # This example assumes that you have a component already, containing variables and MathML.
 

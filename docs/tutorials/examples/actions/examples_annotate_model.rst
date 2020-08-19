@@ -53,9 +53,9 @@ Consider the simple example shown below.
 .. code:: text
 
   model:
-    ├ component: name = "c1", id = "c1id"
+    ├─ component: name = "c1", id = "c1id"
     │   └ variable: name = "v1", id = "v1id" <╴╴╴┐
-    └ component: name = "c2", id = "c2id"     equivalent variables
+    └─ component: name = "c2", id = "c2id"     equivalent variables
         └ variable: name = "v2", id = "v2id" <╴╴╴┘
 
 .. container:: toggle

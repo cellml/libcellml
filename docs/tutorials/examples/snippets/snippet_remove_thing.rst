@@ -66,3 +66,7 @@
       //  - Removing a null pointer.
       success = component->removeVariable(nullptr);
       assert(success == false);
+
+    .. code-tab:: python
+
+      # TODO
