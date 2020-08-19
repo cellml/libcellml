@@ -13,7 +13,7 @@ This section describes how to use the simple solvers provided to run models gene
 
 C profile solver
 ================
-In C++ you can use the code provided in the :code:`tutorials/solver` directory to build your generated code into a runable simulation.
+In C++ you can use the code provided in the :code:`tutorials/solver` directory to build your generated code into a runnable simulation.
 To use the package just follow the instructions below.
 You will need to download:
 

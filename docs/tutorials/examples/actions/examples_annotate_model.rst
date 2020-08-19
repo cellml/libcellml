@@ -286,10 +286,12 @@ Useful snippets
 
 .. include:: ../snippets/snippet_annotator_auto_ids.rst
 
-.. todo :: ../snippets/snippet_annotator_clear_all_ids.rst
+.. include:: ../snippets/snippet_annotator_clear_all_ids.rst
 
 .. include:: ../snippets/snippet_annotator_find_item_known_type.rst
 
 .. include:: ../snippets/snippet_annotator_find_item_unknown_type.rst
 
-.. todo :: ../snippets/snippet_find_duplicated_ids.rst
+.. include:: ../snippets/snippet_annotator_find_duplicate_ids.rst
+
+.. include:: ../snippets/snippet_annotator_retrieve_duplicated_ids.rst

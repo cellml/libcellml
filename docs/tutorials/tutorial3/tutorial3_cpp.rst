@@ -372,7 +372,7 @@ Of course, you may need to create the corresponding :code:`Units` item and add i
 
 Step 4: Use code generation to change the output langauge
 =========================================================
-Some exciting new functionality of libCellML is its ability to generate a runable file from a model description.
+Some exciting new functionality of libCellML is its ability to generate a runnable file from a model description.
 This means that if you already have a solver in either C or Python, you can simply translate your model from here into that language.
 Let's give it a go.
 

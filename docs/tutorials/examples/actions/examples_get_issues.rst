@@ -7,11 +7,11 @@ The classes are:
 
 - the :code:`Parser` class;
 - the :code:`Validator` class;
-- the :code:`Printer` class; and
+- the :code:`Printer` class;
+- the :code:`Importer` class; and
 - the :code:`Generator` class.
 
 **TODO** also the :code:`Analyser` class when available.
-**TODO** also the :code:`Importer` class when available #608
 
 Individual issues can be retrieved from the parent class by their index, an integer between 0 and :code:`issueCount()-1`.
 Each issue contains a severity level indicator, one of three levels (:code:`ERROR`, :code:`WARNING`, or :code:`HINT`):

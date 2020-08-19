@@ -392,7 +392,7 @@ This is done using the :code:`resolveImports()` function of the model, with the 
     If this is the same as your working directory, simply enter an empty string, :code:`""`.
     Once that is done, use the :code:`Model.hasUnresolvedImports()` function to check whether or not the model imports have been found.
 
-Finally it's time to flatten the model so that it can be used to generate runable code.
+Finally it's time to flatten the model so that it can be used to generate runnable code.
 This operation will create new local instances of all of the imported items, thereby removing the model's dependency on imports.
 
 .. container:: dothis
@@ -444,7 +444,7 @@ This operation will create new local instances of all of the imported items, the
 
 Step 7: Generate and output the model
 =====================================
-As we've done several times before, it's time to generate the runable model code.
+As we've done several times before, it's time to generate the runnable model code.
 
 .. container:: dothis
 
