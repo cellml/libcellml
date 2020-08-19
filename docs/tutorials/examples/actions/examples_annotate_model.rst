@@ -31,18 +31,18 @@ The :code:`id` attribute for each of these entity types can be retrieved using t
 
   .. code-tab:: c++
 
-    // Set the id attribute for a Model item.
+    // Set the ID attribute for a Model item.
     model->setId("myModelId");
 
-    // Retrieve the id attribute from a Model item.
+    // Retrieve the ID attribute from a Model item.
     std::string myModelIdString = model->id();
 
   .. code-tab:: python
 
-    # Set the id attribute for a Model item.
+    # Set the ID attribute for a Model item.
     model.setId("myModelId")
 
-    # Retrieve the id attribute from a Model item.
+    # Retrieve the ID attribute from a Model item.
     my_model_id_string = model.id()
 
 Annotation tools for other item types
@@ -84,11 +84,11 @@ Consider the simple example shown below.
 
   .. code-tab:: c++
 
-    // Set the id of the mapping between variables v1 and v2.
+    // Set the ID of the mapping between variables v1 and v2.
     Variable::setEquivalentVariableId(v1, v2, "v1v2Id");
 
-    // Get the id of the mapping between variables v1 and v2. Note that
-    // equivalences and connections go both ways, so the id is the same
+    // Get the ID of the mapping between variables v1 and v2. Note that
+    // equivalences and connections go both ways, so the ID is the same
     // whichever order the variables are specified.
     std::string v1v2IdString = Variable::equivalentVariableId(v1, v2);
 
@@ -98,20 +98,20 @@ Consider the simple example shown below.
     // child variable pairs, just as the equivalence mapping itself is.
     Variable::setConnectionId(v1, v2, "c1c2id");
 
-    // Get the id of the connection between the parent components of
+    // Get the ID of the connection between the parent components of
     // equivalent variable pair. Note that equivalences and connections
-    // go both ways, so the id is the same whichever order the variables
+    // go both ways, so the ID is the same whichever order the variables
     // are specified.
     std::string c1c2IdString = Variable::connectionId(v1, v2);
 
   .. code-tab:: python
 
-    # Set the id of the mapping between variables v1 and v2.
+    # Set the ID of the mapping between variables v1 and v2.
     Variable.setEquivalentVariableId(v1, v2, "v1v2Id")
 
-    # Get the id of the mapping between variables v1 and v2.
+    # Get the ID of the mapping between variables v1 and v2.
     # Note that equivalences and connections go both ways, so 
-    # the id is the same whichever order the variables are specified.
+    # the ID is the same whichever order the variables are specified.
     v1v2_id_string = Variable.equivalentVariableId(v1, v2)
 
     # Since a connection item between two components will only exist
@@ -120,10 +120,10 @@ Consider the simple example shown below.
     # child variable pairs, just as the equivalence mapping itself is.
     Variable.setConnectionId(v1, v2, "c1c2id")
 
-    # Get the id of the connection between the parent components
+    # Get the ID of the connection between the parent components
     # of equivalent variable pair.
     # Note that equivalences and connections go both ways, so 
-    # the id is the same whichever order the variables are specified.
+    # the ID is the same whichever order the variables are specified.
     c1c2IdString = Variable.connectionId(v1, v2)
 
 The model's encapsulation and the component references which it contains may have ID attributes too. 
@@ -168,21 +168,21 @@ The position of each component within that encapsulation structure is referenced
 
   .. code-tab:: c++
 
-    // Set the encapsulation id.
+    // Set the encapsulation ID.
     model->setEncapsulationId("encapsId");
     grandparentComponent->setEncapsulationId("grandparentEncapsId");
 
-    // Get the encapsulation id.
+    // Get the encapsulation ID.
     std::string modelEncapsulationId = model->encapsulationId();
     std::string grandparentEncapsulationId = grandparentComponent->encapsulationId(); 
 
   .. code-tab:: python
 
-    # Set the encapsulation id.
+    # Set the encapsulation ID.
     model.setEncapsulationId("encapsId")
     grandparent_component.setEncapsulationId("grandparentEncapsId")
 
-    # Get the encapsulation id.
+    # Get the encapsulation ID.
     model_encapsulation_id = model.encapsulationId()
     grandparent_encapsulation_id = grandparent_component.encapsulationId()
 
@@ -192,7 +192,7 @@ Some items are most readily accessed through their entity-type parents, these be
 - :code:`unit` items, a collection of which defines a :code:`Units` item; and
 - :code:`test_value` and :code:`reset_value` children of :code:`Reset` items.
 
-Unit children of :code:`Units` items can be accessed either through the streamlined id-only functions :code:`unitId(index)` and :code:`setUnitId(index)`, or through the :code:`unitAttributes` family of functions.
+Unit children of :code:`Units` items can be accessed either through the streamlined ID-only functions :code:`unitId(index)` and :code:`setUnitId(index)`, or through the :code:`unitAttributes` family of functions.
 Note that there are several overloads of the arguments for this function; please see the complete documentation on the :api:`Units functions API page<Units>`.
 
 .. tabs::
@@ -202,20 +202,20 @@ Note that there are several overloads of the arguments for this function; please
     // Create a Units item representing millimetre^3 per second.
     auto mm3PerSecond = libcellml::Units::create("mm3PerSecond");
 
-    // Add the per second part with the id "perSecondUnitId".
+    // Add the per second part with the ID "perSecondUnitId".
     mm3PerSecond->addUnit("second", 0, -1.0, 1.0, "perSecondUnitId");
 
-    // Add the mm^3 part with with the id "mmCubedUnitId".
+    // Add the mm^3 part with with the ID "mmCubedUnitId".
     mm3PerSecond->addUnit("metre", "milli", 3.0, 1.0, "mmCubedUnitId");
 
-    // Check that the id has been assigned to the Unit children.
+    // Check that the ID has been assigned to the Unit children.
     auto checkId1 = mm3PerSecond->unitId(0); // returns "perSecondUnitId".
     auto checkId2 = mm3PerSecond->unitId(1); // returns "mmCubedUnitId".
 
-    // Change the id of the second (ie: index = 1) child to be "millimetreCubedUnitId":
+    // Change the ID of the second (ie: index = 1) child to be "millimetreCubedUnitId":
     mm3PerSecond->setUnitId(1, "millimetreCubedUnitId");
 
-    // Retrieve the unit attributes for the first (index = 0) unit item, including the id attribute:
+    // Retrieve the unit attributes for the first (index = 0) unit item, including the ID attribute:
     std::string unitReference;
     std::string unitPrefix;
     double unitExponent;
@@ -228,20 +228,20 @@ Note that there are several overloads of the arguments for this function; please
     # Create a Units item representing millimetre^3 per second.
     mm3_per_second = Units.create("mm3PerSecond")
 
-    # Add the per second part with the id "perSecondUnitId".
+    # Add the per second part with the ID "perSecondUnitId".
     mm3_per_second.addUnit("second", 0, -1.0, 1.0, "perSecondUnitId")
 
-    # Add the mm^3 part with with the id "mmCubedUnitId".
+    # Add the mm^3 part with with the ID "mmCubedUnitId".
     mm3_per_second.addUnit("metre", "milli", 3.0, 1.0, "mmCubedUnitId")
 
     # Retrieve both ids from the child units.
     check_1 = mm3_per_second.unitId(0) # returns "perSecondUnitId"
     check_2 = mm3_per_second.unitId(1) # returns "mmCubedUnitId"
 
-    # Change the id of the second (ie: index = 1) Unit child to be "millimetreCubedUnitId".
+    # Change the ID of the second (ie: index = 1) Unit child to be "millimetreCubedUnitId".
     mm3_per_second.setUnitId(1, "millimetreCubedUnitId")
 
-    # Retrieve the unit attributes for the second (index = 0) unit item, including the id attribute:
+    # Retrieve the unit attributes for the second (index = 0) unit item, including the ID attribute:
     mm3PerSecond.unitAttributes(0, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId)
 
 

@@ -30,10 +30,23 @@ Issues can also be retrieved from subgroups based on their severity, as shown in
 
   .. code-block:: cpp
 
-      // Iterate through all the issues in a Validator, regardless of level.
+      // Iterate through all the issues in a Validator, regardless of level, and print to the terminal.
       for (size_t i = 0; i < validator->issueCount(); ++i) {
         // Retrieve the i-th issue and store it in the variable "myIssue".
         libcellml::IssuePtr myIssue = validator->issue(i);
+
+        // Print the issue's description:
+        std::cout << myIssue->description() << std::endl;
+
+        // Print the issue's URL.  This is a URL at which more 
+        // information could be found about the cause and corrections
+        // are needed to avoid it.
+        std::cout << myIssue->url() << std::endl;
+
+        // Validator only: Print the issue's reference. This is 
+        // the heading reference in the normative specification which 
+        // relates to this issue.
+        std::cout << myIssue->referenceHeading() << std::endl;
       }
 
       // Retrieve the second ERROR level issue from a Printer. Note indexing from 0.
@@ -56,19 +69,32 @@ Issues can also be retrieved from subgroups based on their severity, as shown in
 
   .. code-block:: python
 
-      # Iterate through the issues in a validator.
+      # Iterate through all the issues in a Validator, regardless of level, and print to the terminal.
       for i in range(0, validator.issueCount()):
-        # Retrieve the i-th issue and store it in the variable "myIssue".
+        # Retrieve the i-th issue and store it in the variable "my_issue".
         my_issue = validator.issue(i)
+
+        # Print the issue's description:
+        print(my_issue.description())
+
+        # Print the issue's URL.  This is a URL at which more 
+        # information could be found about the cause and corrections
+        # are needed to avoid it.
+        print(my_issue.url())
+
+        # Validator only: Print the issue's reference. This is 
+        # the heading reference in the normative specification which 
+        # relates to this issue.
+        print(my_issue.referenceHeading())
 
       # Retrieve the second ERROR level issue from a Printer. Note indexing from 0.
       second_error = printer.error(1)
 
       # Retrieve the last WARNING level issue from a Parser.
-      last_warning = parser.warning(parser.warningCount()-1)
+      last_warning = parser.warning(parser.warningCount() - 1)
 
       # Iterate through all HINT level issues in a Generator.
-      for h in range(0, generator->hintCount()):
+      for h in range(0, generator.hintCount()):
         # Retrieve the h-th hint and store it in the variable "my_hint".
         my_hint = generator.hint(h)
 
@@ -133,7 +159,7 @@ Each :code:`Issue` also contains the following attributes:
     # Retrieve and print the reference heading number, if related to CellML2.0 specification and format.
     print(issue.referenceHeading())
 
-    # Retrieve and print the URL for more help and information about the issue. **TODO** after #604.
+    # Retrieve and print the URL for more help and information about the issue. 
     print(issue.url())
 
     # Retrieve and print the cause - a libcellml.Issue.CAUSE enum - for the issue.
