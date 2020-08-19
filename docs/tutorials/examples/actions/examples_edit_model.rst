@@ -26,7 +26,7 @@ Some example snippets are shown below:
 
 Editing collections
 -------------------
-General families of functions are avaiable for editing collections, but take the form of :code:`addXyz` and :code:`removeXyz`, :code:`takeXyz` and :code:`replaceXyz`, as explained in :ref:`Understanding collections<examples_understand_collections>`.
+General families of functions are available for editing collections, but take the form of :code:`addXyz` and :code:`removeXyz`, :code:`takeXyz` and :code:`replaceXyz`, as explained in :ref:`Understanding collections<examples_understand_collections>`.
 
 Some example snippets are shown below:
 

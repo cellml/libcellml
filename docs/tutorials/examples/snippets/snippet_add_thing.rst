@@ -16,9 +16,10 @@
 
   .. tabs::
 
-    .. code-tab:: c++
+    .. tab::
 
-      .. include:: ../code/example_addThings.cpp
+      .. literalinclude:: ../code/example_addThings.cpp
+        :language: c++
         :start-after:    // #MARKER1
         :end-before:    // #MARKER2
 
