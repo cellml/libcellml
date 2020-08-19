@@ -47,6 +47,9 @@ The :code:`id` attribute for each of these entity types can be retrieved using t
 
 Annotation tools for other item types
 -------------------------------------
+
+Connections and variable equivalence
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Items which specify the relationship between two entities (such as connections between components, and mappings between variables) are accessed and identified by the pair of entities.
 Consider the simple example shown below.
 
@@ -126,6 +129,8 @@ Consider the simple example shown below.
     # the ID is the same whichever order the variables are specified.
     c1c2IdString = Variable.connectionId(v1, v2)
 
+Encapsulation and component references
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The model's encapsulation and the component references which it contains may have ID attributes too. 
 These are accessed through the :code:`encapsulationId()` functions, as shown below.
 
@@ -186,7 +191,8 @@ The position of each component within that encapsulation structure is referenced
     model_encapsulation_id = model.encapsulationId()
     grandparent_encapsulation_id = grandparent_component.encapsulationId()
 
-
+Unit item children; reset_value, test_value item children
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Some items are most readily accessed through their entity-type parents, these being:
 
 - :code:`unit` items, a collection of which defines a :code:`Units` item; and
@@ -244,6 +250,8 @@ Note that there are several overloads of the arguments for this function; please
     # Retrieve the unit attributes for the second (index = 0) unit item, including the ID attribute:
     mm3PerSecond.unitAttributes(0, unitReference, unitPrefix, unitExponent, unitMultiplier, unitId)
 
+Annotator ``Type`` and returned types
+-------------------------------------
 
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | enumeration value | Object type in the "any" container.                                                                 |
@@ -279,7 +287,6 @@ Note that there are several overloads of the arguments for this function; please
 +-------------------+-----------------------------------------------------------------------------------------------------+
 | VARIABLE          | Pointer to a :code:`Variable` item with the given :code:`id`.                                       |
 +-------------------+-----------------------------------------------------------------------------------------------------+
-
 
 Useful snippets
 ===============
