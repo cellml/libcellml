@@ -23,10 +23,6 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 
-#ifndef SWIG
-template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Parser>;
-#endif
-
 namespace libcellml {
 
 /**
@@ -35,10 +31,6 @@ namespace libcellml {
  * The Parser class is for representing a CellML Parser.
  */
 class LIBCELLML_EXPORT Parser: public Logger
-#ifndef SWIG
-    ,
-                               public std::enable_shared_from_this<Parser>
-#endif
 {
 public:
     ~Parser() override; /**< Destructor */
