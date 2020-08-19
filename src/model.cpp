@@ -329,19 +329,14 @@ bool Model::linkUnits()
     return status;
 }
 
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component, const LoggerPtr &logger)
+bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
 {
     bool unlinkedUnits = areComponentVariableUnitsUnlinked(component);
     for (size_t index = 0; index < component->componentCount() && !unlinkedUnits; ++index) {
         auto c = component->component(index);
-        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c, logger);
+        unlinkedUnits = traverseComponentTreeForUnlinkedUnits(c);
     }
     return unlinkedUnits;
-}
-
-bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
-{
-    return traverseComponentTreeForUnlinkedUnits(component, nullptr);
 }
 
 bool Model::hasUnlinkedUnits()
