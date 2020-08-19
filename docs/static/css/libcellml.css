@@ -81,7 +81,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
     font-weight: 600;
 }
 
-/* .toggle .header:after {
+.toggle .header:after {
     content: " +";
 }
 
@@ -95,7 +95,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
 
 .toggle .header-left.open:before {
     content: " -";
-} */
+}
 
 .infospec {
     /* border-top: 1px solid #b9c6dd; */

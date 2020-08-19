@@ -5,24 +5,28 @@
     $(document).ready(function () {
         $(".toggle > *").hide();
         $(".toggle .header").show();
+
+        // Stripping out the extra paragraph that Sphinx adds to the header divs:
+        $('.toggle .header > p').contents().unwrap();
         $(".toggle .header").click(function () {
             $(this).parent().children().not(".header").toggle(400);
-            // $(this).parent().children(".header").toggleClass("open");
+            $(this).parent().children(".header")
+            $(this).parent().children(".header").toggleClass("open");
         });
 
         $(".toggle .header-left").show();
         $(".toggle .header-left").click(function () {
             $(this).parent().children().not(".header-left").toggle(400);
-            // $(this).parent().children(".header-left").toggleClass("open");
+            $(this).parent().children(".header-left").toggleClass("open");
         });
 
         const url_object = new URL(window.location.href);
         const code = url_object.searchParams.get("issue");
-        if (code!=null) {
+        if (code != null) {
             let issueCode = ".issue-" + code.toLowerCase().replace("_", "-");
             let contents = $(issueCode).html();
             let title = "<div style='color:saddlebrown;font-weight:700;padding-bottom:10px;'>";
-            title += code.toUpperCase().replace("-","_") +" errors refer to: </div>"
+            title += code.toUpperCase().replace("-", "_") + " errors refer to: </div>"
             $(issueCode).html(title + contents);
             $(issueCode).addClass("highlight-issue");
         }
