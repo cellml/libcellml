@@ -7,13 +7,13 @@
         $(".toggle .header").show();
         $(".toggle .header").click(function () {
             $(this).parent().children().not(".header").toggle(400);
-            $(this).parent().children(".header").toggleClass("open");
+            // $(this).parent().children(".header").toggleClass("open");
         });
 
         $(".toggle .header-left").show();
         $(".toggle .header-left").click(function () {
             $(this).parent().children().not(".header-left").toggle(400);
-            $(this).parent().children(".header-left").toggleClass("open");
+            // $(this).parent().children(".header-left").toggleClass("open");
         });
 
         const url_object = new URL(window.location.href);
