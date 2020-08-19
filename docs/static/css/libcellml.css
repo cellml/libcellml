@@ -72,7 +72,7 @@ div[class^="issue"], div[class*=" issue"] > ol {
 }
 
 .toggle .header-left {
-    display: block;
+    display: inline;
     clear: both;
     color: darkslategray;
     text-align: left;
