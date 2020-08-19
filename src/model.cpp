@@ -319,12 +319,14 @@ bool Model::removeAllImportSources()
     return status;
 }
 
-void Model::linkUnits()
+bool Model::linkUnits()
 {
+    bool status = true;
     for (size_t index = 0; index < componentCount(); ++index) {
         auto c = component(index);
-        traverseComponentTreeLinkingUnits(c);
+        status = status && traverseComponentTreeLinkingUnits(c);
     }
+    return status;
 }
 
 bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component, const LoggerPtr &logger)

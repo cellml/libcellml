@@ -578,15 +578,29 @@ IdList listIds(const ModelPtr &model);
  */
 std::string makeUniqueId(IdList &idList);
 
-void linkComponentVariableUnits(const ComponentPtr &component, const LoggerPtr &logger);
+/**
+ * Function to support linking units names to their corresponding @c Units items.
+ * 
+ * @param component The component to check.
+ * @param issueList A vector of @c IssuePtr items in which unlinked units are recorded for reporting.
+ * 
+ * @return @c true if all variables have been successfully linked to units, @c false otherwise.
+ */
+bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
+
 /**
  * @overload
  * 
- *  Utility function used when linking units names to their corresponding @c Units items.
+ * @brief Utility function used when linking units names to their corresponding @c Units items.
+ *  
+ * Returns @c true if all variables in the component can be linked to their units, or
+ * @c false otherwise.
  * 
  * @param component The component to check.
- * */
-void traverseComponentTreeLinkingUnits(const ComponentPtr &component);
+ * 
+ * @return @c true upon success; @c false if not all variables could be linked to units.
+ */
+bool traverseComponentTreeLinkingUnits(const ComponentPtr &component);
 
 /**
  * @overload
@@ -594,9 +608,11 @@ void traverseComponentTreeLinkingUnits(const ComponentPtr &component);
  *  Utility function used when linking units names to their corresponding @c Units items.
  * 
  * @param component The component to check.
- * @param logger An optional @c Logger instance which is used to record cases of missing units.
+ * @param issueList An optional @c std::vector of @c IssuePtr items which is used to record cases of missing units.
+ * 
+ * @return @c true upon success; @c false if not all variables could be linked to units.
  * */
-void traverseComponentTreeLinkingUnits(const ComponentPtr &component, const LoggerPtr &logger);
+bool traverseComponentTreeLinkingUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
 
 /**
  * @brief Test whether a component contains variables naming units which have not yet 
