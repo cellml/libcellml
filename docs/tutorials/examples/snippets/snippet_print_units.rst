@@ -61,32 +61,32 @@
 
     .. code-tab:: py
 
-        # This example assumes that you have a component already, containing variables and MathML.
+      # This example assumes that you have a component already, containing variables and MathML.
 
-        # Initialise an empty set to save the units names.
-        units_names = set()
+      # Initialise an empty set to save the units names.
+      units_names = set()
 
-        # Iterate through the variables in this component, and add their units' names to the set.
-        for v in range(0, component.variableCount()):
-            # Get the units for this variable:
-            my_units = component.variable(v).units()
-            # Check that this is not the nullptr, otherwise skip.
-            if my_units is not None:
-                # Add name to set if not already there.
-                units_names.add(my_units.name())
+      # Iterate through the variables in this component, and add their units' names to the set.
+      for v in range(0, component.variableCount()):
+          # Get the units for this variable:
+          my_units = component.variable(v).units()
+          # Check that this is not the nullptr, otherwise skip.
+          if my_units is not None:
+              # Add name to set if not already there.
+              units_names.add(my_units.name())
 
-        # Parse the MathML string to find any units used by <cn> constants:
-        delimiter = "cellml:units="
-        maths_string = component.math()
-        segments = maths_string.split(delimiter)
-        # Start looking for the name after the first delimiter.
-        for segment in segments[1:]:
-            # Split the segment at quotation marks, and take the one at index 1
-            name = segment.split('"')[1]
-            if (len(name)):  # Sanity check that the string is not empty.
-                units_names.add(name)
+      # Parse the MathML string to find any units used by <cn> constants:
+      delimiter = "cellml:units="
+      maths_string = component.math()
+      segments = maths_string.split(delimiter)
+      # Start looking for the name after the first delimiter.
+      for segment in segments[1:]:
+          # Split the segment at quotation marks, and take the one at index 1
+          name = segment.split('"')[1]
+          if (len(name)):  # Sanity check that the string is not empty.
+              units_names.add(name)
 
-        # Print the unique units for this component to the terminal.
-        print("The units needed by component {c} are:".format(c=component.name()))
-        for name in units_names:
-            print("  - {n}".format(n=name))
+      # Print the unique units for this component to the terminal.
+      print("The units needed by component {c} are:".format(c=component.name()))
+      for name in units_names:
+          print("  - {n}".format(n=name))

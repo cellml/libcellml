@@ -8,39 +8,39 @@ As with the :code:`Parser` and the :code:`Validator`, the :code:`Printer` also r
 
 .. tabs::
 
-    .. code-tab:: c++
+  .. code-tab:: c++
 
-        // Create a Printer instance.
-        auto printer = libcellml::Printer::create();
+    // Create a Printer instance.
+    auto printer = libcellml::Printer::create();
 
-        // The output of the printModel function is a string representing the serialised input model.
-        std::string serialisedModelString = printer->printModel(model);
+    // The output of the printModel function is a string representing the serialised input model.
+    std::string serialisedModelString = printer->printModel(model);
 
-        // Check the printer for issues.
-        assert(printer->issueCount() == 0);
+    // Check the printer for issues.
+    assert(printer->issueCount() == 0);
 
-        // Write the serialised string to a file.
-        std::string outFileName = "my_printed_file.cellml";
-        std::ofstream outFile(outFileName);
-        outFile << serialisedModelString;
-        outFile.close();
+    // Write the serialised string to a file.
+    std::string outFileName = "my_printed_file.cellml";
+    std::ofstream outFile(outFileName);
+    outFile << serialisedModelString;
+    outFile.close();
 
-    .. code-tab:: py
+  .. code-tab:: py
 
-        from libcellml import Printer
+    from libcellml import Printer
 
-        # Create a Printer instance.
-        printer = Printer()
+    # Create a Printer instance.
+    printer = Printer()
 
-        # The output of the printModel function is a string representing the serialised input model.
-        serialised_model = printer.printModel(model)
+    # The output of the printModel function is a string representing the serialised input model.
+    serialised_model = printer.printModel(model)
 
-        # Check the printer for issues.
-        assert(printer.issueCount() == 0)
+    # Check the printer for issues.
+    assert(printer.issueCount() == 0)
 
-        # Write the string to a file.
-        write_file = open("my_printed_file.cellml", "w")
-        write_file.write(serialised_model)
-        write_file.close()
+    # Write the string to a file.
+    write_file = open("my_printed_file.cellml", "w")
+    write_file.write(serialised_model)
+    write_file.close()
 
 Details of any issues that the printer encounters and records can be retrieved as described on the :ref:`Retrieve Issue items<examples_get_issues>` page.

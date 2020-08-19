@@ -53,7 +53,7 @@
       // ... OR submit both the Type enum and the item as separate arguments.
       annotator->assignId(libcellml::Annotator::Type::COMPONENT_REF, model->component(0));
 
-  .. code-tab:: py
+    .. code-tab:: py
 
       # Create an Annotator instance.
       from libcellml import Annotator
@@ -88,4 +88,3 @@
       #
       # Submit both the Type enum and the item as separate arguments.
       annotator.assignId(Annotator.Type.COMPONENT_REF, model.component(0))
-
