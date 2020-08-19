@@ -2512,27 +2512,41 @@
             <apply>
                 <eq/>
                 <ci>eqnCnInteger</ci>
-                <cn cellml:units="dimensionless">123</cn>
+                <cn cellml:units="dimensionless">
+                    123
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnDouble</ci>
-                <cn cellml:units="dimensionless">123.456789</cn>
+                <cn cellml:units="dimensionless">
+                    123.456789
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnIntegerWithExponent</ci>
-                <cn cellml:units="dimensionless" type="e-notation">123<sep/>99</cn>
+                <cn cellml:units="dimensionless" type="e-notation">
+                    123
+                    <sep/>
+                    99
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnDoubleWithExponent</ci>
-                <cn cellml:units="dimensionless" type="e-notation">123.456789<sep/>99</cn>
+                <cn cellml:units="dimensionless" type="e-notation">
+                    123.456789
+                    <sep/>
+                    99
+                </cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCi</ci>
-                <ci>m</ci>
+                <ci>
+                    m
+                </ci>
             </apply>
             <apply>
                 <eq/>
