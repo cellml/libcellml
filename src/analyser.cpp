@@ -820,7 +820,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         // Token elements.
 
     } else if (node->isMathmlElement("ci")) {
-        auto variableName = node->firstChild()->convertToString();
+        auto variableName = node->firstChild()->convertToStrippedString();
         auto variable = component->variable(variableName);
         // Note: we always have a variable. Indeed, if we were not to have one,
         //       it would mean that `variableName` is the name of a variable
@@ -845,9 +845,9 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         if (mathmlChildCount(node) == 1) {
             // We are dealing with an e-notation based CN value.
 
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString() + "e" + node->firstChild()->next()->next()->convertToStrippedString(), astParent);
         } else {
-            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
+            ast->mPimpl->populate(AnalyserEquationAst::Type::CN, node->firstChild()->convertToStrippedString(), astParent);
         }
 
         // Qualifier elements.
