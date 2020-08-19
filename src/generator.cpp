@@ -33,8 +33,6 @@ limitations under the License.
 
 #undef NAN
 
-#undef NAN
-
 namespace libcellml {
 
 /**
