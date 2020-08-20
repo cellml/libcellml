@@ -20,6 +20,7 @@ int main()
 
     // 1.a  Create a new controller model, containing the controller component and a parameters component.
     //      This will be written separately to the main model so that its values can be changed easily.
+
     auto controllerModel = libcellml::Model::create("Tutorial8_parameters");
     auto parameters = libcellml::Component::create("parameters");
     controllerModel->addComponent(parameters);
@@ -54,7 +55,7 @@ int main()
     //                 [0]: V [mV]                  integrated variable, initialised by parameters component
     //                 [1]: t [ms]                  base variable of integration
     //                 [2]: i_K [microA_per_cm2]    potassium current, calculated by imported component
-    //                 [3]: i_Na [microA_per_cm2]   sodium current, calculated by imported componnet
+    //                 [3]: i_Na [microA_per_cm2]   sodium current, calculated by imported component
     //                 [4]: i_L [microA_per_cm2]    leakage current, calculated by imported component
     //                 [5]: i_stim [microA_per_cm2] stimulus current, specified locally in the membrane
     //                 [6]: Cm [microF_per_cm2]     constant, membrane capacitance, initialised by parameters component

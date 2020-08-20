@@ -2,11 +2,11 @@
  *  TUTORIAL 1: READING AND WRITING A CELLML FILE
  *
  *  By the time you have worked through Tutorial 1 you will be able to:
- *    - read the contents of a CellML file
- *    - deserialse its contents using the Parser to create a Model structure
+ *    - read the contents of a CellML file;
+ *    - deserialise its contents using the Parser to create a Model structure;
  *    - investigate the hierarchical contents of the Model, including the
- *      Components, Variables, and maths
- *    - serialise the model and write to another file
+ *      Components, Variables, and maths; and
+ *    - serialise the model and write to another file.
  */
 
 #include <fstream>

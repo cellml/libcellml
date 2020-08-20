@@ -1,8 +1,14 @@
 /**
  *  TUTORIAL 7: Creating the Sodium Channel
+ * 
+ * This tutorial is in two parts.  The first demonstrates how to create a model in
+ * which the use of importing functionality is specified; and the second demonstrates
+ * how to resolve those imports ready for flattening.
+ * 
  *  By the time you have finished this tutorial you will be able to:
- *      - Use the import functionality to use components from other models; and
- *      - Use model flattening to resolve imported components for code generation.
+ *      - Specify import functionality for models you create; 
+ *      - Use the import functionality to retrieve items from other models; and
+ *      - Use model flattening to resolve imported components ready for code generation.
  *
  *  Tutorial 7 assumes that you are already comfortable with:
  *      - The concept of component hierarchy and encapsulation (Tutorial 6);
@@ -25,7 +31,7 @@ int main()
     std::string mathFooter = "</math>";
 
     std::cout << "--------------------------------------------------" << std::endl;
-    std::cout << " STEP 1: Create the sodium channel" << std::endl;
+    std::cout << " STEP 1: Create the sodium channel component" << std::endl;
     std::cout << "--------------------------------------------------" << std::endl;
 
     //  1.a Create a model and name it appropriately.
@@ -137,386 +143,177 @@ int main()
     model->linkUnits();
     validator->validateModel(model);
     printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "  STEP 2: Creating the m-gate" << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
+    std::cout << " STEP 2: Specify the imported component 'mGate'" << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
 
-    //  2.a Create component to represent the m-gate and add it to the sodium channel component.
+    //  2.a Create a component representing the mGate, name it appropriately, and
+    //      add it as a child of the sodium channel component.
     auto mGate = libcellml::Component::create("mGate");
     sodiumChannel->addComponent(mGate);
 
-    //  2.b Add the MathML strings which govern the behaviour of this gate.
-    {
-        std::string equation1 =
-            "  <apply><eq/>\n"
-            "    <ci>alpha_m</ci>\n"
-            "    <apply><divide/>\n"
-            "      <apply><times/>\n"
-            "        <cn cellml:units=\"per_mV_ms\">0.1</cn>\n"
-            "        <apply><plus/>\n"
-            "          <ci>V</ci>\n"
-            "          <cn cellml:units=\"mV\">25</cn>\n"
-            "        </apply>\n"
-            "      </apply>\n"
-            "      <apply><minus/>\n"
-            "        <apply><exp/>\n"
-            "          <apply><divide/>\n"
-            "            <apply><plus/>\n"
-            "              <ci>V</ci>\n"
-            "              <cn cellml:units=\"mV\">25</cn>\n"
-            "            </apply>\n"
-            "            <cn cellml:units=\"mV\">10</cn>\n"
-            "          </apply>\n"
-            "        </apply>\n"
-            "        <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "      </apply>\n"
-            "    </apply>\n"
-            "  </apply>\n";
+    //  2.b Create an ImportSource item and attach it to the component.  This indicates
+    //      that the component's contents will be imported from another model.
+    auto mGateImportSource = libcellml::ImportSource::create();
+    mGate->setImportSource(mGateImportSource);
 
-        std::string equation2 =
-            "  <apply><eq/>\n"
-            "    <ci>beta_m</ci>\n"
-            "    <apply><times/>\n"
-            "      <cn cellml:units=\"per_ms\">4</cn>\n"
-            "      <apply><exp/>\n"
-            "        <apply><divide/>\n"
-            "          <ci>V</ci>\n"
-            "          <cn cellml:units=\"mV\">18</cn>\n"
-            "        </apply>\n"
-            "      </apply>\n"
-            "    </apply>\n"
-            "  </apply>\n";
+    //  2.c Set the URL of the ImportSource to the location at which the other model
+    //      can be found.  This can be absolute, or relative to the current model's location.
+    //      For this example, use the file in the resources folder named "tutorial7_mGate.cellml".
+    mGateImportSource->setUrl("../resources/tutorial7_mGate.cellml");
 
-        std::string equation3 =
-            "  <apply><eq/>\n"
-            "    <apply><diff/>\n"
-            "      <bvar>\n"
-            "        <ci>t</ci>\n"
-            "      </bvar>\n"
-            "      <ci>m</ci>\n"
-            "    </apply>\n"
-            "    <apply><minus/>\n"
-            "      <apply><times/>\n"
-            "        <ci>alpha_m</ci>\n"
-            "        <apply><minus/>\n"
-            "          <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "          <ci>m</ci>\n"
-            "        </apply>\n"
-            "      </apply>\n"
-            "      <apply><times/>\n"
-            "        <ci>m</ci>\n"
-            "        <ci>beta_m</ci>\n"
-            "      </apply>\n"
-            "    </apply>\n"
-            "  </apply>\n";
+    //  2.d Set the component's import reference to be the name of the component in the 
+    //      other model whose contents will be imported into this one.  For this example, use "mGate".
+    mGate->setImportReference("mGate");
 
-        mGate->setMath(mathHeader);
-        mGate->appendMath(equation1);
-        mGate->appendMath(equation2);
-        mGate->appendMath(equation3);
-        mGate->appendMath(mathFooter);
+    // Specifying imports in this way does not create anything in the model itself, it just
+    // saves a set of instructions for how to create those components (or units) later on.
+    // The process of verifying that the instructions work is called "resolving" the imports, 
+    // and the process of actually creating the imported items in this model is called "flattening"
+    // the model.
+    // Because it's easier to work with unflattened models later on (if you want to
+    // vary their ingredients etc), you will probably find that you need to connect imported
+    // components to local ones, or to other imported ones before the model is flattened.
+    // This creates a problem as the variables in those imported components can't yet
+    // be referenced: they don't exist yet in this model.
+    // The way around this is to create "dummy" variables in the imported component
+    // placeholders you created.  Note that these need to have the same names as the variables
+    // in the import, and will be over-written by the "real" ones when the model is flattened.
+    // Because they will be over-written, you only need to specify their names and nothing else.
 
-    } // end scope of maths for mGate component
+    //  2.e Create dummy variables representing time "t", voltage "V", and gate status "m" and
+    //      add to this component.
+    mGate->addVariable(libcellml::Variable::create("t"));
+    mGate->addVariable(libcellml::Variable::create("V"));
+    mGate->addVariable(libcellml::Variable::create("m"));
 
-    //  2.c Call the validator and expect errors related to missing variables.
-    //      Add the variables that are needed.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-    {
-        auto V = libcellml::Variable::create("V");
-        V->setUnits("mV");
-        mGate->addVariable(V);
+    //  2.f Add variable equivalences between the dummy variables you just created and their counterparts
+    //      in the sodium channel component.
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), mGate->variable("t")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), mGate->variable("V")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("m"), mGate->variable("m")));
 
-        auto t = libcellml::Variable::create("t");
-        t->setUnits("ms");
-        mGate->addVariable(t);
-
-        auto alpha_m = libcellml::Variable::create("alpha_m");
-        alpha_m->setUnits("per_ms");
-        mGate->addVariable(alpha_m);
-
-        auto beta_m = libcellml::Variable::create("beta_m");
-        beta_m->setUnits("per_ms");
-        mGate->addVariable(beta_m);
-
-        auto m = libcellml::Variable::create("m");
-        m->setUnits("dimensionless");
-        mGate->addVariable(m);
-    }
-
-    //  2.d Call the validator to check the model - expect errors related to
-    //      units missing from the model. Add the units that are required.
+    //  2.g Submit to the validator for checking.  Expect errors related to the interface types on the
+    //      variables you have just created equivalences for.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    auto per_mV_ms = libcellml::Units::create("per_mV_ms");
-    per_mV_ms->addUnit("second", "milli", -1);
-    per_mV_ms->addUnit("volt", "milli", -1);
-    model->addUnits(per_mV_ms);
-
-    auto per_ms = libcellml::Units::create("per_ms");
-    per_ms->addUnit("second", "milli", -1);
-    model->addUnits(per_ms);
-
-    //  2.e Link in the units to the model, and check that there are no more
-    //      validation errors in the model.
-
-    model->linkUnits();
+    //  2.h Fix the interface types for the sodium channel variables by setting them to "public_and_private".
+    sodiumChannel->variable("t")->setInterfaceType("public_and_private");
+    sodiumChannel->variable("V")->setInterfaceType("public_and_private");
+    sodiumChannel->variable("m")->setInterfaceType("public_and_private");
     validator->validateModel(model);
     printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
 
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << " STEP 3: Create the h-gate component " << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
+    // Step 3: Repeat the steps within Step 2 for the hGate component, and include it as a child of the 
+    // sodium channel component.
+    //  - It is defined inside the file called "tutorial7_hGate.cellml" in the resources folder.
+    //  - Import the component reference "hGate" from that file.
+    //  - You will need to create and link dummy variables named "h", "V", and "t".
+    //  - You will need to set the sodium channel variable "h" to have an interface type "public_and_private".
 
-    //  3.a Create the hGate component and add it to the sodium channel component.
+    std::cout << "--------------------------------------------------" << std::endl;
+    std::cout << " STEP 3: Specify the imported component 'hGate'" << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
+
     auto hGate = libcellml::Component::create("hGate");
     sodiumChannel->addComponent(hGate);
 
-    //  3.b Add the MathML strings that govern the gate behaviour.
-    {
-        std::string equation1 =
-            "  <apply><eq/>\n"
-            "    <ci>alpha_h</ci>\n"
-            "    <apply><times/>\n"
-            "      <cn cellml:units=\"per_ms\">0.07</cn>\n"
-            "      <apply><exp/>\n"
-            "        <apply><divide/>\n"
-            "          <ci>V</ci>\n"
-            "          <cn cellml:units=\"mV\">20</cn>\n"
-            "        </apply>\n"
-            "      </apply>\n"
-            "    </apply>\n"
-            "  </apply>\n";
+    auto hGateImportSource = libcellml::ImportSource::create();
+    hGateImportSource->setUrl("../resources/tutorial7_hGate.cellml");
+    hGate->setImportSource(hGateImportSource);
+    hGate->setImportReference("hGate");
 
-        std::string equation2 =
-            "  <apply><eq/>\n"
-            "    <ci>beta_h</ci>\n"
-            "    <apply><divide/>\n"
-            "      <cn cellml:units=\"per_ms\">1</cn>\n"
-            "      <apply><plus/>\n"
-            "        <apply><exp/>\n"
-            "          <apply><divide/>\n"
-            "            <apply><plus/>\n"
-            "              <ci>V</ci>\n"
-            "              <cn cellml:units=\"mV\">30</cn>\n"
-            "            </apply>\n"
-            "            <cn cellml:units=\"mV\">10</cn>\n"
-            "          </apply>\n"
-            "        </apply>\n"
-            "        <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "      </apply>\n"
-            "    </apply>\n"
-            "  </apply>\n";
+    hGate->addVariable(libcellml::Variable::create("t"));
+    hGate->addVariable(libcellml::Variable::create("V"));
+    hGate->addVariable(libcellml::Variable::create("h"));
+    
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), hGate->variable("t")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), hGate->variable("V")));
+    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("h"), hGate->variable("h")));
 
-        std::string equation3 =
-            "  <apply><eq/>\n"
-            "    <apply><diff/>\n"
-            "       <bvar>\n"
-            "         <ci>t</ci>\n"
-            "       </bvar>\n"
-            "       <ci>h</ci>\n"
-            "    </apply>\n"
-            "    <apply><minus/>\n"
-            "      <apply><times/>\n"
-            "        <ci>alpha_h</ci>\n"
-            "        <apply><minus/>\n"
-            "          <cn cellml:units=\"dimensionless\">1</cn>\n"
-            "          <ci>h</ci>\n"
-            "        </apply>\n"
-            "      </apply>\n"
-            "      <apply><times/>\n"
-            "        <ci>h</ci>\n"
-            "        <ci>beta_h</ci>\n"
-            "      </apply>\n"
-            "    </apply>\n"
-            "  </apply>\n";
+    sodiumChannel->variable("h")->setInterfaceType("public_and_private");
 
-        hGate->setMath(mathHeader);
-        hGate->appendMath(equation1);
-        hGate->appendMath(equation2);
-        hGate->appendMath(equation3);
-        hGate->appendMath(mathFooter);
-    } // ends local scope for hGate maths
-
-    //  3.c Call the validator to list missing variables.  Add them as needed.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
-    {
-        auto V = libcellml::Variable::create("V");
-        V->setUnits("mV");
-        hGate->addVariable(V);
 
-        auto t = libcellml::Variable::create("t");
-        t->setUnits("ms");
-        hGate->addVariable(t);
+    // Step 4: Repeat the steps within Step 2 for the controller component, and include it as a child of the 
+    // model.  
+    //  - It is defined inside the file called "tutorial7_controller.cellml" in the resources folder;
+    //  - Import the component reference "controller" from that file.
+    //  - You will need to create and link dummy variables named "V" and "t".
+    //  - You will need to set the sodium channel variables to have an interface type "public_and_private".
 
-        auto alpha_h = libcellml::Variable::create("alpha_h");
-        alpha_h->setUnits("per_ms");
-        hGate->addVariable(alpha_h);
+    std::cout << "----------------------------------------------------" << std::endl;
+    std::cout << " STEP 4: Specify the imported component 'controller'" << std::endl;
+    std::cout << "----------------------------------------------------" << std::endl;
 
-        auto beta_h = libcellml::Variable::create("beta_h");
-        beta_h->setUnits("per_ms");
-        hGate->addVariable(beta_h);
-
-        auto h = libcellml::Variable::create("h");
-        h->setUnits("dimensionless");
-        hGate->addVariable(h);
-    }
-
-    //  3.d Recheck the model, and expect it to be free of errors.
-    model->linkUnits();
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
-
-    std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 4: Import the controller and parameters" << std::endl;
-    std::cout << "----------------------------------------------------------" << std::endl;
-
-    //  STEP 4: When a Component (or Units) item is imported it needs:
-    //          - to be connected to an ImportSource item
-    //              - which in turn stores the url of the source file to be opened
-    //          - the name of the item in the source file to be retrieved
-    //          - a destination component (or units) item in which to store the
-    //            imported information
-
-    //  4.a Create a pointer to an ImportSource item using the create() idiom.
-    auto importer = libcellml::ImportSource::create();
-
-    //  4.b Use the ImportSource::setUrl() function to pass the file name containing the controller.
-    //      In this case we'll use "tutorial7_controller.cellml".
-    importer->setUrl("tutorial7_controller.cellml");
-
-    //  4.c Create the destination component into which the imported component
-    //      will be saved, and name it as usual.  This will be the controller component, and will be at the
-    //      top level of the model's encapsulation hierarchy.
     auto controller = libcellml::Component::create("controller");
     model->addComponent(controller);
 
-    //  4.d Call the Component::setSourceComponent(ImportSource, std::string) function to
-    //      associate the destination controller component with the importer, and
-    //      the importer with the name of the item to retrieve.  If you're using the
-    //      file from the resources folder, the name of the component to import is "sodiumChannel_controller".
-    controller->setSourceComponent(importer, "sodiumChannel_controller");
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("../resources/tutorial7_controller.cellml");
 
-    //  4.e Repeat the above processes to import the component called "parameters" from the same file.
-    //      Note that since they're in the same file, you can reuse the ImportSource instance, and simply
-    //      repeat steps 4.c-d.
-    auto parameters = libcellml::Component::create("parameters");
-    parameters->setSourceComponent(importer, "parameters");
-    model->addComponent(parameters);
-
-    //  4.f Validate the model, expecting it to be free of errors.  Note that the validator does not check
-    //      the contents of imports - this is done at the time that they're resolved (see step 5.c below).
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
-
-    std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 5: Connect the components " << std::endl;
-    std::cout << "----------------------------------------------------------" << std::endl;
-
-    //  STEP 5: Connecting the components together.
-    //      When you import something, it isn't instantiated in the model properly until
-    //      the model is flattened.  Because it's easier to work with unflattened models
-    //      later on (if you want to vary their ingredients etc), you will probably find
-    //      that you need to connect imported components to local ones, or to other imported
-    //      ones before the model is flattened.
-    //      This creates a problem as the variables in those imported components can't yet
-    //      be referenced.
-    //      The way around this is to create "dummy" variables in the imported component
-    //      placeholders you created (as in step 4.c, for example).  Note that these need
-    //      to have the same name as the variables in the import, and will be over-written
-    //      by the "real" ones when the model is flattened.
-
-
-    //  5.a Create the dummy variables as you would normally, and add them to the imported components.
-    //      These are:
-    //          - parameters: h, m, E_Na, g_Na
-    //          - controller: t, V
-    {
-        auto h = libcellml::Variable::create("h");
-        parameters->addVariable(h);
-        auto m = libcellml::Variable::create("m");
-        parameters->addVariable(m);
-        auto E_Na = libcellml::Variable::create("E_Na");
-        parameters->addVariable(E_Na);
-        auto g_Na = libcellml::Variable::create("g_Na");
-        parameters->addVariable(g_Na);
-
-        auto t = libcellml::Variable::create("t");
-        controller->addVariable(t);
-        auto V = libcellml::Variable::create("V");
-        controller->addVariable(V);
-    }
-
-    // TODO This is here temporarily to define units and interfaces for the dummy variables.  It shouldn't
-    //      really be needed ...
-    {
-        parameters->variable("h")->setUnits("dimensionless");
-        parameters->variable("m")->setUnits("dimensionless");
-        parameters->variable("E_Na")->setUnits("mV");
-        parameters->variable("g_Na")->setUnits("mS_per_cm2");
-        controller->variable("V")->setUnits("mV");
-        controller->variable("t")->setUnits("ms");
-
-        parameters->variable("h")->setInterfaceType("public");
-        parameters->variable("m")->setInterfaceType("public");
-        parameters->variable("E_Na")->setInterfaceType("public");
-        parameters->variable("g_Na")->setInterfaceType("public");
-        controller->variable("t")->setInterfaceType("public");
-        controller->variable("V")->setInterfaceType("public");
-    }
-
-    //  5.b Add the equivalences between variables throughout the model.  Recall that only variables with
-    //      a sibling or parent/child relationship can be connected.
+    controller->setImportSource(importSource);
+    controller->setImportReference("sodiumChannel_controller");
+    controller->addVariable(libcellml::Variable::create("t"));
+    controller->addVariable(libcellml::Variable::create("V"));
 
     assert(libcellml::Variable::addEquivalence(controller->variable("t"), sodiumChannel->variable("t")));
-    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), mGate->variable("t")));
-    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("t"), hGate->variable("t")));
     assert(libcellml::Variable::addEquivalence(controller->variable("V"), sodiumChannel->variable("V")));
-    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), mGate->variable("V")));
-    assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("V"), hGate->variable("V")));
+    validator->validateModel(model);
+    printErrorsToTerminal(validator);
 
+    // Step 5: Repeat the steps within Step 2 for the parameters component, and include it 
+    // as a child of the model. Note that since this step will access the same file as was used in Step 4 
+    // ("tutorial7_controller.cellml" in the resources folder), you can simply reuse the same ImportSource
+    // item you created there for this component.  
+    //  - Import the component reference "parameters" from that file.
+    //  - You will need to create and link dummy variables named "m", "h", "g_Na", and "E_Na".
+    //  - You will need to set the corresponding sodium channel variables to have an interface type "public".
+
+    std::cout << "----------------------------------------------------" << std::endl;
+    std::cout << " STEP 5: Specify the imported component 'parameters'" << std::endl;
+    std::cout << "----------------------------------------------------" << std::endl;
+
+    auto parameters = libcellml::Component::create("parameters");
+    parameters->setImportSource(importSource);
+    parameters->setImportReference("sodiumChannel_parameters");
+
+    model->addComponent(parameters);
+
+    parameters->addVariable(libcellml::Variable::create("m"));
+    parameters->addVariable(libcellml::Variable::create("h"));
+    parameters->addVariable(libcellml::Variable::create("E_Na"));
+    parameters->addVariable(libcellml::Variable::create("g_Na"));
+
+    sodiumChannel->variable("E_Na")->setInterfaceType("public");
+    sodiumChannel->variable("g_Na")->setInterfaceType("public");
+    
     assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("m"), parameters->variable("m")));
-    assert(libcellml::Variable::addEquivalence(mGate->variable("m"), sodiumChannel->variable("m")));
     assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("h"), parameters->variable("h")));
-    assert(libcellml::Variable::addEquivalence(hGate->variable("h"), sodiumChannel->variable("h")));
-
     assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("E_Na"), parameters->variable("E_Na")));
     assert(libcellml::Variable::addEquivalence(sodiumChannel->variable("g_Na"), parameters->variable("g_Na")));
 
-    //  5.c Validate the model and expect messages related to unspecified interfaces.  Add these to the
-    //      variables according to the recommendations.
     validator->validateModel(model);
     printErrorsToTerminal(validator);
 
-    sodiumChannel->variable("V")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("t")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("g_Na")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("E_Na")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("h")->setInterfaceType("public_and_private");
-    sodiumChannel->variable("m")->setInterfaceType("public_and_private");
+    std::cout << "--------------------------------------------------" << std::endl;
+    std::cout << " STEP 6: Serialise and output the model" << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
 
-    mGate->variable("t")->setInterfaceType("public");
-    mGate->variable("m")->setInterfaceType("public_and_private");
-    mGate->variable("V")->setInterfaceType("public");
-    hGate->variable("t")->setInterfaceType("public");
-    hGate->variable("h")->setInterfaceType("public_and_private");
-    hGate->variable("V")->setInterfaceType("public");
+    // Step 6: Tidy and output the model.
 
-    // 5.e  Even though it won't be used in this tutorial, we need to set the interface types on any variable
+    // 6.a  Even though it won't be used in this tutorial, we need to set the interface types on any variable
     //      in the sodium channel component that will need to be accessible to other components later.  It's
     //      worth thinking about these at the time of writing the component, as it increases its reusability
     //      and usefulness later on.  In this case, we'll only need to set the i_Na sodium current variable
     //      to have a public interface.
+
     sodiumChannel->variable("i_Na")->setInterfaceType("public");
 
-    //  5.f At this stage our model can be written to a CellML file.  As the model
+    //  6.b At this stage our model can be written to a CellML file.  As the model
     //      contains import statements, the serialised and printed model would also maintain those
     //      same dependencies, and would need to exist alongside the tutorial7_controller.cellml
     //      file specified earlier.  In later steps we'll disconnect this dependency to allow for
@@ -524,85 +321,12 @@ int main()
     //
     //      Check that the model is valid, then create a Printer, and use it to serialise the model.
     //      Write the serialised model to a file.
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
 
     auto printer = libcellml::Printer::create();
     std::ofstream outFile("tutorial7_SodiumChannelModel.cellml");
     outFile << printer->printModel(model);
     outFile.close();
 
-    std::cout << "----------------------------------------------------------" << std::endl;
-    std::cout << "   STEP 6: Resolve the imports and flatten the model" << std::endl;
-    std::cout << "----------------------------------------------------------" << std::endl;
+    std::cout << "The model has been written to tutorial7_SodiumChannelModel.cellml" << std::endl;
 
-    //  6.a Now that all the imports are specified, we need to first resolve them with respect to a
-    //      directory location.  This location is either specified with an absolute path, or
-    //      relative to the current working directory.
-    //      Call the Model::resolveImports(directoryPath) function to resolve the imports.  Check that
-    //      it has worked as expected by checking that Model::hasUnresolvedImports() returns false.
-    //      Note that:
-    //          - The argument of the resolveImports() function is the directory path, ending with a slash.
-    //          - For files in the working directory, use a blank string, "".
-    model->resolveImports("");
-    assert(model->hasUnresolvedImports() == false);
-
-    //  6.b Finally it's time to flatten the model so that it can be used to generate runable code.
-    //      This operation will create new local instances of all of the imported items, thereby
-    //      removing the model's dependency on imports. Use the Model::flatten() function to do this.
-    //      Print the model to the terminal and check that it makes sense.
-    model->flatten();
-    printModelToTerminal(model, false);
-
-    //  6.c After flattening a model it's important to note that the model itself has been completely overwritten
-    //      with its "flat" version.  This means that any imported items which you'd previously assigned to pointers
-    //      (such as the components defined as destinations for the imports: the controller and initialising components)
-    //      have become obsolete.
-    //      The easiest thing to do is to refresh their pointers by fetching them from the flattened model.
-    //      You can do this using their "destination" name, eg: controller = model->component("controller"); etc.
-    controller = model->component("controller");
-    parameters = mGate->component("parameters");
-
-    //  6.d Link the units and validate the model a final time.  Expect no errors.
-    model->linkUnits();
-    validator->validateModel(model);
-    printErrorsToTerminal(validator);
-    assert(validator->errorCount() == 0);
-
-    std::cout << "-----------------------------------------------" << std::endl;
-    std::cout << "    STEP 7: Generate and output the model " << std::endl;
-    std::cout << "-----------------------------------------------" << std::endl;
-
-    //  7.a Create a Generator instance and submit the model for processing.
-    //      Expect no errors.
-    auto generator = libcellml::Generator::create();
-    generator->processModel(model);
-    printErrorsToTerminal(generator);
-    assert(generator->errorCount() == 0);
-
-    //  7.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
-    outFile.open("tutorial7_SodiumChannelModel.h");
-    outFile << generator->interfaceCode();
-    outFile.close();
-
-    outFile.open("tutorial7_SodiumChannelModel.c");
-    outFile << generator->implementationCode();
-    outFile.close();
-
-    //  7.c Change the generator profile to Python and reprocess the model.
-    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
-    generator->setProfile(profile);
-    generator->processModel(model);
-
-    //  7.d Retrieve and write the implementation code (*.py) to a file.
-    outFile.open("tutorial7_SodiumChannelModel.py");
-    outFile << generator->implementationCode();
-    outFile.close();
-
-    std::cout << "The model has been output into tutorial7_SodiumChannelModel.[c,h,py,cellml]"
-              << std::endl;
-
-    //  7.e Please seen the tutorial instructions for how to run this simulation using
-    //      the simple solver provided.  Then go and have a cuppa, you're done!
 }

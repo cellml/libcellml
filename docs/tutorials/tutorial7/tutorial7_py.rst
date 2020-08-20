@@ -8,6 +8,8 @@ The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>` page.
 These are the Python instructions.
 For the same tutorial in C++ please see the :ref:`Tutorial 7 in C++<tutorial7_cpp>` page instead.
 
+**TODO** THESE ARE OUT OF DATE!
+
 **Resources:**
 
     - :download:`tutorial7.py` Either the skeleton code, or :download:`tutorial7_complete.py` the completed tutorial code;

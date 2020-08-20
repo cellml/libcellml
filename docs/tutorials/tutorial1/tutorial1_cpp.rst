@@ -70,21 +70,20 @@ You can either copy the :code:`tutorial1.cellml` file to this folder, or use a r
 
     All the files for each tutorial are provided for you in the :code:`resources` folder: though they are designed to build from one to the next, you're able to use the ready-made ones if you want to jump in at any point.
 
-
 .. container:: dothis
 
     **1.b** Now we need to transform the raw CellML import into the linked :code:`Model` using the :code:`Parser`.
 
 .. code-block:: cpp
 
-    // Create a parser instance
+    // Create a Parser instance
     auto parser = libcellml::Parser::create();
 
     // Create a ModelPtr instance and populate it with the string contents
     // from the inFileContents item:
     auto myFirstModel = parser->parseModel(inFileContents.str());
 
-Now we have a *deserialsied* CellML model which we can manipulate using the libCellML library.
+Now we have a *deserialised* CellML model which we can manipulate using the libCellML library.
 
 2: Investigate the contents of the model
 ========================================

@@ -1,5 +1,5 @@
 /**
- *  TUTORIAL 4: Mathematical behaviour and units
+ *  TUTORIAL 5: Mathematical behaviour and units
  *
  *  This tutorial assumes that you can already:
  *      - read and deserialise a CellML model from a file (Tutorial 1)
@@ -39,7 +39,7 @@ int main()
 
     //  2.b   Add the maths to the component.  Note that there is only one maths
     //        string stored, so parts which are appended must create a viable
-    //        MathML2 string when concantenated.  To clear any string which is
+    //        MathML2 string when concatenated.  To clear any string which is
     //        already stored, simply call setMath("") with an empty string.
 
     //  2.c:  Call the validator and print the messages to the terminal.
@@ -59,7 +59,7 @@ int main()
     //      added by their pointer (cf. their name)
 
     //  3.d Call the validator and print the messages to the terminal.
-    //      Expected errors refer to units refered to by these variables, but
+    //      Expected errors refer to units referred to by these variables, but
     //      which don't (yet) exist in the model.
 
     std::cout << "-----------------------------------------------" << std::endl;

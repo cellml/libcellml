@@ -4,9 +4,15 @@
 Tutorial 7 C++: Creating the sodium channel
 ===========================================
 
-The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>`
-page. These are the C++ instructions.  For the same tutorial in Python
-please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
+The outline for this tutorial is shown on the :ref:`Tutorial 7<tutorial7>` page.
+These are the C++ instructions.
+For the same tutorial in Python please see the :ref:`Tutorial 7 in Python<tutorial7_py>` page instead.
+
+
+
+**TODO** THESE ARE OUT OF DATE!!!  See tutorial7_complete.cpp.
+
+
 
 **Resources:**
 
@@ -341,15 +347,13 @@ This is done using a function in the destination component called :code:`setSour
 
     **4.f** Validate your model, and expect that there are no errors.
 
-
 Step 5: Import the initial conditions and parameters
 ====================================================
-
-When you import something, it isn't instantiated in the model properly until the model is flattened.
+When you import something, it isn't instantiated in the model proper until the model is flattened.
 Because it's easier to work with unflattened models later on (if you want to vary their ingredients etc), you will probably find that you need to connect imported components to local ones, or to other imported ones before the model is flattened.
 This creates a problem as the variables in those imported components can't yet be referenced.
-The way around this is to create "dummy" variables in the imported component placeholders you created (as in step 4.c, for example).
-Note that these need to have the same name as the variables in the import, and will be over-written by the "real" ones when the model is flattened.
+The way around this is to create "dummy" variables in the imported component place-holders you created (as in step 4.c, for example).
+Note that these need to have the same names as the variables in the import, and will be over-written by the "real" ones when the model is flattened.
 
 .. container:: dothis
 
@@ -372,7 +376,7 @@ Note that these need to have the same name as the variables in the import, and w
 .. container:: dothis
 
     **5.d** Even though it won't be used in this tutorial, we need to set the interface types on any variable in the sodium channel component that will need to be accessible to other components later.
-    It's worth thinking about these at the time of writing the component, as it increases its reusability and usefulness later on.
+    It's worth thinking about these at the time of writing the component, as it increases its re-usability and usefulness later on.
     In this case, we'll only need to set the :code:`i_Na` sodium current variable to have a public interface.
 
 At this stage our model can be written to a CellML file.
@@ -387,6 +391,13 @@ In later steps we'll disconnect this dependency ("flattening" the model) to allo
 
 Step 6: Resolve the imports and flatten the model
 =================================================
+
+At this point we've completed the first half of this tutorial.
+We've created a model file which specifies import sources, but we haven't yet seen how those import sources actually work: that is the focus of the second section of this tutorial.
+In order to make sure that these ideas - specifying import sources, and resolving imports - are separate in your mind, we've split them into separate programs here too.  
+
+
+
 
 Once the import sources and destinations are specified, we need to also point the model to the directory in which they sit.
 This is done using the :code:`resolveImports()` function of the model, with the argument of the directory path to the imported file(s).
