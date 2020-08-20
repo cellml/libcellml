@@ -20,8 +20,6 @@
 
       .. literalinclude:: ../code/example_addThings.cpp
         :language: c++
-        :start-after:    // #MARKER1
-        :end-before:    // #MARKER2
 
     .. tab:: Python
 
