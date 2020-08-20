@@ -6,6 +6,8 @@
 %import "logger.i"
 %import "types.i"
 
+%include <std_string.i>
+
 %feature("docstring") libcellml::Importer
 "Manages all importing operations between CellML models.";
 
