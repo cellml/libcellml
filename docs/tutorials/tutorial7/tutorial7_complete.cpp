@@ -329,4 +329,9 @@ int main()
 
     std::cout << "The model has been written to tutorial7_SodiumChannelModel.cellml" << std::endl;
 
+    
+
+
+
+
 }
