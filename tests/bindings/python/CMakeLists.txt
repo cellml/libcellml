@@ -17,6 +17,7 @@ set(TEST_SRCS
   test_generator.py
   test_generator_profile.py
   test_import_source.py
+  test_importer.py
   test_issue.py
   test_model.py
   test_parser.py
