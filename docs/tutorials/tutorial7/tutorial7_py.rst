@@ -14,7 +14,7 @@ For the same tutorial in C++ please see the :ref:`Tutorial 7 in C++<tutorial7_cp
 
     - :download:`tutorial7.py` Either the skeleton code, or :download:`tutorial7_complete.py` the completed tutorial code;
     - :download:`../utilities/tutorial_utilities.py`  Utility functions for use in the tutorials; and
-    - :download:`../resources/tutorial7_resources.cellml` An external controller model.
+    - :download:`../resources/tutorial7_controller.cellml` An external controller model.
 
 .. contents:: Contents:
     :local:
@@ -89,360 +89,227 @@ Step 1: Create the sodium channel component
 
     **1.f** Link the model's units, and validate that the model is now free of errors.
 
-Step 2: Create the m-gate component
-===================================
+Step 2: Create the m-gate imported component
+============================================
+All the other components required by this model can be imported.
+Importing is different from our previous method of reusing code, in that it does not create a copy, or simply parse the code, but simply saves instructions for how items (components or units) in another model can be used in the current one.
+This means that many models can make use of a single component, without needing to have different copies. 
+Imports are the best way to reuse items where you don't need to make any changes to the items.  
+If you do need to make changes, it's better to use the :code:`Parser` to instantiate the items instead of importing.
+
+To create the recipe by which items will be imported, we need to specify three pieces of information:
+
+- a destination in the current model for the imported item (this is the placeholder item, created in 2.a below);
+- a source file containing the item to be imported (this is set by the :code:`ImportSource.setUrl` function); and
+- the name of the item within the source model that will be imported (this is set by the :code:`ImportSource.setImportReference` function).
+
+The structure in which this information is stored is:
+
+.. code:: text
+
+    model:
+      ├─ importSource: <╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┐
+      │   └─ url: "../pathToSourceModel/sourceModel.cellml" ╵
+      │                                                     ╵
+      ├─ units: name = "destinationUnits"                   ╵
+      │   ├─ importSource <╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┤
+      │   └─ importReference = "sourceUnits"                ╵
+      │                                                     ╵
+      └─ component: name = "destinationComponent"           ╵
+          ├─ importSource <╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶╶┘
+          └─ importReference = "sourceComponent"
+
+    model: sourceModel.cellml
+      ├─ units: name = "sourceUnits"
+      └─ component: name = "sourceComponent"
+
+The :code:`ImportSource` items are added to parent model by the action of adding them to a component or units item (as shown below).
+An :code:`ImportSource` can be used more than once (ie: added to more than one component or units), provided they share the same source model.
+The :code:`importReference` attribute belongs to the item imported, not to the :code:`ImportSource`.
+More than one item with the same import source and reference is permitted, as long as the destination items are named uniquely.
+An :code:`ImportSource` item can be retrieved either from the item which uses it, or from the model itself.
+The example below is based on the diagram above, and all import sources returned are identical.
+
+.. code:: python
+
+    # From the destination units:
+    import_source1 = units.importSource()
+
+    # From the destination component:
+    import_source2 = component.importSource()
+
+    # From the model:
+    num_import_sources = model.importSourceCount() # returns 1.
+    import_source3 = model.importSource(0)
 
 .. container:: dothis
 
     **2.a** Create a new component for the m-gate and name it appropriately.
-    Add the m-gate component to the sodium channel component.
+    Add the m-gate component as a child of the sodium channel component.
+    The component will be a placeholder for the component in a separate model which we'll import.
 
 .. container:: dothis
 
-    **2.b** Create the MathML required to represent the mathematics governing
-    the m-gate, as in three equations shown below, and add to the component.
-    Remember that you will need to deduce the appropriate units to the constants to
-    ensure consistency throughout.
-    If needed you can access the code under the "Show code" link.
-
-.. math::
-
-    \alpha_m = \frac {-0.1(V+50)}{e^{-0.1(V+50)}-1} \\
-
-    \beta_m = 4 e^{\frac {-(V+75)} {18}} \\
-
-    \dot m = \frac {dm}{dt} = \alpha_m(1-m)-m\beta_m \\
-
-.. container:: toggle
-
-    .. container:: header
-
-        Show code
-
-    .. code-block:: python
-
-        equation1 = \
-            '  <apply><eq/>\n'\
-            '    <ci>alpha_m</ci>\n'\
-            '    <apply><divide/>\n'\
-            '      <apply><times/>\n'\
-            '        <cn cellml:units="per_mV_ms">0.1</cn>\n'\
-            '        <apply><plus/>\n'\
-            '          <ci>V</ci>\n'\
-            '          <cn cellml:units="mV">25</cn>\n'\
-            '        </apply>\n'\
-            '      </apply>\n'\
-            '      <apply><minus/>\n'\
-            '        <apply><exp/>\n'\
-            '          <apply><divide/>\n'\
-            '              <apply><plus/>\n'\
-            '                <ci>V</ci>\n'\
-            '                <cn cellml:units="mV">25</cn>\n'\
-            '              </apply>\n'\
-            '            <cn cellml:units="mV">10</cn>\n'\
-            '          </apply>\n'\
-            '        </apply>\n'\
-            '        <cn cellml:units="dimensionless">1</cn>\n'\
-            '      </apply>\n'\
-            '    </apply>\n'\
-            '  </apply>\n'
-
-        equation2 = \
-            '  <apply><eq/>\n'\
-            '    <ci>beta_m</ci>\n'\
-            '    <apply><times/>\n'\
-            '      <cn cellml:units="per_ms">4</cn>\n'\
-            '      <apply><exp/>\n'\
-            '        <apply><divide/>\n'\
-            '          <ci>V</ci>\n'\
-            '          <cn cellml:units="mV">18</cn>\n'\
-            '        </apply>\n'\
-            '      </apply>\n'\
-            '    </apply>\n'\
-            '  </apply>\n'
-
-        equation3 = \
-            '  <apply><eq/>\n'\
-            '    <apply><diff/>\n'\
-            '      <bvar>\n'\
-            '        <ci>t</ci>\n'\
-            '      </bvar>\n'\
-            '      <ci>m</ci>\n'\
-            '    </apply>\n'\
-            '    <apply><minus/>\n'\
-            '      <apply><times/>\n'\
-            '        <ci>alpha_m</ci>\n'\
-            '        <apply><minus/>\n'\
-            '          <cn cellml:units="dimensionless">1</cn>\n'\
-            '          <ci>m</ci>\n'\
-            '        </apply>\n'\
-            '      </apply>\n'\
-            '      <apply><times/>\n'\
-            '        <ci>m</ci>\n'\
-            '        <ci>beta_m</ci>\n'\
-            '      </apply>\n'\
-            '    </apply>\n'\
-            '  </apply>\n'
+    **2.b** Create an :code:`ImportSource` item and attach it to the component using the :code:`Component.setImportSource` function.
+    This indicates that the component's contents will be imported from another model, and means that the :code:`Model.hasUnresolvedImports` function will now return true.
 
 .. container:: dothis
 
-    **2.c** Call the validator and use it to summarise the variables that are missing.
-    Add these variables to the component.
-
+    **2.c** Set the URL of the :code:`ImportSource` to the location at which the source model can be found.
+    This can be absolute, or relative to the current model's location.
+    For this example, use the file in the resources folder named "tutorial7_mGate.cellml", and set the path from where this model will be stored to that folder.
+  
 .. container:: dothis
 
-    **2.d** Call the validator and use it to list any remaining units which
-    are not yet defined in the model.
-    Add them in as needed.
-
-.. container:: dothis
-
-    **2.e** Link the model's units and validate that the model is now free of errors.
-
-Step 3: Create the h-gate component
-===================================
-
-.. container:: dothis
-
-    **3.a-c** Repeat the procedure above to create the h-gate component and add it to the model.
-    Its governing equations are shown below.
-
-.. math::
-
-    \alpha_h = 0.07 e^{-0.05(V+75)} \\
-
-    \beta_h = \frac {1} {e^{-0.1(V+45)} + 1} \\
-
-    \dot {h} = \frac {dh} {dt} = \alpha_h (1-h) - h\beta_h
-
-where:
-
-- :math:`\alpha_h` rate constant, 1/ms
-- :math:`\beta_h` rate constant, 1/ms
-- :math:`V` voltage, mV
-- :math:`t` time, ms
-- :math:`h` gate status, dimensionless.
-
-.. container:: toggle
-
-    .. container:: header
-
-        Show code
-
-    .. code-block:: python
-
-        equation1 = \
-            '  <apply><eq/>\n'\
-            '    <ci>alpha_h</ci>\n'\
-            '    <apply><times/>\n'\
-            '      <cn cellml:units="per_ms">0.07</cn>\n'\
-            '      <apply><exp/>\n'\
-            '        <apply><divide/>\n'\
-            '          <ci>V</ci>\n'\
-            '          <cn cellml:units="mV">20</cn>\n'\
-            '        </apply>\n'\
-            '      </apply>\n'\
-            '    </apply>\n'\
-            '  </apply>\n'
-
-        equation2 = \
-            '  <apply><eq/>\n'\
-            '    <ci>beta_h</ci>\n'\
-            '    <apply><divide/>\n'\
-            '      <cn cellml:units="per_ms">1</cn>\n'\
-            '      <apply><plus/>\n'\
-            '        <apply><exp/>\n'\
-            '          <apply><divide/>\n'\
-            '            <apply><plus/>\n'\
-            '              <ci>V</ci>\n'\
-            '              <cn cellml:units="mV">30</cn>\n'\
-            '            </apply>\n'\
-            '            <cn cellml:units="mV">10</cn>\n'\
-            '          </apply>\n'\
-            '        </apply>\n'\
-            '        <cn cellml:units="dimensionless">1</cn>\n'\
-            '      </apply>\n'\
-            '    </apply>\n'\
-            '  </apply>\n'
-
-        equation3 = \
-            '  <apply><eq/>\n'\
-            '    <apply><diff/>\n'\
-            '       <bvar>\n'\
-            '         <ci>t</ci>\n'\
-            '       </bvar>\n'\
-            '       <ci>h</ci>\n'\
-            '    </apply>\n'\
-            '    <apply><minus/>\n'\
-            '      <apply><times/>\n'\
-            '        <ci>alpha_h</ci>\n'\
-            '        <apply><minus/>\n'\
-            '          <cn cellml:units="dimensionless">1</cn>\n'\
-            '          <ci>h</ci>\n'\
-            '        </apply>\n'\
-            '      </apply>\n'\
-            '      <apply><times/>\n'\
-            '        <ci>h</ci>\n'\
-            '        <ci>beta_h</ci>\n'\
-            '      </apply>\n'\
-            '    </apply>\n'\
-            '  </apply>\n'
-
-.. container:: dothis
-
-    **3.d** Check that the model is free of errors to this point.
-
-Step 4: Import the controller and parameters components
-=======================================================
-In :ref:`Tutorial 6<tutorial6_py>` we separated the mathematics from the values of the variables, and used the :code:`Parser` to read an external controller model containing the initialisation information.
-In this tutorial, we will introduce the :code:`ImportSource` and importing functionality, which can be used to the same purpose.
-
-When an item - either :code:`Component` or :code:`Units` - is imported from one model into another, three ingredients are needed:
-
-    - An :code:`ImportSource` instance which does the work;
-    - The name of the item to be retrieved from the source model; and
-    - A destination item (:code:`Component` or :code:`Units`) in which to store the imported item.
-
-.. container:: dothis
-
-    **4.a** Create a pointer to an :code:`ImportSource` item.
-
-.. code-block:: python
-
-   importer = ImportSource()
-
-.. container:: dothis
-
-    **4.b** Use the :code:`ImportSource.setUrl()` function to point the importer to the file containing the controller, :code:`tutorial7_controller.cellml`.
-
-.. container:: dothis
-
-    **4.c** Create the destination component into which the imported component will be saved, and name it as usual.
-    This will be the controller component, and should sit at the top level of the model's encapsulation hierarchy, as a child of the model itself.
-
-Now that we've created a source as well as a destination for the imported controller component, we need to link the two of them together.
-This is done using a function in the destination component called :code:`setSourceComponent` which takes two arguments:
-
-- The :code:`ImportSource` item you created in step 4.a; and
-- A string, which is the name of the item to retrieve from that import source.
-
-.. container:: dothis
-
-    **4.d** Set the source component for the destination controller component which you created in 4.c using the :code:`setSourceComponent` function.
-    The name of component to retrieve (the second argument) is "controller".
-
-.. container:: dothis
-
-    **4.e** Repeat the above processes to import the component called "parameters" from the same file.
-    Note that since they're in the same file, you can reuse the ImportSource instance, and simply repeat steps 4.c-d.
-
-.. container:: dothis
-
-    **4.f** Validate your model, and expect that there are no errors.
-
-
-Step 5: Import the initial conditions and parameters
-====================================================
-
-When you import something, it isn't instantiated in the model properly until the model is flattened.
+    **2.d** Set the component's import reference using the :code:`Component.setImportReference` function to be the name of the component in the source model whose contents will be imported into this one.  
+    For this example, use "mGate".
+    
+Specifying imports in this way does not create anything in the model itself, it just saves a set of instructions for how to create those components (or units) later on.
+The process of verifying that the instructions work is called "resolving" the imports, and the process of actually creating the imported items in this model is called "flattening" the model.
 Because it's easier to work with unflattened models later on (if you want to vary their ingredients etc), you will probably find that you need to connect imported components to local ones, or to other imported ones before the model is flattened.
-This creates a problem as the variables in those imported components can't yet be referenced.
-The way around this is to create "dummy" variables in the imported component placeholders you created (as in step 4.c, for example).
-Note that these need to have the same name as the variables in the import, and will be over-written by the "real" ones when the model is flattened.
+This creates a problem as the variables in those imported components can't yet be referenced: they don't exist yet in this model.
+The way around this is to create "dummy" variables in the imported component placeholders you created.
+Note that these need to have the same names as the variables in the import, and will be over-written by the "real" ones when the model is flattened.
+Because they will be over-written, you only need to specify their names and nothing else.
 
 .. container:: dothis
 
-    **5.a** Create the dummy variables as you would normally, and add them to the imported components.
-    These are:
+    **2.e** Create dummy variables representing time "t", voltage "V", and gate status "m" and add to this component.
+    You do not need to specify units or interface types, so can take advantage of the compact form of creation, naming, and addition:
 
-    - parameters: h, m, E_Na, g_Na
-    - controller: t, V
+    .. code:: python
 
-.. container:: dothis
-
-    **5.b** Add the equivalent variable connections throughout the model.
-    Recall from :ref:`Tutorial 6<tutorial6_py>` that you can only create connections between components which have a sibling or parent/child relationship.
+        m_gate.addVariable(Variable.create("t"))
 
 .. container:: dothis
 
-    **5.c** Validate the model, and expect to see errors relating to unspecified interface types.
-    Add the recommended interface types to the variables.
+    **2.f** Add variable equivalences between the dummy variables you just created and their counterparts in the sodium channel component.
+    These will be the variables named :code:`"t"`, :code:`"V"`, and :code:`"m"`.
 
 .. container:: dothis
 
-    **5.d** Even though it won't be used in this tutorial, we need to set the interface types on any variable in the sodium channel component that will need to be accessible to other components later.
-    It's worth thinking about these at the time of writing the component, as it increases its reusability and usefulness later on.
-    In this case, we'll only need to set the :code:`i_Na` sodium current variable to have a public interface.
-
-At this stage our model can be written to a CellML file.
-As the model contains import statements, the serialised and printed model would also maintain those same dependencies, and would need to exist alongside the :code:`tutorial7_controller.cellml` file specified earlier.
-In later steps we'll disconnect this dependency ("flattening" the model) to allow for the code generation step.
+    **2.g** Submit to the validator for checking.  
+    Expect errors related to the interface types on the variables you have just created equivalences for.
 
 .. container:: dothis
 
-    **5.e** Check that the model is valid, then create a :code:`Printer`, and use it to serialise the model.
+    **2.h** Fix the interface types for the sodium channel variables by setting them to "public_and_private".
+    Revalidate and expect there to be no more errors.
+
+
+Steps 3-5: Import further components
+====================================
+
+The next few steps replicate step 2, but for other components.
+
+.. container:: dothis
+
+    **3** Repeat the steps within Step 2 for the "hGate" component, and include it as a child of the sodium channel component.
+    As always, you can use the :code:`Validator` to check each step, and to give you messages about where you may have gone wrong.
+
+    - The source component is defined inside the file called "tutorial7_hGate.cellml" in the resources folder.
+    - It is named "hGate" in that file.
+    - You will need to create and link dummy variables named "h", "V", and "t".
+    - You will need to set the sodium channel variable "h" to have an interface type "public_and_private".
+
+.. container:: dothis
+
+    **4** Repeat the steps within Step 2 for the "controller" component, and include it as a child of the model. 
+
+    - The controller is defined inside the file called "tutorial7_controller.cellml" in the resources folder.
+    - It is named "controller" in that file.
+    - You will need to create and link dummy variables named "V" and "t".
+    - You will need to set the sodium channel variables to have an interface type "public_and_private".
+
+.. container:: dothis
+
+    **5** Repeat the steps within Step 2 for the parameters component, and include it as a child of the model. 
+    Note that since this step will access the same file as was used in Step 4 ("tutorial7_controller.cellml" in the resources folder), you can simply reuse the same :code:`ImportSource` item you created there for this component.  
+    - Import the component reference "parameters" from that file.
+    - You will need to create and link dummy variables named "m", "h", "g_Na", and "E_Na".
+    - You will need to set the corresponding sodium channel variables to have an interface type "public".
+
+Step 6: Clean-up and serialise
+==============================
+
+Once you have all the components imported, it's time to tidy it up and serialise to a CellML file.
+Even though it won't be used in this tutorial, we need to set the interface types on any variable in the sodium channel component that will need to be accessible to other components later.
+It's worth thinking about these at the time of writing the component, as it increases its re-usability and usefulness later on.
+In this case, we'll only need to set the "i_Na" sodium current variable to have a public interface.
+
+.. container:: dothis
+
+    **6.a** Set the sodium current variable in the sodium channel to have a public interface.
+
+ At this stage our model can be written to a CellML file.
+ As the model contains import statements, the serialised and printed model would also maintain those same dependencies, and would need to exist in the same relative position to the source model files which it uses.
+ In later steps we'll disconnect this dependency to allow for the code generation step.
+
+.. container:: dothis
+
+    **6.b** Check that the model is valid, then create a :code:`Printer`, and use it to serialise the model.
     Write the serialised model to a file.
 
-Step 6: Resolve the imports and flatten the model
-=================================================
-Once the import sources and destinations are specified, we need to also point the model to the directory in which they sit.
-This is done using the :code:`resolveImports()` function of the model, with the argument of the directory path to the imported file(s).
+.. container:: dothis
+
+    **6.c** Go and have a cuppa, you're halfway there!
+
+The remainder of this tutorial looks at the processes needed in order to generate a runnable set of C++ or Python files from your model.
+If you don't need your model in those formats, you can stop now.
+If you do, read on ... 
+
+Step 7: Resolving and flattening the model
+==========================================
+
+As alluded to in Step 2, creating "imported" items really just creates a recipe for retrieving those items, but it doesn't actually do the retrieval step.
+That process of opening the source model files and instantiating their contents into the destination items is known as "flattening" the model.
+This is done with the help of an :code:`Importer` class, and has two key steps:
+
+- "resolving" the imports in the current model (this is the process of opening and checking the source files for the required references, including following generations of imports back to their original concrete source item); and
+- "flattening" the model (this is the process of instantiating the imported items in their destination items; they are no longer imports after this).
 
 .. container:: dothis
 
-    **6.a** Use the :code:`resolveImports()` function to specify the (relative to the current working directory, or absolute) path to the directory in which the :code:`tutorial7_controller.cellml` file is found.
-    If this is the same as your working directory, simply enter an empty string, :code:`""`.
-    Once that is done, use the :code:`Model.hasUnresolvedImports()` function to check whether or not the model imports have been found.
-
-Finally it's time to flatten the model so that it can be used to generate runnable code.
-This operation will create new local instances of all of the imported items, thereby removing the model's dependency on imports.
+    **7.a** Create an :code:`Importer` instance.
 
 .. container:: dothis
 
-    **6.b** Call the :code:`flatten()` function on the model, and then print it to the terminal for checking.
-    You should see a structure similar to that shown below.
+    **7.b** Call the :code:`hasUnresolvedImports()` function on your model to check that its imports have not yet been resolved.
+    This should return :code:`True`, indicating that the model has unresolved imports.
 
-.. code-block:: text
+.. container:: dothis
 
-    ─ model
-        ├─ component: controller
-        ├─ component: parameters
-        └─ component: sodium channel
-            ├─ component: h-gate
-            └─ component: m-gate
+    **7.c** The importer needs to know the path to where the import dependencies are located.
+    This should be relative to the current working directory, and should end with a slash.
+    Call the :code:`Importer.resolveImports` function with the model and the pathway to the resources folder from your working directory.
+
+    .. code:: python
+
+        importer.resolveImports(yourModelHere, '/path/to/the/source/models/')
+    
+.. container:: dothis
+
+    **7.d** Check that the imports have been resolved by repeating 7.b and expecting it to return :code:`False`.
+
+.. container:: dothis
+
+    **7.e** Check that there have been no issues reported by the :code:`Importer`.  
+    Note that these are not necessarily errors, and you should check all of the issue levels.
+    The :code:`Importer` class will report different types of issues, including cyclical imports and missing files: these are returned as warnings, so it's important to check all issue types in order to get the full picture.
+    
+.. container:: dothis
+
+    **7.f** Now it's time to flatten the model.
+    This process will leave the original model untouched and return a flattened copy.
+    Create a flattened model by calling the :code:`Importer.flattenModel` function with your model as input.
 
 .. container:: gotcha
 
-    Flattening a model completely over-writes the "import" version with the "flat" version.
-    This means that any imported items which you'd previously assigned to pointers (such as the components defined as destinations for the imports: the controller and parameters components) are now obsolete.
-    **TODO** Check if this is true?? all components or only imported ones??
-    The easiest thing to do is to refresh all pointers by re-fetching them from the flattened model:
-
-    .. code-block:: python
-
-        from libcellml import Component, Model
-
-        myModel = Model()
-        myModel.setName("myModel")
-
-        myComponent = Component()
-        myComponent.setName("myComponent")
-        myModel.addComponent(myComponent)
-
-        #Flattening the model over-writes all references:
-        myModel.flatten()
-
-        # Re-fetching the pointer after flattening:
-        myComponent = myModel.component("myComponent")
+    Note that if you call the :code:`flattenModel` function on a model which still has unresolved imports, it will return :code:`None`. 
 
 .. container:: dothis
 
-    **6.c** Following the example above, re-fetch the component pointers which you created earlier.
-
-.. container:: dothis
-
-    **6.d** Link the units and validate the model a final time.
-    Expect no errors.
+    **7.g** Check that the flattened model is not :code:`None`, and then pass it to the validator and check that there are no errors.
 
 Step 7: Generate and output the model
 =====================================
@@ -450,8 +317,7 @@ As we've done several times before, it's time to generate the runnable model cod
 
 .. container:: dothis
 
-    **7.a** Create a :code:`Generator` instance and submit the model for
-    processing.
+    **7.a** Create a :code:`Generator` instance and submit the model for processing with a :code:`C` profile.
     Check that there are no errors found during this processing.
 
 .. container:: dothis

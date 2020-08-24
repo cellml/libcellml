@@ -89,8 +89,8 @@ Step 1: Create the sodium channel component
 
     **1.f** Link the model's units, and use the validator to check that the model is now free of errors.
 
-Step 2: Create the m-gate component
-===================================
+Step 2: Create the m-gate imported component
+============================================
 
 All the other components required by this model can be imported.
 Importing is different from our previous method of reusing code, in that it does not create a copy, or simply parse the code, but simply saves instructions for how items (components or units) in another model can be used in the current one.
@@ -230,8 +230,8 @@ The next few steps replicate step 2, but for other components.
     - You will need to create and link dummy variables named "m", "h", "g_Na", and "E_Na".
     - You will need to set the corresponding sodium channel variables to have an interface type "public".
 
-Step 6: Clean-up and serlialise
-===============================
+Step 6: Clean-up and serialise
+==============================
 
 Once you have all the components imported, it's time to tidy it up and serialise to a CellML file.
 Even though it won't be used in this tutorial, we need to set the interface types on any variable in the sodium channel component that will need to be accessible to other components later.
@@ -335,7 +335,7 @@ Step 9: Run the simulation
 ==========================
 You can solve the model to simulate the dynamics of the sodium gate using the supplied solver.
 Instructions for running this are given on the :ref:`Simple solver for generated models<solver>` page, as well as in previous tutorials.
-You should see the behaviour shown in the figures below by the red line representing a voltage step to -20mV.
+You should see the behaviour shown in the figures below by the red line representing a voltage step to -20mV (we used a timestep of 1ms from 0 to 40s).
 The theory of this channel's operation is given in :ref:`Theory of the sodium channel<theory_sodiumchannel>`.
 
 .. figure:: ../../theory/images/tut7_Vgraph.png
