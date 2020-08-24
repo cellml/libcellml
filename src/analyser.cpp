@@ -972,7 +972,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                       + "' in component '" + component->name()
                                       + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
                                       + "', but it is not a constant.");
-                issue->setCause(Issue::Cause::VARIABLE);
+                issue->setVariable(variable);
 
                 mAnalyser->addIssue(issue);
             }
@@ -1056,7 +1056,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->setDescription("Variable '" + voiEquivalentVariable->name()
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
-                            issue->setCause(Issue::Cause::VARIABLE);
+                            issue->setVariable(voiEquivalentVariable);
 
                             mAnalyser->addIssue(issue);
 
@@ -1332,7 +1332,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                 issue->setDescription("Variable '" + realVariable->name()
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' " + issueType + ".");
-                issue->setCause(Issue::Cause::VARIABLE);
+                issue->setVariable(realVariable);
 
                 mAnalyser->addIssue(issue);
             }
