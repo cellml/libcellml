@@ -1,22 +1,22 @@
 '''
-   TUTORIAL 7: Creating the Sodium Channel
+TUTORIAL 7: Creating the Sodium Channel
 
   This tutorial is in two parts.  The first demonstrates how to create a model in
   which the use of importing functionality is specified and the second demonstrates
   how to resolve those imports ready for flattening.
 
-   By the time you have finished this tutorial you will be able to:
-       - Specify import functionality for models you create
-       - Use the import functionality to retrieve items from other models and
-       - Use model flattening to resolve imported components ready for code generation.
+By the time you have finished this tutorial you will be able to:
+    - Specify import functionality for models you create
+    - Use the import functionality to retrieve items from other models and
+    - Use model flattening to resolve imported components ready for code generation.
 
-   Tutorial 7 assumes that you are already comfortable with:
-       - The concept of component hierarchy and encapsulation (Tutorial 6)
-       - The use of the API to create all of the entities in a model (Tutorial 3)
-       - The content MathML2 markup for mathematical equations (Tutorial 3)
-       - Serialisation and printing of a model to a CellML file (Tutorial 1) and
-       - Model generation and simulation (Tutorial 3, 4).
- '''
+Tutorial 7 assumes that you are already comfortable with:
+    - The concept of component hierarchy and encapsulation (Tutorial 6)
+    - The use of the API to create all of the entities in a model (Tutorial 3)
+    - The content MathML2 markup for mathematical equations (Tutorial 3)
+    - Serialisation and printing of a model to a CellML file (Tutorial 1) and
+    - Model generation and simulation (Tutorial 3, 4).
+'''
 
 from libcellml import Component, Generator, GeneratorProfile, Importer, ImportSource, Model, Parser, Printer, \
     Units, Validator, Variable
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     sodiumChannel.appendMath(mathFooter)
 
     validator.validateModel(model)
-    printErrorsToTerminal(validator)
+    print_errors_to_terminal(validator)
 
     #  1.d Add the variables required by the validator.
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     print_errors_to_terminal(validator)
 
     print('--------------------------------------------------')
-    print(' STEP 2: Specify the imported component 'mGate'')
+    print(' STEP 2: Specify the imported component \'mGate\'')
     print('--------------------------------------------------')
 
     #  2.a Create a component representing the mGate, name it appropriately, and
@@ -230,7 +230,7 @@ if __name__ == '__main__':
     sodiumChannel.variable('h').setInterfaceType('public_and_private')
 
     validator.validateModel(model)
-    printErrorsToTerminal(validator)
+    print_errors_to_terminal(validator)
 
     # Step 4: Repeat the steps within Step 2 for the controller component, and include it as a child of the
     # model.
@@ -257,7 +257,7 @@ if __name__ == '__main__':
     assert(Variable.addEquivalence(controller.variable('t'), sodiumChannel.variable('t')))
     assert(Variable.addEquivalence(controller.variable('V'), sodiumChannel.variable('V')))
     validator.validateModel(model)
-    printErrorsToTerminal(validator)
+    print_errors_to_terminal(validator)
 
     # Step 5: Repeat the steps within Step 2 for the parameters component, and include it
     # as a child of the model. Note that since this step will access the same file as was used in Step 4
@@ -291,7 +291,7 @@ if __name__ == '__main__':
     assert(Variable.addEquivalence(sodiumChannel.variable('g_Na'), parameters.variable('g_Na')))
 
     validator.validateModel(model)
-    printErrorsToTerminal(validator)
+    print_errors_to_terminal(validator)
 
     print('--------------------------------------------------')
     print(' STEP 6: Serialise and output the model')
@@ -346,7 +346,7 @@ if __name__ == '__main__':
     assert(model.hasUnresolvedImports() is False)
 
     #  7.e Check that there are no issues recorded in the importer.
-    printErrorsToTerminal(importer)
+    print_errors_to_terminal(importer)
 
     #  7.f Now it's time to flatten the model.  This process will leave the original model untouched
     #      and return a flattened copy.  Create a flattened model by calling the Importer::flattenModel
@@ -358,7 +358,7 @@ if __name__ == '__main__':
     #      check that there are no errors.
     assert(flatModel != None)
     validator.validateModel(flatModel)
-    printErrorsToTerminal(validator)
+    print_errors_to_terminal(validator)
 
     print('--------------------------------------------------')
     print(' STEP 7: Generate and output the model')
@@ -368,14 +368,14 @@ if __name__ == '__main__':
     #      Check that there are no errors reported by the generator.
     generator = Generator()
     generator.processModel(flatModel)
-    printErrorsToTerminal(generator)
+    print_errors_to_terminal(generator)
 
     #  8.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
-    write_file.open('tutorial7_SodiumChannelModel.h', 'w')
+    write_file = open('tutorial7_SodiumChannelModel.h', 'w')
     write_file.write(generator.interfaceCode())
     write_file.close()
 
-    write_file.open('tutorial7_SodiumChannelModel.c', 'w')
+    write_file = open('tutorial7_SodiumChannelModel.c', 'w')
     write_file.write(generator.implementationCode())
     write_file.close()
 
@@ -385,7 +385,7 @@ if __name__ == '__main__':
     generator.processModel(flatModel)
 
     #  8.d Retrieve and write the implementation code (*.py) to a file.
-    write_file.open('tutorial7_SodiumChannelModel.py', 'w')
+    write_file =open('tutorial7_SodiumChannelModel.py', 'w')
     write_file.write(generator.implementationCode())
     write_file.close()
 
