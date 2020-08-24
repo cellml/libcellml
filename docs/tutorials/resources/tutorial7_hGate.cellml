@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="hGateModel">
+  <units name="millivolt">
+    <unit prefix="milli" units="volt"/>
+  </units>
+  <units name="millisecond">
+    <unit prefix="milli" units="second"/>
+  </units>
+  <units name="per_millisecond">
+    <unit exponent="-1" prefix="milli" units="second"/>
+  </units>
+  <component name="hGate">
+    <variable name="V" units="millivolt" interface="public"/>
+    <variable name="t" units="millisecond" interface="public"/>
+    <variable name="alpha_h" units="per_millisecond"/>
+    <variable name="beta_h" units="per_millisecond"/>
+    <variable name="h" units="dimensionless" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <ci>alpha_h</ci>
+        <apply>
+          <times/>
+          <cn cellml:units="per_millisecond">0.07</cn>
+          <apply>
+            <exp/>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci>V</ci>
+                  <cn cellml:units="millivolt">75</cn>
+                </apply>
+              </apply>
+              <cn cellml:units="millivolt">20</cn>
+            </apply>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <ci>beta_h</ci>
+        <apply>
+          <divide/>
+          <cn cellml:units="per_millisecond">1</cn>
+          <apply>
+            <plus/>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <ci>V</ci>
+                    <cn cellml:units="millivolt">45</cn>
+                  </apply>
+                </apply>
+                <cn cellml:units="millivolt">10</cn>
+              </apply>
+            </apply>
+            <cn cellml:units="dimensionless">1</cn>
+          </apply>
+        </apply>
+      </apply>
+      <apply>
+        <eq/>
+        <apply>
+          <diff/>
+          <bvar>
+            <ci>t</ci>
+          </bvar>
+          <ci>h</ci>
+        </apply>
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>alpha_h</ci>
+            <apply>
+              <minus/>
+              <cn cellml:units="dimensionless">1</cn>
+              <ci>h</ci>
+            </apply>
+          </apply>
+          <apply>
+            <times/>
+            <ci>beta_h</ci>
+            <ci>h</ci>
+          </apply>
+        </apply>
+      </apply>
+    </math>
+  </component>
+</model>

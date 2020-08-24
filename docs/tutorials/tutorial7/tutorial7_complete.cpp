@@ -161,7 +161,7 @@ int main()
     //  2.c Set the URL of the ImportSource to the location at which the other model
     //      can be found.  This can be absolute, or relative to the current model's location.
     //      For this example, use the file in the resources folder named "tutorial7_mGate.cellml".
-    mGateImportSource->setUrl("../resources/tutorial7_mGate.cellml");
+    mGateImportSource->setUrl("tutorial7_mGate.cellml");
 
     //  2.d Set the component's import reference to be the name of the component in the 
     //      other model whose contents will be imported into this one.  For this example, use "mGate".
@@ -221,7 +221,7 @@ int main()
     sodiumChannel->addComponent(hGate);
 
     auto hGateImportSource = libcellml::ImportSource::create();
-    hGateImportSource->setUrl("../resources/tutorial7_hGate.cellml");
+    hGateImportSource->setUrl("tutorial7_hGate.cellml");
     hGate->setImportSource(hGateImportSource);
     hGate->setImportReference("hGate");
 
@@ -253,10 +253,10 @@ int main()
     model->addComponent(controller);
 
     auto importSource = libcellml::ImportSource::create();
-    importSource->setUrl("../resources/tutorial7_controller.cellml");
+    importSource->setUrl("tutorial7_controller.cellml");
 
     controller->setImportSource(importSource);
-    controller->setImportReference("sodiumChannel_controller");
+    controller->setImportReference("controller");
     controller->addVariable(libcellml::Variable::create("t"));
     controller->addVariable(libcellml::Variable::create("V"));
 
@@ -279,7 +279,7 @@ int main()
 
     auto parameters = libcellml::Component::create("parameters");
     parameters->setImportSource(importSource);
-    parameters->setImportReference("sodiumChannel_parameters");
+    parameters->setImportReference("parameters");
 
     model->addComponent(parameters);
 
@@ -329,9 +329,75 @@ int main()
 
     std::cout << "The model has been written to tutorial7_SodiumChannelModel.cellml" << std::endl;
 
+    std::cout << "--------------------------------------------------" << std::endl;
+    std::cout << " STEP 7: Resolve imports and flatten the model" << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
+
+    // Step 7: Resolve the imports and flatten the model.
+
+    //  7.a Create an Importer item.
+    auto importer = libcellml::Importer::create();
+
+    //  7.b Call the Model::hasUnresolvedImports() function to check that the imports have 
+    //      not yet been resolved.  It should return true.
+    assert(model->hasUnresolvedImports());
+
+    //  7.c The importer needs to know the path to where the import dependencies are located.
+    //      This should be relative to the current working directory, and should end with a slash.
+    //      Call the Importer::resolveImports function with the model and the pathway to the resources
+    //      folder from your working directory.
+    importer->resolveImports(model, "../resources/");
+
+    //  7.d Check that the imports have been resolved by repeating 7.b and expecting it to return false.
+    assert(!model->hasUnresolvedImports());
+
+    //  7.e Check that there are no issues recorded in the importer.
+    printErrorsToTerminal(importer);
     
+    //  7.f Now it's time to flatten the model.  This process will leave the original model untouched
+    //      and return a flattened copy.  Create a flattened model by calling the Importer::flattenModel
+    //      function.  Note that if you call the flattenModel function on a model which still has
+    //      unresolved imports, it will return a null pointer.  
+    auto flatModel = importer->flattenModel(model);
 
+    //  7.g Check that the flattened model is not null, and then pass it to the validator and 
+    //      check that there are no errors.
+    assert(flatModel != nullptr);
+    validator->validateModel(flatModel);
+    printErrorsToTerminal(validator);
 
+    std::cout << "--------------------------------------------------" << std::endl;
+    std::cout << " STEP 7: Generate and output the model" << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
 
+    //  8.a Create a Generator instance and pass it the flattened model for processing.
+    //      Check that there are no errors reported by the generator.
+    auto generator = libcellml::Generator::create();
+    generator->processModel(flatModel);
+    printErrorsToTerminal(generator);
 
+    //  8.b Retrieve and write the interface code (*.h) and implementation code (*.c) to files.
+    outFile.open("tutorial7_SodiumChannelModel.h");
+    outFile << generator->interfaceCode();
+    outFile.close();
+
+    outFile.open("tutorial7_SodiumChannelModel.c");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    //  8.c Change the generator profile to Python and reprocess the model.
+    auto profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
+    generator->setProfile(profile);
+    generator->processModel(flatModel);
+
+    //  8.d Retrieve and write the implementation code (*.py) to a file.
+    outFile.open("tutorial7_SodiumChannelModel.py");
+    outFile << generator->implementationCode();
+    outFile.close();
+
+    std::cout << "The model has been output into tutorial7_SodiumChannelModel.[c,h,py,cellml]"
+              << std::endl;
+
+    //  8.e The files can now be submitted to the simple solver for simulation.  Or,
+    //      go and have a cuppa, you're done.
 }

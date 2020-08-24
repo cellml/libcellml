@@ -10,7 +10,7 @@
     <unit prefix="milli" units="siemens"/>
     <unit prefix="centi" units="metre" exponent="-2"/>
   </units>
-  <component name="sodiumChannel_controller">
+  <component name="controller">
     <variable name="t" units="millisecond" interface="public_and_private"/>
     <variable name="V" units="millivolt" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML"

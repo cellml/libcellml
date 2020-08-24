@@ -197,6 +197,10 @@ Because they will be over-written, you only need to specify their names and noth
     **2.h** Fix the interface types for the sodium channel variables by setting them to "public_and_private".
     Revalidate and expect there to be no more errors.
 
+
+Steps 3-5: Import further components
+====================================
+
 The next few steps replicate step 2, but for other components.
 
 .. container:: dothis
@@ -226,6 +230,9 @@ The next few steps replicate step 2, but for other components.
     - You will need to create and link dummy variables named "m", "h", "g_Na", and "E_Na".
     - You will need to set the corresponding sodium channel variables to have an interface type "public".
 
+Step 6: Clean-up and serlialise
+===============================
+
 Once you have all the components imported, it's time to tidy it up and serialise to a CellML file.
 Even though it won't be used in this tutorial, we need to set the interface types on any variable in the sodium channel component that will need to be accessible to other components later.
 It's worth thinking about these at the time of writing the component, as it increases its reusability and usefulness later on.
@@ -253,8 +260,9 @@ If you don't need your model in those formats, you can stop now.
 If you do, read on ... 
 
 Step 7: Resolving and flattening the model
+==========================================
 
-As was alluded to in Step 2, creating "imported" items really just creates a recipe for retrieving those items, but it doesn't actually do the retrieval step.
+As alluded to in Step 2, creating "imported" items really just creates a recipe for retrieving those items, but it doesn't actually do the retrieval step.
 That process of opening the source model files and instantiating their contents into the destination items is known as "flattening" the model.
 This is done with the help of an :code:`Importer` class, and has two key steps:
 
@@ -265,9 +273,41 @@ This is done with the help of an :code:`Importer` class, and has two key steps:
 
     **7.a** Create an :code:`Importer` instance.
 
+.. container:: dothis
 
+    **7.b** Call the :code:`Model::hasUnresolvedImports()` function to check that the imports have not yet been resolved.
+    It should return :code:`true`, indicating that the model has unresolved imports.
 
+.. container:: dothis
 
+    **7.c** The importer needs to know the path to where the import dependencies are located.
+    This should be relative to the current working directory, and should end with a slash.
+    Call the :code:`Importer::resolveImports` function with the model and the pathway to the resources folder from your working directory.
+
+    .. code:: cpp
+
+        importer->resolveImports(yourModelHere, "/path/to/the/source/models/");
+    
+.. container:: dothis
+
+    **7.d** Check that the imports have been resolved by repeating 7.b and expecting it to return :code:`false`.
+
+.. container:: dothis
+
+    **7.e** Check that there have been no issues reported by the :code:`Importer`.  
+    Note that these are not necessarily errors, and you should check all of the issue levels.
+    The :code:`Importer` class will report different types of issues, including cyclical imports and missing files: these are returned as warnings, so it's important to check all issue types in order to get the full picture.
+    
+.. container:: dothis
+
+    **7.f** Now it's time to flatten the model.
+    This process will leave the original model untouched and return a flattened copy.
+    Create a flattened model by calling the :code:`Importer::flattenModel` function.
+    Note that if you call the :code:`flattenModel` function on a model which still has unresolved imports, it will return a null pointer. 
+
+.. container:: dothis
+
+    **7.g** Check that the flattened model is not null, and then pass it to the validator and check that there are no errors.
 
 Step 8: Generate and output the model
 =====================================
@@ -275,23 +315,23 @@ As we've done several times before, it's time to generate the runnable model cod
 
 .. container:: dothis
 
-    **7.a** Create a :code:`Generator` instance and submit the model for
+    **8.a** Create a :code:`Generator` instance and submit the model for
     processing.
     Check that there are no errors found during this processing.
 
 .. container:: dothis
 
-    **7.b** Retrieve and write the interface :code:`*.h` code and implementation :code:`*.c` code to files.
+    **8.b** Retrieve and write the interface :code:`*.h` code and implementation :code:`*.c` code to files.
 
 .. container:: dothis
 
-    **7.c**  Change the generator profile to Python and reprocess the model
+    **8.c**  Change the generator profile to Python and reprocess the model
 
 .. container:: dothis
 
-    **7.d** Retrieve and write the implementation code :code:`*.py` to a file.
+    **8.d** Retrieve and write the implementation code :code:`*.py` to a file.
 
-Step 8: Run the simulation
+Step 9: Run the simulation
 ==========================
 You can solve the model to simulate the dynamics of the sodium gate using the supplied solver.
 Instructions for running this are given on the :ref:`Simple solver for generated models<solver>` page, as well as in previous tutorials.
