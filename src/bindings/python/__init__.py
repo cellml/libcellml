@@ -9,6 +9,7 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 
 import libcellml
 from libcellml.component import Component
+from libcellml.enums import *
 from libcellml.generator import Generator
 from libcellml.generator import GeneratorVariable
 from libcellml.generatorprofile import GeneratorProfile
@@ -47,6 +48,37 @@ def convert(base, enum, variables, new_base=None):
             converting = True
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
+
+
+# def convert_global(enum, variables, new_base=None):
+#     converting = False
+
+#     class Object:
+#         pass
+
+#     global obj = Object()
+
+#     for var in vars:
+#        setattr(obj, var, getattr(libcellml.enums,'ItemType_'+var))
+#        delattr(libcellml.enums,'ItemType_'+var)
+    
+#     for var in variables:
+#         if enum + '_' + var in globals():
+#             # Swig 3.0.3 and higher
+#             setattr(obj, var, getattr(base, enum + '_' + var))
+#             delattr(base, enum + '_' + var)
+#             converting = True
+
+#         elif var in globals():
+#             # Swig 3.0.0, 3.0.1, 3.0.2
+#             setattr(obj, var, getattr(base, var))
+#             delattr(base, var)
+#             converting = True
+#     if converting:
+#         setattr(base if new_base is None else new_base, enum, obj)
+
+
+# ItemType_COMPONENT = _enums.ItemType_COMPONENT
 
 
 convert(Generator, 'ModelType', [
@@ -203,7 +235,7 @@ convert(Variable, 'InterfaceType', [
     'PUBLIC_AND_PRIVATE',
 ])
 
-convert(libcellml, 'ItemType', [
+convert(libcellml.enums, 'ItemType', [
     'COMPONENT',
     'COMPONENT_REF',
     'CONNECTION',
@@ -221,7 +253,11 @@ convert(libcellml, 'ItemType', [
     'UNITS',
     'VARIABLE',
     'XML',
-])
+], new_base=libcellml)
+
+
+
+
 
 
 del (convert, libcellml)

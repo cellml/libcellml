@@ -44,40 +44,94 @@ Level::ERROR will be returned.";
 :class:`ReferenceRule` for this issue (empty string if not set).";
 
 %feature("docstring") libcellml::Issue::component
-"Returns the :class:`Component` that this issue is relevant to (or ``None``).";
+"Returns the :class:`Component` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setComponent
-"Sets the :class:`Component` that this issue is relevant to (``None`` to unset).";
+"Sets the :class:`Component` relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::componentRef
+"Returns the :class:`Component` whose encapsulation is relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setComponentRef
+"Sets the :class:`Component` whose encapsulation is relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::importSource
-"Returns the :class:`ImportSource` that this issue is relevant to (or ``None``).";
+"Returns the :class:`ImportSource` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setImportSource
-"Sets the :class:`ImportSource` that this issue is relevant to (``None`` to unset).";
+"Sets the :class:`ImportSource` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::model
-"Returns the :class:`Model` that this issue is relevant to (or ``None``).";
+"Returns the :class:`Model` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setModel
-"Sets the :class:`Model` that this issue is relevant to (``None`` to unset).";
+"Sets the :class:`Model` relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::encapsulation
+"Returns the :class:`Model` whose encapsulation is relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setEncapsulation
+"Sets the :class:`Model` whose encapsulation is relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::units
-"Get the :class:`Units` that this issue is relevant to (or ``None``).";
+"Get the :class:`Units` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setUnits
-"Sets the :class`Units` that this issue is relevant to (``None`` to unset).";
+"Sets the :class`Units` relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::unit
+"Get the :class:`UnitItem` relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setUnit
+"Sets the :class`UnitItem` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::variable
-"Get the :class:`Variable` that this issue is relevant to (or ``None``).";
+"Get the :class:`Variable` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setVariable
-"Sets the :class:`Variable` that this issue is relevant to (``None`` to unset).";
+"Sets the :class:`Variable` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::reset
-"Get the :class:`Reset` that this issue is relevant to (or ``None``).";
+"Get the :class:`Reset` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setReset
-"Sets the :class:`Reset` that this issue is relevant to (``None`` to unset).";
+"Sets the :class:`Reset` relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::math
+"Get the :class:`Component` containing the MathML relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setMath
+"Sets the :class:`Component` containing the MathML relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::connection
+"Get the :class:`VariablePair` representing the connection relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setConnection
+"Sets the :class:`VariablePair` representing the connection relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::mapVariables
+"Get the :class:`VariablePair` representing the equivalence relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setMapVariables
+"Sets the :class:`VariablePair` representing the equivalence relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::resetValue
+"Get the :class:`Reset` containing the reset value relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setResetValue
+"Sets the :class:`Reset` containing the reset value relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::testValue
+"Get the :class:`Reset` containing the test value relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setTestValue
+"Sets the :class:`Reset` containing the test value relevant to this issue (``None`` to unset).";
+
+%feature("docstring") libcellml::Issue::item
+"Get the :class:`AnyItem` relevant to this issue (or ``None``).";
+
+%feature("docstring") libcellml::Issue::setItem
+"Sets the :class:`AnyItem` relevant to this issue (``None`` to unset).";
 
 %{
 #include "libcellml/issue.h"

@@ -473,7 +473,6 @@ public:
     void setItem(const AnyItem &item);
     AnyItem item() const;
 
-
 private:
     Issue(); /**< Constructor */
 
