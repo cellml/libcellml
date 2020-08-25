@@ -1057,8 +1057,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                   + "' in component '" + component->name()
                                   + "' of model '" + owningModel(component)->name()
                                   + "' is referenced in an equation, but it is not defined anywhere.");
-            issue->setCause(Issue::Cause::GENERATOR);
-
+            issue->setVariable(variable);
             mGenerator->addIssue(issue);
         }
     } else if (node->isMathmlElement("cn")) {
@@ -1175,7 +1174,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' of model '" + owningModel(trackedVariableComponent)->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
-            issue->setCause(Issue::Cause::GENERATOR);
+            issue->setVariable(variable);
 
             mGenerator->addIssue(issue);
         }
@@ -1196,7 +1195,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                                       + "' of model '" + owningModel(component)->name()
                                       + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
                                       + "', but it is not defined anywhere.");
-                issue->setCause(Issue::Cause::GENERATOR);
+                issue->setVariable(variable);
 
                 mGenerator->addIssue(issue);
             } else {
@@ -1210,7 +1209,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                                           + "' of model '" + owningModel(component)->name()
                                           + "' is initialised using variable '" + generatorVariable->mVariable->initialValue()
                                           + "', but it is not a constant.");
-                    issue->setCause(Issue::Cause::GENERATOR);
+                    issue->setVariable(variable);
 
                     mGenerator->addIssue(issue);
                 }
@@ -1296,7 +1295,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' of model '" + owningModel(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
-                            issue->setCause(Issue::Cause::GENERATOR);
+                            issue->setVariable(voiEquivalentVariable);
 
                             mGenerator->addIssue(issue);
 
@@ -1324,7 +1323,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' of model '" + owningModel(variable)->name()
                                   + "' cannot both be the variable of integration.");
-            issue->setCause(Issue::Cause::GENERATOR);
+            issue->setVariable(variable);
 
             mGenerator->addIssue(issue);
         }
@@ -1345,7 +1344,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' of model '" + owningModel(variable)->name()
                                   + "' must be of the first order.");
-            issue->setCause(Issue::Cause::GENERATOR);
+            issue->setVariable(variable);
 
             mGenerator->addIssue(issue);
         }
@@ -1583,8 +1582,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' of model '" + owningModel(realVariable)->name()
                                       + "' " + issueType + ".");
-                issue->setCause(Issue::Cause::GENERATOR);
-
+                issue->setVariable(realVariable);
                 mGenerator->addIssue(issue);
             }
         }

@@ -236,8 +236,8 @@ void Importer::ImporterImpl::generateCyclicDependenciesIssues(const ModelPtr &mo
     }
     auto issue = Issue::create();
     issue->setDescription(msg);
-    issue->setLevel(libcellml::Issue::Level::WARNING);
-    issue->setCause(libcellml::Issue::Cause::IMPORT);
+    issue->setLevel(Issue::Level::WARNING);
+    issue->setCause(ItemType::IMPORT); // KRM
     mImporter->addIssue(issue);
     std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
 }
