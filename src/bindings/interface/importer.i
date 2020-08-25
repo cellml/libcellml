@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
+
 %import "createconstructor.i"
 %import "logger.i"
 %import "types.i"
