@@ -43,24 +43,29 @@ class IssueTestCase(unittest.TestCase):
         del(e7)
 
     def test_cause_enum(self):
+        import libcellml
         from libcellml import Issue
+        from libcellml import ItemType
 
-        self.assertIsInstance(Issue.Cause.COMPONENT, int)
-        self.assertIsInstance(Issue.Cause.CONNECTION, int)
-        self.assertIsInstance(Issue.Cause.ENCAPSULATION, int)
-        self.assertIsInstance(Issue.Cause.IMPORT, int)
-        self.assertIsInstance(Issue.Cause.MATHML, int)
-        self.assertIsInstance(Issue.Cause.MODEL, int)
-        self.assertIsInstance(Issue.Cause.UNDEFINED, int)
-        self.assertIsInstance(Issue.Cause.UNITS, int)
-        self.assertIsInstance(Issue.Cause.VARIABLE, int)
-        self.assertIsInstance(Issue.Cause.XML, int)
+        self.assertIsInstance(ItemType.COMPONENT, int)
+        self.assertIsInstance(ItemType.COMPONENT_REF, int)
+        self.assertIsInstance(ItemType.CONNECTION, int)
+        self.assertIsInstance(ItemType.ENCAPSULATION, int)
+        self.assertIsInstance(ItemType.IMPORT, int)
+        self.assertIsInstance(ItemType.MAP_VARIABLES, int)
+        self.assertIsInstance(ItemType.MATHML, int)
+        self.assertIsInstance(ItemType.MODEL, int)
+        self.assertIsInstance(ItemType.UNDEFINED, int)
+        self.assertIsInstance(ItemType.UNITS, int)
+        self.assertIsInstance(ItemType.UNIT, int)
+        self.assertIsInstance(ItemType.VARIABLE, int)
+        self.assertIsInstance(ItemType.XML, int)
 
         # Test conversion to enum
         e = Issue()
-        e.setCause(Issue.Cause.COMPONENT)
-        self.assertRaises(RuntimeError, e.setCause, Issue.Cause.COMPONENT - 1)
-        self.assertRaises(RuntimeError, e.setCause, Issue.Cause.XML + 1)
+        e.setCause(ItemType.COMPONENT)
+        self.assertRaises(RuntimeError, e.setCause, ItemType.COMPONENT - 1)
+        self.assertRaises(RuntimeError, e.setCause, ItemType.XML + 1)
 
     def test_reference_rule_enum(self):
         from libcellml import Issue
@@ -182,19 +187,20 @@ class IssueTestCase(unittest.TestCase):
 
     def test_set_cause(self):
         from libcellml import Issue
+        from libcellml import ItemType
 
         # void setCause(Cause cause)
         e = Issue()
-        e.setCause(Issue.Cause.CONNECTION)
+        e.setCause(ItemType.CONNECTION)
 
     def test_cause(self):
         from libcellml import Issue
-
+        from libcellml import ItemType
         # Cause cause()
         e = Issue()
-        self.assertEqual(e.cause(), Issue.Cause.UNDEFINED)
-        e.setCause(Issue.Cause.MATHML)
-        self.assertEqual(e.cause(), Issue.Cause.MATHML)
+        self.assertEqual(e.cause(), ItemType.UNDEFINED)
+        e.setCause(ItemType.MATHML)
+        self.assertEqual(e.cause(), ItemType.MATHML)
 
     def test_set_rule(self):
         from libcellml import Issue

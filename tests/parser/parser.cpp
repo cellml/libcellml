@@ -1384,7 +1384,7 @@ TEST(Parser, invalidImportsAndGetIssue)
     EXPECT_EQ(import, importFromIssue);
 }
 
-TEST(Parser, invalidModelWithAllCausesOfIssues)
+TEST(Parser, invalidModelWithDifferentCausesOfIssues)
 {
     // Check for all causes of issues.
     std::vector<bool> foundCause(9, false);

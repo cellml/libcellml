@@ -25,7 +25,7 @@ limitations under the License.
  * This is the source code documentation for the libCellML C++ library.
  */
 #include "libcellml/component.h"
-#include "libcellml/enums.h"  
+#include "libcellml/enums.h"
 #include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
 #include "libcellml/importer.h"
