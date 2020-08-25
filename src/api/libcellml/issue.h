@@ -142,27 +142,6 @@ public:
      */
     static IssuePtr create(ItemType type, const UnitItem &unit) noexcept;
 
-    // /**
-    //  * @brief The issue Cause enum class.
-    //  *
-    //  * Enum to describe the cause of issue a given issue is.
-    //  */
-    // enum class Cause
-    // {
-    //     COMPONENT,
-    //     CONNECTION,
-    //     ENCAPSULATION,
-    //     GENERATOR,
-    //     IMPORT,
-    //     MATHML,
-    //     MODEL,
-    //     RESET,
-    //     UNDEFINED,
-    //     UNITS,
-    //     VARIABLE,
-    //     XML
-    // };
-
     /**
      * @brief The issue Level enum class.
      *
@@ -474,6 +453,7 @@ public:
      */
     ResetPtr reset() const;
 
+    // KRM needs docstrings.
     void setMath(const ComponentPtr &component);
     ComponentPtr math() const;
     void setConnection(const VariablePair &pair);
