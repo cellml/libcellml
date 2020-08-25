@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <any>
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
@@ -46,6 +47,9 @@ public:
      *
      * or an issue with one of the following types as a parameter::
      *
+     * 
+     * KRM change this:
+     * 
      *   - libcellml::ComponentPtr
      *   - libcellml::ImportSourcePtr
      *   - libcellml::ModelPtr
@@ -71,7 +75,17 @@ public:
     /**
      * @overload
      */
+    static IssuePtr create(ItemType type, const ComponentPtr &component) noexcept;
+
+    /**
+     * @overload
+     */
     static IssuePtr create(const ImportSourcePtr &importSource) noexcept;
+
+    /**
+     * @overload
+     */
+    static IssuePtr create(ItemType type, const ImportSourcePtr &importSource) noexcept;
 
     /**
      * @overload
@@ -81,7 +95,17 @@ public:
     /**
      * @overload
      */
+    static IssuePtr create(ItemType type, const ModelPtr &model) noexcept;
+
+    /**
+     * @overload
+     */
     static IssuePtr create(const ResetPtr &reset) noexcept;
+
+    /**
+     * @overload
+     */
+    static IssuePtr create(ItemType type, const ResetPtr &reset) noexcept;
 
     /**
      * @overload
@@ -91,28 +115,53 @@ public:
     /**
      * @overload
      */
+    static IssuePtr create(ItemType type, const UnitsPtr &units) noexcept;
+
+    /**
+     * @overload
+     */
     static IssuePtr create(const VariablePtr &variable) noexcept;
 
     /**
-     * @brief The issue Cause enum class.
-     *
-     * Enum to describe the cause of issue a given issue is.
+     * @overload
      */
-    enum class Cause
-    {
-        COMPONENT,
-        CONNECTION,
-        ENCAPSULATION,
-        GENERATOR,
-        IMPORT,
-        MATHML,
-        MODEL,
-        RESET,
-        UNDEFINED,
-        UNITS,
-        VARIABLE,
-        XML
-    };
+    static IssuePtr create(ItemType type, const VariablePtr &variable) noexcept;
+
+    /**
+     * @overload
+     */
+    static IssuePtr create(ItemType type, const VariablePair &variablePair) noexcept;
+
+    /**
+     * @overload
+     */
+    static IssuePtr create(const UnitItem &unit) noexcept;
+
+    /**
+     * @overload
+     */
+    static IssuePtr create(ItemType type, const UnitItem &unit) noexcept;
+
+    // /**
+    //  * @brief The issue Cause enum class.
+    //  *
+    //  * Enum to describe the cause of issue a given issue is.
+    //  */
+    // enum class Cause
+    // {
+    //     COMPONENT,
+    //     CONNECTION,
+    //     ENCAPSULATION,
+    //     GENERATOR,
+    //     IMPORT,
+    //     MATHML,
+    //     MODEL,
+    //     RESET,
+    //     UNDEFINED,
+    //     UNITS,
+    //     VARIABLE,
+    //     XML
+    // };
 
     /**
      * @brief The issue Level enum class.
@@ -234,20 +283,21 @@ public:
      *
      * Set the @p cause of this issue from the options available in
      * @c Issue::Cause.
-     *
-     * @param cause The @c Issue::Cause to set.
+     * 
+     * @param cause The @c Issue::Cause to set. KRM update this
      */
-    void setCause(Cause cause);
+    void setCause(ItemType cause);
 
     /**
      * @brief Get the cause of this issue.
      *
      * Get the @c cause of this issue. If no cause has been set for
      * this issue, will return Cause::UNDEFINED.
+     * KRM update this ...
      *
-     * @return The @c Issue::Cause set for this issue.
+     * @return The @c Issue::Cause set for this issue. 
      */
-    Cause cause() const;
+    ItemType cause() const;
 
     /**
      * @brief Set the level of this issue.
@@ -424,6 +474,26 @@ public:
      */
     ResetPtr reset() const;
 
+    void setMath(const ComponentPtr &component);
+    ComponentPtr math() const;
+    void setConnection(const VariablePair &pair);
+    VariablePair connection() const;
+    void setMapVariables(const VariablePair &pair);
+    VariablePair mapVariables() const;
+    void setResetValue(const ResetPtr &reset);
+    ResetPtr resetValue() const;
+    void setTestValue(const ResetPtr &reset);
+    ResetPtr testValue() const;
+    void setUnit(const UnitItem &unit);
+    UnitItem unit() const;
+    void setEncapsulation(const ModelPtr &model);
+    ModelPtr encapsulation() const;
+    void setComponentRef(const ComponentPtr &component);
+    ComponentPtr componentRef() const;
+    void setItem(const AnyItem &item);
+    AnyItem item() const;
+
+
 private:
     Issue(); /**< Constructor */
 
@@ -480,6 +550,15 @@ private:
      * @param variable The variable the issue references.
      */
     explicit Issue(const VariablePtr &variable);
+
+    /**
+     * @brief Constructs an Issue for the unit.
+     *
+     * Convenience constructor for creating an issue for the unit.
+     *
+     * @param unit The unit the issue references.
+     */
+    explicit Issue(const UnitItem &unit);
 
     struct IssueImpl; /**< Forward declaration for pImpl idiom. */
     IssueImpl *mPimpl; /**< Private member to implementation pointer */

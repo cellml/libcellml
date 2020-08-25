@@ -196,7 +196,7 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
 }
 
 void expectEqualIssuesCauses(const std::vector<std::string> &issues,
-                             const std::vector<libcellml::Issue::Cause> &causes,
+                             const std::vector<libcellml::ItemType> &causes,
                              const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());

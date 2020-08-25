@@ -23,7 +23,7 @@ TEST(Issue, createModelIssue)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
 
-    EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
+    EXPECT_EQ(libcellml::ItemType::MODEL, e->cause());
 }
 
 TEST(Issue, createComponentIssue)
@@ -31,7 +31,7 @@ TEST(Issue, createComponentIssue)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
 
-    EXPECT_EQ(libcellml::Issue::Cause::COMPONENT, e->cause());
+    EXPECT_EQ(libcellml::ItemType::COMPONENT, e->cause());
 }
 
 TEST(Issue, createVariableIssue)
@@ -39,7 +39,7 @@ TEST(Issue, createVariableIssue)
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
 
-    EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
+    EXPECT_EQ(libcellml::ItemType::VARIABLE, e->cause());
 }
 
 TEST(Issue, createUnitsIssue)
@@ -47,7 +47,7 @@ TEST(Issue, createUnitsIssue)
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
 
-    EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
+    EXPECT_EQ(libcellml::ItemType::UNITS, e->cause());
 }
 
 TEST(Issue, createImportSourceIssue)
@@ -55,7 +55,7 @@ TEST(Issue, createImportSourceIssue)
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
 
-    EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
+    EXPECT_EQ(libcellml::ItemType::IMPORT, e->cause());
 }
 
 TEST(Issue, createResetIssue)
@@ -63,7 +63,7 @@ TEST(Issue, createResetIssue)
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);
 
-    EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
+    EXPECT_EQ(libcellml::ItemType::RESET, e->cause());
 }
 
 void testReferenceRule(const libcellml::IssuePtr &e)
@@ -510,7 +510,7 @@ TEST(Issue, createModelWarning)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
+    EXPECT_EQ(libcellml::ItemType::MODEL, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -519,7 +519,7 @@ TEST(Issue, createComponemntWarning)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::Issue::Cause::COMPONENT, e->cause());
+    EXPECT_EQ(libcellml::ItemType::COMPONENT, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -528,7 +528,7 @@ TEST(Issue, createVariableWarning)
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
+    EXPECT_EQ(libcellml::ItemType::VARIABLE, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -537,7 +537,7 @@ TEST(Issue, createUnitsWarning)
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
+    EXPECT_EQ(libcellml::ItemType::UNITS, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -546,7 +546,7 @@ TEST(Issue, createImportSourceWarning)
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
+    EXPECT_EQ(libcellml::ItemType::IMPORT, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -555,7 +555,7 @@ TEST(Issue, createResetWarning)
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
+    EXPECT_EQ(libcellml::ItemType::RESET, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 

@@ -85,7 +85,7 @@ void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::s
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
 void TEST_EXPORT expectEqualIssuesCauses(const std::vector<std::string> &issues,
-                                         const std::vector<libcellml::Issue::Cause> &causes,
+                                         const std::vector<libcellml::ItemType> &causes,
                                          const libcellml::LoggerPtr &logger);
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",

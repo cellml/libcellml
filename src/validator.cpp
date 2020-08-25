@@ -792,7 +792,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("LibXml2 error: " + doc->xmlError(i));
-                issue->setCause(Issue::Cause::XML);
+                issue->setCause(ItemType::XML);
                 mValidator->addIssue(issue);
             }
         }
@@ -800,7 +800,6 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         if (node == nullptr) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
-            issue->setCause(Issue::Cause::XML);
             issue->setComponent(component);
             mValidator->addIssue(issue);
             return;
@@ -809,7 +808,6 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             IssuePtr issue = Issue::create();
             issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->setComponent(component);
-            issue->setCause(Issue::Cause::XML);
             mValidator->addIssue(issue);
             return;
         }
@@ -845,8 +843,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("W3C MathML DTD error: " + mathmlDoc->xmlError(i));
-                issue->setComponent(component);
-                issue->setCause(Issue::Cause::MATHML);
+                issue->setMath(component);
+                // issue->setCause(Issue::Cause::MATHML);
                 mValidator->addIssue(issue);
             }
         }
@@ -861,8 +859,8 @@ bool Validator::ValidatorImpl::validateCnUnits(const ComponentPtr &component, co
 
     IssuePtr issue = Issue::create();
     issue->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
-    issue->setComponent(component);
-    issue->setCause(Issue::Cause::MATHML);
+    issue->setMath(component);
+    // issue->setCause(Issue::Cause::MATHML);
     mValidator->addIssue(issue);
 
     return false;
@@ -895,8 +893,8 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
                 cellmlAttributesToRemove.push_back(attribute);
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.");
-                issue->setComponent(component);
-                issue->setCause(Issue::Cause::MATHML);
+                issue->setMath(component);
+                // issue->setCause(Issue::Cause::MATHML);
                 mValidator->addIssue(issue);
             }
         }
@@ -917,8 +915,8 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
             if (!isStandardUnitName(unitsName)) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in the model '" + model->name() + "' or a standard unit.");
-                issue->setComponent(component);
-                issue->setCause(Issue::Cause::MATHML);
+                issue->setMath(component);
+                // issue->setCause(Issue::Cause::MATHML);
                 mValidator->addIssue(issue);
             }
         }
@@ -943,8 +941,8 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
         if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
             IssuePtr issue = Issue::create();
             issue->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
-            issue->setComponent(component);
-            issue->setCause(Issue::Cause::MATHML);
+            issue->setMath(component);
+            // issue->setCause(Issue::Cause::MATHML);
             mValidator->addIssue(issue);
         }
     }
@@ -976,8 +974,8 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
         if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Math has a '" + childNode->name() + "' element that is not a supported MathML element.");
-            issue->setComponent(component);
-            issue->setCause(Issue::Cause::MATHML);
+            issue->setMath(component);
+            // issue->setCause(Issue::Cause::MATHML);
             mValidator->addIssue(issue);
         }
         validateMathMLElements(childNode, component);
@@ -988,8 +986,8 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
         if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Math has a '" + nextNode->name() + "' element that is not a supported MathML element.");
-            issue->setComponent(component);
-            issue->setCause(Issue::Cause::MATHML);
+            issue->setMath(component);
+            // issue->setCause(Issue::Cause::MATHML);
             mValidator->addIssue(issue);
         }
         validateMathMLElements(nextNode, component);
@@ -1046,8 +1044,8 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
 
                     IssuePtr err = Issue::create();
                     err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                    err->setVariable(variable);
-                    err->setCause(Issue::Cause::CONNECTION);
+                    err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                    // err->setCause(Issue::Cause::CONNECTION);
                     mValidator->addIssue(err);
                 }
             }
@@ -1062,7 +1060,7 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
                 err->setDescription("Variable '" + variable->name() + "' in component '" + componentName + "' has an interface type set to '" + interfaceTypeString + "' which is not the correct interface type for this variable. The interface type required is '" + interfaceTypeToString.find(interfaceType)->second + "'.");
             }
             err->setVariable(variable);
-            err->setCause(Issue::Cause::CONNECTION);
+            // err->setCause(Issue::Cause::CONNECTION);
             mValidator->addIssue(err);
         }
     }
@@ -1090,8 +1088,8 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-                err->setModel(model);
-                err->setCause(Issue::Cause::UNITS);
+                err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                // err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1108,8 +1106,8 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->setVariable(equivalentVariable);
-                err->setCause(Issue::Cause::CONNECTION);
+                err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                // err->setCause(Issue::Cause::CONNECTION);
                 mValidator->addIssue(err);
             }
         }
@@ -1328,7 +1326,7 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
                 des += issues[issues.size() - 1] + "'";
                 issue->setDescription("Cyclic units exist: " + des);
                 issue->setModel(model);
-                issue->setCause(Issue::Cause::UNITS);
+                issue->setCause(ItemType::UNITS);
                 mValidator->addIssue(issue);
                 reportedIssueList.push_back(hash);
             }

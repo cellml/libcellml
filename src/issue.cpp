@@ -19,6 +19,7 @@ limitations under the License.
 #include <map>
 #include <string>
 
+#include "libcellml/enums.h"
 #include "libcellml/types.h"
 
 #include "utilities.h"
@@ -33,15 +34,10 @@ namespace libcellml {
 struct Issue::IssueImpl
 {
     std::string mDescription; /**< The string description for why this issue was raised. */
-    Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this issue. */
+    ItemType mCause = ItemType::UNDEFINED; /**< The ItemType enum value for the cause of this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
-    ComponentPtr mComponent; /**< Pointer to the component that the issue occurred in. */
-    ImportSourcePtr mImportSource; /**< Pointer to the import source that the issue occurred in. */
-    ModelPtr mModel; /**< Pointer to the model that the issue occurred in. */
-    UnitsPtr mUnits; /**< Pointer to the units that the issue occurred in. */
-    VariablePtr mVariable; /**< Pointer to the variable that the issue occurred in. */
-    ResetPtr mReset; /**< Pointer to the reset that the issue ocurred in. */
+    AnyItem mItem = std::make_pair(ItemType::UNDEFINED, nullptr); /**< Pointer to the item where the issue occurred. */
 };
 
 Issue::Issue()
@@ -57,43 +53,43 @@ Issue::~Issue()
 Issue::Issue(const ModelPtr &model)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mModel = model;
-    mPimpl->mCause = Issue::Cause::MODEL;
+    mPimpl->mItem = std::make_pair(ItemType::MODEL, model);
 }
 
 Issue::Issue(const ComponentPtr &component)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mComponent = component;
-    mPimpl->mCause = Issue::Cause::COMPONENT;
+    mPimpl->mItem = std::make_pair(ItemType::COMPONENT, component);
 }
 
 Issue::Issue(const ImportSourcePtr &importSource)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mImportSource = importSource;
-    mPimpl->mCause = Issue::Cause::IMPORT;
+    mPimpl->mItem = std::make_pair(ItemType::IMPORT, importSource);
 }
 
 Issue::Issue(const UnitsPtr &units)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mUnits = units;
-    mPimpl->mCause = Issue::Cause::UNITS;
+    mPimpl->mItem = std::make_pair(ItemType::UNITS, units);
 }
 
 Issue::Issue(const VariablePtr &variable)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mVariable = variable;
-    mPimpl->mCause = Issue::Cause::VARIABLE;
+    mPimpl->mItem = std::make_pair(ItemType::VARIABLE, variable);
 }
 
 Issue::Issue(const ResetPtr &reset)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mReset = reset;
-    mPimpl->mCause = Issue::Cause::RESET;
+    mPimpl->mItem = std::make_pair(ItemType::RESET, reset);
+}
+
+Issue::Issue(const UnitItem &unit)
+    : mPimpl(new IssueImpl())
+{
+    mPimpl->mItem = std::make_pair(ItemType::UNIT, unit);
 }
 
 IssuePtr Issue::create() noexcept
@@ -106,29 +102,100 @@ IssuePtr Issue::create(const ComponentPtr &component) noexcept
     return std::shared_ptr<Issue> {new Issue {component}};
 }
 
+IssuePtr Issue::create(ItemType type, const ComponentPtr &component) noexcept
+{
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, component);
+    return issue;
+}
+
 IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 {
+    // Defaults to IMPORT type.
     return std::shared_ptr<Issue> {new Issue {importSource}};
+}
+
+IssuePtr Issue::create(ItemType type, const ImportSourcePtr &importSource) noexcept
+{
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, importSource);
+    return issue;
 }
 
 IssuePtr Issue::create(const ModelPtr &model) noexcept
 {
+    // Defaults to MODEL type.
     return std::shared_ptr<Issue> {new Issue {model}};
+}
+
+IssuePtr Issue::create(ItemType type, const ModelPtr &model) noexcept
+{
+    // Acceptable type values are: ENCAPSULATION, MODEL.
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, model);
+    return issue;
 }
 
 IssuePtr Issue::create(const ResetPtr &reset) noexcept
 {
+    // Defaults to RESET type.
     return std::shared_ptr<Issue> {new Issue {reset}};
+}
+
+IssuePtr Issue::create(ItemType type, const ResetPtr &reset) noexcept
+{
+    // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, reset);
+    return issue;
 }
 
 IssuePtr Issue::create(const UnitsPtr &units) noexcept
 {
+    // Defaults to UNITS type.
     return std::shared_ptr<Issue> {new Issue {units}};
+}
+
+IssuePtr Issue::create(ItemType type, const UnitsPtr &units) noexcept
+{
+    // No difference here, UNITS is not overloaded.
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, units);
+    return issue;
 }
 
 IssuePtr Issue::create(const VariablePtr &variable) noexcept
 {
     return std::shared_ptr<Issue> {new Issue {variable}};
+}
+
+IssuePtr Issue::create(ItemType type, const VariablePtr &variable) noexcept
+{
+    // No difference here, VARIABLE is not overloaded.
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, variable);
+    return issue;
+}
+
+IssuePtr Issue::create(const UnitItem &unit) noexcept
+{
+    return std::shared_ptr<Issue> {new Issue {unit}};
+}
+
+IssuePtr Issue::create(ItemType type, const UnitItem &unit) noexcept
+{
+    // Acceptable type values are: UNIT.
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, unit);
+    return issue;
+}
+
+IssuePtr Issue::create(ItemType type, const VariablePair &variablePair) noexcept
+{
+    // Acceptable type values are: CONNECTION, MAP_VARIABLES.
+    auto issue = std::shared_ptr<Issue> {new Issue {}};
+    issue->mPimpl->mItem = std::make_pair(type, variablePair);
+    return issue;
 }
 
 void Issue::setDescription(const std::string &description)
@@ -141,14 +208,18 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-void Issue::setCause(Issue::Cause cause)
+void Issue::setCause(ItemType cause)
 {
     mPimpl->mCause = cause;
 }
 
-Issue::Cause Issue::cause() const
+ItemType Issue::cause() const
 {
-    return mPimpl->mCause;
+    // Returns the cause, if set independently, or the stored item type if not.
+    if (mPimpl->mCause != ItemType::UNDEFINED) {
+        return mPimpl->mCause;
+    }
+    return mPimpl->mItem.first;
 }
 
 void Issue::setLevel(Issue::Level level)
@@ -173,68 +244,194 @@ Issue::ReferenceRule Issue::referenceRule() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    mPimpl->mComponent = component;
-    mPimpl->mCause = Issue::Cause::COMPONENT;
+    mPimpl->mItem = std::make_pair(ItemType::COMPONENT, component);
 }
 
 ComponentPtr Issue::component() const
 {
-    return mPimpl->mComponent;
+    if (mPimpl->mItem.first != ItemType::COMPONENT) {
+        return nullptr;
+    }
+    return std::any_cast<ComponentPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setComponentRef(const ComponentPtr &component)
+{
+    mPimpl->mItem = std::make_pair(ItemType::COMPONENT_REF, component);
+}
+
+ComponentPtr Issue::componentRef() const
+{
+    if (mPimpl->mItem.first != ItemType::COMPONENT_REF) {
+        return nullptr;
+    }
+    return std::any_cast<ComponentPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setMath(const ComponentPtr &component)
+{
+    mPimpl->mItem = std::make_pair(ItemType::MATHML, component);
+}
+
+ComponentPtr Issue::math() const
+{
+    if (mPimpl->mItem.first != ItemType::MATHML) {
+        return nullptr;
+    }
+    return std::any_cast<ComponentPtr>(mPimpl->mItem.second);
 }
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
-    mPimpl->mImportSource = importSource;
-    mPimpl->mCause = Issue::Cause::IMPORT;
+    mPimpl->mItem = std::make_pair(ItemType::IMPORT, importSource);
 }
 
 ImportSourcePtr Issue::importSource() const
 {
-    return mPimpl->mImportSource;
+    if (mPimpl->mItem.first != ItemType::IMPORT) {
+        return nullptr;
+    }
+    return std::any_cast<ImportSourcePtr>(mPimpl->mItem.second);
 }
 
 void Issue::setModel(const ModelPtr &model)
 {
-    mPimpl->mModel = model;
-    mPimpl->mCause = Issue::Cause::MODEL;
+    mPimpl->mItem = std::make_pair(ItemType::MODEL, model);
 }
 
 ModelPtr Issue::model() const
 {
-    return mPimpl->mModel;
+    if (mPimpl->mItem.first != ItemType::MODEL) {
+        return nullptr;
+    }
+    return std::any_cast<ModelPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setEncapsulation(const ModelPtr &model)
+{
+    mPimpl->mItem = std::make_pair(ItemType::ENCAPSULATION, model);
+}
+
+ModelPtr Issue::encapsulation() const
+{
+    if (mPimpl->mItem.first != ItemType::ENCAPSULATION) {
+        return nullptr;
+    }
+    return std::any_cast<ModelPtr>(mPimpl->mItem.second);
 }
 
 void Issue::setUnits(const UnitsPtr &units)
 {
-    mPimpl->mUnits = units;
-    mPimpl->mCause = Issue::Cause::UNITS;
+    mPimpl->mItem = std::make_pair(ItemType::UNITS, units);
 }
 
 UnitsPtr Issue::units() const
 {
-    return mPimpl->mUnits;
+    if (mPimpl->mItem.first != ItemType::UNITS) {
+        return nullptr;
+    }
+    return std::any_cast<UnitsPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setUnit(const UnitItem &unit)
+{
+    mPimpl->mItem = std::make_pair(ItemType::UNIT, unit);
+}
+
+UnitItem Issue::unit() const
+{
+    if (mPimpl->mItem.first != ItemType::UNIT) {
+        return std::make_pair(nullptr, 0);
+    }
+    return std::any_cast<UnitItem>(mPimpl->mItem.second);
+}
+
+void Issue::setConnection(const VariablePair &pair)
+{
+    mPimpl->mItem = std::make_pair(ItemType::CONNECTION, pair);
+}
+
+VariablePair Issue::connection() const
+{
+    if (mPimpl->mItem.first != ItemType::CONNECTION) {
+        return std::make_pair(nullptr, nullptr);
+    }
+    return std::any_cast<VariablePair>(mPimpl->mItem.second);
+}
+
+void Issue::setMapVariables(const VariablePair &pair)
+{
+    mPimpl->mItem = std::make_pair(ItemType::MAP_VARIABLES, pair);
+}
+
+VariablePair Issue::mapVariables() const
+{
+    if (mPimpl->mItem.first != ItemType::MAP_VARIABLES) {
+        return std::make_pair(nullptr, nullptr);
+    }
+    return std::any_cast<VariablePair>(mPimpl->mItem.second);
 }
 
 void Issue::setVariable(const VariablePtr &variable)
 {
-    mPimpl->mVariable = variable;
-    mPimpl->mCause = Issue::Cause::VARIABLE;
+    mPimpl->mItem = std::make_pair(ItemType::VARIABLE, variable);
 }
 
 VariablePtr Issue::variable() const
 {
-    return mPimpl->mVariable;
+    if (mPimpl->mItem.first != ItemType::VARIABLE) {
+        return nullptr;
+    }
+    return std::any_cast<VariablePtr>(mPimpl->mItem.second);
 }
 
 void Issue::setReset(const ResetPtr &reset)
 {
-    mPimpl->mReset = reset;
-    mPimpl->mCause = Issue::Cause::RESET;
+    mPimpl->mItem = std::make_pair(ItemType::RESET, reset);
 }
 
 ResetPtr Issue::reset() const
 {
-    return mPimpl->mReset;
+    if (mPimpl->mItem.first != ItemType::RESET) {
+        return nullptr;
+    }
+    return std::any_cast<ResetPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setResetValue(const ResetPtr &reset)
+{
+    mPimpl->mItem = std::make_pair(ItemType::RESET_VALUE, reset);
+}
+
+ResetPtr Issue::resetValue() const
+{
+    if (mPimpl->mItem.first != ItemType::RESET_VALUE) {
+        return nullptr;
+    }
+    return std::any_cast<ResetPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setTestValue(const ResetPtr &reset)
+{
+    mPimpl->mItem = std::make_pair(ItemType::TEST_VALUE, reset);
+}
+
+ResetPtr Issue::testValue() const
+{
+    if (mPimpl->mItem.first != ItemType::TEST_VALUE) {
+        return nullptr;
+    }
+    return std::any_cast<ResetPtr>(mPimpl->mItem.second);
+}
+
+void Issue::setItem(const AnyItem &item)
+{
+    mPimpl->mItem = item;
+}
+
+AnyItem Issue::item() const
+{
+    return mPimpl->mItem;
 }
 
 /**

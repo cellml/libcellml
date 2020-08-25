@@ -21,7 +21,7 @@ limitations under the License.
 #include <unordered_set>
 #include <vector>
 
-#include "libcellml/variable.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -34,7 +34,6 @@ using NameList = std::vector<std::string>; /**< Type definition for list of name
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 
 // VariableMap
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
 using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap

@@ -1,5 +1,5 @@
 /*
-Provides support for shared pointers declared in types.h
+Provides support for shared pointers declared in types.h.
 
 Only meant to be included, shouldn't be passed to cmake as a module!
 */
@@ -44,18 +44,6 @@ Only meant to be included, shouldn't be passed to cmake as a module!
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
     if (val < %static_cast($type::C, int) || %static_cast($type::PYTHON, int) < val) {
-      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
-    }
-    $1 = %static_cast(val,$basetype);
-  }
-}
-
-%typemap(in) libcellml::Issue::Cause (int val, int ecode) {
-  ecode = SWIG_AsVal(int)($input, &val);
-  if (!SWIG_IsOK(ecode)) {
-    %argument_fail(ecode, "$type", $symname, $argnum);
-  } else {
-    if (val < %static_cast($type::COMPONENT, int) || %static_cast($type::XML, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val,$basetype);

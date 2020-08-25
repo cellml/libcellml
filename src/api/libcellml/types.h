@@ -16,7 +16,10 @@ limitations under the License.
 
 #pragma once
 
+#include <any>
 #include <memory>
+
+#include "libcellml/enums.h"
 
 namespace libcellml {
 
@@ -61,5 +64,9 @@ class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
+
+using AnyItem = std::pair<ItemType, std::any>; /**< Type definition for the AnyItem pair. */
+using UnitItem = std::pair<UnitsPtr, size_t>; /**< Type definition for the UnitItem pair. */
+using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
 
 } // namespace libcellml
