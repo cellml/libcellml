@@ -25,7 +25,7 @@ namespace libcellml {
  * 
  */
 // KRM not sure how to get this working with SWIG.
-enum class LIBCELLML_EXPORT ItemType
+enum class ItemType
 {
     COMPONENT,
     COMPONENT_REF,
