@@ -111,6 +111,7 @@ Level::ERROR will be returned.";
     }
 }
 
+%include "libcellml/enums.h"
 %include "libcellml/exportdefinitions.h"
 %include "libcellml/types.h"
 %include "libcellml/issue.h"
