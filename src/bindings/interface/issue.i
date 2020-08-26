@@ -5,6 +5,7 @@
 %include <std_string.i>
 
 %import "createconstructor.i"
+%import "enums.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Issue
