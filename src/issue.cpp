@@ -221,7 +221,7 @@ ItemType Issue::cause() const
     if (mPimpl->mCause != ItemType::UNDEFINED) {
         return mPimpl->mCause;
     }
-    return mPimpl->mItem.first;
+    return mPimpl->mItemType;
 }
 
 ItemType Issue::itemType() const
