@@ -18,6 +18,7 @@ limitations under the License->
 
 #include <libcellml>
 
+#if 0
 TEST(Issue, createModelIssue)
 {
     libcellml::ModelPtr m = libcellml::Model::create();
@@ -514,7 +515,7 @@ TEST(Issue, createModelWarning)
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
-TEST(Issue, createComponemntWarning)
+TEST(Issue, createComponentWarning)
 {
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
@@ -538,6 +539,16 @@ TEST(Issue, createUnitsWarning)
     libcellml::IssuePtr e = libcellml::Issue::create(u);
     e->setLevel(libcellml::Issue::Level::WARNING);
     EXPECT_EQ(libcellml::ItemType::UNITS, e->cause());
+    EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
+}
+
+TEST(Issue, createUnitWarning)
+{
+    libcellml::UnitsPtr u = libcellml::Units::create();
+    u->addUnit("second");
+    libcellml::IssuePtr e = libcellml::Issue::create(std::make_pair(u, 0));
+    e->setLevel(libcellml::Issue::Level::WARNING);
+    EXPECT_EQ(libcellml::ItemType::UNIT, e->cause());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -604,3 +615,154 @@ TEST(Issue, undefinedIssueUrl)
     EXPECT_EQ(e, issue->url());
     EXPECT_EQ(e, issue->referenceHeading());
 }
+
+#endif
+
+TEST(Issue, setGetByObjectOrItem)
+{
+    auto component = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create();
+
+    // Adding directly as a component.
+    issue->setComponent(component);
+    // Retrieving as a component: involves storing internally as std::any and casting before return.
+    EXPECT_EQ(component, issue->component());
+
+    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->itemType());
+    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->cause());
+
+    // Retrieving as a std::any.
+    auto outItem = issue->item();
+
+    // Checking output type.
+    std::cout << outItem.type().name() << std::endl;
+    std::cout << typeid(component).name() << std::endl;
+
+    // EXACTLY the same casting as done internally fails here!
+    // std::any_cast<ComponentPtr>(mPimpl->mAnyItem);
+    auto b = std::any_cast<libcellml::ComponentPtr>(outItem);
+    EXPECT_EQ(component, b);
+}
+
+// TEST(Issue, setGetItems)
+// {
+//     auto model = libcellml::Model::create("model");
+//     auto component = libcellml::Component::create("component");
+//     auto variable1 = libcellml::Variable::create("variable1");
+//     auto variable2 = libcellml::Variable::create("variable2");
+//     auto import = libcellml::ImportSource::create();
+//     auto reset = libcellml::Reset::create();
+//     auto units = libcellml::Units::create();
+//     units->addUnit("second");
+//     auto issue = libcellml::Issue::create();
+
+//     libcellml::AnyItem item = std::make_pair(libcellml::ItemType::COMPONENT, component);
+
+//     issue->setComponent(component);
+//     EXPECT_EQ(component, issue->component());
+//     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->item().first);
+//     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item().second));
+//     std::cout << "1" << std::endl;
+
+//     issue->setComponentRef(component);
+//     EXPECT_EQ(component, issue->componentRef());
+//     EXPECT_EQ(libcellml::ItemType::COMPONENT_REF, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::COMPONENT_REF, issue->item().first);
+//     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item().second));
+//     std::cout << "2" << std::endl;
+
+//     issue->setConnection(std::make_pair(variable1, variable2));
+//     EXPECT_EQ(variable1, issue->connection().first);
+//     EXPECT_EQ(variable2, issue->connection().second);
+//     EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->item().first);
+//     EXPECT_EQ(variable1, std::any_cast<libcellml::VariablePair>(issue->item().second).first);
+//     EXPECT_EQ(variable2, std::any_cast<libcellml::VariablePair>(issue->item().second).second);
+//     std::cout << "3" << std::endl;
+
+//     issue->setEncapsulation(model);
+//     EXPECT_EQ(model, issue->encapsulation());
+//     EXPECT_EQ(libcellml::ItemType::ENCAPSULATION, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::ENCAPSULATION, issue->item().first);
+//     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(issue->item().second));
+//     std::cout << "4" << std::endl;
+
+//     issue->setImportSource(import);
+//     EXPECT_EQ(import, issue->importSource());
+//     EXPECT_EQ(libcellml::ItemType::IMPORT, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::IMPORT, issue->item().first);
+//     EXPECT_EQ(import, std::any_cast<libcellml::ImportSourcePtr>(issue->item().second));
+//     std::cout << "5" << std::endl;
+
+//     issue->setMapVariables(std::make_pair(variable1, variable2));
+//     EXPECT_EQ(variable1, issue->mapVariables().first);
+//     EXPECT_EQ(variable2, issue->mapVariables().second);
+//     EXPECT_EQ(libcellml::ItemType::MAP_VARIABLES, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::MAP_VARIABLES, issue->item().first);
+//     EXPECT_EQ(variable1, std::any_cast<libcellml::VariablePair>(issue->item().second).first);
+//     EXPECT_EQ(variable2, std::any_cast<libcellml::VariablePair>(issue->item().second).second);
+//     std::cout << "6" << std::endl;
+
+//     issue->setMath(component);
+//     EXPECT_EQ(component, issue->math());
+//     EXPECT_EQ(libcellml::ItemType::MATHML, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::MATHML, issue->item().first);
+//     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item().second));
+//     std::cout << "7" << std::endl;
+
+//     issue->setModel(model);
+//     EXPECT_EQ(model, issue->model());
+//     EXPECT_EQ(libcellml::ItemType::MODEL, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::MODEL, issue->item().first);
+//     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(issue->item().second));
+
+//     issue->setReset(reset);
+//     EXPECT_EQ(reset, issue->reset());
+//     EXPECT_EQ(libcellml::ItemType::RESET, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::RESET, issue->item().first);
+//     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item().second));
+
+//     issue->setResetValue(reset);
+//     EXPECT_EQ(reset, issue->resetValue());
+//     EXPECT_EQ(libcellml::ItemType::RESET_VALUE, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::RESET_VALUE, issue->item().first);
+//     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item().second));
+
+//     issue->setTestValue(reset);
+//     EXPECT_EQ(reset, issue->testValue());
+//     EXPECT_EQ(libcellml::ItemType::TEST_VALUE, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::TEST_VALUE, issue->item().first);
+//     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item().second));
+
+//     issue->setUnit(std::make_pair(units, 0));
+//     EXPECT_EQ(units, issue->unit().first);
+//     EXPECT_EQ(size_t(0), issue->unit().second);
+//     EXPECT_EQ(libcellml::ItemType::UNIT, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::UNIT, issue->item().first);
+//     EXPECT_EQ(units, std::any_cast<libcellml::UnitItem>(issue->item().second).first);
+//     EXPECT_EQ(size_t(0), std::any_cast<libcellml::UnitItem>(issue->item().second).second);
+
+//     issue->setUnits(units);
+//     EXPECT_EQ(units, issue->units());
+//     EXPECT_EQ(libcellml::ItemType::UNITS, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::UNITS, issue->item().first);
+//     EXPECT_EQ(units, std::any_cast<libcellml::UnitsPtr>(issue->item().second));
+
+//     issue->setVariable(variable1);
+//     EXPECT_EQ(variable1, issue->variable());
+//     EXPECT_EQ(libcellml::ItemType::VARIABLE, issue->cause());
+//     EXPECT_EQ(libcellml::ItemType::VARIABLE, issue->item().first);
+//     EXPECT_EQ(variable1, std::any_cast<libcellml::VariablePtr>(issue->item().second));
+
+//     issue->setItem(item);
+//     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->item().first);
+//     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item().second));
+//     EXPECT_EQ(component, issue->component());
+//     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->cause());
+// }
+
+// // TEST(Issue, getItemMismatchedCauseType)
+// // {
+
+// // }

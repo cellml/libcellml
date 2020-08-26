@@ -454,6 +454,7 @@ public:
     ResetPtr reset() const;
 
     // KRM needs docstrings.
+    ItemType itemType() const;
     void setMath(const ComponentPtr &component);
     ComponentPtr math() const;
     void setConnection(const VariablePair &pair);
@@ -470,8 +471,8 @@ public:
     ModelPtr encapsulation() const;
     void setComponentRef(const ComponentPtr &component);
     ComponentPtr componentRef() const;
-    void setItem(const AnyItem &item);
-    AnyItem item() const;
+    void setItem(ItemType type, const std::any &item);
+    std::any item() const;
 
 private:
     Issue(); /**< Constructor */
