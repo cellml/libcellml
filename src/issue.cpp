@@ -37,7 +37,9 @@ struct Issue::IssueImpl
     ItemType mCause = ItemType::UNDEFINED; /**< The ItemType enum value for the cause of this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
-    AnyItem mItem = std::make_pair(ItemType::UNDEFINED, nullptr); /**< Pointer to the item where the issue occurred. */
+    AnyItem mItem = std::make_pair(ItemType::UNDEFINED, nullptr); /**< Item where the issue occurred. */
+    std::any mAnyItem;
+    ItemType mItemType = ItemType::UNDEFINED;
 };
 
 Issue::Issue()
@@ -222,6 +224,11 @@ ItemType Issue::cause() const
     return mPimpl->mItem.first;
 }
 
+ItemType Issue::itemType() const
+{
+    return mPimpl->mItemType;
+}
+
 void Issue::setLevel(Issue::Level level)
 {
     mPimpl->mLevel = level;
@@ -244,15 +251,30 @@ Issue::ReferenceRule Issue::referenceRule() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    mPimpl->mItem = std::make_pair(ItemType::COMPONENT, component);
+    // mPimpl->mItems.at(0).second.reset();
+    // mPimpl->mItems.clear();
+    // mPimpl->mItems.push_back(std::make_pair(ItemType::COMPONENT, std::make_any<ComponentPtr>(component)));
+
+    // mPimpl->mAnyItem = std::make_shared<std::any>(std::make_any<ComponentPtr>(component));
+    mPimpl->mAnyItem = component;
+    mPimpl->mItemType = ItemType::COMPONENT;
 }
 
 ComponentPtr Issue::component() const
 {
-    if (mPimpl->mItem.first != ItemType::COMPONENT) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem.second);
+    // if (mPimpl->mItem.first != ItemType::COMPONENT) {
+    //     return nullptr;
+    // }
+    // try {
+    //     auto item = std::any_cast<ComponentPtr>(mPimpl->mItem.second);
+    //     return item;
+    // }
+    // catch (std::bad_any_cast &e) {
+    //     (void)e;
+    //     return nullptr;
+    // }
+    return std::any_cast<ComponentPtr>(mPimpl->mAnyItem);
+    // return std::any_cast<Component>(mPimpl->mItems.at(0).second);
 }
 
 void Issue::setComponentRef(const ComponentPtr &component)
@@ -424,14 +446,15 @@ ResetPtr Issue::testValue() const
     return std::any_cast<ResetPtr>(mPimpl->mItem.second);
 }
 
-void Issue::setItem(const AnyItem &item)
+void Issue::setItem(ItemType type, const std::any &item)
 {
-    mPimpl->mItem = item;
+    mPimpl->mItemType = type;
+    mPimpl->mAnyItem = item;
 }
 
-AnyItem Issue::item() const
+std::any Issue::item() const
 {
-    return mPimpl->mItem;
+    return mPimpl->mAnyItem;
 }
 
 /**
