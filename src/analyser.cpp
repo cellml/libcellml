@@ -327,8 +327,8 @@ struct Analyser::AnalyserImpl
 
     explicit AnalyserImpl(Analyser *analyser);
 
-    static bool compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
-                                       const AnalyserInternalVariablePtr &variable2);
+    static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
+                                                   const AnalyserInternalVariablePtr &variable2);
 
     static bool isStateVariable(const AnalyserInternalVariablePtr &variable);
     static bool isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable);
@@ -379,8 +379,8 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
 {
 }
 
-bool Analyser::AnalyserImpl::compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
-                                                    const AnalyserInternalVariablePtr &variable2)
+bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
+                                                                const AnalyserInternalVariablePtr &variable2)
 {
     auto realComponent1 = owningComponent(variable1->mVariable);
     auto realComponent2 = owningComponent(variable2->mVariable);
@@ -1270,7 +1270,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // be determined using a given equation.
 
         std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-                  compareVariablesByName);
+                  compareVariablesByComponentAndName);
 
         auto variableIndex = MAX_SIZE_T;
 
