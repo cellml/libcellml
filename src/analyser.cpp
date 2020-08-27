@@ -251,7 +251,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
-    // If there is one (ODE) variable left then update its viariable (to be the
+    // If there is one (ODE) variable left then update its variable (to be the
     // corresponding one in the component in which the equation is), its type
     // (if it is currently unknown), determine its index and determine the type
     // of our equation and set its order, if the (ODE) variable is a state,
