@@ -253,12 +253,14 @@ TEST(Analyser, nonInitialisedState)
     const std::vector<libcellml::Issue::Level> expectedLevels = {
         libcellml::Issue::Level::ERROR,
     };
+    const std::string expectedVariableName = "x";
 
     auto analyser = libcellml::Analyser::create();
 
     analyser->analyseModel(model);
 
     EXPECT_EQ_ISSUES_CAUSES_LEVELS(expectedIssues, expectedCauses, expectedLevels, analyser);
+    EXPECT_EQ(expectedVariableName, analyser->issue(0)->variable()->name());
 
     EXPECT_EQ(libcellml::AnalyserModel::Type::UNDERCONSTRAINED, analyser->model()->type());
 }
