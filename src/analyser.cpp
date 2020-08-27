@@ -34,12 +34,17 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
-#ifdef __linux__
+#ifdef TRUE
 #    undef TRUE
+#endif
+
+#ifdef FALSE
 #    undef FALSE
 #endif
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 
@@ -115,11 +120,7 @@ void AnalyserInternalVariable::makeState()
     }
 }
 
-#ifdef SWIG
-struct AnalyserEquation
-#else
-struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInternalEquation>
-#endif
+struct AnalyserInternalEquation
 {
     enum struct Type
     {
@@ -158,7 +159,7 @@ struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInt
     static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
-    bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
+    bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
 };
 
 AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
@@ -263,7 +264,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
-    // If there is one (ODE) variable left then update its viariable (to be the
+    // If there is one (ODE) variable left then update its variable (to be the
     // corresponding one in the component in which the equation is), its type
     // (if it is currently unknown), determine its index and determine the type
     // of our equation and set its order, if the (ODE) variable is a state,
@@ -335,8 +336,8 @@ struct Analyser::AnalyserImpl
 
     explicit AnalyserImpl(Analyser *analyser);
 
-    static bool compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
-                                       const AnalyserInternalVariablePtr &variable2);
+    static bool compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
+                                                   const AnalyserInternalVariablePtr &variable2);
 
     static bool isStateVariable(const AnalyserInternalVariablePtr &variable);
     static bool isConstantOrAlgebraicVariable(const AnalyserInternalVariablePtr &variable);
@@ -392,8 +393,8 @@ Analyser::AnalyserImpl::AnalyserImpl(Analyser *analyser)
 {
 }
 
-bool Analyser::AnalyserImpl::compareVariablesByName(const AnalyserInternalVariablePtr &variable1,
-                                                    const AnalyserInternalVariablePtr &variable2)
+bool Analyser::AnalyserImpl::compareVariablesByComponentAndName(const AnalyserInternalVariablePtr &variable1,
+                                                                const AnalyserInternalVariablePtr &variable2)
 {
     auto realComponent1 = owningComponent(variable1->mVariable);
     auto realComponent2 = owningComponent(variable2->mVariable);
@@ -1289,7 +1290,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
         // be determined using a given equation.
 
         std::sort(mInternalVariables.begin(), mInternalVariables.end(),
-                  compareVariablesByName);
+                  compareVariablesByComponentAndName);
 
         auto variableIndex = MAX_SIZE_T;
 

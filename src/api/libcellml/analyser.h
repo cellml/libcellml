@@ -224,6 +224,8 @@ public:
     /**
      * @brief Get the analysed model.
      *
+     * Get the analysed model that is the result of the model analysis.
+     *
      * @return The analysed model for the @c Model analysed by this @c Analyser.
      */
     AnalyserModelPtr model() const;

@@ -32,6 +32,17 @@ class LIBCELLML_EXPORT AnalyserVariable
     friend class Analyser;
 
 public:
+    /**
+     * @brief The type of a variable.
+     *
+     * A variable can be of one of the following types:
+     *  - VARIABLE_OF_INTEGRATION: the variable is the variable of integration;
+     *  - STATE: the variable is a state;
+     *  - CONSTANT: the variable is a constant;
+     *  - COMPUTED_CONSTANT: the variable is a computed constant (e.g. x = y+z
+     *    where y and z are constants); or
+     *  - ALGEBRAIC: the variable is an algebraic variable.
+     */
     enum class Type
     {
         VARIABLE_OF_INTEGRATION,

@@ -31,6 +31,17 @@ class LIBCELLML_EXPORT AnalyserEquation
     friend class Analyser;
 
 public:
+    /**
+     * @brief The type of an equation.
+     *
+     * An equation can be of one of the following types:
+     *  - TRUE_CONSTANT: an equation that computes a true constant, e.g. x = 3;
+     *  - VARIABLE_BASED_CONSTANT: an equation that computes a variable-based
+     *    constant, e.g. x = y+z where y and z are true constants;
+     *  - RATE: an equation that computes a rate, e.g. d(y)/dt = f(t, x); or
+     *  - ALGEBRAIC: an equation that computes an algebraic variable, e.g.
+     *    y = f(x).
+     */
     enum class Type
     {
         TRUE_CONSTANT,

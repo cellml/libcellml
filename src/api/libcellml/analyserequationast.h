@@ -19,7 +19,9 @@ limitations under the License.
 #include "libcellml/analyser.h"
 #include "libcellml/generator.h"
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 
@@ -34,6 +36,86 @@ class LIBCELLML_EXPORT AnalyserEquationAst
     friend class Analyser;
 
 public:
+    /**
+     * @brief The type of a node in an abstract syntax tree (AST).
+     *
+     * A node in an abstract syntax tree (AST) can be of one of the following
+     * types:
+     *  - Assignment type:
+     *     - ASSIGNMENT: the assignment operator
+     *  - Relational and logical operators:
+     *    - EQ: the equal to function;
+     *    - NEQ: the not equal to function;
+     *    - LT: the less than function;
+     *    - LEQ: the less than or equal to function;
+     *    - GT: the greater than function;
+     *    - GEQ: the greater than or equal to function;
+     *    - AND: the and function;
+     *    - OR: the or function
+     *    - XOR: the exclusive or function;
+     *    - NOT: the not function;
+     *  - Arithmetic operators:
+     *    - PLUS: the plus operator;
+     *    - MINUS: the minus operator;
+     *    - TIMES: the times operator;
+     *    - DIVIDE: the divide operator;
+     *    - POWER: the power operator;
+     *    - ROOT: the root operator;
+     *    - ABS: the absolute value function;
+     *    - EXP: the exponential function;
+     *    - LN: the Napierian logarithm function;
+     *    - LOG: the common logarithm function;
+     *    - CEILING: the ceiling function;
+     *    - FLOOR: the floor function;
+     *    - MIN: the minimum function;
+     *    - MAX: the maximum function;
+     *    - REM: the remainder function;
+     *  - Calculus elements:
+     *    - DIFF: the differentiation operator;
+     *  - Trigonometric operators:
+     *    - SIN: the sinus function;
+     *    - COS: the cosinus function;
+     *    - TAN: the tangent function;
+     *    - SEC: the secant function;
+     *    - CSC: the cosecant function;
+     *    - COT: the cotangent function;
+     *    - SINH: the hyperbolic sinus function;
+     *    - COSH: the hyperbolic cosinus function;
+     *    - TANH: the hyperbolic tangent function;
+     *    - SECH: the hyperbolic secant function;
+     *    - CSCH: the hyperbolic cosecant function;
+     *    - COTH: the hyperbolic cotangent function;
+     *    - ASIN: the arc sinus function;
+     *    - ACOS: the arc cosinus function;
+     *    - ATAN: the arc tangent function;
+     *    - ASEC: the arc secant function;
+     *    - ACSC: the arc cosecant function;
+     *    - ACOT: the arc cotangent function;
+     *    - ASINH: the arc hyperbolic sinus function;
+     *    - ACOSH: the arc hyperbolic cosinus function;
+     *    - ATANH: the arc hyperbolic tangent function;
+     *    - ASECH: the arc hyperbolic secant function;
+     *    - ACSCH: the arc hyperbolic cosecant function;
+     *    - ACOTH: the arc hyperbolic cotangent function;
+     *  - Piecewise statement:
+     *    - PIECEWISE: the "piecewise" statement;
+     *    - PIECE: the "piece" part of a "piecewise" statement;
+     *    - OTHERWISE: the "otherwise" part of a "piecewise" statement;
+     *  - Token elements:
+     *    - CI: an identifier (i.e. the name of a model variable);
+     *    - CN: a number;
+     *  - Qualifier elements:
+     *    - DEGREE: the degree (or oder) of a differential equation;
+     *    - LOGBASE: the base with respect to which the logarithm is taken;
+     *    - BVAR: the bound variable of a differential equation;
+     *  - Constants:
+     *    - TRUE: the "true" boolean;
+     *    - FALSE: the "false" boolean;
+     *    - E: Euler's number;
+     *    - PI: the πconstant;
+     *    - INF: the infinity value; or
+     *    - NAN: the not-a-number value.
+     */
     enum class Type
     {
         // Assignment.
