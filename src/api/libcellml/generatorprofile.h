@@ -31,6 +31,13 @@ namespace libcellml {
 class LIBCELLML_EXPORT GeneratorProfile
 {
 public:
+    /**
+     * @brief The type of a profile.
+     *
+     * A profile can be of one of the following types:
+     *  - C: a profile that targets the C language; or
+     *  - PYTHON: a profile that targets the Python language.
+     */
     enum class Profile
     {
         C,
