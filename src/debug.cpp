@@ -20,7 +20,9 @@ limitations under the License.
 #include "libcellml/generator.h"
 #include "libcellml/variable.h"
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 

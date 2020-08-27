@@ -33,12 +33,17 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
-#ifdef __linux__
+#ifdef TRUE
 #    undef TRUE
+#endif
+
+#ifdef FALSE
 #    undef FALSE
 #endif
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 
