@@ -157,7 +157,7 @@ struct AnalyserInternalEquation
     static bool hasKnownVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
     static bool hasNonConstantVariables(const std::vector<AnalyserInternalVariablePtr> &variables);
 
-    bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
+    bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
 };
 
 AnalyserInternalEquation::AnalyserInternalEquation(const ComponentPtr &component)
