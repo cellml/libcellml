@@ -114,11 +114,7 @@ void AnalyserInternalVariable::makeState()
     }
 }
 
-#ifdef SWIG
-struct AnalyserEquation
-#else
-struct AnalyserInternalEquation: public std::enable_shared_from_this<AnalyserInternalEquation>
-#endif
+struct AnalyserInternalEquation
 {
     enum struct Type
     {
