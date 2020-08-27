@@ -19,7 +19,9 @@ limitations under the License.
 #include "libcellml/analyser.h"
 #include "libcellml/generator.h"
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 
