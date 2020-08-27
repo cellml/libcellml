@@ -104,210 +104,241 @@ public:
     // Assignment.
 
     /**
-     * @brief Get the @c std::string for the "assignment" operator.
+     * @brief Get the @c std::string representing the MathML "assignment"
+     * operator.
      *
-     * Return the @c std::string for the "assignment" operator.
+     * Return the @c std::string representing the MathML "assignment" operator.
      *
-     * @return The @c std::string for the "assignment" operator.
+     * @return The @c std::string representing the MathML "assignment"
+     * operator.
      */
     std::string assignmentString() const;
 
     /**
-     * @brief Set the @c std::string for the "assignment" operator.
-     *
-     * Set this @c std::string for the "assignment" operator.
-     *
-     * @param assignmentString The @c std::string to use for the "assignment"
+     * @brief Set the @c std::string representing the MathML "assignment"
      * operator.
+     *
+     * Set the @c std::string representing the MathML "assignment" operator.
+     *
+     * @param assignmentString The @c std::string representing the MathML
+     * "assignment" operator.
      */
     void setAssignmentString(const std::string &assignmentString);
 
     // Relational and logical operators.
 
     /**
-     * @brief Get the @c std::string for the "equal to" operator.
+     * @brief Get the @c std::string representing the MathML "equal to"
+     * operator.
      *
-     * Return the @c std::string for the "equal to" operator.
+     * Return the @c std::string representing the MathML "equal to" operator.
      *
-     * @return The @c std::string for the "equal to" operator.
+     * @return The @c std::string representing the MathML "equal to" operator.
      */
     std::string eqString() const;
 
     /**
-     * @brief Set the @c std::string for the "equal to" operator.
+     * @brief Set the @c std::string representing the MathML "equal to"
+     * operator.
      *
-     * Set this @c std::string for the "equal to" operator.
+     * Set the @c std::string representing the MathML "equal to" operator.
      *
-     * @param eqString The @c std::string to use for the "equal to" operator.
+     * @param eqString The @c std::string representing the MathML "equal to"
+     * operator.
      */
     void setEqString(const std::string &eqString);
 
     /**
-     * @brief Get the @c std::string for the "not equal to" operator.
+     * @brief Get the @c std::string representing the MathML "not equal to"
+     * operator.
      *
-     * Return the @c std::string for the "not equal to" operator.
+     * Return the @c std::string representing the MathML "not equal to"
+     * operator.
      *
-     * @return The @c std::string for the "not equal to" operator.
+     * @return The @c std::string representing the MathML "not equal to"
+     * operator.
      */
     std::string neqString() const;
 
     /**
-     * @brief Set the @c std::string for the "not equal to" operator.
-     *
-     * Set this @c std::string for the "not equal to" operator.
-     *
-     * @param neqString The @c std::string to use for the "not equal to"
+     * @brief Set the @c std::string representing the MathML "not equal to"
      * operator.
+     *
+     * Set the @c std::string representing the MathML "not equal to" operator.
+     *
+     * @param neqString The @c std::string representing the MathML "not equal
+     * to" operator.
      */
     void setNeqString(const std::string &neqString);
 
     /**
-     * @brief Get the @c std::string for the "less than" operator.
+     * @brief Get the @c std::string representing the MathML "less than"
+     * operator.
      *
-     * Return the @c std::string for the "less than" operator.
+     * Return the @c std::string representing the MathML "less than" operator.
      *
-     * @return The @c std::string for the "less than" operator.
+     * @return The @c std::string representing the MathML "less than" operator.
      */
     std::string ltString() const;
 
     /**
-     * @brief Set the @c std::string for the "less than" operator.
+     * @brief Set the @c std::string representing the MathML "less than"
+     * operator.
      *
-     * Set this @c std::string for the "less than" operator.
+     * Set the @c std::string representing the MathML "less than" operator.
      *
-     * @param ltString The @c std::string to use for the "less than" operator.
+     * @param ltString The @c std::string representing the MathML "less than"
+     * operator.
      */
     void setLtString(const std::string &ltString);
 
     /**
-     * @brief Get the @c std::string for the "less than or equal to" operator.
+     * @brief Get the @c std::string representing the MathML "less than or
+     * equal to" operator.
      *
-     * Return the @c std::string for the "less than or equal to" operator.
+     * Return the @c std::string representing the MathML "less than or equal
+     * to" operator.
      *
-     * @return The @c std::string for the "less than or equal to" operator.
+     * @return The @c std::string representing the MathML "less than or equal
+     * to" operator.
      */
     std::string leqString() const;
 
     /**
-     * @brief Set the @c std::string for the "less than or equal to" operator.
+     * @brief Set the @c std::string representing the MathML "less than or
+     * equal to" operator.
      *
-     * Set this @c std::string for the "less than or equal to" operator.
+     * Set the @c std::string representing the MathML "less than or equal to"
+     * operator.
      *
-     * @param leqString The @c std::string to use for the "less than or equal
-     * to" operator.
+     * @param leqString The @c std::string representing the MathML "less than or
+     * equal to" operator.
      */
     void setLeqString(const std::string &leqString);
 
     /**
-     * @brief Get the @c std::string for the "greater than" operator.
+     * @brief Get the @c std::string representing the MathML "greater than"
+     * operator.
      *
-     * Return the @c std::string for the "greater than" operator.
+     * Return the @c std::string representing the MathML "greater than"
+     * operator.
      *
-     * @return The @c std::string for the "greater than" operator.
+     * @return The @c std::string representing the MathML "greater than"
+     * operator.
      */
     std::string gtString() const;
 
     /**
-     * @brief Set the @c std::string for the "greater than" operator.
+     * @brief Set the @c std::string representing the MathML "greater than"
+     * operator.
      *
-     * Set this @c std::string for the "greater than" operator.
+     * Set the @c std::string representing the MathML "greater than" operator.
      *
-     * @param gtString The @c std::string to use for the "greater than"
+     * @param gtString The @c std::string representing the MathML "greater than"
      * operator.
      */
     void setGtString(const std::string &gtString);
 
     /**
-     * @brief Get the @c std::string for the "greater than or equal to"
-     * operator.
+     * @brief Get the @c std::string representing the MathML "greater than or
+     * equal to" operator.
      *
-     * Return the @c std::string for the "greater than or equal to" operator.
+     * Return the @c std::string representing the MathML "greater than or equal
+     * to" operator.
      *
-     * @return The @c std::string for the "greater than or equal to" operator.
+     * @return The @c std::string representing the MathML "greater than or
+     * equal to" operator.
      */
     std::string geqString() const;
 
     /**
-     * @brief Set the @c std::string for the "greater than or equal to"
+     * @brief Set the @c std::string representing the MathML "greater than or
+     * equal to" operator.
+     *
+     * Set the @c std::string representing the MathML "greater than or equal to"
      * operator.
      *
-     * Set this @c std::string for the "greater than or equal to" operator.
-     *
-     * @param geqString The @c std::string to use for the "greater than or equal
-     * to" operator.
+     * @param geqString The @c std::string representing the MathML "greater than
+     * or equal to" operator.
      */
     void setGeqString(const std::string &geqString);
 
     /**
-     * @brief Get the @c std::string for the "and" operator.
+     * @brief Get the @c std::string representing the MathML "and" operator.
      *
-     * Return the @c std::string for the "and" operator.
+     * Return the @c std::string representing the MathML "and" operator.
      *
-     * @return The @c std::string for the "and" operator.
+     * @return The @c std::string representing the MathML "and" operator.
      */
     std::string andString() const;
 
     /**
-     * @brief Set the @c std::string for the "and" operator.
+     * @brief Set the @c std::string representing the MathML "and" operator.
      *
-     * Set this @c std::string for the "and" operator.
+     * Set the @c std::string representing the MathML "and" operator.
      *
-     * @param andString The @c std::string to use for the "and" operator.
+     * @param andString The @c std::string representing the MathML "and"
+     * operator.
      */
     void setAndString(const std::string &andString);
 
     /**
-     * @brief Get the @c std::string for the "or" operator.
+     * @brief Get the @c std::string representing the MathML "or" operator.
      *
-     * Return the @c std::string for the "or" operator.
+     * Return the @c std::string representing the MathML "or" operator.
      *
-     * @return The @c std::string for the "or" operator.
+     * @return The @c std::string representing the MathML "or" operator.
      */
     std::string orString() const;
 
     /**
-     * @brief Set the @c std::string for the "or" operator.
+     * @brief Set the @c std::string representing the MathML "or" operator.
      *
-     * Set this @c std::string for the "or" operator.
+     * Set the @c std::string representing the MathML "or" operator.
      *
-     * @param orString The @c std::string to use for the "or" operator.
+     * @param orString The @c std::string representing the MathML "or" operator.
      */
     void setOrString(const std::string &orString);
 
     /**
-     * @brief Get the @c std::string for the "exclusive or" operator.
+     * @brief Get the @c std::string representing the MathML "exclusive or"
+     * operator.
      *
-     * Return the @c std::string for the "exclusive or" operator.
+     * Return the @c std::string representing the MathML "exclusive or"
+     * operator.
      *
-     * @return The @c std::string for the "exclusive or" operator.
+     * @return The @c std::string representing the MathML "exclusive or"
+     * operator.
      */
     std::string xorString() const;
 
     /**
-     * @brief Set the @c std::string for the "exclusive or" operator.
-     *
-     * Set this @c std::string for the "exclusive or" operator.
-     *
-     * @param xorString The @c std::string to use for the "exclusive or"
+     * @brief Set the @c std::string representing the MathML "exclusive or"
      * operator.
+     *
+     * Set the @c std::string representing the MathML "exclusive or" operator.
+     *
+     * @param xorString The @c std::string representing the MathML "exclusive
+     * or" operator.
      */
     void setXorString(const std::string &xorString);
 
     /**
-     * @brief Get the @c std::string for the "not" operator.
+     * @brief Get the @c std::string representing the MathML "not" operator.
      *
-     * Return the @c std::string for the "not" operator.
+     * Return the @c std::string representing the MathML "not" operator.
      *
-     * @return The @c std::string for the "not" operator.
+     * @return The @c std::string representing the MathML "not" operator.
      */
     std::string notString() const;
 
     /**
-     * @brief Set the @c std::string for the "not" operator.
+     * @brief Set the @c std::string representing the MathML "not" operator.
      *
-     * Set this @c std::string for the "not" operator.
+     * Set the @c std::string representing the MathML "not" operator.
      *
-     * @param notString The @c std::string to use for the "not" operator.
+     * @param notString The @c std::string representing the MathML "not"
+     * operator.
      */
     void setNotString(const std::string &notString);
 
@@ -525,297 +556,334 @@ public:
     // Arithmetic operators.
 
     /**
-     * @brief Get the @c std::string for the "plus" operator.
+     * @brief Get the @c std::string representing the MathML "plus" operator.
      *
-     * Return the @c std::string for the "plus" operator.
+     * Return the @c std::string representing the MathML "plus" operator.
      *
-     * @return The @c std::string for the "plus" operator.
+     * @return The @c std::string representing the MathML "plus" operator.
      */
     std::string plusString() const;
 
     /**
-     * @brief Set the @c std::string for the "plus" operator.
+     * @brief Set the @c std::string representing the MathML "plus" operator.
      *
-     * Set this @c std::string for the "plus" operator.
+     * Set the @c std::string representing the MathML "plus" operator.
      *
-     * @param plusString The @c std::string to use for the "plus" operator.
+     * @param plusString The @c std::string representing the MathML "plus"
+     * operator.
      */
     void setPlusString(const std::string &plusString);
 
     /**
-     * @brief Get the @c std::string for the "minus" operator.
+     * @brief Get the @c std::string representing the MathML "minus" operator.
      *
-     * Return the @c std::string for the "minus" operator.
+     * Return the @c std::string representing the MathML "minus" operator.
      *
-     * @return The @c std::string for the "minus" operator.
+     * @return The @c std::string representing the MathML "minus" operator.
      */
     std::string minusString() const;
 
     /**
-     * @brief Set the @c std::string for the "minus" operator.
+     * @brief Set the @c std::string representing the MathML "minus" operator.
      *
-     * Set this @c std::string for the "minus" operator.
+     * Set the @c std::string representing the MathML "minus" operator.
      *
-     * @param minusString The @c std::string to use for the "minus" operator.
+     * @param minusString The @c std::string representing the MathML "minus"
+     * operator.
      */
     void setMinusString(const std::string &minusString);
 
     /**
-     * @brief Get the @c std::string for the "times" operator.
+     * @brief Get the @c std::string representing the MathML "times" operator.
      *
-     * Return the @c std::string for the "times" operator.
+     * Return the @c std::string representing the MathML "times" operator.
      *
-     * @return The @c std::string for the "times" operator.
+     * @return The @c std::string representing the MathML "times" operator.
      */
     std::string timesString() const;
 
     /**
-     * @brief Set the @c std::string for the "times" operator.
+     * @brief Set the @c std::string representing the MathML "times" operator.
      *
-     * Set this @c std::string for the "times" operator.
+     * Set the @c std::string representing the MathML "times" operator.
      *
-     * @param timesString The @c std::string to use for the "times" operator.
+     * @param timesString The @c std::string representing the MathML "times"
+     * operator.
      */
     void setTimesString(const std::string &timesString);
 
     /**
-     * @brief Get the @c std::string for the "divide" operator.
+     * @brief Get the @c std::string representing the MathML "divide" operator.
      *
-     * Return the @c std::string for the "divide" operator.
+     * Return the @c std::string representing the MathML "divide" operator.
      *
-     * @return The @c std::string for the "divide" operator.
+     * @return The @c std::string representing the MathML "divide" operator.
      */
     std::string divideString() const;
 
     /**
-     * @brief Set the @c std::string for the "divide" operator.
+     * @brief Set the @c std::string representing the MathML "divide" operator.
      *
-     * Set this @c std::string for the "divide" operator.
+     * Set the @c std::string representing the MathML "divide" operator.
      *
-     * @param divideString The @c std::string to use for the "divide" operator.
+     * @param divideString The @c std::string representing the MathML "divide"
+     * operator.
      */
     void setDivideString(const std::string &divideString);
 
     /**
-     * @brief Get the @c std::string for the "power" operator or function.
+     * @brief Get the @c std::string representing the MathML "power" operator or
+     * function.
      *
-     * Return the @c std::string for the "power" operator or function.
+     * Return the @c std::string representing the MathML "power" operator or
+     * function.
      *
-     * @return The @c std::string for the "power" operator or function.
+     * @return The @c std::string representing the MathML "power" operator or
+     * function.
      */
     std::string powerString() const;
 
     /**
-     * @brief Set the @c std::string for the "power" operator or function.
-     *
-     * Set this @c std::string for the "power" operator or function.
-     *
-     * @param powerString The @c std::string to use for the "power" operator or
+     * @brief Set the @c std::string representing the MathML "power" operator or
      * function.
+     *
+     * Set the @c std::string representing the MathML "power" operator or
+     * function.
+     *
+     * @param powerString The @c std::string representing the MathML "power"
+     * operator or function.
      */
     void setPowerString(const std::string &powerString);
 
     /**
-     * @brief Get the @c std::string for the "square root" function.
+     * @brief Get the @c std::string representing the MathML "square root"
+     * function.
      *
-     * Return the @c std::string for the "square root" function.
+     * Return the @c std::string representing the MathML "square root" function.
      *
-     * @return The @c std::string for the "square root" function.
+     * @return The @c std::string representing the MathML "square root"
+     * function.
      */
     std::string squareRootString() const;
 
     /**
-     * @brief Set the @c std::string for the "square root" function.
-     *
-     * Set this @c std::string for the "square root" function.
-     *
-     * @param squareRootString The @c std::string to use for the "square root"
+     * @brief Set the @c std::string representing the MathML "square root"
      * function.
+     *
+     * Set the @c std::string representing the MathML "square root" function.
+     *
+     * @param squareRootString The @c std::string representing the MathML
+     * "square root" function.
      */
     void setSquareRootString(const std::string &squareRootString);
 
     /**
-     * @brief Get the @c std::string for the "square" function.
+     * @brief Get the @c std::string representing the MathML "square" function.
      *
-     * Return the @c std::string for the "square" function.
+     * Return the @c std::string representing the MathML "square" function.
      *
-     * @return The @c std::string for the "square" function.
+     * @return The @c std::string representing the MathML "square" function.
      */
     std::string squareString() const;
 
     /**
-     * @brief Set the @c std::string for the "square" function.
+     * @brief Set the @c std::string representing the MathML "square" function.
      *
-     * Set this @c std::string for the "square" function.
+     * Set the @c std::string representing the MathML "square" function.
      *
-     * @param squareString The @c std::string to use for the "square" function.
+     * @param squareString The @c std::string representing the MathML "square"
+     * function.
      */
     void setSquareString(const std::string &squareString);
 
     /**
-     * @brief Get the @c std::string for the "absolute value" function.
+     * @brief Get the @c std::string representing the MathML "absolute value"
+     * function.
      *
-     * Return the @c std::string for the "absolute value" function.
+     * Return the @c std::string representing the MathML "absolute value"
+     * function.
      *
-     * @return The @c std::string for the "absolute value" function.
+     * @return The @c std::string representing the MathML "absolute value"
+     * function.
      */
     std::string absoluteValueString() const;
 
     /**
-     * @brief Set the @c std::string for the "absolute value" function.
+     * @brief Set the @c std::string representing the MathML "absolute value"
+     * function.
      *
-     * Set this @c std::string for the "absolute value" function.
+     * Set the @c std::string representing the MathML "absolute value" function.
      *
-     * @param absoluteValueString The @c std::string to use for the "absolute
-     * value" function.
+     * @param absoluteValueString The @c std::string representing the MathML
+     * "absolute value" function.
      */
     void setAbsoluteValueString(const std::string &absoluteValueString);
 
     /**
-     * @brief Get the @c std::string for the "exponential" function.
+     * @brief Get the @c std::string representing the MathML "exponential"
+     * function.
      *
-     * Return the @c std::string for the "exponential" function.
+     * Return the @c std::string representing the MathML "exponential"
+     * function.
      *
-     * @return The @c std::string for the "exponential" function.
+     * @return The @c std::string representing the MathML "exponential"
+     * function.
      */
     std::string exponentialString() const;
 
     /**
-     * @brief Set the @c std::string for the "exponential" function.
-     *
-     * Set this @c std::string for the "exponential" function.
-     *
-     * @param exponentialString The @c std::string to use for the "exponential"
+     * @brief Set the @c std::string representing the MathML "exponential"
      * function.
+     *
+     * Set the @c std::string representing the MathML "exponential" function.
+     *
+     * @param exponentialString The @c std::string representing the MathML
+     * "exponential" function.
      */
     void setExponentialString(const std::string &exponentialString);
 
     /**
-     * @brief Get the @c std::string for the "Napierian logarithm" function.
+     * @brief Get the @c std::string representing the MathML "Napierian
+     * logarithm" function.
      *
-     * Return the @c std::string for the "Napierian logarithm" function.
+     * Return the @c std::string representing the MathML "Napierian
+     * logarithm" function.
      *
-     * @return The @c std::string for the "Napierian logarithm" function.
+     * @return The @c std::string representing the MathML "Napierian
+     * logarithm" function.
      */
     std::string napierianLogarithmString() const;
 
     /**
-     * @brief Set the @c std::string for the "Napierian logarithm" function.
+     * @brief Set the @c std::string representing the MathML "Napierian
+     * logarithm" function.
      *
-     * Set this @c std::string for the "Napierian logarithm" function.
+     * Set the @c std::string representing the MathML "Napierian logarithm"
+     * function.
      *
-     * @param napierianLogarithmString The @c std::string to use for the
-     * "Napierian logarithm" function.
+     * @param napierianLogarithmString The @c std::string representing the
+     * MathML "Napierian logarithm" function.
      */
     void setNapierianLogarithmString(const std::string &napierianLogarithmString);
 
     /**
-     * @brief Get the @c std::string for the "common logarithm" function.
+     * @brief Get the @c std::string representing the MathML "common logarithm"
+     * function.
      *
-     * Return the @c std::string for the "common logarithm" function.
+     * Return the @c std::string representing the MathML "common logarithm"
+     * function.
      *
-     * @return The @c std::string for the "common logarithm" function.
+     * @return The @c std::string representing the MathML "common logarithm"
+     * function.
      */
     std::string commonLogarithmString() const;
 
     /**
-     * @brief Set the @c std::string for the "common logarithm" function.
+     * @brief Set the @c std::string representing the MathML "common logarithm"
+     * function.
      *
-     * Set this @c std::string for the "common logarithm" function.
+     * Set the @c std::string representing the MathML "common logarithm"
+     * function.
      *
-     * @param commonLogarithmString The @c std::string to use for the "common
-     * logarithm" function.
+     * @param commonLogarithmString The @c std::string representing the MathML
+     * "common logarithm" function.
      */
     void setCommonLogarithmString(const std::string &commonLogarithmString);
 
     /**
-     * @brief Get the @c std::string for the "ceiling" function.
+     * @brief Get the @c std::string representing the MathML "ceiling" function.
      *
-     * Return the @c std::string for the "ceiling" function.
+     * Return the @c std::string representing the MathML "ceiling" function.
      *
-     * @return The @c std::string for the "ceiling" function.
+     * @return The @c std::string representing the MathML "ceiling" function.
      */
     std::string ceilingString() const;
 
     /**
-     * @brief Set the @c std::string for the "ceiling" function.
+     * @brief Set the @c std::string representing the MathML "ceiling" function.
      *
-     * Set this @c std::string for the "ceiling" function.
+     * Set the @c std::string representing the MathML "ceiling" function.
      *
-     * @param ceilingString The @c std::string to use for the "ceiling"
+     * @param ceilingString The @c std::string representing the MathML "ceiling"
      * function.
      */
     void setCeilingString(const std::string &ceilingString);
 
     /**
-     * @brief Get the @c std::string for the "floor" function.
+     * @brief Get the @c std::string representing the MathML "floor" function.
      *
-     * Return the @c std::string for the "floor" function.
+     * Return the @c std::string representing the MathML "floor" function.
      *
-     * @return The @c std::string for the "floor" function.
+     * @return The @c std::string representing the MathML "floor" function.
      */
     std::string floorString() const;
 
     /**
-     * @brief Set the @c std::string for the "floor" function.
+     * @brief Set the @c std::string representing the MathML "floor" function.
      *
-     * Set this @c std::string for the "floor" function.
+     * Set the @c std::string representing the MathML "floor" function.
      *
-     * @param floorString The @c std::string to use for the "floor" function.
+     * @param floorString The @c std::string representing the MathML "floor"
+     * function.
      */
     void setFloorString(const std::string &floorString);
 
     /**
-     * @brief Get the @c std::string for the "minimum" function.
+     * @brief Get the @c std::string representing the MathML "minimum" function.
      *
-     * Return the @c std::string for the "minimum" function.
+     * Return the @c std::string representing the MathML "minimum" function.
      *
-     * @return The @c std::string for the "minimum" function.
+     * @return The @c std::string representing the MathML "minimum" function.
      */
     std::string minString() const;
 
     /**
-     * @brief Set the @c std::string for the "minimum" function.
+     * @brief Set the @c std::string representing the MathML "minimum" function.
      *
-     * Set this @c std::string for the "minimum" function.
+     * Set the @c std::string representing the MathML "minimum" function.
      *
-     * @param minString The @c std::string to use for the "minimum" function.
+     * @param minString The @c std::string representing the MathML "minimum"
+     * function.
      */
     void setMinString(const std::string &minString);
 
     /**
-     * @brief Get the @c std::string for the "maximum" function.
+     * @brief Get the @c std::string representing the MathML "maximum" function.
      *
-     * Return the @c std::string for the "maximum" function.
+     * Return the @c std::string representing the MathML "maximum" function.
      *
-     * @return The @c std::string for the "maximum" function.
+     * @return The @c std::string representing the MathML "maximum" function.
      */
     std::string maxString() const;
 
     /**
-     * @brief Set the @c std::string for the "maximum" function.
+     * @brief Set the @c std::string representing the MathML "maximum" function.
      *
-     * Set this @c std::string for the "maximum" function.
+     * Set the @c std::string representing the MathML "maximum" function.
      *
-     * @param maxString The @c std::string to use for the "maximum" function.
+     * @param maxString The @c std::string representing the MathML "maximum"
+     * function.
      */
     void setMaxString(const std::string &maxString);
 
     /**
-     * @brief Get the @c std::string for the "remainder" function.
+     * @brief Get the @c std::string representing the MathML "remainder"
+     * function.
      *
-     * Return the @c std::string for the "remainder" function.
+     * Return the @c std::string representing the MathML "remainder" function.
      *
-     * @return The @c std::string for the "remainder" function.
+     * @return The @c std::string representing the MathML "remainder" function.
      */
     std::string remString() const;
 
     /**
-     * @brief Set the @c std::string for the "remainder" function.
+     * @brief Set the @c std::string representing the MathML "remainder"
+     * function.
      *
-     * Set this @c std::string for the "remainder" function.
+     * Set the @c std::string representing the MathML "remainder" function.
      *
-     * @param remString The @c std::string to use for the "remainder" function.
+     * @param remString The @c std::string representing the MathML "remainder"
+     * function.
      */
     void setRemString(const std::string &remString);
 
@@ -842,546 +910,637 @@ public:
     // Trigonometric operators.
 
     /**
-     * @brief Get the @c std::string for the "sine" function.
+     * @brief Get the @c std::string representing the MathML "sine" function.
      *
-     * Return the @c std::string for the "sine" function.
+     * Return the @c std::string representing the MathML "sine" function.
      *
-     * @return The @c std::string for the "sine" function.
+     * @return The @c std::string representing the MathML "sine" function.
      */
     std::string sinString() const;
 
     /**
-     * @brief Set the @c std::string for the "sine" function.
+     * @brief Set the @c std::string representing the MathML "sine" function.
      *
-     * Set this @c std::string for the "sine" function.
+     * Set the @c std::string representing the MathML "sine" function.
      *
-     * @param sinString The @c std::string to use for the "sine" function.
+     * @param sinString The @c std::string representing the MathML "sine"
+     * function.
      */
     void setSinString(const std::string &sinString);
 
     /**
-     * @brief Get the @c std::string for the "cosine" function.
+     * @brief Get the @c std::string representing the MathML "cosine" function.
      *
-     * Return the @c std::string for the "cosine" function.
+     * Return the @c std::string representing the MathML "cosine" function.
      *
-     * @return The @c std::string for the "cosine" function.
+     * @return The @c std::string representing the MathML "cosine" function.
      */
     std::string cosString() const;
 
     /**
-     * @brief Set the @c std::string for the "cosine" function.
+     * @brief Set the @c std::string representing the MathML "cosine" function.
      *
-     * Set this @c std::string for the "cosine" function.
+     * Set the @c std::string representing the MathML "cosine" function.
      *
-     * @param cosString The @c std::string to use for the "cosine" function.
+     * @param cosString The @c std::string representing the MathML "cosine"
+     * function.
      */
     void setCosString(const std::string &cosString);
 
     /**
-     * @brief Get the @c std::string for the "tangent" function.
+     * @brief Get the @c std::string representing the MathML "tangent" function.
      *
-     * Return the @c std::string for the "tangent" function.
+     * Return the @c std::string representing the MathML "tangent" function.
      *
-     * @return The @c std::string for the "tangent" function.
+     * @return The @c std::string representing the MathML "tangent" function.
      */
     std::string tanString() const;
 
     /**
-     * @brief Set the @c std::string for the "tangent" function.
+     * @brief Set the @c std::string representing the MathML "tangent" function.
      *
-     * Set this @c std::string for the "tangent" function.
+     * Set the @c std::string representing the MathML "tangent" function.
      *
-     * @param tanString The @c std::string to use for the "tangent" function.
+     * @param tanString The @c std::string representing the MathML "tangent"
+     * function.
      */
     void setTanString(const std::string &tanString);
 
     /**
-     * @brief Get the @c std::string for the "secant" function.
+     * @brief Get the @c std::string representing the MathML "secant" function.
      *
-     * Return the @c std::string for the "secant" function.
+     * Return the @c std::string representing the MathML "secant" function.
      *
-     * @return The @c std::string for the "secant" function.
+     * @return The @c std::string representing the MathML "secant" function.
      */
     std::string secString() const;
 
     /**
-     * @brief Set the @c std::string for the "secant" function.
+     * @brief Set the @c std::string representing the MathML "secant" function.
      *
-     * Set this @c std::string for the "secant" function.
+     * Set the @c std::string representing the MathML "secant" function.
      *
-     * @param secString The @c std::string to use for the "secant" function.
+     * @param secString The @c std::string representing the MathML "secant"
+     * function.
      */
     void setSecString(const std::string &secString);
 
     /**
-     * @brief Get the @c std::string for the "cosecant" function.
+     * @brief Get the @c std::string representing the MathML "cosecant"
+     * function.
      *
-     * Return the @c std::string for the "cosecant" function.
+     * Return the @c std::string representing the MathML "cosecant" function.
      *
-     * @return The @c std::string for the "cosecant" function.
+     * @return The @c std::string representing the MathML "cosecant" function.
      */
     std::string cscString() const;
 
     /**
-     * @brief Set the @c std::string for the "cosecant" function.
+     * @brief Set the @c std::string representing the MathML "cosecant"
+     * function.
      *
-     * Set this @c std::string for the "cosecant" function.
+     * Set the @c std::string representing the MathML "cosecant" function.
      *
-     * @param cscString The @c std::string to use for the "cosecant" function.
+     * @param cscString The @c std::string representing the MathML "cosecant"
+     * function.
      */
     void setCscString(const std::string &cscString);
 
     /**
-     * @brief Get the @c std::string for the "cotangent" function.
+     * @brief Get the @c std::string representing the MathML "cotangent"
+     * function.
      *
-     * Return the @c std::string for the "cotangent" function.
+     * Return the @c std::string representing the MathML "cotangent" function.
      *
-     * @return The @c std::string for the "cotangent" function.
+     * @return The @c std::string representing the MathML "cotangent" function.
      */
     std::string cotString() const;
 
     /**
-     * @brief Set the @c std::string for the "cotangent" function.
+     * @brief Set the @c std::string representing the MathML "cotangent"
+     * function.
      *
-     * Set this @c std::string for the "cotangent" function.
+     * Set the @c std::string representing the MathML "cotangent" function.
      *
-     * @param cotString The @c std::string to use for the "cotangent" function.
+     * @param cotString The @c std::string representing the MathML "cotangent"
+     * function.
      */
     void setCotString(const std::string &cotString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic sine" function.
+     * @brief Get the @c std::string representing the MathML "hyperbolic sine"
+     * function.
      *
-     * Return the @c std::string for the "hyperbolic sine" function.
+     * Return the @c std::string representing the MathML "hyperbolic sine"
+     * function.
      *
-     * @return The @c std::string for the "hyperbolic sine" function.
+     * @return The @c std::string representing the MathML "hyperbolic sine"
+     * function.
      */
     std::string sinhString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic sine" function.
-     *
-     * Set this @c std::string for the "hyperbolic sine" function.
-     *
-     * @param sinhString The @c std::string to use for the "hyperbolic sine"
+     * @brief Set the @c std::string representing the MathML "hyperbolic sine"
      * function.
+     *
+     * Set the @c std::string representing the MathML "hyperbolic sine"
+     * function.
+     *
+     * @param sinhString The @c std::string representing the MathML "hyperbolic
+     * sine" function.
      */
     void setSinhString(const std::string &sinhString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic cosine" function.
+     * @brief Get the @c std::string representing the MathML "hyperbolic cosine"
+     * function.
      *
-     * Return the @c std::string for the "hyperbolic cosine" function.
+     * Return the @c std::string representing the MathML "hyperbolic cosine"
+     * function.
      *
-     * @return The @c std::string for the "hyperbolic cosine" function.
+     * @return The @c std::string representing the MathML "hyperbolic cosine"
+     * function.
      */
     std::string coshString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic cosine" function.
-     *
-     * Set this @c std::string for the "hyperbolic cosine" function.
-     *
-     * @param coshString The @c std::string to use for the "hyperbolic cosine"
+     * @brief Set the @c std::string representing the MathML "hyperbolic cosine"
      * function.
+     *
+     * Set the @c std::string representing the MathML "hyperbolic cosine"
+     * function.
+     *
+     * @param coshString The @c std::string representing the MathML "hyperbolic
+     * cosine" function.
      */
     void setCoshString(const std::string &coshString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic tangent" function.
+     * @brief Get the @c std::string representing the MathML "hyperbolic
+     * tangent" function.
      *
-     * Return the @c std::string for the "hyperbolic tangent" function.
+     * Return the @c std::string representing the MathML "hyperbolic tangent"
+     * function.
      *
-     * @return The @c std::string for the "hyperbolic tangent" function.
+     * @return The @c std::string representing the MathML "hyperbolic tangent"
+     * function.
      */
     std::string tanhString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic tangent" function.
+     * @brief Set the @c std::string representing the MathML "hyperbolic
+     * tangent" function.
      *
-     * Set this @c std::string for the "hyperbolic tangent" function.
-     *
-     * @param tanhString The @c std::string to use for the "hyperbolic tangent"
+     * Set the @c std::string representing the MathML "hyperbolic tangent"
      * function.
+     *
+     * @param tanhString The @c std::string representing the MathML "hyperbolic
+     * tangent" function.
      */
     void setTanhString(const std::string &tanhString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic secant" function.
+     * @brief Get the @c std::string representing the MathML "hyperbolic secant"
+     * function.
      *
-     * Return the @c std::string for the "hyperbolic secant" function.
+     * Return the @c std::string representing the MathML "hyperbolic secant"
+     * function.
      *
-     * @return The @c std::string for the "hyperbolic secant" function.
+     * @return The @c std::string representing the MathML "hyperbolic secant"
+     * function.
      */
     std::string sechString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic secant" function.
-     *
-     * Set this @c std::string for the "hyperbolic secant" function.
-     *
-     * @param sechString The @c std::string to use for the "hyperbolic secant"
+     * @brief Set the @c std::string representing the MathML "hyperbolic secant"
      * function.
+     *
+     * Set the @c std::string representing the MathML "hyperbolic secant"
+     * function.
+     *
+     * @param sechString The @c std::string representing the MathML "hyperbolic
+     * secant" function.
      */
     void setSechString(const std::string &sechString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic cosecant" function.
+     * @brief Get the @c std::string representing the MathML "hyperbolic
+     * cosecant" function.
      *
-     * Return the @c std::string for the "hyperbolic cosecant" function.
+     * Return the @c std::string representing the MathML "hyperbolic cosecant"
+     * function.
      *
-     * @return The @c std::string for the "hyperbolic cosecant" function.
+     * @return The @c std::string representing the MathML "hyperbolic cosecant"
+     * function.
      */
     std::string cschString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic cosecant" function.
+     * @brief Set the @c std::string representing the MathML "hyperbolic
+     * cosecant" function.
      *
-     * Set this @c std::string for the "hyperbolic cosecant" function.
-     *
-     * @param cschString The @c std::string to use for the "hyperbolic cosecant"
+     * Set the @c std::string representing the MathML "hyperbolic cosecant"
      * function.
+     *
+     * @param cschString The @c std::string representing the MathML "hyperbolic
+     * cosecant" function.
      */
     void setCschString(const std::string &cschString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic cotangent" function.
+     * @brief Get the @c std::string representing the MathML "hyperbolic
+     * cotangent" function.
      *
-     * Return the @c std::string for the "hyperbolic cotangent" function.
+     * Return the @c std::string representing the MathML "hyperbolic cotangent"
+     * function.
      *
-     * @return The @c std::string for the "hyperbolic cotangent" function.
+     * @return The @c std::string representing the MathML "hyperbolic cotangent"
+     * function.
      */
     std::string cothString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic cotangent" function.
+     * @brief Set the @c std::string representing the MathML "hyperbolic
+     * cotangent" function.
      *
-     * Set this @c std::string for the "hyperbolic cotangent" function.
+     * Set the @c std::string representing the MathML "hyperbolic cotangent"
+     * function.
      *
-     * @param cothString The @c std::string to use for the "hyperbolic
+     * @param cothString The @c std::string representing the MathML "hyperbolic
      * cotangent" function.
      */
     void setCothString(const std::string &cothString);
 
     /**
-     * @brief Get the @c std::string for the "arc sine" function.
+     * @brief Get the @c std::string representing the MathML "arc sine"
+     * function.
      *
-     * Return the @c std::string for the "arc sine" function.
+     * Return the @c std::string representing the MathML "arc sine" function.
      *
-     * @return The @c std::string for the "arc sine" function.
+     * @return The @c std::string representing the MathML "arc sine" function.
      */
     std::string asinString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc sine" function.
+     * @brief Set the @c std::string representing the MathML "arc sine"
+     * function.
      *
-     * Set this @c std::string for the "arc sine" function.
+     * Set the @c std::string representing the MathML "arc sine" function.
      *
-     * @param asinString The @c std::string to use for the "arc sine" function.
+     * @param asinString The @c std::string representing the MathML "arc sine"
+     * function.
      */
     void setAsinString(const std::string &asinString);
 
     /**
-     * @brief Get the @c std::string for the "arc cosine" function.
+     * @brief Get the @c std::string representing the MathML "arc cosine"
+     * function.
      *
-     * Return the @c std::string for the "arc cosine" function.
+     * Return the @c std::string representing the MathML "arc cosine" function.
      *
-     * @return The @c std::string for the "arc cosine" function.
+     * @return The @c std::string representing the MathML "arc cosine" function.
      */
     std::string acosString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc cosine" function.
+     * @brief Set the @c std::string representing the MathML "arc cosine"
+     * function.
      *
-     * Set this @c std::string for the "arc cosine" function.
+     * Set the @c std::string representing the MathML "arc cosine" function.
      *
-     * @param acosString The @c std::string to use for the "arc cosine"
+     * @param acosString The @c std::string representing the MathML "arc cosine"
      * function.
      */
     void setAcosString(const std::string &acosString);
 
     /**
-     * @brief Get the @c std::string for the "arc tangent" function.
+     * @brief Get the @c std::string representing the MathML "arc tangent"
+     * function.
      *
-     * Return the @c std::string for the "arc tangent" function.
+     * Return the @c std::string representing the MathML "arc tangent" function.
      *
-     * @return The @c std::string for the "arc tangent" function.
+     * @return The @c std::string representing the MathML "arc tangent"
+     * function.
      */
     std::string atanString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc tangent" function.
-     *
-     * Set this @c std::string for the "arc tangent" function.
-     *
-     * @param atanString The @c std::string to use for the "arc tangent"
+     * @brief Set the @c std::string representing the MathML "arc tangent"
      * function.
+     *
+     * Set the @c std::string representing the MathML "arc tangent" function.
+     *
+     * @param atanString The @c std::string representing the MathML "arc
+     * tangent" function.
      */
     void setAtanString(const std::string &atanString);
 
     /**
-     * @brief Get the @c std::string for the "arc secant" function.
+     * @brief Get the @c std::string representing the MathML "arc secant"
+     * function.
      *
-     * Return the @c std::string for the "arc secant" function.
+     * Return the @c std::string representing the MathML "arc secant" function.
      *
-     * @return The @c std::string for the "arc secant" function.
+     * @return The @c std::string representing the MathML "arc secant" function.
      */
     std::string asecString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc secant" function.
+     * @brief Set the @c std::string representing the MathML "arc secant"
+     * function.
      *
-     * Set this @c std::string for the "arc secant" function.
+     * Set the @c std::string representing the MathML "arc secant" function.
      *
-     * @param asecString The @c std::string to use for the "arc secant"
+     * @param asecString The @c std::string representing the MathML "arc secant"
      * function.
      */
     void setAsecString(const std::string &asecString);
 
     /**
-     * @brief Get the @c std::string for the "arc cosecant" function.
+     * @brief Get the @c std::string representing the MathML "arc cosecant"
+     * function.
      *
-     * Return the @c std::string for the "arc cosecant" function.
+     * Return the @c std::string representing the MathML "arc cosecant"
+     * function.
      *
-     * @return The @c std::string for the "arc cosecant" function.
+     * @return The @c std::string representing the MathML "arc cosecant"
+     * function.
      */
     std::string acscString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc cosecant" function.
-     *
-     * Set this @c std::string for the "arc cosecant" function.
-     *
-     * @param acscString The @c std::string to use for the "arc cosecant"
+     * @brief Set the @c std::string representing the MathML "arc cosecant"
      * function.
+     *
+     * Set the @c std::string representing the MathML "arc cosecant" function.
+     *
+     * @param acscString The @c std::string representing the MathML "arc
+     * cosecant" function.
      */
     void setAcscString(const std::string &acscString);
 
     /**
-     * @brief Get the @c std::string for the "arc cotangent" function.
+     * @brief Get the @c std::string representing the MathML "arc cotangent"
+     * function.
      *
-     * Return the @c std::string for the "arc cotangent" function.
+     * Return the @c std::string representing the MathML "arc cotangent"
+     * function.
      *
-     * @return The @c std::string for the "arc cotangent" function.
+     * @return The @c std::string representing the MathML "arc cotangent"
+     * function.
      */
     std::string acotString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc cotangent" function.
-     *
-     * Set this @c std::string for the "arc cotangent" function.
-     *
-     * @param acotString The @c std::string to use for the "arc cotangent"
+     * @brief Set the @c std::string representing the MathML "arc cotangent"
      * function.
+     *
+     * Set the @c std::string representing the MathML "arc cotangent" function.
+     *
+     * @param acotString The @c std::string representing the MathML "arc
+     * cotangent" function.
      */
     void setAcotString(const std::string &acotString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic sine" function.
+     * @brief Get the @c std::string representing the MathML "arc hyperbolic
+     * sine" function.
      *
-     * Return the @c std::string for the "arc hyperbolic sine" function.
+     * Return the @c std::string representing the MathML "arc hyperbolic sine"
+     * function.
      *
-     * @return The @c std::string for the "arc hyperbolic sine" function.
+     * @return The @c std::string representing the MathML "arc hyperbolic sine"
+     * function.
      */
     std::string asinhString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic sine" function.
-     *
-     * Set this @c std::string for the "arc hyperbolic sine" function.
-     *
-     * @param asinhString The @c std::string to use for the "arc hyperbolic
+     * @brief Set the @c std::string representing the MathML "arc hyperbolic
      * sine" function.
+     *
+     * Set the @c std::string representing the MathML "arc hyperbolic sine"
+     * function.
+     *
+     * @param asinhString The @c std::string representing the MathML "arc
+     * hyperbolic sine" function.
      */
     void setAsinhString(const std::string &asinhString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic cosine" function.
+     * @brief Get the @c std::string representing the MathML "arc hyperbolic
+     * cosine" function.
      *
-     * Return the @c std::string for the "arc hyperbolic cosine" function.
+     * Return the @c std::string representing the MathML "arc hyperbolic cosine"
+     * function.
      *
-     * @return The @c std::string for the "arc hyperbolic cosine" function.
+     * @return The @c std::string representing the MathML "arc hyperbolic
+     * cosine" function.
      */
     std::string acoshString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic cosine" function.
-     *
-     * Set this @c std::string for the "arc hyperbolic cosine" function.
-     *
-     * @param acoshString The @c std::string to use for the "arc hyperbolic
+     * @brief Set the @c std::string representing the MathML "arc hyperbolic
      * cosine" function.
+     *
+     * Set the @c std::string representing the MathML "arc hyperbolic cosine"
+     * function.
+     *
+     * @param acoshString The @c std::string representing the MathML "arc
+     * hyperbolic cosine" function.
      */
     void setAcoshString(const std::string &acoshString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic tangent" function.
+     * @brief Get the @c std::string representing the MathML "arc hyperbolic
+     * tangent" function.
      *
-     * Return the @c std::string for the "arc hyperbolic tangent" function.
+     * Return the @c std::string representing the MathML "arc hyperbolic
+     * tangent" function.
      *
-     * @return The @c std::string for the "arc hyperbolic tangent" function.
+     * @return The @c std::string representing the MathML "arc hyperbolic
+     * tangent" function.
      */
     std::string atanhString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic tangent" function.
-     *
-     * Set this @c std::string for the "arc hyperbolic tangent" function.
-     *
-     * @param atanhString The @c std::string to use for the "arc hyperbolic
+     * @brief Set the @c std::string representing the MathML "arc hyperbolic
      * tangent" function.
+     *
+     * Set the @c std::string representing the MathML "arc hyperbolic tangent"
+     * function.
+     *
+     * @param atanhString The @c std::string representing the MathML "arc
+     * hyperbolic tangent" function.
      */
     void setAtanhString(const std::string &atanhString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic secant" function.
+     * @brief Get the @c std::string representing the MathML "arc hyperbolic
+     * secant" function.
      *
-     * Return the @c std::string for the "arc hyperbolic secant" function.
+     * Return the @c std::string representing the MathML "arc hyperbolic
+     * secant" function.
      *
-     * @return The @c std::string for the "arc hyperbolic secant" function.
+     * @return The @c std::string representing the MathML "arc hyperbolic
+     * secant" function.
      */
     std::string asechString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic secant" function.
-     *
-     * Set this @c std::string for the "arc hyperbolic secant" function.
-     *
-     * @param asechString The @c std::string to use for the "arc hyperbolic
+     * @brief Set the @c std::string representing the MathML "arc hyperbolic
      * secant" function.
+     *
+     * Set the @c std::string representing the MathML "arc hyperbolic secant"
+     * function.
+     *
+     * @param asechString The @c std::string representing the MathML "arc
+     * hyperbolic secant" function.
      */
     void setAsechString(const std::string &asechString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic cosecant" function.
+     * @brief Get the @c std::string representing the MathML "arc hyperbolic
+     * cosecant" function.
      *
-     * Return the @c std::string for the "arc hyperbolic cosecant" function.
+     * Return the @c std::string representing the MathML "arc hyperbolic
+     * cosecant" function.
      *
-     * @return The @c std::string for the "arc hyperbolic cosecant" function.
+     * @return The @c std::string representing the MathML "arc hyperbolic
+     * cosecant" function.
      */
     std::string acschString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic cosecant" function.
-     *
-     * Set this @c std::string for the "arc hyperbolic cosecant" function.
-     *
-     * @param acschString The @c std::string to use for the "arc hyperbolic
+     * @brief Set the @c std::string representing the MathML "arc hyperbolic
      * cosecant" function.
+     *
+     * Set the @c std::string representing the MathML "arc hyperbolic cosecant"
+     * function.
+     *
+     * @param acschString The @c std::string representing the MathML "arc
+     * hyperbolic cosecant" function.
      */
     void setAcschString(const std::string &acschString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic cotangent"
-     * function.
+     * @brief Get the @c std::string representing the MathML "arc hyperbolic
+     * cotangent" function.
      *
-     * Return the @c std::string for the "arc hyperbolic cotangent" function.
+     * Return the @c std::string representing the MathML "arc hyperbolic
+     * cotangent" function.
      *
-     * @return The @c std::string for the "arc hyperbolic cotangent" function.
+     * @return The @c std::string representing the MathML "arc hyperbolic
+     * cotangent" function.
      */
     std::string acothString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic cotangent"
+     * @brief Set the @c std::string representing the MathML "arc hyperbolic
+     * cotangent" function.
+     *
+     * Set the @c std::string representing the MathML "arc hyperbolic cotangent"
      * function.
      *
-     * Set this @c std::string for the "arc hyperbolic cotangent" function.
-     *
-     * @param acothString The @c std::string to use for the "arc hyperbolic
-     * cotangent" function.
+     * @param acothString The @c std::string representing the MathML "arc
+     * hyperbolic cotangent" function.
      */
     void setAcothString(const std::string &acothString);
 
     // Piecewise statement.
 
     /**
-     * @brief Get the @c std::string for the "if" part of a "conditional"
-     * statement or operator.
+     * @brief Get the @c std::string representing the MathML "if" part of a
+     * "conditional" statement or operator.
      *
-     * Return the @c std::string for the "if" part of a "conditional" statement
-     * or operator.
+     * Return the @c std::string representing the MathML "if" part of a
+     * "conditional" statement or operator.
      *
-     * @return The @c std::string for the "if" part of a "conditional"
-     * statement or operator.
+     * @return The @c std::string representing the MathML "if" part of a
+     * "conditional" statement or operator.
      */
     std::string conditionalOperatorIfString() const;
 
     /**
-     * @brief Set the @c std::string for the "if" part of a "conditional"
-     * statement or operator.
+     * @brief Set the @c std::string representing the MathML "if" part of a
+     * "conditional" statement or operator.
      *
-     * Set this @c std::string for the "if" part of a "conditional" statement or
-     * operator.
+     * Set the @c std::string representing the MathML "if" part of a
+     * "conditional" statement or operator.
      *
-     * @param conditionalOperatorIfString The @c std::string to use for the "if"
-     * part of a "conditional" statement or operator.
+     * @param conditionalOperatorIfString The @c std::string representing the
+     * MathML "if" part of a "conditional" statement or operator.
      */
     void setConditionalOperatorIfString(const std::string &conditionalOperatorIfString);
 
     /**
-     * @brief Get the @c std::string for the "else" part of a "conditional"
-     * statement or operator.
+     * @brief Get the @c std::string representing the MathML "else" part of a
+     * "conditional" statement or operator.
      *
-     * Return the @c std::string for the "else" part of a "conditional"
-     * statement or operator.
+     * Return the @c std::string representing the MathML "else" part of a
+     * "conditional" statement or operator.
      *
-     * @return The @c std::string for the "else" part of a "conditional"
-     * statement or operator.
+     * @return The @c std::string representing the MathML "else" part of a
+     * "conditional" statement or operator.
      */
     std::string conditionalOperatorElseString() const;
 
     /**
-     * @brief Set the @c std::string for the "else" part of a "conditional"
-     * statement or operator.
+     * @brief Set the @c std::string representing the MathML "else" part of a
+     * "conditional" statement or operator.
      *
-     * Set this @c std::string for the "else" part of a "conditional" statement
-     * or operator.
+     * Set the @c std::string representing the MathML "else" part of a
+     * "conditional" statement or operator.
      *
-     * @param conditionalOperatorElseString The @c std::string to use for the
-     * "else" part of a "conditional" statement or operator.
+     * @param conditionalOperatorElseString The @c std::string representing the
+     * MathML "else" part of a "conditional" statement or operator.
      */
     void setConditionalOperatorElseString(const std::string &conditionalOperatorElseString);
 
     /**
-     * @brief Get the @c std::string for the "if" part of a "piecewise"
-     * statement.
+     * @brief Get the @c std::string representing the MathML "if" part of a
+     * "piecewise" statement.
      *
-     * Return the @c std::string for the "if" part of a "piecewise" statement.
+     * Return the @c std::string representing the MathML "if" part of a
+     * "piecewise" statement.
      *
-     * @return The @c std::string for the "if" part of a "piecewise" statement.
+     * @return The @c std::string representing the MathML "if" part of a
+     * "piecewise" statement.
      */
     std::string piecewiseIfString() const;
 
     /**
-     * @brief Set the @c std::string for the "if" part of a "piecewise"
+     * @brief Set the @c std::string representing the MathML "if" part of a
+     * "piecewise" statement.
+     *
+     * Set the @c std::string representing the MathML "if" part of a "piecewise"
      * statement.
      *
-     * Set this @c std::string for the "if" part of a "piecewise" statement.
-     *
-     * @param piecewiseIfString The @c std::string to use for the "if" part of a
-     * "piecewise" statement.
+     * @param piecewiseIfString The @c std::string representing the MathML "if"
+     * part of a "piecewise" statement.
      */
     void setPiecewiseIfString(const std::string &piecewiseIfString);
 
     /**
-     * @brief Get the @c std::string for the "else" part of a "piecewise"
-     * statement.
+     * @brief Get the @c std::string representing the MathML "else" part of a
+     * "piecewise" statement.
      *
-     * Return the @c std::string for the "else" part of a "piecewise" statement.
+     * Return the @c std::string representing the MathML "else" part of a
+     * "piecewise" statement.
      *
-     * @return The @c std::string for the "else" part of a "piecewise"
-     * statement.
+     * @return The @c std::string representing the MathML "else" part of a
+     * "piecewise" statement.
      */
     std::string piecewiseElseString() const;
 
     /**
-     * @brief Set the @c std::string for the "else" part of a "piecewise"
-     * statement.
+     * @brief Set the @c std::string representing the MathML "else" part of a
+     * "piecewise" statement.
      *
-     * Set this @c std::string for the "else" part of a "piecewise" statement.
+     * Set the @c std::string representing the MathML "else" part of a
+     * "piecewise" statement.
      *
-     * @param piecewiseElseString The @c std::string to use for the "else" part
-     * of a "piecewise" statement.
+     * @param piecewiseElseString The @c std::string representing the MathML
+     * "else" part of a "piecewise" statement.
      */
     void setPiecewiseElseString(const std::string &piecewiseElseString);
 
@@ -1408,574 +1567,638 @@ public:
     // Constants.
 
     /**
-     * @brief Get the @c std::string for "true".
+     * @brief Get the @c std::string representing the MathML "true" boolean.
      *
-     * Return the @c std::string for "true".
+     * Return the @c std::string representing the MathML "true" boolean.
      *
-     * @return The @c std::string for "true".
+     * @return The @c std::string representing the MathML "true" boolean.
      */
     std::string trueString() const;
 
     /**
-     * @brief Set the @c std::string for "true".
+     * @brief Set the @c std::string representing the MathML "true" boolean.
      *
-     * Set this @c std::string for "true".
+     * Set the @c std::string representing the MathML "true" boolean.
      *
-     * @param trueString The @c std::string to use for "true".
+     * @param trueString The @c std::string representing the MathML "true"
+     * boolean.
      */
     void setTrueString(const std::string &trueString);
 
     /**
-     * @brief Get the @c std::string for "false".
+     * @brief Get the @c std::string representing the MathML "false" boolean.
      *
-     * Return the @c std::string for "false".
+     * Return the @c std::string representing the MathML "false" boolean.
      *
-     * @return The @c std::string for "false".
+     * @return The @c std::string representing the MathML "false" boolean.
      */
     std::string falseString() const;
 
     /**
-     * @brief Set the @c std::string for "false".
+     * @brief Set the @c std::string representing the MathML "false" boolean.
      *
-     * Set this @c std::string for "false".
+     * Set the @c std::string representing the MathML "false" boolean.
      *
-     * @param falseString The @c std::string to use for "false".
+     * @param falseString The @c std::string representing the MathML "false"
+     * boolean.
      */
     void setFalseString(const std::string &falseString);
 
     /**
-     * @brief Get the @c std::string for Euler's number.
+     * @brief Get the @c std::string representing the MathML "Euler's number".
      *
-     * Return the @c std::string for Euler's number.
+     * Return the @c std::string representing the MathML "Euler's number".
      *
-     * @return The @c std::string for Euler's number.
+     * @return The @c std::string representing the MathML "Euler's number".
      */
     std::string eString() const;
 
     /**
-     * @brief Set the @c std::string for Euler's number.
+     * @brief Set the @c std::string representing the MathML "Euler's number".
      *
-     * Set this @c std::string for Euler's number.
+     * Set the @c std::string representing the MathML "Euler's number".
      *
-     * @param eString The @c std::string to use for Euler's number.
+     * @param eString The @c std::string representing the MathML "Euler's
+     * number".
      */
     void setEString(const std::string &eString);
 
     /**
-     * @brief Get the @c std::string for π.
+     * @brief Get the @c std::string representing the MathML "π" constant.
      *
-     * Return the @c std::string for π.
+     * Return the @c std::string representing the MathML "π" constant.
      *
-     * @return The @c std::string for π.
+     * @return The @c std::string representing the MathML "π" constant.
      */
     std::string piString() const;
 
     /**
-     * @brief Set the @c std::string for π.
+     * @brief Set the @c std::string representing the MathML "π" constant.
      *
-     * Set this @c std::string for π.
+     * Set the @c std::string representing the MathML "π" constant.
      *
-     * @param piString The @c std::string to use for π.
+     * @param piString The @c std::string representing the MathML "π" constant.
      */
     void setPiString(const std::string &piString);
 
     /**
-     * @brief Get the @c std::string for "infinity".
+     * @brief Get the @c std::string representing the MathML "infinity" value.
      *
-     * Return the @c std::string for "infinity".
+     * Return the @c std::string representing the MathML "infinity" value.
      *
-     * @return The @c std::string for "infinity".
+     * @return The @c std::string representing the MathML "infinity" value.
      */
     std::string infString() const;
 
     /**
-     * @brief Set the @c std::string for "infinity".
+     * @brief Set the @c std::string representing the MathML "infinity" value.
      *
-     * Set this @c std::string for "infinity".
+     * Set the @c std::string representing the MathML "infinity" value.
      *
-     * @param infString The @c std::string to use for "infinity".
+     * @param infString The @c std::string representing the MathML "infinity"
+     * value.
      */
     void setInfString(const std::string &infString);
 
     /**
-     * @brief Get the @c std::string for "not-a-number".
+     * @brief Get the @c std::string representing the MathML "not-a-number"
+     * value.
      *
-     * Return the @c std::string for "not-a-number".
+     * Return the @c std::string representing the MathML "not-a-number" value.
      *
-     * @return The @c std::string for "not-a-number".
+     * @return The @c std::string representing the MathML "not-a-number" value.
      */
     std::string nanString() const;
 
     /**
-     * @brief Set the @c std::string for "not-a-number".
+     * @brief Set the @c std::string representing the MathML "not-a-number"
+     * value.
      *
-     * Set this @c std::string for "not-a-number".
+     * Set the @c std::string representing the MathML "not-a-number" value.
      *
-     * @param nanString The @c std::string to use for "not-a-number".
+     * @param nanString The @c std::string representing the MathML
+     * "not-a-number" value.
      */
     void setNanString(const std::string &nanString);
 
     // Arithmetic functions.
 
     /**
-     * @brief Get the @c std::string for the "equal to" function.
+     * @brief Get the @c std::string for the "equal to" function implementation.
      *
-     * Return the @c std::string for the "equal to" function.
+     * Return the @c std::string for the "equal to" function implementation.
      *
-     * @return The @c std::string for the "equal to" function.
+     * @return The @c std::string for the "equal to" function implementation.
      */
     std::string eqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "equal to" function.
+     * @brief Set the @c std::string for the "equal to" function implementation.
      *
-     * Set this @c std::string for the "equal to" function.
+     * Set the @c std::string for the "equal to" function implementation.
      *
-     * @param eqFunctionString The @c std::string to use for the "equal to"
-     * function.
+     * @param eqFunctionString The @c std::string for the "equal to" function
+     * implementation.
      */
     void setEqFunctionString(const std::string &eqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "not equal to" function.
+     * @brief Get the @c std::string for the "not equal to" function
+     * implementation.
      *
-     * Return the @c std::string for the "not equal to" function.
+     * Return the @c std::string for the "not equal to" function implementation.
      *
-     * @return The @c std::string for the "not equal to" function.
+     * @return The @c std::string for the "not equal to" function
+     * implementation.
      */
     std::string neqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "not equal to" function.
+     * @brief Set the @c std::string for the "not equal to" function
+     * implementation.
      *
-     * Set this @c std::string for the "not equal to" function.
+     * Set the @c std::string for the "not equal to" function implementation.
      *
-     * @param neqFunctionString The @c std::string to use for the "not equal to"
-     * function.
+     * @param neqFunctionString The @c std::string for the "not
+     * equal to" function implementation.
      */
     void setNeqFunctionString(const std::string &neqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "less than" function.
+     * @brief Get the @c std::string for the "less than" function
+     * implementation.
      *
-     * Return the @c std::string for the "less than" function.
+     * Return the @c std::string for the "less than" function implementation.
      *
-     * @return The @c std::string for the "less than" function.
+     * @return The @c std::string for the "less than" function implementation.
      */
     std::string ltFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "less than" function.
+     * @brief Set the @c std::string for the "less than" function
+     * implementation.
      *
-     * Set this @c std::string for the "less than" function.
+     * Set the @c std::string for the "less than" function implementation.
      *
-     * @param ltFunctionString The @c std::string to use for the "less than"
-     * function.
+     * @param ltFunctionString The @c std::string for the "less than" function
+     * implementation.
      */
     void setLtFunctionString(const std::string &ltFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "less than or equal to" function.
+     * @brief Get the @c std::string for the "less than or equal to" function
+     * implementation.
      *
-     * Return the @c std::string for the "less than or equal to" function.
+     * Return the @c std::string for the "less than or equal to" function
+     * implementation.
      *
-     * @return The @c std::string for the "less than or equal to" function.
+     * @return The @c std::string for the "less than or equal to" function
+     * implementation.
      */
     std::string leqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "less than or equal to" function.
+     * @brief Set the @c std::string for the "less than or equal to" function
+     * implementation.
      *
-     * Set this @c std::string for the "less than or equal to" function.
+     * Set the @c std::string for the "less than or equal to" function
+     * implementation.
      *
-     * @param leqFunctionString The @c std::string to use for the "less than or
-     * equal to" function.
+     * @param leqFunctionString The @c std::string for the "less than or equal
+     * to" function implementation.
      */
     void setLeqFunctionString(const std::string &leqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "greater than" function.
+     * @brief Get the @c std::string for the "greater than" function
+     * implementation.
      *
-     * Return the @c std::string for the "greater than" function.
+     * Return the @c std::string for the "greater than" function implementation.
      *
-     * @return The @c std::string for the "greater than" function.
+     * @return The @c std::string for the "greater than" function
+     * implementation.
      */
     std::string gtFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "greater than" function.
+     * @brief Set the @c std::string for the "greater than" function
+     * implementation.
      *
-     * Set this @c std::string for the "greater than" function.
+     * Set the @c std::string for the "greater than" function implementation.
      *
-     * @param gtFunctionString The @c std::string to use for the "greater than"
-     * function.
+     * @param gtFunctionString The @c std::string for the "greater than"
+     * function implementation.
      */
     void setGtFunctionString(const std::string &gtFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "greater than or equal to"
-     * function.
+     * @brief Get the @c std::string for the "greater than or equal to" function
+     * implementation.
      *
-     * Return the @c std::string for the "greater than or equal to" function.
+     * Return the @c std::string for the "greater than or equal to" function
+     * implementation.
      *
-     * @return The @c std::string for the "greater than or equal to" function.
+     * @return The @c std::string for the "greater than or equal to" function
+     * implementation.
      */
     std::string geqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "greater than or equal to"
-     * function.
+     * @brief Set the @c std::string for the "greater than or equal to" function
+     * implementation.
      *
-     * Set this @c std::string for the "greater than or equal to" function.
+     * Set the @c std::string for the "greater than or equal to" function
+     * implementation.
      *
-     * @param geqFunctionString The @c std::string to use for the "greater than
-     * or equal to" function.
+     * @param geqFunctionString The @c std::string for the "greater than or
+     * equal to" function implementation.
      */
     void setGeqFunctionString(const std::string &geqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "and" function.
+     * @brief Get the @c std::string for the "and" function implementation.
      *
-     * Return the @c std::string for the "and" function.
+     * Return the @c std::string for the "and" function implementation.
      *
-     * @return The @c std::string for the "and" function.
+     * @return The @c std::string for the "and" function implementation.
      */
     std::string andFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "and" function.
+     * @brief Set the @c std::string for the "and" function implementation.
      *
-     * Set this @c std::string for the "and" function.
+     * Set the @c std::string for the "and" function implementation.
      *
-     * @param andFunctionString The @c std::string to use for the "and" function.
+     * @param andFunctionString The @c std::string for the "and"
+     * function implementation.
      */
     void setAndFunctionString(const std::string &andFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "or" function.
+     * @brief Get the @c std::string for the "or" function implementation.
      *
-     * Return the @c std::string for the "or" function.
+     * Return the @c std::string for the "or" function implementation.
      *
-     * @return The @c std::string for the "or" function.
+     * @return The @c std::string for the "or" function implementation.
      */
     std::string orFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "or" function.
+     * @brief Set the @c std::string for the "or" function implementation.
      *
-     * Set this @c std::string for the "or" function.
+     * Set the @c std::string for the "or" function implementation.
      *
-     * @param orFunctionString The @c std::string to use for the "or" function.
+     * @param orFunctionString The @c std::string for the "or"
+     * function implementation.
      */
     void setOrFunctionString(const std::string &orFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "exclusive or" function.
+     * @brief Get the @c std::string for the "exclusive or" function
+     * implementation.
      *
-     * Return the @c std::string for the "exclusive or" function.
+     * Return the @c std::string for the "exclusive or" function implementation.
      *
-     * @return The @c std::string for the "exclusive or" function.
+     * @return The @c std::string for the "exclusive or" function
+     * implementation.
      */
     std::string xorFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "exclusive or" function.
+     * @brief Set the @c std::string for the "exclusive or" function
+     * implementation.
      *
-     * Set this @c std::string for the "exclusive or" function.
+     * Set the @c std::string for the "exclusive or" function implementation.
      *
-     * @param xorFunctionString The @c std::string to use for the "exclusive or"
-     * function.
+     * @param xorFunctionString The @c std::string for the "exclusive or"
+     * function implementation.
      */
     void setXorFunctionString(const std::string &xorFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "not" function.
+     * @brief Get the @c std::string for the "not" function implementation.
      *
-     * Return the @c std::string for the "not" function.
+     * Return the @c std::string for the "not" function implementation.
      *
-     * @return The @c std::string for the "not" function.
+     * @return The @c std::string for the "not" function implementation.
      */
     std::string notFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "not" function.
+     * @brief Set the @c std::string for the "not" function implementation.
      *
-     * Set this @c std::string for the "not" function.
+     * Set the @c std::string for the "not" function implementation.
      *
-     * @param notFunctionString The @c std::string to use for the "not"
-     * function.
+     * @param notFunctionString The @c std::string for the "not" function
+     * implementation.
      */
     void setNotFunctionString(const std::string &notFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "minimum" function.
+     * @brief Get the @c std::string for the "minimum" function implementation.
      *
-     * Return the @c std::string for the "minimum" function.
+     * Return the @c std::string for the "minimum" function implementation.
      *
-     * @return The @c std::string for the "minimum" function.
+     * @return The @c std::string for the "minimum" function implementation.
      */
     std::string minFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "minimum" function.
+     * @brief Set the @c std::string for the "minimum" function implementation.
      *
-     * Set this @c std::string for the "minimum" function.
+     * Set the @c std::string for the "minimum" function implementation.
      *
-     * @param minFunctionString The @c std::string to use for the "minimum"
-     * function.
+     * @param minFunctionString The @c std::string for the "minimum" function
+     * implementation.
      */
     void setMinFunctionString(const std::string &minFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "maximum" function.
+     * @brief Get the @c std::string for the "maximum" function implementation.
      *
-     * Return the @c std::string for the "maximum" function.
+     * Return the @c std::string for the "maximum" function implementation.
      *
-     * @return The @c std::string for the "maximum" function.
+     * @return The @c std::string for the "maximum" function implementation.
      */
     std::string maxFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "maximum" function.
+     * @brief Set the @c std::string for the "maximum" function implementation.
      *
-     * Set this @c std::string for the "maximum" function.
+     * Set the @c std::string for the "maximum" function implementation.
      *
-     * @param maxFunctionString The @c std::string to use for the "maximum"
-     * function.
+     * @param maxFunctionString The @c std::string for the "maximum" function
+     * implementation.
      */
     void setMaxFunctionString(const std::string &maxFunctionString);
 
-    // Trigonometric functions.
+    // Trigonometric function implementations.
 
     /**
-     * @brief Get the @c std::string for the "secant" function.
+     * @brief Get the @c std::string for the "secant" function implementation.
      *
-     * Return the @c std::string for the "secant" function.
+     * Return the @c std::string for the "secant" function implementation.
      *
-     * @return The @c std::string for the "secant" function.
+     * @return The @c std::string for the "secant" function implementation.
      */
     std::string secFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "secant" function.
+     * @brief Set the @c std::string for the "secant" function implementation.
      *
-     * Set this @c std::string for the "secant" function.
+     * Set the @c std::string for the "secant" function implementation.
      *
-     * @param secFunctionString The @c std::string to use for the "secant"
-     * function.
+     * @param secFunctionString The @c std::string for the "secant" function
+     * implementation.
      */
     void setSecFunctionString(const std::string &secFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "cosecant" function.
+     * @brief Get the @c std::string for the "cosecant" function implementation.
      *
-     * Return the @c std::string for the "cosecant" function.
+     * Return the @c std::string for the "cosecant" function implementation.
      *
-     * @return The @c std::string for the "cosecant" function.
+     * @return The @c std::string for the "cosecant" function implementation.
      */
     std::string cscFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "cosecant" function.
+     * @brief Set the @c std::string for the "cosecant" function implementation.
      *
-     * Set this @c std::string for the "cosecant" function.
+     * Set the @c std::string for the "cosecant" function implementation.
      *
-     * @param cscFunctionString The @c std::string to use for the "cosecant"
-     * function.
+     * @param cscFunctionString The @c std::string for the "cosecant" function
+     * implementation.
      */
     void setCscFunctionString(const std::string &cscFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "cotangent" function.
+     * @brief Get the @c std::string for the "cotangent" function
+     * implementation.
      *
-     * Return the @c std::string for the "cotangent" function.
+     * Return the @c std::string for the "cotangent" function implementation.
      *
-     * @return The @c std::string for the "cotangent" function.
+     * @return The @c std::string for the "cotangent" function implementation.
      */
     std::string cotFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "cotangent" function.
+     * @brief Set the @c std::string for the "cotangent" function
+     * implementation.
      *
-     * Set this @c std::string for the "cotangent" function.
+     * Set the @c std::string for the "cotangent" function implementation.
      *
-     * @param cotFunctionString The @c std::string to use for the "cotangent"
-     * function.
+     * @param cotFunctionString The @c std::string for the "cotangent" function
+     * implementation.
      */
     void setCotFunctionString(const std::string &cotFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic secant" function.
+     * @brief Get the @c std::string for the "hyperbolic secant" function
+     * implementation.
      *
-     * Return the @c std::string for the "hyperbolic secant" function.
+     * Return the @c std::string for the "hyperbolic secant" function
+     * implementation.
      *
-     * @return The @c std::string for the "hyperbolic secant" function.
+     * @return The @c std::string for the "hyperbolic secant" function
+     * implementation.
      */
     std::string sechFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic secant" function.
+     * @brief Set the @c std::string for the "hyperbolic secant" function
+     * implementation.
      *
-     * Set this @c std::string for the "hyperbolic secant" function.
+     * Set the @c std::string for the "hyperbolic secant" function
+     * implementation.
      *
-     * @param sechFunctionString The @c std::string to use for the "hyperbolic
-     * secant" function.
+     * @param sechFunctionString The @c std::string for the "hyperbolic secant"
+     * function implementation.
      */
     void setSechFunctionString(const std::string &sechFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic cosecant" function.
+     * @brief Get the @c std::string for the "hyperbolic cosecant" function
+     * implementation.
      *
-     * Return the @c std::string for the "hyperbolic cosecant" function.
+     * Return the @c std::string for the "hyperbolic cosecant" function
+     * implementation.
      *
-     * @return The @c std::string for the "hyperbolic cosecant" function.
+     * @return The @c std::string for the "hyperbolic cosecant" function
+     * implementation.
      */
     std::string cschFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic cosecant" function.
+     * @brief Set the @c std::string for the "hyperbolic cosecant" function
+     * implementation.
      *
-     * Set this @c std::string for the "hyperbolic cosecant" function.
+     * Set the @c std::string for the "hyperbolic cosecant" function
+     * implementation.
      *
-     * @param cschFunctionString The @c std::string to use for the "hyperbolic
-     * cosecant" function.
+     * @param cschFunctionString The @c std::string for the "hyperbolic
+     * cosecant" function implementation.
      */
     void setCschFunctionString(const std::string &cschFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "hyperbolic cotangent" function.
+     * @brief Get the @c std::string for the "hyperbolic cotangent" function
+     * implementation.
      *
-     * Return the @c std::string for the "hyperbolic cotangent" function.
+     * Return the @c std::string for the "hyperbolic cotangent" function
+     * implementation.
      *
-     * @return The @c std::string for the "hyperbolic cotangent" function.
+     * @return The @c std::string for the "hyperbolic cotangent" function
+     * implementation.
      */
     std::string cothFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "hyperbolic cotangent" function.
+     * @brief Set the @c std::string for the "hyperbolic cotangent" function
+     * implementation.
      *
-     * Set this @c std::string for the "hyperbolic cotangent" function.
+     * Set the @c std::string for the "hyperbolic cotangent" function
+     * implementation.
      *
-     * @param cothFunctionString The @c std::string to use for the "hyperbolic
-     * cotangent" function.
+     * @param cothFunctionString The @c std::string for the "hyperbolic
+     * cotangent" function implementation.
      */
     void setCothFunctionString(const std::string &cothFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "arc secant" function.
+     * @brief Get the @c std::string for the "arc secant" function
+     * implementation.
      *
-     * Return the @c std::string for the "arc secant" function.
+     * Return the @c std::string for the "arc secant" function implementation.
      *
-     * @return The @c std::string for the "arc secant" function.
+     * @return The @c std::string for the "arc secant" function implementation.
      */
     std::string asecFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc secant" function.
+     * @brief Set the @c std::string for the "arc secant" function
+     * implementation.
      *
-     * Set this @c std::string for the "arc secant" function.
+     * Set the @c std::string for the "arc secant" function implementation.
      *
-     * @param asecFunctionString The @c std::string to use for the "arc secant"
-     * function.
+     * @param asecFunctionString The @c std::string for the "arc secant"
+     * function implementation.
      */
     void setAsecFunctionString(const std::string &asecFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "arc cosecant" function.
+     * @brief Get the @c std::string for the "arc cosecant" function
+     * implementation.
      *
-     * Return the @c std::string for the "arc cosecant" function.
+     * Return the @c std::string for the "arc cosecant" function implementation.
      *
-     * @return The @c std::string for the "arc cosecant" function.
+     * @return The @c std::string for the "arc cosecant" function
+     * implementation.
      */
     std::string acscFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc cosecant" function.
+     * @brief Set the @c std::string for the "arc cosecant" function
+     * implementation.
      *
-     * Set this @c std::string for the "arc cosecant" function.
+     * Set the @c std::string for the "arc cosecant" function implementation.
      *
-     * @param acscFunctionString The @c std::string to use for the "arc
-     * cosecant" function.
+     * @param acscFunctionString The @c std::string for the "arc cosecant"
+     * function implementation.
      */
     void setAcscFunctionString(const std::string &acscFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "arc cotangent" function.
+     * @brief Get the @c std::string for the "arc cotangent" function
+     * implementation.
      *
-     * Return the @c std::string for the "arc cotangent" function.
+     * Return the @c std::string for the "arc cotangent" function
+     * implementation.
      *
-     * @return The @c std::string for the "arc cotangent" function.
+     * @return The @c std::string for the "arc cotangent" function
+     * implementation.
      */
     std::string acotFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc cotangent" function.
+     * @brief Set the @c std::string for the "arc cotangent" function implementation.
      *
-     * Set this @c std::string for the "arc cotangent" function.
+     * Set the @c std::string for the "arc cotangent" function implementation.
      *
-     * @param acotFunctionString The @c std::string to use for the "arc
-     * cotangent" function.
+     * @param acotFunctionString The @c std::string for the "arc cotangent"
+     * function implementation.
      */
     void setAcotFunctionString(const std::string &acotFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic secant" function.
+     * @brief Get the @c std::string for the "arc hyperbolic secant" function
+     * implementation.
      *
-     * Return the @c std::string for the "arc hyperbolic secant" function.
+     * Return the @c std::string for the "arc hyperbolic secant" function
+     * implementation.
      *
-     * @return The @c std::string for the "arc hyperbolic secant" function.
+     * @return The @c std::string for the "arc hyperbolic secant" function
+     * implementation.
      */
     std::string asechFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic secant" function.
+     * @brief Set the @c std::string for the "arc hyperbolic secant" function
+     * implementation.
      *
-     * Set this @c std::string for the "arc hyperbolic secant" function.
+     * Set the @c std::string for the "arc hyperbolic secant" function
+     * implementation.
      *
-     * @param asechFunctionString The @c std::string to use for the "arc
-     * hyperbolic secant" function.
+     * @param asechFunctionString The @c std::string for the "arc hyperbolic
+     * secant" function implementation.
      */
     void setAsechFunctionString(const std::string &asechFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic cosecant"
-     * function.
+     * @brief Get the @c std::string for the "arc hyperbolic cosecant" function
+     * implementation.
      *
-     * Return the @c std::string for the "arc hyperbolic cosecant" function.
+     * Return the @c std::string for the "arc hyperbolic cosecant" function
+     * implementation.
      *
-     * @return The @c std::string for the "arc hyperbolic cosecant" function.
+     * @return The @c std::string for the "arc hyperbolic cosecant" function
+     * implementation.
      */
     std::string acschFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic cosecant"
-     * function.
+     * @brief Set the @c std::string for the "arc hyperbolic cosecant" function
+     * implementation.
      *
-     * Set this @c std::string for the "arc hyperbolic cosecant" function.
+     * Set the @c std::string for the "arc hyperbolic cosecant" function
+     * implementation.
      *
-     * @param acschFunctionString The @c std::string to use for the "arc
-     * hyperbolic cosecant" function.
+     * @param acschFunctionString The @c std::string for the "arc hyperbolic
+     * cosecant" function implementation.
      */
     void setAcschFunctionString(const std::string &acschFunctionString);
 
     /**
-     * @brief Get the @c std::string for the "arc hyperbolic cotangent"
-     * function.
+     * @brief Get the @c std::string for the "arc hyperbolic cotangent" function
+     * implementation.
      *
-     * Return the @c std::string for the "arc hyperbolic cotangent" function.
+     * Return the @c std::string for the "arc hyperbolic cotangent" function
+     * implementation.
      *
-     * @return The @c std::string for the "arc hyperbolic cotangent" function.
+     * @return The @c std::string for the "arc hyperbolic cotangent" function
+     * implementation.
      */
     std::string acothFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the "arc hyperbolic cotangent"
-     * function.
+     * @brief Set the @c std::string for the "arc hyperbolic cotangent" function
+     * implementation.
      *
-     * Set this @c std::string for the "arc hyperbolic cotangent" function.
+     * Set the @c std::string for the "arc hyperbolic cotangent" function
+     * implementation.
      *
-     * @param acothFunctionString The @c std::string to use for the "arc
-     * hyperbolic cotangent" function.
+     * @param acothFunctionString The @c std::string for the "arc hyperbolic
+     * cotangent" function implementation.
      */
     void setAcothFunctionString(const std::string &acothFunctionString);
 
@@ -1993,7 +2216,7 @@ public:
     /**
      * @brief Set the @c std::string for a comment.
      *
-     * Set this @c std::string for a comment. To be useful, the string should
+     * Set the @c std::string for a comment. To be useful, the string should
      * contain the <CODE> tag, which will be replaced with a (proper) comment.
      *
      * @param commentString The @c std::string to use for a comment.
@@ -2012,7 +2235,7 @@ public:
     /**
      * @brief Set the @c std::string for an origin comment.
      *
-     * Set this @c std::string for an origin comment. To be useful, the string
+     * Set the @c std::string for an origin comment. To be useful, the string
      * should contain the <PROFILE_INFORMATION> and <LIBCELLML_VERSION> tags,
      * which will be replaced with some profile information and the version of
      * libCellML used.
@@ -2034,7 +2257,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface file name.
      *
-     * Set this @c std::string for the interface file name.
+     * Set the @c std::string for the interface file name.
      *
      * @param interfaceFileNameString The @c std::string to use the interface
      * file name.
@@ -2053,7 +2276,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface of a header.
      *
-     * Set this @c std::string for the interface of a header.
+     * Set the @c std::string for the interface of a header.
      *
      * @param interfaceHeaderString The @c std::string to use the interface of a
      * header.
@@ -2072,7 +2295,7 @@ public:
     /**
      * @brief Set the @c std::string for an implementation header.
      *
-     * Set this @c std::string for an implementation header.
+     * Set the @c std::string for an implementation header.
      *
      * @param implementationHeaderString The @c std::string to use for an
      * implementation header.
@@ -2091,7 +2314,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface of the version constant.
      *
-     * Set this @c std::string for the interface of the version constant.
+     * Set the @c std::string for the interface of the version constant.
      *
      * @param interfaceVersionString The @c std::string to use for the interface
      * of the version constant.
@@ -2113,7 +2336,7 @@ public:
      * @brief Set the @c std::string for the implementation of the version
      * constant.
      *
-     * Set this @c std::string for the implementation of the version constant.
+     * Set the @c std::string for the implementation of the version constant.
      *
      * @param implementationVersionString The @c std::string to use for the
      * implementation of the version constant.
@@ -2136,7 +2359,7 @@ public:
      * @brief Set the @c std::string for the interface of the libCellML version
      * constant.
      *
-     * Set this @c std::string for the interface of the libCellML version
+     * Set the @c std::string for the interface of the libCellML version
      * constant.
      *
      * @param interfaceLibcellmlVersionString The @c std::string to use for the
@@ -2160,7 +2383,7 @@ public:
      * @brief Set the @c std::string for the implementation of the libCellML
      * version constant.
      *
-     * Set this @c std::string for the implementation of the libCellML version
+     * Set the @c std::string for the implementation of the libCellML version
      * constant. To be useful, the string should contain the <LIBCELLML_VERSION>
      * tag, which will be replaced with the version of libCellML used.
      *
@@ -2183,7 +2406,7 @@ public:
      * @brief Set the @c std::string for the interface of the state count
      * constant.
      *
-     * Set this @c std::string for the interface of the state count constant.
+     * Set the @c std::string for the interface of the state count constant.
      *
      * @param interfaceStateCountString The @c std::string to use for the
      * interface of the state count constant.
@@ -2206,7 +2429,7 @@ public:
      * @brief Set the @c std::string for the implementation of the state count
      * constant.
      *
-     * Set this @c std::string for the implementation of the state count
+     * Set the @c std::string for the implementation of the state count
      * constant. To be useful, the string should contain the <STATE_COUNT> tag,
      * which will be replaced with the number of states in the model.
      *
@@ -2231,7 +2454,7 @@ public:
      * @brief Set the @c std::string for the interface of the variable count
      * constant.
      *
-     * Set this @c std::string for the interface of the variable count constant.
+     * Set the @c std::string for the interface of the variable count constant.
      *
      * @param interfaceVariableCountString The @c std::string to use for the
      * interface of the variable count constant.
@@ -2254,7 +2477,7 @@ public:
      * @brief Set the @c std::string for the implementation of the variable
      * count constant.
      *
-     * Set this @c std::string for the implementation of the variable count
+     * Set the @c std::string for the implementation of the variable count
      * constant. To be useful, the string should contain the <VARIABLE_COUNT>
      * tag, which will be replaced with the number of states in the model.
      *
@@ -2279,8 +2502,8 @@ public:
      * @brief Set the @c std::string for the data structure for the variable
      * type object.
      *
-     * Set this @c std::string for the data structure for the variable
-     * type object.
+     * Set the @c std::string for the data structure for the variable type
+     * object.
      *
      * @param variableTypeObjectString The @c std::string to use for the data
      * structure for the variable type object.
@@ -2299,7 +2522,7 @@ public:
     /**
      * @brief Set the @c std::string for the name of the constant variable type.
      *
-     * Set this @c std::string for the name of the constant variable type.
+     * Set the @c std::string for the name of the constant variable type.
      *
      * @param statesArrayString The @c std::string to use for the name of the
      * constant variable type.
@@ -2322,7 +2545,7 @@ public:
      * @brief Set the @c std::string for the name of the computed constant
      * variable type.
      *
-     * Set this @c std::string for the name of the computed constant variable
+     * Set the @c std::string for the name of the computed constant variable
      * type.
      *
      * @param statesArrayString The @c std::string to use for the name of the
@@ -2344,7 +2567,7 @@ public:
      * @brief Set the @c std::string for the name of the algebraic variable
      * type.
      *
-     * Set this @c std::string for the name of the algebraic variable type.
+     * Set the @c std::string for the name of the algebraic variable type.
      *
      * @param statesArrayString The @c std::string to use for the name of the
      * algebraic variable type.
@@ -2367,7 +2590,7 @@ public:
      * @brief Set the @c std::string for the data structure for the variable
      * information object.
      *
-     * Set this @c std::string for the data structure for the variable
+     * Set the @c std::string for the data structure for the variable
      * information object. To be useful, the string should contain the
      * <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be
      * replaced with the maximum size of a string for holding the name of a
@@ -2394,7 +2617,7 @@ public:
      * @brief Set the @c std::string for the data structure for the variable
      * information (incl. its type) object.
      *
-     * Set this @c std::string for the data structure for the variable
+     * Set the @c std::string for the data structure for the variable
      * information (incl. its type) object. To be useful, the string should
      * contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which
      * will be replaced with the maximum size of a string for holding the name
@@ -2421,7 +2644,7 @@ public:
      * @brief Set the @c std::string for the interface of some information about
      * the variable of integration.
      *
-     * Set this @c std::string for the interface of some information about the
+     * Set the @c std::string for the interface of some information about the
      * variable of integration.
      *
      * @param interfaceVoiInfoString The @c std::string to use for the interface
@@ -2445,7 +2668,7 @@ public:
      * @brief Set the @c std::string for the implementation of some information
      * about the variable of integration.
      *
-     * Set this @c std::string for the implementation of some information about
+     * Set the @c std::string for the implementation of some information about
      * the variable of integration. To be useful, the string should contain the
      * <CODE> tag, which will be replaced with some information about the
      * variable of integration.
@@ -2471,7 +2694,7 @@ public:
      * @brief Set the @c std::string for the interface of some information about
      * the different states.
      *
-     * Set this @c std::string for the interface of some information about the
+     * Set the @c std::string for the interface of some information about the
      * different states.
      *
      * @param interfaceStateInfoString The @c std::string to use for the
@@ -2495,7 +2718,7 @@ public:
      * @brief Set the @c std::string for the implementation of some information
      * about the different states.
      *
-     * Set this @c std::string for the implementation of some information about
+     * Set the @c std::string for the implementation of some information about
      * the different states. To be useful, the string should contain the <CODE>
      * tag, which will be replaced with some information about the different
      * states.
@@ -2521,7 +2744,7 @@ public:
      * @brief Set the @c std::string for the interface of some information about
      * the different variables.
      *
-     * Set this @c std::string for the interface of some information about the
+     * Set the @c std::string for the interface of some information about the
      * different variables.
      *
      * @param interfaceVariableInfoString The @c std::string to use for the
@@ -2545,7 +2768,7 @@ public:
      * @brief Set the @c std::string for the implementation of some information
      * about the different variables.
      *
-     * Set this @c std::string for the implementation of some information about
+     * Set the @c std::string for the implementation of some information about
      * the different variables. To be useful, the string should contain the
      * <CODE> tag, which will be replaced with some information about the
      * different variables.
@@ -2571,7 +2794,7 @@ public:
      * @brief Set the @c std::string for an entry in an array for some
      * information about a variable.
      *
-     * Set this @c std::string for an entry in an array for some information
+     * Set the @c std::string for an entry in an array for some information
      * about a variable. To be useful, the string should contain the
      * <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the
      * name of the component, name and units of a variable.
@@ -2597,7 +2820,7 @@ public:
      * @brief Set the @c std::string for an entry in an array for some
      * information about a variable (incl. its type).
      *
-     * Set this @c std::string for an entry in an array for some information
+     * Set the @c std::string for an entry in an array for some information
      * about a variable (incl. its type). To be useful, the string should
      * contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced
      * with the name of the component, name and units of a variable.
@@ -2621,7 +2844,7 @@ public:
      * @brief Set the @c std::string for the name of the variable of
      * integration.
      *
-     * Set this @c std::string for the name of the variable of integration.
+     * Set the @c std::string for the name of the variable of integration.
      *
      * @param voiString The @c std::string to use for the name of the variable
      * of integration.
@@ -2640,7 +2863,7 @@ public:
     /**
      * @brief Set the @c std::string for the name of the states array.
      *
-     * Set this @c std::string for the name of the states array.
+     * Set the @c std::string for the name of the states array.
      *
      * @param statesArrayString The @c std::string to use for the name of the
      * states array.
@@ -2659,7 +2882,7 @@ public:
     /**
      * @brief Set the @c std::string for the name of the rates array.
      *
-     * Set this @c std::string for the name of the rates array.
+     * Set the @c std::string for the name of the rates array.
      *
      * @param ratesArrayString The @c std::string to use for the name of the
      * rates array.
@@ -2678,7 +2901,7 @@ public:
     /**
      * @brief Set the @c std::string for the name of the variables array.
      *
-     * Set this @c std::string for the name of the variables array.
+     * Set the @c std::string for the name of the variables array.
      *
      * @param variablesArrayString The @c std::string to use for the name of the
      * variables array.
@@ -2722,8 +2945,7 @@ public:
      * @brief Set the @c std::string for the implementation to create the states
      * array.
      *
-     * Set this @c std::string for the implementation to create the states
-     * array.
+     * Set the @c std::string for the implementation to create the states array.
      *
      * @param implementationCreateStatesArrayMethodString The @c std::string to
      * use for the implementation to create the states array.
@@ -2744,7 +2966,7 @@ public:
      * @brief Set the @c std::string for the interface to create variables
      * array.
      *
-     * Set this @c std::string for the interface to create variables array.
+     * Set the @c std::string for the interface to create variables array.
      *
      * @param interfaceCreateVariablesArrayMethodString The @c std::string to
      * use for the interface to create variables array.
@@ -2767,7 +2989,7 @@ public:
      * @brief Set the @c std::string for the implementation to create the
      * variables array.
      *
-     * Set this @c std::string for the implementation to create the variables
+     * Set the @c std::string for the implementation to create the variables
      * array.
      *
      * @param implementationCreateVariablesArrayMethodString The @c std::string
@@ -2787,7 +3009,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface to delete an array.
      *
-     * Set this @c std::string for the interface to delete an array.
+     * Set the @c std::string for the interface to delete an array.
      *
      * @param interfaceDeleteArrayMethodString The @c std::string to use for the
      * interface to delete an array.
@@ -2806,7 +3028,7 @@ public:
     /**
      * @brief Set the @c std::string for the implementation to delete an array.
      *
-     * Set this @c std::string for the implementation to delete an array.
+     * Set the @c std::string for the implementation to delete an array.
      *
      * @param implementationDeleteArrayMethodString The @c std::string to use
      * for the implementation to delete an array.
@@ -2829,7 +3051,7 @@ public:
      * @brief Set the @c std::string for the interface to initialise states and
      * constants.
      *
-     * Set this @c std::string for the interface to initialise states and
+     * Set the @c std::string for the interface to initialise states and
      * constants.
      *
      * @param interfaceInitialiseStatesAndConstantsMethodString The
@@ -2854,7 +3076,7 @@ public:
      * @brief Set the @c std::string for the implementation to initialise states
      * and constants.
      *
-     * Set this @c std::string for the implementation to initialise states and
+     * Set the @c std::string for the implementation to initialise states and
      * constants. To be useful, the string should contain the <CODE> tag, which
      * will be replaced with some code to initialise states and constants.
      *
@@ -2880,7 +3102,7 @@ public:
      * @brief Set the @c std::string for the interface to compute computed
      * constants.
      *
-     * Set this @c std::string for the interface to compute computed constants.
+     * Set the @c std::string for the interface to compute computed constants.
      *
      * @param interfaceComputeComputedConstantsMethodString The @c std::string
      * to use for the interface to compute computed constants.
@@ -2903,7 +3125,7 @@ public:
      * @brief Set the @c std::string for the implementation to compute computed
      * constants.
      *
-     * Set this @c std::string for the implementation to compute computed
+     * Set the @c std::string for the implementation to compute computed
      * constants. To be useful, the string should contain the <CODE> tag, which
      * will be replaced with some code to compute computed constants.
      *
@@ -2925,7 +3147,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface to compute rates.
      *
-     * Set this @c std::string for the interface to compute rates.
+     * Set the @c std::string for the interface to compute rates.
      *
      * @param interfaceComputeRatesMethodString The @c std::string to use for
      * the interface to compute rates.
@@ -2944,7 +3166,7 @@ public:
     /**
      * @brief Set the @c std::string for the implementation to compute rates.
      *
-     * Set this @c std::string for the implementation to compute rates. To be
+     * Set the @c std::string for the implementation to compute rates. To be
      * useful, the string should contain the <CODE> tag, which will be replaced
      * with a parameter for some code to compute rates.
      *
@@ -2965,7 +3187,7 @@ public:
     /**
      * @brief Set the @c std::string for the interface to compute variables.
      *
-     * Set this @c std::string for the interface to compute variables.
+     * Set the @c std::string for the interface to compute variables.
      *
      * @param interfaceComputeVariablesMethodString The @c std::string to use
      * for the interface to compute variables.
@@ -2986,9 +3208,9 @@ public:
      * @brief Set the @c std::string for the implementation to compute
      * variables.
      *
-     * Set this @c std::string for the implementation to compute variables. To
-     * be useful, the string should contain the <CODE> tag, which will be
-     * replaced with a parameter for some code to compute rates.
+     * Set the @c std::string for the implementation to compute variables. To be
+     * useful, the string should contain the <CODE> tag, which will be replaced
+     * with a parameter for some code to compute rates.
      *
      * @param implementationComputeVariablesMethodString The @c std::string to
      * use for the implementation to compute variables.
@@ -3007,7 +3229,7 @@ public:
     /**
      * @brief Set the @c std::string for an empty method.
      *
-     * Set this @c std::string for an empty method.
+     * Set the @c std::string for an empty method.
      *
      * @param emptyMethodString The @c std::string to use for an empty method.
      */
@@ -3025,7 +3247,7 @@ public:
     /**
      * @brief Set the @c std::string for an indent.
      *
-     * Set this @c std::string for an indent.
+     * Set the @c std::string for an indent.
      *
      * @param indentString The @c std::string to use for an indent.
      */
@@ -3043,7 +3265,7 @@ public:
     /**
      * @brief Set the @c std::string for opening an array initialiser.
      *
-     * Set this @c std::string for opening an array initialiser.
+     * Set the @c std::string for opening an array initialiser.
      *
      * @param openArrayInitialiserString The @c std::string to use for opening
      * an array initialiser.
@@ -3062,7 +3284,7 @@ public:
     /**
      * @brief Set the @c std::string for closing an array initialiser.
      *
-     * Set this @c std::string for closing an array initialiser.
+     * Set the @c std::string for closing an array initialiser.
      *
      * @param closeArrayInitialiserString The @c std::string to use for closing
      *  an array initialiser.
@@ -3081,7 +3303,7 @@ public:
     /**
      * @brief Set the @c std::string for opening an array.
      *
-     * Set this @c std::string for opening an array.
+     * Set the @c std::string for opening an array.
      *
      * @param openArrayString The @c std::string to use for opening an array.
      */
@@ -3099,7 +3321,7 @@ public:
     /**
      * @brief Set the @c std::string for closing an array.
      *
-     * Set this @c std::string for closing an array.
+     * Set the @c std::string for closing an array.
      *
      * @param closeArrayString The @c std::string to use for closing an array.
      */
@@ -3117,7 +3339,7 @@ public:
     /**
      * @brief Set the @c std::string for separating elements in an array.
      *
-     * Set this @c std::string for separating elements in an array.
+     * Set the @c std::string for separating elements in an array.
      *
      * @param arrayElementSeparatorString The @c std::string to use for
      * separating elements in an array.
@@ -3136,7 +3358,7 @@ public:
     /**
      * @brief Set the @c std::string for a string delimiter.
      *
-     * Set this @c std::string for a string delimiter.
+     * Set the @c std::string for a string delimiter.
      *
      * @param stringDelimiterString The @c std::string to use for a string
      * delimiter.
@@ -3155,7 +3377,7 @@ public:
     /**
      * @brief Set the @c std::string for a command separator.
      *
-     * Set this @c std::string for a command separator.
+     * Set the @c std::string for a command separator.
      *
      * @param commandSeparatorString The @c std::string to use for a command
      * separator.
