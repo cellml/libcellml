@@ -31,7 +31,9 @@ limitations under the License.
 #include "analyserequationast_p.h"
 #include "utilities.h"
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 

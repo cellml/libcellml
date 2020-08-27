@@ -31,6 +31,18 @@ class LIBCELLML_EXPORT AnalyserModel
     friend class Analyser;
 
 public:
+    /**
+     * @brief The type of a model.
+     *
+     * A model can be of one of the following types:
+     *  - UNKNOWN: the type of the model is unknown;
+     *  - ALGEBRAIC: the model defines a system of algebraic equations;
+     *  - ODE: the model defines a system of ordinary differential equations;
+     *  - INVALID: the model is invalid;
+     *  - UNDERCONSTRAINED: the model is underconstrainted;
+     *  - OVERCONSTRAINED: the model is overconstrained; or
+     *  - UNSUITABLY_CONSTRAINED: the model is unsuitably constrained.
+     */
     enum class Type
     {
         UNKNOWN,
