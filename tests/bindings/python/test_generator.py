@@ -32,14 +32,16 @@ class GeneratorTestCase(unittest.TestCase):
 
         g = Generator()
 
+        g.setModel(am)
+
         self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.py"),
-                         g.implementationCode(am))
+                         g.implementationCode())
 
         profile = GeneratorProfile(GeneratorProfile.Profile.C)
         g.setProfile(profile)
 
-        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), g.interfaceCode(am))
-        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), g.implementationCode(am))
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), g.interfaceCode())
+        self.assertEqual(file_contents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), g.implementationCode())
 
 
 if __name__ == '__main__':
