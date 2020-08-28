@@ -2172,15 +2172,23 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
     mPimpl->mProfile = profile;
 }
 
-std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
+AnalyserModelPtr Generator::model()
 {
-    if (!model->isValid() || !mPimpl->mProfile->hasInterface()) {
+    return mPimpl->mModel;
+}
+
+void Generator::setModel(const AnalyserModelPtr &model)
+{
+    mPimpl->mModel = model;
+}
+
+std::string Generator::interfaceCode() const
+{
+    if ((mPimpl->mModel == nullptr)
+        || !mPimpl->mModel->isValid()
+        || !mPimpl->mProfile->hasInterface()) {
         return {};
     }
-
-    // Keep track of the model (so we don't have to keep passing it around).
-
-    mPimpl->mModel = model;
 
     // Add code for the origin comment.
 
@@ -2226,15 +2234,11 @@ std::string Generator::interfaceCode(const AnalyserModelPtr &model) const
     return mPimpl->mCode;
 }
 
-std::string Generator::implementationCode(const AnalyserModelPtr &model) const
+std::string Generator::implementationCode() const
 {
-    if (!model->isValid()) {
+    if ((mPimpl->mModel == nullptr) || !mPimpl->mModel->isValid()) {
         return {};
     }
-
-    // Keep track of the model (so we don't have to keep passing it around).
-
-    mPimpl->mModel = model;
 
     // Add code for the origin comment.
 
