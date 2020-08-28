@@ -15,16 +15,22 @@
 "Creates a :class:`Generator` object.";
 
 %feature("docstring") libcellml::Generator::profile
-"Returns the :enum:`Profile` type.";
+"Returns the profile used for code generation.";
 
 %feature("docstring") libcellml::Generator::setProfile
-"Sets this :class:`Generator`'s profile.";
+"Sets the profile to use for code generation.";
+
+%feature("docstring") libcellml::Generator::model
+"Returns the model used for code generation.";
+
+%feature("docstring") libcellml::Generator::setModel
+"Sets the model to use for code generation.";
 
 %feature("docstring") libcellml::Generator::interfaceCode
-"Returns the interface code for an :class:`AnalyserModel`.";
+"Returns the interface code.";
 
 %feature("docstring") libcellml::Generator::implementationCode
-"Returns the implementation code for an :class:`AnalyserModel`.";
+"Returns the implementation code.";
 
 %{
 #include "libcellml/generator.h"

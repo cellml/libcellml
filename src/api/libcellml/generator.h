@@ -66,30 +66,42 @@ public:
     void setProfile(const GeneratorProfilePtr &profile);
 
     /**
+     * @brief Get the @c AnalyserModel.
+     *
+     * Get the @c AnalyserModel used by this @c Generator.
+     *
+     * @return The @c AnalyserModel used.
+     */
+    AnalyserModelPtr model();
+
+    /**
+     * @brief Set the @c AnalyserModel.
+     *
+     * Set the @c AnalyserModel to be used by this @c Generator.
+     *
+     * @param model The @c AnalyserModel to set.
+     */
+    void setModel(const AnalyserModelPtr &model);
+
+    /**
      * @brief Get the interface code for the @c AnalyserModel.
      *
-     * Return the interface code for the @c AnalyserModel, using its
+     * Return the interface code for the @c AnalyserModel, using the
      * @c GeneratorProfile.
-     *
-     * @param model The @AnalyserModel for which interface code is to be
-     * generated.
      *
      * @return The code.
      */
-    std::string interfaceCode(const AnalyserModelPtr &model) const;
+    std::string interfaceCode() const;
 
     /**
      * @brief Get the implementation code for the @c AnalyserModel.
      *
-     * Return the implementation code for the @c AnalyserModel, using its
+     * Return the implementation code for the @c AnalyserModel, using the
      * @c GeneratorProfile.
-     *
-     * @param model The @AnalyserModel for which implementation code is to be
-     * generated.
      *
      * @return The code.
      */
-    std::string implementationCode(const AnalyserModelPtr &model) const;
+    std::string implementationCode() const;
 
 private:
     Generator(); /**< Constructor */
