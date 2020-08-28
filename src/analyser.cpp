@@ -342,7 +342,6 @@ struct Analyser::AnalyserImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    AnalyserInternalVariablePtr primaryInternalVariable(const VariablePtr &variable);
     AnalyserInternalVariablePtr internalVariable(const VariablePtr &variable);
 
     VariablePtr voiFirstOccurrence(const VariablePtr &variable,
@@ -464,26 +463,20 @@ XmlNodePtr Analyser::AnalyserImpl::mathmlChildNode(const XmlNodePtr &node,
     return res;
 }
 
-AnalyserInternalVariablePtr Analyser::AnalyserImpl::primaryInternalVariable(const VariablePtr &variable)
-{
-    // Find and return, if there is one, the primary internal variable for the
-    // given variable.
-
-    for (const auto &internalVariable : mInternalVariables) {
-        if (isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
-            return internalVariable;
-        }
-    }
-
-    return nullptr;
-}
-
 AnalyserInternalVariablePtr Analyser::AnalyserImpl::internalVariable(const VariablePtr &variable)
 {
     // Find and return, if there is one, the internal variable associated with
     // the given variable.
 
-    auto res = primaryInternalVariable(variable);
+    AnalyserInternalVariablePtr res = nullptr;
+
+    for (const auto &internalVariable : mInternalVariables) {
+        if (isSameOrEquivalentVariable(variable, internalVariable->mVariable)) {
+            res = internalVariable;
+
+            break;
+        }
+    }
 
     if (res != nullptr) {
         return res;
