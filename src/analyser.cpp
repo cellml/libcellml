@@ -559,7 +559,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
         auto childCount = mathmlChildCount(node);
 
         analyseNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
 
         if (childCount >= 3) {
             AnalyserEquationAstPtr astRightChild;
@@ -571,11 +571,11 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
                 tempAst = AnalyserEquationAst::create();
 
                 analyseNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
+                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
 
                 astRightChild->mPimpl->mParent = tempAst;
 
-                tempAst->mPimpl->mRightChild = astRightChild;
+                tempAst->mPimpl->mOwnedRightChild = astRightChild;
                 astRightChild = tempAst;
             }
 
@@ -583,7 +583,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
                 astRightChild->mPimpl->mParent = ast;
             }
 
-            ast->mPimpl->mRightChild = astRightChild;
+            ast->mPimpl->mOwnedRightChild = astRightChild;
         }
 
         // Assignment, and relational and logical operators.
@@ -762,7 +762,7 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
 
         if (childCount >= 2) {
             AnalyserEquationAstPtr astRight;
@@ -775,27 +775,27 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 
                 tempAst->mPimpl->populate(AnalyserEquationAst::Type::PIECEWISE, astParent);
 
-                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mLeftChild, tempAst, component, equation);
+                analyseNode(mathmlChildNode(node, i), tempAst->mPimpl->mOwnedLeftChild, tempAst, component, equation);
 
                 astRight->mPimpl->mParent = tempAst;
 
-                tempAst->mPimpl->mRightChild = astRight;
+                tempAst->mPimpl->mOwnedRightChild = astRight;
                 astRight = tempAst;
             }
 
             astRight->mPimpl->mParent = ast;
 
-            ast->mPimpl->mRightChild = astRight;
+            ast->mPimpl->mOwnedRightChild = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::PIECE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
-        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mRightChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 1), ast->mPimpl->mOwnedRightChild, ast, component, equation);
     } else if (node->isMathmlElement("otherwise")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::OTHERWISE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
 
         // Token elements.
 
@@ -835,20 +835,20 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("degree")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::DEGREE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("logbase")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::LOGBASE, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
     } else if (node->isMathmlElement("bvar")) {
         ast->mPimpl->populate(AnalyserEquationAst::Type::BVAR, astParent);
 
-        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mLeftChild, ast, component, equation);
+        analyseNode(mathmlChildNode(node, 0), ast->mPimpl->mOwnedLeftChild, ast, component, equation);
 
         auto rightNode = mathmlChildNode(node, 1);
 
         if (rightNode != nullptr) {
-            analyseNode(rightNode, ast->mPimpl->mRightChild, ast, component, equation);
+            analyseNode(rightNode, ast->mPimpl->mOwnedRightChild, ast, component, equation);
         }
 
         // Constants.
@@ -892,7 +892,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
 
                 // Actually analyse the node.
 
-                analyseNode(node, internalEquation->mAst, internalEquation->mAst->mPimpl->mParent.lock(), component, internalEquation);
+                analyseNode(node, internalEquation->mAst, internalEquation->mAst->parent(), component, internalEquation);
             }
         }
     }
@@ -994,14 +994,14 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
-    auto astParent = ast->mPimpl->mParent.lock();
-    auto astGrandParent = (astParent != nullptr) ? astParent->mPimpl->mParent.lock() : nullptr;
-    auto astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mPimpl->mParent.lock() : nullptr;
+    auto astParent = ast->parent();
+    auto astGrandParent = (astParent != nullptr) ? astParent->parent() : nullptr;
+    auto astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->parent() : nullptr;
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::BVAR)
         && (astGrandParent != nullptr) && (astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        auto variable = ast->mPimpl->mVariable;
+        auto variable = ast->variable();
 
         internalVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
@@ -1078,7 +1078,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
         if (!convertToDouble(ast->mPimpl->mValue, value) || !areEqual(value, 1.0)) {
             auto issue = Issue::create();
-            auto variable = astGreatGrandParent->mPimpl->mRightChild->mPimpl->mVariable;
+            auto variable = astGreatGrandParent->mPimpl->mOwnedRightChild->variable();
 
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
@@ -1093,17 +1093,17 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
     if ((ast->mPimpl->mType == AnalyserEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF)) {
-        internalVariable(ast->mPimpl->mVariable)->makeState();
+        internalVariable(ast->variable())->makeState();
     }
 
     // Recursively check the given AST's children.
 
-    if (ast->mPimpl->mLeftChild != nullptr) {
-        analyseEquationAst(ast->mPimpl->mLeftChild);
+    if (ast->mPimpl->mOwnedLeftChild != nullptr) {
+        analyseEquationAst(ast->mPimpl->mOwnedLeftChild);
     }
 
-    if (ast->mPimpl->mRightChild != nullptr) {
-        analyseEquationAst(ast->mPimpl->mRightChild);
+    if (ast->mPimpl->mOwnedRightChild != nullptr) {
+        analyseEquationAst(ast->mPimpl->mOwnedRightChild);
     }
 }
 
@@ -1124,17 +1124,17 @@ void Analyser::AnalyserImpl::scaleAst(const AnalyserEquationAstPtr &ast,
 
     scaledAst->mPimpl->populate(AnalyserEquationAst::Type::TIMES, astParent);
 
-    scaledAst->mPimpl->mLeftChild = AnalyserEquationAst::create();
-    scaledAst->mPimpl->mRightChild = ast;
+    scaledAst->mPimpl->mOwnedLeftChild = AnalyserEquationAst::create();
+    scaledAst->mPimpl->mOwnedRightChild = ast;
 
-    scaledAst->mPimpl->mLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
+    scaledAst->mPimpl->mOwnedLeftChild->mPimpl->populate(AnalyserEquationAst::Type::CN, convertToString(scalingFactor), scaledAst);
 
     ast->mPimpl->mParent = scaledAst;
 
-    if (astParent->mPimpl->mLeftChild == ast) {
-        astParent->mPimpl->mLeftChild = scaledAst;
+    if (astParent->mPimpl->mOwnedLeftChild == ast) {
+        astParent->mPimpl->mOwnedLeftChild = scaledAst;
     } else {
-        astParent->mPimpl->mRightChild = scaledAst;
+        astParent->mPimpl->mOwnedRightChild = scaledAst;
     }
 }
 
@@ -1142,12 +1142,12 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
 {
     // Recursively scale the given AST's children.
 
-    if (ast->mPimpl->mLeftChild != nullptr) {
-        scaleEquationAst(ast->mPimpl->mLeftChild);
+    if (ast->mPimpl->mOwnedLeftChild != nullptr) {
+        scaleEquationAst(ast->mPimpl->mOwnedLeftChild);
     }
 
-    if (ast->mPimpl->mRightChild != nullptr) {
-        scaleEquationAst(ast->mPimpl->mRightChild);
+    if (ast->mPimpl->mOwnedRightChild != nullptr) {
+        scaleEquationAst(ast->mPimpl->mOwnedRightChild);
     }
 
     // If the given AST node is a variable (i.e. a CI node) then we may need to
@@ -1158,25 +1158,25 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         // dealing with a rate or some other variable, i.e. whether or not it
         // has a DIFF node as a parent.
 
-        auto astParent = ast->mPimpl->mParent.lock();
+        auto astParent = ast->parent();
 
         if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
             // We are dealing with a rate, so retrieve the scaling factor for
             // its corresponding variable of integration and apply it, if
             // needed.
 
-            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mLeftChild->mPimpl->mLeftChild->mPimpl->mVariable);
+            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(astParent->mPimpl->mOwnedLeftChild->mPimpl->mOwnedLeftChild->variable());
 
             if (!areEqual(scalingFactor, 1.0)) {
                 // We need to scale using the inverse of the scaling factor, but
                 // how we do it depends on whether the rate is to be computed or
                 // used.
 
-                auto astGrandParent = astParent->mPimpl->mParent.lock();
+                auto astGrandParent = astParent->parent();
 
                 if ((astGrandParent->mPimpl->mType == AnalyserEquationAst::Type::ASSIGNMENT)
-                    && (astGrandParent->mPimpl->mLeftChild == astParent)) {
-                    scaleAst(astGrandParent->mPimpl->mRightChild, astGrandParent, 1.0 / scalingFactor);
+                    && (astGrandParent->mPimpl->mOwnedLeftChild == astParent)) {
+                    scaleAst(astGrandParent->mPimpl->mOwnedRightChild, astGrandParent, 1.0 / scalingFactor);
                 } else {
                     scaleAst(astParent, astGrandParent, 1.0 / scalingFactor);
                 }
@@ -1184,18 +1184,18 @@ void Analyser::AnalyserImpl::scaleEquationAst(const AnalyserEquationAstPtr &ast)
         }
 
         if (((astParent->mPimpl->mType != AnalyserEquationAst::Type::ASSIGNMENT)
-             || (astParent->mPimpl->mLeftChild != ast))
+             || (astParent->mPimpl->mOwnedLeftChild != ast))
             && (astParent->mPimpl->mType != AnalyserEquationAst::Type::BVAR)) {
             // We are dealing with a variable which is neither a computed
             // variable nor our variable of integration, so retrieve its scaling
             // factor and apply it, if needed, distinguishing between a rate
             // variable and an algebraic variable.
 
-            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->mPimpl->mVariable);
+            auto scalingFactor = Analyser::AnalyserImpl::scalingFactor(ast->variable());
 
             if (!areEqual(scalingFactor, 1.0)) {
                 if (astParent->mPimpl->mType == AnalyserEquationAst::Type::DIFF) {
-                    scaleAst(astParent, astParent->mPimpl->mParent.lock(), scalingFactor);
+                    scaleAst(astParent, astParent->parent(), scalingFactor);
                 } else {
                     scaleAst(ast, astParent, scalingFactor);
                 }
