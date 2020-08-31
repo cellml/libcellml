@@ -52,7 +52,11 @@ AnalyserEquation::Type AnalyserEquation::type() const
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const
 {
-    return mPimpl->mAst;
+    if (mPimpl->mAst.expired()) {
+        return nullptr;
+    }
+
+    return mPimpl->mAst.lock();
 }
 
 std::vector<AnalyserEquationPtr> AnalyserEquation::dependencies() const
@@ -73,6 +77,10 @@ bool AnalyserEquation::isStateRateBased() const
 
 AnalyserVariablePtr AnalyserEquation::variable() const
 {
+    if (mPimpl->mVariable.expired()) {
+        return nullptr;
+    }
+
     return mPimpl->mVariable.lock();
 }
 
