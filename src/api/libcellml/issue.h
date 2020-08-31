@@ -471,7 +471,8 @@ public:
     ModelPtr encapsulation() const;
     void setComponentRef(const ComponentPtr &component);
     ComponentPtr componentRef() const;
-    void setItem(ItemType type, const std::any &item);
+    // void setItem(ItemType type, const std::any &item);
+    // AnyItem item() const;
     std::any item() const;
 
 private:

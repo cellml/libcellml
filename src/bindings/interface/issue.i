@@ -130,8 +130,8 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::item
 "Get the :class:`AnyItem` relevant to this issue (or ``None``).";
 
-%feature("docstring") libcellml::Issue::setItem
-"Sets the :class:`AnyItem` relevant to this issue (``None`` to unset).";
+// %feature("docstring") libcellml::Issue::setItem
+// "Sets the :class:`AnyItem` relevant to this issue (``None`` to unset).";
 
 %{
 #include "libcellml/issue.h"
