@@ -618,6 +618,46 @@ TEST(Issue, undefinedIssueUrl)
 
 #endif
 
+TEST(Issue, krm)
+{
+    auto c = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create(c);
+    EXPECT_EQ(c, issue->component());
+}
+
+TEST(Issue, krm2)
+{
+    auto c = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create();
+    issue->setComponent(c);
+    EXPECT_EQ(c, issue->component());
+}
+
+TEST(Issue, krm3)
+{
+    auto c = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create(libcellml::ItemType::COMPONENT, c);
+    EXPECT_EQ(c, issue->component());
+}
+
+TEST(Issue, krm4)
+{
+    auto c = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create(libcellml::ItemType::COMPONENT, c);
+    EXPECT_EQ(c, issue->component());
+    
+    auto item = issue->item();
+    EXPECT_EQ(c, std::any_cast<libcellml::ComponentPtr>(item));
+}
+
+TEST(Issue, krm5) {
+    auto c = libcellml::Component::create("component");
+    std::any item = c;
+    EXPECT_EQ(c, std::any_cast<libcellml::ComponentPtr>(item));
+}
+
+
+
 TEST(Issue, setGetByObjectOrItem)
 {
     auto component = libcellml::Component::create("component");

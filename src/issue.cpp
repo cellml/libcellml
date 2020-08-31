@@ -101,103 +101,132 @@ IssuePtr Issue::create() noexcept
 
 IssuePtr Issue::create(const ComponentPtr &component) noexcept
 {
-    return std::shared_ptr<Issue> {new Issue {component}};
+    // Defaults to COMPONENT type.
+    return create(ItemType::COMPONENT, component);
 }
 
 IssuePtr Issue::create(ItemType type, const ComponentPtr &component) noexcept
 {
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, component);
-    return issue;
+    // Acceptable types: COMPONENT, COMPONENT_REF.
+    if ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF)) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, component);
+        // issue->mPimpl->mAnyItem = std::make_any<ComponentPtr>(component);
+        issue->mPimpl->mAnyItem = component;
+        issue->mPimpl->mItemType = type;
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 {
     // Defaults to IMPORT type.
-    return std::shared_ptr<Issue> {new Issue {importSource}};
+    return create(ItemType::IMPORT, importSource);
 }
 
 IssuePtr Issue::create(ItemType type, const ImportSourcePtr &importSource) noexcept
 {
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, importSource);
-    return issue;
+    if (type == ItemType::IMPORT) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, importSource);
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(const ModelPtr &model) noexcept
 {
     // Defaults to MODEL type.
-    return std::shared_ptr<Issue> {new Issue {model}};
+    return create(ItemType::MODEL, model);
 }
 
 IssuePtr Issue::create(ItemType type, const ModelPtr &model) noexcept
 {
     // Acceptable type values are: ENCAPSULATION, MODEL.
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, model);
-    return issue;
+    if ((type == ItemType::MODEL) || (type == ItemType::ENCAPSULATION)) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, model);
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(const ResetPtr &reset) noexcept
 {
     // Defaults to RESET type.
-    return std::shared_ptr<Issue> {new Issue {reset}};
+    return create(ItemType::RESET, reset);
 }
 
 IssuePtr Issue::create(ItemType type, const ResetPtr &reset) noexcept
 {
     // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, reset);
-    return issue;
+    if ((type == ItemType::RESET) || (type == ItemType::RESET_VALUE) || (type == ItemType::TEST_VALUE)) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, reset);
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(const UnitsPtr &units) noexcept
 {
     // Defaults to UNITS type.
-    return std::shared_ptr<Issue> {new Issue {units}};
+    return create(ItemType::UNITS, units);
 }
 
 IssuePtr Issue::create(ItemType type, const UnitsPtr &units) noexcept
 {
-    // No difference here, UNITS is not overloaded.
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, units);
-    return issue;
+    // Acceptable type values are: UNITS.
+    if (type == ItemType::UNITS) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, units);
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(const VariablePtr &variable) noexcept
 {
-    return std::shared_ptr<Issue> {new Issue {variable}};
+    return create(ItemType::VARIABLE, variable);
 }
 
 IssuePtr Issue::create(ItemType type, const VariablePtr &variable) noexcept
 {
     // No difference here, VARIABLE is not overloaded.
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, variable);
-    return issue;
+    if (type == ItemType::VARIABLE) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, variable);
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(const UnitItem &unit) noexcept
 {
-    return std::shared_ptr<Issue> {new Issue {unit}};
+    return create(ItemType::UNIT, unit);
 }
 
 IssuePtr Issue::create(ItemType type, const UnitItem &unit) noexcept
 {
     // Acceptable type values are: UNIT.
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, unit);
-    return issue;
+    if (type == ItemType::UNIT) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, unit);
+        return issue;
+    }
+    return nullptr;
 }
 
 IssuePtr Issue::create(ItemType type, const VariablePair &variablePair) noexcept
 {
     // Acceptable type values are: CONNECTION, MAP_VARIABLES.
-    auto issue = std::shared_ptr<Issue> {new Issue {}};
-    issue->mPimpl->mItem = std::make_pair(type, variablePair);
-    return issue;
+    if ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES)) {
+        auto issue = std::shared_ptr<Issue> {new Issue {}};
+        issue->mPimpl->mItem = std::make_pair(type, variablePair);
+        return issue;
+    }
+    return nullptr;
 }
 
 void Issue::setDescription(const std::string &description)
@@ -249,19 +278,31 @@ Issue::ReferenceRule Issue::referenceRule() const
     return mPimpl->mReferenceRule;
 }
 
+
+// AnyItem Issue::item() const
+// {
+//     return std::make_pair(mPimpl->mItemType, mPimpl->mAnyItem);
+// }
+
+std::any Issue::item() const
+{
+    return mPimpl->mAnyItem;
+}
+
 void Issue::setComponent(const ComponentPtr &component)
 {
-    // mPimpl->mItems.at(0).second.reset();
-    // mPimpl->mItems.clear();
-    // mPimpl->mItems.push_back(std::make_pair(ItemType::COMPONENT, std::make_any<ComponentPtr>(component)));
-
-    // mPimpl->mAnyItem = std::make_shared<std::any>(std::make_any<ComponentPtr>(component));
+    // mPimpl->mAnyItem = std::make_any<ComponentPtr>(component);
     mPimpl->mAnyItem = component;
     mPimpl->mItemType = ItemType::COMPONENT;
 }
 
 ComponentPtr Issue::component() const
 {
+    if (mPimpl->mItemType != ItemType::COMPONENT) {
+        return nullptr;
+    }
+    return std::any_cast<ComponentPtr>(mPimpl->mAnyItem);
+
     // if (mPimpl->mItem.first != ItemType::COMPONENT) {
     //     return nullptr;
     // }
@@ -273,7 +314,6 @@ ComponentPtr Issue::component() const
     //     (void)e;
     //     return nullptr;
     // }
-    return std::any_cast<ComponentPtr>(mPimpl->mAnyItem);
     // return std::any_cast<Component>(mPimpl->mItems.at(0).second);
 }
 
@@ -446,16 +486,33 @@ ResetPtr Issue::testValue() const
     return std::any_cast<ResetPtr>(mPimpl->mItem.second);
 }
 
-void Issue::setItem(ItemType type, const std::any &item)
-{
-    mPimpl->mItemType = type;
-    mPimpl->mAnyItem = item;
-}
+// void Issue::setItem(ItemType type, const std::any &item)
+// {
+//     mPimpl->mItemType = type;
 
-std::any Issue::item() const
-{
-    return mPimpl->mAnyItem;
-}
+//     switch (type) {
+//     case ItemType::COMPONENT:
+//     case ItemType::COMPONENT_REF:
+//         mPimpl->mAnyItem = std::make_any<ComponentPtr>(item);
+//         break;
+//     case ItemType::CONNECTION:
+//     case ItemType::ENCAPSULATION:
+//     case ItemType::IMPORT:
+//     case ItemType::ISSUE:
+//     case ItemType::MAP_VARIABLES:
+//     case ItemType::MATHML:
+//     case ItemType::MODEL:
+//     case ItemType::RESET:
+//     case ItemType::RESET_VALUE:
+//     case ItemType::TEST_VALUE:
+//     case ItemType::UNDEFINED:
+//     case ItemType::UNIT:
+//     case ItemType::UNITS:
+//     case ItemType::VARIABLE:
+//     case ItemType::XML:
+//         break;
+//     }
+// }
 
 /**
  * @brief Map ReferenceRules to their section titles.
