@@ -615,34 +615,13 @@ TEST(Issue, undefinedIssueUrl)
     EXPECT_EQ(e, issue->referenceHeading());
 }
 
-// TEST(Issue, setGetByObjectOrItem)
-// {
-//     auto component = libcellml::Component::create("component");
-//     auto issue = libcellml::Issue::create();
-
-//     // Adding directly as a component.
-//     issue->setComponent(component);
-//     // Retrieving as a component: involves storing internally as std::any and casting before return.
-//     EXPECT_EQ(component, issue->component());
-
-//     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->itemType());
-//     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->cause());
-
-//     // Retrieving as a std::any.
-//     auto outItem = issue->item();
-
-//     // EXACTLY the same casting as done internally fails here!
-//     // std::any_cast<ComponentPtr>(mPimpl->mAnyItem);
-//     auto b = std::any_cast<libcellml::ComponentPtr>(outItem);
-//     EXPECT_EQ(component, b);
-// }
-
 TEST(Issue, setGetItems)
 {
     auto model = libcellml::Model::create("model");
     auto component = libcellml::Component::create("component");
     auto variable1 = libcellml::Variable::create("variable1");
     auto variable2 = libcellml::Variable::create("variable2");
+    auto pair = std::make_pair(variable1, variable2);
     auto import = libcellml::ImportSource::create();
     auto reset = libcellml::Reset::create();
     auto units = libcellml::Units::create();
@@ -748,7 +727,364 @@ TEST(Issue, setGetItems)
     EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->cause());
 }
 
-// // TEST(Issue, getItemMismatchedCauseType)
-// // {
+TEST(Issue, createCorrectType)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto import = libcellml::ImportSource::create();
+    auto reset = libcellml::Reset::create();
+    auto units = libcellml::Units::create();
+    units->addUnit("second");
+    auto unit = std::make_pair(units, 0);
+    auto pair = std::make_pair(variable1, variable2);
 
-// // }
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::COMPONENT, component));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::COMPONENT_REF, component));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::MATHML, component));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::VARIABLE, variable1));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::MODEL, model));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::ENCAPSULATION, model));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::IMPORT, import));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::RESET, reset));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::RESET_VALUE, reset));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::TEST_VALUE, reset));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::UNITS, units));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::UNIT, unit));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::CONNECTION, pair));
+    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::MAP_VARIABLES, pair));
+}
+
+TEST(Issue, createMismatchedTypeReturnsNull)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto import = libcellml::ImportSource::create();
+    auto reset = libcellml::Reset::create();
+    auto units = libcellml::Units::create();
+    units->addUnit("second");
+    auto unit = std::make_pair(units, 0);
+
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, component));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, variable1));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, model));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, import));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, reset));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, units));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, unit));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, std::make_pair(variable1, variable2)));
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullComponent)
+{
+    auto component = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create();
+
+    issue->setComponent(component);
+    EXPECT_NE(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullComponentRef)
+{
+    auto component = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create();
+
+    issue->setComponentRef(component);
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_NE(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullConnection)
+{
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto pair = std::make_pair(variable1, variable2);
+    auto issue = libcellml::Issue::create();
+    issue->setConnection(pair);
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_NE(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullEncapsulation)
+{
+    auto model = libcellml::Model::create("model");
+    auto issue = libcellml::Issue::create();
+    issue->setEncapsulation(model);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_NE(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullImportSource)
+{
+    auto import = libcellml::ImportSource::create();
+    auto issue = libcellml::Issue::create();
+    issue->setImportSource(import);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_NE(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullMapVariables)
+{
+    auto variable1 = libcellml::Variable::create("variable1");
+    auto variable2 = libcellml::Variable::create("variable2");
+    auto pair = std::make_pair(variable1, variable2);
+    auto issue = libcellml::Issue::create();
+    issue->setMapVariables(pair);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_NE(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullMath)
+{
+    auto component = libcellml::Component::create("component");
+    auto issue = libcellml::Issue::create();
+    issue->setMath(component);
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_NE(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullModel)
+{
+    auto model = libcellml::Model::create("model");
+    auto issue = libcellml::Issue::create();
+    issue->setModel(model);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_NE(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullReset)
+{
+    auto reset = libcellml::Reset::create();
+    auto issue = libcellml::Issue::create();
+    issue->setReset(reset);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_NE(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullResetValue)
+{
+    auto reset = libcellml::Reset::create();
+    auto issue = libcellml::Issue::create();
+    issue->setResetValue(reset);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_NE(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullTestValue)
+{
+    auto reset = libcellml::Reset::create();
+    auto issue = libcellml::Issue::create();
+    issue->setTestValue(reset);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_NE(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsUnit)
+{
+    auto units = libcellml::Units::create();
+    units->addUnit("second");
+    auto unit = std::make_pair(units, 0);
+    auto issue = libcellml::Issue::create();
+    issue->setUnit(unit);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_NE(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullUnits)
+{
+    auto units = libcellml::Units::create();
+    auto issue = libcellml::Issue::create();
+    issue->setUnits(units);
+
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_NE(nullptr, issue->units());
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, getMismatchedTypeReturnsNullVariable)
+{
+    auto variable = libcellml::Variable::create("variable");
+    auto issue = libcellml::Issue::create();
+    issue->setVariable(variable);
+    EXPECT_EQ(nullptr, issue->component());
+    EXPECT_EQ(nullptr, issue->componentRef());
+    EXPECT_EQ(nullptr, issue->connection().first);
+    EXPECT_EQ(nullptr, issue->encapsulation());
+    EXPECT_EQ(nullptr, issue->importSource());
+    EXPECT_EQ(nullptr, issue->mapVariables().first);
+    EXPECT_EQ(nullptr, issue->math());
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(nullptr, issue->reset());
+    EXPECT_EQ(nullptr, issue->resetValue());
+    EXPECT_EQ(nullptr, issue->testValue());
+    EXPECT_EQ(nullptr, issue->unit().first);
+    EXPECT_EQ(nullptr, issue->units());
+    EXPECT_NE(nullptr, issue->variable());
+}
