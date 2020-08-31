@@ -120,10 +120,9 @@ IssuePtr Issue::create(const ComponentPtr &component) noexcept
 
 IssuePtr Issue::create(ItemType type, const ComponentPtr &component) noexcept
 {
-    // Acceptable types: COMPONENT, COMPONENT_REF.
-    if ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF)) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<ComponentPtr>(component);
+    // Acceptable types: COMPONENT, COMPONENT_REF, MATHML.
+    if ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF) || (type == ItemType::MATHML)) {
+        auto issue = std::shared_ptr<Issue> {new Issue {component}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -139,8 +138,7 @@ IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 IssuePtr Issue::create(ItemType type, const ImportSourcePtr &importSource) noexcept
 {
     if (type == ItemType::IMPORT) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<ImportSourcePtr>(importSource);
+        auto issue = std::shared_ptr<Issue> {new Issue {importSource}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -157,8 +155,7 @@ IssuePtr Issue::create(ItemType type, const ModelPtr &model) noexcept
 {
     // Acceptable type values are: ENCAPSULATION, MODEL.
     if ((type == ItemType::MODEL) || (type == ItemType::ENCAPSULATION)) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<ModelPtr>(model);
+        auto issue = std::shared_ptr<Issue> {new Issue {model}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -175,8 +172,7 @@ IssuePtr Issue::create(ItemType type, const ResetPtr &reset) noexcept
 {
     // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
     if ((type == ItemType::RESET) || (type == ItemType::RESET_VALUE) || (type == ItemType::TEST_VALUE)) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<ResetPtr>(reset);
+        auto issue = std::shared_ptr<Issue> {new Issue {reset}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -193,8 +189,7 @@ IssuePtr Issue::create(ItemType type, const UnitsPtr &units) noexcept
 {
     // Acceptable type values are: UNITS.
     if (type == ItemType::UNITS) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<UnitsPtr>(units);
+        auto issue = std::shared_ptr<Issue> {new Issue {units}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -210,8 +205,7 @@ IssuePtr Issue::create(ItemType type, const VariablePtr &variable) noexcept
 {
     // No difference here, VARIABLE is not overloaded.
     if (type == ItemType::VARIABLE) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<VariablePtr>(variable);
+        auto issue = std::shared_ptr<Issue> {new Issue {variable}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -227,8 +221,7 @@ IssuePtr Issue::create(ItemType type, const UnitItem &unit) noexcept
 {
     // Acceptable type values are: UNIT.
     if (type == ItemType::UNIT) {
-        auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<UnitItem>(unit);
+        auto issue = std::shared_ptr<Issue> {new Issue {unit}};
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -317,12 +310,7 @@ ComponentPtr Issue::component() const
     if (mPimpl->mItemType != ItemType::COMPONENT) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ComponentPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ComponentPtr>(mPimpl->mItem);
 }
 
 void Issue::setComponentRef(const ComponentPtr &component)
@@ -335,12 +323,7 @@ ComponentPtr Issue::componentRef() const
     if (mPimpl->mItemType != ItemType::COMPONENT_REF) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ComponentPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ComponentPtr>(mPimpl->mItem);
 }
 
 void Issue::setMath(const ComponentPtr &component)
@@ -353,12 +336,7 @@ ComponentPtr Issue::math() const
     if (mPimpl->mItemType != ItemType::MATHML) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ComponentPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ComponentPtr>(mPimpl->mItem);
 }
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
@@ -371,12 +349,7 @@ ImportSourcePtr Issue::importSource() const
     if (mPimpl->mItemType != ItemType::IMPORT) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
 }
 
 void Issue::setModel(const ModelPtr &model)
@@ -389,12 +362,7 @@ ModelPtr Issue::model() const
     if (mPimpl->mItemType != ItemType::MODEL) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ModelPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ModelPtr>(mPimpl->mItem);
 }
 
 void Issue::setEncapsulation(const ModelPtr &model)
@@ -407,12 +375,7 @@ ModelPtr Issue::encapsulation() const
     if (mPimpl->mItemType != ItemType::ENCAPSULATION) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ModelPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ModelPtr>(mPimpl->mItem);
 }
 
 void Issue::setUnits(const UnitsPtr &units)
@@ -425,12 +388,7 @@ UnitsPtr Issue::units() const
     if (mPimpl->mItemType != ItemType::UNITS) {
         return nullptr;
     }
-    try {
-        return std::any_cast<UnitsPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<UnitsPtr>(mPimpl->mItem);
 }
 
 void Issue::setUnit(const UnitItem &unit)
@@ -443,12 +401,7 @@ UnitItem Issue::unit() const
     if (mPimpl->mItemType != ItemType::UNIT) {
         return std::make_pair(nullptr, 0);
     }
-    try {
-        return std::any_cast<UnitItem>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return std::make_pair(nullptr, 0);
-    }
+    return std::any_cast<UnitItem>(mPimpl->mItem);
 }
 
 void Issue::setConnection(const VariablePair &pair)
@@ -461,12 +414,7 @@ VariablePair Issue::connection() const
     if (mPimpl->mItemType != ItemType::CONNECTION) {
         return std::make_pair(nullptr, nullptr);
     }
-    try {
-        return std::any_cast<VariablePair>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return std::make_pair(nullptr, nullptr);
-    }
+    return std::any_cast<VariablePair>(mPimpl->mItem);
 }
 
 void Issue::setMapVariables(const VariablePair &pair)
@@ -479,12 +427,7 @@ VariablePair Issue::mapVariables() const
     if (mPimpl->mItemType != ItemType::MAP_VARIABLES) {
         return std::make_pair(nullptr, nullptr);
     }
-    try {
-        return std::any_cast<VariablePair>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return std::make_pair(nullptr, nullptr);
-    }
+    return std::any_cast<VariablePair>(mPimpl->mItem);
 }
 
 void Issue::setVariable(const VariablePtr &variable)
@@ -497,12 +440,7 @@ VariablePtr Issue::variable() const
     if (mPimpl->mItemType != ItemType::VARIABLE) {
         return nullptr;
     }
-    try {
-        return std::any_cast<VariablePtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<VariablePtr>(mPimpl->mItem);
 }
 
 void Issue::setReset(const ResetPtr &reset)
@@ -515,12 +453,7 @@ ResetPtr Issue::reset() const
     if (mPimpl->mItemType != ItemType::RESET) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ResetPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ResetPtr>(mPimpl->mItem);
 }
 
 void Issue::setResetValue(const ResetPtr &reset)
@@ -533,12 +466,7 @@ ResetPtr Issue::resetValue() const
     if (mPimpl->mItemType != ItemType::RESET_VALUE) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ResetPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ResetPtr>(mPimpl->mItem);
 }
 
 void Issue::setTestValue(const ResetPtr &reset)
@@ -551,12 +479,7 @@ ResetPtr Issue::testValue() const
     if (mPimpl->mItemType != ItemType::TEST_VALUE) {
         return nullptr;
     }
-    try {
-        return std::any_cast<ResetPtr>(mPimpl->mItem);
-    } catch (std::bad_any_cast &e) {
-        (void)e;
-        return nullptr;
-    }
+    return std::any_cast<ResetPtr>(mPimpl->mItem);
 }
 
 /**
