@@ -41,7 +41,9 @@ public:
      *
      * Factory method to create an @c Analyser.  Create an analyser with::
      *
-     *   AnalyserPtr analyser = libcellml::Analyser::create();
+     * @code
+     *   auto analyser = libcellml::Analyser::create();
+     * @endcode
      *
      * @return A smart pointer to an @c Analyser object.
      */
