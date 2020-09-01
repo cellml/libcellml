@@ -302,6 +302,10 @@ std::any Issue::item() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
+    if (component == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::COMPONENT, component);
 }
 
@@ -315,6 +319,10 @@ ComponentPtr Issue::component() const
 
 void Issue::setComponentRef(const ComponentPtr &component)
 {
+    if (component == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::COMPONENT_REF, component);
 }
 
@@ -328,6 +336,10 @@ ComponentPtr Issue::componentRef() const
 
 void Issue::setMath(const ComponentPtr &component)
 {
+    if (component == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::MATHML, component);
 }
 
@@ -341,6 +353,10 @@ ComponentPtr Issue::math() const
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
+    if (importSource == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::IMPORT, importSource);
 }
 
@@ -354,6 +370,10 @@ ImportSourcePtr Issue::importSource() const
 
 void Issue::setModel(const ModelPtr &model)
 {
+    if (model == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::MODEL, model);
 }
 
@@ -367,6 +387,10 @@ ModelPtr Issue::model() const
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
+    if (model == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::ENCAPSULATION, model);
 }
 
@@ -380,6 +404,10 @@ ModelPtr Issue::encapsulation() const
 
 void Issue::setUnits(const UnitsPtr &units)
 {
+    if (units == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::UNITS, units);
 }
 
@@ -393,6 +421,10 @@ UnitsPtr Issue::units() const
 
 void Issue::setUnit(const UnitItem &unit)
 {
+    if (unit.first == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::UNIT, unit);
 }
 
@@ -406,6 +438,10 @@ UnitItem Issue::unit() const
 
 void Issue::setConnection(const VariablePair &pair)
 {
+    if ((pair.first == nullptr) && (pair.second == nullptr)) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::CONNECTION, pair);
 }
 
@@ -419,6 +455,10 @@ VariablePair Issue::connection() const
 
 void Issue::setMapVariables(const VariablePair &pair)
 {
+    if ((pair.first == nullptr) && (pair.second == nullptr)) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::MAP_VARIABLES, pair);
 }
 
@@ -432,6 +472,10 @@ VariablePair Issue::mapVariables() const
 
 void Issue::setVariable(const VariablePtr &variable)
 {
+    if (variable == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::VARIABLE, variable);
 }
 
@@ -445,6 +489,10 @@ VariablePtr Issue::variable() const
 
 void Issue::setReset(const ResetPtr &reset)
 {
+    if (reset == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::RESET, reset);
 }
 
@@ -458,6 +506,10 @@ ResetPtr Issue::reset() const
 
 void Issue::setResetValue(const ResetPtr &reset)
 {
+    if (reset == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::RESET_VALUE, reset);
 }
 
@@ -471,6 +523,10 @@ ResetPtr Issue::resetValue() const
 
 void Issue::setTestValue(const ResetPtr &reset)
 {
+    if (reset == nullptr) {
+        clearItem();
+        return;
+    }
     setItem(ItemType::TEST_VALUE, reset);
 }
 
@@ -480,6 +536,12 @@ ResetPtr Issue::testValue() const
         return nullptr;
     }
     return std::any_cast<ResetPtr>(mPimpl->mItem);
+}
+
+void Issue::clearItem()
+{
+    mPimpl->mItemType = ItemType::UNDEFINED;
+    mPimpl->mItem.reset();
 }
 
 /**

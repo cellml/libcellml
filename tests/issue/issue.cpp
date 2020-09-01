@@ -798,6 +798,9 @@ TEST(Issue, getMismatchedTypeReturnsNullComponent)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setComponent(nullptr);
+    EXPECT_EQ(nullptr, issue->component());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullComponentRef)
@@ -820,6 +823,9 @@ TEST(Issue, getMismatchedTypeReturnsNullComponentRef)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setComponentRef(nullptr);
+    EXPECT_EQ(nullptr, issue->componentRef());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullConnection)
@@ -843,6 +849,11 @@ TEST(Issue, getMismatchedTypeReturnsNullConnection)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    auto empty = std::make_pair(nullptr, nullptr);
+    issue->setConnection(empty);
+    EXPECT_EQ(empty.first, issue->connection().first);
+    EXPECT_EQ(empty.second, issue->connection().second);
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullEncapsulation)
@@ -865,6 +876,9 @@ TEST(Issue, getMismatchedTypeReturnsNullEncapsulation)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setEncapsulation(nullptr);
+    EXPECT_EQ(nullptr, issue->encapsulation());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullImportSource)
@@ -887,6 +901,9 @@ TEST(Issue, getMismatchedTypeReturnsNullImportSource)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setImportSource(nullptr);
+    EXPECT_EQ(nullptr, issue->importSource());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullMapVariables)
@@ -911,6 +928,11 @@ TEST(Issue, getMismatchedTypeReturnsNullMapVariables)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    auto empty = std::make_pair(nullptr, nullptr);
+    issue->setMapVariables(empty);
+    EXPECT_EQ(empty.first, issue->mapVariables().first);
+    EXPECT_EQ(empty.second, issue->mapVariables().second);
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullMath)
@@ -932,6 +954,9 @@ TEST(Issue, getMismatchedTypeReturnsNullMath)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setMath(nullptr);
+    EXPECT_EQ(nullptr, issue->math());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullModel)
@@ -954,6 +979,9 @@ TEST(Issue, getMismatchedTypeReturnsNullModel)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setModel(nullptr);
+    EXPECT_EQ(nullptr, issue->model());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullReset)
@@ -976,6 +1004,9 @@ TEST(Issue, getMismatchedTypeReturnsNullReset)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setReset(nullptr);
+    EXPECT_EQ(nullptr, issue->reset());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullResetValue)
@@ -998,6 +1029,9 @@ TEST(Issue, getMismatchedTypeReturnsNullResetValue)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setResetValue(nullptr);
+    EXPECT_EQ(nullptr, issue->resetValue());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullTestValue)
@@ -1020,6 +1054,9 @@ TEST(Issue, getMismatchedTypeReturnsNullTestValue)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setTestValue(nullptr);
+    EXPECT_EQ(nullptr, issue->testValue());
 }
 
 TEST(Issue, getMismatchedTypeReturnsUnit)
@@ -1044,6 +1081,11 @@ TEST(Issue, getMismatchedTypeReturnsUnit)
     EXPECT_NE(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    auto empty = std::make_pair(nullptr, 0);
+    issue->setUnit(empty);
+    EXPECT_EQ(empty.first, issue->unit().first);
+    EXPECT_EQ(empty.second, issue->unit().second);
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullUnits)
@@ -1066,6 +1108,9 @@ TEST(Issue, getMismatchedTypeReturnsNullUnits)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_NE(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
+
+    issue->setUnits(nullptr);
+    EXPECT_EQ(nullptr, issue->units());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullVariable)
@@ -1087,4 +1132,27 @@ TEST(Issue, getMismatchedTypeReturnsNullVariable)
     EXPECT_EQ(nullptr, issue->unit().first);
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_NE(nullptr, issue->variable());
+
+    issue->setVariable(nullptr);
+    EXPECT_EQ(nullptr, issue->variable());
+}
+
+TEST(Issue, clearStoredItem)
+{
+    auto model = libcellml::Model::create();
+    auto issue = libcellml::Issue::create(model);
+    EXPECT_EQ(model, issue->model());
+    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+
+    // Clear by setting to nullptr.
+    issue->setModel(nullptr);
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+
+    issue->setModel(model);
+
+    // Clear by calling the clearItem function.
+    issue->clearItem();
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
 }
