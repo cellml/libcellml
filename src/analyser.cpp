@@ -901,16 +901,16 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
     // makes sense.
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        // Retrieve the variable's corresponding analyser variable.
+        // Retrieve the variable's corresponding internal variable.
 
         auto variable = component->variable(i);
         auto internalVariable = Analyser::AnalyserImpl::internalVariable(variable);
 
-        // Replace the variable held by `analyserVariable`, in case the
-        // existing one has no initial value while `variable` does and after
-        // insuring that the initial value is either a double or an existing
-        // variable. Otherwise, generate an error if the variable held by
-        // `analyserVariable` and `variable` are both initialised.
+        // If `variable` has an initial value and the variable held by
+        // `internalVariable` doesn't, then replace the variable held by
+        // `internalVariable`. If `variable` and the variable held by
+        // `internalVariable` are different and both of them have an initial
+        // value then generate an error.
 
         if (!variable->initialValue().empty()
             && internalVariable->mVariable->initialValue().empty()) {
