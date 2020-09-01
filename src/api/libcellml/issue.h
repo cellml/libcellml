@@ -599,6 +599,13 @@ public:
      */
     std::any item() const;
 
+    /**
+     * @brief Clear the stored item.
+     * 
+     * The internal type will be set to @c ItemType::UNDEFINED.
+     */
+    void clearItem();
+
 private:
     Issue(); /**< Constructor */
 
