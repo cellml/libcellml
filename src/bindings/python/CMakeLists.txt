@@ -22,7 +22,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/component.i
     ../interface/componententity.i
     ../interface/entity.i
-    ../interface/enums.i  # KRM
+    ../interface/enums.i  
     ../interface/generator.i
     ../interface/generatorprofile.i
     ../interface/importer.i

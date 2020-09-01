@@ -43,19 +43,18 @@ public:
      * Factory method to create an @c Issue.  Can create a
      * blank issue with::
      *
-     *   IssuePtr issue = libcellml::Issue::create();
+     *   auto issue = libcellml::Issue::create();
      *
      * or an issue with one of the following types as a parameter::
-     *
      * 
-     * KRM change this:
-     * 
-     *   - libcellml::ComponentPtr
-     *   - libcellml::ImportSourcePtr
-     *   - libcellml::ModelPtr
-     *   - libcellml::ResetPtr
-     *   - libcellml::UnitsPtr
-     *   - libcellml::VariablePtr
+     *   - libcellml::ComponentPtr (defaults the item type to ItemType::COMPONENT);
+     *   - libcellml::ImportSourcePtr (defaults the item type to ItemType::IMPORT);
+     *   - libcellml::ModelPtr (defaults the item type to ItemType::MODEL);
+     *   - libcellml::ResetPtr (defaults the item type to ItemType::RESET);
+     *   - libcellml::UnitItem (defaults the item type to ItemType::UNIT);
+     *   - libcellml::UnitsPtr (defaults the item type to ItemType::UNITS);
+     *   - libcellml::VariablePtr (defaults the item type to ItemType::VARIABLE); or
+     *   - libcellml::ItemType, std::any.
      *
      * The default values for the enumerations are::
      *
