@@ -23,7 +23,7 @@
 "Returns the states contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::state
-"Removes the state, specified by index, contained by this :class:`AnalyserModel` object.";
+"Returns the state, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::variableCount
 "Returns the number of variables contained by this :class:`AnalyserModel` object.";
@@ -32,7 +32,7 @@
 "Returns the variables contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::variable
-"Removes the variable, specified by index, contained by this :class:`AnalyserModel` object.";
+"Returns the variable, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::equationCount
 "Returns the number of equations contained by this :class:`AnalyserModel` object.";
@@ -41,7 +41,7 @@
 "Returns the equations contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::equation
-"Removes the equation, specified by index, contained by this :class:`AnalyserModel` object.";
+"Returns the equation, specified by index, contained by this :class:`AnalyserModel` object.";
 
 %feature("docstring") libcellml::AnalyserModel::needEqFunction
 "Tests if this :class:`AnalyserModel` object needs an \"equal to\" function.";
