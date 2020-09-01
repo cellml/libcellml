@@ -233,7 +233,7 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     }
 
     // Determine, from the (new) known (ODE) variables, whether the equation is
-    // truly a constant or a variable-based constant.
+    // used to compute a true constant or a variable-based constant.
 
     mComputedTrueConstant = mComputedTrueConstant
                             && !hasKnownVariables(mVariables)
