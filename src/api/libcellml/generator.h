@@ -91,7 +91,7 @@ public:
      * Return the interface code for the @c AnalyserModel, using the
      * @c GeneratorProfile.
      *
-     * @return The code.
+     * @return The interface code as a @c std::string.
      */
     std::string interfaceCode() const;
 
@@ -101,7 +101,7 @@ public:
      * Return the implementation code for the @c AnalyserModel, using the
      * @c GeneratorProfile.
      *
-     * @return The code.
+     * @return The implementation code as a @c std::string.
      */
     std::string implementationCode() const;
 
