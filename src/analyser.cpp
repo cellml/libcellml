@@ -1024,8 +1024,8 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
 
                 if (voi != nullptr) {
                     // We have found the first occurrence of our variable of
-                    // integration, but now we must ensure that it (or one of
-                    // its equivalent variables) is not initialised.
+                    // integration, but now we must ensure neither it (nor any
+                    // of its equivalent variables) is initialised.
 
                     bool isVoiInitialised = false;
 
