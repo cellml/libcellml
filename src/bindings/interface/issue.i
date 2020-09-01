@@ -130,9 +130,6 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::item
 "Get the :class:`AnyItem` relevant to this issue (or ``None``).";
 
-// %feature("docstring") libcellml::Issue::setItem
-// "Sets the :class:`AnyItem` relevant to this issue (``None`` to unset).";
-
 %{
 #include "libcellml/issue.h"
 %}
@@ -148,19 +145,23 @@ Level::ERROR will be returned.";
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
     Issue(const ModelPtr &model) {
-        auto ptr = new std::shared_ptr<  libcellml::Issue >(libcellml::Issue::create(model));
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(model));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
     Issue(const ResetPtr &reset) {
-        auto ptr = new std::shared_ptr<  libcellml::Issue >(libcellml::Issue::create(reset));
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(reset));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
-    Issue(const UnitsPtr &units) {
-        auto ptr = new std::shared_ptr<  libcellml::Issue >(libcellml::Issue::create(units));
+    Issue(const UnitsPtr &unit) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
+        return reinterpret_cast<libcellml::Issue *>(ptr);
+    }
+    Issue(const UnitItem &unit) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(units));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
     Issue(const VariablePtr &variable) {
-        auto ptr = new std::shared_ptr<  libcellml::Issue >(libcellml::Issue::create(variable));
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(variable));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
