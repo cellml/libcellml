@@ -55,28 +55,16 @@ size_t AnalyserVariable::index() const
 
 VariablePtr AnalyserVariable::initialisingVariable() const
 {
-    if (mPimpl->mInitialisingVariable.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mInitialisingVariable.lock();
 }
 
 VariablePtr AnalyserVariable::variable() const
 {
-    if (mPimpl->mVariable.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mVariable.lock();
 }
 
 AnalyserEquationPtr AnalyserVariable::equation() const
 {
-    if (mPimpl->mEquation.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mEquation.lock();
 }
 

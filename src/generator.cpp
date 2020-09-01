@@ -161,8 +161,8 @@ bool Generator::GeneratorImpl::retrieveLockedModelAndProfile()
 
 void Generator::GeneratorImpl::resetLockedModelAndProfile()
 {
-    mLockedModel.reset();
-    mLockedProfile.reset();
+    mLockedModel = nullptr;
+    mLockedProfile = nullptr;
 }
 
 AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr &variable) const
@@ -2128,40 +2128,23 @@ GeneratorProfilePtr Generator::profile()
         return mPimpl->mOwnedProfile;
     }
 
-    if (mPimpl->mProfile.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mProfile.lock();
 }
 
 void Generator::setProfile(const GeneratorProfilePtr &profile)
 {
-    mPimpl->mOwnedProfile.reset();
-
-    if (profile == nullptr) {
-        mPimpl->mProfile.reset();
-    } else {
-        mPimpl->mProfile = profile;
-    }
+    mPimpl->mOwnedProfile = nullptr;
+    mPimpl->mProfile = profile;
 }
 
 AnalyserModelPtr Generator::model()
 {
-    if (mPimpl->mModel.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mModel.lock();
 }
 
 void Generator::setModel(const AnalyserModelPtr &model)
 {
-    if (model == nullptr) {
-        mPimpl->mModel.reset();
-    } else {
-        mPimpl->mModel = model;
-    }
+    mPimpl->mModel = model;
 }
 
 std::string Generator::interfaceCode() const
