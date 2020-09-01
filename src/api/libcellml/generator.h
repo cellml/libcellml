@@ -41,7 +41,9 @@ public:
      *
      * Factory method to create a @c Generator. Create a generator with::
      *
-     *   GeneratorPtr generator = libcellml::Generator::create();
+     * @code
+     *   auto generator = libcellml::Generator::create();
+     * @endcode
      *
      * @return A smart pointer to a @c Generator object.
      */
