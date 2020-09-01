@@ -237,7 +237,7 @@ void Importer::ImporterImpl::generateCyclicDependenciesIssues(const ModelPtr &mo
     auto issue = Issue::create();
     issue->setDescription(msg);
     issue->setLevel(Issue::Level::WARNING);
-    issue->setCause(ItemType::IMPORT); // KRM
+    issue->setCause(ItemType::IMPORT); 
     mImporter->addIssue(issue);
     std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
 }
