@@ -16,9 +16,6 @@
 %feature("docstring") libcellml::AnalyserModel::voi
 "Returns the :class:`AnalyserVariable` for the variable of integration.";
 
-%feature("docstring") libcellml::AnalyserModel::voi
-"Returns the :class:`AnalyserVariable` for the variable of integration.";
-
 %feature("docstring") libcellml::AnalyserModel::stateCount
 "Returns the number of states contained by this :class:`AnalyserModel` object.";
 
