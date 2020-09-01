@@ -101,7 +101,7 @@ public:
      *
      * Return the states in the @c AnalyserModel.
      *
-     * @return The states.
+     * @return The states as a @c std::vector.
      */
     std::vector<AnalyserVariablePtr> states() const;
 
@@ -111,6 +111,9 @@ public:
      * Return the state at the index @p index for the @c AnalyserModel.
      *
      * @param index The index of the state to return.
+     *
+     * @return The state at the given @p index on success, @c nullptr on
+     * failure.
      */
     AnalyserVariablePtr state(size_t index) const;
 
@@ -128,7 +131,7 @@ public:
      *
      * Return the variables in the @c AnalyserModel.
      *
-     * @return The variables.
+     * @return The variables as a @c std::vector.
      */
     std::vector<AnalyserVariablePtr> variables() const;
 
@@ -138,6 +141,9 @@ public:
      * Return the variable at the index @p index for the @c AnalyserModel.
      *
      * @param index The index of the variable to return.
+     *
+     * @return The variable at the given @p index on success, @c nullptr on
+     * failure.
      */
     AnalyserVariablePtr variable(size_t index) const;
 
@@ -155,7 +161,7 @@ public:
      *
      * Return the equations in the @c AnalyserModel.
      *
-     * @return The equations.
+     * @return The equations as a @c std::vector.
      */
     std::vector<AnalyserEquationPtr> equations() const;
 
@@ -165,6 +171,9 @@ public:
      * Return the equation at the index @p index for the @c AnalyserModel.
      *
      * @param index The index of the equation to return.
+     *
+     * @return The equation at the given @p index on success, @c nullptr on
+     * failure.
      */
     AnalyserEquationPtr equation(size_t index) const;
 
