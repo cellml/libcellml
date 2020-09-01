@@ -52,10 +52,6 @@ AnalyserEquation::Type AnalyserEquation::type() const
 
 AnalyserEquationAstPtr AnalyserEquation::ast() const
 {
-    if (mPimpl->mAst.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mAst.lock();
 }
 
@@ -77,10 +73,6 @@ bool AnalyserEquation::isStateRateBased() const
 
 AnalyserVariablePtr AnalyserEquation::variable() const
 {
-    if (mPimpl->mVariable.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mVariable.lock();
 }
 

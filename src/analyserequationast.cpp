@@ -82,38 +82,22 @@ void AnalyserEquationAst::setValue(const std::string &value)
 
 VariablePtr AnalyserEquationAst::variable() const
 {
-    if (mPimpl->mVariable.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mVariable.lock();
 }
 
 void AnalyserEquationAst::setVariable(const VariablePtr &variable)
 {
-    if (variable == nullptr) {
-        mPimpl->mVariable.reset();
-    } else {
-        mPimpl->mVariable = variable;
-    }
+    mPimpl->mVariable = variable;
 }
 
 AnalyserEquationAstPtr AnalyserEquationAst::parent() const
 {
-    if (mPimpl->mParent.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mParent.lock();
 }
 
 void AnalyserEquationAst::setParent(const AnalyserEquationAstPtr &parent)
 {
-    if (parent == nullptr) {
-        mPimpl->mParent.reset();
-    } else {
-        mPimpl->mParent = parent;
-    }
+    mPimpl->mParent = parent;
 }
 
 AnalyserEquationAstPtr AnalyserEquationAst::leftChild() const
@@ -122,22 +106,13 @@ AnalyserEquationAstPtr AnalyserEquationAst::leftChild() const
         return mPimpl->mOwnedLeftChild;
     }
 
-    if (mPimpl->mLeftChild.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mLeftChild.lock();
 }
 
 void AnalyserEquationAst::setLeftChild(const AnalyserEquationAstPtr &leftChild)
 {
-    mPimpl->mOwnedLeftChild.reset();
-
-    if (leftChild == nullptr) {
-        mPimpl->mLeftChild.reset();
-    } else {
-        mPimpl->mLeftChild = leftChild;
-    }
+    mPimpl->mOwnedLeftChild = nullptr;
+    mPimpl->mLeftChild = leftChild;
 }
 
 AnalyserEquationAstPtr AnalyserEquationAst::rightChild() const
@@ -146,22 +121,13 @@ AnalyserEquationAstPtr AnalyserEquationAst::rightChild() const
         return mPimpl->mOwnedRightChild;
     }
 
-    if (mPimpl->mRightChild.expired()) {
-        return nullptr;
-    }
-
     return mPimpl->mRightChild.lock();
 }
 
 void AnalyserEquationAst::setRightChild(const AnalyserEquationAstPtr &rightChild)
 {
-    mPimpl->mOwnedRightChild.reset();
-
-    if (rightChild == nullptr) {
-        mPimpl->mRightChild.reset();
-    } else {
-        mPimpl->mRightChild = rightChild;
-    }
+    mPimpl->mOwnedRightChild = nullptr;
+    mPimpl->mRightChild = rightChild;
 }
 
 } // namespace libcellml
