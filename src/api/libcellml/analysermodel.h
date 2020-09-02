@@ -70,9 +70,9 @@ public:
     bool isValid() const;
 
     /**
-     * @brief Get the @c Type of the @c Model.
+     * @brief Get the @c Type of the @c AnalyserModel.
      *
-     * Return the @c Type of the @c Model analysed by an @c Analyser.
+     * Return the @c Type of the @c AnalyserModel.
      *
      * @return The @c Type.
      */
@@ -90,98 +90,101 @@ public:
     bool hasExternalVariables() const;
 
     /**
-     * @brief Get the @c Variable of integration of the @c Model.
+     * @brief Get the @c Variable of integration.
      *
-     * Return the @c Variable of integration of the @c Model analysed by this
-     * @c Analyser.
+     * Return the @c Variable of integration of the @c AnalyserModel.
      *
      * @return The @c Variable of integration.
      */
     AnalyserVariablePtr voi() const;
 
     /**
-     * @brief Get the number of states in the @c Model.
+     * @brief Get the number of states.
      *
-     * Return the number of states in the @c Model analysed by this @c Analyser.
+     * Return the number of states in the @c AnalyserModel.
      *
      * @return The number of states.
      */
     size_t stateCount() const;
 
     /**
-     * @brief Get the states in the @c Model.
+     * @brief Get the states.
      *
-     * Return the states in the @c Model analysed by this @c Analyser.
+     * Return the states in the @c AnalyserModel.
      *
-     * @return The states.
+     * @return The states as a @c std::vector.
      */
     std::vector<AnalyserVariablePtr> states() const;
 
     /**
      * @brief Get the state at @p index.
      *
-     * Return the state at the index @p index for the @c Model analysed by this
-     * @c Analyser.
+     * Return the state at the index @p index for the @c AnalyserModel.
      *
      * @param index The index of the state to return.
+     *
+     * @return The state at the given @p index on success, @c nullptr on
+     * failure.
      */
     AnalyserVariablePtr state(size_t index) const;
 
     /**
-     * @brief Get the number of variables in the @c Model.
+     * @brief Get the number of variables.
      *
-     * Return the number of variables in the @c Model analysed by this
-     * @c Analyser.
+     * Return the number of variables in the @c AnalyserModel.
      *
      * @return The number of variables.
      */
     size_t variableCount() const;
 
     /**
-     * @brief Get the variables in the @c Model.
+     * @brief Get the variables.
      *
-     * Return the variables in the @c Model analysed by this @c Analyser.
+     * Return the variables in the @c AnalyserModel.
      *
-     * @return The variables.
+     * @return The variables as a @c std::vector.
      */
     std::vector<AnalyserVariablePtr> variables() const;
 
     /**
      * @brief Get the variable at @p index.
      *
-     * Return the variable at the index @p index for the @c Model analysed by
-     * this @c Analyser.
+     * Return the variable at the index @p index for the @c AnalyserModel.
      *
      * @param index The index of the variable to return.
+     *
+     * @return The variable at the given @p index on success, @c nullptr on
+     * failure.
      */
     AnalyserVariablePtr variable(size_t index) const;
 
     /**
-     * @brief Get the number of equations in the @c Model.
+     * @brief Get the number of equations.
      *
-     * Return the number of equations in the @c Model analysed by this
-     * @c Analyser.
+     * Return the number of equations in the @c AnalyserModel.
      *
      * @return The number of equations.
      */
     size_t equationCount() const;
 
     /**
-     * @brief Get the equations in the @c Model.
+     * @brief Get the equations.
      *
-     * Return the equations in the @c Model analysed by this @c Analyser.
+     * Return the equations in the @c AnalyserModel.
      *
-     * @return The equations.
+     * @return The equations as a @c std::vector.
      */
     std::vector<AnalyserEquationPtr> equations() const;
 
     /**
      * @brief Get the equation at @p index.
      *
-     * Return the equation at the index @p index for the @c Model analysed by
-     * this @c Analyser.
+     * Return the equation at the index @p index for the @c AnalyserModel.
      *
      * @param index The index of the equation to return.
+     *
+     * @return The equation at the given @p index on success, @c nullptr on
+     * failure.
      */
     AnalyserEquationPtr equation(size_t index) const;
 
