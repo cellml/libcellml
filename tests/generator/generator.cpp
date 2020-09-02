@@ -1346,19 +1346,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithStateAsExternalVariable)
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.state.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.state.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariable)
@@ -1403,19 +1406,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentStateExternalVariabl
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.dependent.state.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.state.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
@@ -1453,19 +1459,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithConstantAsExternalVariable)
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.constant.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVariable)
@@ -1509,19 +1518,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentConstantAsExternalVa
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.dependent.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.constant.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVariable)
@@ -1559,19 +1571,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithComputedConstantAsExternalVar
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.computed.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.computed.constant.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsExternalVariable)
@@ -1615,19 +1630,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentComputedConstantAsEx
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.dependent.computed.constant.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.computed.constant.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVariable)
@@ -1665,19 +1683,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithAlgebraicVariableAsExternalVa
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.algebraic.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.algebraic.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsExternalVariable)
@@ -1721,19 +1742,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithDependentAlgebraicVariableAsE
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.dependent.algebraic.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.dependent.algebraic.py"), generator->implementationCode());
 }
 
 TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
@@ -1784,19 +1808,22 @@ TEST(Generator, hodgkinHuxleySquidAxonModel1952WithExternalVariables)
     EXPECT_EQ(nullptr, analyserModel->equation(analyserModel->equationCount()));
 
     auto generator = libcellml::Generator::create();
+
+    generator->setModel(analyserModel);
+
     auto profile = generator->profile();
 
     profile->setInterfaceFileNameString("model.external.h");
 
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h"), generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.h"), generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"), generator->implementationCode());
 
     profile = libcellml::GeneratorProfile::create(libcellml::GeneratorProfile::Profile::PYTHON);
 
     generator->setProfile(profile);
 
-    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode(analyserModel));
-    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode(analyserModel));
+    EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());
+    EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.external.py"), generator->implementationCode());
 }
 
 #include "../resources/generator/hodgkin_huxley_squid_axon_model_1952/model.external.c"

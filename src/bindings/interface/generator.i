@@ -36,12 +36,6 @@
 #include "libcellml/generator.h"
 %}
 
-%pythonappend libcellml::Generator::Generator %{
-from libcellml import GeneratorProfile
-profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
-self.setProfile(profile)
-%}
-
 %create_constructor(Generator)
 
 %include "libcellml/generator.h"
