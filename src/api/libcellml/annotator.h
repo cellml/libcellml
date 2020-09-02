@@ -16,8 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <any>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -27,10 +25,6 @@ limitations under the License.
 
 namespace libcellml {
 
-using VariablePair = std::pair<VariablePtr, VariablePtr>;
-using UnitItem = std::pair<UnitsPtr, size_t>;
-using AnyItem = std::pair<std::uint64_t, std::any>;
-using ItemList = std::multimap<std::string, AnyItem>;
 /**
  * @brief The Annotator class.
  *
@@ -39,24 +33,6 @@ using ItemList = std::multimap<std::string, AnyItem>;
 class LIBCELLML_EXPORT Annotator: public Logger
 {
 public:
-    enum Type
-    {
-        COMPONENT,
-        COMPONENT_REF,
-        CONNECTION,
-        ENCAPSULATION,
-        IMPORT,
-        ISSUE,
-        MAP_VARIABLES,
-        MODEL,
-        RESET,
-        RESET_VALUE,
-        TEST_VALUE,
-        UNIT,
-        UNITS,
-        VARIABLE,
-    };
-
     ~Annotator() override; /**< Destructor */
     Annotator(const Annotator &rhs) = delete; /**< Copy constructor */
     Annotator(Annotator &&rhs) noexcept = delete; /**< Move constructor */
@@ -65,7 +41,7 @@ public:
     /**
      * @brief Create a @c Annotator object.
      *
-     * Factory method to create a @c Annotator.  Create a
+     * Factory method to create a @ref Annotator.  Create a
      * annotator with::
      *
      *   AnnotatorPtr annotator = libcellml::Annotator::create();
@@ -75,59 +51,46 @@ public:
     static AnnotatorPtr create() noexcept;
 
     /**
-     * @brief Builds the internal map of ids to items for the model provided.
+     * @brief Set the model that this annotator will use.
      *
-     * @param model A @c ModelPtr model to build map for.
+     * Set the model that this annotator will use.
+     *
+     * @param model A @c ModelPtr model to use in this annotator.
      */
-    void buildModelIndex(const ModelPtr &model);
+    void setModel(const ModelPtr &model);
 
     /**
-     * @overload
-     * @brief Retrieves an item with the given id string, in the model
-     * for which the internal map was built using @sa buildModelIndex().
+     * @brief Get the model associated with this annotator.
+     *
+     * Get the model associated with this annotator.
+     *
+     * @return A @ref ModelPtr to a model, or a @c nullptr.
+     */
+    ModelPtr model() const;
+
+    /**
+     * @brief Retrieves an item with the given id string.
      *
      * The item returned is a @c std::pair containing:
-     *  - an @c Annotator::Type enum, and
-     *  - an @c std::any item containing the item.
+     *  - a @ref CellMLElement enum, and
+     *  - a @c std::any item containing the item.
      *
-     * Possible string labels and their corresponding items returned are:
-     *  - Annotator::Type::COMPONENT
-     *          ComponentPtr to item with this id.
-     *  - Annotator::Type::COMPONENT_REF
-     *          ComponentPtr to component which has component->componentRefId() == id.
-     *  - Annotator::Type::CONNECTION
-     *          VariablePair including two VariablePtr items which can be used to retrieve the
-     *          connection.  Note that multiple pairs of variables could be used to identify
-     *          a single connection.
-     *   Annotator::Type::ENCAPSULATION
-     *          A ModelPtr of the model whose encapsulation id is the given id.
-     *   Annotator::Type::IMPORT
-     *          An ImportSourcePtr item with this id.
-     *   Annotator::Type::ISSUE
-     *          An IssuePtr containing an error message.
-     *   Annotator::Type::MAP_VARIABLES
-     *          A VariablePair including two VariablePtr items which can be used to retrieve the
-     *          equivalence.
-     *   Annotator::Type::MODEL
-     *          A ModelPtr with this id.
-     *   Annotator::Type::RESET
-     *          A ResetPtr with this id.
-     *   Annotator::Type::RESET_VALUE
-     *          A ResetPtr which is the parent of the reset_value item found with this id.
-     *          Retrieve the reset_value MathML string using reset->resetValue().
-     *   Annotator::Type::TEST_VALUE
-     *          A ResetPtr which is the parent of the test_value item found with this id.
-     *          Retrieve the test_value MathML string using reset->testValue().
-     *   Annotator::Type::UNIT
-     *          A UnitItem pair containing:
-     *              .first: A UnitsPtr to the parent of the unit item with this id, and
-     *              .second: A size_t with the index to the Unit item.
-     *          Retrieve the unit description using Units::unitAttributes() function with
-     *   Annotator::Type::UNITS
-     *          A UnitsPtr item with this id.
-     *   Annotator::Type::VARIABLE
-     *          A VariablePtr item with this id.
-          *
+     * Possible pairs returned returned are:
+     *  - <CellMLElement::COMPONENT, @ref ComponentPtr> - Retrieve id with Component::id().
+     *  - <CellMLElement::COMPONENT_REF, @ref ComponentPtr> - Retrieve id with Component::encapsulationId().
+     *  - <CellMLElement::CONNECTION, @ref VariablePair> - Retrieve id with Variable::equivalenceConnectionId(const VariablePtr &,const VariablePtr &).
+     *  - <CellMLElement::ENCAPSULATION, @ref ModelPtr> - Retrieve id with Model::encapsulationId().
+     *  - <CellMLElement::IMPORT, @ref ImportSourcePtr> - Retrieve id with ImportSource::id().
+     *  - <CellMLElement::MAP_VARIABLES, @ref VariablePair> - Retrieve id with Variable::equivalenceMappingId(const VariablePtr &, const VariablePtr &).
+     *  - <CellMLElement::MODEL, @ref ModelPtr> - Retrieve id with Model::id().
+     *  - <CellMLElement::RESET, @ref ResetPtr> - Retrieve id with Reset::id().
+     *  - <CellMLElement::RESET_VALUE, @ref ResetPtr> - Retrieve id with Reset::resetValueId (const std::string &).
+     *  - <CellMLElement::TEST_VALUE, @ref ResetPtr> - Retrieve id with Reset::testValueId (const std::string &).
+     *  - <CellMLElement::UNDEFINED, @c nullptr>.
+     *  - <CellMLElement::UNIT, @ref UnitItem> - Retrieve id with Units::unitAttributes(size_t,std::string &,std::string &,double &,double &,std::string &) const..
+     *  - <CellMLElement::UNITS, @ref UnitsPtr> - Retrieve id with Units::id().
+     *  - <CellMLElement::VARIABLE, @ref VariablePtr> - Retrieve id with Variable::id().
+     *
      * @param id A @c std::string representing the @p id to retrieve.
      *
      * @return An @c AnyItem item as described above.
@@ -136,62 +99,22 @@ public:
 
     /**
      * @overload
-     * @brief From a list of items in the stored model with the given @p id string,
-     *        this function returns the item in the @p index position.
+     * @brief Return the item at @p index with the @p id.
+     *
+     * From a list of items in the stored model with the given @p id string,
+     * this function returns the item in the @p index position.
      * 
-     * Note that the @sa Annotator::build function must be called before this can work successfully. 
+     * See item(const std::string &) for a full breakdown of the return value.
      *
-     * The item returned is a @c std::pair containing:
-     *  - an @c Annotator::Type enum, and
-     *  - an @c std::any item containing the item.
-     *
-     * Possible string labels and their corresponding items returned are:
-     *  - Annotator::Type::COMPONENT
-     *          ComponentPtr to item with this id.
-     *  - Annotator::Type::COMPONENT_REF
-     *          ComponentPtr to component which has component->componentRefId() == id.
-     *  - Annotator::Type::CONNECTION
-     *          VariablePair including two VariablePtr items which can be used to retrieve the
-     *          connection.  Note that multiple pairs of variables could be used to identify
-     *          a single connection.
-     *   Annotator::Type::ENCAPSULATION
-     *          A ModelPtr of the model whose encapsulation id is the given id.
-     *   Annotator::Type::IMPORT
-     *          An ImportSourcePtr item with this id.
-     *   Annotator::Type::ISSUE
-     *          An IssuePtr containing an error message.
-     *   Annotator::Type::MAP_VARIABLES
-     *          A VariablePair including two VariablePtr items which can be used to retrieve the
-     *          equivalence.
-     *   Annotator::Type::MODEL
-     *          A ModelPtr with this id.
-     *   Annotator::Type::RESET
-     *          A ResetPtr with this id.
-     *   Annotator::Type::RESET_VALUE
-     *          A ResetPtr which is the parent of the reset_value item found with this id.
-     *          Retrieve the reset_value MathML string using reset->resetValue().
-     *   Annotator::Type::TEST_VALUE
-     *          A ResetPtr which is the parent of the test_value item found with this id.
-     *          Retrieve the test_value MathML string using reset->testValue().
-     *   Annotator::Type::UNIT
-     *          A UnitItem pair containing:
-     *              .first: A UnitsPtr to the parent of the unit item with this id, and
-     *              .second: A size_t with the index to the Unit item.
-     *          Retrieve the unit description using Units::unitAttributes() function with
-     *   Annotator::Type::UNITS
-     *          A UnitsPtr item with this id.
-     *   Annotator::Type::VARIABLE
-     *          A VariablePtr item with this id.
-          *
      * @param id A @c std::string representing the @p id to retrieve.
      * @param index 
      *
-     * @return An @c AnyItem item as described above.
+     * @return An @c AnyItem item as described in item(const std::string &).
      */
     AnyItem item(const std::string &id, size_t index);
 
     /**
-     * @brief Retrieve a @c ComponentPtr with the given @p id.
+     * @brief Retrieve a @ref ComponentPtr with the given @p id.
      *
      *        If an item with the id is not found, has another type, or is not unique, the
      *        @c nullptr is returned.
@@ -599,14 +522,14 @@ public:
      *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this function can be called successfully.
      * 
-     * @param type Items of this @c Annotator::Type will all be assigned a new id.
+     * @param type Items of this @c CellMLElement will all be assigned a new id.
      * 
      * @return a boolean value indicating whether any ids have been changed.
      */
-    bool assignIds(Annotator::Type type);
+    bool assignIds(CellMLElement type);
 
     /**
-     * @brief Clear all id strings from all items in the stored model.
+     * Clear all id strings from all items in the stored model.
      */
     void clearAllIds();
 
@@ -623,33 +546,33 @@ public:
 
     /**
      * @brief Test whether the given @p id exists uniquely within the stored model.
+     *
+     * Test whether the given @p id exists uniquely within the stored model.
      * 
      * @param id A @c std::string to test for uniqueness amongst the set of ids in the stored model.
-     * @param raiseError A @c bool determining whether, if duplicates are found, to create an @c Issue item
-     *                   in this annotator.
      *
      * @return @c true if the @p id exists exactly once, @c false otherwise.
      */
-    bool isUnique(const std::string &id, bool raiseError);
+    bool isUnique(const std::string &id);
 
     /**
      * @brief Return a @c std::vector of @c AnyItem items which have the given @p id.
      * 
-     *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
-     *  before this function can be called successfully.
+     * The annotator requires a model to be set with setModel(ModelPtr)
+     * before this function can be called successfully.
      * 
      * @param id A @c std::string used to identify the set of items to retrieve.
      * 
-     * @return a @c std::vector of @c AnyItem items.
+     * @return a @c std::vector of @ref AnyItem items.
      */
     std::vector<AnyItem> items(const std::string &id);
 
     /** 
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id
-     *  string in the stored model.
+     * string in the stored model.
      * 
-     *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
-     *  before this function can be called successfully.
+     * The annotator requires a model to be set with setModel(ModelPtr)
+     * before this function can be called successfully.
      * 
      * @return a @c std::vector of @c std::strings.
      */
@@ -681,15 +604,15 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if a @c ModelPtr is 
-     *     submitted, the @p type must be @c Annotator::Type::MODEL); or
+     *     submitted, the @p type must be @c CellMLElement::MODEL); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param type An @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::MODEL.
+     * @param type An @c CellMLElement enumeration.  This must be equal to @c CellMLElement::MODEL.
      * @param item A @c ModelPtr model to which the new id will be assigned.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const ModelPtr &item);
+    std::string assignId(const ModelPtr &item, CellMLElement type=CellMLElement::MODEL);
 
     /**
      * @overload
@@ -702,13 +625,13 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if a @c ComponentPtr is 
-     *     submitted, the @p type must be @c Annotator::Type::COMPONENT or 
-     *     @c Annotator::Type::COMPONENT_REF); or
+     *     submitted, the @p type must be @c CellMLElement::COMPONENT or
+     *     @c CellMLElement::COMPONENT_REF); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param type An @c Annotator::Type enumeration.  This must be equal to:
-     *          - @c Annotator::Type::COMPONENT; or
-     *          - @c Annotator::Type::COMPONENT_REF.
+     * @param type An @c CellMLElement enumeration.  This must be equal to:
+     *          - @c CellMLElement::COMPONENT; or
+     *          - @c CellMLElement::COMPONENT_REF.
      * 
      * @param item A @c ComponentPtr item.  The new id will be assigned to either:
      *          - the component (COMPONENT) or
@@ -717,7 +640,7 @@ public:
      *    
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const ComponentPtr &item);
+    std::string assignId(const ComponentPtr &item, CellMLElement type=CellMLElement::COMPONENT);
 
     /**
      * @overload
@@ -730,15 +653,15 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c ImportSourcePtr is 
-     *     submitted, the @p type must be @c Annotator::Type::IMPORT); or
+     *     submitted, the @p type must be @c CellMLElement::IMPORT); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param type An @c Annotator::Type enum.  This must be @c Annotator::Type::IMPORT.
+     * @param type An @c CellMLElement enum.  This must be @c CellMLElement::IMPORT.
      * @param item An @c ImportSourcePtr to which the new id will be assigned.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const ImportSourcePtr &item);
+    std::string assignId(const ImportSourcePtr &item);
 
     /**
      * @overload
@@ -751,24 +674,23 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if a @c ResetPtr is 
-     *     submitted, the @p type must be either @c Annotator::Type::RESET,  
-     *     @c Annotator::Type::RESET_VALUE, or  @c Annotator::Type::TEST_VALUE); or
+     *     submitted, the @p type must be either @c CellMLElement::RESET,
+     *     @c CellMLElement::RESET_VALUE, or  @c CellMLElement::TEST_VALUE); or
      *   - the given @p item is @c nullptr.
-     * 
-     * @param type An @c Annotator::Type enumeration.  This must be equal to:
-     *          - @c Annotator::Type::RESET; 
-     *          - @c Annotator::Type::RESET_VALUE; or
-     *          - @c Annotator::TYPE::TEST_VALUE.
      * 
      * @param item A @c ResetPtr item.  The new id will be assigned to either:
      *          - the reset item itself (RESET);
      *          - its reset value (RESET_VALUE); or
      *          - its test value (TEST_VALUE)
      *        depending on the @p type.
-     * 
+     * @param type An @c CellMLElement enumeration.  This must be equal to:
+     *          - @c CellMLElement::RESET;
+     *          - @c CellMLElement::RESET_VALUE; or
+     *          - @c CellMLElement::TEST_VALUE.
+     *
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const ResetPtr &item);
+    std::string assignId(const ResetPtr &item, CellMLElement type=CellMLElement::RESET);
 
     /**
      * @overload
@@ -781,15 +703,14 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c UnitsPtr is 
-     *     submitted, the @p type must be @c Annotator::Type::UNITS); or
+     *     submitted, the @p type must be @c CellMLElement::UNITS); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::UNITS.
      * @param units A @c UnitsPtr item to which the new id is assigned.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const UnitsPtr &item);
+    std::string assignId(const UnitsPtr &item);
 
     /**
      * @overload
@@ -802,15 +723,14 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c UnitItem is 
-     *     submitted, the @p type must be @c Annotator::Type::UNIT); or
+     *     submitted, the @p type must be @c CellMLElement::UNIT); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::UNIT.
      * @param units A @c UnitItem item to which the new id is assigned.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const UnitItem &item);
+    std::string assignId(const UnitItem &item);
 
     /**
      * @overload
@@ -823,15 +743,15 @@ public:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p item is not a member of the stored model; 
      *   - the given @p item is not of the given @p type (ie: if an @c VariablePtr is 
-     *     submitted, the @p type must be @c Annotator::Type::VARIABLE); or
+     *     submitted, the @p type must be @c CellMLElement::VARIABLE); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::VARIABLE.
+     * @param type A @c CellMLElement enumeration.  This must be equal to @c CellMLElement::VARIABLE.
      * @param units A @c VariablePtr item to which the new id is assigned.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const VariablePtr &item);
+    std::string assignId(const VariablePtr &item);
 
     /**
      * @overload
@@ -845,9 +765,9 @@ public:
      *   - either @c VariablePtr in the @p pair is @c nullptr; or
      *   - no item of the given @p type exists in the stored model.
      * 
-     * @param type A @c Annotator::Type enumeration.  This must be equal to either:
-     *             - @c Annotator::Type::CONNECTION; or
-     *             - @c Annotator::Type::MAP_VARIABLES.
+     * @param type A @c CellMLElement enumeration.  This must be equal to either:
+     *             - @c CellMLElement::CONNECTION; or
+     *             - @c CellMLElement::MAP_VARIABLES.
      * 
      * @param pair A @c VariablePair item containing two @c VariablePtrs which together define either:
      *             - a connection between parent components (CONNECTION); or
@@ -855,7 +775,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const VariablePair &pair);
+    std::string assignId(const VariablePair &pair, CellMLElement type=CellMLElement::CONNECTION);
 
     /**
      * @overload
@@ -869,40 +789,40 @@ public:
      *   - @p item1 and/or @p item2 is not a member of the stored model; 
      *   - @p item1 and/or @p item2 is @c nullptr;
      *   - a connection or equivalence (determined by @p type) does not exist in the stored model;
-     *   - the @p type is neither @c Annotator::Type::CONNECTION or @c Annotator::Type::MAP_VARIABLES.
+     *   - the @p type is neither @c CellMLElement::CONNECTION or @c CellMLElement::MAP_VARIABLES.
      * 
-     * @param type An @c Annotator::Type enumeration.  This must be equal to either:
-     *             - @c Annotator::Type::CONNECTION; or
-     *             - @c Annotator::Type::MAP_VARIABLE.
+     * @param type An @c CellMLElement enumeration.  This must be equal to either:
+     *             - @c CellMLElement::CONNECTION; or
+     *             - @c CellMLElement::MAP_VARIABLE.
      * 
      * @param item1 A @c VariablePtr item related to @p item2 through a connection or equivalence.
      * @param item2 A @c VariablePtr item related to @p item1 through a connection or equivalence.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const VariablePtr &item1, const VariablePtr &item2);
+    std::string assignId(const VariablePtr &item1, const VariablePtr &item2, CellMLElement type=CellMLElement::CONNECTION);
 
     /**
      * @overload
      * 
      * @brief Assign an automatically generated, unique id to the unit item at index @p index 
-     *        within units @p units.  The given @p type must be @c Annotator::Type::UNIT.
+     *        within units @p units.  The given @p type must be @c CellMLElement::UNIT.
      * 
      *  This function will return the new id that has been assigned, or an empty string
      *  if the operation failed.  The id will not be assigned if:
      *   - no model has been stored and/or built in this annotator;
      *   - the given @p units is not a member of the stored model; 
      *   - the given @p index is beyond the valid index range for the @p units;
-     *   - the given @p type is not @c Annotator::Type::UNIT; or
+     *   - the given @p type is not @c CellMLElement::UNIT; or
      *   - the given @p units is @c nullptr.
      * 
-     * @param type A @c Annotator::Type enumeration.  This must be equal to @c Annotator::Type::UNIT.
+     * @param type A @c CellMLElement enumeration.  This must be equal to @c CellMLElement::UNIT.
      * @param units A @c UnitsPtr containing the child unit item.
      * @param index The index at which the child unit exists within the parent @p units item.
      * 
      * @return the new id string.
      */
-    std::string assignId(Annotator::Type type, const UnitsPtr &units, size_t index);
+    std::string assignId(const UnitsPtr &units, size_t index);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p component.
@@ -1109,31 +1029,6 @@ public:
     std::string assignVariableId(const VariablePtr &variable);
 
     /**
-     * @overload
-     * 
-     * @brief Return a string representing the given @p type.
-     *  
-     *  The string returned is a lower-case equivalent of the @c Annotator::Type
-     *  enumeration; for example, @c Annotator::Type::COMPONENT_REF becomes "component_ref".
-     *
-     * @return a string representing the @p type.
-     */
-
-    std::string typeString(const Annotator::Type &type);
-
-    /**
-     * @overload
-     * 
-     * @brief Return a string representing the given @p type.
-     *  
-     *  The string returned is a lower-case equivalent of the @c Annotator::Type
-     *  enumeration; for example, @c Annotator::Type::COMPONENT_REF becomes "component_ref".
-     *
-     * @return a string representing the @p type.
-     */
-    std::string typeString(const std::uint64_t &type);
-
-    /**
      * @brief Get the number of items with the given @p id.
      *
      * @param id A @c std::string for the id to find.
@@ -1147,7 +1042,7 @@ public:
      *
      * @return @c true if the annotator has been built with respect to the current model state, or @c false otherwise.
      */
-    bool isBuilt();
+    bool hasModel() const;
 
 private:
     Annotator(); /**< Constructor */

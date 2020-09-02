@@ -19,6 +19,7 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <cmath>
+#include <ctime>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -39,6 +40,16 @@ std::string fileContents(const std::string &fileName)
     buffer << file.rdbuf();
 
     return buffer.str();
+}
+
+void timeit(std::function<void()> func) {
+    std::clock_t start = std::clock();
+
+    func();
+
+    int ms = (std::clock() - start) / (double) (CLOCKS_PER_SEC / 1000);
+
+    std::cout << "Finished in " << ms << "ms" << std::endl;
 }
 
 void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)

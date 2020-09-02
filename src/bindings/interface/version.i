@@ -18,4 +18,8 @@ minor version, and z the patch level.";
 #include "libcellml/version.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code
+%}
+
 %include "libcellml/version.h"

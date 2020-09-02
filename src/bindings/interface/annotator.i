@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %import "createconstructor.i"
+%import "enums.i"
 %import "logger.i"
 %import "types.i"
 
@@ -14,7 +15,7 @@
 %feature("docstring") libcellml::Annotator
 "Interacts with CellML objects using their id attribute.";
 
-%feature("docstring") libcellml::Annotator::buildModelIndex
+%feature("docstring") libcellml::Annotator::setModel
 "Construct a searchable map of items in the model.";
 
 %feature("docstring") libcellml::Annotator::item
@@ -104,13 +105,10 @@
 %feature("docstring") libcellml::Annotator::assignVariableId
 "Assign an automatically generated, unique id to the given variable.";
 
-%feature("docstring") libcellml::Annotator::typeString
-"Translate the given Annotator::Type enumeration into a string.";
-
 %feature("docstring") libcellml::Annotator::duplicateCount
 "Return the number of items in the stored model with the given id.";
 
-%feature("docstring") libcellml::Annotator::isBuilt
+%feature("docstring") libcellml::Annotator::hasModel
 "Report whether the annotator index is up-to-date with its stored model state.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
@@ -145,6 +143,10 @@
 #include "libcellml/annotator.h"
 %}
 
+%create_constructor(Annotator)
+
+%template(StringVector) std::vector<std::string>;
+
 %ignore libcellml::Annotator::item;
 %ignore libcellml::Annotator::items;
 %ignore libcellml::Annotator::unit;
@@ -152,9 +154,9 @@
 %ignore libcellml::Annotator::mapVariables;
 %ignore libcellml::Annotator::assignId;
 
-%create_constructor(Annotator)
-
-%template(VectorOfStrings) std::vector<std::string>;
+%pythoncode %{
+from libcellml import CellMLElement
+%}
 
 %extend libcellml::Annotator {
 
@@ -215,32 +217,32 @@
     %pythoncode %{
         def assignId(self, type, item, item2=None):
             r"""Sets the given item's id to an automatically generated, unique string."""
-            if type == Annotator.Type.COMPONENT:
+            if type == CellMLElement.COMPONENT:
                 return _annotator.Annotator_assignComponentId(self, item)
-            elif type == Annotator.Type.COMPONENT_REF:
+            elif type == CellMLElement.COMPONENT_REF:
                 return _annotator.Annotator_assignComponentRefId(self, item)
-            elif type == Annotator.Type.ENCAPSULATION:
+            elif type == CellMLElement.ENCAPSULATION:
                 return _annotator.Annotator_assignEncapsulationId(self, item)
-            elif type == Annotator.Type.IMPORT:
+            elif type == CellMLElement.IMPORT:
                 return _annotator.Annotator_assignImportSourceId(self, item)
-            elif type == Annotator.Type.MODEL:
+            elif type == CellMLElement.MODEL:
                 return _annotator.Annotator_assignModelId(self, item)
-            elif type == Annotator.Type.RESET:
+            elif type == CellMLElement.RESET:
                 return _annotator.Annotator_assignResetId(self, item)
-            elif type == Annotator.Type.RESET_VALUE:
+            elif type == CellMLElement.RESET_VALUE:
                 return _annotator.Annotator_assignResetValueId(self, item)
-            elif type == Annotator.Type.TEST_VALUE:
+            elif type == CellMLElement.TEST_VALUE:
                 return _annotator.Annotator_assignTestValueId(self, item)
-            elif type == Annotator.Type.UNITS:
+            elif type == CellMLElement.UNITS:
                 return _annotator.Annotator_assignUnitsId(self, item)
-            elif type == Annotator.Type.VARIABLE:
+            elif type == CellMLElement.VARIABLE:
                 return _annotator.Annotator_assignVariableId(self, item)
 
-            if type == Annotator.Type.CONNECTION:
+            if type == CellMLElement.CONNECTION:
                 return _annotator.Annotator_assignConnectionIdForSWIG(self, item, item2)
-            elif type == Annotator.Type.MAP_VARIABLES:
+            elif type == CellMLElement.MAP_VARIABLES:
                 return _annotator.Annotator_assignMapVariablesIdForSWIG(self, item, item2)
-            elif type == Annotator.Type.UNIT:
+            elif type == CellMLElement.UNIT:
                 return _annotator.Annotator_assignUnitIdForSWIG(self, item, item2)
             return ""
        
@@ -265,39 +267,37 @@
                 index = 0
 
             type = _annotator.Annotator_itemTypeForSWIG(self, id, index)
-            if type == Annotator.Type.COMPONENT:
+            if type == CellMLElement.COMPONENT:
                 return (type, _annotator.Annotator_component(self, id, index))
-            elif type == Annotator.Type.COMPONENT_REF:
+            elif type == CellMLElement.COMPONENT_REF:
                 return (type, _annotator.Annotator_componentRef(self, id, index))
-            elif type == Annotator.Type.CONNECTION:
+            elif type == CellMLElement.CONNECTION:
                 first = _annotator.Annotator_connectionForSWIG(self, id, True, index)
                 second = _annotator.Annotator_connectionForSWIG(self, id, False, index)
                 return (type, (first, second))
-            elif type == Annotator.Type.ENCAPSULATION:
+            elif type == CellMLElement.ENCAPSULATION:
                 return (type, _annotator.Annotator_encapsulation(self, id, index))
-            elif type == Annotator.Type.IMPORT:
+            elif type == CellMLElement.IMPORT:
                 return (type, _annotator.Annotator_importSource(self, id, index))
-            elif type == Annotator.Type.ISSUE:
-                return (type, _annotator.Annotator_issue(self, id, index))
-            elif type == Annotator.Type.MAP_VARIABLES:
+            elif type == CellMLElement.MAP_VARIABLES:
                 first = _annotator.Annotator_mapVariablesForSWIG(self, id, True, index)
                 second = _annotator.Annotator_mapVariablesForSWIG(self, id, False, index)
                 return (type, (first, second))
-            elif type == Annotator.Type.MODEL:
+            elif type == CellMLElement.MODEL:
                 return (type, _annotator.Annotator_model(self, id, index))
-            elif type == Annotator.Type.RESET:
+            elif type == CellMLElement.RESET:
                 return (type, _annotator.Annotator_reset(self, id, index))
-            elif type == Annotator.Type.RESET_VALUE:
+            elif type == CellMLElement.RESET_VALUE:
                 return (type, _annotator.Annotator_resetValue(self, id, index))
-            elif type == Annotator.Type.TEST_VALUE:
+            elif type == CellMLElement.TEST_VALUE:
                 return (type, _annotator.Annotator_testValue(self, id, index)) 
-            elif type == Annotator.Type.UNIT:
+            elif type == CellMLElement.UNIT:
                 first = _annotator.Annotator_unitParentForSWIG(self, id, index)
                 second = _annotator.Annotator_unitIndexForSWIG(self, id, index)
                 return (type, (first, second))
-            elif type == Annotator.Type.UNITS:
+            elif type == CellMLElement.UNITS:
                 return (type, _annotator.Annotator_units(self, id, index))
-            elif type == Annotator.Type.VARIABLE:
+            elif type == CellMLElement.VARIABLE:
                 return (type, _annotator.Annotator_variable(self, id, index))
             return (-1, None)
 
@@ -310,8 +310,7 @@
                 itemsList.append(items_with_id)
             return itemsList
 
-        %}
-    }
+    %}
+}
 
-%include "libcellml/types.h"
 %include "libcellml/annotator.h"
