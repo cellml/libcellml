@@ -32,6 +32,7 @@ limitations under the License.
 #include "analyservariable_p.h"
 #include "utilities.h"
 #include "xmldoc.h"
+#include "xmlutils.h"
 
 #ifdef TRUE
 #    undef TRUE
@@ -871,28 +872,24 @@ void Analyser::AnalyserImpl::analyseNode(const XmlNodePtr &node,
 void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
 {
     // Retrieve the math string associated with the given component and analyse
-    // it, one equation at a time.
+    // it, one equation at a time, keeping in mind that it may consist of
+    // several <math> elements, hence our use of multiRootXml().
 
-    auto xmlDoc = std::make_shared<XmlDoc>();
-    auto math = component->math();
+    if (!component->math().empty()) {
+        for (const auto &doc : multiRootXml(component->math())) {
+            for (auto node = doc->rootNode()->firstChild(); node != nullptr; node = node->next()) {
+                if (node->isMathmlElement()) {
+                    // Create and keep track of the equation associated with the
+                    // given node.
 
-    if (!math.empty()) {
-        xmlDoc->parseMathML(math, false);
+                    auto internalEquation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
 
-        auto mathNode = xmlDoc->rootNode();
+                    mInternalEquations.push_back(internalEquation);
 
-        for (auto node = mathNode->firstChild(); node != nullptr; node = node->next()) {
-            if (node->isMathmlElement()) {
-                // Create and keep track of the equation associated with the
-                // given node.
+                    // Actually analyse the node.
 
-                auto internalEquation = std::shared_ptr<AnalyserInternalEquation> {new AnalyserInternalEquation {component}};
-
-                mInternalEquations.push_back(internalEquation);
-
-                // Actually analyse the node.
-
-                analyseNode(node, internalEquation->mAst, internalEquation->mAst->parent(), component, internalEquation);
+                    analyseNode(node, internalEquation->mAst, internalEquation->mAst->parent(), component, internalEquation);
+                }
             }
         }
     }
