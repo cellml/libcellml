@@ -28,21 +28,24 @@ AnalyserExternalVariable::AnalyserExternalVariableImpl::AnalyserExternalVariable
 {
 }
 
-std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const ModelPtr &model,
-                                                                                                          const std::string &componentName,
-                                                                                                          const std::string &variableName)
+std::vector<VariableWeakPtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const ModelPtr &model,
+                                                                                                              const std::string &componentName,
+                                                                                                              const std::string &variableName)
 {
-    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariablePtr &v) {
-        return (owningModel(v) == model)
-               && (owningComponent(v)->name() == componentName)
-               && (v->name() == variableName);
+    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariableWeakPtr &v) {
+        auto variable = v.lock();
+
+        return (variable != nullptr)
+               && (owningModel(variable) == model)
+               && (owningComponent(variable)->name() == componentName)
+               && (variable->name() == variableName);
     });
 }
 
-std::vector<VariablePtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const VariablePtr &variable)
+std::vector<VariableWeakPtr>::iterator AnalyserExternalVariable::AnalyserExternalVariableImpl::findDependency(const VariablePtr &variable)
 {
-    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariablePtr &v) {
-        return v == variable;
+    return std::find_if(mDependencies.begin(), mDependencies.end(), [=](const VariableWeakPtr &v) {
+        return v.lock() == variable;
     });
 }
 
@@ -63,14 +66,17 @@ AnalyserExternalVariablePtr AnalyserExternalVariable::create(const VariablePtr &
 
 VariablePtr AnalyserExternalVariable::variable() const
 {
-    return mPimpl->mVariable;
+    return mPimpl->mVariable.lock();
 }
 
 bool AnalyserExternalVariable::addDependency(const VariablePtr &variable)
 {
-    if (!isSameOrEquivalentVariable(variable, mPimpl->mVariable)
-        && (owningModel(variable) == owningModel(mPimpl->mVariable))
-        && std::find(mPimpl->mDependencies.begin(), mPimpl->mDependencies.end(), variable) == mPimpl->mDependencies.end()) {
+    auto pimplVariable = AnalyserExternalVariable::variable();
+
+    if ((pimplVariable != nullptr)
+        && !isSameOrEquivalentVariable(variable, pimplVariable)
+        && (owningModel(variable) == owningModel(pimplVariable))
+        && mPimpl->findDependency(variable) == mPimpl->mDependencies.end()) {
         mPimpl->mDependencies.push_back(variable);
 
         return true;
@@ -138,7 +144,7 @@ bool AnalyserExternalVariable::containsDependency(const VariablePtr &variable) c
 VariablePtr AnalyserExternalVariable::dependency(size_t index) const
 {
     if (index < mPimpl->mDependencies.size()) {
-        return mPimpl->mDependencies.at(index);
+        return mPimpl->mDependencies.at(index).lock();
     }
 
     return nullptr;
@@ -151,7 +157,7 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
     auto result = mPimpl->findDependency(model, componentName, variableName);
 
     if (result != mPimpl->mDependencies.end()) {
-        return *result;
+        return (*result).lock();
     }
 
     return nullptr;
@@ -159,7 +165,13 @@ VariablePtr AnalyserExternalVariable::dependency(const ModelPtr &model,
 
 std::vector<VariablePtr> AnalyserExternalVariable::dependencies() const
 {
-    return mPimpl->mDependencies;
+    std::vector<VariablePtr> res;
+
+    for (const auto &dependency : mPimpl->mDependencies) {
+        res.push_back(dependency.lock());
+    }
+
+    return res;
 }
 
 size_t AnalyserExternalVariable::dependencyCount() const
