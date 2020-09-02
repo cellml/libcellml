@@ -16,20 +16,24 @@ limitations under the License.
 
 #pragma once
 
+#include <any>
+#include <map>
 #include <memory>
+
+#include "libcellml/enums.h"
 
 namespace libcellml {
 
 // General classes.
 class Annotator; /**< Forward declaration of Annotator class. */
-using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for shared annotator pointer. */
+using AnnotatorPtr = std::shared_ptr<Annotator>; /**< Type definition for @c std::shared Annotator pointer some othe text. */
 class Generator; /**< Forward declaration of Generator class. */
 using GeneratorPtr = std::shared_ptr<Generator>; /**< Type definition for shared generator pointer. */
 class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
 using GeneratorProfilePtr = std::shared_ptr<GeneratorProfile>; /**< Type definition for shared generator variable pointer. */
 class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */
 using GeneratorVariablePtr = std::shared_ptr<GeneratorVariable>; /**< Type definition for shared generator variable pointer. */
-class Importer; /**< Forward declaration of Importer class. */
+class Importer; /*!< Forward declaration of Importer class. */
 using ImporterPtr = std::shared_ptr<Importer>; /**< Type definition for shared importer pointer. */
 class Issue; /**< Forward declaration of Issue class. */
 using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared issue pointer. */
@@ -44,7 +48,7 @@ using ValidatorPtr = std::shared_ptr<Validator>; /**< Type definition for shared
 
 // CellML entities.
 class Component; /**< Forward declaration of Component class. */
-using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
+using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. @details Some extra definition for detailed description. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
 using ComponentEntityConstPtr = std::shared_ptr<const ComponentEntity>; /**< Type definition for shared component entity const pointer. */
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
@@ -63,5 +67,9 @@ class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
+
+using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
+using UnitItem = std::pair<UnitsPtr, size_t>;
+using AnyItem = std::pair<CellMLElement, std::any>;
 
 } // namespace libcellml

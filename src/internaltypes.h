@@ -21,7 +21,6 @@ limitations under the License.
 #include <unordered_set>
 #include <vector>
 
-#include "libcellml/annotator.h"
 #include "libcellml/variable.h"
 
 namespace libcellml {
@@ -35,9 +34,9 @@ using NameList = std::vector<std::string>; /**< Type definition for list of name
 using StringStringMap = std::map<std::string, std::string>; /**< Type definition for map of string to string. */
 
 // VariableMap
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
 using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
+
 // ComponentMap
 using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
 using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
@@ -50,9 +49,17 @@ using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of 
 using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */
 using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 
-using VariablePair = std::pair<VariablePtr, VariablePtr>;
-using UnitItem = std::pair<UnitsPtr, size_t>;
-using AnyItem = std::pair<std::uint64_t, std::any>; // Clang-tidy suggested this type instead of the Annotator::Type enum.
-using ItemList = std::multimap<std::string, AnyItem>;
+using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
+//using ComponentEntityWeakPtr = std::weak_ptr<ComponentEntity>; /**< Type definition for weak component entity pointer. */
+//using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
+//using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>; /**< Type definition for weak imported entity pointer. */
+using ImportSourceWeakPtr = std::weak_ptr<ImportSource>; /**< Type definition for weak import source pointer. */
+using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
+using ResetWeakPtr = std::weak_ptr<Reset>; /**< Type definition for weak reset pointer. */
+using UnitsWeakPtr = std::weak_ptr<Units>; /**< Type definition for weak units pointer. */
+using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
+
+using UnitWeakItem = std::pair<UnitsWeakPtr, size_t>;
+using VariableWeakPair = std::pair<VariableWeakPtr, VariableWeakPtr>; /**< Type definition for VariablePtr pair.*/
 
 } // namespace libcellml

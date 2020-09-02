@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <functional>
 #include <iostream>
 #include <libcellml>
 #include <sstream>
@@ -73,6 +74,8 @@ private:
     bool mNewLine;
 };
 
+void TEST_EXPORT timeit(std::function<void()> func);
+
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 std::string TEST_EXPORT fileContents(const std::string &fileName);
 void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
@@ -113,20 +116,3 @@ libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::EntityConst
 #define EXPECT_EQ_ISSUES_CAUSES(issues, causes, logger) \
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesCauses(issues, causes, logger)
-
-const static std::map<libcellml::Annotator::Type, std::string> annotatorTypeToString = {
-    {libcellml::Annotator::Type::COMPONENT, "component"},
-    {libcellml::Annotator::Type::COMPONENT_REF, "component_ref"},
-    {libcellml::Annotator::Type::IMPORT, "import"},
-    {libcellml::Annotator::Type::VARIABLE, "variable"},
-    {libcellml::Annotator::Type::MODEL, "model"},
-    {libcellml::Annotator::Type::CONNECTION, "connection"},
-    {libcellml::Annotator::Type::UNITS, "units"},
-    {libcellml::Annotator::Type::UNIT, "unit"},
-    {libcellml::Annotator::Type::RESET, "reset"},
-    {libcellml::Annotator::Type::RESET_VALUE, "reset_value"},
-    {libcellml::Annotator::Type::TEST_VALUE, "test_value"},
-    {libcellml::Annotator::Type::MAP_VARIABLES, "map_variables"},
-    {libcellml::Annotator::Type::ENCAPSULATION, "encapsulation"},
-    {libcellml::Annotator::Type::ISSUE, "issue"},
-};
