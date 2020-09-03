@@ -557,8 +557,6 @@ TEST(Clone, modelWithImportedItems)
     auto clonedModel = model->clone();
 
     auto printer = libcellml::Printer::create();
-    std::cout << printer->printModel(model) << std::endl;
-    std::cout << printer->printModel(clonedModel) << std::endl;
-
+    EXPECT_EQ(printer->printModel(model), printer->printModel(clonedModel));
     compareModel(model, clonedModel);
 }

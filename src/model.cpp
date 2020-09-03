@@ -492,6 +492,28 @@ void fixComponentUnits(const ModelPtr &model, const ComponentPtr &component)
     }
 }
 
+void fixImportSourceUnits(const ImportSourcePtr &i1, ImportSourcePtr &i2)
+{
+    auto m2 = owningModel(i2);
+
+    // Go through all the imported units in this import source and update their sources.
+    for (size_t index = 0; index < i1->unitsCount(); ++index) {
+        auto u1 = i1->units(index);
+        auto u2 = m2->units(u1->name());
+        u2->setImportSource(i2);
+    }
+}
+
+void fixImportSourceComponents(const ImportSourcePtr &i1, ImportSourcePtr &i2)
+{
+    auto m2 = owningModel(i2);
+    for (size_t index = 0; index < i1->componentCount(); ++index) {
+        auto c1 = i1->component(index);
+        auto c2 = m2->component(c1->name(), true);
+        c2->setImportSource(i2);
+    }
+}
+
 ModelPtr Model::clone() const
 {
     auto m = create();
@@ -509,6 +531,10 @@ ModelPtr Model::clone() const
         m->addComponent(component(index)->clone());
     }
 
+    for (size_t index = 0; index < importSourceCount(); ++index) {
+        m->addImportSource(importSource(index)->clone());
+    }
+
     // Generate equivalence map starting from the models components.
     EquivalenceMap map;
     IndexStack indexStack;
@@ -523,6 +549,18 @@ ModelPtr Model::clone() const
 
     for (size_t index = 0; index < m->componentCount(); ++index) {
         fixComponentUnits(m, m->component(index));
+    }
+
+    // Remove all import sources from the cloned model as they will
+    // be duplicates.  The real ones will be copied below.
+    m->removeAllImportSources();
+
+    for (size_t index = 0; index < importSourceCount(); ++index) {
+        auto i1 = importSource(index);
+        auto i2 = i1->clone();
+        m->addImportSource(i2);
+        fixImportSourceUnits(i1, i2);
+        fixImportSourceComponents(i1, i2);
     }
 
     return m;
