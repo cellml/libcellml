@@ -531,22 +531,6 @@ ModelPtr Model::clone() const
         m->addComponent(component(index)->clone());
     }
 
-    for (size_t index = 0; index < importSourceCount(); ++index) {
-        m->addImportSource(importSource(index)->clone());
-    }
-
-    // Generate equivalence map starting from the models components.
-    EquivalenceMap map;
-    IndexStack indexStack;
-    for (size_t index = 0; index < componentCount(); ++index) {
-        indexStack.push_back(index);
-        auto c = component(index);
-        recordVariableEquivalences(c, map, indexStack);
-        generateEquivalenceMap(c, map, indexStack);
-        indexStack.pop_back();
-    }
-    applyEquivalenceMapToModel(map, m);
-
     for (size_t index = 0; index < m->componentCount(); ++index) {
         fixComponentUnits(m, m->component(index));
     }
@@ -562,6 +546,18 @@ ModelPtr Model::clone() const
         fixImportSourceUnits(i1, i2);
         fixImportSourceComponents(i1, i2);
     }
+
+    // Generate equivalence map starting from the models components.
+    EquivalenceMap map;
+    IndexStack indexStack;
+    for (size_t index = 0; index < componentCount(); ++index) {
+        indexStack.push_back(index);
+        auto c = component(index);
+        recordVariableEquivalences(c, map, indexStack);
+        generateEquivalenceMap(c, map, indexStack);
+        indexStack.pop_back();
+    }
+    applyEquivalenceMapToModel(map, m);
 
     return m;
 }
