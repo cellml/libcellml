@@ -529,9 +529,4 @@ TEST(Clone, modelWithComponentVariableUnits)
     EXPECT_EQ(clonedModel->component(0)->variable(0)->units(), clonedModel->component(0)->variable(1)->units());
     EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(0)->units());
     EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(1)->units());
-
 }
-
-// TEST(Clone, complicatedModel){
-
-// }
