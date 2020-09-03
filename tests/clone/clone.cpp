@@ -531,10 +531,34 @@ TEST(Clone, modelWithComponentVariableUnits)
     EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(1)->units());
 }
 
-TEST(Clone, modelWithImportedItems){
+TEST(Clone, modelWithImportedItems)
+{
+    std::string modelString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import1.cellml\">\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent1a\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits1a\"/>\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent1b\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits1b\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import2.cellml\">\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent2\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits2\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"import2.cellml\">\n"
+        "    <component component_ref=\"componentToFetch\" name=\"importedComponent3\"/>\n"
+        "    <units units_ref=\"unitsToFetch\" name=\"importedUnits4\"/>\n"
+        "  </import>\n"
+        "</model>";
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/diamond.cellml"));
+    auto model = parser->parseModel(modelString);
 
     auto clonedModel = model->clone();
+
+    auto printer = libcellml::Printer::create();
+    std::cout << printer->printModel(model) << std::endl;
+    std::cout << printer->printModel(clonedModel) << std::endl;
+
     compareModel(model, clonedModel);
 }
