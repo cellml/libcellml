@@ -530,3 +530,11 @@ TEST(Clone, modelWithComponentVariableUnits)
     EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(0)->units());
     EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(1)->units());
 }
+
+TEST(Clone, modelWithImportedItems){
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/diamond.cellml"));
+
+    auto clonedModel = model->clone();
+    compareModel(model, clonedModel);
+}
