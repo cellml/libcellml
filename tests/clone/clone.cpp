@@ -504,3 +504,34 @@ TEST(Clone, generateFromClonedModel)
 
     EXPECT_EQ(p->printModel(model), p->printModel(clonedModel));
 }
+
+TEST(Clone, modelWithComponentVariableUnits)
+{
+    auto model = libcellml::Model::create("model");
+    auto units = libcellml::Units::create("units");
+    auto component = libcellml::Component::create("component");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    model->addComponent(component);
+    model->addUnits(units);
+    component->addVariable(v1);
+    component->addVariable(v2);
+    v1->setUnits(units);
+    v2->setUnits(units);
+
+    EXPECT_EQ(model->component(0)->variable(0)->units(), model->component(0)->variable(1)->units());
+    EXPECT_EQ(model->units(0), model->component(0)->variable(0)->units());
+    EXPECT_EQ(model->units(0), model->component(0)->variable(1)->units());
+
+    auto clonedModel = model->clone();
+
+    EXPECT_EQ(clonedModel->component(0)->variable(0)->units(), clonedModel->component(0)->variable(1)->units());
+    EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(0)->units());
+    EXPECT_EQ(clonedModel->units(0), clonedModel->component(0)->variable(1)->units());
+
+}
+
+// TEST(Clone, complicatedModel){
+
+// }
