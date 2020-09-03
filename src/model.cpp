@@ -475,6 +475,23 @@ bool Model::hasImports() const
     return importsPresent;
 }
 
+void fixComponentUnits(const ModelPtr &model, const ComponentPtr &component)
+{
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        auto variable = component->variable(v);
+        if (variable->units() != nullptr) {
+            // Find the units in the model and switch out.
+            auto units = model->units(variable->units()->name());
+            if (units != nullptr) {
+                variable->setUnits(units);
+            }
+        }
+    }
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        fixComponentUnits(model, component->component(c));
+    }
+}
+
 ModelPtr Model::clone() const
 {
     auto m = create();
@@ -503,6 +520,10 @@ ModelPtr Model::clone() const
         indexStack.pop_back();
     }
     applyEquivalenceMapToModel(map, m);
+
+    for (size_t index = 0; index < m->componentCount(); ++index) {
+        fixComponentUnits(m, m->component(index));
+    }
 
     return m;
 }
