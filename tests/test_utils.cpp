@@ -354,6 +354,7 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 
     EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
     EXPECT_EQ(m1->componentCount(), m2->componentCount());
+    EXPECT_EQ(m1->importSourceCount(), m2->importSourceCount());
 
     for (size_t index = 0; index < m1->unitsCount(); ++index) {
         auto u1 = m1->units(index);
