@@ -1082,7 +1082,7 @@ TEST(Issue, getMismatchedTypeReturnsUnit)
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
-    auto empty = std::make_pair(nullptr, 0);
+    auto empty = std::make_pair(nullptr, size_t(0));
     issue->setUnit(empty);
     EXPECT_EQ(empty.first, issue->unit().first);
     EXPECT_EQ(empty.second, issue->unit().second);
