@@ -23,8 +23,6 @@ limitations under the License.
 #include <sstream>
 #include <stdexcept>
 
-#include <iostream> // KRM
-
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
