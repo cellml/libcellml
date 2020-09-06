@@ -27,7 +27,6 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
-#include "libcellml/printer.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
