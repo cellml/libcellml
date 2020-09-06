@@ -420,7 +420,7 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
             }
         }
 
-        // Go through Components and instatiate any imported Components.
+        // Go through Components and instantiate any imported Components.
         for (size_t index = 0; index < flatModel->componentCount(); ++index) {
             auto c = flatModel->component(index);
             flattenComponentTree(flatModel, c, index);

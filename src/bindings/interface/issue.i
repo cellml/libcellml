@@ -130,6 +130,32 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::item
 "Get the :class:`AnyItem` relevant to this issue (or ``None``).";
 
+%feature("docstring") libcellml::Issue::itemType
+"Get the type of this issue.";
+
+%feature("docstring") libcellml::Issue::setItem
+"Set the :class:`AnyItem` item related to this issue.";
+
+%feature("docstring") libcellml::Issue::clearItem
+"Remove the stored item related to this issue.";
+
+// Private classes, only used in bindings.
+
+%feature("docstring") libcellml::Issue::itemTypeForSWIG
+"PRIVATE: Gets the type of this issue.";
+
+%feature("docstring") libcellml::Issue::unitIndexForSWIG
+"PRIVATE: Gets the index of the :class:`UnitItem` related to this issue.";
+
+%feature("docstring") libcellml::Issue::unitParentForSWIG
+"PRIVATE: Gets the parent :class:`UnitsPtr` of a :class:`UnitItem` related to this issue.";
+
+%feature("docstring") libcellml::Issue::connectionForSWIG
+"PRIVATE: Gets the individual :class:`VariablePtr` items for a connection.";
+
+%feature("docstring") libcellml::Issue::mapVariablesForSWIG
+"PRIVATE: Gets the individual :class:`VariablePtr` items for a variable equivalence.";
+
 %{
 #include "libcellml/issue.h"
 %}
@@ -152,12 +178,12 @@ Level::ERROR will be returned.";
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(reset));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
-    Issue(const UnitsPtr &unit) {
-        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
+    Issue(const UnitsPtr &units) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(units));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
     Issue(const UnitItem &unit) {
-        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(units));
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
     Issue(const VariablePtr &variable) {
