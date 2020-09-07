@@ -425,16 +425,6 @@ void Annotator::setModel(const ModelPtr &model)
     mPimpl->mModel = model;
     mPimpl->buildIdList();
     mPimpl->mHash = mPimpl->generateHash();
-
-    for (auto it = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); it != end; it = mPimpl->mIdList.upper_bound(it->first)) {
-        auto id = it->first;
-        if (mPimpl->mIdList.count(id) > 1) {
-            auto issue = Issue::create();
-            issue->setDescription("The id '" + id + "' occurs " + std::to_string(mPimpl->mIdList.count(id)) + " times in the model.");
-            issue->setLevel(Issue::Level::WARNING);
-            addIssue(issue);
-        }
-    }
 }
 
 void Annotator::AnnotatorImpl::addIssueNotFound(const std::string &id) const
