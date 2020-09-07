@@ -1575,6 +1575,18 @@ TEST(Annotator, assignAllIdsBlankModel)
     EXPECT_EQ(size_t(0), annotator->errorCount());
 }
 
+TEST(Annotator, assignAllIdsNonblankModel)
+{
+    auto parser = libcellml::Parser::create();
+    auto printer = libcellml::Printer::create();
+    auto model = parser->parseModel(modelStringUniqueIds);
+    auto annotator = libcellml::Annotator::create();
+
+    annotator->assignAllIds(model);
+    EXPECT_EQ(size_t(0), annotator->errorCount());
+    EXPECT_EQ(modelStringUniqueIds, printer->printModel(model));
+}
+
 TEST(Annotator, clearAllIdsNoModelPresent)
 {
     std::vector<std::string> expectedErrors = {

@@ -781,7 +781,6 @@ bool Annotator::assignAllIds()
     bool assigned = false;
     auto model = mPimpl->mModel.lock();
     if (model) {
-        clearAllIds();
         mPimpl->doSetAllAutomaticIds();
         assigned = true;
     } else {
