@@ -155,8 +155,7 @@ static const std::map<CellMLElement, std::string> typeToString = {
     {CellMLElement::UNDEFINED, "undefined"},
     {CellMLElement::UNIT, "unit"},
     {CellMLElement::UNITS, "units"},
-    {CellMLElement::VARIABLE, "variable"}
-};
+    {CellMLElement::VARIABLE, "variable"}};
 
 std::string typeAsString(CellMLElement type)
 {
@@ -165,11 +164,11 @@ std::string typeAsString(CellMLElement type)
 
 struct Annotator::AnnotatorImpl
 {
-    Annotator *mAnnotator;
+    Annotator *mAnnotator = nullptr;
     ItemList mIdList;
     ModelWeakPtr mModel;
-    size_t mCounter;
-    size_t mHash;
+    size_t mCounter = 0xb4da55;
+    size_t mHash = 0;
 
     void update();
     void buildIdList();
@@ -212,8 +211,6 @@ Annotator::Annotator()
 {
     mPimpl->mAnnotator = this;
     mPimpl->mIdList = std::multimap<std::string, AnyItem>();
-    mPimpl->mCounter = 0xb4da55;
-    mPimpl->mHash = 0;
 }
 
 Annotator::~Annotator()
@@ -226,8 +223,8 @@ AnnotatorPtr Annotator::create() noexcept
     return std::shared_ptr<Annotator> {new Annotator {}};
 }
 
-template <typename T, typename U>
-inline bool equals(const std::weak_ptr<T>& t, const std::weak_ptr<U>& u)
+template<typename T, typename U>
+inline bool equals(const std::weak_ptr<T> &t, const std::weak_ptr<U> &u)
 {
     return !t.owner_before(u) && !u.owner_before(t);
 }
@@ -351,7 +348,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
 ItemList listIdsAndItems(const ModelPtr &model)
 {
     // Collect all existing ids in a list and return.
-//    auto model = weakModel.lock();
+    //    auto model = weakModel.lock();
     ItemList idList;
     // Model.
     std::string id = model->id();
@@ -730,7 +727,6 @@ void Annotator::clearAllIds()
 {
     auto model = mPimpl->mModel.lock();
     if (model) {
-
         model->setId("");
         for (size_t i = 0; i < model->importSourceCount(); ++i) {
             model->importSource(i)->setId("");
@@ -1166,7 +1162,7 @@ std::string Annotator::AnnotatorImpl::setComponentRelatedId(const ComponentPtr &
     }
 
     mIdList.insert(std::make_pair(id, std::make_pair(type, weakComponent)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1210,7 +1206,7 @@ std::string Annotator::assignConnectionId(const VariablePair &variablePair)
     }
     Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakVariablePair)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1245,7 +1241,7 @@ std::string Annotator::assignMapVariablesId(const VariablePair &variablePair)
     }
     Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakVariablePair)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1279,7 +1275,7 @@ std::string Annotator::AnnotatorImpl::setModelRelatedId(const ModelPtr &model, C
         model->setId(id);
     }
     mIdList.insert(std::make_pair(id, std::make_pair(type, weakModel)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1317,7 +1313,7 @@ std::string Annotator::assignImportSourceId(const ImportSourcePtr &importSource)
     }
     importSource->setId(id);
     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakImportSource)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1327,7 +1323,7 @@ std::string Annotator::AnnotatorImpl::setResetRelatedId(const ResetPtr &reset, C
     if (type == CellMLElement::RESET_VALUE) {
         oldId = reset->resetValueId();
     } else if (type == CellMLElement::TEST_VALUE) {
-        oldId= reset->testValueId();
+        oldId = reset->testValueId();
     }
     std::string id;
 
@@ -1356,7 +1352,7 @@ std::string Annotator::AnnotatorImpl::setResetRelatedId(const ResetPtr &reset, C
         reset->setId(id);
     }
     mIdList.insert(std::make_pair(id, std::make_pair(type, weakReset)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1402,7 +1398,7 @@ std::string Annotator::assignUnitId(const UnitItem &unitItem)
 
     unitItem.first->setUnitId(unitItem.second, id);
     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakUnitItem)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
@@ -1462,7 +1458,7 @@ std::string Annotator::assignVariableId(const VariablePtr &variable)
 
     variable->setId(id);
     mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakVariable)));
-//    mPimpl->updateHash();
+    //    mPimpl->updateHash();
     return id;
 }
 
