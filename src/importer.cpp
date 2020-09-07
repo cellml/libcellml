@@ -294,7 +294,7 @@ void Importer::clearImports(ModelPtr &model)
     }
 }
 
-void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t index)
+void flattenComponent(const ComponentEntityPtr &parent, ComponentPtr &component, size_t index)
 {
     if (component->isImport()) {
         auto model = owningModel(component);
@@ -367,7 +367,7 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
         }
         parent->replaceComponent(index, importedComponentCopy);
 
-        // Apply the rebased equivalence map onto the modified model.
+        // Apply the re-based equivalence map onto the modified model.
         applyEquivalenceMapToModel(rebasedMap, model);
 
         // Copy over units used in imported component to this model.
@@ -388,10 +388,13 @@ void flattenComponent(const ComponentEntityPtr &parent, const ComponentPtr &comp
             }
         }
         findAndReplaceComponentsCnUnitsNames(importedComponentCopy, unitsNamesToReplace);
+
+        // Remove the component from the import source.
+        importSource->removeComponent(component);
     }
 }
 
-void flattenComponentTree(const ComponentEntityPtr &parent, const ComponentPtr &component, size_t componentIndex)
+void flattenComponentTree(const ComponentEntityPtr &parent, ComponentPtr &component, size_t componentIndex)
 {
     flattenComponent(parent, component, componentIndex);
     auto flattenedComponent = parent->component(componentIndex);
@@ -413,14 +416,16 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
         for (size_t index = 0; index < flatModel->unitsCount(); ++index) {
             auto u = flatModel->units(index);
             if (u->isImport()) {
-                auto importedUnits = u->importSource()->model()->units(u->importReference());
+                auto importSource = u->importSource();
+                auto importedUnits = importSource->model()->units(u->importReference());
                 auto importedUnitsCopy = importedUnits->clone();
                 importedUnitsCopy->setName(u->name());
                 flatModel->replaceUnits(index, importedUnitsCopy);
+                importSource->removeUnits(u);
             }
         }
 
-        // Go through Components and instatiate any imported Components.
+        // Go through Components and instantiate any imported Components.
         for (size_t index = 0; index < flatModel->componentCount(); ++index) {
             auto c = flatModel->component(index);
             flattenComponentTree(flatModel, c, index);
@@ -428,6 +433,14 @@ ModelPtr Importer::flattenModel(const ModelPtr &model)
     }
 
     flatModel->linkUnits();
+
+    for (int i = int(flatModel->importSourceCount()) - 1; i >= 0; --i) {
+        auto importSource = flatModel->importSource(size_t(i));
+        if ((importSource->unitsCount() == 0) && (importSource->componentCount() == 0)) {
+            flatModel->removeImportSource(importSource);
+        }
+    }
+
     return flatModel;
 }
 
