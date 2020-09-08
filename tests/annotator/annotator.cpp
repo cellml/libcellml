@@ -592,72 +592,79 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
 
 TEST(Annotator, castingOnRetrieval)
 {
-    auto model = libcellml::Model::create("model");
-    auto component = libcellml::Component::create("component");
-    auto variable = libcellml::Variable::create("variable");
-    auto reset = libcellml::Reset::create();
-    auto units = libcellml::Units::create("units");
-    auto importSource = libcellml::ImportSource::create();
-
-    model->setId("model_id");
-    component->addVariable(variable);
-    component->addReset(reset);
-    component->setImportSource(importSource);
-    model->addComponent(component);
-    model->addUnits(units);
-
+    std::vector<std::string> idList = {
+        "component_1",
+        "component_ref_1",
+        "connection_1",
+        "encapsulation_1",
+        "import_1",
+        "map_variables_1",
+        "model_1",
+        "reset_1",
+        "reset_value_1",
+        "test_value_1",
+        "unit_1",
+        "units_1",
+        "variable_1",
+    };
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringUniqueIds);
     auto annotator = libcellml::Annotator::create();
     annotator->setModel(model);
 
-    libcellml::AnyItem itemInfo = annotator->item("model_id");
+    libcellml::AnyItem itemInfo;
 
-    // In order to be able to use the switch below, we have to manually
-    // declare all possible return types ... :(
-    libcellml::ModelPtr itemModel;
-    libcellml::ComponentPtr itemComponent;
-    libcellml::ResetPtr itemReset;
-    libcellml::VariablePtr itemVariable;
-    libcellml::VariablePair itemVariablePair;
-    libcellml::UnitItem itemUnit;
-    libcellml::UnitsPtr itemUnits;
-    libcellml::ImportSourcePtr itemImportItem;
-    std::string itemEncapsulation;
+    libcellml::VariablePair v1v2;
+    libcellml::ComponentPtr c1;
+    libcellml::ComponentPtr c2;
 
-    switch (itemInfo.first) {
-    case libcellml::CellMLElement::COMPONENT:
-    case libcellml::CellMLElement::COMPONENT_REF:
-        itemComponent = std::any_cast<libcellml::ComponentPtr>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::CONNECTION:
-    case libcellml::CellMLElement::MAP_VARIABLES:
-        itemVariablePair = std::any_cast<libcellml::VariablePair>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::ENCAPSULATION:
-        itemEncapsulation = "encapsulation";
-        break;
-    case libcellml::CellMLElement::IMPORT:
-        itemImportItem = std::any_cast<libcellml::ImportSourcePtr>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::MODEL:
-        itemModel = std::any_cast<libcellml::ModelPtr>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::RESET:
-    case libcellml::CellMLElement::RESET_VALUE:
-    case libcellml::CellMLElement::TEST_VALUE:
-        itemReset = std::any_cast<libcellml::ResetPtr>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::UNIT:
-        itemUnit = std::any_cast<libcellml::UnitItem>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::UNITS:
-        itemUnits = std::any_cast<libcellml::UnitsPtr>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::VARIABLE:
-        itemVariable = std::any_cast<libcellml::VariablePtr>(itemInfo.second);
-        break;
-    case libcellml::CellMLElement::MATHML:
-    case libcellml::CellMLElement::UNDEFINED:
-        break;
+    for (auto const &id : idList) {
+        itemInfo = annotator->item(id);
+        switch (itemInfo.first) {
+        case libcellml::CellMLElement::COMPONENT:
+            EXPECT_EQ(model->component("component1"), std::any_cast<libcellml::ComponentPtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::COMPONENT_REF:
+        case libcellml::CellMLElement::MATHML:
+            EXPECT_EQ(model->component("component2"), std::any_cast<libcellml::ComponentPtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::CONNECTION:
+            v1v2 = std::any_cast<libcellml::VariablePair>(itemInfo.second);
+            c1 = owningComponent(v1v2.first);
+            c2 = owningComponent(v1v2.second);
+            EXPECT_TRUE((model->component("component2") == c1) || (model->component("component2") == c2));
+            EXPECT_TRUE((model->component("component2")->component("component3") == c1) || (model->component("component2")->component("component3") == c2));
+            break;
+        case libcellml::CellMLElement::MAP_VARIABLES:
+            v1v2 = std::any_cast<libcellml::VariablePair>(itemInfo.second);
+            EXPECT_TRUE((v1v2.first == model->component("component2")->variable("variable1")) || (v1v2.first == model->component("component2")->component("component3")->variable("variable1")));
+            EXPECT_TRUE((v1v2.second == model->component("component2")->variable("variable1")) || (v1v2.second == model->component("component2")->component("component3")->variable("variable1")));
+            break;
+        case libcellml::CellMLElement::IMPORT:
+            EXPECT_EQ(model->importSource(0), std::any_cast<libcellml::ImportSourcePtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::ENCAPSULATION:
+        case libcellml::CellMLElement::MODEL:
+            EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::RESET:
+        case libcellml::CellMLElement::RESET_VALUE:
+        case libcellml::CellMLElement::TEST_VALUE:
+            EXPECT_EQ(model->component("component2")->reset(0), std::any_cast<libcellml::ResetPtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::UNIT:
+            EXPECT_EQ(model->units("units2"), std::any_cast<libcellml::UnitItem>(itemInfo.second).first);
+            EXPECT_EQ(size_t(0), std::any_cast<libcellml::UnitItem>(itemInfo.second).second);
+            break;
+        case libcellml::CellMLElement::UNITS:
+            EXPECT_EQ(model->units("units1"), std::any_cast<libcellml::UnitsPtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::VARIABLE:
+            EXPECT_EQ(model->component("component2")->variable("variable1"), std::any_cast<libcellml::VariablePtr>(itemInfo.second));
+            break;
+        case libcellml::CellMLElement::UNDEFINED:
+            break;
+        }
     }
 }
 
