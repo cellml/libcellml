@@ -1668,6 +1668,57 @@ TEST(Annotator, listDuplicateIds)
     EXPECT_EQ(std::vector<std::string>(), ids);
 }
 
+TEST(Annotator, listAllIds)
+{
+    std::vector<std::string> uniqueIds = {
+        "component_1",
+        "component_2",
+        "component_3",
+        "component_ref_1",
+        "component_ref_2",
+        "connection_1",
+        "encapsulation_1",
+        "import_1",
+        "import_2",
+        "map_variables_1",
+        "map_variables_2",
+        "model_1",
+        "reset_1",
+        "reset_value_1",
+        "test_value_1",
+        "unit_1",
+        "units_1",
+        "units_2",
+        "units_3",
+        "units_4",
+        "variable_1",
+        "variable_2",
+        "variable_3",
+        "variable_4"};
+    std::vector<std::string> duplicatedIds = {
+        "duplicateId1",
+        "duplicateId2",
+        "duplicateId3",
+        "duplicateId4"};
+    auto parser = libcellml::Parser::create();
+
+    auto model1 = parser->parseModel(modelStringLotsOfDuplicateIds);
+    auto annotator = libcellml::Annotator::create();
+    annotator->setModel(model1);
+    auto ids = annotator->ids();
+    EXPECT_EQ(duplicatedIds, ids);
+
+    auto model2 = parser->parseModel(modelStringUniqueIds);
+    annotator->setModel(model2);
+    ids = annotator->ids();
+    EXPECT_EQ(uniqueIds, ids);
+
+    auto model3 = parser->parseModel(modelStringNoIds);
+    annotator->setModel(model3);
+    ids = annotator->ids();
+    EXPECT_EQ(std::vector<std::string>(), ids);
+}
+
 TEST(Annotator, retrieveDuplicateIdItemLists)
 {
     std::vector<std::string> ids = {"duplicateId1", "duplicateId2", "duplicateId3", "duplicateId4"};
