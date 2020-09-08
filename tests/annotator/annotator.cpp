@@ -1660,6 +1660,12 @@ TEST(Annotator, listDuplicateIds)
     annotator->setModel(model);
     auto ids = annotator->duplicateIds();
     EXPECT_EQ(expectedIds, ids);
+
+    // Repeat with no duplicates and verify that none are returned.
+    model = parser->parseModel(modelStringUniqueIds);
+    annotator->setModel(model);
+    ids = annotator->duplicateIds();
+    EXPECT_EQ(std::vector<std::string>(), ids);
 }
 
 TEST(Annotator, retrieveDuplicateIdItemLists)
