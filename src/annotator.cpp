@@ -157,11 +157,6 @@ static const std::map<CellMLElement, std::string> typeToString = {
     {CellMLElement::UNITS, "units"},
     {CellMLElement::VARIABLE, "variable"}};
 
-std::string typeAsString(CellMLElement type)
-{
-    return typeToString.at(type);
-}
-
 struct Annotator::AnnotatorImpl
 {
     Annotator *mAnnotator = nullptr;
@@ -399,6 +394,11 @@ ItemList listIdsAndItems(const ModelPtr &model)
     }
 
     return idList;
+}
+
+std::string Annotator::typeAsString(CellMLElement type)
+{
+    return typeToString.at(type);
 }
 
 void Annotator::AnnotatorImpl::buildIdList()

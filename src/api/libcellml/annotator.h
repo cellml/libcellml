@@ -68,6 +68,9 @@ public:
      */
     ModelPtr model() const;
 
+    // KRM docstring
+    static std::string typeAsString(CellMLElement type);
+
     /**
      * @brief Retrieves an item with the given id string.
      *

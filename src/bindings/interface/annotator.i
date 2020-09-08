@@ -18,6 +18,9 @@
 %feature("docstring") libcellml::Annotator::setModel
 "Construct a searchable map of items in the model.";
 
+%feature("docstring") libcellml::Annotator::typeAsString
+"Convert a CellMLElement enum into a string.";
+
 %feature("docstring") libcellml::Annotator::item
 "Return the item with the given id.";
 
