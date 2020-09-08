@@ -523,6 +523,15 @@ std::vector<std::string> Annotator::ids()
     return ids;
 }
 
+std::multimap<std::string, CellMLElement> Annotator::dictionary()
+{
+    std::multimap<std::string, CellMLElement> dict;
+    for (auto &i : mPimpl->mIdList) {
+        dict.insert(std::make_pair(i.first, i.second.first));
+    }
+    return dict;
+}
+
 ComponentPtr Annotator::component(const std::string &id)
 {
     return component(id, 0);

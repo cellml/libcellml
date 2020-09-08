@@ -580,6 +580,17 @@ public:
     std::vector<std::string> ids();
 
     /** 
+     * @brief Return a @c std::multimap of @c std::strings representing all id
+     * strings in the stored model, paired with their @c CellMLElement type.
+     * 
+     * The annotator requires a model to be set with setModel(ModelPtr)
+     * before this function can be called successfully.
+     * 
+     * @return a @c std::multimap of @c std::strings, @c CellMLElement enums.
+     */
+    std::multimap<std::string, CellMLElement> dictionary();
+
+    /** 
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id
      * string in the stored model.
      * 

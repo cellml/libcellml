@@ -66,6 +66,9 @@
 %feature("docstring") libcellml::Annotator::ids
 "Return a list of all id strings within the stored model.";
 
+%feature("docstring") libcellml::Annotator::dictionary
+"Return a dictionary of all id strings and their type within the stored model.";
+
 %feature("docstring") libcellml::Annotator::duplicateIds
 "Return a list of id strings which are duplicated within the stored model.";
 
