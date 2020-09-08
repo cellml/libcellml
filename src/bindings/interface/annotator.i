@@ -63,6 +63,9 @@
 %feature("docstring") libcellml::Annotator::isUnique
 "Return `true` if the given string is not duplicated in the stored model, or `false` otherwise.";
 
+%feature("docstring") libcellml::Annotator::ids
+"Return a list of all id strings within the stored model.";
+
 %feature("docstring") libcellml::Annotator::duplicateIds
 "Return a list of id strings which are duplicated within the stored model.";
 
