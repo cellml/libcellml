@@ -7,6 +7,7 @@
 %import "logger.i"
 %import "types.i"
 
+%include <std_multimap.i>
 %include <std_pair.i>
 %include <std_vector.i>
 %include <std_string.i>
@@ -162,6 +163,7 @@
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
 %ignore libcellml::Annotator::assignId;
+%ignore libcellml::Annotator::dictionary;
 
 %pythoncode %{
 from libcellml import CellMLElement
@@ -223,8 +225,33 @@ from libcellml import CellMLElement
         return $self->assignUnitId(unitItem);
     }
 
+    std::vector<std::string> dictionaryForSWIG(bool first) {
+        std::vector<std::string> rtn;
+        if(first){
+            for( auto &i : $self->dictionary()) {
+                rtn.push_back(i.first);
+            }
+        }
+        else {
+            for( auto &i : $self->dictionary()) {
+                rtn.push_back($self->typeAsString(i.second));
+            }
+        }
+        return rtn;
+    }
+            
     %pythoncode %{
-        def assignId(self, type, item, item2=None):
+
+        def assignId(self, item, type=None, item2=None):
+
+            if type == None: 
+                type = item[0]
+                if type == CellMLElement.CONNECTION or type == CellMLElement.MAP_VARIABLES or type == CellMLElement.UNIT:
+                    item2 = item[1][1]
+                    item = item[1][0]
+                else:
+                    item = item[1]
+                 
             r"""Sets the given item's id to an automatically generated, unique string."""
             if type == CellMLElement.COMPONENT:
                 return _annotator.Annotator_assignComponentId(self, item)
@@ -269,7 +296,7 @@ from libcellml import CellMLElement
 
         def item(self, id, index=-1):
             r"""Retrieve a unique item with the given id."""
-            if index == -1 and not _annotator.Annotator_isUnique(id, true):
+            if index == -1 and not _annotator.Annotator_isUnique(self, id):
                 return (-1, None)
             
             if index == -1:
@@ -318,7 +345,12 @@ from libcellml import CellMLElement
                 items_with_id = self.item(id, c)
                 itemsList.append(items_with_id)
             return itemsList
-
+        
+        def dictionary(self):
+            rtn = []
+            for k, v in zip(_annotator.Annotator_dictionaryForSWIG(self, True), _annotator.Annotator_dictionaryForSWIG(self, False)):
+                rtn.append((k,v))
+            return rtn
     %}
 }
 
