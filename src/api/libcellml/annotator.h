@@ -569,6 +569,17 @@ public:
     std::vector<AnyItem> items(const std::string &id);
 
     /** 
+     * @brief Return a @c std::vector of @c std::strings representing all id
+     * strings in the stored model.
+     * 
+     * The annotator requires a model to be set with setModel(ModelPtr)
+     * before this function can be called successfully.
+     * 
+     * @return a @c std::vector of @c std::strings.
+     */
+    std::vector<std::string> ids();
+
+    /** 
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id
      * string in the stored model.
      * 
