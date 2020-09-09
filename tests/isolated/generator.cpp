@@ -89,7 +89,7 @@ TEST(Generator, isolatedFirstOrderModel)
 
     //  2.b   Add the maths to the component. Note that there is only one maths
     //        string stored, so parts which are appended must create a viable
-    //        MathML string when concantenated. To clear any string, which is
+    //        MathML string when concatenated. To clear any string, which is
     //        already stored, simply call setMath("") with an empty string.
     component->setMath(mathHeader);
     component->appendMath(equation1);
