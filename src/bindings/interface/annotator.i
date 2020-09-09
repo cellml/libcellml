@@ -61,6 +61,9 @@
 %feature("docstring") libcellml::Annotator::assignIds
 "Set all items of the given type in the stored model to automatically generated, unique strings.";
 
+%feature("docstring") libcellml::Annotator::assignId
+"Set the id of the given item to an automatically generated, unique string.";
+
 %feature("docstring") libcellml::Annotator::clearAllIds
 "Clear all the id strings in the given or stored model.";
 
@@ -69,9 +72,6 @@
 
 %feature("docstring") libcellml::Annotator::ids
 "Return a list of all id strings within the stored model.";
-
-%feature("docstring") libcellml::Annotator::dictionary
-"Return a dictionary of all id strings and their type within the stored model.";
 
 %feature("docstring") libcellml::Annotator::duplicateIds
 "Return a list of id strings which are duplicated within the stored model.";
@@ -147,6 +147,9 @@
 
 %feature("docstring") libcellml::Annotator::assignUnitIdForSWIG
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
+
+%feature("docstring") libcellml::Annotator::dictionaryForSWIG
+"Private: Utility function to return the id dictionary for this model.";
 
 
 %{
@@ -242,17 +245,23 @@ from libcellml import CellMLElement
             
     %pythoncode %{
 
-        def assignId(self, item, type=None, item2=None):
-
-            if type == None: 
-                type = item[0]
-                if type == CellMLElement.CONNECTION or type == CellMLElement.MAP_VARIABLES or type == CellMLElement.UNIT:
-                    item2 = item[1][1]
-                    item = item[1][0]
-                else:
-                    item = item[1]
-                 
+        def assignId(self, a, b=None, c=None):
             r"""Sets the given item's id to an automatically generated, unique string."""
+            if b == None: 
+                type = a[0]
+                if type == CellMLElement.CONNECTION or type == CellMLElement.MAP_VARIABLES or type == CellMLElement.UNIT:
+                    item2 = a[1][1]
+                    item = a[1][0]
+                else:
+                    item = a[1]
+            elif c == None:
+                item = a
+                type = b
+            else:
+                item = a
+                item2 = b
+                type = c
+
             if type == CellMLElement.COMPONENT:
                 return _annotator.Annotator_assignComponentId(self, item)
             elif type == CellMLElement.COMPONENT_REF:
@@ -347,6 +356,7 @@ from libcellml import CellMLElement
             return itemsList
         
         def dictionary(self):
+            r"""Return a dictionary of all id strings and their type within the stored model."""
             rtn = []
             for k, v in zip(_annotator.Annotator_dictionaryForSWIG(self, True), _annotator.Annotator_dictionaryForSWIG(self, False)):
                 rtn.append((k,v))
