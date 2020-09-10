@@ -60,8 +60,9 @@ foreach(_TEST ${TEST_SRCS})
 endforeach()
 
 if(LIBCELLML_PYTHON_COVERAGE)
+  configure_file(runner.py runner.py COPYONLY)
   add_custom_target(python_coverage
-    COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${NOSETESTS_EXE} --with-cover
+    COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${Python_EXECUTABLE} runner.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running Python coverage tests")
 endif()
