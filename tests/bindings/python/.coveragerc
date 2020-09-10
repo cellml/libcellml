@@ -1,0 +1,7 @@
+[run]
+plugins =
+    exclude_until_coverage_plugin
+
+[exclude_until_coverage_plugin]
+marker=# libCellML generated wrapper code starts here.
+
