@@ -1,0 +1,4 @@
+
+nose
+exclude-until-coverage-plugin
+

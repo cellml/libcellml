@@ -32,6 +32,12 @@ find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLV
 find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
+if(Python_Interpreter_FOUND)
+  get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
+  find_program(COVERAGE_EXE NAMES  ${PRFERRED_COVERAGE_NAMES} coverage HINTS ${PYTHON_DIR})
+  find_program(NOSETESTS_EXE NAMES  ${PRFERRED_NOSETESTS_NAMES} nosetests HINTS ${PYTHON_DIR})
+endif()
+
 find_package(Doxygen)
 find_package(Sphinx)
 find_package(SWIG 3)
@@ -54,6 +60,7 @@ endif()
 mark_as_advanced(
   CLANG_TIDY_EXE
   CLANG_FORMAT_EXE
+  COEVERAGE_EXE
   FIND_EXE
   GCC_COVERAGE_COMPILER_FLAGS_OK
   GCOV_EXE
@@ -61,6 +68,7 @@ mark_as_advanced(
   LLVM_COV_EXE
   LLVM_COVERAGE_COMPILER_FLAGS_OK
   LLVM_PROFDATA_EXE
+  NOSETESTS_EXE
   SWIG_EXECUTABLE
   VALGRIND_EXE
 )
@@ -125,6 +133,10 @@ endif()
 
 if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
+endif()
+
+if(NOSETESTS_EXE AND COVERAGE_EXE)
+  set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the Python coverage testing are available.")
 endif()
 
 if(WIN32)
