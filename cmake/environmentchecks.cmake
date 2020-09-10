@@ -33,18 +33,17 @@ find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profd
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
 if(Python_Interpreter_FOUND)
-  get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
-  find_program(COVERAGE_EXE NAMES  ${PRFERRED_COVERAGE_NAMES} coverage HINTS ${PYTHON_DIR} NO_DEFAULT_PATH)
-  if(COVERAGE_EXE)
-    message(STATUS "Found Coverage: ${COVERAGE_EXE}")
-  else()
-    message(STATUS "Did not find Coverage.")
-  endif()
-  find_program(NOSETESTS_EXE NAMES  ${PRFERRED_NOSETESTS_NAMES} nosetests HINTS ${PYTHON_DIR} NO_DEFAULT_PATH)
-  if(NOSETESTS_EXE)
-    message(STATUS "Found Nose: ${NOSETESTS_EXE}")
-  else()
-    message(STATUS "Did not find Nose.")
+  if(NOT DEFINED TEST_COVERAGE_RESULT)
+    set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
+    get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
+    execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
+      RESULT_VARIABLE TEST_COVERAGE_RESULT)
+    if(TEST_COVERAGE_RESULT EQUAL 0)
+      set(HAVE_COVERAGE TRUE)
+    else()
+      set(HAVE_COVERAGE FALSE)
+    endif()
+    message(STATUS "Have Coverage: ${HAVE_COVERAGE}")
   endif()
 endif()
 
@@ -70,7 +69,6 @@ endif()
 mark_as_advanced(
   CLANG_TIDY_EXE
   CLANG_FORMAT_EXE
-  COEVERAGE_EXE
   FIND_EXE
   GCC_COVERAGE_COMPILER_FLAGS_OK
   GCOV_EXE
@@ -78,7 +76,6 @@ mark_as_advanced(
   LLVM_COV_EXE
   LLVM_COVERAGE_COMPILER_FLAGS_OK
   LLVM_PROFDATA_EXE
-  NOSETESTS_EXE
   SWIG_EXECUTABLE
   VALGRIND_EXE
 )
@@ -145,8 +142,8 @@ if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FL
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
 endif()
 
-if(NOSETESTS_EXE AND COVERAGE_EXE)
-  set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the Python coverage testing are available.")
+if(HAVE_COVERAGE)
+  set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
 endif()
 
 if(WIN32)
