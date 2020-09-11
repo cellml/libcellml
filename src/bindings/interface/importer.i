@@ -54,6 +54,10 @@ which are now stored in the library). The second item is the import reference."
 #include "libcellml/importer.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Importer)
 
 %include "libcellml/types.h"
