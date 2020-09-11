@@ -108,6 +108,10 @@ the structure."
 #include "libcellml/componententity.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %ignore libcellml::ComponentEntity::ComponentEntity();
 
 %include "libcellml/types.h"

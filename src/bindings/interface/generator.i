@@ -65,6 +65,10 @@ preparing for code generation.";
 #include "libcellml/generator.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %pythonappend libcellml::Generator::Generator %{
 from libcellml import GeneratorProfile
 profile = GeneratorProfile(GeneratorProfile.Profile.PYTHON)
