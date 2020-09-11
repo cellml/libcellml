@@ -20,7 +20,7 @@ cov = coverage.Coverage(source=["libcellml"])
 cov.set_option("run:plugins", ["exclude_until_coverage_plugin"])
 cov.set_option("exclude_until_coverage_plugin:marker", "# libCellML generated wrapper code starts here.")
 
-os.chdir(os.path.join("@PYTHON_COVERAGE_WORKING_DIRIRECTORY@", configuration))
+os.chdir(os.path.join("@PYTHON_COVERAGE_WORKING_DIRECTORY@", configuration))
 cov.start()
 
 unittest.TextTestRunner(verbosity=1).run(suite)
