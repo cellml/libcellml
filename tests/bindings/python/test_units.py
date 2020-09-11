@@ -32,6 +32,11 @@ class UnitsTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.id(), idx)
 
+    def test_create_imported_entity(self):
+        from libcellml.importedentity import ImportedEntity
+
+        self.assertRaises(AttributeError, ImportedEntity)
+
     def test_standard_unit(self):
         from libcellml import Units
 
@@ -248,6 +253,19 @@ class UnitsTestCase(unittest.TestCase):
         i = ImportSource()
         u = Units()
         u.setSourceUnits(i, 'hello')
+
+        self.assertTrue(u.isImport())
+
+    def test_import_units(self):
+        from libcellml import Units, ImportSource
+
+        i = ImportSource()
+        u = Units()
+
+        u.setImportSource(i)
+        u.setImportReference("Volt")
+
+        self.assertTrue(u.isImport())
 
 
 if __name__ == '__main__':
