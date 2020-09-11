@@ -1094,7 +1094,9 @@ endif()
 unset (${_PYTHON_PREFIX}_SOABI)
 
 # Define lookup strategy
-cmake_policy (GET CMP0094 _${_PYTHON_PREFIX}_LOOKUP_POLICY)
+if (POLICY CMP0094)
+  cmake_policy (GET CMP0094 _${_PYTHON_PREFIX}_LOOKUP_POLICY)
+endif()
 if (_${_PYTHON_PREFIX}_LOOKUP_POLICY STREQUAL "NEW")
   set (_${_PYTHON_PREFIX}_FIND_STRATEGY "LOCATION")
 else()
