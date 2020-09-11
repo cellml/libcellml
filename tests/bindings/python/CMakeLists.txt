@@ -60,11 +60,22 @@ foreach(_TEST ${TEST_SRCS})
 endforeach()
 
 if(LIBCELLML_PYTHON_COVERAGE)
-  configure_file(runner.py runner.py COPYONLY)
+  configure_file(runner.py runner.py @ONLY)
+
+  set(_CONFIG_ARGUMENT ".")
+  if(IS_MULTI_CONFIG)
+    set(_CONFIG_ARGUMENT "/$<CONFIG>")
+  endif()
+
   add_custom_target(python_coverage
-    COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${Python_EXECUTABLE} runner.py
+    COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${Python_EXECUTABLE} runner.py ${_CONFIG_ARGUMENT}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running Python coverage tests")
+
+  add_custom_target(python_coverage_html_report
+    COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${Python_EXECUTABLE} runner.py ${_CONFIG_ARGUMENT} html
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Running Python coverage tests with html report")
 endif()
 
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
