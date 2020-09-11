@@ -77,5 +77,13 @@ class EntityTestCase(unittest.TestCase):
         self.assertTrue(c2.hasAncestor(x))
 
 
+class NamedEntityTestCase(unittest.TestCase):
+
+    def test_create(self):
+        from libcellml.namedentity import NamedEntity
+
+        self.assertRaises(AttributeError, NamedEntity)
+
+
 if __name__ == '__main__':
     unittest.main()
