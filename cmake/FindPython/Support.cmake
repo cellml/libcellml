@@ -2965,12 +2965,19 @@ foreach (_${_PYTHON_PREFIX}_COMPONENT IN ITEMS Interpreter Compiler Development 
 endforeach()
 
 include (FindPackageHandleStandardArgs)
-find_package_handle_standard_args (${_PYTHON_PREFIX}
-                                   REQUIRED_VARS ${_${_PYTHON_PREFIX}_REQUIRED_VARS}
-                                   VERSION_VAR ${_PYTHON_PREFIX}_VERSION
-                                   HANDLE_COMPONENTS
-                                   REASON_FAILURE_MESSAGE "${_${_PYTHON_PREFIX}_REASON_FAILURE}")
-
+if (CMAKE_VERSION LESS 3.16)
+  find_package_handle_standard_args (${_PYTHON_PREFIX}
+                                     REQUIRED_VARS ${_${_PYTHON_PREFIX}_REQUIRED_VARS}
+                                     VERSION_VAR ${_PYTHON_PREFIX}_VERSION
+                                     HANDLE_COMPONENTS
+                                     FAIL_MESSAGE "${_${_PYTHON_PREFIX}_REASON_FAILURE}")
+else()
+  find_package_handle_standard_args (${_PYTHON_PREFIX}
+                                     REQUIRED_VARS ${_${_PYTHON_PREFIX}_REQUIRED_VARS}
+                                     VERSION_VAR ${_PYTHON_PREFIX}_VERSION
+                                     HANDLE_COMPONENTS
+                                     REASON_FAILURE_MESSAGE "${_${_PYTHON_PREFIX}_REASON_FAILURE}")
+endif()
 # Create imported targets and helper functions
 if(_${_PYTHON_PREFIX}_CMAKE_ROLE STREQUAL "PROJECT")
   if ("Interpreter" IN_LIST ${_PYTHON_PREFIX}_FIND_COMPONENTS
