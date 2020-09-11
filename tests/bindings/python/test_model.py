@@ -237,6 +237,52 @@ class ModelTestCase(unittest.TestCase):
         c.setImportSource(ImportSource())
         self.assertTrue(m.hasUnresolvedImports())
 
+    def test_add_component(self):
+        from libcellml import Model, Component
+
+        m = Model()
+        c = Component()
+
+        self.assertEqual(0, m.componentCount())
+        m.addComponent(c)
+        self.assertTrue(m.containsComponent(c))
+        self.assertEqual(1, m.componentCount())
+
+    def test_remove_component(self):
+        from libcellml import Model, Component
+
+        m = Model()
+        c1 = Component()
+        c2 = Component()
+
+        self.assertEqual(0, m.componentCount())
+        m.addComponent(c1)
+        m.addComponent(c2)
+        self.assertEqual(2, m.componentCount())
+
+        m.removeAllComponents()
+        self.assertEqual(0, m.componentCount())
+
+        m.addComponent(c1)
+        m.addComponent(c2)
+
+        self.assertEqual(2, m.componentCount())
+        m.removeComponent(c2)
+        self.assertEqual(1, m.componentCount())
+
+    def test_ids(self):
+      from libcellml import Model
+
+      m = Model()
+      self.assertEqual('', m.id())
+      self.assertEqual('', m.encapsulationId())
+
+      m.setId('main_model')
+      m.setEncapsulationId('model_encapsulation')
+      self.assertEqual('main_model', m.id())
+      self.assertEqual('model_encapsulation', m.encapsulationId())
+
+
 
 if __name__ == '__main__':
     unittest.main()

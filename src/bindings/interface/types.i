@@ -10,6 +10,7 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Entity)
 %shared_ptr(libcellml::Generator)
 %shared_ptr(libcellml::GeneratorProfile)
+%shared_ptr(libcellml::GeneratorVariable)
 %shared_ptr(libcellml::Importer)
 %shared_ptr(libcellml::ImportSource)
 %shared_ptr(libcellml::ImportedEntity)
