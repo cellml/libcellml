@@ -79,9 +79,12 @@ the structure."
 
 
 #if defined(SWIGPYTHON)
+    %ignore libcellml::ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component);
+
     // Allow any type of input to be converted to bool
     %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
     %typemap(in) bool { $1 = PyObject_IsTrue($input) == 1; }
+
 
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::ComponentEntity {
