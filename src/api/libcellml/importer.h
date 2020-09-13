@@ -105,6 +105,17 @@ public:
     ModelPtr library(const size_t &index);
 
     /**
+     * @brief Get the key string under which a model is stored in the library, at the given @p index.
+     * 
+     * Get the key string under which a model is stored in the library, at the given @p index.
+     * 
+     * @param index The index of the key to return.
+     * 
+     * @return If successful, a string under which the model has been stored, or an empty string otherwise.
+     */
+    std::string key(const size_t &index);
+
+    /**
      * @brief Manually add a local @c ModelPtr model instance to the importer library,
      *        using the given @p key as a reference.
      *

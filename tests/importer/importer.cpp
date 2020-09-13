@@ -318,6 +318,12 @@ TEST(Importer, accessImportedModelLibrary)
     // Library should contain left, right, and one instance (not two) of the point.
     EXPECT_EQ(size_t(3), importer->libraryCount());
 
+    // Test that the library items have the expected keys.
+    EXPECT_EQ(resourcePath("importer/diamond_left.cellml"), importer->key(0));
+    EXPECT_EQ(resourcePath("importer/diamond_point.cellml"), importer->key(1));
+    EXPECT_EQ(resourcePath("importer/diamond_right.cellml"), importer->key(2));
+    EXPECT_EQ("", importer->key(999));
+
     // Access library items by their URL.
     auto left = importer->library(resourcePath("importer/diamond_left.cellml"));
     auto right = importer->library(resourcePath("importer/diamond_right.cellml"));
