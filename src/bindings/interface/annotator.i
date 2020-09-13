@@ -7,6 +7,7 @@
 %import "logger.i"
 %import "types.i"
 
+%include <std_multimap.i>
 %include <std_pair.i>
 %include <std_vector.i>
 %include <std_string.i>
@@ -17,6 +18,9 @@
 
 %feature("docstring") libcellml::Annotator::setModel
 "Construct a searchable map of items in the model.";
+
+%feature("docstring") libcellml::Annotator::typeAsString
+"Convert a CellMLElement enum into a string.";
 
 %feature("docstring") libcellml::Annotator::item
 "Return the item with the given id.";
@@ -57,11 +61,17 @@
 %feature("docstring") libcellml::Annotator::assignIds
 "Set all items of the given type in the stored model to automatically generated, unique strings.";
 
+%feature("docstring") libcellml::Annotator::assignId
+"Set the id of the given item to an automatically generated, unique string.";
+
 %feature("docstring") libcellml::Annotator::clearAllIds
 "Clear all the id strings in the given or stored model.";
 
 %feature("docstring") libcellml::Annotator::isUnique
 "Return `true` if the given string is not duplicated in the stored model, or `false` otherwise.";
+
+%feature("docstring") libcellml::Annotator::ids
+"Return a list of all id strings within the stored model.";
 
 %feature("docstring") libcellml::Annotator::duplicateIds
 "Return a list of id strings which are duplicated within the stored model.";
@@ -138,6 +148,9 @@
 %feature("docstring") libcellml::Annotator::assignUnitIdForSWIG
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
 
+%feature("docstring") libcellml::Annotator::dictionaryForSWIG
+"Private: Utility function to return the id dictionary for this model.";
+
 
 %{
 #include "libcellml/annotator.h"
@@ -153,6 +166,7 @@
 %ignore libcellml::Annotator::connection;
 %ignore libcellml::Annotator::mapVariables;
 %ignore libcellml::Annotator::assignId;
+%ignore libcellml::Annotator::dictionary;
 
 %pythoncode %{
 from libcellml import CellMLElement
@@ -214,9 +228,40 @@ from libcellml import CellMLElement
         return $self->assignUnitId(unitItem);
     }
 
+    std::vector<std::string> dictionaryForSWIG(bool first) {
+        std::vector<std::string> rtn;
+        if(first){
+            for( auto &i : $self->dictionary()) {
+                rtn.push_back(i.first);
+            }
+        }
+        else {
+            for( auto &i : $self->dictionary()) {
+                rtn.push_back($self->typeAsString(i.second));
+            }
+        }
+        return rtn;
+    }
+            
     %pythoncode %{
-        def assignId(self, type, item, item2=None):
+
+        def assignId(self, a, b=None, c=None):
             r"""Sets the given item's id to an automatically generated, unique string."""
+            if b == None: 
+                type = a[0]
+                if type == CellMLElement.CONNECTION or type == CellMLElement.MAP_VARIABLES or type == CellMLElement.UNIT:
+                    item2 = a[1][1]
+                    item = a[1][0]
+                else:
+                    item = a[1]
+            elif c == None:
+                item = a
+                type = b
+            else:
+                item = a
+                item2 = b
+                type = c
+
             if type == CellMLElement.COMPONENT:
                 return _annotator.Annotator_assignComponentId(self, item)
             elif type == CellMLElement.COMPONENT_REF:
@@ -260,7 +305,7 @@ from libcellml import CellMLElement
 
         def item(self, id, index=-1):
             r"""Retrieve a unique item with the given id."""
-            if index == -1 and not _annotator.Annotator_isUnique(id, true):
+            if index == -1 and not _annotator.Annotator_isUnique(self, id):
                 return (-1, None)
             
             if index == -1:
@@ -309,7 +354,13 @@ from libcellml import CellMLElement
                 items_with_id = self.item(id, c)
                 itemsList.append(items_with_id)
             return itemsList
-
+        
+        def dictionary(self):
+            r"""Return a dictionary of all id strings and their type within the stored model."""
+            rtn = []
+            for k, v in zip(_annotator.Annotator_dictionaryForSWIG(self, True), _annotator.Annotator_dictionaryForSWIG(self, False)):
+                rtn.append((k,v))
+            return rtn
     %}
 }
 
