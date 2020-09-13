@@ -353,5 +353,6 @@ class IssueTestCase(unittest.TestCase):
         e.setLevel(Issue.Level.HINT)
         self.assertEqual(Issue.Level.HINT, e.level())
 
+
 if __name__ == '__main__':
     unittest.main()
