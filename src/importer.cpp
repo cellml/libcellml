@@ -56,8 +56,6 @@ struct Importer::ImporterImpl
     Importer *mImporter = nullptr;
 
     ImportLibrary mLibrary;
-    std::vector<std::string> mLibraryIndex;
-    std::vector<std::pair<std::string, std::string>> mExternals;
 
     bool doResolveImports(ModelPtr &model, const std::string &baseFile);
 
@@ -573,6 +571,20 @@ bool Importer::replaceModel(const ModelPtr &model, const std::string &key)
     }
     mPimpl->mLibrary[key] = model;
     return true;
+}
+
+std::string Importer::key(const size_t &index)
+{
+    if (index >= mPimpl->mLibrary.size()) {
+        return "";
+    }
+    auto it = mPimpl->mLibrary.begin();
+    size_t i = 0;
+    while (i < index) {
+        ++it;
+        ++i;
+    }
+    return it->first;
 }
 
 } // namespace libcellml
