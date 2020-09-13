@@ -42,12 +42,13 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void timeit(std::function<void()> func) {
+void timeit(std::function<void()> func)
+{
     std::clock_t start = std::clock();
 
     func();
 
-    int ms = (std::clock() - start) / (double) (CLOCKS_PER_SEC / 1000);
+    int ms = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
 
     std::cout << "Finished in " << ms << "ms" << std::endl;
 }
@@ -320,7 +321,9 @@ void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::Compon
     EXPECT_EQ(c1->componentCount(), c2->componentCount());
     EXPECT_EQ(c1->resetCount(), c2->resetCount());
     EXPECT_EQ(c1->variableCount(), c2->variableCount());
+
     EXPECT_EQ(expectedParent, c2->parent());
+
     for (size_t index = 0; index < c1->componentCount(); ++index) {
         auto c1i = c1->component(index);
         auto c2i = c2->component(index);
@@ -337,6 +340,25 @@ void compareComponent(const libcellml::ComponentPtr &c1, const libcellml::Compon
     }
 }
 
+void compareImportSource(const libcellml::ImportSourcePtr &i1, const libcellml::ImportSourcePtr &i2, const libcellml::ModelPtr &m2)
+{
+    EXPECT_EQ(i1->url(), i2->url());
+
+    EXPECT_EQ(i1->unitsCount(), i2->unitsCount());
+    for (size_t index = 0; index < i1->unitsCount(); ++index) {
+        auto u1 = i1->units(index);
+        auto u2 = i2->units(index);
+        compareUnits(u1, u2, m2);
+    }
+
+    EXPECT_EQ(i1->componentCount(), i2->componentCount());
+    for (size_t index = 0; index < i1->componentCount(); ++index) {
+        auto c1 = i1->component(index);
+        auto c2 = i2->component(index);
+        compareComponent(c1, c2, m2);
+    }
+}
+
 void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 {
     EXPECT_EQ(m1->id(), m2->id());
@@ -344,6 +366,7 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
 
     EXPECT_EQ(m1->unitsCount(), m2->unitsCount());
     EXPECT_EQ(m1->componentCount(), m2->componentCount());
+    EXPECT_EQ(m1->importSourceCount(), m2->importSourceCount());
 
     for (size_t index = 0; index < m1->unitsCount(); ++index) {
         auto u1 = m1->units(index);
@@ -355,6 +378,12 @@ void compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2)
         auto c1 = m1->component(index);
         auto c2 = m2->component(index);
         compareComponent(c1, c2, m2);
+    }
+
+    for (size_t index = 0; index < m1->importSourceCount(); ++index) {
+        auto i1 = m1->importSource(index);
+        auto i2 = m2->importSource(index);
+        compareImportSource(i1, i2, m2);
     }
 }
 
@@ -370,6 +399,8 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
         EXPECT_NE(r1->testVariable(), r2->testVariable());
         EXPECT_EQ(r1->testVariable()->name(), r2->testVariable()->name());
     }
+    EXPECT_EQ(r1->testValueId(), r2->testValueId());
+    EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
 }
 
 libcellml::ModelPtr owningModel(const libcellml::EntityConstPtr &entity)

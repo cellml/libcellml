@@ -351,64 +351,51 @@ class AnnotatorTestCase(unittest.TestCase):
 
         annotator.setModel(model)
 
-        self.assertEqual("b4da55", annotator.assignId(
-            CellMLElement.COMPONENT, model.component(0)))
+        self.assertEqual("b4da55", annotator.assignId(model.component(0), CellMLElement.COMPONENT))
         self.assertEqual("b4da55", model.component(0).id())
 
-        self.assertEqual("b4da56", annotator.assignId(
-            CellMLElement.COMPONENT_REF, model.component("component2")))
-        self.assertEqual("b4da56", model.component(
-            "component2").encapsulationId())
+        self.assertEqual("b4da56", annotator.assignId(model.component("component2"), CellMLElement.COMPONENT_REF))
+        self.assertEqual("b4da56", model.component("component2").encapsulationId())
 
-        self.assertEqual("b4da57", annotator.assignId(CellMLElement.CONNECTION,
-                                                      model.component("component2").variable(
-                                                          "variable1"),
-                                                      model.component("component2").variable("variable1").equivalentVariable(0)))
+        self.assertEqual("b4da57", annotator.assignId(model.component("component2").variable("variable1"),
+                                                      model.component("component2").variable("variable1").equivalentVariable(0),
+                                                      CellMLElement.CONNECTION))
+
         self.assertEqual("b4da57", Variable.equivalenceConnectionId(
             model.component("component2").variable("variable1"),
             model.component("component2").variable("variable1").equivalentVariable(0)))
 
-        self.assertEqual("b4da58", annotator.assignId(
-            CellMLElement.IMPORT, model.importSource(0)))
+        self.assertEqual("b4da58", annotator.assignId(model.importSource(0), CellMLElement.IMPORT))
         self.assertEqual("b4da58", model.importSource(0).id())
 
-        self.assertEqual("b4da59", annotator.assignId(CellMLElement.MAP_VARIABLES,
-                                                      model.component("component2").variable(
-                                                          "variable2"),
-                                                      model.component("component2").variable("variable2").equivalentVariable(0)))
+        self.assertEqual("b4da59", annotator.assignId(model.component("component2").variable("variable2"),
+                                                      model.component("component2").variable("variable2").equivalentVariable(0),
+                                                      CellMLElement.MAP_VARIABLES))
         self.assertEqual("b4da59", Variable.equivalenceMappingId(model.component("component2").variable("variable2"),
                                                                  model.component("component2").variable("variable2").equivalentVariable(0)))
 
-        self.assertEqual("b4da5a", annotator.assignId(
-            CellMLElement.MODEL, model))
+        self.assertEqual("b4da5a", annotator.assignId(model, CellMLElement.MODEL))
         self.assertEqual("b4da5a", model.id())
 
-        self.assertEqual("b4da5b", annotator.assignId(CellMLElement.RESET,
-                                                      model.component(1).reset(0)))
+        self.assertEqual("b4da5b", annotator.assignId(model.component(1).reset(0), CellMLElement.RESET))
         self.assertEqual("b4da5b", model.component(1).reset(0).id())
 
-        self.assertEqual("b4da5c", annotator.assignId(CellMLElement.RESET_VALUE,
-                                                      model.component(1).reset(0)))
+        self.assertEqual("b4da5c", annotator.assignId(model.component(1).reset(0), CellMLElement.RESET_VALUE))
         self.assertEqual("b4da5c", model.component(1).reset(0).resetValueId())
 
-        self.assertEqual("b4da5d", annotator.assignId(CellMLElement.TEST_VALUE,
-                                                      model.component(1).reset(0)))
+        self.assertEqual("b4da5d", annotator.assignId(model.component(1).reset(0), CellMLElement.TEST_VALUE))
         self.assertEqual("b4da5d", model.component(1).reset(0).testValueId())
 
-        self.assertEqual("b4da5e", annotator.assignId(CellMLElement.UNIT,
-                                                      model.units(1), 0))
+        self.assertEqual("b4da5e", annotator.assignId(model.units(1), 0, CellMLElement.UNIT))
         self.assertEqual("b4da5e", model.units(1).unitId(0))
 
-        self.assertEqual("b4da5f", annotator.assignId(CellMLElement.UNITS,
-                                                      model.units(1)))
+        self.assertEqual("b4da5f", annotator.assignId(model.units(1), CellMLElement.UNITS))
         self.assertEqual("b4da5f", model.units(1).id())
 
-        self.assertEqual("b4da60", annotator.assignId(CellMLElement.VARIABLE,
-                                                      model.component(1).variable(0)))
+        self.assertEqual("b4da60", annotator.assignId(model.component(1).variable(0), CellMLElement.VARIABLE))
         self.assertEqual("b4da60", model.component(1).variable(0).id())
 
-        self.assertEqual("b4da61", annotator.assignId(CellMLElement.ENCAPSULATION,
-                                                      model))
+        self.assertEqual("b4da61", annotator.assignId(model, CellMLElement.ENCAPSULATION))
         self.assertEqual("b4da61", model.encapsulationId())
 
     def test_list_duplicate_ids(self):

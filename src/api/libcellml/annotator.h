@@ -68,6 +68,9 @@ public:
      */
     ModelPtr model() const;
 
+    // KRM docstring
+    static std::string typeAsString(CellMLElement type);
+
     /**
      * @brief Retrieves an item with the given id string.
      *
@@ -497,7 +500,8 @@ public:
 
     /**
      * @brief Assign an id string to every item in the model which is already 
-     * stored in this annotator, excluding its MathML items.
+     * stored in this annotator, excluding its MathML items. Existing ids will 
+     * not be changed.
      * 
      * @return a boolean value indicating whether any ids have been changed.
      */
@@ -505,7 +509,7 @@ public:
 
     /**
      * @brief Assign a unique, automatic id string to every item in the given @p model, 
-     * excluding its MathML items. 
+     * excluding its MathML items. Existing ids will not be changed.
      * 
      * The given @p model replaces any previously stored in this annotator.
      * 
@@ -517,7 +521,7 @@ public:
 
     /**
      * @brief Assign an id string to every item of the given @p type in the
-     *  model which is already stored in this annotator.
+     *  model which is already stored in this annotator. Existing ids will not be changed.
      * 
      *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this function can be called successfully.
@@ -536,7 +540,7 @@ public:
     /**
      * @brief Clear all id strings from all items in the given @p model.
      * 
-     *  The given @p model also replaces the one which was previously stored 
+     *  The given @p model will replace the one which was previously stored 
      *  in this annotator.
      * 
      * @param model A @c ModelPtr for which all id strings will be cleared.  It will
@@ -566,6 +570,28 @@ public:
      * @return a @c std::vector of @ref AnyItem items.
      */
     std::vector<AnyItem> items(const std::string &id);
+
+    /** 
+     * @brief Return a @c std::vector of @c std::strings representing all id
+     * strings in the stored model.
+     * 
+     * The annotator requires a model to be set with setModel(ModelPtr)
+     * before this function can be called successfully.
+     * 
+     * @return a @c std::vector of @c std::strings.
+     */
+    std::vector<std::string> ids();
+
+    /** 
+     * @brief Return a @c std::multimap of @c std::strings representing all id
+     * strings in the stored model, paired with their @c CellMLElement type.
+     * 
+     * The annotator requires a model to be set with setModel(ModelPtr)
+     * before this function can be called successfully.
+     * 
+     * @return a @c std::multimap of @c std::strings, @c CellMLElement enums.
+     */
+    std::multimap<std::string, CellMLElement> dictionary();
 
     /** 
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id
@@ -612,7 +638,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const ModelPtr &item, CellMLElement type=CellMLElement::MODEL);
+    std::string assignId(const ModelPtr &item, CellMLElement type = CellMLElement::MODEL);
 
     /**
      * @overload
@@ -640,7 +666,7 @@ public:
      *    
      * @return the new id string.
      */
-    std::string assignId(const ComponentPtr &item, CellMLElement type=CellMLElement::COMPONENT);
+    std::string assignId(const ComponentPtr &item, CellMLElement type = CellMLElement::COMPONENT);
 
     /**
      * @overload
@@ -690,7 +716,7 @@ public:
      *
      * @return the new id string.
      */
-    std::string assignId(const ResetPtr &item, CellMLElement type=CellMLElement::RESET);
+    std::string assignId(const ResetPtr &item, CellMLElement type = CellMLElement::RESET);
 
     /**
      * @overload
@@ -775,7 +801,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const VariablePair &pair, CellMLElement type=CellMLElement::CONNECTION);
+    std::string assignId(const VariablePair &pair, CellMLElement type = CellMLElement::CONNECTION);
 
     /**
      * @overload
@@ -800,7 +826,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const VariablePtr &item1, const VariablePtr &item2, CellMLElement type=CellMLElement::CONNECTION);
+    std::string assignId(const VariablePtr &item1, const VariablePtr &item2, CellMLElement type = CellMLElement::CONNECTION);
 
     /**
      * @overload
