@@ -2476,9 +2476,9 @@ TEST(Units, setGetUnitId)
     units->addUnit("second");
     units->addUnit("metre");
 
-    std::string id1 = "id1";
-    std::string id2 = "id2";
-    std::string oor = "out_of_range";
+    const std::string id1 = "id1";
+    const std::string id2 = "id2";
+    const std::string oor = "out_of_range";
 
     EXPECT_TRUE(units->setUnitId(0, id1));
     EXPECT_TRUE(units->setUnitId(1, id2));
