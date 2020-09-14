@@ -515,6 +515,9 @@ public:
     /**
      * @brief Return the id string of the unit at the given @p index.
      * 
+     * Return the id string of the unit at the given @p index.  If the
+     * given index is out of range then the empty string is returned.
+     *
      * @return An id string.
      */
     std::string unitId(size_t index);
