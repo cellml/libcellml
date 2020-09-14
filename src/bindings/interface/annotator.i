@@ -124,31 +124,31 @@
 // PRIVATE: Functions only written to support bindings. They are not 
 // intended to be called from anywhere other than this file.
 
-%feature("docstring") libcellml::Annotator::itemTypeForSWIG
+%feature("docstring") libcellml::Annotator::_itemTypeForSWIG
 "Private: Utility function to retrieve item type integer based on id.";
 
-%feature("docstring") libcellml::Annotator::unitIndexForSWIG
+%feature("docstring") libcellml::Annotator::_unitIndexForSWIG
 "Private: Utility function to retrieve index of Unit item within parent Units item based on given id.";
 
-%feature("docstring") libcellml::Annotator::unitParentForSWIG
+%feature("docstring") libcellml::Annotator::_unitParentForSWIG
 "Private: Utility function to retrieve UnitsPtr parent for Unit item with given id.";
 
-%feature("docstring") libcellml::Annotator::connectionForSWIG
+%feature("docstring") libcellml::Annotator::_connectionForSWIG
 "Private: Utility function to retrieve one of VariablePtrs connection with given id.";
 
-%feature("docstring") libcellml::Annotator::mapVariablesForSWIG
+%feature("docstring") libcellml::Annotator::_mapVariablesForSWIG
 "Private: Utility function to retrieve one of VariablePtrs map_variables with given id.";
 
-%feature("docstring") libcellml::Annotator::assignConnectionIdForSWIG
+%feature("docstring") libcellml::Annotator::_assignConnectionIdForSWIG
 "Private: Utility function to set a unique id for the connection between a given variable pair..";
 
-%feature("docstring") libcellml::Annotator::assignMapVariablesIdForSWIG
+%feature("docstring") libcellml::Annotator::_assignMapVariablesIdForSWIG
 "Private: Utility function to set a unique id for the equivalence between a given variable pair.";
 
-%feature("docstring") libcellml::Annotator::assignUnitIdForSWIG
+%feature("docstring") libcellml::Annotator::_assignUnitIdForSWIG
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
 
-%feature("docstring") libcellml::Annotator::dictionaryForSWIG
+%feature("docstring") libcellml::Annotator::_dictionaryForSWIG
 "Private: Utility function to return the id dictionary for this model.";
 
 
@@ -174,13 +174,13 @@ from libcellml import CellMLElement
 
 %extend libcellml::Annotator {
 
-    int itemTypeForSWIG(const std::string &id, size_t index)
+    int _itemTypeForSWIG(const std::string &id, size_t index)
     {
         auto itemInfo = $self->item(id, index);
         return static_cast<int>(itemInfo.first);
     }
 
-    int unitIndexForSWIG(const std::string &id, size_t index)
+    int _unitIndexForSWIG(const std::string &id, size_t index)
     {
         auto u = $self->unit(id, index);
         if(u.first == nullptr){
@@ -189,13 +189,13 @@ from libcellml import CellMLElement
         return u.second;
     }
 
-    UnitsPtr unitParentForSWIG(const std::string &id, size_t index)
+    UnitsPtr _unitParentForSWIG(const std::string &id, size_t index)
     {
         auto u = $self->unit(id, index);
         return u.first;
     }
 
-    VariablePtr connectionForSWIG(const std::string &id, bool useFirst, const size_t &index)
+    VariablePtr _connectionForSWIG(const std::string &id, bool useFirst, const size_t &index)
     {
         auto vPair = $self->connection(id, index);
         if (useFirst) {
@@ -204,7 +204,7 @@ from libcellml import CellMLElement
         return vPair.second;
     }
 
-    VariablePtr mapVariablesForSWIG(const std::string &id, bool useFirst, const size_t &index)
+    VariablePtr _mapVariablesForSWIG(const std::string &id, bool useFirst, const size_t &index)
     {
         auto vPair = $self->mapVariables(id, index);
         if (useFirst) {
@@ -213,22 +213,22 @@ from libcellml import CellMLElement
         return vPair.second;
     }
 
-    std::string assignConnectionIdForSWIG(VariablePtr &item, VariablePtr &item2) {
+    std::string _assignConnectionIdForSWIG(VariablePtr &item, VariablePtr &item2) {
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
         return $self->assignConnectionId(variablePair);
     }
 
-    std::string assignMapVariablesIdForSWIG(VariablePtr &item, VariablePtr &item2) {
+    std::string _assignMapVariablesIdForSWIG(VariablePtr &item, VariablePtr &item2) {
         libcellml::VariablePair variablePair = std::make_pair(item, item2);
         return $self->assignMapVariablesId(variablePair);
     }
 
-    std::string assignUnitIdForSWIG(UnitsPtr &item, size_t index) {
+    std::string _assignUnitIdForSWIG(UnitsPtr &item, size_t index) {
         libcellml::UnitItem unitItem = std::make_pair(item, index);
         return $self->assignUnitId(unitItem);
     }
 
-    std::vector<std::string> dictionaryForSWIG(bool first) {
+    std::vector<std::string> _dictionaryForSWIG(bool first) {
         std::vector<std::string> rtn;
         if(first){
             for( auto &i : $self->dictionary()) {
@@ -284,24 +284,24 @@ from libcellml import CellMLElement
                 return _annotator.Annotator_assignVariableId(self, item)
 
             if type == CellMLElement.CONNECTION:
-                return _annotator.Annotator_assignConnectionIdForSWIG(self, item, item2)
+                return _annotator.Annotator__assignConnectionIdForSWIG(self, item, item2)
             elif type == CellMLElement.MAP_VARIABLES:
-                return _annotator.Annotator_assignMapVariablesIdForSWIG(self, item, item2)
+                return _annotator.Annotator__assignMapVariablesIdForSWIG(self, item, item2)
             elif type == CellMLElement.UNIT:
-                return _annotator.Annotator_assignUnitIdForSWIG(self, item, item2)
+                return _annotator.Annotator__assignUnitIdForSWIG(self, item, item2)
             return ""
        
         def unit(self, id, index=0):
             r"""Return the UnitItem with the given id.  The first item is the parent UnitsPtr item, the second is the index of this unit."""
-            return (_annotator.Annotator_unitParentForSWIG(self, id, index), _annotator.Annotator_unitIndexForSWIG(self, id, index))
+            return (_annotator.Annotator__unitParentForSWIG(self, id, index), _annotator.Annotator__unitIndexForSWIG(self, id, index))
 
         def connection(self, id, index=0):
             r"""Retrieve a tuple of VariablePtr items from a connection with the given id."""
-            return (_annotator.Annotator_connectionForSWIG(self, id, True, index), _annotator.Annotator_connectionForSWIG(self, id, False, index))
+            return (_annotator.Annotator__connectionForSWIG(self, id, True, index), _annotator.Annotator__connectionForSWIG(self, id, False, index))
 
         def mapVariables(self, id, index=0):
             r"""Retrieve a tuple of VariablePtr items from a map_variables with the given id."""
-            return (_annotator.Annotator_mapVariablesForSWIG(self, id, True, index), _annotator.Annotator_mapVariablesForSWIG(self, id, False, index))
+            return (_annotator.Annotator__mapVariablesForSWIG(self, id, True, index), _annotator.Annotator__mapVariablesForSWIG(self, id, False, index))
 
         def item(self, id, index=-1):
             r"""Retrieve a unique item with the given id."""
@@ -311,22 +311,22 @@ from libcellml import CellMLElement
             if index == -1:
                 index = 0
 
-            type = _annotator.Annotator_itemTypeForSWIG(self, id, index)
+            type = _annotator.Annotator__itemTypeForSWIG(self, id, index)
             if type == CellMLElement.COMPONENT:
                 return (type, _annotator.Annotator_component(self, id, index))
             elif type == CellMLElement.COMPONENT_REF:
                 return (type, _annotator.Annotator_componentRef(self, id, index))
             elif type == CellMLElement.CONNECTION:
-                first = _annotator.Annotator_connectionForSWIG(self, id, True, index)
-                second = _annotator.Annotator_connectionForSWIG(self, id, False, index)
+                first = _annotator.Annotator__connectionForSWIG(self, id, True, index)
+                second = _annotator.Annotator__connectionForSWIG(self, id, False, index)
                 return (type, (first, second))
             elif type == CellMLElement.ENCAPSULATION:
                 return (type, _annotator.Annotator_encapsulation(self, id, index))
             elif type == CellMLElement.IMPORT:
                 return (type, _annotator.Annotator_importSource(self, id, index))
             elif type == CellMLElement.MAP_VARIABLES:
-                first = _annotator.Annotator_mapVariablesForSWIG(self, id, True, index)
-                second = _annotator.Annotator_mapVariablesForSWIG(self, id, False, index)
+                first = _annotator.Annotator__mapVariablesForSWIG(self, id, True, index)
+                second = _annotator.Annotator__mapVariablesForSWIG(self, id, False, index)
                 return (type, (first, second))
             elif type == CellMLElement.MODEL:
                 return (type, _annotator.Annotator_model(self, id, index))
@@ -337,8 +337,8 @@ from libcellml import CellMLElement
             elif type == CellMLElement.TEST_VALUE:
                 return (type, _annotator.Annotator_testValue(self, id, index)) 
             elif type == CellMLElement.UNIT:
-                first = _annotator.Annotator_unitParentForSWIG(self, id, index)
-                second = _annotator.Annotator_unitIndexForSWIG(self, id, index)
+                first = _annotator.Annotator__unitParentForSWIG(self, id, index)
+                second = _annotator.Annotator__unitIndexForSWIG(self, id, index)
                 return (type, (first, second))
             elif type == CellMLElement.UNITS:
                 return (type, _annotator.Annotator_units(self, id, index))
@@ -358,7 +358,7 @@ from libcellml import CellMLElement
         def dictionary(self):
             r"""Return a dictionary of all id strings and their type within the stored model."""
             rtn = []
-            for k, v in zip(_annotator.Annotator_dictionaryForSWIG(self, True), _annotator.Annotator_dictionaryForSWIG(self, False)):
+            for k, v in zip(_annotator.Annotator__dictionaryForSWIG(self, True), _annotator.Annotator__dictionaryForSWIG(self, False)):
                 rtn.append((k,v))
             return rtn
     %}
