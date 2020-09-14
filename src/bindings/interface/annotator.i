@@ -17,7 +17,7 @@
 "Interacts with CellML objects using their id attribute.";
 
 %feature("docstring") libcellml::Annotator::setModel
-"Construct a searchable map of items in the model.";
+"Set the model for this Annototor to work with.";
 
 %feature("docstring") libcellml::Annotator::typeAsString
 "Convert a CellMLElement enum into a string.";
@@ -32,7 +32,7 @@
 "Return the model with the given encapsulation id.";
 
 %feature("docstring") libcellml::Annotator::model
-"Return the model with the given id.";
+"Return the model assigned to this Annotator or the model with the given id.";
 
 %feature("docstring") libcellml::Annotator::variable
 "Return the variable with the given id.";
@@ -119,7 +119,7 @@
 "Return the number of items in the stored model with the given id.";
 
 %feature("docstring") libcellml::Annotator::hasModel
-"Report whether the annotator index is up-to-date with its stored model state.";
+"Report whether the annotator has a model assigned or not.";
 
 // PRIVATE: Functions only written to support bindings. They are not 
 // intended to be called from anywhere other than this file.
