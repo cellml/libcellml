@@ -105,7 +105,7 @@ public:
      *    - CI: an identifier (i.e. the name of a model variable);
      *    - CN: a number;
      *  - Qualifier elements:
-     *    - DEGREE: the degree (or oder) of a differential equation;
+     *    - DEGREE: the degree (or order) of a differential equation;
      *    - LOGBASE: the base with respect to which the logarithm is taken;
      *    - BVAR: the bound variable of a differential equation;
      *  - Constants:
