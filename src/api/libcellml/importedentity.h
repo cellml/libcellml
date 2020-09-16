@@ -98,6 +98,16 @@ public:
 protected:
     ImportedEntity(); /**< Constructor */
 
+    /**
+     * @brief Virtual set import source method to be implemented by derived classes.
+     *
+     * Virtual setImportSource method to allow the units and component classes to
+     * implement their own versions.
+     *
+     * @param importSource The import source to set.
+     */
+    virtual void doSetImportSource(const ImportSourcePtr &importSource);
+
 private:
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
     ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */

@@ -32,6 +32,11 @@ class UnitsTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.id(), idx)
 
+    def test_create_imported_entity(self):
+        from libcellml.importedentity import ImportedEntity
+
+        self.assertRaises(AttributeError, ImportedEntity)
+
     def test_standard_unit(self):
         from libcellml import Units
 
@@ -248,6 +253,73 @@ class UnitsTestCase(unittest.TestCase):
         i = ImportSource()
         u = Units()
         u.setSourceUnits(i, 'hello')
+
+        self.assertTrue(u.isImport())
+
+    def test_import_units(self):
+        from libcellml import Units, ImportSource
+
+        i = ImportSource()
+        u = Units()
+
+        u.setImportSource(i)
+        u.setImportReference("Volt")
+
+        self.assertTrue(u.isImport())
+
+    def test_requires_imports(self):
+        from libcellml import Units
+
+        u = Units("Volt")
+        self.assertFalse(u.requiresImports())
+
+    def test_scaling_factor(self):
+        from libcellml import Units
+        from libcellml.units import Units_scalingFactor
+
+        u1 = Units("BigVolts")
+        u1.addUnit("volt", 0, 1, 1000)
+
+        u2 = Units("LittleVolts")
+        u2.addUnit("volt")
+
+        self.assertEqual(0.001, Units.scalingFactor(u1, u2))
+        self.assertEqual(0.001, Units_scalingFactor(u1, u2))
+
+    def test_compatible(self):
+        from libcellml import Units
+        from libcellml.units import Units_compatible
+
+        u1 = Units("BigVolts")
+        u1.addUnit("volt", 0, 1, 1000)
+
+        u2 = Units("LittleVolts")
+        u2.addUnit("volt")
+
+        self.assertTrue(Units.compatible(u1, u2))
+        self.assertTrue(Units_compatible(u1, u2))
+
+    def test_equivalent(self):
+        from libcellml import Units
+        from libcellml.units import Units_equivalent
+
+        u1 = Units("BigVolts")
+        u1.addUnit("volt", 0, 1, 1000)
+
+        u2 = Units("LittleVolts")
+        u2.addUnit("volt")
+
+        self.assertFalse(Units.equivalent(u1, u2))
+        self.assertFalse(Units_equivalent(u1, u2))
+
+    def test_clone(self):
+        from libcellml import Units
+
+        u = Units("BigVolts")
+        u.addUnit("volt", 0, 1, 1000)
+
+        uCloned = u.clone()
+        self.assertEqual(1, uCloned.unitCount())
 
 
 if __name__ == '__main__':
