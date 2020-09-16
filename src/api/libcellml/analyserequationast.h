@@ -226,7 +226,7 @@ public:
      *   auto ast = libcellml::AnalyserEquationAst::create();
      * @endcode
      *
-     * @return A smart pointer to a @c AnalyserEquationAst object.
+     * @return A smart pointer to an @c AnalyserEquationAst object.
      */
     static AnalyserEquationAstPtr create() noexcept;
 
