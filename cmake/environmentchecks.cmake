@@ -32,9 +32,26 @@ find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLV
 find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
+if(Python_Interpreter_FOUND)
+  if(NOT DEFINED TEST_COVERAGE_RESULT)
+    set(TEST_COVERAGE_RESULT -1 CACHE INTERNAL "Result of testing for Python coverage.")
+    message(STATUS "Performing Test HAVE_COVERAGE")
+    get_filename_component(PYTHON_DIR ${Python_EXECUTABLE} DIRECTORY)
+    execute_process(COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/python_package_check.py exclude-until-coverage-plugin
+      RESULT_VARIABLE TEST_COVERAGE_RESULT OUTPUT_QUIET ERROR_QUIET)
+    if(TEST_COVERAGE_RESULT EQUAL 0)
+      set(HAVE_COVERAGE TRUE)
+      message(STATUS "Performing Test HAVE_COVERAGE - Success")
+    else()
+      set(HAVE_COVERAGE FALSE)
+      message(STATUS "Performing Test HAVE_COVERAGE - Failed")
+    endif()
+  endif()
+endif()
+
 find_package(Doxygen)
 find_package(Sphinx)
-find_package(SWIG 3)
+find_package(SWIG 3.0.3)
 
 set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
@@ -125,6 +142,10 @@ endif()
 
 if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Executables required to run the llvm coverage testing are available.")
+endif()
+
+if(HAVE_COVERAGE)
+  set(PYTHON_COVERAGE_TESTING_AVAILABLE TRUE CACHE INTERNAL "Module required to run Python coverage testing is available.")
 endif()
 
 if(WIN32)
