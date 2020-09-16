@@ -1009,6 +1009,10 @@ some code to create the variables array.";
 #include <memory>
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(GeneratorProfile)
 %extend libcellml::GeneratorProfile {
     GeneratorProfile(libcellml::GeneratorProfile::Profile profileType) {

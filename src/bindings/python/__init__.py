@@ -45,11 +45,7 @@ def convert(base, enum, variables, new_base=None):
             setattr(obj, var, getattr(base, enum + '_' + var))
             delattr(base, enum + '_' + var)
             converting = True
-        elif hasattr(base, var):
-            # Swig 3.0.0, 3.0.1, 3.0.2
-            setattr(obj, var, getattr(base, var))
-            delattr(base, var)
-            converting = True
+
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
 
@@ -170,6 +166,13 @@ convert(AnalyserVariable, 'Type', [
 convert(GeneratorProfile, 'Profile', [
     'C',
     'PYTHON',
+])
+convert(GeneratorVariable, 'Type', [
+    'VARIABLE_OF_INTEGRATION',
+    'STATE',
+    'CONSTANT',
+    'COMPUTED_CONSTANT',
+    'ALGEBRAIC',
 ])
 convert(Issue, 'Cause', [
     'COMPONENT',

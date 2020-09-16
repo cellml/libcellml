@@ -57,6 +57,10 @@
 #include "libcellml/logger.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %ignore libcellml::Logger::Logger();
 
 %include "libcellml/types.h"

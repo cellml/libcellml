@@ -65,6 +65,10 @@ unset).";
 #include "libcellml/importsource.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(ImportSource)
 
 %include "libcellml/types.h"
