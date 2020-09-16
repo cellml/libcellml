@@ -83,6 +83,10 @@ Level::ERROR will be returned.";
 #include "libcellml/issue.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Issue)
 %extend libcellml::Issue {
     Issue(const ComponentPtr &component) {
