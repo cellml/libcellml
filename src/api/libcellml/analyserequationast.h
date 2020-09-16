@@ -112,7 +112,7 @@ public:
      *    - TRUE: the "true" boolean;
      *    - FALSE: the "false" boolean;
      *    - E: Euler's number;
-     *    - PI: the πconstant;
+     *    - PI: the π constant;
      *    - INF: the infinity value; or
      *    - NAN: the not-a-number value.
      */
