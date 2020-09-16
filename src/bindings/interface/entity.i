@@ -38,6 +38,10 @@ unset).";
 #include "libcellml/component.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %ignore libcellml::Entity::Entity();
 
 %typemap(out) libcellml::EntityPtr parent {

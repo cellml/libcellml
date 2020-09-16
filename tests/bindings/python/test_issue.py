@@ -337,6 +337,22 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(e.reset(), Reset)
         self.assertEqual(e.reset().id(), name)
 
+    def test_url(self):
+        from libcellml import Issue
+
+        i = Issue()
+        self.assertEqual('', i.url())
+
+    def test_level(self):
+        from libcellml import Issue, Reset
+
+        # ResetPtr reset() const;
+        e = Issue()
+        self.assertEqual(Issue.Level.ERROR, e.level())
+
+        e.setLevel(Issue.Level.HINT)
+        self.assertEqual(Issue.Level.HINT, e.level())
+
 
 if __name__ == '__main__':
     unittest.main()

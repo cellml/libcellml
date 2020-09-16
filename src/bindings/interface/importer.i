@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_pair.i>
 %include <std_string.i>
 
 %import "createconstructor.i"
@@ -47,6 +48,12 @@ library by index, or an empty string if the index is out of range."
 
 %{
 #include "libcellml/importer.h"
+%}
+
+%template(StringPair) std::pair<std::string, std::string>;
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(Importer)
