@@ -80,7 +80,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mSquareString;
     std::string mAbsoluteValueString;
     std::string mExponentialString;
-    std::string mNapierianLogarithmString;
+    std::string mNaturalLogarithmString;
     std::string mCommonLogarithmString;
     std::string mCeilingString;
     std::string mFloorString;
@@ -302,7 +302,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mSquareString = "";
         mAbsoluteValueString = "fabs";
         mExponentialString = "exp";
-        mNapierianLogarithmString = "log";
+        mNaturalLogarithmString = "log";
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
@@ -607,7 +607,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mSquareString = "";
         mAbsoluteValueString = "fabs";
         mExponentialString = "exp";
-        mNapierianLogarithmString = "log";
+        mNaturalLogarithmString = "log";
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
@@ -1191,14 +1191,14 @@ void GeneratorProfile::setExponentialString(const std::string &exponentialString
     mPimpl->mExponentialString = exponentialString;
 }
 
-std::string GeneratorProfile::napierianLogarithmString() const
+std::string GeneratorProfile::naturalLogarithmString() const
 {
-    return mPimpl->mNapierianLogarithmString;
+    return mPimpl->mNaturalLogarithmString;
 }
 
-void GeneratorProfile::setNapierianLogarithmString(const std::string &napierianLogarithmString)
+void GeneratorProfile::setNaturalLogarithmString(const std::string &naturalLogarithmString)
 {
-    mPimpl->mNapierianLogarithmString = napierianLogarithmString;
+    mPimpl->mNaturalLogarithmString = naturalLogarithmString;
 }
 
 std::string GeneratorProfile::commonLogarithmString() const

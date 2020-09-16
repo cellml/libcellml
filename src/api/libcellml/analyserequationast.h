@@ -63,7 +63,7 @@ public:
      *    - ROOT: the root operator;
      *    - ABS: the absolute value function;
      *    - EXP: the exponential function;
-     *    - LN: the Napierian logarithm function;
+     *    - LN: the natural logarithm function;
      *    - LOG: the common logarithm function;
      *    - CEILING: the ceiling function;
      *    - FLOOR: the floor function;
