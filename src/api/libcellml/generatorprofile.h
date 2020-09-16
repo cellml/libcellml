@@ -750,28 +750,28 @@ public:
     void setExponentialString(const std::string &exponentialString);
 
     /**
-     * @brief Get the @c std::string representing the MathML "Napierian
-     * logarithm" function.
-     *
-     * Return the @c std::string representing the MathML "Napierian
-     * logarithm" function.
-     *
-     * @return The @c std::string representing the MathML "Napierian
-     * logarithm" function.
-     */
-    std::string napierianLogarithmString() const;
-
-    /**
-     * @brief Set the @c std::string representing the MathML "Napierian
-     * logarithm" function.
-     *
-     * Set the @c std::string representing the MathML "Napierian logarithm"
+     * @brief Get the @c std::string representing the MathML "natural logarithm"
      * function.
      *
-     * @param napierianLogarithmString The @c std::string representing the
-     * MathML "Napierian logarithm" function.
+     * Return the @c std::string representing the MathML "natural logarithm"
+     * function.
+     *
+     * @return The @c std::string representing the MathML "natural logarithm"
+     * function.
      */
-    void setNapierianLogarithmString(const std::string &napierianLogarithmString);
+    std::string naturalLogarithmString() const;
+
+    /**
+     * @brief Set the @c std::string representing the MathML "natural logarithm"
+     * function.
+     *
+     * Set the @c std::string representing the MathML "natural logarithm"
+     * function.
+     *
+     * @param naturalLogarithmString The @c std::string representing the MathML
+     * "natural logarithm" function.
+     */
+    void setNaturalLogarithmString(const std::string &naturalLogarithmString);
 
     /**
      * @brief Get the @c std::string representing the MathML "common logarithm"
