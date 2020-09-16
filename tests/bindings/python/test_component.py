@@ -36,6 +36,31 @@ class ComponentTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.id(), idx)
 
+    def test_replace_component(self):
+        from libcellml import Component
+
+        c = Component()
+        c1 = Component("component_1")
+
+        c.addComponent(c1)
+
+        c2 = Component("component_2")
+
+        self.assertTrue(c.replaceComponent(0, c2))
+        self.assertEqual(1, c.componentCount())
+        self.assertEqual("component_2", c.component(0).name())
+
+    def test_take_component(self):
+        from libcellml import Component
+
+        c = Component()
+        c1 = Component("component_1")
+
+        c.addComponent(c1)
+
+        cTaken = c.takeComponent(0)
+        self.assertEqual("component_1", cTaken.name())
+
     def test_set_source(self):
         from libcellml import Component, ImportSource
 
@@ -64,6 +89,8 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual(x.math(), 'bonjour')
         x.setMath('hola')
         self.assertEqual(x.math(), 'hola')
+        x.removeMath()
+        self.assertEqual(x.math(), '')
 
     def test_add_variable(self):
         from libcellml import Component, Variable
@@ -94,9 +121,14 @@ class ComponentTestCase(unittest.TestCase):
         name = 'yellow'
         v2 = Variable()
         v2.setName(name)
+        v1.setName('orange')
         c.addVariable(v2)
         self.assertTrue(c.hasVariable(name))
-        del(c, v1, v2, name)
+
+        vTaken = c.takeVariable(0)
+        self.assertEqual('orange', vTaken.name())
+        self.assertTrue(c.variableCount() == 1)
+        del(c, v1, v2, vTaken, name)
 
     def test_remove_variable(self):
         from libcellml import Component, Variable
@@ -196,6 +228,57 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual(c.variableCount(), 1)
         c.removeVariable('')
         self.assertEqual(c.variableCount(), 0)
+
+    def test_reset(self):
+        from libcellml import Component, Reset
+
+        c = Component()
+        r = Reset()
+        r.setTestValue('<math></math>')
+        c.addReset(r)
+        self.assertEqual(1, c.resetCount())
+        self.assertTrue(c.hasReset(r))
+
+        rReturned = c.reset(0)
+        self.assertEqual(r.testValue(), rReturned.testValue())
+
+    def test_reset_manipulations(self):
+        from libcellml import Component, Reset
+
+        c = Component()
+        r1 = Reset()
+        r1.setResetValue('<math></math>')
+
+        r2 = Reset()
+
+        c.addReset(r1)
+        c.addReset(r2)
+
+        self.assertEqual(2, c.resetCount())
+        c.removeAllResets()
+        self.assertEqual(0, c.resetCount())
+
+        c.addReset(r1)
+        c.addReset(r2)
+
+        self.assertTrue(c.removeReset(r2))
+
+        self.assertEqual(1, c.resetCount())
+        rTaken = c.takeReset(0)
+        self.assertEqual(0, c.resetCount())
+        self.assertEqual(r1.resetValue(), rTaken.resetValue())
+
+    def test_clone(self):
+        from libcellml import Component
+
+        c = Component("component_name")
+        cCloned = c.clone()
+        self.assertEqual(c.name(), cCloned.name())
+
+    def test_misc(self):
+        from libcellml.componententity import ComponentEntity
+
+        self.assertRaises(AttributeError, ComponentEntity)
 
 
 if __name__ == '__main__':

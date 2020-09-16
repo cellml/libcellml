@@ -237,6 +237,152 @@ class ModelTestCase(unittest.TestCase):
         c.setImportSource(ImportSource())
         self.assertTrue(m.hasUnresolvedImports())
 
+    def test_add_component(self):
+        from libcellml import Model, Component
+
+        m = Model()
+        c = Component()
+
+        self.assertEqual(0, m.componentCount())
+        m.addComponent(c)
+        self.assertTrue(m.containsComponent(c))
+        self.assertEqual(1, m.componentCount())
+
+    def test_remove_component(self):
+        from libcellml import Model, Component
+
+        m = Model()
+        c1 = Component()
+        c2 = Component()
+
+        self.assertEqual(0, m.componentCount())
+        m.addComponent(c1)
+        m.addComponent(c2)
+        self.assertEqual(2, m.componentCount())
+
+        m.removeAllComponents()
+        self.assertEqual(0, m.componentCount())
+
+        m.addComponent(c1)
+        m.addComponent(c2)
+
+        self.assertEqual(2, m.componentCount())
+        m.removeComponent(c2)
+        self.assertEqual(1, m.componentCount())
+
+    def test_ids(self):
+        from libcellml import Model
+
+        m = Model()
+        self.assertEqual('', m.id())
+        self.assertEqual('', m.encapsulationId())
+
+        m.setId('main_model')
+        m.setEncapsulationId('model_encapsulation')
+        self.assertEqual('main_model', m.id())
+        self.assertEqual('model_encapsulation', m.encapsulationId())
+
+    def test_clone(self):
+        from libcellml import Component, Model, Units, Variable
+
+        m = Model()
+        c1 = Component("c1")
+        c2 = Component("c2")
+        v = Variable("v1")
+        u = Units("apple")
+
+        m.addComponent(c1)
+        m.addComponent(c2)
+        c1.addVariable(v)
+        v.setUnits(u)
+        m.addUnits(u)
+
+        mCloned = m.clone()
+
+        self.assertEqual(2, mCloned.componentCount())
+        self.assertEqual(1, mCloned.unitsCount())
+        self.assertEqual(1, mCloned.component(0).variableCount())
+        self.assertEqual("apple", mCloned.component(0).variable(0).units().name())
+
+
+    def test_link_units(self):
+        from libcellml import Component, Model, Units, Variable
+
+        m = Model()
+        c = Component()
+        v = Variable()
+        u = Units("orange")
+
+        self.assertFalse(m.hasUnlinkedUnits())
+
+        m.addUnits(u)
+        v.setUnits("orange")
+        c.addVariable(v)
+        m.addComponent(c)
+
+        self.assertTrue(m.hasUnlinkedUnits())
+
+        m.linkUnits()
+
+        self.assertFalse(m.hasUnlinkedUnits())
+
+    def test_variable_interfaces(self):
+        from libcellml import Component, Model, Variable
+
+        m = Model()
+        c1 = Component("c1")
+        c2 = Component("c2")
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+
+        c1.addVariable(v1)
+        c2.addVariable(v2)
+
+        m.addComponent(c1)
+        m.addComponent(c2)
+
+        Variable.addEquivalence(v1, v2)
+
+        m.fixVariableInterfaces()
+
+        self.assertEqual("public", v1.interfaceType())
+        self.assertEqual("public", v2.interfaceType())
+
+
+    def test_imports(self):
+        from libcellml import Model, ImportSource, Units
+
+        m = Model()
+        u = Units()
+
+        u.setImportSource(ImportSource())
+
+        m.addUnits(u)
+        self.assertTrue(m.hasImports())
+
+        self.assertEqual(1, m.importSourceCount())
+
+        i = ImportSource()
+        i.setUrl('actual_url')
+
+        m.addImportSource(i)
+
+        self.assertEqual(2, m.importSourceCount())
+
+        i1 = m.importSource(0)
+
+        self.assertTrue(m.hasImportSource(i))
+
+        m.removeImportSource(0)
+
+        self.assertEqual(1, m.importSourceCount())
+
+        m.removeAllImportSources()
+
+        self.assertEqual(0, m.importSourceCount())
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
