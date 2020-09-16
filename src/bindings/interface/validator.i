@@ -17,6 +17,10 @@ Specification. Any errors will be logged in the `Validator`.";
 #include "libcellml/validator.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Validator)
 
 %include "libcellml/types.h"

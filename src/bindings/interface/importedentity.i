@@ -29,6 +29,10 @@ string to unset).";
 #include "libcellml/importedentity.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %ignore libcellml::ImportedEntity::ImportedEntity();
 
 %include "libcellml/types.h"

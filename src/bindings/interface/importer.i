@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_pair.i>
 %include <std_string.i>
 
 %import "createconstructor.i"
@@ -52,6 +53,12 @@ which are now stored in the library). The second item is the import reference."
 
 %{
 #include "libcellml/importer.h"
+%}
+
+%template(StringPair) std::pair<std::string, std::string>;
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(Importer)

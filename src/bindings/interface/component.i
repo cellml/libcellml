@@ -118,6 +118,10 @@ resets and False otherwise.";
 #include "libcellml/component.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %shared_ptr(libcellml::Component);
 %create_constructor(Component)
 %create_name_constructor(Component)
