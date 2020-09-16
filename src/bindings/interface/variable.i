@@ -110,6 +110,10 @@ not equivalent the connection id is not set.";
 #include "libcellml/variable.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Variable)
 %create_name_constructor(Variable)
 
