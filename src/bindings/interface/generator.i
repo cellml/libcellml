@@ -5,12 +5,10 @@
 %include <std_string.i>
 
 %import "createconstructor.i"
+%import "generatorprofile.i"
 %import "logger.i"
 %import "types.i"
 
-#ifdef SWIGPYTHON
-%import "generatorprofile.i"
-#endif
 
 %feature("docstring") libcellml::GeneratorVariable
 "Defines a variable created by processing a :class:`Model` with the :class:`Generator`.";
@@ -63,6 +61,10 @@ preparing for code generation.";
 
 %{
 #include "libcellml/generator.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %pythonappend libcellml::Generator::Generator %{
