@@ -73,26 +73,26 @@ public:
      *  - Calculus elements:
      *    - DIFF: the differentiation operator;
      *  - Trigonometric operators:
-     *    - SIN: the sinus function;
-     *    - COS: the cosinus function;
+     *    - SIN: the sine function;
+     *    - COS: the cosine function;
      *    - TAN: the tangent function;
      *    - SEC: the secant function;
      *    - CSC: the cosecant function;
      *    - COT: the cotangent function;
-     *    - SINH: the hyperbolic sinus function;
-     *    - COSH: the hyperbolic cosinus function;
+     *    - SINH: the hyperbolic sine function;
+     *    - COSH: the hyperbolic cosine function;
      *    - TANH: the hyperbolic tangent function;
      *    - SECH: the hyperbolic secant function;
      *    - CSCH: the hyperbolic cosecant function;
      *    - COTH: the hyperbolic cotangent function;
-     *    - ASIN: the arc sinus function;
-     *    - ACOS: the arc cosinus function;
+     *    - ASIN: the arc sine function;
+     *    - ACOS: the arc cosine function;
      *    - ATAN: the arc tangent function;
      *    - ASEC: the arc secant function;
      *    - ACSC: the arc cosecant function;
      *    - ACOT: the arc cotangent function;
-     *    - ASINH: the arc hyperbolic sinus function;
-     *    - ACOSH: the arc hyperbolic cosinus function;
+     *    - ASINH: the arc hyperbolic sine function;
+     *    - ACOSH: the arc hyperbolic cosine function;
      *    - ATANH: the arc hyperbolic tangent function;
      *    - ASECH: the arc hyperbolic secant function;
      *    - ACSCH: the arc hyperbolic cosecant function;
