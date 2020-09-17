@@ -29,86 +29,85 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
     @unittest.skip("Create tests script")
     def test_create_tests(self):
-      import re
-      from libcellml import GeneratorProfile
+        import re
+        from libcellml import GeneratorProfile
 
-      p = GeneratorProfile()
+        p = GeneratorProfile()
 
-      seen = {}
-      def working_name(entry):
-       name = re.sub('([A-Z]{1})', r'_\1', entry).lower()
-       if name.startswith("set"):
-         name = name[4:]
+        seen = {}
 
-       return name
+        def working_name(entry):
+            name = re.sub('([A-Z]{1})', r'_\1', entry).lower()
+            if name.startswith("set"):
+                name = name[4:]
 
-      def ignore(entry):
-       if entry.startswith("_") or entry in ["Profile", "profile", "this", "thisown"]:
-         return True
+            return name
 
-       return False
+        def ignore(entry):
+            if entry.startswith("_") or entry in ["Profile", "profile", "this", "thisown"]:
+                return True
 
-      def visited(entry):
-       result = entry in seen
+            return False
 
-       return entry in seen
-       if entry not in seen:
-         seen[entry] = True
-         return False
+        def visited(entry):
+            result = entry in seen
 
-       return True
+            return entry in seen
+            if entry not in seen:
+                seen[entry] = True
+                return False
 
-      def getSetNames(entry):
-        if entry.startswith("set"):
-          getter = entry[3:]
-          getter = getter[0].lower() + getter[1:]
-          return [getter, entry]
-        else:
-          setter = entry
-          setter = "set" + setter[0].upper() + setter[1:]
-          return[entry, setter]
+            return True
 
-      def printStringMethod(entry):
+        def getSetNames(entry):
+            if entry.startswith("set"):
+                getter = entry[3:]
+                getter = getter[0].lower() + getter[1:]
+                return [getter, entry]
+            else:
+                setter = entry
+                setter = "set" + setter[0].upper() + setter[1:]
+                return [entry, setter]
 
-        [getter, setter] = getSetNames(entry)
-        content = getattr(p, getter)()
-        content = content.replace("\n", "\\n")
-        print("        from libcellml import GeneratorProfile")
-        print("        ")
-        print("        g = GeneratorProfile()")
-        print("        ")
-        print(f"        self.assertEqual(\"{content}\", g.{getter}())")
-        print(f"        g.{setter}(\"Some text content.\")")
-        print(f"        self.assertEqual(\"Some text content.\", g.{getter}())")
-        print("        ")
+        def printStringMethod(entry):
 
-      def printHasMethod(entry):
-        print("        from libcellml import GeneratorProfile")
-        print("        ")
-        print("        g = GeneratorProfile()")
-        print("        ")
-        print("        self.assertFalse(g.{0}())".format(entry))
-        print("        ")
+            [getter, setter] = getSetNames(entry)
+            content = getattr(p, getter)()
+            content = content.replace("\n", "\\n")
+            print("        from libcellml import GeneratorProfile")
+            print("        ")
+            print("        g = GeneratorProfile()")
+            print("        ")
+            print(f"        self.assertEqual(\"{content}\", g.{getter}())")
+            print(f"        g.{setter}(\"Some text content.\")")
+            print(f"        self.assertEqual(\"Some text content.\", g.{getter}())")
+            print("        ")
 
-      def isStringMethod(name):
-        return name.endswith("string")
+        def printHasMethod(entry):
+            print("        from libcellml import GeneratorProfile")
+            print("        ")
+            print("        g = GeneratorProfile()")
+            print("        ")
+            print("        self.assertFalse(g.{0}())".format(entry))
+            print("        ")
 
-      def isHasMethod(name):
-        return name.startswith("has")
+        def isStringMethod(name):
+            return name.endswith("string")
 
+        def isHasMethod(name):
+            return name.startswith("has")
 
-      for entry in dir(p):
-       name = working_name(entry)
-       if not ignore(entry) and not name in seen:
-         seen[name] = True
-         print("    def test_{0}(self):".format(name))
-         if isStringMethod(name):
-           printStringMethod(entry)
-         elif isHasMethod(name):
-           printHasMethod(entry)
-         else:
-           print("        # Yikes missing this method: " + entry)
-
+        for entry in dir(p):
+            name = working_name(entry)
+            if not ignore(entry) and not name in seen:
+                seen[name] = True
+                print("    def test_{0}(self):".format(name))
+                if isStringMethod(name):
+                    printStringMethod(entry)
+                elif isHasMethod(name):
+                    printHasMethod(entry)
+                else:
+                    print("        # Yikes missing this method: " + entry)
 
     def test_absolute_value_string(self):
         from libcellml import GeneratorProfile
@@ -160,7 +159,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("double acoth(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n}\n", g.acothFunctionString())
+        self.assertEqual(
+            "double acoth(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n}\n",
+            g.acothFunctionString())
         g.setAcothFunctionString("Some text content.")
         self.assertEqual("Some text content.", g.acothFunctionString())
 
@@ -196,7 +197,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("double acsch(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n}\n", g.acschFunctionString())
+        self.assertEqual(
+            "double acsch(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n}\n",
+            g.acschFunctionString())
         g.setAcschFunctionString("Some text content.")
         self.assertEqual("Some text content.", g.acschFunctionString())
 
@@ -268,7 +271,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("double asech(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n}\n", g.asechFunctionString())
+        self.assertEqual(
+            "double asech(double x)\n{\n    double oneOverX = 1.0/x;\n\n    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n}\n",
+            g.asechFunctionString())
         g.setAsechFunctionString("Some text content.")
         self.assertEqual("Some text content.", g.asechFunctionString())
 
@@ -727,7 +732,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeComputedConstants(double *variables)\n{\n<CODE>}\n", g.implementationComputeComputedConstantsMethodString())
+        self.assertEqual("void computeComputedConstants(double *variables)\n{\n<CODE>}\n",
+                         g.implementationComputeComputedConstantsMethodString())
         g.setImplementationComputeComputedConstantsMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationComputeComputedConstantsMethodString())
 
@@ -736,7 +742,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeRates(double voi, double *states, double *rates, double *variables)\n{\n<CODE>}\n", g.implementationComputeRatesMethodString())
+        self.assertEqual(
+            "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n<CODE>}\n",
+            g.implementationComputeRatesMethodString())
         g.setImplementationComputeRatesMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationComputeRatesMethodString())
 
@@ -745,7 +753,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n<CODE>}\n", g.implementationComputeVariablesMethodString())
+        self.assertEqual(
+            "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n<CODE>}\n",
+            g.implementationComputeVariablesMethodString())
         g.setImplementationComputeVariablesMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationComputeVariablesMethodString())
 
@@ -754,7 +764,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("double * createStatesArray()\n{\n    return (double *) malloc(STATE_COUNT*sizeof(double));\n}\n", g.implementationCreateStatesArrayMethodString())
+        self.assertEqual(
+            "double * createStatesArray()\n{\n    return (double *) malloc(STATE_COUNT*sizeof(double));\n}\n",
+            g.implementationCreateStatesArrayMethodString())
         g.setImplementationCreateStatesArrayMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationCreateStatesArrayMethodString())
 
@@ -763,7 +775,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("double * createVariablesArray()\n{\n    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n}\n", g.implementationCreateVariablesArrayMethodString())
+        self.assertEqual(
+            "double * createVariablesArray()\n{\n    return (double *) malloc(VARIABLE_COUNT*sizeof(double));\n}\n",
+            g.implementationCreateVariablesArrayMethodString())
         g.setImplementationCreateVariablesArrayMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationCreateVariablesArrayMethodString())
 
@@ -772,7 +786,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void deleteArray(double *array)\n{\n    free(array);\n}\n", g.implementationDeleteArrayMethodString())
+        self.assertEqual("void deleteArray(double *array)\n{\n    free(array);\n}\n",
+                         g.implementationDeleteArrayMethodString())
         g.setImplementationDeleteArrayMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationDeleteArrayMethodString())
 
@@ -781,7 +796,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("#include \"<INTERFACE_FILE_NAME>\"\n\n#include <math.h>\n#include <stdlib.h>\n", g.implementationHeaderString())
+        self.assertEqual("#include \"<INTERFACE_FILE_NAME>\"\n\n#include <math.h>\n#include <stdlib.h>\n",
+                         g.implementationHeaderString())
         g.setImplementationHeaderString("Some text content.")
         self.assertEqual("Some text content.", g.implementationHeaderString())
 
@@ -790,7 +806,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void initializeStatesAndConstants(double *states, double *variables)\n{\n<CODE>}\n", g.implementationInitializeStatesAndConstantsMethodString())
+        self.assertEqual("void initializeStatesAndConstants(double *states, double *variables)\n{\n<CODE>}\n",
+                         g.implementationInitializeStatesAndConstantsMethodString())
         g.setImplementationInitializeStatesAndConstantsMethodString("Some text content.")
         self.assertEqual("Some text content.", g.implementationInitializeStatesAndConstantsMethodString())
 
@@ -799,7 +816,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", g.implementationLibcellmlVersionString())
+        self.assertEqual("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n",
+                         g.implementationLibcellmlVersionString())
         g.setImplementationLibcellmlVersionString("Some text content.")
         self.assertEqual("Some text content.", g.implementationLibcellmlVersionString())
 
@@ -835,7 +853,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("const VariableInfoWithType VARIABLE_INFO[] = {\n<CODE>};\n", g.implementationVariableInfoString())
+        self.assertEqual("const VariableInfoWithType VARIABLE_INFO[] = {\n<CODE>};\n",
+                         g.implementationVariableInfoString())
         g.setImplementationVariableInfoString("Some text content.")
         self.assertEqual("Some text content.", g.implementationVariableInfoString())
 
@@ -880,7 +899,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeComputedConstants(double *variables);\n", g.interfaceComputeComputedConstantsMethodString())
+        self.assertEqual("void computeComputedConstants(double *variables);\n",
+                         g.interfaceComputeComputedConstantsMethodString())
         g.setInterfaceComputeComputedConstantsMethodString("Some text content.")
         self.assertEqual("Some text content.", g.interfaceComputeComputedConstantsMethodString())
 
@@ -889,7 +909,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeRates(double voi, double *states, double *rates, double *variables);\n", g.interfaceComputeRatesMethodString())
+        self.assertEqual("void computeRates(double voi, double *states, double *rates, double *variables);\n",
+                         g.interfaceComputeRatesMethodString())
         g.setInterfaceComputeRatesMethodString("Some text content.")
         self.assertEqual("Some text content.", g.interfaceComputeRatesMethodString())
 
@@ -898,7 +919,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeVariables(double voi, double *states, double *rates, double *variables);\n", g.interfaceComputeVariablesMethodString())
+        self.assertEqual("void computeVariables(double voi, double *states, double *rates, double *variables);\n",
+                         g.interfaceComputeVariablesMethodString())
         g.setInterfaceComputeVariablesMethodString("Some text content.")
         self.assertEqual("Some text content.", g.interfaceComputeVariablesMethodString())
 
@@ -952,7 +974,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void initializeStatesAndConstants(double *states, double *variables);\n", g.interfaceInitializeStatesAndConstantsMethodString())
+        self.assertEqual("void initializeStatesAndConstants(double *states, double *variables);\n",
+                         g.interfaceInitializeStatesAndConstantsMethodString())
         g.setInterfaceInitializeStatesAndConstantsMethodString("Some text content.")
         self.assertEqual("Some text content.", g.interfaceInitializeStatesAndConstantsMethodString())
 
@@ -1195,7 +1218,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", g.originCommentString())
+        self.assertEqual(
+            "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.",
+            g.originCommentString())
         g.setOriginCommentString("Some text content.")
         self.assertEqual("Some text content.", g.originCommentString())
 
@@ -1402,7 +1427,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("typedef struct {\n    char name[<NAME_SIZE>];\n    char units[<UNITS_SIZE>];\n    char component[<COMPONENT_SIZE>];\n} VariableInfo;\n", g.variableInfoObjectString())
+        self.assertEqual(
+            "typedef struct {\n    char name[<NAME_SIZE>];\n    char units[<UNITS_SIZE>];\n    char component[<COMPONENT_SIZE>];\n} VariableInfo;\n",
+            g.variableInfoObjectString())
         g.setVariableInfoObjectString("Some text content.")
         self.assertEqual("Some text content.", g.variableInfoObjectString())
 
@@ -1420,7 +1447,9 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("typedef struct {\n    char name[<NAME_SIZE>];\n    char units[<UNITS_SIZE>];\n    char component[<COMPONENT_SIZE>];\n    VariableType type;\n} VariableInfoWithType;\n", g.variableInfoWithTypeObjectString())
+        self.assertEqual(
+            "typedef struct {\n    char name[<NAME_SIZE>];\n    char units[<UNITS_SIZE>];\n    char component[<COMPONENT_SIZE>];\n    VariableType type;\n} VariableInfoWithType;\n",
+            g.variableInfoWithTypeObjectString())
         g.setVariableInfoWithTypeObjectString("Some text content.")
         self.assertEqual("Some text content.", g.variableInfoWithTypeObjectString())
 
@@ -1429,7 +1458,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n", g.variableTypeObjectString())
+        self.assertEqual("typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n",
+                         g.variableTypeObjectString())
         g.setVariableTypeObjectString("Some text content.")
         self.assertEqual("Some text content.", g.variableTypeObjectString())
 
@@ -1456,7 +1486,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("double xor(double x, double y)\n{\n    return (x != 0.0) ^ (y != 0.0);\n}\n", g.xorFunctionString())
+        self.assertEqual("double xor(double x, double y)\n{\n    return (x != 0.0) ^ (y != 0.0);\n}\n",
+                         g.xorFunctionString())
         g.setXorFunctionString("Some text content.")
         self.assertEqual("Some text content.", g.xorFunctionString())
 
@@ -1468,6 +1499,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual("xor", g.xorString())
         g.setXorString("Some text content.")
         self.assertEqual("Some text content.", g.xorString())
+
 
 if __name__ == '__main__':
     unittest.main()
