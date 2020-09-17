@@ -200,14 +200,11 @@ TEST(Generator, isolatedFirstOrderModel)
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->issueCount());
 
-    //  5.a   Create a Generator instance. By default the options set in the
-    //        generator constructor are:
-    //          - profile() return "C" (cf "PYTHON"); and
-    //          - modelType() returns "ODE".
+    //  5.a   Create an Analyser instance and analyse the model.
 
     libcellml::AnalyserPtr analyser = libcellml::Analyser::create();
     analyser->analyseModel(model);
 
-    //  5.b   Check whether the generator has encountered any issues.
+    //  5.b   Check whether the analyser has encountered any issues.
     EXPECT_EQ(size_t(0), analyser->issueCount());
 }
