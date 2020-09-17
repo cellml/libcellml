@@ -76,5 +76,6 @@ class GeneratorTestCase(unittest.TestCase):
         self.assertEqual("P_af", g.state(9).variable().name())
         self.assertEqual("V", g.state(14).initialisingVariable().name())
 
+
 if __name__ == '__main__':
     unittest.main()
