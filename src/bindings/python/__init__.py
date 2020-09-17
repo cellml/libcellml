@@ -167,13 +167,6 @@ convert(GeneratorProfile, 'Profile', [
     'C',
     'PYTHON',
 ])
-convert(GeneratorVariable, 'Type', [
-    'VARIABLE_OF_INTEGRATION',
-    'STATE',
-    'CONSTANT',
-    'COMPUTED_CONSTANT',
-    'ALGEBRAIC',
-])
 convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',
