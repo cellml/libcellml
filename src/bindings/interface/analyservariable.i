@@ -26,6 +26,10 @@
 #include "libcellml/analyservariable.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %shared_ptr(libcellml::AnalyserVariable);
 
 %include "libcellml/types.h"

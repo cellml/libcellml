@@ -119,6 +119,10 @@
 #include "libcellml/analysermodel.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %shared_ptr(libcellml::AnalyserModel);
 
 %include "libcellml/types.h"

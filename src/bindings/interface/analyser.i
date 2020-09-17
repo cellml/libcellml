@@ -20,6 +20,10 @@
 #include "libcellml/analyser.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Analyser)
 
 %include "libcellml/analyser.h"
