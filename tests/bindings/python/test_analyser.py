@@ -42,6 +42,37 @@ class AnalyserTestCase(unittest.TestCase):
         self.assertEqual(0, a.errorCount())
         self.assertEqual(AnalyserModel.Type.UNKNOWN, a.model().type())
 
+    def test_coverage(self):
+        from libcellml import Analyser
+        from libcellml import AnalyserModel
+        from libcellml import AnalyserVariable
+        from libcellml import Parser
+        from test_resources import file_contents
+
+        p = Parser()
+        m = p.parseModel(file_contents('generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml'))
+
+        a = Analyser()
+        a.analyseModel(m)
+
+        am = a.model()
+
+        self.assertEqual(AnalyserModel.Type.ODE, am.type())
+        self.assertEqual(185, am.variableCount())
+
+        av = am.variable(1)
+
+        self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
+        self.assertEqual("g_Ca_L_Centre_0DCapable", av.variable().name())
+
+        voi = am.voi()
+
+        self.assertEqual("time", voi.variable().name())
+
+        self.assertEqual(15, am.stateCount())
+        self.assertEqual("P_af", am.state(9).variable().name())
+        self.assertEqual("V", am.state(14).initialisingVariable().name())
+
 
 if __name__ == '__main__':
     unittest.main()
