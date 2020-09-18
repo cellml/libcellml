@@ -51,7 +51,7 @@ endif()
 
 find_package(Doxygen)
 find_package(Sphinx)
-find_package(SWIG 3.0.3)
+find_package(SWIG 4.0)
 
 set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
