@@ -5,7 +5,7 @@ import unittest
 
 
 class GeneratorProfileTestCase(unittest.TestCase):
-    VALUE = "value"
+    VALUE = 'value'
 
     def test_create_destroy(self):
         from libcellml import GeneratorProfile
@@ -1496,6 +1496,15 @@ class GeneratorProfileTestCase(unittest.TestCase):
         self.assertEqual("xor", g.xorString())
         g.setXorString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.xorString())
+
+    def test_has_interface(self):
+        from libcellml import GeneratorProfile
+
+        g = GeneratorProfile()
+
+        self.assertTrue(g.hasInterface())
+        g.setHasInterface(False)
+        self.assertFalse(g.hasInterface())
 
 
 if __name__ == '__main__':

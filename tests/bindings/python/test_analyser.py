@@ -5,6 +5,7 @@ import unittest
 
 
 class AnalyserTestCase(unittest.TestCase):
+    VALUE = 'value'
 
     def test_create_destroy(self):
         from libcellml import Analyser
@@ -44,34 +45,127 @@ class AnalyserTestCase(unittest.TestCase):
 
     def test_coverage(self):
         from libcellml import Analyser
+        from libcellml import AnalyserEquation
+        from libcellml import AnalyserEquationAst
         from libcellml import AnalyserModel
         from libcellml import AnalyserVariable
         from libcellml import Parser
         from test_resources import file_contents
 
+        # Try to create an analyser equation/model/variable, something that is not allowed.
+
+        try:
+            x = AnalyserEquation()
+        except:
+            self.assertTrue(True)
+
+        try:
+            x = AnalyserModel()
+        except:
+            self.assertTrue(True)
+
+        try:
+            x = AnalyserVariable()
+        except:
+            self.assertTrue(True)
+
+        # Analyse a model, so we can then do some coverage.
+
         p = Parser()
-        m = p.parseModel(file_contents('generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml'))
+        m = p.parseModel(file_contents('generator/noble_model_1962/model.cellml'))
 
         a = Analyser()
         a.analyseModel(m)
 
+        # Ensure coverage for AnalyserModel.
+
         am = a.model()
 
-        self.assertEqual(AnalyserModel.Type.ODE, am.type())
-        self.assertEqual(185, am.variableCount())
+        self.assertTrue(am.isValid())
 
-        av = am.variable(1)
+        self.assertIsNotNone(am.voi())
+
+        self.assertEqual(4, am.stateCount())
+        self.assertIsNotNone(am.states())
+        self.assertIsNotNone(am.state(3))
+
+        self.assertEqual(17, am.variableCount())
+        self.assertIsNotNone(am.variables())
+        self.assertIsNotNone(am.variable(3))
+
+        self.assertEqual(16, am.equationCount())
+        self.assertIsNotNone(am.equations())
+        self.assertIsNotNone(am.equation(3))
+
+        self.assertFalse(am.needEqFunction())
+        self.assertFalse(am.needNeqFunction())
+        self.assertFalse(am.needLtFunction())
+        self.assertFalse(am.needLeqFunction())
+        self.assertFalse(am.needGtFunction())
+        self.assertFalse(am.needGeqFunction())
+        self.assertFalse(am.needAndFunction())
+        self.assertFalse(am.needOrFunction())
+        self.assertFalse(am.needXorFunction())
+        self.assertFalse(am.needNotFunction())
+        self.assertFalse(am.needMinFunction())
+        self.assertFalse(am.needMaxFunction())
+        self.assertFalse(am.needSecFunction())
+        self.assertFalse(am.needCscFunction())
+        self.assertFalse(am.needCotFunction())
+        self.assertFalse(am.needSechFunction())
+        self.assertFalse(am.needCschFunction())
+        self.assertFalse(am.needCothFunction())
+        self.assertFalse(am.needAsecFunction())
+        self.assertFalse(am.needAcscFunction())
+        self.assertFalse(am.needAcotFunction())
+        self.assertFalse(am.needAsechFunction())
+        self.assertFalse(am.needAcschFunction())
+        self.assertFalse(am.needAcothFunction())
+
+        # Ensure coverage for AnalyserVariable.
+
+        av = am.variable(3)
 
         self.assertEqual(AnalyserVariable.Type.CONSTANT, av.type())
-        self.assertEqual("g_Ca_L_Centre_0DCapable", av.variable().name())
+        self.assertEqual(3, av.index())
+        self.assertIsNotNone(av.initialisingVariable())
+        self.assertIsNotNone(av.variable())
+        self.assertIsNotNone(av.equation())
 
-        voi = am.voi()
+        # Ensure coverage for AnalyserEquation.
 
-        self.assertEqual("time", voi.variable().name())
+        ae = am.equation(3)
 
-        self.assertEqual(15, am.stateCount())
-        self.assertEqual("P_af", am.state(9).variable().name())
-        self.assertEqual("V", am.state(14).initialisingVariable().name())
+        self.assertEqual(AnalyserEquation.Type.RATE, ae.type())
+        self.assertIsNotNone(ae.ast())
+        self.assertIsNotNone(ae.dependencies())
+        self.assertTrue(ae.isStateRateBased())
+        self.assertIsNotNone(ae.variable())
+
+        # Ensure coverage for AnalyserEquationAst.
+
+        aea = ae.ast()
+
+        self.assertEqual(AnalyserEquationAst.Type.ASSIGNMENT, aea.type())
+        self.assertEqual('', aea.value())
+        self.assertIsNone(aea.variable())
+        self.assertIsNone(aea.parent())
+        self.assertIsNotNone(aea.leftChild())
+        self.assertIsNotNone(aea.rightChild())
+
+        aea.setType(AnalyserEquationAst.Type.EQ)
+        aea.setValue(AnalyserTestCase.VALUE)
+        aea.setVariable(av.variable())
+        aea.setParent(aea)
+        aea.setLeftChild(None)
+        aea.setRightChild(None)
+
+        self.assertEqual(AnalyserEquationAst.Type.EQ, aea.type())
+        self.assertEqual(AnalyserTestCase.VALUE, aea.value())
+        self.assertIsNotNone(aea.variable())
+        self.assertIsNotNone(aea.parent())
+        self.assertIsNone(aea.leftChild())
+        self.assertIsNone(aea.rightChild())
 
 
 if __name__ == '__main__':
