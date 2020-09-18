@@ -54,20 +54,9 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Try to create an analyser equation/model/variable, something that is not allowed.
 
-        try:
-            x = AnalyserEquation()
-        except:
-            self.assertTrue(True)
-
-        try:
-            x = AnalyserModel()
-        except:
-            self.assertTrue(True)
-
-        try:
-            x = AnalyserVariable()
-        except:
-            self.assertTrue(True)
+        self.assertRaises(AttributeError, AnalyserEquation)
+        self.assertRaises(AttributeError, AnalyserModel)
+        self.assertRaises(AttributeError, AnalyserVariable)
 
         # Analyse a model, so we can then do some coverage.
 
