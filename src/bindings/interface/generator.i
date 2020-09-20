@@ -6,10 +6,8 @@
 
 %import "createconstructor.i"
 
-#ifdef SWIGPYTHON
 %import "analysermodel.i"
 %import "generatorprofile.i"
-#endif
 
 %feature("docstring") libcellml::Generator
 "Creates a :class:`Generator` object.";
@@ -34,6 +32,10 @@
 
 %{
 #include "libcellml/generator.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(Generator)

@@ -1674,7 +1674,11 @@ AnalyserPtr Analyser::create() noexcept
 
 void Analyser::analyseModel(const ModelPtr &model)
 {
-    // Make sure that the model is valid before analysis it.
+    // Make sure that we have a model and that it is valid before analysing it.
+
+    if (model == nullptr) {
+        return;
+    }
 
     auto validator = Validator::create();
 

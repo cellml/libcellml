@@ -83,7 +83,7 @@ TEST(GeneratorProfile, defaultArithmeticOperatorValues)
     EXPECT_EQ("", generatorProfile->squareString());
     EXPECT_EQ("fabs", generatorProfile->absoluteValueString());
     EXPECT_EQ("exp", generatorProfile->exponentialString());
-    EXPECT_EQ("log", generatorProfile->napierianLogarithmString());
+    EXPECT_EQ("log", generatorProfile->naturalLogarithmString());
     EXPECT_EQ("log10", generatorProfile->commonLogarithmString());
     EXPECT_EQ("ceil", generatorProfile->ceilingString());
     EXPECT_EQ("floor", generatorProfile->floorString());
@@ -496,7 +496,7 @@ TEST(GeneratorProfile, arithmeticOperators)
     generatorProfile->setSquareString(value);
     generatorProfile->setAbsoluteValueString(value);
     generatorProfile->setExponentialString(value);
-    generatorProfile->setNapierianLogarithmString(value);
+    generatorProfile->setNaturalLogarithmString(value);
     generatorProfile->setCommonLogarithmString(value);
     generatorProfile->setCeilingString(value);
     generatorProfile->setFloorString(value);
@@ -515,7 +515,7 @@ TEST(GeneratorProfile, arithmeticOperators)
     EXPECT_EQ(value, generatorProfile->squareString());
     EXPECT_EQ(value, generatorProfile->absoluteValueString());
     EXPECT_EQ(value, generatorProfile->exponentialString());
-    EXPECT_EQ(value, generatorProfile->napierianLogarithmString());
+    EXPECT_EQ(value, generatorProfile->naturalLogarithmString());
     EXPECT_EQ(value, generatorProfile->commonLogarithmString());
     EXPECT_EQ(value, generatorProfile->ceilingString());
     EXPECT_EQ(value, generatorProfile->floorString());

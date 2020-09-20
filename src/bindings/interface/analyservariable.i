@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_shared_ptr.i>
+
 %feature("docstring") libcellml::AnalyserVariable
 "Creates an :class:`AnalyserVariable` object.";
 
@@ -23,6 +25,12 @@
 %{
 #include "libcellml/analyservariable.h"
 %}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
+%shared_ptr(libcellml::AnalyserVariable);
 
 %include "libcellml/types.h"
 %include "libcellml/analyservariable.h"

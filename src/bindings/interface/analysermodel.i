@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %include <std_shared_ptr.i>
+%include <std_vector.i>
 
 %feature("docstring") libcellml::AnalyserModel
 "Creates an :class:`AnalyserModel` object.";
@@ -120,6 +121,13 @@
 
 %{
 #include "libcellml/analysermodel.h"
+%}
+
+%template(AnalyserEquationVector) std::vector<libcellml::AnalyserEquationPtr>;
+%template(AnalyserVariableVector) std::vector<libcellml::AnalyserVariablePtr>;
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %shared_ptr(libcellml::AnalyserModel);

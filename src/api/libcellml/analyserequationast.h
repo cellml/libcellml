@@ -63,7 +63,7 @@ public:
      *    - ROOT: the root operator;
      *    - ABS: the absolute value function;
      *    - EXP: the exponential function;
-     *    - LN: the Napierian logarithm function;
+     *    - LN: the natural logarithm function;
      *    - LOG: the common logarithm function;
      *    - CEILING: the ceiling function;
      *    - FLOOR: the floor function;
@@ -73,26 +73,26 @@ public:
      *  - Calculus elements:
      *    - DIFF: the differentiation operator;
      *  - Trigonometric operators:
-     *    - SIN: the sinus function;
-     *    - COS: the cosinus function;
+     *    - SIN: the sine function;
+     *    - COS: the cosine function;
      *    - TAN: the tangent function;
      *    - SEC: the secant function;
      *    - CSC: the cosecant function;
      *    - COT: the cotangent function;
-     *    - SINH: the hyperbolic sinus function;
-     *    - COSH: the hyperbolic cosinus function;
+     *    - SINH: the hyperbolic sine function;
+     *    - COSH: the hyperbolic cosine function;
      *    - TANH: the hyperbolic tangent function;
      *    - SECH: the hyperbolic secant function;
      *    - CSCH: the hyperbolic cosecant function;
      *    - COTH: the hyperbolic cotangent function;
-     *    - ASIN: the arc sinus function;
-     *    - ACOS: the arc cosinus function;
+     *    - ASIN: the arc sine function;
+     *    - ACOS: the arc cosine function;
      *    - ATAN: the arc tangent function;
      *    - ASEC: the arc secant function;
      *    - ACSC: the arc cosecant function;
      *    - ACOT: the arc cotangent function;
-     *    - ASINH: the arc hyperbolic sinus function;
-     *    - ACOSH: the arc hyperbolic cosinus function;
+     *    - ASINH: the arc hyperbolic sine function;
+     *    - ACOSH: the arc hyperbolic cosine function;
      *    - ATANH: the arc hyperbolic tangent function;
      *    - ASECH: the arc hyperbolic secant function;
      *    - ACSCH: the arc hyperbolic cosecant function;
@@ -105,14 +105,14 @@ public:
      *    - CI: an identifier (i.e. the name of a model variable);
      *    - CN: a number;
      *  - Qualifier elements:
-     *    - DEGREE: the degree (or oder) of a differential equation;
+     *    - DEGREE: the degree (or order) of a differential equation;
      *    - LOGBASE: the base with respect to which the logarithm is taken;
      *    - BVAR: the bound variable of a differential equation;
      *  - Constants:
      *    - TRUE: the "true" boolean;
      *    - FALSE: the "false" boolean;
      *    - E: Euler's number;
-     *    - PI: the πconstant;
+     *    - PI: the π constant;
      *    - INF: the infinity value; or
      *    - NAN: the not-a-number value.
      */
@@ -226,7 +226,7 @@ public:
      *   auto ast = libcellml::AnalyserEquationAst::create();
      * @endcode
      *
-     * @return A smart pointer to a @c AnalyserEquationAst object.
+     * @return A smart pointer to an @c AnalyserEquationAst object.
      */
     static AnalyserEquationAstPtr create() noexcept;
 
