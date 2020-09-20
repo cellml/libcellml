@@ -843,14 +843,17 @@ TEST(Analyser, threeEquivalentExternalVariablesNotIncludingPrimaryVariable)
 
 TEST(Analyser, coverage)
 {
-    auto model = libcellml::Model::create("empty_model");
     auto analyser = libcellml::Analyser::create();
 
-    analyser->analyseModel(model);
+    analyser->analyseModel(nullptr);
 
     EXPECT_EQ(size_t(0), analyser->issueCount());
 
     auto analyserModel = analyser->model();
+
+    EXPECT_FALSE(analyserModel->isValid());
+
+    EXPECT_EQ(libcellml::AnalyserModel::Type::UNKNOWN, analyserModel->type());
 
     EXPECT_EQ(nullptr, analyserModel->voi());
 

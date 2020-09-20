@@ -209,11 +209,11 @@ operator.";
 %feature("docstring") libcellml::GeneratorProfile::setExponentialString
 "Set the string representing the MathML \"exponential\" function.";
 
-%feature("docstring") libcellml::GeneratorProfile::napierianLogarithmString
-"Return the string representing the MathML \"Napierian logarithm\" function.";
+%feature("docstring") libcellml::GeneratorProfile::naturalLogarithmString
+"Return the string representing the MathML \"natural logarithm\" function.";
 
-%feature("docstring") libcellml::GeneratorProfile::setNapierianLogarithmString
-"Set the string representing the MathML \"Napierian logarithm\" function.";
+%feature("docstring") libcellml::GeneratorProfile::setNaturalLogarithmString
+"Set the string representing the MathML \"natural logarithm\" function.";
 
 %feature("docstring") libcellml::GeneratorProfile::commonLogarithmString
 "Return the string representing the MathML \"common logarithm\" function.";
@@ -1039,6 +1039,10 @@ some code to create the variables array.";
 #include "libcellml/generatorprofile.h"
 
 #include <memory>
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(GeneratorProfile)

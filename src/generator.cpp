@@ -384,7 +384,7 @@ bool Generator::GeneratorImpl::modifiedProfile() const
                        + mLockedProfile->squareString()
                        + mLockedProfile->absoluteValueString()
                        + mLockedProfile->exponentialString()
-                       + mLockedProfile->napierianLogarithmString()
+                       + mLockedProfile->naturalLogarithmString()
                        + mLockedProfile->commonLogarithmString()
                        + mLockedProfile->ceilingString()
                        + mLockedProfile->floorString()
@@ -1754,7 +1754,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
 
         break;
     case AnalyserEquationAst::Type::LN:
-        code = generateOneParameterFunctionCode(mLockedProfile->napierianLogarithmString(), ast);
+        code = generateOneParameterFunctionCode(mLockedProfile->naturalLogarithmString(), ast);
 
         break;
     case AnalyserEquationAst::Type::LOG:
@@ -1766,7 +1766,7 @@ std::string Generator::GeneratorImpl::generateCode(const AnalyserEquationAstPtr 
                 && areEqual(doubleValue, 10.0)) {
                 code = mLockedProfile->commonLogarithmString() + "(" + generateCode(ast->rightChild()) + ")";
             } else {
-                code = mLockedProfile->napierianLogarithmString() + "(" + generateCode(ast->rightChild()) + ")/" + mLockedProfile->napierianLogarithmString() + "(" + stringValue + ")";
+                code = mLockedProfile->naturalLogarithmString() + "(" + generateCode(ast->rightChild()) + ")/" + mLockedProfile->naturalLogarithmString() + "(" + stringValue + ")";
             }
         } else {
             code = generateOneParameterFunctionCode(mLockedProfile->commonLogarithmString(), ast);

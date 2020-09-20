@@ -10,7 +10,7 @@ class VariableTestCase(unittest.TestCase):
         from libcellml import Variable
 
         x = Variable()
-        del(x)
+        del x
 
         y = Variable("nice")
         self.assertEqual("nice", y.name())
@@ -31,14 +31,58 @@ class VariableTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.id(), idx)
 
-    def test_add_equivalence(self):
+    def test_id(self):
         from libcellml import Variable
+        from libcellml.variable import Variable_setEquivalenceMappingId, Variable_setEquivalenceConnectionId, \
+            Variable_equivalenceMappingId, Variable_equivalenceConnectionId
+        from libcellml.variable import Variable_removeEquivalenceMappingId, Variable_removeEquivalenceConnectionId
 
-        # static void addEquivalence(const VariablePtr &variable1,
-        #   const VariablePtr &variable2)
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        Variable.addEquivalence(v1, v2)
+
+        self.assertEqual("", Variable.equivalenceMappingId(v1, v2))
+        Variable.setEquivalenceMappingId(v1, v2, "mapping_id")
+        self.assertEqual("mapping_id", Variable.equivalenceMappingId(v1, v2))
+        Variable.removeEquivalenceMappingId(v1, v2)
+        self.assertEqual("", Variable.equivalenceMappingId(v1, v2))
+
+        Variable_setEquivalenceMappingId(v1, v2, "other_mapping_id")
+        self.assertEqual("other_mapping_id", Variable_equivalenceMappingId(v1, v2))
+        Variable_removeEquivalenceMappingId(v1, v2)
+        self.assertEqual("", Variable_equivalenceMappingId(v1, v2))
+
+        self.assertEqual("", Variable.equivalenceConnectionId(v1, v2))
+        Variable.setEquivalenceConnectionId(v1, v2, "connection_id")
+        self.assertEqual("connection_id", Variable.equivalenceConnectionId(v1, v2))
+        Variable.removeEquivalenceConnectionId(v1, v2)
+        self.assertEqual("", Variable.equivalenceConnectionId(v1, v2))
+
+        Variable_setEquivalenceConnectionId(v1, v2, "other_connection_id")
+        self.assertEqual("other_connection_id", Variable_equivalenceConnectionId(v1, v2))
+        Variable_removeEquivalenceConnectionId(v1, v2)
+        self.assertEqual("", Variable_equivalenceConnectionId(v1, v2))
+
+    def test_equivalence(self):
+        from libcellml import Variable
+        from libcellml.variable import Variable_addEquivalence, Variable_removeEquivalence
+
         v1 = Variable()
         v2 = Variable()
+
+        self.assertFalse(v1.hasEquivalentVariable(v2))
+
         Variable.addEquivalence(v1, v2)
+        self.assertTrue(v1.hasEquivalentVariable(v2))
+
+        Variable.removeEquivalence(v1, v2)
+        self.assertFalse(v1.hasEquivalentVariable(v2))
+
+        Variable_addEquivalence(v1, v2)
+        self.assertTrue(v1.hasEquivalentVariable(v2))
+
+        Variable_removeEquivalence(v1, v2)
+        self.assertFalse(v1.hasEquivalentVariable(v2))
 
     def test_remove_equivalence(self):
         from libcellml import Variable
@@ -181,7 +225,7 @@ class VariableTestCase(unittest.TestCase):
         v.setUnits('')
         v.setUnits('Hello')
         v.setUnits('')
-        del(v)
+        del v
 
         # void setUnits(const UnitsPtr &units)
         name = 'tiger'
@@ -189,7 +233,10 @@ class VariableTestCase(unittest.TestCase):
         u.setName(name)
         v = Variable()
         v.setUnits(u)
-        self.assertEqual(v.units().name(), name)
+        self.assertEqual(name, v.units().name())
+
+        v.removeUnits()
+        self.assertIsNone(v.units())
 
     def test_units(self):
         from libcellml import Variable
@@ -202,26 +249,28 @@ class VariableTestCase(unittest.TestCase):
         self.assertEqual(v.units().name(), name)
         v.setUnits('')
         self.assertEqual(v.units().name(), '')
-        del(v, name)
 
     def test_set_initial_value(self):
         from libcellml import Variable
 
         # void setInitialValue(const std::string &initialValue)
         v = Variable()
-        v.setInitialValue('test')
-        del(v)
+        v.setInitialValue('test1')
+        self.assertEqual("test1", v.initialValue())
 
         # void setInitialValue(double initialValue)
         v = Variable()
-        v.setInitialValue('test')
-        del(v)
+        v.setInitialValue(3.0)
+        self.assertEqual("3", v.initialValue())
+
+        v.removeInitialValue()
+        self.assertEqual("", v.initialValue())
 
         # void setInitialValue(const VariablePtr &variable)
         v1 = Variable()
         v2 = Variable()
         v1.setInitialValue(v2)
-        del(v1, v2)
+        self.assertEqual("", v1.initialValue())
 
     def test_initial_value(self):
         from libcellml import Variable
@@ -240,11 +289,11 @@ class VariableTestCase(unittest.TestCase):
         self.assertNotEqual(
             Variable.InterfaceType.NONE,
             Variable.InterfaceType.PRIVATE,
-            )
+        )
         self.assertNotEqual(
             Variable.InterfaceType.PUBLIC,
             Variable.InterfaceType.PUBLIC_AND_PRIVATE,
-            )
+        )
 
     def test_set_interface_type(self):
         from libcellml import Variable
@@ -257,19 +306,23 @@ class VariableTestCase(unittest.TestCase):
         v = Variable()
         v.setInterfaceType(Variable.InterfaceType.NONE)
         v.setInterfaceType(Variable.InterfaceType.PRIVATE)
+        self.assertEqual("private", v.interfaceType())
+        v.removeInterfaceType()
+        self.assertEqual("", v.interfaceType())
         v.setInterfaceType(Variable.InterfaceType.PUBLIC)
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
+        self.assertTrue(v.hasInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
         self.assertRaises(
             RuntimeError, v.setInterfaceType, Variable.InterfaceType.NONE - 1)
         self.assertRaises(
             RuntimeError, v.setInterfaceType,
             Variable.InterfaceType.PUBLIC_AND_PRIVATE + 1)
-        del(v)
+        del v
 
         # void setInterfaceType(const std::string &interfaceType)
         v = Variable()
         v.setInterfaceType('not an interface type')
-        del(v)
+        del v
 
     def test_interface_type(self):
         from libcellml import Variable
@@ -285,6 +338,18 @@ class VariableTestCase(unittest.TestCase):
         self.assertEqual(v.interfaceType(), 'public')
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
         self.assertEqual(v.interfaceType(), 'public_and_private')
+
+    def test_clone(self):
+        from libcellml import Units, Variable
+
+        v = Variable("sodium")
+        u = Units("kg_per_ml")
+
+        v.setUnits(u)
+
+        vCloned = v.clone()
+        self.assertEqual("sodium", vCloned.name())
+        self.assertEqual("kg_per_ml", vCloned.units().name())
 
 
 if __name__ == '__main__':
