@@ -740,7 +740,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n<CODE>}\n",
+            "void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n<CODE>}\n",
             g.implementationComputeRatesMethodString())
         g.setImplementationComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeRatesMethodString())
@@ -751,7 +751,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
         g = GeneratorProfile()
 
         self.assertEqual(
-            "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n<CODE>}\n",
+            "void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>)\n{\n<CODE>}\n",
             g.implementationComputeVariablesMethodString())
         g.setImplementationComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.implementationComputeVariablesMethodString())
@@ -906,7 +906,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeRates(double voi, double *states, double *rates, double *variables);\n",
+        self.assertEqual("void computeRates(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n",
                          g.interfaceComputeRatesMethodString())
         g.setInterfaceComputeRatesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeRatesMethodString())
@@ -916,7 +916,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("void computeVariables(double voi, double *states, double *rates, double *variables);\n",
+        self.assertEqual("void computeVariables(double voi, double *states, double *rates, double *variables<OPTIONAL_PARAMETER>);\n",
                          g.interfaceComputeVariablesMethodString())
         g.setInterfaceComputeVariablesMethodString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.interfaceComputeVariablesMethodString())
@@ -1455,7 +1455,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
         g = GeneratorProfile()
 
-        self.assertEqual("typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC\n} VariableType;\n",
+        self.assertEqual("typedef enum {\n    CONSTANT,\n    COMPUTED_CONSTANT,\n    ALGEBRAIC<OPTIONAL_TYPE>\n} VariableType;\n",
                          g.variableTypeObjectString())
         g.setVariableTypeObjectString(GeneratorProfileTestCase.VALUE)
         self.assertEqual(GeneratorProfileTestCase.VALUE, g.variableTypeObjectString())
