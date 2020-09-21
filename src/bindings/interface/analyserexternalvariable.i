@@ -44,6 +44,12 @@
 #include "libcellml/analyserexternalvariable.h"
 %}
 
+%template(VariableVector) std::vector<libcellml::VariablePtr>;
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %typemap(out) libcellml::AnalyserExternalVariable * AnalyserExternalVariable() {
     std::shared_ptr<libcellml::AnalyserExternalVariable> *smartresult = reinterpret_cast<std::shared_ptr<libcellml::AnalyserExternalVariable> *>(result);
 

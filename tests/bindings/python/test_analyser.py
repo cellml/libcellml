@@ -47,8 +47,10 @@ class AnalyserTestCase(unittest.TestCase):
         from libcellml import Analyser
         from libcellml import AnalyserEquation
         from libcellml import AnalyserEquationAst
+        from libcellml import AnalyserExternalVariable
         from libcellml import AnalyserModel
         from libcellml import AnalyserVariable
+        from libcellml import Model
         from libcellml import Parser
         from test_resources import file_contents
 
@@ -66,11 +68,39 @@ class AnalyserTestCase(unittest.TestCase):
         a = Analyser()
         a.analyseModel(m)
 
+        # Ensure coverage for Analyser.
+
+        c = m.component(0)
+        v = c.variable(0)
+
+        aev = AnalyserExternalVariable(v)
+
+        a.addExternalVariable(aev)
+        # self.assertEqual('', aev.__class__.__name__)
+
+        self.assertTrue(a.containsExternalVariable(aev))
+        # ISSUE627: the below ought to work.
+        # self.assertTrue(a.containsExternalVariable(m, c.name(), v.name()))
+
+        self.assertEqual(aev.variable().name(), a.externalVariable(0).variable().name())
+        # ISSUE627: the below ought to work.
+        # self.assertEqual(aev.variable().name(), a.externalVariable(m, c.name(), v.name()).variable().name())
+
+        a.addExternalVariable(AnalyserExternalVariable(c.variable(1)))
+        a.addExternalVariable(AnalyserExternalVariable(c.variable(2)))
+
+        self.assertEqual(3, a.externalVariableCount())
+
+        a.removeExternalVariable(aev)
+        a.removeAllExternalVariables()
+
         # Ensure coverage for AnalyserModel.
 
         am = a.model()
 
         self.assertTrue(am.isValid())
+
+        self.assertFalse(am.hasExternalVariables())
 
         self.assertIsNotNone(am.voi())
 
