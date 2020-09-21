@@ -9,12 +9,10 @@
 "Creates an :class:`Analyser` object.";
 
 %feature("docstring") libcellml::Analyser::analyseModel
-"Analyses the model to determine whether it can be used for simulation"
-"purposes.";
+"Analyses the model to determine whether it can be used for simulation purposes.";
 
 %feature("docstring") libcellml::Analyser::model
-"Returns the :class:`AnalysedModel` object which results from the analysis of a"
-"model.";
+"Returns the :class:`AnalysedModel` object which results from the analysis of a model.";
 
 %{
 #include "libcellml/analyser.h"
