@@ -47,9 +47,6 @@
 
 %import "createconstructor.i"
 
-%feature("docstring") libcellml::AnalyserEquationAst
-"Creates an :class:`AnalyserEquationAst` object.";
-
 %{
 #include "libcellml/analyserequationast.h"
 %}
