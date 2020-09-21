@@ -4,9 +4,8 @@
 
 %include <std_string.i>
 
-%import "createconstructor.i"
-
 %import "analysermodel.i"
+%import "createconstructor.i"
 %import "generatorprofile.i"
 
 %feature("docstring") libcellml::Generator
