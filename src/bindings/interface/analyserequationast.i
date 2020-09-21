@@ -4,6 +4,7 @@
 
 %include <std_string.i>
 
+%import "createconstructor.i"
 %import "types.i"
 
 %feature("docstring") libcellml::AnalyserEquationAst
@@ -44,8 +45,6 @@
 
 %feature("docstring") libcellml::AnalyserEquationAst::setRightChild
 "Sets the :class:`AnalyserEquationAst` right child for this :class:`AnalyserEquationAst` object.";
-
-%import "createconstructor.i"
 
 %{
 #include "libcellml/analyserequationast.h"
