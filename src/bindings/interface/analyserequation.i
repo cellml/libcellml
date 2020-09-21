@@ -15,7 +15,8 @@
 "Returns the :class:`AnalyserEquationAst` object for this :class:`AnalyserEquation` object.";
 
 %feature("docstring") libcellml::AnalyserEquation::dependencies
-"Returns the list of :class:`AnalyserEquation` objects which corresponds to the equations on which this :class:`AnalyserEquation` object depends.";
+"Returns the list of :class:`AnalyserEquation` objects which corresponds to the equations on which this
+:class:`AnalyserEquation` object depends.";
 
 %feature("docstring") libcellml::AnalyserEquation::isStateRateBased
 "Tests if this :class:`AnalyserEquation` object relies on states and/or rates.";

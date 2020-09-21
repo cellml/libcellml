@@ -19,23 +19,21 @@
 "Adds a dependency to this external variable.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::removeDependency
-"Removes a dependency, specified by an index, name, or with a"
-":class:`AnalyserExternalVariable` object. Returns `True` on success.";
+"Removes a dependency, specified by an index, name, or with a :class:`AnalyserExternalVariable` object. Returns
+`True` on success.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::removeAllDependencies
 "Removes all dependencies from this external variable.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::containsDependency
-"Tests if a dependency, specified by a name, or with an"
-":class:`AnalyserExternalVariable` object, is contained within this external"
-"variable.";
+"Tests if a dependency, specified by a name, or with an :class:`AnalyserExternalVariable` object, is contained
+within this external variable.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::dependency
 "Returns the dependency, specified by an index or name.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::dependencies
-"Returns the list of :class:`Variable` objects on which this"
-":class:`AnalyserExternalVariable` depends.";
+"Returns the list of :class:`Variable` objects on which this :class:`AnalyserExternalVariable` depends.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::dependencyCount
 "Returns the number of dependencies this external variable contains.";
