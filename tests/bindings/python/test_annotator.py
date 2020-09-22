@@ -3,6 +3,8 @@
 #
 import unittest
 
+from test_resources import file_contents
+
 
 class AnnotatorTestCase(unittest.TestCase):
 
@@ -15,6 +17,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
     def test_item(self):
         from libcellml import Annotator, Model, Parser
+
         annotator = Annotator()
         model = Model()
         parser = Parser()
@@ -289,82 +292,90 @@ class AnnotatorTestCase(unittest.TestCase):
         from libcellml import Annotator, CellMLElement, Model, Parser, Variable
         annotator = Annotator()
         parser = Parser()
-        model_string = '<?xml version="1.0" encoding="UTF-8"?>\n' + \
-            '<model xmlns="http://www.cellml.org/cellml/2.0#" name="everything" >\n' + \
-            '  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml">\n' + \
-            '    <component component_ref="a_component_in_that_model" name="component1" />\n' + \
-            '  </import>\n' + \
-            '  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml" >\n' + \
-            '    <units units_ref="a_units_in_that_model" name="units1"  />\n' + \
-            '  </import>\n' + \
-            '  <units name="units2">\n' + \
-            '    <unit units="second" />\n' + \
-            '  </units>\n' + \
-            '  <units name="units3" />\n' + \
-            '  <units name="blob" />\n' + \
-            '  <component name="component2">\n' + \
-            '    <variable name="variable1" units="units2" interface="private" />\n' + \
-            '    <variable name="variable2" units="units2" />\n' + \
-            '    <reset variable="variable1" test_variable="variable2" order="1">\n' + \
-            '      <test_value>\n' + \
-            '        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n' + \
-            '          <apply>\n' + \
-            '            <eq/>\n' + \
-            '            <ci>variable1</ci>\n' + \
-            '            <cn cellml:units="units2">3.4</cn>\n' + \
-            '          </apply>\n' + \
-            '        </math>\n' + \
-            '      </test_value>\n' + \
-            '      <reset_value>\n' + \
-            '        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n' + \
-            '          <apply>\n' + \
-            '            <eq/>\n' + \
-            '            <ci>variable1</ci>\n' + \
-            '            <cn cellml:units="units2">9.0</cn>\n' + \
-            '          </apply>\n' + \
-            '        </math>\n' + \
-            '      </reset_value>\n' + \
-            '    </reset>\n' + \
-            '  </component>\n' + \
-            '  <component name="component3">\n' + \
-            '    <variable name="variable4" units="units2" interface="public"  />\n' + \
-            '    <variable name="variable2" units="units2" interface="public"  />\n' + \
-            '    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n' + \
-            '      <apply>\n' + \
-            '        <eq/>\n' + \
-            '        <ci>variable4</ci>\n' + \
-            '        <cn cellml:units="units2">9.0</cn>\n' + \
-            '      </apply>\n' + \
-            '    </math>\n' + \
-            '  </component>\n' + \
-            '  <connection component_1="component2" component_2="component3">\n' + \
-            '    <map_variables variable_1="variable1" variable_2="variable2" />\n' + \
-            '    <map_variables variable_1="variable2" variable_2="variable4" />\n' + \
-            '  </connection>\n' + \
-            '  <encapsulation>\n' + \
-            '    <component_ref component="component2">\n' + \
-            '      <component_ref component="component3" />\n' + \
-            '    </component_ref>\n' + \
-            '  </encapsulation>\n' + \
-            '</model>\n'
+        model_string = file_contents("annotator/no_ids.cellml")
+#        model_string = '<?xml version="1.0" encoding="UTF-8"?>\n' + \
+#            '<model xmlns="http://www.cellml.org/cellml/2.0#" name="everything" >\n' + \
+#            '  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml">\n' + \
+#            '    <component component_ref="a_component_in_that_model" name="component1" />\n' + \
+#            '  </import>\n' + \
+#            '  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml" >\n' + \
+#            '    <units units_ref="a_units_in_that_model" name="units1"  />\n' + \
+#            '  </import>\n' + \
+#            '  <units name="units2">\n' + \
+#            '    <unit units="second" />\n' + \
+#            '  </units>\n' + \
+#            '  <units name="units3" />\n' + \
+#            '  <units name="blob" />\n' + \
+#            '  <component name="component2">\n' + \
+#            '    <variable name="variable1" units="units2" interface="private" />\n' + \
+#            '    <variable name="variable2" units="units2" />\n' + \
+#            '    <reset variable="variable1" test_variable="variable2" order="1">\n' + \
+#            '      <test_value>\n' + \
+#            '        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n' + \
+#            '          <apply>\n' + \
+#            '            <eq/>\n' + \
+#            '            <ci>variable1</ci>\n' + \
+#            '            <cn cellml:units="units2">3.4</cn>\n' + \
+#            '          </apply>\n' + \
+#            '        </math>\n' + \
+#            '      </test_value>\n' + \
+#            '      <reset_value>\n' + \
+#            '        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n' + \
+#            '          <apply>\n' + \
+#            '            <eq/>\n' + \
+#            '            <ci>variable1</ci>\n' + \
+#            '            <cn cellml:units="units2">9.0</cn>\n' + \
+#            '          </apply>\n' + \
+#            '        </math>\n' + \
+#            '      </reset_value>\n' + \
+#            '    </reset>\n' + \
+#            '  </component>\n' + \
+#            '  <component name="component3">\n' + \
+#            '    <variable name="variable4" units="units2" interface="public"  />\n' + \
+#            '    <variable name="variable2" units="units2" interface="public"  />\n' + \
+#            '    <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:cellml="http://www.cellml.org/cellml/2.0#">\n' + \
+#            '      <apply>\n' + \
+#            '        <eq/>\n' + \
+#            '        <ci>variable4</ci>\n' + \
+#            '        <cn cellml:units="units2">9.0</cn>\n' + \
+#            '      </apply>\n' + \
+#            '    </math>\n' + \
+#            '  </component>\n' + \
+#            '  <connection component_1="component2" component_2="component3">\n' + \
+#            '    <map_variables variable_1="variable1" variable_2="variable2" />\n' + \
+#            '    <map_variables variable_1="variable2" variable_2="variable4" />\n' + \
+#            '  </connection>\n' + \
+#            '  <encapsulation>\n' + \
+#            '    <component_ref component="component2">\n' + \
+#            '      <component_ref component="component3" />\n' + \
+#            '    </component_ref>\n' + \
+#            '  </encapsulation>\n' + \
+#            '</model>\n'
+        print(model_string)
         model = parser.parseModel(model_string)
 
+        print(model.name())
         annotator.setModel(model)
 
+        print("here 1")
         self.assertEqual("b4da55", annotator.assignId(model.component(0), CellMLElement.COMPONENT))
         self.assertEqual("b4da55", model.component(0).id())
+        print("here 1")
 
         self.assertEqual("b4da56", annotator.assignId(model.component("component2"), CellMLElement.COMPONENT_REF))
         self.assertEqual("b4da56", model.component("component2").encapsulationId())
 
+        print("here 1")
         self.assertEqual("b4da57", annotator.assignId(model.component("component2").variable("variable1"),
                                                       model.component("component2").variable("variable1").equivalentVariable(0),
                                                       CellMLElement.CONNECTION))
 
+        print("here 1")
         self.assertEqual("b4da57", Variable.equivalenceConnectionId(
             model.component("component2").variable("variable1"),
             model.component("component2").variable("variable1").equivalentVariable(0)))
 
+        print("here 1")
         self.assertEqual("b4da58", annotator.assignId(model.importSource(0), CellMLElement.IMPORT))
         self.assertEqual("b4da58", model.importSource(0).id())
 
@@ -373,33 +384,45 @@ class AnnotatorTestCase(unittest.TestCase):
                                                       CellMLElement.MAP_VARIABLES))
         self.assertEqual("b4da59", Variable.equivalenceMappingId(model.component("component2").variable("variable2"),
                                                                  model.component("component2").variable("variable2").equivalentVariable(0)))
+        print("here 1")
 
         self.assertEqual("b4da5a", annotator.assignId(model, CellMLElement.MODEL))
         self.assertEqual("b4da5a", model.id())
+        print("here 7: ", model.componentCount())
+        print(model.component("component2"))
+        print(model.component("component2").reset(0))
 
-        self.assertEqual("b4da5b", annotator.assignId(model.component(1).reset(0), CellMLElement.RESET))
-        self.assertEqual("b4da5b", model.component(1).reset(0).id())
+        self.assertEqual("b4da5b", annotator.assignId(model.component("component2").reset(0), CellMLElement.RESET))
+        print("here 8")
+        self.assertEqual("b4da5b", model.component("component2").reset(0).id())
+        print("here 9")
 
-        self.assertEqual("b4da5c", annotator.assignId(model.component(1).reset(0), CellMLElement.RESET_VALUE))
-        self.assertEqual("b4da5c", model.component(1).reset(0).resetValueId())
+        self.assertEqual("b4da5c", annotator.assignId(model.component("component2").reset(0), CellMLElement.RESET_VALUE))
+        self.assertEqual("b4da5c", model.component("component2").reset(0).resetValueId())
 
-        self.assertEqual("b4da5d", annotator.assignId(model.component(1).reset(0), CellMLElement.TEST_VALUE))
-        self.assertEqual("b4da5d", model.component(1).reset(0).testValueId())
+        self.assertEqual("b4da5d", annotator.assignId(model.component("component2").reset(0), CellMLElement.TEST_VALUE))
+        self.assertEqual("b4da5d", model.component("component2").reset(0).testValueId())
+        print("here 1")
 
         self.assertEqual("b4da5e", annotator.assignId(model.units(1), 0, CellMLElement.UNIT))
         self.assertEqual("b4da5e", model.units(1).unitId(0))
+        print("here 1")
 
         self.assertEqual("b4da5f", annotator.assignId(model.units(1), CellMLElement.UNITS))
         self.assertEqual("b4da5f", model.units(1).id())
+        print("here 1")
 
         self.assertEqual("b4da60", annotator.assignId(model.component(1).variable(0), CellMLElement.VARIABLE))
         self.assertEqual("b4da60", model.component(1).variable(0).id())
+        print("here 1")
 
         self.assertEqual("b4da61", annotator.assignId(model, CellMLElement.ENCAPSULATION))
         self.assertEqual("b4da61", model.encapsulationId())
+        print("here 2")
 
     def test_list_duplicate_ids(self):
         from libcellml import Annotator, CellMLElement, Model, Parser
+
         model_string =  '<?xml version="1.0" encoding="UTF-8"?>\n' \
                         '<model xmlns="http://www.cellml.org/cellml/2.0#" name="everything" id="duplicateId2" >\n' \
                         '  <import xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="some-other-model.xml" id="duplicateId1">\n' \

@@ -704,7 +704,7 @@ public:
      *     @c CellMLElement::RESET_VALUE, or  @c CellMLElement::TEST_VALUE); or
      *   - the given @p item is @c nullptr.
      * 
-     * @param item A @c ResetPtr item.  The new id will be assigned to either:
+     * @param reset A @ref ResetPtr.  The new id will be assigned to either:
      *          - the reset item itself (RESET);
      *          - its reset value (RESET_VALUE); or
      *          - its test value (TEST_VALUE)
@@ -716,7 +716,7 @@ public:
      *
      * @return the new id string.
      */
-    std::string assignId(const ResetPtr &item, CellMLElement type = CellMLElement::RESET);
+    std::string assignId(const ResetPtr &reset, CellMLElement type = CellMLElement::RESET);
 
     /**
      * @overload

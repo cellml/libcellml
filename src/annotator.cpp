@@ -169,6 +169,15 @@ struct Annotator::AnnotatorImpl
     void buildIdList();
 
     std::string makeUniqueId();
+
+    std::string id(AnyItem item);
+    std::string setAutoId(AnyItem item);
+    bool isOwnedByModel(AnyItem item);
+    void removeId(AnyItem item, const std::string &id);
+    void setId(AnyItem item, const std::string &id);
+    bool itemsEqual(AnyItem itemWeak, AnyItem itemShared);
+    bool validItem(AnyItem item);
+
     void doSetAllAutomaticIds();
     void doSetModelIds();
     void doSetImportSourceIds();
@@ -185,14 +194,9 @@ struct Annotator::AnnotatorImpl
     void doSetComponentRefIds(const ComponentPtr &parent);
     void doClearComponentIds(const ComponentPtr &component);
 
-    std::string setComponentRelatedId(const ComponentPtr &component, CellMLElement type);
-    std::string setModelRelatedId(const ModelPtr &model, CellMLElement type);
-    std::string setResetRelatedId(const ResetPtr &reset, CellMLElement type);
-
     bool exists(const std::string &id, size_t index) const;
 
     size_t generateHash();
-    void updateHash();
     void doUpdateComponentHash(ComponentPtr &component, std::string &idsString);
 
     void addIssueNoModel() const;
@@ -1152,524 +1156,399 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
     return id;
 }
 
-std::string Annotator::AnnotatorImpl::setComponentRelatedId(const ComponentPtr &component, CellMLElement type)
+std::string Annotator::AnnotatorImpl::id(AnyItem item)
 {
-    auto oldId = component->id();
-    if (type == CellMLElement::COMPONENT_REF) {
-        oldId = component->encapsulationId();
-    }
-
     std::string id;
-
-    if (owningModel(component) != mModel.lock()) {
-        return id;
+    CellMLElement type = item.first;
+    if (type == CellMLElement::UNIT) {
+        auto unitItem = std::any_cast<UnitItem>(item.second);
+        id = unitItem.first->unitId(unitItem.second);
+    } else if (type == CellMLElement::MODEL) {
+        auto entity = std::any_cast<ModelPtr>(item.second);
+        id = entity->id();
+    } else if (type == CellMLElement::RESET) {
+        auto entity = std::any_cast<ResetPtr>(item.second);
+        id = entity->id();
+    } else if (type == CellMLElement::UNITS) {
+        auto entity = std::any_cast<UnitsPtr>(item.second);
+        id = entity->id();
+    } else if (type == CellMLElement::IMPORT) {
+        auto entity = std::any_cast<ImportSourcePtr>(item.second);
+        id = entity->id();
+    } else if (type == CellMLElement::VARIABLE) {
+        auto entity = std::any_cast<VariablePtr>(item.second);
+        id = entity->id();
+    } else if (type == CellMLElement::COMPONENT) {
+        auto entity = std::any_cast<ComponentPtr>(item.second);
+        id = entity->id();
+    } else if (type == CellMLElement::CONNECTION) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        id = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
+    } else if (type == CellMLElement::TEST_VALUE) {
+        auto reset = std::any_cast<ResetPtr>(item.second);
+        id = reset->testValueId();
+    } else if (type == CellMLElement::RESET_VALUE) {
+        auto reset = std::any_cast<ResetPtr>(item.second);
+        id = reset->resetValueId();
+    } else if (type == CellMLElement::COMPONENT_REF) {
+        auto entity = std::any_cast<ComponentPtr>(item.second);
+        id = entity->encapsulationId();
+    } else if (type == CellMLElement::ENCAPSULATION) {
+        auto entity = std::any_cast<ModelPtr>(item.second);
+        id = entity->encapsulationId();
+    } else if (type == CellMLElement::MAP_VARIABLES) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        id = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
     }
+    return id;
+}
 
-    ComponentWeakPtr weakComponent = component;
-    // NB: the id must be created before the old one is removed from the idList to prevent the
-    // reuse of previously allocated ids.
-    id = makeUniqueId();
-    if (!oldId.empty()) {
-        auto range = mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && equals(std::any_cast<ComponentWeakPtr>(it->second.second), weakComponent)) {
-                mIdList.erase(it);
-                break;
+void Annotator::AnnotatorImpl::setId(AnyItem item, const std::string &id)
+{
+    CellMLElement type = item.first;
+    if (type == CellMLElement::UNIT) {
+        auto unitItem = std::any_cast<UnitItem>(item.second);
+        unitItem.first->setUnitId(unitItem.second, id);
+    } else if (type == CellMLElement::MODEL) {
+        auto entity = std::any_cast<ModelPtr>(item.second);
+        entity->setId(id);
+    } else if (type == CellMLElement::RESET) {
+        auto entity = std::any_cast<ResetPtr>(item.second);
+        entity->setId(id);
+    } else if (type == CellMLElement::UNITS) {
+        auto entity = std::any_cast<UnitsPtr>(item.second);
+        entity->setId(id);
+    } else if (type == CellMLElement::IMPORT) {
+        auto entity = std::any_cast<ImportSourcePtr>(item.second);
+        entity->setId(id);
+    } else if (type == CellMLElement::VARIABLE) {
+        auto entity = std::any_cast<VariablePtr>(item.second);
+        entity->setId(id);
+    } else if (type == CellMLElement::COMPONENT) {
+        auto entity = std::any_cast<ComponentPtr>(item.second);
+        entity->setId(id);
+    } else if (type == CellMLElement::CONNECTION) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
+    } else if (type == CellMLElement::TEST_VALUE) {
+        auto reset = std::any_cast<ResetPtr>(item.second);
+        reset->setTestValueId(id);
+    } else if (type == CellMLElement::RESET_VALUE) {
+        auto reset = std::any_cast<ResetPtr>(item.second);
+        reset->setResetValueId(id);
+    } else if (type == CellMLElement::COMPONENT_REF) {
+        auto entity = std::any_cast<ComponentPtr>(item.second);
+        entity->setEncapsulationId(id);
+    } else if (type == CellMLElement::ENCAPSULATION) {
+        auto entity = std::any_cast<ModelPtr>(item.second);
+        entity->setEncapsulationId(id);
+    } else if (type == CellMLElement::MAP_VARIABLES) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
+    }
+}
+
+bool Annotator::AnnotatorImpl::isOwnedByModel(AnyItem item)
+{
+    bool modelBased = false;
+    CellMLElement type = item.first;
+    auto model = mModel.lock();
+    if (type == CellMLElement::UNIT) {
+        auto unitItem = std::any_cast<UnitItem>(item.second);
+        modelBased = owningModel(unitItem.first) == model;
+    } else if (type == CellMLElement::MODEL || type == CellMLElement::ENCAPSULATION) {
+        auto entity = std::any_cast<ModelPtr>(item.second);
+        modelBased = entity == model;
+    } else if (type == CellMLElement::RESET || type == CellMLElement::TEST_VALUE || type == CellMLElement::RESET_VALUE) {
+        auto entity = std::any_cast<ResetPtr>(item.second);
+        modelBased = owningModel(entity) == model;
+    } else if (type == CellMLElement::UNITS) {
+        auto entity = std::any_cast<UnitsPtr>(item.second);
+        modelBased = owningModel(entity) == model;
+    } else if (type == CellMLElement::IMPORT) {
+        auto entity = std::any_cast<ImportSourcePtr>(item.second);
+        modelBased = owningModel(entity) == model;
+    } else if (type == CellMLElement::VARIABLE) {
+        auto entity = std::any_cast<VariablePtr>(item.second);
+        modelBased = owningModel(entity) == model;
+    } else if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+        auto entity = std::any_cast<ComponentPtr>(item.second);
+        modelBased = owningModel(entity) == model;
+    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        modelBased = owningModel(variablePair.first) == model && owningModel(variablePair.second) == model;
+    }
+    return modelBased;
+}
+
+bool Annotator::AnnotatorImpl::itemsEqual(AnyItem itemWeak, AnyItem itemShared)
+{
+    bool itemsEqual = false;
+    auto item = convertToWeak(itemShared);
+    CellMLElement type = itemWeak.first;
+    if (type == CellMLElement::UNIT) {
+        auto unit1 = std::any_cast<UnitWeakItem>(itemWeak.second);
+        auto unit2 = std::any_cast<UnitWeakItem>(item.second);
+        itemsEqual = equals(unit1.first, unit2.first) && unit1.second == unit2.second;
+    } else if (type == CellMLElement::MODEL || type == CellMLElement::ENCAPSULATION) {
+        itemsEqual = equals(std::any_cast<ModelWeakPtr>(itemWeak.second), std::any_cast<ModelWeakPtr>(item.second));
+    } else if (type == CellMLElement::RESET || type == CellMLElement::TEST_VALUE || type == CellMLElement::RESET_VALUE) {
+        itemsEqual = equals(std::any_cast<ResetWeakPtr>(itemWeak.second), std::any_cast<ResetWeakPtr>(item.second));
+    } else if (type == CellMLElement::UNITS) {
+        itemsEqual = equals(std::any_cast<UnitsWeakPtr>(itemWeak.second), std::any_cast<UnitsWeakPtr>(item.second));
+    } else if (type == CellMLElement::IMPORT) {
+        itemsEqual = equals(std::any_cast<ImportSourceWeakPtr>(itemWeak.second), std::any_cast<ImportSourceWeakPtr>(item.second));
+    } else if (type == CellMLElement::VARIABLE) {
+        itemsEqual = equals(std::any_cast<VariableWeakPtr>(itemWeak.second), std::any_cast<VariableWeakPtr>(item.second));
+    } else if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+        itemsEqual = equals(std::any_cast<ComponentWeakPtr>(itemWeak.second), std::any_cast<ComponentWeakPtr>(item.second));
+    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+        auto pair1 = std::any_cast<VariableWeakPair>(itemWeak.second);
+        auto pair2 = std::any_cast<VariableWeakPair>(item.second);
+        itemsEqual = (equals(pair1.first, pair2.first) && equals(pair1.second, pair2.second)) || (equals(pair1.first, pair2.second) && equals(pair1.second, pair2.first));
+    }
+    return itemsEqual;
+}
+
+bool Annotator::AnnotatorImpl::validItem(AnyItem item)
+{
+    bool valid = false;
+    CellMLElement type = item.first;
+    if (type == CellMLElement::UNIT) {
+        try {
+            auto unitItem = std::any_cast<UnitItem>(item.second);
+            if (unitItem.first) {
+                valid = true;
             }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::MODEL || type == CellMLElement::ENCAPSULATION) {
+        try {
+            auto entity = std::any_cast<ModelPtr>(item.second);
+            if (entity) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::RESET || type == CellMLElement::TEST_VALUE || type == CellMLElement::RESET_VALUE) {
+        try {
+            auto entity = std::any_cast<ResetPtr>(item.second);
+            if (entity) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::UNITS) {
+        try {
+            auto entity = std::any_cast<UnitsPtr>(item.second);
+            if (entity) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::IMPORT) {
+        try {
+            auto entity = std::any_cast<ImportSourcePtr>(item.second);
+            if (entity) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::VARIABLE) {
+        try {
+            auto entity = std::any_cast<VariablePtr>(item.second);
+            if (entity) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+        try {
+            auto entity = std::any_cast<ComponentPtr>(item.second);
+            if (entity) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
+        }
+    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+
+        try {
+            auto pair = std::any_cast<VariablePair>(item.second);
+            if (pair.first && pair.second) {
+                valid = true;
+            }
+        } catch (std::bad_any_cast &) {
+            valid = false;
         }
     }
-    if (type == CellMLElement::COMPONENT_REF) {
-        component->setEncapsulationId(id);
-    } else {
-        component->setId(id);
-    }
+    return valid;
+}
 
-    mIdList.insert(std::make_pair(id, std::make_pair(type, weakComponent)));
-    //    mPimpl->updateHash();
+void Annotator::AnnotatorImpl::removeId(AnyItem item, const std::string &id)
+{
+    auto range = mIdList.equal_range(id);
+    for (auto it = range.first; it != range.second; ++it) {
+        if ((it->second.first == item.first) && itemsEqual(it->second, item)) {
+            mIdList.erase(it);
+            break;
+        }
+    }
+}
+
+std::string Annotator::AnnotatorImpl::setAutoId(AnyItem item)
+{
+    std::string id;
+    if (validItem(item)) {
+        if (mModel.lock()) {
+            auto oldId = this->id(item);
+
+            if (!isOwnedByModel(item)) {
+                return id;
+            }
+
+            update();
+            id = makeUniqueId();
+
+            if (!oldId.empty()) {
+                removeId(item, oldId);
+            }
+
+            this->setId(item, id);
+            mIdList.insert(std::make_pair(id, convertToWeak(item)));
+        } else {
+            addIssueNoModel();
+        }
+    } else {
+        addInvalidArgument(item.first);
+    }
     return id;
 }
 
 std::string Annotator::assignComponentId(const ComponentPtr &component)
 {
-    return mPimpl->setComponentRelatedId(component, CellMLElement::COMPONENT);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::COMPONENT, component));
 }
 
 std::string Annotator::assignComponentRefId(const ComponentPtr &component)
 {
-    return mPimpl->setComponentRelatedId(component, CellMLElement::COMPONENT_REF);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::COMPONENT_REF, component));
 }
 
 std::string Annotator::assignConnectionId(const VariablePair &variablePair)
 {
-    auto oldId = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
-    auto type = CellMLElement::CONNECTION;
-    auto model = mPimpl->mModel.lock();
-    std::string id;
-
-    if (owningModel(variablePair.first) != model || owningModel(variablePair.second) != model) {
-        return id;
-    }
-
-    VariableWeakPtr weakVariable1 = variablePair.first;
-    VariableWeakPtr weakVariable2 = variablePair.second;
-    VariableWeakPair weakVariablePair = std::make_pair(weakVariable1, weakVariable2);
-
-    id = mPimpl->makeUniqueId();
-    if (!oldId.empty()) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if (it->second.first == type) {
-                auto testPair = std::any_cast<VariableWeakPair>(it->second.second);
-                if ((owningComponent(testPair.first.lock()) == owningComponent(variablePair.first) || owningComponent(testPair.first.lock()) == owningComponent(variablePair.second)) && (owningComponent(testPair.second.lock()) == owningComponent(variablePair.first) || owningComponent(testPair.second.lock()) == owningComponent(variablePair.second))) {
-                    mPimpl->mIdList.erase(it);
-                    break;
-                }
-            }
-        }
-    }
-    Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
-    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakVariablePair)));
-    //    mPimpl->updateHash();
-    return id;
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::CONNECTION, variablePair));
 }
 
 std::string Annotator::assignMapVariablesId(const VariablePair &variablePair)
 {
-    auto oldId = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
-    auto type = CellMLElement::MAP_VARIABLES;
-    std::string id;
-    auto model = mPimpl->mModel.lock();
-
-    if (owningModel(variablePair.first) != model || owningModel(variablePair.second) != model) {
-        return id;
-    }
-
-    VariableWeakPtr weakVariable1 = variablePair.first;
-    VariableWeakPtr weakVariable2 = variablePair.second;
-    VariableWeakPair weakVariablePair = std::make_pair(weakVariable1, weakVariable2);
-
-    id = mPimpl->makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if (it->second.first == type) {
-                auto testPair = std::any_cast<VariableWeakPair>(it->second.second);
-                if ((equals(testPair.first, weakVariable1) && equals(testPair.second, weakVariable2)) || (equals(testPair.first, weakVariable2) && equals(testPair.second, weakVariable1))) {
-                    mPimpl->mIdList.erase(it);
-                    break;
-                }
-            }
-        }
-    }
-    Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
-    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakVariablePair)));
-    //    mPimpl->updateHash();
-    return id;
-}
-
-std::string Annotator::AnnotatorImpl::setModelRelatedId(const ModelPtr &model, CellMLElement type)
-{
-    auto oldId = model->id();
-    if (type == CellMLElement::ENCAPSULATION) {
-        oldId = model->encapsulationId();
-    }
-    std::string id;
-
-    if (model != mModel.lock()) {
-        return id;
-    }
-
-    ModelWeakPtr weakModel = model;
-    id = makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mIdList.equal_range(oldId);
-        auto it = range.first;
-        // There will only be one model, and it will always be the first in the list of items with its id.
-        if ((it->second.first == type) && equals(std::any_cast<ModelWeakPtr>(it->second.second), weakModel)) {
-            mIdList.erase(it);
-        }
-    }
-
-    if (type == CellMLElement::ENCAPSULATION) {
-        model->setEncapsulationId(id);
-    } else {
-        model->setId(id);
-    }
-    mIdList.insert(std::make_pair(id, std::make_pair(type, weakModel)));
-    //    mPimpl->updateHash();
-    return id;
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::MAP_VARIABLES, variablePair));
 }
 
 std::string Annotator::assignModelId(const ModelPtr &model)
 {
-    return mPimpl->setModelRelatedId(model, CellMLElement::MODEL);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::MODEL, model));
 }
 
 std::string Annotator::assignEncapsulationId(const ModelPtr &model)
 {
-    return mPimpl->setModelRelatedId(model, CellMLElement::ENCAPSULATION);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::ENCAPSULATION, model));
 }
 
 std::string Annotator::assignImportSourceId(const ImportSourcePtr &importSource)
 {
-    auto oldId = importSource->id();
-    auto type = CellMLElement::IMPORT;
-    std::string id;
-
-    if (owningModel(importSource) != mPimpl->mModel.lock()) {
-        return id;
-    }
-
-    ImportSourceWeakPtr weakImportSource = importSource;
-    id = mPimpl->makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && equals(std::any_cast<ImportSourceWeakPtr>(it->second.second), weakImportSource)) {
-                mPimpl->mIdList.erase(it);
-                break;
-            }
-        }
-    }
-    importSource->setId(id);
-    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakImportSource)));
-    //    mPimpl->updateHash();
-    return id;
-}
-
-std::string Annotator::AnnotatorImpl::setResetRelatedId(const ResetPtr &reset, CellMLElement type)
-{
-    auto oldId = reset->id();
-    if (type == CellMLElement::RESET_VALUE) {
-        oldId = reset->resetValueId();
-    } else if (type == CellMLElement::TEST_VALUE) {
-        oldId = reset->testValueId();
-    }
-    std::string id;
-
-    if (owningModel(reset) != mModel.lock()) {
-        return id;
-    }
-
-    ResetWeakPtr weakReset = reset;
-
-    id = makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && equals(std::any_cast<ResetWeakPtr>(it->second.second), weakReset)) {
-                mIdList.erase(it);
-                break;
-            }
-        }
-    }
-    if (type == CellMLElement::RESET_VALUE) {
-        reset->setResetValueId(id);
-    } else if (type == CellMLElement::TEST_VALUE) {
-        reset->setTestValueId(id);
-    } else {
-        reset->setId(id);
-    }
-    mIdList.insert(std::make_pair(id, std::make_pair(type, weakReset)));
-    //    mPimpl->updateHash();
-    return id;
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::IMPORT, importSource));
 }
 
 std::string Annotator::assignResetId(const ResetPtr &reset)
 {
-    return mPimpl->setResetRelatedId(reset, CellMLElement::RESET);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::RESET, reset));
 }
 
 std::string Annotator::assignResetValueId(const ResetPtr &reset)
 {
-    return mPimpl->setResetRelatedId(reset, CellMLElement::RESET_VALUE);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::RESET_VALUE, reset));
 }
 
 std::string Annotator::assignTestValueId(const ResetPtr &reset)
 {
-    return mPimpl->setResetRelatedId(reset, CellMLElement::TEST_VALUE);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::TEST_VALUE, reset));
 }
 
 std::string Annotator::assignUnitId(const UnitItem &unitItem)
 {
-    auto oldId = unitItem.first->unitId(unitItem.second);
-    auto type = CellMLElement::UNIT;
-    std::string id;
-
-    if (owningModel(unitItem.first) != mPimpl->mModel.lock()) {
-        return id;
-    }
-
-    UnitsWeakPtr weakUnits = unitItem.first;
-    UnitWeakItem weakUnitItem = std::make_pair(weakUnits, unitItem.second);
-
-    id = mPimpl->makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && equals(std::any_cast<UnitWeakItem>(it->second.second).first, weakUnits) && std::any_cast<UnitWeakItem>(it->second.second).second == unitItem.second) {
-                mPimpl->mIdList.erase(it);
-                break;
-            }
-        }
-    }
-
-    unitItem.first->setUnitId(unitItem.second, id);
-    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakUnitItem)));
-    //    mPimpl->updateHash();
-    return id;
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNIT, unitItem));
 }
 
 std::string Annotator::assignUnitsId(const UnitsPtr &units)
 {
-    auto oldId = units->id();
-    auto type = CellMLElement::UNITS;
-    std::string id;
-
-    if (owningModel(units) != mPimpl->mModel.lock()) {
-        return id;
-    }
-
-    UnitsWeakPtr weakUnits = units;
-
-    id = mPimpl->makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && equals(std::any_cast<UnitsWeakPtr>(it->second.second), weakUnits)) {
-                mPimpl->mIdList.erase(it);
-                break;
-            }
-        }
-    }
-
-    units->setId(id);
-    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakUnits)));
-    mPimpl->updateHash();
-    return id;
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNITS, units));
 }
 
 std::string Annotator::assignVariableId(const VariablePtr &variable)
 {
-    auto oldId = variable->id();
-    auto type = CellMLElement::VARIABLE;
-    std::string id;
-
-    if (owningModel(variable) != mPimpl->mModel.lock()) {
-        return id;
-    }
-
-    VariableWeakPtr weakVariable = variable;
-
-    id = mPimpl->makeUniqueId();
-
-    if (!oldId.empty()) {
-        auto range = mPimpl->mIdList.equal_range(oldId);
-        for (auto it = range.first; it != range.second; ++it) {
-            if ((it->second.first == type) && equals(std::any_cast<VariableWeakPtr>(it->second.second), weakVariable)) {
-                mPimpl->mIdList.erase(it);
-                break;
-            }
-        }
-    }
-
-    variable->setId(id);
-    mPimpl->mIdList.insert(std::make_pair(id, std::make_pair(type, weakVariable)));
-    //    mPimpl->updateHash();
-    return id;
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::VARIABLE, variable));
 }
 
 std::string Annotator::assignId(const AnyItem &item)
 {
-    ComponentPtr component;
-    ModelPtr model;
-    ImportSourcePtr importSource;
-    VariablePtr variable;
-    UnitsPtr units;
-    ResetPtr reset;
-    VariablePair variablePair;
-    UnitItem unitItem;
-    std::string oldId;
-    std::string id;
-
-    switch (item.first) {
-    case CellMLElement::COMPONENT:
-        component = std::any_cast<ComponentPtr>(item.second);
-        id = assignComponentId(component);
-        break;
-
-    case CellMLElement::COMPONENT_REF:
-        component = std::any_cast<ComponentPtr>(item.second);
-        id = assignComponentRefId(component);
-        break;
-
-    case CellMLElement::CONNECTION:
-        variablePair = std::any_cast<VariablePair>(item.second);
-        id = assignConnectionId(variablePair);
-        break;
-
-    case CellMLElement::ENCAPSULATION:
-        model = std::any_cast<ModelPtr>(item.second);
-        id = assignEncapsulationId(model);
-        break;
-
-    case CellMLElement::IMPORT:
-        importSource = std::any_cast<ImportSourcePtr>(item.second);
-        id = assignImportSourceId(importSource);
-        break;
-
-    case CellMLElement::MAP_VARIABLES:
-        variablePair = std::any_cast<VariablePair>(item.second);
-        id = assignMapVariablesId(variablePair);
-        break;
-
-    case CellMLElement::MODEL:
-        model = std::any_cast<ModelPtr>(item.second);
-        id = assignModelId(model);
-        break;
-
-    case CellMLElement::RESET:
-        reset = std::any_cast<ResetPtr>(item.second);
-        id = assignResetId(reset);
-        break;
-
-    case CellMLElement::RESET_VALUE:
-        reset = std::any_cast<ResetPtr>(item.second);
-        id = assignResetValueId(reset);
-        break;
-
-    case CellMLElement::TEST_VALUE:
-        reset = std::any_cast<ResetPtr>(item.second);
-        id = assignTestValueId(reset);
-        break;
-
-    case CellMLElement::UNIT:
-        unitItem = std::any_cast<UnitItem>(item.second);
-        id = assignUnitId(unitItem);
-        break;
-
-    case CellMLElement::UNITS:
-        units = std::any_cast<UnitsPtr>(item.second);
-        id = assignUnitsId(units);
-        break;
-
-    case CellMLElement::VARIABLE:
-        variable = std::any_cast<VariablePtr>(item.second);
-        id = assignVariableId(variable);
-        break;
-    case CellMLElement::MATHML:
-    case CellMLElement::UNDEFINED:
-        break;
-    }
-    return id;
+    return mPimpl->setAutoId(item);
 }
 
-std::string Annotator::assignId(const ModelPtr &item, CellMLElement type)
+std::string Annotator::assignId(const ModelPtr &model, CellMLElement type)
 {
-    std::string id;
-    if (type == CellMLElement::MODEL) {
-        id = assignModelId(item);
-    } else if (type == CellMLElement::ENCAPSULATION) {
-        id = assignEncapsulationId(item);
-    } else {
-        mPimpl->addInvalidArgument(type);
-    }
-    return id;
+    return mPimpl->setAutoId(std::make_pair(type, model));
 }
 
-std::string Annotator::assignId(const ComponentPtr &item, CellMLElement type)
+std::string Annotator::assignId(const ComponentPtr &component, CellMLElement type)
 {
-    std::string id;
-    if (type == CellMLElement::COMPONENT) {
-        id = assignComponentId(item);
-    } else if (type == CellMLElement::COMPONENT_REF) {
-        id = assignComponentRefId(item);
-    } else {
-        mPimpl->addInvalidArgument(type);
-    }
-    return id;
+    return mPimpl->setAutoId(std::make_pair(type, component));
 }
 
-std::string Annotator::assignId(const ResetPtr &item, CellMLElement type)
+std::string Annotator::assignId(const ResetPtr &reset, CellMLElement type)
 {
-    std::string id;
-
-    if (type == CellMLElement::RESET) {
-        id = assignResetId(item);
-    } else if (type == CellMLElement::RESET_VALUE) {
-        id = assignResetValueId(item);
-    } else if (type == CellMLElement::TEST_VALUE) {
-        id = assignTestValueId(item);
-    } else {
-        mPimpl->addInvalidArgument(type);
-    }
-    return id;
+    return mPimpl->setAutoId(std::make_pair(type, reset));
 }
 
-std::string Annotator::assignId(const UnitsPtr &item)
+std::string Annotator::assignId(const UnitsPtr &units)
 {
-    return assignUnitsId(item);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNITS, units));
 }
 
-std::string Annotator::assignId(const ImportSourcePtr &item)
+std::string Annotator::assignId(const ImportSourcePtr &importSource)
 {
-    return assignImportSourceId(item);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::IMPORT, importSource));
 }
 
 std::string Annotator::assignId(const UnitsPtr &units, size_t index)
 {
-    UnitItem item;
-    item.first = units;
-    item.second = index;
-    return assignUnitId(item);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNIT, std::make_pair(units, index)));
 }
 
 std::string Annotator::assignId(const UnitItem &item)
 {
-    return assignUnitId(item);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNIT, item));
 }
 
-std::string Annotator::assignId(const VariablePtr &item)
+std::string Annotator::assignId(const VariablePtr &variable)
 {
-    return assignVariableId(item);
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::VARIABLE, variable));
 }
 
 std::string Annotator::assignId(const VariablePair &pair, CellMLElement type)
 {
-    std::string id;
-    if (type == CellMLElement::MAP_VARIABLES) {
-        id = assignMapVariablesId(pair);
-    } else if (type == CellMLElement::CONNECTION) {
-        id = assignConnectionId(pair);
-    } else {
-        mPimpl->addInvalidArgument(type);
-    }
-    return id;
+    return mPimpl->setAutoId(std::make_pair(type, pair));
 }
 
-std::string Annotator::assignId(const VariablePtr &item1, const VariablePtr &item2, CellMLElement type)
+std::string Annotator::assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellMLElement type)
 {
-    // Overloaded so that bindings work better.
-    std::string id;
-    VariablePair item;
-    if (type == CellMLElement::MAP_VARIABLES) {
-        item.first = item1;
-        item.second = item2;
-        id = assignMapVariablesId(item);
-    } else if (type == CellMLElement::CONNECTION) {
-        item.first = item1;
-        item.second = item2;
-        id = assignConnectionId(item);
-    } else {
-        mPimpl->addInvalidArgument(type);
-    }
-    return id;
+    return mPimpl->setAutoId(std::make_pair(type, std::make_pair(variable1, variable2)));
 }
 
 size_t Annotator::duplicateCount(const std::string &id)
@@ -1740,11 +1619,6 @@ bool Annotator::hasModel() const
 ModelPtr Annotator::model() const
 {
     return mPimpl->mModel.lock();
-}
-
-void Annotator::AnnotatorImpl::updateHash()
-{
-    mHash = generateHash();
 }
 
 } // namespace libcellml
