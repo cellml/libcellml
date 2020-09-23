@@ -42,11 +42,13 @@ public:
      * @brief Create a @c Annotator object.
      *
      * Factory method to create a @ref Annotator.  Create a
-     * annotator with::
+     * annotator with:
      *
+     * @code
      *   AnnotatorPtr annotator = libcellml::Annotator::create();
+     * @endcode
      *
-     * @return A smart pointer to an @c Annotator object.
+     * @return A smart pointer to an @ref Annotator object.
      */
     static AnnotatorPtr create() noexcept;
 
@@ -55,21 +57,19 @@ public:
      *
      * Set the model that this annotator will use.
      *
-     * @param model A @c ModelPtr model to use in this annotator.
+     * @param model A @ref ModelPtr model to use in this annotator.
      */
     void setModel(const ModelPtr &model);
 
     /**
      * @brief Get the model associated with this annotator.
      *
-     * Get the model associated with this annotator.
+     * Get the model associated with this annotator.  A @c nullptr
+     * is returned if there is no model associated with this annotator.
      *
      * @return A @ref ModelPtr to a model, or a @c nullptr.
      */
     ModelPtr model() const;
-
-    // KRM docstring
-    static std::string typeAsString(CellMLElement type);
 
     /**
      * @brief Retrieves an item with the given id string.
@@ -90,18 +90,17 @@ public:
      *  - <CellMLElement::RESET_VALUE, @ref ResetPtr> - Retrieve id with Reset::resetValueId (const std::string &).
      *  - <CellMLElement::TEST_VALUE, @ref ResetPtr> - Retrieve id with Reset::testValueId (const std::string &).
      *  - <CellMLElement::UNDEFINED, @c nullptr>.
-     *  - <CellMLElement::UNIT, @ref UnitItem> - Retrieve id with Units::unitAttributes(size_t,std::string &,std::string &,double &,double &,std::string &) const..
+     *  - <CellMLElement::UNIT, @ref UnitItem> - Retrieve id with Units::unitId(size_t) const.
      *  - <CellMLElement::UNITS, @ref UnitsPtr> - Retrieve id with Units::id().
      *  - <CellMLElement::VARIABLE, @ref VariablePtr> - Retrieve id with Variable::id().
      *
      * @param id A @c std::string representing the @p id to retrieve.
      *
-     * @return An @c AnyItem item as described above.
+     * @return An @c AnyItem item (as described above).
      */
     AnyItem item(const std::string &id);
 
     /**
-     * @overload
      * @brief Return the item at @p index with the @p id.
      *
      * From a list of items in the stored model with the given @p id string,
@@ -109,8 +108,12 @@ public:
      * 
      * See item(const std::string &) for a full breakdown of the return value.
      *
+     * @overload
+     *
+     * @sa item(const std::string &)
+     *
      * @param id A @c std::string representing the @p id to retrieve.
-     * @param index 
+     * @param index The index of the item to return from the list of items with @p id.
      *
      * @return An @c AnyItem item as described in item(const std::string &).
      */
@@ -119,8 +122,8 @@ public:
     /**
      * @brief Retrieve a @ref ComponentPtr with the given @p id.
      *
-     *        If an item with the id is not found, has another type, or is not unique, the
-     *        @c nullptr is returned.
+     * If an item with the id is not found, has another type, or is not unique, the
+     * @c nullptr is returned.
      *
      * @param id String representing the id of the item to retrieve.
      *
