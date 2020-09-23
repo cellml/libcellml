@@ -47,6 +47,14 @@ enum class CellMLElement
     VARIABLE,
 };
 
+/**
+ * @brief Convert a CellMLElement enumeration value into its @c std::string form.
+ *
+ * Convert a CellMLElement enumeration value into its @c std::string form.
+ *
+ * @param value A CellMLElement enumeration.
+ * @return A @c std::string.
+ */
 LIBCELLML_EXPORT std::string cellMLElementAsString(CellMLElement value);
 
 } // namespace libcellml

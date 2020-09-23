@@ -316,6 +316,8 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").first);
     EXPECT_EQ(nullptr, annotator->mapVariables("duplicateId").second);
     EXPECT_EQ(nullptr, annotator->importSource("duplicateId"));
+
+    EXPECT_EQ(size_t(15), annotator->warningCount());
 }
 
 TEST(Annotator, castingOnRetrieval)
