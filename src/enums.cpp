@@ -34,12 +34,11 @@ static const std::map<CellMLElement, std::string> cellMLElementToString = {
     {CellMLElement::UNDEFINED, "undefined"},
     {CellMLElement::UNIT, "unit"},
     {CellMLElement::UNITS, "units"},
-    {CellMLElement::VARIABLE, "variable"}
-};
+    {CellMLElement::VARIABLE, "variable"}};
 
 std::string cellMLElementAsString(CellMLElement value)
 {
-  return cellMLElementToString.at(value);
+    return cellMLElementToString.at(value);
 }
 
 } // namespace libcellml
