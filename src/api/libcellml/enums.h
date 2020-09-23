@@ -13,6 +13,10 @@ limitations under the License.
 
 #pragma once
 
+#include <string>
+
+#include "libcellml/exportdefinitions.h"
+
 namespace libcellml {
 
 /**
@@ -42,5 +46,7 @@ enum class CellMLElement
     UNITS,
     VARIABLE,
 };
+
+LIBCELLML_EXPORT std::string cellMLElementAsString(CellMLElement value);
 
 } // namespace libcellml

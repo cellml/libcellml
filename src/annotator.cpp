@@ -400,11 +400,6 @@ ItemList listIdsAndItems(const ModelPtr &model)
     return idList;
 }
 
-std::string Annotator::typeAsString(CellMLElement type)
-{
-    return typeToString.at(type);
-}
-
 void Annotator::AnnotatorImpl::buildIdList()
 {
     mIdList.clear();
@@ -455,7 +450,7 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
 void Annotator::AnnotatorImpl::addInvalidArgument(CellMLElement type) const
 {
     auto issue = Issue::create();
-    issue->setDescription("The given type '" + typeAsString(type) + "' is invalid for this method.");
+    issue->setDescription("The given type '" + cellMLElementAsString(type) + "' is invalid for this method.");
     issue->setLevel(Issue::Level::ERROR);
     mAnnotator->addIssue(issue);
 }
@@ -476,8 +471,10 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 
 AnyItem Annotator::item(const std::string &id)
 {
-    auto retrieved = item(id, 0);
-    if (retrieved.first != CellMLElement::UNDEFINED && !isUnique(id)) {
+    AnyItem retrieved = std::make_pair(CellMLElement::UNDEFINED, nullptr);
+    if (isUnique(id)) {
+        retrieved = item(id, 0);
+    } else {
         mPimpl->addIssueNonUnique(id);
     }
     return retrieved;
@@ -539,67 +536,197 @@ std::multimap<std::string, CellMLElement> Annotator::dictionary()
 
 ComponentPtr Annotator::component(const std::string &id)
 {
-    return component(id, 0);
+    ComponentPtr component = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            component = this->component(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return component;
 }
 
 VariablePtr Annotator::variable(const std::string &id)
 {
-    return variable(id, 0);
+    VariablePtr variable = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            variable = this->variable(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return variable;
 }
 
 ModelPtr Annotator::model(const std::string &id)
 {
-    return model(id, 0);
+    ModelPtr model = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            model = this->model(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return model;
 }
 
 ModelPtr Annotator::encapsulation(const std::string &id)
 {
-    return encapsulation(id, 0);
+    ModelPtr model = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            model = this->encapsulation(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return model;
 }
 
 UnitsPtr Annotator::units(const std::string &id)
 {
-    return units(id, 0);
+    UnitsPtr units = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            units = this->units(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return units;
 }
 
 ImportSourcePtr Annotator::importSource(const std::string &id)
 {
-    return importSource(id, 0);
+    ImportSourcePtr importSource = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            importSource = this->importSource(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return importSource;
 }
 
 ResetPtr Annotator::reset(const std::string &id)
 {
-    return reset(id, 0);
+    ResetPtr reset = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            reset = this->reset(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return reset;
 }
 
 VariablePair Annotator::connection(const std::string &id)
 {
-    return connection(id, 0);
+    VariablePair pair = std::make_pair(nullptr, nullptr);
+    if (hasModel()) {
+        if (isUnique(id)) {
+            pair = this->connection(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return pair;
 }
 
 VariablePair Annotator::mapVariables(const std::string &id)
 {
-    return mapVariables(id, 0);
+    VariablePair pair = std::make_pair(nullptr, nullptr);
+    if (hasModel()) {
+        if (isUnique(id)) {
+            pair = this->mapVariables(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return pair;
 }
 
 UnitItem Annotator::unit(const std::string &id)
 {
-    return unit(id, 0);
+    UnitItem unitItem = std::make_pair(nullptr, 0);
+    if (hasModel()) {
+        if (isUnique(id)) {
+            unitItem = this->unit(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return unitItem;
 }
 
 ComponentPtr Annotator::componentRef(const std::string &id)
 {
-    return componentRef(id, 0);
+    ComponentPtr component = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            component = this->componentRef(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return component;
 }
 
 ResetPtr Annotator::testValue(const std::string &id)
 {
-    return testValue(id, 0);
+    ResetPtr reset = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            reset = this->testValue(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return reset;
 }
 
 ResetPtr Annotator::resetValue(const std::string &id)
 {
-    return resetValue(id, 0);
+    ResetPtr reset = nullptr;
+    if (hasModel()) {
+        if (isUnique(id)) {
+            reset = this->resetValue(id, 0);
+        } else {
+            mPimpl->addIssueNonUnique(id);
+        }
+    } else {
+        mPimpl->addIssueNoModel();
+    }
+    return reset;
 }
 
 ComponentPtr Annotator::component(const std::string &id, size_t index)

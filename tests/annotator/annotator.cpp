@@ -42,6 +42,14 @@ TEST(Annotator, getSetHasModel)
     EXPECT_NE(nullptr, annotator->model());
 }
 
+TEST(Annotator, itemFromNoModel)
+{
+    auto annotator = libcellml::Annotator::create();
+
+    EXPECT_EQ(libcellml::CellMLElement::UNDEFINED, annotator->item("model_id").first);
+    EXPECT_EQ(libcellml::CellMLElement::UNDEFINED, annotator->item("model_id", 3).first);
+}
+
 TEST(Annotator, getEntityFromId)
 {
     auto model = libcellml::Model::create("model");
@@ -292,8 +300,8 @@ TEST(Annotator, getItemBySpecificTypeDuplicateId)
     // Expect that the errors have been cleared.
     EXPECT_EQ(size_t(0), annotator->errorCount());
 
-    EXPECT_NE(nullptr, annotator->model("duplicateId"));
-    EXPECT_NE(nullptr, annotator->encapsulation("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->model("duplicateId"));
+    EXPECT_EQ(nullptr, annotator->encapsulation("duplicateId"));
 
     EXPECT_EQ(nullptr, annotator->component("duplicateId"));
     EXPECT_EQ(nullptr, annotator->variable("duplicateId"));

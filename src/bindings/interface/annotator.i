@@ -19,9 +19,6 @@
 %feature("docstring") libcellml::Annotator::setModel
 "Set the model for this Annototor to work with.";
 
-%feature("docstring") libcellml::Annotator::typeAsString
-"Convert a CellMLElement enum into a string.";
-
 %feature("docstring") libcellml::Annotator::item
 "Return the item with the given id.";
 
@@ -237,7 +234,7 @@ from libcellml import CellMLElement
         }
         else {
             for( auto &i : $self->dictionary()) {
-                rtn.push_back($self->typeAsString(i.second));
+                rtn.push_back(cellMLElementAsString(i.second));
             }
         }
         return rtn;
