@@ -1505,7 +1505,6 @@ bool Annotator::AnnotatorImpl::validItem(AnyItem item)
             valid = false;
         }
     } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
-
         try {
             auto pair = std::any_cast<VariablePair>(item.second);
             if (pair.first && pair.second) {

@@ -574,15 +574,15 @@ TEST(Annotator, automaticIdsEncapsulation)
 TEST(Annotator, automaticIdsImportSource)
 {
     const std::string in =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-            "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
-            "  </import>\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
-            "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
-            "  </import>\n"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" />\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\"/>\n"
+        "  </import>\n"
+        "</model>";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(in);
     auto annotator = libcellml::Annotator::create();
@@ -1017,7 +1017,7 @@ TEST(Annotator, automaticIdResetItemBadInput)
     auto annotator = libcellml::Annotator::create();
 
     libcellml::AnyItem itemReset = std::make_pair(libcellml::CellMLElement::RESET, nullptr);
-//    std::shared_ptr /*reset*/ = nullptr;
+    //    std::shared_ptr /*reset*/ = nullptr;
     EXPECT_EQ("", annotator->assignId(itemReset));
 }
 
@@ -1111,7 +1111,6 @@ TEST(Annotator, assignVariableVariableId)
     libcellml::VariablePair variablePair = std::make_pair(
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
-
 
     annotator->setModel(model);
 
@@ -1229,7 +1228,6 @@ TEST(Annotator, assignUnitsId)
     annotator->assignUnitsId(units);
     EXPECT_EQ("b4da55", units->id());
 }
-
 
 TEST(Annotator, automaticIdAllItemsAllDuplicated)
 {
