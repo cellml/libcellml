@@ -84,7 +84,7 @@ Level::ERROR will be returned.";
 %}
 
 %pythoncode %{
-# libCellML generated wrapper code
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(Issue)

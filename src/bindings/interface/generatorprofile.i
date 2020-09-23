@@ -995,7 +995,7 @@ be replaced with some code to create the variables array.";
 %}
 
 %pythoncode %{
-# libCellML generated wrapper code
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(GeneratorProfile)

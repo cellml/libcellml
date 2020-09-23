@@ -108,6 +108,10 @@ extract the units with the given `name`.";
 #include "libcellml/units.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 // The name 'reference' has been typemapped above, which causes an issue for
 // the removeUnit(reference) method. This is solved below by creating a new
 // method removeUnit(ref) and telling swig not to use removeUnit(reference).

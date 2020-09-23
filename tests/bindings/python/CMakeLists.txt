@@ -15,6 +15,8 @@
 set(TEST_SRCS
   test_annotator.py
   test_component.py
+  test_docstrings.py
+  test_entity.py
   test_generator.py
   test_generator_profile.py
   test_import_source.py
@@ -25,38 +27,60 @@ set(TEST_SRCS
   test_printer.py
   test_reset.py
   test_units.py
-  test_variable.py
   test_validator.py
+  test_variable.py
   test_version.py
-  test_docstrings.py
 )
 
 include(test_resources.cmake)
+
+
+if(WIN32)
+  if(TARGET xml2)
+    set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
+  endif()
+  if(NOT POLICY CMP0078)
+    set(_PYTHON_MODULE_TARGET _entity)
+      else()
+    set(_PYTHON_MODULE_TARGET entity)
+  endif()
+  set(_RUN_PYTHON_ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:${_PYTHON_MODULE_TARGET}>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
+else()
+  set(_RUN_PYTHON_ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
+endif()
 
 foreach(_TEST ${TEST_SRCS})
   configure_file(${_TEST} ${_TEST} COPYONLY)
   get_filename_component(_TEST_NAME ${_TEST} NAME_WE)
   set(_TEST_NAME python_${_TEST_NAME})
   add_test(NAME ${_TEST_NAME} COMMAND ${Python_EXECUTABLE} ${_TEST})
-  if(WIN32)
-    if(TARGET xml2)
-      set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
-    endif()
-    if(NOT POLICY CMP0078)
-      set(_PYTHON_MODULE_TARGET _entity)
-	else()
-      set(_PYTHON_MODULE_TARGET entity)
-    endif()
-    set_tests_properties(${_TEST_NAME} PROPERTIES
-      ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:${_PYTHON_MODULE_TARGET}>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
-  else()
-    set_tests_properties(${_TEST_NAME} PROPERTIES
-      ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
-  endif()
+  set_tests_properties(${_TEST_NAME} PROPERTIES
+    ENVIRONMENT "${_RUN_PYTHON_ENVIRONMENT}")
   set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${_TEST}c
     ${CMAKE_CURRENT_BINARY_DIR}/${_TEST})
 endforeach()
+
+if(LIBCELLML_PYTHON_COVERAGE)
+  configure_file(runner.py runner.py @ONLY)
+
+  set(_CONFIG_ARGUMENT ".")
+  if(IS_MULTI_CONFIG)
+    set(_CONFIG_ARGUMENT "/$<CONFIG>")
+  endif()
+
+  add_custom_target(python_coverage
+    COMMAND ${CMAKE_COMMAND} -E env "${_RUN_PYTHON_ENVIRONMENT}" ${Python_EXECUTABLE} runner.py ${_CONFIG_ARGUMENT}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS python_bindings
+    COMMENT "Running Python coverage tests")
+
+  add_custom_target(python_coverage_html_report
+    COMMAND ${CMAKE_COMMAND} -E env ${_RUN_PYTHON_ENVIRONMENT} ${Python_EXECUTABLE} runner.py ${_CONFIG_ARGUMENT} html
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS python_bindings
+    COMMENT "Running Python coverage tests with html report")
+endif()
 
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
     ${CMAKE_CURRENT_BINARY_DIR}/__pycache__)
