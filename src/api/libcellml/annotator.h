@@ -739,7 +739,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const UnitsPtr &item);
+    std::string assignId(const UnitsPtr &units);
 
     /**
      * @overload
@@ -780,7 +780,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const VariablePtr &item);
+    std::string assignId(const VariablePtr &variable);
 
     /**
      * @overload

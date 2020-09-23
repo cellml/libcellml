@@ -173,7 +173,7 @@ struct Annotator::AnnotatorImpl
     std::string id(AnyItem item);
     std::string setAutoId(const AnyItem &item);
     bool isOwnedByModel(AnyItem item) const;
-    void removeId(AnyItem item, const std::string &id);
+    void removeId(const AnyItem &item, const std::string &id);
     void setId(AnyItem item, const std::string &id);
     bool itemsEqual(AnyItem itemWeak, const AnyItem &itemShared);
     bool validItem(AnyItem item);
@@ -1518,7 +1518,7 @@ bool Annotator::AnnotatorImpl::validItem(AnyItem item)
     return valid;
 }
 
-void Annotator::AnnotatorImpl::removeId(AnyItem item, const std::string &id)
+void Annotator::AnnotatorImpl::removeId(const AnyItem &item, const std::string &id)
 {
     auto range = mIdList.equal_range(id);
     for (auto it = range.first; it != range.second; ++it) {
