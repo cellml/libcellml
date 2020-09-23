@@ -171,11 +171,11 @@ struct Annotator::AnnotatorImpl
     std::string makeUniqueId();
 
     std::string id(AnyItem item);
-    std::string setAutoId(AnyItem item);
-    bool isOwnedByModel(AnyItem item);
+    std::string setAutoId(const AnyItem &item);
+    bool isOwnedByModel(AnyItem item) const;
     void removeId(AnyItem item, const std::string &id);
     void setId(AnyItem item, const std::string &id);
-    bool itemsEqual(AnyItem itemWeak, AnyItem itemShared);
+    bool itemsEqual(AnyItem itemWeak, const AnyItem &itemShared);
     bool validItem(AnyItem item);
 
     void doSetAllAutomaticIds();
@@ -1375,7 +1375,7 @@ void Annotator::AnnotatorImpl::setId(AnyItem item, const std::string &id)
     }
 }
 
-bool Annotator::AnnotatorImpl::isOwnedByModel(AnyItem item)
+bool Annotator::AnnotatorImpl::isOwnedByModel(AnyItem item) const
 {
     bool modelBased = false;
     CellMLElement type = item.first;
@@ -1408,7 +1408,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(AnyItem item)
     return modelBased;
 }
 
-bool Annotator::AnnotatorImpl::itemsEqual(AnyItem itemWeak, AnyItem itemShared)
+bool Annotator::AnnotatorImpl::itemsEqual(AnyItem itemWeak, const AnyItem &itemShared)
 {
     bool itemsEqual = false;
     auto item = convertToWeak(itemShared);
@@ -1529,7 +1529,7 @@ void Annotator::AnnotatorImpl::removeId(AnyItem item, const std::string &id)
     }
 }
 
-std::string Annotator::AnnotatorImpl::setAutoId(AnyItem item)
+std::string Annotator::AnnotatorImpl::setAutoId(const AnyItem &item)
 {
     std::string id;
     if (validItem(item)) {

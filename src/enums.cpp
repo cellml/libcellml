@@ -42,4 +42,4 @@ std::string cellMLElementAsString(CellMLElement value)
   return cellMLElementToString.at(value);
 }
 
-}
+} // namespace libcellml
