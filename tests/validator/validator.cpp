@@ -2625,10 +2625,36 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
     t2->setUnits("millisecond");
 
     validator->validateModel(model);
-    EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ(size_t(1), validator->errorCount()); // KRM this will fail now since we *don't* need to link units anymore
 
     // Linking the units to the model fixes the problem
     model->linkUnits();
+    validator->validateModel(model);
+    EXPECT_EQ(size_t(0), validator->errorCount());
+}
+
+TEST(Validator, importedUnitsFoundByValidator)
+{
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("somewhere.cellml");
+    model->addImportSource(importSource);
+    model->addComponent(component);
+
+    auto mV = libcellml::Units::create("mV");
+    mV->setImportReference("mV");
+    mV->setImportSource(importSource);
+    model->addUnits(mV);
+
+    auto v = libcellml::Variable::create("variable");
+    v->setUnits(mV);
+    component->addVariable(v);
+
+    EXPECT_EQ(model, mV->parent());
+    EXPECT_TRUE(model->hasUnits("mV"));
+
+    auto validator = libcellml::Validator::create();
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
