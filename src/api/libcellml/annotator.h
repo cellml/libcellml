@@ -641,7 +641,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const ModelPtr &item, CellMLElement type = CellMLElement::MODEL);
+    std::string assignId(const ModelPtr &model, CellMLElement type = CellMLElement::MODEL);
 
     /**
      * @overload
@@ -669,7 +669,7 @@ public:
      *    
      * @return the new id string.
      */
-    std::string assignId(const ComponentPtr &item, CellMLElement type = CellMLElement::COMPONENT);
+    std::string assignId(const ComponentPtr &component, CellMLElement type = CellMLElement::COMPONENT);
 
     /**
      * @overload
@@ -690,7 +690,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const ImportSourcePtr &item);
+    std::string assignId(const ImportSourcePtr &importSource);
 
     /**
      * @overload
@@ -829,7 +829,7 @@ public:
      * 
      * @return the new id string.
      */
-    std::string assignId(const VariablePtr &item1, const VariablePtr &item2, CellMLElement type = CellMLElement::CONNECTION);
+    std::string assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellMLElement type = CellMLElement::CONNECTION);
 
     /**
      * @overload
