@@ -321,6 +321,17 @@ class UnitsTestCase(unittest.TestCase):
         uCloned = u.clone()
         self.assertEqual(1, uCloned.unitCount())
 
+    def test_unit_id(self):
+        from libcellml import Units
+
+        u = Units("BigVolts")
+        u.addUnit("volt", 0, 1, 1000)
+
+        self.assertEqual("", u.unitId(0))
+
+        u.setUnitId(0, "dangerous")
+        self.assertEqual("dangerous", u.unitId(0))
+
 
 if __name__ == '__main__':
     unittest.main()

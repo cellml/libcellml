@@ -62,4 +62,5 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
 using UnitWeakItem = std::pair<UnitsWeakPtr, size_t>;
 using VariableWeakPair = std::pair<VariableWeakPtr, VariableWeakPtr>; /**< Type definition for VariablePtr pair.*/
 
+using ConnectionMap = std::map<VariablePtr, VariablePtr>;
 } // namespace libcellml

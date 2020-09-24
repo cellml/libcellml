@@ -588,4 +588,29 @@ std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &compo
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
 
+/**
+ * @brief Create a connection map for the given variables.
+ *
+ * Create a map of variables that belong to the same connection as
+ * the connection created by the equivalent variables @p variable1 and @p variable2.
+ *
+ * @param variable1 A variable in the connection.
+ * @param variable2 A variable in the connection.
+ *
+ * @return A map of connections.
+ */
+ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2);
+
+/**
+ * @brief Make a list of all variables equivalent to the given variable.
+ *
+ * Collect all the equivalent variables of the given @p variable and return
+ * them as a list of @ref VariablePtr.
+ *
+ * @param variable The variable to find equivalent variables of.
+ *
+ * @return A @c std::vector of @ref VariablePtr.
+ */
+std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable);
+
 } // namespace libcellml
