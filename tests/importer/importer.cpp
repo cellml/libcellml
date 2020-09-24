@@ -836,3 +836,22 @@ TEST(Importer, resolveImportsOfGrandchildUnits)
     EXPECT_EQ(resourcePath("importer/source_units.cellml"), importer->key(0));
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
+
+TEST(Importer, complicatedHHImportMissingGateModel)
+{
+    // In this test the generic gate model which is imported by deeply encapsulated components
+    // through three generations of imports, is missing. It's used here to give coverage.
+    auto e = "The attempt to resolve imports with the model at '"
+             + resourcePath("importer/HH/GateModel.cellml")
+             + "' failed: the file could not be opened.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/HH/MembraneModel.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/HH/"));
+    EXPECT_TRUE(model->hasUnresolvedImports()); // Expect that the missing GateModel.cellml file can't be found.
+    EXPECT_EQ(size_t(2), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+    EXPECT_EQ(e, importer->error(1)->description());
+}
