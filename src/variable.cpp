@@ -496,8 +496,15 @@ void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const Varia
 void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId)
 {
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
-        variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
+        auto map = createConnectionMap(variable1, variable2);
+        for(auto it = map.begin(); it != map.end(); ++it) {
+            it->first->mPimpl->setEquivalentConnectionId(it->second, connectionId);
+            it->second->mPimpl->setEquivalentConnectionId(it->first, connectionId);
+        }
+        if (map.empty()) {
+            variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
+            variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
+        }
     }
 }
 
@@ -505,11 +512,7 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        std::string id_1 = variable1->mPimpl->equivalentMappingId(variable2);
-        std::string id_2 = variable2->mPimpl->equivalentMappingId(variable1);
-        if (id_1 == id_2) {
-            id = id_1;
-        }
+        id = variable1->mPimpl->equivalentMappingId(variable2);
     }
     return id;
 }
@@ -518,10 +521,12 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
-        std::string id_1 = variable1->mPimpl->equivalentConnectionId(variable2);
-        std::string id_2 = variable2->mPimpl->equivalentConnectionId(variable1);
-        if (id_1 == id_2) {
-            id = id_1;
+        auto map = createConnectionMap(variable1, variable2);
+        for(auto it = map.begin(); it != map.end() && id.empty(); ++it) {
+            id = it->first->mPimpl->equivalentConnectionId(it->second);
+        }
+        if (id.empty()) {
+            id = variable1->mPimpl->equivalentConnectionId(variable2);
         }
     }
     return id;

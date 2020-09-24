@@ -1037,4 +1037,46 @@ std::string makeUniqueId(IdList &idList)
     return id;
 }
 
+ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    ConnectionMap map;
+
+    ComponentPtr component1 = owningComponent(variable1);
+    ComponentPtr component2 = owningComponent(variable2);
+    if (component1 && component2) {
+        for(size_t i = 0; i < component1->variableCount(); ++i) {
+            auto v = component1->variable(i);
+            for (const auto &vEquiv : equivalentVariables(v)) {
+                if (owningComponent(vEquiv) == component2) {
+                    map.insert(std::make_pair(v, vEquiv));
+                }
+            }
+        }
+    }
+
+    return map;
+}
+
+void recursiveEquivalentVariables(const VariablePtr &variable, std::vector<VariablePtr> &equivalentVariables)
+{
+    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
+        VariablePtr equivalentVariable = variable->equivalentVariable(i);
+
+        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
+            equivalentVariables.push_back(equivalentVariable);
+
+            recursiveEquivalentVariables(equivalentVariable, equivalentVariables);
+        }
+    }
+}
+
+std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable)
+{
+    std::vector<VariablePtr> res = {variable};
+
+    recursiveEquivalentVariables(variable, res);
+
+    return res;
+}
+
 } // namespace libcellml

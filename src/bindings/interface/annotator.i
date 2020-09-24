@@ -165,7 +165,10 @@
 %ignore libcellml::Annotator::assignId;
 %ignore libcellml::Annotator::dictionary;
 
+
 %pythoncode %{
+# libCellML generated wrapper code starts here.
+
 from libcellml import CellMLElement
 %}
 

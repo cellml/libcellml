@@ -52,6 +52,17 @@ void printEquivalenceMap(const EquivalenceMap &map)
     }
 }
 
+void printConnectionMap(const ConnectionMap &map)
+{
+    Debug() << "Print out of connection map";
+    for (const auto &iter : map) {
+        auto key = iter.first;
+        auto value = iter.second;
+        Debug() << "first: " << key->name();
+        Debug() << "second: " << value->name();
+    }
+}
+
 void printStringStringMap(const StringStringMap &map)
 {
     Debug() << "Print out of string -> string map";

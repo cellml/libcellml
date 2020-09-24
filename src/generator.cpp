@@ -517,10 +517,6 @@ struct Generator::GeneratorImpl
                                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
 
-    void doEquivalentVariables(const VariablePtr &variable,
-                               std::vector<VariablePtr> &equivalentVariables) const;
-    std::vector<VariablePtr> equivalentVariables(const VariablePtr &variable) const;
-
     void processEquationAst(const GeneratorEquationAstPtr &ast);
 
     double scalingFactor(const VariablePtr &variable);
@@ -1223,29 +1219,6 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->component(i));
     }
-}
-
-void Generator::GeneratorImpl::doEquivalentVariables(const VariablePtr &variable,
-                                                     std::vector<VariablePtr> &equivalentVariables) const
-{
-    for (size_t i = 0; i < variable->equivalentVariableCount(); ++i) {
-        VariablePtr equivalentVariable = variable->equivalentVariable(i);
-
-        if (std::find(equivalentVariables.begin(), equivalentVariables.end(), equivalentVariable) == equivalentVariables.end()) {
-            equivalentVariables.push_back(equivalentVariable);
-
-            doEquivalentVariables(equivalentVariable, equivalentVariables);
-        }
-    }
-}
-
-std::vector<VariablePtr> Generator::GeneratorImpl::equivalentVariables(const VariablePtr &variable) const
-{
-    std::vector<VariablePtr> res = {variable};
-
-    doEquivalentVariables(variable, res);
-
-    return res;
 }
 
 void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)

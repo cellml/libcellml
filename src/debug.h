@@ -98,5 +98,6 @@ void printStack(const IndexStack &stack);
 void printEquivalenceMap(const EquivalenceMap &map);
 void printStringStringMap(const StringStringMap &map);
 void printAst(const GeneratorEquationAstPtr &ast);
+void printConnectionMap(const ConnectionMap &map);
 
 } // namespace libcellml
