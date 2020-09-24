@@ -24,8 +24,6 @@ class AnalyserEquationAstTestCase(unittest.TestCase):
         self.assertIsNone(ast.leftChild())
         self.assertIsNone(ast.rightChild())
 
-        del ast
-
 
 if __name__ == '__main__':
     unittest.main()
