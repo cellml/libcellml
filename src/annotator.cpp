@@ -1520,12 +1520,10 @@ bool Annotator::AnnotatorImpl::validItem(AnyItem item)
 void Annotator::AnnotatorImpl::removeId(const AnyItem &item, const std::string &id)
 {
     auto range = mIdList.equal_range(id);
-    for (auto it = range.first; it != range.second;) {
+    for (auto it = range.first; it != range.second; ++it) {
         if ((it->second.first == item.first) && itemsEqual(it->second, item)) {
-            it = mIdList.erase(it);
+            mIdList.erase(it);
             break;
-        } else {
-            ++it;
         }
     }
 }
