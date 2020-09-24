@@ -2511,10 +2511,10 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModels)
     auto u1 = libcellml::Units::create("units");
     u1->addUnit("second", "milli");
     model1->addUnits(u1);
-    
+
     auto model2 = model1->clone();
     auto u2 = model2->units(0);
-    
+
     auto scaling = libcellml::Units::scalingFactor(u1, u2);
     EXPECT_EQ(1.0, scaling);
 }
