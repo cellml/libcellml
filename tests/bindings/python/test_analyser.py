@@ -70,28 +70,31 @@ class AnalyserTestCase(unittest.TestCase):
 
         # Ensure coverage for Analyser.
 
-        c = m.component(0)
-        v = c.variable(0)
+        c = m.component(1)
+        v0 = c.variable(0)
 
-        aev = AnalyserExternalVariable(v)
+        aev = AnalyserExternalVariable(v0)
 
-        a.addExternalVariable(aev)
-        # self.assertEqual('', aev.__class__.__name__)
+        self.assertTrue(a.addExternalVariable(aev))
 
         self.assertTrue(a.containsExternalVariable(aev))
-        # ISSUE627: the below ought to work.
-        # self.assertTrue(a.containsExternalVariable(m, c.name(), v.name()))
+        self.assertTrue(a.containsExternalVariable(m, c.name(), v0.name()))
 
         self.assertEqual(aev.variable().name(), a.externalVariable(0).variable().name())
-        # ISSUE627: the below ought to work.
-        # self.assertEqual(aev.variable().name(), a.externalVariable(m, c.name(), v.name()).variable().name())
+        self.assertEqual(aev.variable().name(), a.externalVariable(m, c.name(), v0.name()).variable().name())
 
-        a.addExternalVariable(AnalyserExternalVariable(c.variable(1)))
-        a.addExternalVariable(AnalyserExternalVariable(c.variable(2)))
+        v2 = c.variable(2)
 
-        self.assertEqual(3, a.externalVariableCount())
+        self.assertTrue(a.addExternalVariable(AnalyserExternalVariable(c.variable(1))))
+        self.assertTrue(a.addExternalVariable(AnalyserExternalVariable(v2)))
+        self.assertTrue(a.addExternalVariable(AnalyserExternalVariable(c.variable(3))))
 
-        a.removeExternalVariable(aev)
+        self.assertEqual(4, a.externalVariableCount())
+
+        self.assertTrue(a.removeExternalVariable(1))
+        self.assertTrue(a.removeExternalVariable(aev))
+        self.assertTrue(a.removeExternalVariable(m, c.name(), v2.name()))
+
         a.removeAllExternalVariables()
 
         # Ensure coverage for AnalyserModel.
