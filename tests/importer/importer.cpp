@@ -810,3 +810,29 @@ TEST(Importer, resolveComponentWithUnitsMissingModel)
     EXPECT_EQ(size_t(1), importer->issueCount());
     EXPECT_EQ(e, importer->issue(0)->description());
 }
+
+TEST(Importer, resolveImportsOfGrandchildComponents)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/nested_components.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/source.cellml"), importer->key(0));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, resolveImportsOfGrandchildUnits)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/nested_units.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/source_units.cellml"), importer->key(0));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}

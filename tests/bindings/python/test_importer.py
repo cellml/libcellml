@@ -115,19 +115,6 @@ class ValidatorTestCase(unittest.TestCase):
         self.assertEqual(0, importer.issueCount())
         self.assertFalse(model.hasUnresolvedImports())
 
-    def test_dependencies(self):
-        from libcellml import Importer, Parser
-
-        parser = Parser()
-        importer = Importer()
-
-        model = parser.parseModel(file_contents("importer/diamond.cellml"))
-
-        importer.resolveImports(model, resource_path("importer/"))
-
-        self.assertEqual(3, importer.externalDependencyCount())
-        self.assertEqual(("", ""), importer.externalDependency(999))
-
     def test_flatten(self):
         from libcellml import Importer, Parser
 
