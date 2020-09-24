@@ -338,6 +338,59 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
         self.assertEqual(v.interfaceType(), 'public_and_private')
 
+
+    def test_minimum_interface_type(self):
+        from libcellml import Variable
+
+        v_public = Variable()
+        v_public.setName("v_public")
+        v_public.setInterfaceType("public")
+
+        v_private = Variable()
+        v_public.setName("v_private")
+        v_private.setInterfaceType("private")
+
+        v_public_and_private = Variable()
+        v_public_and_private.setName("v_public_and_private")
+        v_public_and_private.setInterfaceType("public_and_private")
+
+        v_none = Variable()
+        v_none.setName("v_none")
+        v_none.setInterfaceType("none")
+
+        v_empty = Variable()
+        v_empty.setName("v_empty")
+
+        # Stored public_and_private meets all requirements.
+        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
+        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+
+        # Stored private meets private and none requirements.
+        self.assertTrue(v_private.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
+        self.assertTrue(v_private.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertFalse(v_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+
+        # Stored public meets public and none requirements.
+        self.assertTrue(v_public.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
+        self.assertFalse(v_public.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertTrue(v_public.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_public.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+
+        # Stored none meets none requirements.
+        self.assertTrue(v_none.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
+        self.assertFalse(v_none.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertFalse(v_none.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_none.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+
+        # Stored empty meets none requirements.
+        self.assertTrue(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
+        self.assertFalse(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertFalse(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+
     def test_clone(self):
         from libcellml import Units, Variable
 
