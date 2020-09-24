@@ -1556,10 +1556,9 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
 
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
+    const std::vector<std::string> expectedIssues = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+        "Variable 'tomayto' in component 'comp1' has units of 'testunit1' and an equivalent variable 'tomahto' in component 'comp2' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1594,12 +1593,6 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     v2->setUnits(u2);
     m->addUnits(u1);
     m->addUnits(u2);
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
-        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' in component 'comp1' has units of 'testunit1' and an equivalent variable 'tomahto' in component 'comp2' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-    };
 
     // This one is now an issue.
     libcellml::Variable::addEquivalence(v1, v2);
