@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_string.i>
 %include <std_vector.i>
 
 %import "types.i"
@@ -19,18 +20,19 @@
 "Adds a dependency to this external variable.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::removeDependency
-"Removes a dependency, specified by an index, name, or with a :class:`AnalyserExternalVariable` object. Returns
-`True` on success.";
+"Removes a dependency specified by 1) an index, 2) a :class:`Model` object, component name and variable name, or
+3) a :class:`Variable` object. Returns `True` on success.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::removeAllDependencies
 "Removes all dependencies from this external variable.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::containsDependency
-"Tests if a dependency, specified by a name, or with an :class:`AnalyserExternalVariable` object, is contained
-within this external variable.";
+"Tests if a dependency, specified by 1) a :class:`Model` object, component name and variable name, or 2) a
+:class:`Variable` object.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::dependency
-"Returns the dependency, specified by an index or name.";
+"Returns the dependency, specified by 1) an index, or 2) a :class:`Model` object, component name and variable
+name.";
 
 %feature("docstring") libcellml::AnalyserExternalVariable::dependencies
 "Returns the list of :class:`Variable` objects on which this :class:`AnalyserExternalVariable` depends.";
