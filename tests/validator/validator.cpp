@@ -2597,42 +2597,6 @@ TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
-{
-    auto parser = libcellml::Parser::create();
-    auto validator = libcellml::Validator::create();
-
-    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
-                     "  <units name=\"millisecond\">"
-                     "    <unit prefix=\"milli\" units=\"second\"/>"
-                     "  </units>"
-                     "  <component name=\"IonChannel\">"
-                     "    <variable name=\"t\" units=\"millisecond\"/>"
-                     "  </component>"
-                     "</model>";
-
-    auto model = parser->parseModel(in);
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-
-    auto nGate = libcellml::Component::create("nGate");
-    model->addComponent(nGate);
-
-    // Adding the variable *before* its units are added results in unfound units in the validator
-    auto t2 = libcellml::Variable::create("t2");
-    nGate->addVariable(t2);
-    t2->setUnits("millisecond");
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(1), validator->errorCount()); // KRM this will fail now since we *don't* need to link units anymore
-
-    // Linking the units to the model fixes the problem
-    model->linkUnits();
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->errorCount());
-}
-
 TEST(Validator, importedUnitsFoundByValidator)
 {
     auto model = libcellml::Model::create("model");
