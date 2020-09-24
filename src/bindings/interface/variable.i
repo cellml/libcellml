@@ -53,13 +53,16 @@ reference.";
 "Returns this variable's interface type as a string.";
 
 %feature("docstring") libcellml::Variable::hasInterfaceType
-"Test if this variable has the given interface type.";
+"Tests if this variable has the given interface type.";
+
+%feature("docstring") libcellml::Variable::hasMinimumInterfaceType
+"Tests if this variable will accept access through the given interface type.";
 
 %feature("docstring") libcellml::Variable::removeInterfaceType
-"Clear the interface type for this variable.";
+"Clears the interface type for this variable.";
 
 %feature("docstring") libcellml::Variable::removeInitialValue
-"Clears the intial value for this variable.";
+"Clears the initial value for this variable.";
 
 %feature("docstring") libcellml::Variable::setInterfaceType
 "Sets this variable's interfacetype to the given type specified as string or
