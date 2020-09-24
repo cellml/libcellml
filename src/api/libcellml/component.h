@@ -416,6 +416,17 @@ public:
      */
     ComponentPtr clone() const;
 
+    /**
+     * @brief Determines whether this component or its descendents
+     *        contain imported components.
+     * 
+     * Determines whether this component or its descendents contain
+     * imported components.
+     * 
+     * @return @c true when imports are required, @c false otherwise.
+     */
+    bool requiresImports() const;
+
 private:
     Component(); /**< Constructor @private*/
     explicit Component(const std::string &name); /**< Constructor named @private */

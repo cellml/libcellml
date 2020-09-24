@@ -194,7 +194,18 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     // Given the importComponent, check whether it has been resolved previously.  If so, return.
     // If not, check for model, and parse/instantiate/add to library if needed.
     // If model exists, resolve component's requirements, including child components and units required.
-    if (!importComponent->isImport() || importComponent->isResolved()) {
+
+    if (!importComponent->requiresImports() || importComponent->isResolved()) {
+        return true;
+    }
+
+    if (!importComponent->isImport()) {
+        // This component is not an import, but a descendent is.
+        for(size_t c = 0; c < importComponent->componentCount(); ++c) {
+            if(!fetchComponent(importComponent->component(c), baseFile, history)) {
+                return false;
+            }
+        }
         return true;
     }
 
