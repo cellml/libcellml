@@ -143,26 +143,24 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
         VariablePtr variable = component->variable(i);
         for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
             VariablePtr equivalentVariable = variable->equivalentVariable(j);
-            if (equivalentVariable->hasEquivalentVariable(variable)) {
-                VariablePair variablePair = std::make_pair(variable, equivalentVariable);
-                VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
-                bool pairFound = false;
-                for (const auto &iter : variableMap) {
-                    if ((iter == variablePair) || (iter == reciprocalVariablePair)) {
-                        pairFound = true;
-                        break;
-                    }
+            VariablePair variablePair = std::make_pair(variable, equivalentVariable);
+            VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
+            bool pairFound = false;
+            for (const auto &iter : variableMap) {
+                if ((iter == variablePair) || (iter == reciprocalVariablePair)) {
+                    pairFound = true;
+                    break;
                 }
-                if (!pairFound) {
-                    // Get parent components.
-                    ComponentPtr component1 = owningComponent(variable);
-                    ComponentPtr component2 = owningComponent(equivalentVariable);
-                    // Add new unique variable equivalence pair to the VariableMap.
-                    variableMap.push_back(variablePair);
-                    // Also create a component map pair corresponding with the variable map pair.
-                    ComponentPair componentPair = std::make_pair(component1, component2);
-                    componentMap.push_back(componentPair);
-                }
+            }
+            if (!pairFound) {
+                // Get parent components.
+                ComponentPtr component1 = owningComponent(variable);
+                ComponentPtr component2 = owningComponent(equivalentVariable);
+                // Add new unique variable equivalence pair to the VariableMap.
+                variableMap.push_back(variablePair);
+                // Also create a component map pair corresponding with the variable map pair.
+                ComponentPair componentPair = std::make_pair(component1, component2);
+                componentMap.push_back(componentPair);
             }
         }
     }
