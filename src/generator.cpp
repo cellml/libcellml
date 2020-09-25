@@ -78,9 +78,6 @@ struct Generator::GeneratorImpl
     bool isRootOperator(const AnalyserEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const AnalyserEquationAstPtr &ast) const;
 
-    std::string replace(std::string string, const std::string &from,
-                        const std::string &to) const;
-
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
                                  const AnalyserVariablePtr &variable) const;
@@ -285,17 +282,6 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const AnalyserEquationAstPtr
 {
     return (ast->type() == AnalyserEquationAst::Type::PIECEWISE)
            && mLockedProfile->hasConditionalOperator();
-}
-
-std::string Generator::GeneratorImpl::replace(std::string string,
-                                              const std::string &from,
-                                              const std::string &to) const
-{
-    auto index = string.find(from);
-
-    return (index == std::string::npos) ?
-               string :
-               string.replace(index, from.length(), to);
 }
 
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
