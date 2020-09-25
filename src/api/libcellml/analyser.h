@@ -61,7 +61,10 @@ public:
     /**
      * @brief Get the analysed model.
      *
-     * Get the analysed model that is the result of the model analysis.
+     * Get the analysed model that is the result of the model analysis. This
+     * allows to retrieve some information about the type of the model, its
+     * variable of integration, states, variables, equations, and whether it
+     * needs some specific mathematical functions.
      *
      * @return The analysed model for the @c Model analysed by this @c Analyser.
      */
