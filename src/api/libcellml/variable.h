@@ -435,12 +435,16 @@ public:
      * Test if this variable permits access through the @p interfaceType. The results
      * will be given according to this truth table:
      * 
-     *    argument : stored interface type = return value
-     *    (anything) : public_and_private = true
-     *    private : public = false
-     *    public : private = false
-     *    public, private, public_and_private : none = false
-     *    none : (anything) = true
+     *    Parameter (right) /
+     *   Stored value (below) | none | public | private | public_and_private  
+     *   ---------------------+------+--------+---------+-------------------
+     *                   none | T    | F      | F       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *                 public | T    | T      | F       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *                private | T    | F      | T       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *     public_and_private | T    | T      | T       | T
      *
      * @param interfaceType The interface type to test for.
      *
