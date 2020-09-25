@@ -51,7 +51,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
             return False
 
-        def getSetNames(entry):
+        def get_set_names(entry):
             if entry.startswith('set'):
                 getter = entry[3:]
                 getter = getter[0].lower() + getter[1:]
@@ -63,8 +63,8 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
                 return [entry, setter]
 
-        def printStringMethod(entry):
-            [getter, setter] = getSetNames(entry)
+        def print_string_method(entry):
+            [getter, setter] = get_set_names(entry)
             content = getattr(p, getter)()
             content = content.replace('\n', '\\n')
 
@@ -77,7 +77,7 @@ class GeneratorProfileTestCase(unittest.TestCase):
             print('        self.assertEqual("Some text content.", g.{getter}())')
             print('        ')
 
-        def printHasMethod(entry):
+        def print_has_method(entry):
             print('        from libcellml import GeneratorProfile')
             print('        ')
             print('        g = GeneratorProfile()')
@@ -85,10 +85,10 @@ class GeneratorProfileTestCase(unittest.TestCase):
             print('        self.assertFalse(g.{0}())'.format(entry))
             print('        ')
 
-        def isStringMethod(name):
+        def is_string_method(name):
             return name.endswith('string')
 
-        def isHasMethod(name):
+        def is_has_method(name):
             return name.startswith('has')
 
         for entry in dir(p):
@@ -99,10 +99,10 @@ class GeneratorProfileTestCase(unittest.TestCase):
 
                 print('    def test_{0}(self):'.format(name))
 
-                if isStringMethod(name):
-                    printStringMethod(entry)
-                elif isHasMethod(name):
-                    printHasMethod(entry)
+                if is_string_method(name):
+                    print_string_method(entry)
+                elif is_has_method(name):
+                    print_has_method(entry)
                 else:
                     print('        # Yikes missing this method: ' + entry)
 
