@@ -1043,4 +1043,13 @@ std::string makeUniqueId(IdList &idList)
     return id;
 }
 
+std::string replace(std::string string, const std::string &from, const std::string &to)
+{
+    auto index = string.find(from);
+
+    return (index == std::string::npos) ?
+               string :
+               string.replace(index, from.length(), to);
+}
+
 } // namespace libcellml
