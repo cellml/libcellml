@@ -2501,6 +2501,7 @@ TEST(Units, scalingFactorBetweenSameUnits)
     auto model = libcellml::Model::create("model");
     auto u1 = libcellml::Units::create("u1");
     u1->addUnit("second", "milli");
+    model->addUnits(u1);
     auto scaling = libcellml::Units::scalingFactor(u1, u1);
     EXPECT_EQ(1.0, scaling);
 }
