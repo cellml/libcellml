@@ -269,18 +269,18 @@ public:
     void setValue(const std::string &value);
 
     /**
-     * @brief Get the variable for this @c AnalyserEquationAst.
+     * @brief Get the @c Variable for this @c AnalyserEquationAst.
      *
-     * Return the variable for this @c AnalyserEquationAst.
+     * Return the @c Variable for this @c AnalyserEquationAst.
      *
      * @return The variable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Set the variable for this @c AnalyserEquationAst.
+     * @brief Set the @c Variable for this @c AnalyserEquationAst.
      *
-     * Set the variable for this @c AnalyserEquationAst.
+     * Set the @c Variable for this @c AnalyserEquationAst.
      *
      * @param variable The @c Variable to be set as the variable for this
      * @c AnalyserEquationAst.

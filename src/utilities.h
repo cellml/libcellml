@@ -606,5 +606,6 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+std::string replace(std::string string, const std::string &from, const std::string &to);
 
 } // namespace libcellml
