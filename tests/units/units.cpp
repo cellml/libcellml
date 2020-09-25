@@ -2518,3 +2518,19 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModels)
     auto scaling = libcellml::Units::scalingFactor(u1, u2);
     EXPECT_EQ(1.0, scaling);
 }
+
+TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModelsDifferentScale)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("second", "milli");
+    model1->addUnits(u1);
+
+    auto model2 = libcellml::Model::create("model2");
+    auto u2 = libcellml::Units::create("units");
+    u2->addUnit("second");
+    model2->addUnits(u2);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1000.0, scaling);
+}
