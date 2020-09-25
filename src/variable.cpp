@@ -487,14 +487,17 @@ bool Variable::hasInterfaceType(InterfaceType interfaceType) const
 
 bool Variable::hasMinimumInterfaceType(InterfaceType interfaceType) const
 {
-    /*
-     *    argument : stored interface type = return value
-     *    (anything) : public_and_private = true
-     *    private : public = false
-     *    public : private = false
-     *    public, private, public_and_private : none = false
-     *    none : (anything) = true
-     */
+    //  Parameter (right) /
+    // Stored value (below) | none | public | private | public_and_private  
+    // ---------------------+------+--------+---------+-------------------
+    //                 none | T    | F      | F       | F
+    // ---------------------+------+--------+---------+-------------------
+    //               public | T    | T      | F       | F
+    // ---------------------+------+--------+---------+-------------------
+    //              private | T    | F      | T       | F
+    // ---------------------+------+--------+---------+-------------------
+    //   public_and_private | T    | T      | T       | T
+     
     std::string testString = interfaceTypeToString.find(interfaceType)->second;
 
     if ((testString == "none") || testString.empty()) {
