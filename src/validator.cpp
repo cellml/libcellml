@@ -1628,7 +1628,7 @@ void Validator::ValidatorImpl::buildMathIdMap(const std::string &infoRef, IdMap 
             return;
         }
         if (!node->isMathmlElement("math")) {
-            return;
+            continue;
         }
         buildMathChildIdMap(node, infoRef, idMap);
     }
