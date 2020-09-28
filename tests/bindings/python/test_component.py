@@ -280,6 +280,17 @@ class ComponentTestCase(unittest.TestCase):
 
         self.assertRaises(AttributeError, ComponentEntity)
 
+    def test_requires_imports(self):
+        from libcellml import Component
+
+        c = Component("banana")
+        self.assertFalse(c.requiresImports())
+
+    def test_resolved(self):
+        from libcellml import Component
+        b = Component("banana")
+        b.setResolved(False)
+        self.assertFalse(b.isResolved())
 
 if __name__ == '__main__':
     unittest.main()
