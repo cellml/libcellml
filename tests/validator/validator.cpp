@@ -2636,11 +2636,11 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
 TEST(Validator, duplicateIdSimple)
 {
     std::vector<std::string> e = {"Duplicated id attribute 'id' has been found in:\n"
-                                  "  - model 'model'\n"
-                                  "  - component 'c1' in model 'model'\n"
-                                  "  - variable 'v1' in component 'c1'\n"
-                                  "  - component 'c2' in component 'c1'\n"
-                                  "  - variable 'v2' in component 'c2'\n"};
+                                  " - model 'model';\n"
+                                  " - component 'c1' in model 'model';\n"
+                                  " - variable 'v1' in component 'c1';\n"
+                                  " - component 'c2' in component 'c1'; and\n"
+                                  " - variable 'v2' in component 'c2'.\n"};
 
     auto model = createModelTwoComponentsWithOneVariableEach("model", "c1", "c2", "v1", "v2");
     model->setId("id");
@@ -2664,52 +2664,52 @@ TEST(Validator, duplicateIdAll)
     expectedIssues.emplace_back("W3C MathML DTD error: ID id1 already defined.");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id1' has been found in:\n"
-        "  - model 'everything'\n"
-        "  - units 'units2' in model 'everything'\n"
-        "  - encapsulation in model 'everything'\n"
-        "  - variable 'variable2' in component 'component2'\n"
-        "  - MathML apply element in test_value in reset 0 in component 'component2'\n"
-        "  - MathML math element in reset_value in reset 0 in component 'component2'\n"
-        "  - MathML cn element in reset_value in reset 0 in component 'component2'\n"
-        "  - MathML ci element 'variable4' in math in component 'component3'\n");
+        " - model 'everything';\n"
+        " - units 'units2' in model 'everything';\n"
+        " - encapsulation in model 'everything';\n"
+        " - variable 'variable2' in component 'component2';\n"
+        " - MathML apply element in test_value in reset 0 in component 'component2';\n"
+        " - MathML math element in reset_value in reset 0 in component 'component2';\n"
+        " - MathML cn element in reset_value in reset 0 in component 'component2'; and\n"
+        " - MathML ci element 'variable4' in math in component 'component3'.\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id2' has been found in:\n"
-        "  - unit in units 'units2' in model 'everything'\n"
-        "  - import source for component 'component1'\n"
-        "  - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable4' in component 'component3'\n"
-        "  - reset at index 0 in component 'component2'\n"
-        "  - MathML eq element in test_value in reset 0 in component 'component2'\n"
-        "  - MathML ci element 'variable1' in reset_value in reset 0 in component 'component2'\n"
-        "  - encapsulation component_ref to component 'component2'\n"
-        "  - component 'component3' in component 'component2'\n"
-        "  - MathML eq element in math in component 'component3'\n");
+        " - unit in units 'units2' in model 'everything';\n"
+        " - import source for component 'component1';\n"
+        " - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable4' in component 'component3';\n"
+        " - reset at index 0 in component 'component2';\n"
+        " - MathML eq element in test_value in reset 0 in component 'component2';\n"
+        " - MathML ci element 'variable1' in reset_value in reset 0 in component 'component2';\n"
+        " - encapsulation component_ref to component 'component2';\n"
+        " - component 'component3' in component 'component2'; and\n"
+        " - MathML eq element in math in component 'component3'.\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id3' has been found in:\n"
-        "  - units 'units3' in model 'everything'\n"
-        "  - imported component 'component1' in model 'everything'\n"
-        "  - test_value in reset at index 0 in component 'component2'\n"
-        "  - MathML ci element 'variable1' in test_value in reset 0 in component 'component2'\n"
-        "  - MathML eq element in reset_value in reset 0 in component 'component2'\n"
-        "  - variable 'variable2' in component 'component3'\n"
-        "  - MathML apply element in math in component 'component3'\n"
-        "  - encapsulation component_ref to component 'component3'\n");
+        " - units 'units3' in model 'everything';\n"
+        " - imported component 'component1' in model 'everything';\n"
+        " - test_value in reset at index 0 in component 'component2';\n"
+        " - MathML ci element 'variable1' in test_value in reset 0 in component 'component2';\n"
+        " - MathML eq element in reset_value in reset 0 in component 'component2';\n"
+        " - variable 'variable2' in component 'component3';\n"
+        " - MathML apply element in math in component 'component3'; and\n"
+        " - encapsulation component_ref to component 'component3'.\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id4' has been found in:\n"
-        "  - import source for units 'units1'\n"
-        "  - component 'component2' in model 'everything'\n"
-        "  - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2'\n"
-        "  - MathML math element in test_value in reset 0 in component 'component2'\n"
-        "  - MathML cn element in test_value in reset 0 in component 'component2'\n"
-        "  - MathML apply element in reset_value in reset 0 in component 'component2'\n"
-        "  - MathML math element in math in component 'component3'\n");
+        " - import source for units 'units1';\n"
+        " - component 'component2' in model 'everything';\n"
+        " - connection between components 'component2' and 'component3' because of variable equivalence between variables 'variable1' and 'variable2';\n"
+        " - MathML math element in test_value in reset 0 in component 'component2';\n"
+        " - MathML cn element in test_value in reset 0 in component 'component2';\n"
+        " - MathML apply element in reset_value in reset 0 in component 'component2'; and\n"
+        " - MathML math element in math in component 'component3'.\n");
     expectedIssues.emplace_back(
         "Duplicated id attribute 'id5' has been found in:\n"
-        "  - imported units 'units1' in model 'everything'\n"
-        "  - variable 'variable1' in component 'component2'\n"
-        "  - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable2' in component 'component3'\n"
-        "  - reset_value in reset at index 0 in component 'component2'\n"
-        "  - variable 'variable4' in component 'component3'\n"
-        "  - MathML cn element in math in component 'component3'\n");
+        " - imported units 'units1' in model 'everything';\n"
+        " - variable 'variable1' in component 'component2';\n"
+        " - variable equivalence between variable 'variable1' in component 'component2' and variable 'variable2' in component 'component3';\n"
+        " - reset_value in reset at index 0 in component 'component2';\n"
+        " - variable 'variable4' in component 'component3'; and\n"
+        " - MathML cn element in math in component 'component3'.\n");
 
     const std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"  name=\"everything\" id=\"id1\">\n"
