@@ -2650,7 +2650,6 @@ TEST(Validator, duplicateIdSimple)
     model->component(1)->variable(0)->setId("id");
     model->component(0)->variable(0)->setUnits("dimensionless");
     model->component(1)->variable(0)->setUnits("dimensionless");
-
     model->component(0)->addComponent(model->component(1));
 
     auto validator = libcellml::Validator::create();

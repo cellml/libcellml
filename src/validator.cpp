@@ -1431,11 +1431,11 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 
     for (const auto &id : idMap) {
         if (id.second.first > 1) {
-            auto des = "Duplicated id attribute '" + id.first + "' has been found in:\n" + id.second.second;
+            auto desc = "Duplicated id attribute '" + id.first + "' has been found in:\n" + id.second.second;
             auto issue = libcellml::Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
             issue->setLevel(Issue::Level::ERROR);
-            issue->setDescription(des);
+            issue->setDescription(desc);
             issue->setModel(model);
             mValidator->addIssue(issue);
         }
