@@ -1533,29 +1533,27 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
         // Equivalent variables.
         for (size_t e = 0; e < item->equivalentVariableCount(); ++e) {
             auto equiv = item->equivalentVariable(e);
-            if (equiv != nullptr) {
-                auto equivParent = owningComponent(equiv);
-                if (equivParent != nullptr) {
-                    // Skipping half of the equivalences to avoid duplicate reporting.
-                    std::string s1 = item->name() + component->name();
-                    std::string s2 = equiv->name() + equivParent->name();
-                    std::string mappingId = Variable::equivalenceMappingId(item, equiv);
-                    // Variable mapping.
-                    if ((s1 < s2) && !mappingId.empty()) {
-                        info = "  - variable equivalence between variable '" + item->name() + "' in component '" + component->name();
-                        info += "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'\n";
-                        addIdMapItem(mappingId, info, idMap);
-                    }
-                    // Connections.
-                    auto connectionId = Variable::equivalenceConnectionId(item, equiv);
-                    std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
-                    if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
-                        reportedConnections.insert(connection);
-                        info = "  - connection between components '" + component->name() + "' and '" + equivParent->name();
-                        info += "' because of variable equivalence between variables '" + item->name();
-                        info += "' and '" + equiv->name() + "'\n";
-                        addIdMapItem(connectionId, info, idMap);
-                    }
+            auto equivParent = owningComponent(equiv);
+            if (equivParent != nullptr) {
+                // Skipping half of the equivalences to avoid duplicate reporting.
+                std::string s1 = item->name() + component->name();
+                std::string s2 = equiv->name() + equivParent->name();
+                std::string mappingId = Variable::equivalenceMappingId(item, equiv);
+                // Variable mapping.
+                if ((s1 < s2) && !mappingId.empty()) {
+                    info = "  - variable equivalence between variable '" + item->name() + "' in component '" + component->name();
+                    info += "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'\n";
+                    addIdMapItem(mappingId, info, idMap);
+                }
+                // Connections.
+                auto connectionId = Variable::equivalenceConnectionId(item, equiv);
+                std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
+                if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
+                    reportedConnections.insert(connection);
+                    info = "  - connection between components '" + component->name() + "' and '" + equivParent->name();
+                    info += "' because of variable equivalence between variables '" + item->name();
+                    info += "' and '" + equiv->name() + "'\n";
+                    addIdMapItem(connectionId, info, idMap);
                 }
             }
         }
