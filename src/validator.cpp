@@ -333,7 +333,7 @@ struct Validator::ValidatorImpl
 
     /** @brief Utility function to parse math and add element ids to idMap.
      *
-     * @param component Component to investigate
+     * @param component Component to investigate.
      * @param idMap The IdMap under construction.
      */
     void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
@@ -1427,9 +1427,9 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
 
 void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 {
-    IdMap idMap = buildModelIdMap(model);
+    auto idMap = buildModelIdMap(model);
 
-    for (auto const &id : idMap) {
+    for (const auto &id : idMap) {
         if (id.second.first > 1) {
             auto des = "Duplicated id attribute '" + id.first + "' has been found in:\n" + id.second.second;
             auto issue = libcellml::Issue::create();
@@ -1516,7 +1516,6 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
         }
         if (owningComponent(component) != nullptr) {
             owning = "' in component '" + owningComponent(component)->name() + "'\n";
-
         } else {
             owning = "' in model '" + owningModel(component)->name() + "'\n";
         }
@@ -1542,7 +1541,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     std::string s2 = equiv->name() + equivParent->name();
                     std::string mappingId = Variable::equivalenceMappingId(item, equiv);
                     // Variable mapping.
-                    if ((s1 < s2) && (!mappingId.empty())) {
+                    if ((s1 < s2) && !mappingId.empty()) {
                         info = "  - variable equivalence between variable '" + item->name() + "' in component '" + component->name();
                         info += "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'\n";
                         addIdMapItem(mappingId, info, idMap);
@@ -1550,7 +1549,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                     // Connections.
                     auto connectionId = Variable::equivalenceConnectionId(item, equiv);
                     std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
-                    if ((s1 < s2) && (!connectionId.empty()) && (reportedConnections.count(connection) == 0)) {
+                    if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
                         reportedConnections.insert(connection);
                         info = "  - connection between components '" + component->name() + "' and '" + equivParent->name();
                         info += "' because of variable equivalence between variables '" + item->name();
@@ -1588,7 +1587,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     buildMathIdMap(info, idMap, component->math());
 
     // Imports.
-    if (component->isImport() && component->importSource() != nullptr && !component->importSource()->id().empty()) {
+    if (component->isImport() && (component->importSource() != nullptr) && !component->importSource()->id().empty()) {
         info = "  - import source for component '" + component->name() + "'\n";
         addIdMapItem(component->importSource()->id(), info, idMap);
     }
@@ -1625,7 +1624,7 @@ void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const
 {
     std::string info;
     XmlAttributePtr attribute = node->firstAttribute();
-    while (attribute) {
+    while (attribute != nullptr) {
         if (attribute->isType("id")) {
             std::string variable;
             if (node->name() == "ci") {
@@ -1639,7 +1638,7 @@ void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const
         attribute = attribute->next();
     }
     XmlNodePtr childNode = node->firstChild();
-    while (childNode) {
+    while (childNode != nullptr) {
         buildMathChildIdMap(childNode, infoRef, idMap);
         childNode = childNode->next();
     }
