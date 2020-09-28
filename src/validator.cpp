@@ -1431,7 +1431,20 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 
     for (const auto &id : idMap) {
         if (id.second.first > 1) {
-            auto desc = "Duplicated id attribute '" + id.first + "' has been found in:\n" + id.second.second;
+            auto desc = "Duplicated id attribute '" + id.first + "' has been found in:\n";
+            size_t i = 0;
+            size_t iMax = id.second.second.size();
+            for (const auto &item : id.second.second) {
+                desc += item;
+                ++i;
+                if (i < iMax - 1) {
+                    desc += ";\n";
+                } else if (i == iMax - 1) {
+                    desc += "; and\n";
+                } else if (i == iMax) {
+                    desc += ".\n";
+                }
+            }
             auto issue = libcellml::Issue::create();
             issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
             issue->setLevel(Issue::Level::ERROR);
@@ -1445,9 +1458,12 @@ void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
 void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::string &info, IdMap &idMap)
 {
     if (idMap.count(id) > 0) {
-        idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second + info);
+        idMap[id].second.emplace_back(info);
+        idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second);
     } else {
-        idMap[id] = std::make_pair(1, info);
+        std::vector<std::string> infos;
+        infos.emplace_back(info);
+        idMap[id] = std::make_pair(1, infos);
     }
 }
 
@@ -1458,7 +1474,7 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
     std::set<std::string> reportedConnections;
     // Model.
     if (!model->id().empty()) {
-        info = "  - model '" + model->name() + "'\n";
+        info = " - model '" + model->name() + "'";
         addIdMapItem(model->id(), info, idMap);
     }
 
@@ -1467,9 +1483,9 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
         auto units = model->units(u);
         if (!units->id().empty()) {
             if (units->isImport()) {
-                info = "  - imported units '" + units->name() + "' in model '" + model->name() + "'\n";
+                info = " - imported units '" + units->name() + "' in model '" + model->name() + "'";
             } else {
-                info = "  - units '" + units->name() + "' in model '" + model->name() + "'\n";
+                info = " - units '" + units->name() + "' in model '" + model->name() + "'";
             }
             addIdMapItem(units->id(), info, idMap);
         }
@@ -1481,18 +1497,18 @@ IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
             std::string id;
             units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
             if (!id.empty()) {
-                info = "  - unit in units '" + units->name() + "' in model '" + model->name() + "'\n";
+                info = " - unit in units '" + units->name() + "' in model '" + model->name() + "'";
                 addIdMapItem(id, info, idMap);
             }
         }
         if (units->isImport() && units->importSource() != nullptr && !units->importSource()->id().empty()) {
-            info = "  - import source for units '" + units->name() + "'\n";
+            info = " - import source for units '" + units->name() + "'";
             addIdMapItem(units->importSource()->id(), info, idMap);
         }
     }
     // Encapsulation.
     if (!model->encapsulationId().empty()) {
-        info = "  - encapsulation in model '" + model->name() + "'\n";
+        info = " - encapsulation in model '" + model->name() + "'";
         addIdMapItem(model->encapsulationId(), info, idMap);
     }
 
@@ -1515,11 +1531,11 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
             imported = "imported ";
         }
         if (owningComponent(component) != nullptr) {
-            owning = "' in component '" + owningComponent(component)->name() + "'\n";
+            owning = "' in component '" + owningComponent(component)->name() + "'";
         } else {
-            owning = "' in model '" + owningModel(component)->name() + "'\n";
+            owning = "' in model '" + owningModel(component)->name() + "'";
         }
-        info = "  - " + imported + "component '" + component->name() + owning;
+        info = " - " + imported + "component '" + component->name() + owning;
         addIdMapItem(component->id(), info, idMap);
     }
 
@@ -1527,7 +1543,7 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     for (size_t i = 0; i < component->variableCount(); ++i) {
         auto item = component->variable(i);
         if (!item->id().empty()) {
-            info = "  - variable '" + item->name() + "' in component '" + component->name() + "'\n";
+            info = " - variable '" + item->name() + "' in component '" + component->name() + "'";
             addIdMapItem(item->id(), info, idMap);
         }
         // Equivalent variables.
@@ -1541,8 +1557,8 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 std::string mappingId = Variable::equivalenceMappingId(item, equiv);
                 // Variable mapping.
                 if ((s1 < s2) && !mappingId.empty()) {
-                    info = "  - variable equivalence between variable '" + item->name() + "' in component '" + component->name();
-                    info += "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'\n";
+                    info = " - variable equivalence between variable '" + item->name() + "' in component '" + component->name()
+                           + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
                     addIdMapItem(mappingId, info, idMap);
                 }
                 // Connections.
@@ -1550,9 +1566,9 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
                 std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
                 if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
                     reportedConnections.insert(connection);
-                    info = "  - connection between components '" + component->name() + "' and '" + equivParent->name();
-                    info += "' because of variable equivalence between variables '" + item->name();
-                    info += "' and '" + equiv->name() + "'\n";
+                    info = " - connection between components '" + component->name() + "' and '" + equivParent->name()
+                           + "' because of variable equivalence between variables '" + item->name()
+                           + "' and '" + equiv->name() + "'";
                     addIdMapItem(connectionId, info, idMap);
                 }
             }
@@ -1563,17 +1579,17 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
     for (size_t i = 0; i < component->resetCount(); ++i) {
         auto item = component->reset(i);
         if (!item->id().empty()) {
-            info = "  - reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+            info = " - reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
             addIdMapItem(item->id(), info, idMap);
         }
         if (!item->testValueId().empty()) {
-            info = "  - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+            info = " - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
             addIdMapItem(item->testValueId(), info, idMap);
         }
         info = "test_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
         buildMathIdMap(info, idMap, item->testValue());
         if (!item->resetValueId().empty()) {
-            info = "  - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'\n";
+            info = " - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
             addIdMapItem(item->resetValueId(), info, idMap);
         }
         info = "reset_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
@@ -1586,13 +1602,13 @@ void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component
 
     // Imports.
     if (component->isImport() && (component->importSource() != nullptr) && !component->importSource()->id().empty()) {
-        info = "  - import source for component '" + component->name() + "'\n";
+        info = " - import source for component '" + component->name() + "'";
         addIdMapItem(component->importSource()->id(), info, idMap);
     }
 
     // Connections.
     if (!component->encapsulationId().empty()) {
-        info = "  - encapsulation component_ref to component '" + component->name() + "'\n";
+        info = " - encapsulation component_ref to component '" + component->name() + "'";
         addIdMapItem(component->encapsulationId(), info, idMap);
     }
 
@@ -1630,7 +1646,7 @@ void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const
                     variable = "'" + node->firstChild()->convertToString() + "' ";
                 }
             }
-            info = "  - MathML " + node->name() + " element " + variable + "in " + infoRef + "\n";
+            info = " - MathML " + node->name() + " element " + variable + "in " + infoRef;
             addIdMapItem(attribute->value(), info, idMap);
         }
         attribute = attribute->next();
