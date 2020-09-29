@@ -18,6 +18,10 @@
 #include "libcellml/namedentity.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %ignore libcellml::NamedEntity::NamedEntity();
 
 %include "libcellml/namedentity.h"
