@@ -425,7 +425,7 @@ public:
      *
      * @return @c true when imports are required, @c false otherwise.
      */
-    bool requiresImports() const;
+    bool requiresImports();
 
 private:
     Component(); /**< Constructor @private*/
