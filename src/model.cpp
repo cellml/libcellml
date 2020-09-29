@@ -575,7 +575,7 @@ bool Model::fixVariableInterfaces()
         Variable::InterfaceType interfaceType = determineInterfaceType(variable);
         if (interfaceType == Variable::InterfaceType::NONE) {
             allOk = false;
-        } else if (!variable->hasMinimumInterfaceType(interfaceType)) {
+        } else if (!variable->permitsInterfaceType(interfaceType)) {
             variable->setInterfaceType(interfaceType);
         }
     }

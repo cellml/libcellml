@@ -55,7 +55,7 @@ reference.";
 %feature("docstring") libcellml::Variable::hasInterfaceType
 "Tests if this variable has the given interface type.";
 
-%feature("docstring") libcellml::Variable::hasMinimumInterfaceType
+%feature("docstring") libcellml::Variable::permitsInterfaceType
 "Tests if this variable will accept access through the given interface type.";
 
 %feature("docstring") libcellml::Variable::removeInterfaceType

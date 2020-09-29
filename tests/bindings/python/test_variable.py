@@ -361,34 +361,34 @@ class VariableTestCase(unittest.TestCase):
         v_empty.setName("v_empty")
 
         # Stored public_and_private meets all requirements.
-        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
-        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
-        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
-        self.assertTrue(v_public_and_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+        self.assertTrue(v_public_and_private.permitsInterfaceType(Variable.InterfaceType.NONE))
+        self.assertTrue(v_public_and_private.permitsInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertTrue(v_public_and_private.permitsInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertTrue(v_public_and_private.permitsInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
 
         # Stored private meets private and none requirements.
-        self.assertTrue(v_private.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
-        self.assertTrue(v_private.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
-        self.assertFalse(v_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
-        self.assertFalse(v_private.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+        self.assertTrue(v_private.permitsInterfaceType(Variable.InterfaceType.NONE))
+        self.assertTrue(v_private.permitsInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertFalse(v_private.permitsInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_private.permitsInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
 
         # Stored public meets public and none requirements.
-        self.assertTrue(v_public.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
-        self.assertFalse(v_public.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
-        self.assertTrue(v_public.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
-        self.assertFalse(v_public.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+        self.assertTrue(v_public.permitsInterfaceType(Variable.InterfaceType.NONE))
+        self.assertFalse(v_public.permitsInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertTrue(v_public.permitsInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_public.permitsInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
 
         # Stored none meets none requirements.
-        self.assertTrue(v_none.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
-        self.assertFalse(v_none.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
-        self.assertFalse(v_none.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
-        self.assertFalse(v_none.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+        self.assertTrue(v_none.permitsInterfaceType(Variable.InterfaceType.NONE))
+        self.assertFalse(v_none.permitsInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertFalse(v_none.permitsInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_none.permitsInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
 
         # Stored empty meets none requirements.
-        self.assertTrue(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.NONE))
-        self.assertFalse(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.PRIVATE))
-        self.assertFalse(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC))
-        self.assertFalse(v_empty.hasMinimumInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
+        self.assertTrue(v_empty.permitsInterfaceType(Variable.InterfaceType.NONE))
+        self.assertFalse(v_empty.permitsInterfaceType(Variable.InterfaceType.PRIVATE))
+        self.assertFalse(v_empty.permitsInterfaceType(Variable.InterfaceType.PUBLIC))
+        self.assertFalse(v_empty.permitsInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE))
 
     def test_clone(self):
         from libcellml import Units, Variable

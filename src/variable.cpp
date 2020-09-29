@@ -485,19 +485,8 @@ bool Variable::hasInterfaceType(InterfaceType interfaceType) const
     return mPimpl->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
 }
 
-bool Variable::hasMinimumInterfaceType(InterfaceType interfaceType) const
+bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
 {
-    //  Parameter (right) /
-    // Stored value (below) | none | public | private | public_and_private
-    // ---------------------+------+--------+---------+-------------------
-    //                 none | T    | F      | F       | F
-    // ---------------------+------+--------+---------+-------------------
-    //               public | T    | T      | F       | F
-    // ---------------------+------+--------+---------+-------------------
-    //              private | T    | F      | T       | F
-    // ---------------------+------+--------+---------+-------------------
-    //   public_and_private | T    | T      | T       | T
-
     std::string testString = interfaceTypeToString.find(interfaceType)->second;
 
     if ((testString == "none") || testString.empty()) {
