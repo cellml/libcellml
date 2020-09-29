@@ -125,17 +125,15 @@ bool checkForCycles(ModelPtr &model, std::vector<std::tuple<std::string, std::st
  *
  * @return The full path from the @p base location to the @p filename
  */
-std::string resolvePath(const std::string &filename, const std::string &base)
-{
-    // We can be naive here as we know what we are dealing with.
-    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
-    return path;
-}
-
 std::string directoryPath(const std::string &filename)
 {
-    std::string res = filename.substr(0, filename.find_last_of('/') + 1);
-    return res;
+    // We can be naive here as we know what we are dealing with.
+    return filename.substr(0, filename.find_last_of('/') + 1);
+}
+
+std::string resolvePath(const std::string &filename, const std::string &base)
+{
+    return directoryPath(base) + filename;
 }
 
 bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile)
