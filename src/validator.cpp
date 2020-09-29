@@ -19,6 +19,8 @@ limitations under the License.
 #include <algorithm>
 #include <cmath>
 #include <libxml/uri.h>
+#include <map>
+#include <set>
 #include <stdexcept>
 
 #include "libcellml/component.h"
@@ -291,6 +293,50 @@ struct Validator::ValidatorImpl
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
                             std::vector<std::string> &history,
                             std::vector<std::vector<std::string>> &errorList);
+
+    /** @brief Function to check IDs within the model scope are unique.
+     *
+     * @param model The model to be checked.
+     */
+    void checkUniqueIds(const ModelPtr &model);
+
+    /** @brief Utility function to construct a map of ids used within the model.
+     *
+     * @param model The model to be checked.
+     * @return An IdMap of the items in the model with id fields.
+     */
+
+    IdMap buildModelIdMap(const ModelPtr &model);
+    /** @brief Utility function called recursively to construct a map of ids in a component.
+     *
+     * @param component The component to check.
+     * @param idMap The IdMap object to construct.
+     * @param reportedConnections A set of connection ids to prevent duplicate reporting.
+     */
+    void buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections);
+
+    /** @brief Utility function to add an item to the idMap.
+     *
+     * @param id A string id to add.
+     * @param info A string description of the item with this id.
+     * @param idMap The IdMap under construction.
+     */
+    void addIdMapItem(const std::string &id, const std::string &info, IdMap &idMap);
+
+    /** @brief Utility function to parse MathML children and add element ids to idMap.
+     *
+     * @param node XMLNode to read.
+     * @param component Owning component of the MathML string.
+     * @param idMap The IdMap under construction.
+     */
+    void buildMathChildIdMap(const XmlNodePtr &node, const std::string &infoRef, IdMap &idMap);
+
+    /** @brief Utility function to parse math and add element ids to idMap.
+     *
+     * @param component Component to investigate.
+     * @param idMap The IdMap under construction.
+     */
+    void buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input);
 };
 
 Validator::Validator()
@@ -415,6 +461,9 @@ void Validator::validateModel(const ModelPtr &model)
 
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
+
+    // Check ids across the model are unique.
+    mPimpl->checkUniqueIds(model);
 }
 
 void Validator::ValidatorImpl::validateUniqueName(const ModelPtr &model, const std::string &name, std::vector<std::string> &names) const
@@ -1371,6 +1420,239 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
                 std::vector<std::string>().swap(child_history);
             }
         }
+    }
+}
+
+void Validator::ValidatorImpl::checkUniqueIds(const ModelPtr &model)
+{
+    auto idMap = buildModelIdMap(model);
+
+    for (const auto &id : idMap) {
+        if (id.second.first > 1) {
+            auto desc = "Duplicated id attribute '" + id.first + "' has been found in:\n";
+            size_t i = 0;
+            size_t iMax = id.second.second.size();
+            for (const auto &item : id.second.second) {
+                desc += item;
+                ++i;
+                if (i < iMax - 1) {
+                    desc += ";\n";
+                } else if (i == iMax - 1) {
+                    desc += "; and\n";
+                } else if (i == iMax) {
+                    desc += ".\n";
+                }
+            }
+            auto issue = libcellml::Issue::create();
+            issue->setReferenceRule(Issue::ReferenceRule::DATA_REPR_IDENTIFIER_IDENTICAL);
+            issue->setLevel(Issue::Level::ERROR);
+            issue->setDescription(desc);
+            issue->setModel(model);
+            mValidator->addIssue(issue);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::addIdMapItem(const std::string &id, const std::string &info, IdMap &idMap)
+{
+    if (idMap.count(id) > 0) {
+        idMap[id].second.emplace_back(info);
+        idMap[id] = std::make_pair(idMap[id].first + 1, idMap[id].second);
+    } else {
+        std::vector<std::string> infos;
+        infos.emplace_back(info);
+        idMap[id] = std::make_pair(1, infos);
+    }
+}
+
+IdMap Validator::ValidatorImpl::buildModelIdMap(const ModelPtr &model)
+{
+    IdMap idMap;
+    std::string info;
+    std::set<std::string> reportedConnections;
+    // Model.
+    if (!model->id().empty()) {
+        info = " - model '" + model->name() + "'";
+        addIdMapItem(model->id(), info, idMap);
+    }
+
+    // Units.
+    for (size_t u = 0; u < model->unitsCount(); ++u) {
+        auto units = model->units(u);
+        if (!units->id().empty()) {
+            if (units->isImport()) {
+                info = " - imported units '" + units->name() + "' in model '" + model->name() + "'";
+            } else {
+                info = " - units '" + units->name() + "' in model '" + model->name() + "'";
+            }
+            addIdMapItem(units->id(), info, idMap);
+        }
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            std::string reference;
+            std::string prefix;
+            double exponent;
+            double multiplier;
+            std::string id;
+            units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
+            if (!id.empty()) {
+                info = " - unit in units '" + units->name() + "' in model '" + model->name() + "'";
+                addIdMapItem(id, info, idMap);
+            }
+        }
+        if (units->isImport() && units->importSource() != nullptr && !units->importSource()->id().empty()) {
+            info = " - import source for units '" + units->name() + "'";
+            addIdMapItem(units->importSource()->id(), info, idMap);
+        }
+    }
+    // Encapsulation.
+    if (!model->encapsulationId().empty()) {
+        info = " - encapsulation in model '" + model->name() + "'";
+        addIdMapItem(model->encapsulationId(), info, idMap);
+    }
+
+    // Start recursion through encapsulation hierarchy.
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        buildComponentIdMap(model->component(c), idMap, reportedConnections);
+    }
+    return idMap;
+}
+
+void Validator::ValidatorImpl::buildComponentIdMap(const ComponentPtr &component, IdMap &idMap, std::set<std::string> &reportedConnections)
+{
+    std::string info;
+
+    // Component.
+    if (!component->id().empty()) {
+        std::string imported;
+        std::string owning;
+        if (component->isImport()) {
+            imported = "imported ";
+        }
+        if (owningComponent(component) != nullptr) {
+            owning = "' in component '" + owningComponent(component)->name() + "'";
+        } else {
+            owning = "' in model '" + owningModel(component)->name() + "'";
+        }
+        info = " - " + imported + "component '" + component->name() + owning;
+        addIdMapItem(component->id(), info, idMap);
+    }
+
+    // Variables.
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        auto item = component->variable(i);
+        if (!item->id().empty()) {
+            info = " - variable '" + item->name() + "' in component '" + component->name() + "'";
+            addIdMapItem(item->id(), info, idMap);
+        }
+        // Equivalent variables.
+        for (size_t e = 0; e < item->equivalentVariableCount(); ++e) {
+            auto equiv = item->equivalentVariable(e);
+            auto equivParent = owningComponent(equiv);
+            if (equivParent != nullptr) {
+                // Skipping half of the equivalences to avoid duplicate reporting.
+                std::string s1 = item->name() + component->name();
+                std::string s2 = equiv->name() + equivParent->name();
+                std::string mappingId = Variable::equivalenceMappingId(item, equiv);
+                // Variable mapping.
+                if ((s1 < s2) && !mappingId.empty()) {
+                    info = " - variable equivalence between variable '" + item->name() + "' in component '" + component->name()
+                           + "' and variable '" + equiv->name() + "' in component '" + equivParent->name() + "'";
+                    addIdMapItem(mappingId, info, idMap);
+                }
+                // Connections.
+                auto connectionId = Variable::equivalenceConnectionId(item, equiv);
+                std::string connection = component->name() < equivParent->name() ? component->name() + equivParent->name() : equivParent->name() + component->name();
+                if ((s1 < s2) && !connectionId.empty() && (reportedConnections.count(connection) == 0)) {
+                    reportedConnections.insert(connection);
+                    info = " - connection between components '" + component->name() + "' and '" + equivParent->name()
+                           + "' because of variable equivalence between variables '" + item->name()
+                           + "' and '" + equiv->name() + "'";
+                    addIdMapItem(connectionId, info, idMap);
+                }
+            }
+        }
+    }
+
+    // Resets.
+    for (size_t i = 0; i < component->resetCount(); ++i) {
+        auto item = component->reset(i);
+        if (!item->id().empty()) {
+            info = " - reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
+            addIdMapItem(item->id(), info, idMap);
+        }
+        if (!item->testValueId().empty()) {
+            info = " - test_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
+            addIdMapItem(item->testValueId(), info, idMap);
+        }
+        info = "test_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
+        buildMathIdMap(info, idMap, item->testValue());
+        if (!item->resetValueId().empty()) {
+            info = " - reset_value in reset at index " + std::to_string(i) + " in component '" + component->name() + "'";
+            addIdMapItem(item->resetValueId(), info, idMap);
+        }
+        info = "reset_value in reset " + std::to_string(i) + " in component '" + component->name() + "'";
+        buildMathIdMap(info, idMap, item->resetValue());
+    }
+
+    // Maths.
+    info = "math in component '" + component->name() + "'";
+    buildMathIdMap(info, idMap, component->math());
+
+    // Imports.
+    if (component->isImport() && (component->importSource() != nullptr) && !component->importSource()->id().empty()) {
+        info = " - import source for component '" + component->name() + "'";
+        addIdMapItem(component->importSource()->id(), info, idMap);
+    }
+
+    // Connections.
+    if (!component->encapsulationId().empty()) {
+        info = " - encapsulation component_ref to component '" + component->name() + "'";
+        addIdMapItem(component->encapsulationId(), info, idMap);
+    }
+
+    // Child components.
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        buildComponentIdMap(component->component(c), idMap, reportedConnections);
+    }
+}
+
+void Validator::ValidatorImpl::buildMathIdMap(const std::string &infoRef, IdMap &idMap, const std::string &input)
+{
+    std::vector<XmlDocPtr> docs = multiRootXml(input);
+
+    for (const auto &doc : docs) {
+        XmlNodePtr node = doc->rootNode();
+        if (node == nullptr) {
+            return;
+        }
+        if (!node->isMathmlElement("math")) {
+            continue;
+        }
+        buildMathChildIdMap(node, infoRef, idMap);
+    }
+}
+
+void Validator::ValidatorImpl::buildMathChildIdMap(const XmlNodePtr &node, const std::string &infoRef, IdMap &idMap)
+{
+    std::string info;
+    XmlAttributePtr attribute = node->firstAttribute();
+    while (attribute != nullptr) {
+        if (attribute->isType("id")) {
+            std::string variable;
+            if (node->name() == "ci") {
+                if (node->firstChild() != nullptr) {
+                    variable = "'" + node->firstChild()->convertToString() + "' ";
+                }
+            }
+            info = " - MathML " + node->name() + " element " + variable + "in " + infoRef;
+            addIdMapItem(attribute->value(), info, idMap);
+        }
+        attribute = attribute->next();
+    }
+    XmlNodePtr childNode = node->firstChild();
+    while (childNode != nullptr) {
+        buildMathChildIdMap(childNode, infoRef, idMap);
+        childNode = childNode->next();
     }
 }
 
