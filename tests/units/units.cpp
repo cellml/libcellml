@@ -2500,8 +2500,10 @@ TEST(Units, scalingFactorBetweenSameUnits)
 {
     auto model = libcellml::Model::create("model");
     auto u1 = libcellml::Units::create("u1");
-    u1->addUnit("second", "milli");
+    auto u2 = libcellml::Units::create("u2");
+    u1->addUnit("u2");
     model->addUnits(u1);
+    model->addUnits(u2);
     auto scaling = libcellml::Units::scalingFactor(u1, u1);
     EXPECT_EQ(1.0, scaling);
 }
@@ -2518,6 +2520,20 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModels)
 
     auto scaling = libcellml::Units::scalingFactor(u1, u2);
     EXPECT_EQ(1.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("second", "milli");
+    model1->addUnits(u1);
+
+    auto u2 = libcellml::Units::create("units");
+    u2->addUnit("volt");
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(0.0, scaling);
 }
 
 TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModelsDifferentScale)
