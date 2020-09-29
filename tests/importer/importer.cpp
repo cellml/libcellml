@@ -577,7 +577,6 @@ TEST(Importer, resolveImportsUsingDifferentAPIModels)
     auto flatModel = importer->flattenModel(model);
     ASSERT_NE(nullptr, flatModel);
     EXPECT_EQ("vanilla", flatModel->component(0)->variable(0)->name());
-    ASSERT_NE(nullptr, model);
 
     // But now the flavour of the month changes, and you have a better definition for componentThatINeed
     // and unitsThatINeed.
