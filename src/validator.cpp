@@ -843,7 +843,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
                 IssuePtr issue = Issue::create();
                 issue->setDescription("LibXml2 error: " + doc->xmlError(i));
                 issue->setCause(Issue::Cause::XML);
-                issue->setReferenceRule(Issue::ReferenceRule::LIBXML2_ISSUE);
+                issue->setReferenceRule(Issue::ReferenceRule::XML);
                 mValidator->addIssue(issue);
             }
         }
@@ -853,7 +853,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
             issue->setCause(Issue::Cause::XML);
             issue->setComponent(component);
-            issue->setReferenceRule(Issue::ReferenceRule::LIBXML2_ISSUE);
+            issue->setReferenceRule(Issue::ReferenceRule::XML);
             mValidator->addIssue(issue);
             return;
         }
@@ -862,7 +862,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->setComponent(component);
             issue->setCause(Issue::Cause::XML);
-            issue->setReferenceRule(Issue::ReferenceRule::LIBXML2_ISSUE);
+            issue->setReferenceRule(Issue::ReferenceRule::XML);
             mValidator->addIssue(issue);
             return;
         }
