@@ -59,5 +59,5 @@ unset).";
     }
 }
 
-%include "libcellml/types.h"
+//%include "libcellml/types.h"
 %include "libcellml/entity.h"

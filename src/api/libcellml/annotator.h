@@ -594,7 +594,7 @@ public:
      * 
      * @return a @c std::multimap of @c std::strings, @c CellMLElement enums.
      */
-    std::multimap<std::string, CellMLElement> dictionary();
+    IdCellMLElementMap dictionary();
 
     /** 
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id

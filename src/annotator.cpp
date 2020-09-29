@@ -525,9 +525,9 @@ std::vector<std::string> Annotator::ids()
     return ids;
 }
 
-std::multimap<std::string, CellMLElement> Annotator::dictionary()
+IdCellMLElementMap Annotator::dictionary()
 {
-    std::multimap<std::string, CellMLElement> dict;
+    IdCellMLElementMap dict;
     for (auto &i : mPimpl->mIdList) {
         dict.insert(std::make_pair(i.first, i.second.first));
     }

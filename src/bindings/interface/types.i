@@ -3,7 +3,13 @@ Provides support for shared pointers declared in types.h
 
 Only meant to be included, shouldn't be passed to cmake as a module!
 */
+%module(package="libcellml") types
+
+%include <stdint.i>
+%include <std_multimap.i>
+%include <std_pair.i>
 %include <std_shared_ptr.i>
+%include <std_string.i>
 
 %shared_ptr(libcellml::Annotator)
 %shared_ptr(libcellml::Component)
@@ -25,6 +31,22 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Units)
 %shared_ptr(libcellml::Validator)
 %shared_ptr(libcellml::Variable)
+
+%{
+#include "libcellml/types.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+
+%}
+
+%include "libcellml/types.h"
+
+// Currently not able to define these templates here, still looking for a solution.
+//%template(UnitItem) std::pair<libcellml::UnitsPtr, size_t>;
+//%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;
+%template(IdCellMLElementMap) std::multimap< std::string, libcellml::CellMLElement>;
 
 // Shared typemaps
 
