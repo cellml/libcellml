@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import" id="sin_approximations_import">
+<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import">
 
 
 
@@ -12,12 +12,12 @@
     <component name="parabolic_approx_sin" component_ref="sin"/>
   </import>
 
-  <component name="main" id="main">
-    <variable id="x" name="x" units="dimensionless" interface="public_and_private"/>
-    <variable id="sin" name="sin1" units="dimensionless" interface="public_and_private"/>
-    <variable id="deriv_approx" units="dimensionless" name="sin2" interface="public_and_private"/>
-    <variable id="deriv_approx_initial_value" units="dimensionless" name="deriv_approx_initial_value" initial_value="0" interface="public_and_private"/>
-    <variable id="parabolic_approx" name="sin3" units="dimensionless" interface="public_and_private"/>
+  <component name="main">
+    <variable name="x" units="dimensionless" interface="public_and_private"/>
+    <variable name="sin1" units="dimensionless" interface="public_and_private"/>
+    <variable units="dimensionless" name="sin2" interface="public_and_private"/>
+    <variable units="dimensionless" name="deriv_approx_initial_value" initial_value="0" interface="public_and_private"/>
+    <variable name="sin3" units="dimensionless" interface="public_and_private"/>
 	<variable name="C" units="dimensionless" interface="public_and_private" initial_value="0.75"/>
   </component>
 
