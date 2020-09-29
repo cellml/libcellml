@@ -495,9 +495,6 @@ bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
     if (mPimpl->mInterfaceType == "public_and_private") {
         return true;
     }
-    if ((mPimpl->mInterfaceType == "none") || mPimpl->mInterfaceType.empty()) {
-        return false;
-    }
     return testString == mPimpl->mInterfaceType;
 }
 

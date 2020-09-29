@@ -1745,14 +1745,6 @@ TEST(Variable, variableInterfaceDontDowngradeFromPublicAndPrivate)
 
 TEST(Variable, minimumInterfaceType)
 {
-    /*
-     *    argument : stored interface type = return value
-     *    (anything) : public_and_private = true
-     *    private : public = false
-     *    public : private = false
-     *    public, private, public_and_private : none = false
-     *    none : (anything) = true
-     */
     auto vPublic = libcellml::Variable::create("vPublic");
     vPublic->setInterfaceType("public");
 
