@@ -1606,10 +1606,9 @@ TEST(Validator, validMathCnElementsMissingCellMLNamespace)
 
 TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
+    const std::vector<std::string> expectedIssues = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+        "Variable 'tomayto' in component 'comp1' has units of 'testunit1' and an equivalent variable 'tomahto' in component 'comp2' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
     };
 
     libcellml::ValidatorPtr validator = libcellml::Validator::create();
@@ -1644,12 +1643,6 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     v2->setUnits(u2);
     m->addUnits(u1);
     m->addUnits(u2);
-
-    const std::vector<std::string> expectedIssues = {
-        "Variable 'tomahto' in component 'comp2' has a units reference 'testunit2' which is neither standard nor defined in the parent model.",
-        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' in component 'comp1' has units of 'testunit1' and an equivalent variable 'tomahto' in component 'comp2' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-    };
 
     // This one is now an issue.
     libcellml::Variable::addEquivalence(v1, v2);
@@ -2647,38 +2640,28 @@ TEST(Validator, variableInterfaceShouldBePublicAndPrivate)
     EXPECT_EQ_ISSUES(expectedIssues, validator);
 }
 
-TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
+TEST(Validator, importedUnitsFoundByValidator)
 {
-    auto parser = libcellml::Parser::create();
+    auto model = libcellml::Model::create("model");
+    auto component = libcellml::Component::create("component");
+    auto importSource = libcellml::ImportSource::create();
+    importSource->setUrl("somewhere.cellml");
+    model->addImportSource(importSource);
+    model->addComponent(component);
+
+    auto mV = libcellml::Units::create("mV");
+    mV->setImportReference("mV");
+    mV->setImportSource(importSource);
+    model->addUnits(mV);
+
+    auto v = libcellml::Variable::create("variable");
+    v->setUnits(mV);
+    component->addVariable(v);
+
+    EXPECT_EQ(model, mV->parent());
+    EXPECT_TRUE(model->hasUnits("mV"));
+
     auto validator = libcellml::Validator::create();
-
-    std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                     "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
-                     "  <units name=\"millisecond\">"
-                     "    <unit prefix=\"milli\" units=\"second\"/>"
-                     "  </units>"
-                     "  <component name=\"IonChannel\">"
-                     "    <variable name=\"t\" units=\"millisecond\"/>"
-                     "  </component>"
-                     "</model>";
-
-    auto model = parser->parseModel(in);
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(0), validator->issueCount());
-
-    auto nGate = libcellml::Component::create("nGate");
-    model->addComponent(nGate);
-
-    // Adding the variable *before* its units are added results in unfound units in the validator
-    auto t2 = libcellml::Variable::create("t2");
-    nGate->addVariable(t2);
-    t2->setUnits("millisecond");
-
-    validator->validateModel(model);
-    EXPECT_EQ(size_t(1), validator->errorCount());
-
-    // Linking the units to the model fixes the problem
-    model->linkUnits();
     validator->validateModel(model);
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
