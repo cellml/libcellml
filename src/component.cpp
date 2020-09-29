@@ -445,17 +445,9 @@ bool doRequiresImport(const ComponentPtr &thisComponent)
     return false;
 }
 
-bool Component::requiresImports() const
+bool Component::requiresImports()
 {
-    if (isImport()) {
-        return true;
-    }
-    for (size_t c = 0; c < componentCount(); ++c) {
-        if (doRequiresImport(component(c))) {
-            return true;
-        }
-    }
-    return false;
+    return doRequiresImport(shared_from_this());
 }
 
 } // namespace libcellml
