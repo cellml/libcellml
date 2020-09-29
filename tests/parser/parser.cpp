@@ -1582,7 +1582,7 @@ TEST(Parser, parseIds)
     EXPECT_EQ("vid", model->component("component2")->variable("variable1")->id());
 }
 
-TEST(Parser, parseIdsOnEverythingButMath)
+TEST(Parser, parseIdsOnEntities)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1651,6 +1651,100 @@ TEST(Parser, parseIdsOnEverythingButMath)
     EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
     EXPECT_EQ("tv1id", model->component("component2")->reset(0)->testValueId());
     EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
+
+    libcellml::PrinterPtr printer = libcellml::Printer::create();
+    EXPECT_EQ(in, printer->printModel(model));
+}
+
+TEST(Parser, parseIdsOnEverythingExceptMath)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"mid\">\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i1id\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>\n"
+        "  </import>\n"
+        "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" id=\"i2id\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>\n"
+        "  </import>\n"
+        "  <units name=\"units2\" id=\"u2id\">\n"
+        "    <unit units=\"second\" id=\"unit1id\"/>\n"
+        "  </units>\n"
+        "  <units name=\"units3\" id=\"u3id\"/>\n"
+        "  <units name=\"blob\"/>\n"
+        "  <component name=\"component2\" id=\"c2id\">\n"
+        "    <variable name=\"variable1\" units=\"blob\" interface=\"private\" id=\"v1id\"/>\n"
+        "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"r1id\">\n"
+        "      <test_value id=\"tv1id\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          <apply>\n"
+        "            <eq/>\n"
+        "            <ci>variable1</ci>\n"
+        "            <cn>3.4</cn>\n"
+        "          </apply>\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value id=\"rv1id\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          <apply>\n"
+        "            <eq/>\n"
+        "            <ci>variable1</ci>\n"
+        "            <cn>9.0</cn>\n"
+        "          </apply>\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>variable1</ci>\n"
+        "        <cn>9.0</cn>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "  <component name=\"component3\" id=\"c3id\">\n"
+        "    <variable name=\"variable2\" units=\"ampere\" interface=\"public\" id=\"c3v2id\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component2\" component_2=\"component3\" id=\"con1id\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\" id=\"map1id\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation id=\"encap1id\">\n"
+        "    <component_ref component=\"component2\" id=\"cref1id\">\n"
+        "      <component_ref component=\"component3\" id=\"crefchild1id\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    libcellml::ParserPtr parser = libcellml::Parser::create();
+    libcellml::ModelPtr model = parser->parseModel(in);
+
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    // Entity objects.
+    EXPECT_EQ("mid", model->id());
+    EXPECT_EQ("c1id", model->component("component1")->id());
+    EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
+    EXPECT_EQ("u1id", model->units("units1")->id());
+    EXPECT_EQ("i2id", model->units("units1")->importSource()->id());
+    EXPECT_EQ("u2id", model->units("units2")->id());
+    EXPECT_EQ("c2id", model->component("component2")->id());
+    EXPECT_EQ("u3id", model->units("units3")->id());
+    EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
+    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("tv1id", model->component("component2")->reset(0)->testValueId());
+    EXPECT_EQ("rv1id", model->component("component2")->reset(0)->resetValueId());
+
+    // Non-entity objects: connections, mappings, encapsulation, and maths.
+    EXPECT_EQ("encap1id", model->encapsulationId());
+    EXPECT_EQ("map1id", libcellml::Variable::equivalenceMappingId(
+                            model->component("component2")->variable("variable1"),
+                            model->component("component3")->variable("variable2")));
+    EXPECT_EQ("con1id", libcellml::Variable::equivalenceConnectionId(
+                            model->component("component2")->variable("variable1"),
+                            model->component("component3")->variable("variable2")));
+    EXPECT_EQ("cref1id", model->component("component2")->encapsulationId());
+    EXPECT_EQ("crefchild1id", model->component("component3")->encapsulationId());
 
     libcellml::PrinterPtr printer = libcellml::Printer::create();
     EXPECT_EQ(in, printer->printModel(model));
