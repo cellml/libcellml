@@ -63,7 +63,8 @@ public:
      * @brief Test to determine if @c AnalyserModel is a valid model.
      *
      * Test to determine if @c AnalyserModel is a valid model, return @c true if
-     * it is a valid model and @c false otherwise.
+     * it is a valid model (i.e. either an algebraic or an ODE model) and
+     * @c false otherwise.
      *
      * @return @c true if @c AnalyserModel is a valid model, @c false otherwise.
      */
