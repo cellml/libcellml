@@ -57,8 +57,6 @@ struct Importer::ImporterImpl
 
     ImportLibrary mLibrary;
 
-    bool doResolveImports(ModelPtr &model, const std::string &baseFile);
-
     void makeIssueCyclicDependency(const ModelPtr &model, Type type,
                                    std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
 
@@ -350,7 +348,7 @@ void Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
     std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
 }
 
-bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string &baseFile)
+bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
 {
     std::vector<std::tuple<std::string, std::string, std::string>> history = {};
     bool status = true;
@@ -358,22 +356,17 @@ bool Importer::ImporterImpl::doResolveImports(ModelPtr &model, const std::string
     for (size_t i = 0; i < model->importSourceCount(); ++i) {
         auto imp = model->importSource(i);
         for (size_t u = 0; u < imp->unitsCount(); ++u) {
-            if (!fetchUnits(imp->units(u), baseFile, history)) {
+            if (!mPimpl->fetchUnits(imp->units(u), baseFile, history)) {
                 status = false;
             }
         }
         for (size_t c = 0; c < imp->componentCount(); ++c) {
-            if (!fetchComponent(imp->component(c), baseFile, history)) {
+            if (!mPimpl->fetchComponent(imp->component(c), baseFile, history)) {
                 status = false;
             }
         }
     }
     return status;
-}
-
-bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
-{
-    return mPimpl->doResolveImports(model, baseFile);
 }
 
 void clearComponentImports(const ComponentPtr &component)
