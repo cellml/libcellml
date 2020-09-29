@@ -19,6 +19,7 @@ limitations under the License.
 #include <any>
 #include <map>
 #include <memory>
+#include <utility>
 
 #include "libcellml/enums.h"
 
@@ -71,5 +72,7 @@ using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared v
 using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
 using UnitItem = std::pair<UnitsPtr, size_t>;
 using AnyItem = std::pair<CellMLElement, std::any>;
+
+using IdCellMLElementMap = std::multimap<std::string, CellMLElement>;
 
 } // namespace libcellml
