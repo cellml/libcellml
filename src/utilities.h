@@ -632,6 +632,7 @@ void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &e
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
 void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
 NameList componentNames(const ModelPtr &model);
+NameList unitsNamesUsed(const ComponentPtr &component);
 IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
 EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
