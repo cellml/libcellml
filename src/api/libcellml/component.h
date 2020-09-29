@@ -417,12 +417,12 @@ public:
     ComponentPtr clone() const;
 
     /**
-     * @brief Determines whether this component or its descendents
+     * @brief Determines whether this component or its descendants
      *        contain imported components.
-     * 
-     * Determines whether this component or its descendents contain
+     *
+     * Determines whether this component or its descendants contain
      * imported components.
-     * 
+     *
      * @return @c true when imports are required, @c false otherwise.
      */
     bool requiresImports() const;

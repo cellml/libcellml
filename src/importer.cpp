@@ -200,7 +200,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
     }
 
     if (!importComponent->isImport()) {
-        // This component is not an import, but a descendent is.
+        // This component is not an import, but a descendant is.
         for (size_t c = 0; c < importComponent->componentCount(); ++c) {
             if (!fetchComponent(importComponent->component(c), baseFile, history)) {
                 return false;
