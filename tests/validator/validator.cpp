@@ -535,7 +535,7 @@ TEST(Validator, validMathInMultipleMathMLBlocksInvalidMathTagDuplicateIDs)
         "    </apply>\n"
         "  </apply>\n"
         "</math>\n";
-    const std::vector<std::string> e = {
+    const std::vector<std::string> expectedIssues = {
         "Math root node is of invalid type 'banana' on component 'componentName'. A valid math root node should be of type 'math'.",
         "Duplicated id attribute 'myId' has been found in:\n"
         " - MathML cn element in math in component 'componentName'; and\n"
@@ -559,10 +559,8 @@ TEST(Validator, validMathInMultipleMathMLBlocksInvalidMathTagDuplicateIDs)
     m->addComponent(c);
 
     v->validateModel(m);
-    printIssues(v);
-    EXPECT_EQ(size_t(2), v->errorCount());
-    EXPECT_EQ(e[0], v->error(0)->description());
-    EXPECT_EQ(e[1], v->error(1)->description());
+
+    EXPECT_EQ_ISSUES(expectedIssues, v);
 }
 
 TEST(Validator, invalidMath)
