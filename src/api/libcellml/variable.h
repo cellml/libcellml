@@ -448,9 +448,9 @@ public:
      *
      * @param interfaceType The interface type to test for.
      *
-     * @return @c true if the interface type is acceptable, @c false otherwise.
+     * @return @c true if the interface type is permitted, @c false otherwise.
      */
-    bool hasMinimumInterfaceType(InterfaceType interfaceType) const;
+    bool permitsInterfaceType(InterfaceType interfaceType) const;
 
     /**
      * @brief Create a clone of this variable.

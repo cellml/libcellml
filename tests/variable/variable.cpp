@@ -1768,34 +1768,34 @@ TEST(Variable, minimumInterfaceType)
     auto vEmpty = libcellml::Variable::create("vEmpty");
 
     // Stored public_and_private meets all requirements.
-    EXPECT_TRUE(vPublicAndPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::NONE));
-    EXPECT_TRUE(vPublicAndPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
-    EXPECT_TRUE(vPublicAndPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
-    EXPECT_TRUE(vPublicAndPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+    EXPECT_TRUE(vPublicAndPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::NONE));
+    EXPECT_TRUE(vPublicAndPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+    EXPECT_TRUE(vPublicAndPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+    EXPECT_TRUE(vPublicAndPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
 
     // Stored private meets private and none requirements.
-    EXPECT_TRUE(vPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::NONE));
-    EXPECT_TRUE(vPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
-    EXPECT_FALSE(vPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
-    EXPECT_FALSE(vPrivate->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+    EXPECT_TRUE(vPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::NONE));
+    EXPECT_TRUE(vPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+    EXPECT_FALSE(vPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+    EXPECT_FALSE(vPrivate->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
 
     // Stored public meets public and none requirements.
-    EXPECT_TRUE(vPublic->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::NONE));
-    EXPECT_FALSE(vPublic->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
-    EXPECT_TRUE(vPublic->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
-    EXPECT_FALSE(vPublic->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+    EXPECT_TRUE(vPublic->permitsInterfaceType(libcellml::Variable::InterfaceType::NONE));
+    EXPECT_FALSE(vPublic->permitsInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+    EXPECT_TRUE(vPublic->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+    EXPECT_FALSE(vPublic->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
 
     // Stored none meets none requirements.
-    EXPECT_TRUE(vNone->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::NONE));
-    EXPECT_FALSE(vNone->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
-    EXPECT_FALSE(vNone->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
-    EXPECT_FALSE(vNone->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+    EXPECT_TRUE(vNone->permitsInterfaceType(libcellml::Variable::InterfaceType::NONE));
+    EXPECT_FALSE(vNone->permitsInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+    EXPECT_FALSE(vNone->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+    EXPECT_FALSE(vNone->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
 
     // Stored empty meets none requirements.
-    EXPECT_TRUE(vEmpty->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::NONE));
-    EXPECT_FALSE(vEmpty->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
-    EXPECT_FALSE(vEmpty->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
-    EXPECT_FALSE(vEmpty->hasMinimumInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
+    EXPECT_TRUE(vEmpty->permitsInterfaceType(libcellml::Variable::InterfaceType::NONE));
+    EXPECT_FALSE(vEmpty->permitsInterfaceType(libcellml::Variable::InterfaceType::PRIVATE));
+    EXPECT_FALSE(vEmpty->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC));
+    EXPECT_FALSE(vEmpty->permitsInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE));
 }
 
 TEST(Variable, connectionsPersistAfterImporting)
