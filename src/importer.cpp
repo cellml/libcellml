@@ -180,8 +180,9 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
     if (mLibrary.count(url) == 0) {
         url = resolvePath(url, baseFile);
     }
-    if (!checkForCycles(mLibrary[url], history)) {
-        makeIssueCyclicDependency(mLibrary[url], type, history);
+    auto model = mLibrary[url];
+    if (!checkForCycles(model, history)) {
+        makeIssueCyclicDependency(model, type, history);
         return false;
     }
     return true;
@@ -247,7 +248,6 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
                 return false;
             }
         }
-
     } else {
         auto issue = Issue::create();
         issue->setDescription("Import of component '" + importComponent->name() + "' requires component named '" + importComponent->importReference() + "' which was not found.");
