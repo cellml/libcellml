@@ -673,8 +673,6 @@ TEST(Importer, importFilesWithSameName)
 
     // 4 items in the library.
     EXPECT_EQ(size_t(4), importer->libraryCount());
-    // 3 of them are resolved from external locations -> have absolute URLs as keys.
-    // EXPECT_EQ(size_t(3), importer->externalDependencyCount());
 
     EXPECT_FALSE(model->hasUnresolvedImports());
 
