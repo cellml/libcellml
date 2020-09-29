@@ -289,8 +289,9 @@ class ComponentTestCase(unittest.TestCase):
     def test_resolved(self):
         from libcellml import Component
         b = Component("banana")
-        b.setResolved(False)
         self.assertFalse(b.isResolved())
+        b.setResolved(True)
+        self.assertTrue(b.isResolved())
 
 if __name__ == '__main__':
     unittest.main()
