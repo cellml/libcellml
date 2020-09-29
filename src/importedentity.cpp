@@ -33,9 +33,6 @@ struct ImportedEntity::ImportedEntityImpl
 ImportedEntity::ImportedEntity()
     : mPimpl(new ImportedEntityImpl())
 {
-    mPimpl->mImportSource.reset();
-    mPimpl->mImportReference = "";
-    mPimpl->mIsResolved = false;
 }
 
 ImportedEntity::~ImportedEntity()

@@ -447,12 +447,11 @@ bool doRequiresImport(const ComponentPtr &thisComponent)
 
 bool Component::requiresImports() const
 {
-    auto thisComponent = shared_from_this();
-    if (thisComponent->isImport()) {
+    if (isImport()) {
         return true;
     }
-    for (size_t c = 0; c < thisComponent->componentCount(); ++c) {
-        if (doRequiresImport(thisComponent->component(c))) {
+    for (size_t c = 0; c < componentCount(); ++c) {
+        if (doRequiresImport(component(c))) {
             return true;
         }
     }
