@@ -323,23 +323,27 @@ void Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
                                                        Type type,
                                                        std::vector<std::tuple<std::string, std::string, std::string>> &history) const
 {
-    std::string msgStart = "Cyclic dependencies were found when attempting to resolve "
-                           + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
-                           + model->name() + "'. The dependency loop is:\n";
-    std::string msg = ".";
-    std::string end1 = "; and\n";
-    std::string end2 = ".";
+    std::string msg = "Cyclic dependencies were found when attempting to resolve "
+                      + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
+                      + model->name() + "'. The dependency loop is:\n";
     std::tuple<std::string, std::string, std::string> h;
     auto hSize = history.size();
+    std::string typeString = (type == Type::UNITS) ? "units" : "component";
     for (size_t i = 0; i < hSize; ++i) {
-        h = history[hSize - i - 1];
-        msg.insert(0, end1 + " - " + std::string((type == Type::UNITS) ? "units" : "component") + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'");
-        end1 = ";\n";
-        end2 = "";
+        h = history[i];
+        msg += " - " + typeString + " '" + std::get<0>(h) + "' is imported from '" + std::get<1>(h) + "' in '" + std::get<2>(h) + "'";
+        if (i != hSize - 1) {
+            msg += ";";
+            if (i == hSize - 2) {
+                msg += " and";
+            }
+            msg += "\n";
+        } else {
+            msg += ".";
+        }
     }
-    msg.erase(0, 2);
     auto issue = Issue::create();
-    issue->setDescription(msgStart + msg);
+    issue->setDescription(msg);
     issue->setLevel(libcellml::Issue::Level::WARNING);
     issue->setCause(libcellml::Issue::Cause::IMPORT);
     mImporter->addIssue(issue);
