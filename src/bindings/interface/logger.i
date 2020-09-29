@@ -4,6 +4,7 @@
 
 %include <std_shared_ptr.i>
 %include <std_vector.i>
+
 %import "types.i"
 
 %feature("docstring") libcellml::Logger
