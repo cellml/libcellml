@@ -88,6 +88,7 @@ convert(Issue, 'Level', [
 ])
 convert(Issue, 'ReferenceRule', [
     'UNDEFINED',
+    'XML',
     'DATA_REPR_IDENTIFIER_UNICODE',
     'DATA_REPR_IDENTIFIER_LATIN_ALPHANUM',
     'DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM',
