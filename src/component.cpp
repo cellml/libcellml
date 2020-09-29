@@ -432,4 +432,22 @@ ComponentPtr Component::clone() const
     return c;
 }
 
+bool doRequiresImport(const ComponentPtr &thisComponent)
+{
+    if (thisComponent->isImport()) {
+        return true;
+    }
+    for (size_t c = 0; c < thisComponent->componentCount(); ++c) {
+        if (doRequiresImport(thisComponent->component(c))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Component::requiresImports()
+{
+    return doRequiresImport(shared_from_this());
+}
+
 } // namespace libcellml
