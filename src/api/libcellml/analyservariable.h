@@ -38,9 +38,9 @@ public:
      * A variable can be of one of the following types:
      *  - VARIABLE_OF_INTEGRATION: the variable is the variable of integration;
      *  - STATE: the variable is a state;
-     *  - CONSTANT: the variable is a constant;
-     *  - COMPUTED_CONSTANT: the variable is a computed constant (e.g. x = y+z
-     *    where y and z are constants); or
+     *  - CONSTANT: the variable is a constant (e.g. x = 3);
+     *  - COMPUTED_CONSTANT: the variable is a computed constant (e.g. x = 3+5,
+     *    x = 3+z, x = y+z where y and z are constants); or
      *  - ALGEBRAIC: the variable is an algebraic variable.
      */
     enum class Type
