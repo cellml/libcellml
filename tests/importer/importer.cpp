@@ -720,8 +720,8 @@ TEST(Importer, importSourceGetSetModel)
 
 TEST(Importer, resolveWithMissingItems)
 {
-    std::vector<std::string> e = {"Import of units 'i_dont_exist' requires units named 'i_dont_exist' which were not found.",
-                                  "Import of component 'i_dont_exist' requires component named 'i_dont_exist' which was not found."};
+    std::vector<std::string> e = {"Import of units 'i_dont_exist' requires units named 'i_dont_exist' which cannot be found.",
+                                  "Import of component 'i_dont_exist' requires component named 'i_dont_exist' which cannot be found."};
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_nonexistent_items.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -734,7 +734,7 @@ TEST(Importer, resolveWithMissingItems)
 
 TEST(Importer, resolveWithMissingChildComponents)
 {
-    std::string e = "Import of component 'child' requires component named 'i_dont_exist' which was not found.";
+    std::string e = "Import of component 'child' requires component named 'i_dont_exist' which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -758,7 +758,7 @@ TEST(Importer, resolveWithPresentChildUnits)
 
 TEST(Importer, resolveWithMissingChildUnits)
 {
-    std::string e = "Import of units 'units1' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which were not found.";
+    std::string e = "Import of units 'units1' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_units_with_missing_children.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
@@ -771,7 +771,7 @@ TEST(Importer, resolveWithMissingChildUnits)
 
 TEST(Importer, resolveWithMissingChildDependentUnits)
 {
-    std::string e = "Import of component 'component' from 'concrete' requires units named 'other_units_that_dont_exist' which were not found.";
+    std::string e = "Import of component 'component' from 'concrete' requires units named 'other_units_that_dont_exist' which cannot be found.";
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_units.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
