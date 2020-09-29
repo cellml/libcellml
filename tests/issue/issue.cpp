@@ -282,6 +282,12 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION:
         EXPECT_EQ("", e->referenceHeading());
         break;
+    case libcellml::Issue::ReferenceRule::LIBXML2_ISSUE:
+        EXPECT_EQ("", e->referenceHeading());
+        break;
+    case libcellml::Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE:
+        EXPECT_EQ("3.10.8", e->referenceHeading());
+        break;
     }
 }
 
@@ -502,7 +508,13 @@ TEST(Issue, referenceRule)
     e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
     ++count;
     testReferenceRule(e);
-    EXPECT_EQ(size_t(71), count);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
+    ++count;
+    testReferenceRule(e);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::LIBXML2_ISSUE);
+    ++count;
+    testReferenceRule(e);
+    EXPECT_EQ(size_t(73), count);
 }
 
 TEST(Issue, createModelWarning)
