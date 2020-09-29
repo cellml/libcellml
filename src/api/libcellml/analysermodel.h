@@ -82,9 +82,11 @@ public:
     /**
      * @brief Get the @c Variable of integration.
      *
-     * Return the @c Variable of integration of the @c AnalyserModel.
+     * Return the @c Variable of integration of the @c AnalyserModel, in the
+     * case of an ODE model, @c nullptr otherwise.
      *
-     * @return The @c Variable of integration.
+     * @return The @c Variable of integration, if an ODE model, @c nullptr
+     * otherwise.
      */
     AnalyserVariablePtr voi() const;
 
