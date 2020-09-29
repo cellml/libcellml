@@ -59,6 +59,9 @@ class ValidatorTestCase(unittest.TestCase):
 
         # Library should contain left, right, and one instance (not two) of the point.
         self.assertEqual(3, i.libraryCount())
+        self.assertEqual(resource_path("importer/diamond_left.cellml"), i.key(0))
+        self.assertEqual(resource_path("importer/diamond_point.cellml"), i.key(1))
+        self.assertEqual(resource_path("importer/diamond_right.cellml"), i.key(2))
 
         # Access library items by their URL.
         left = i.library(resource_path("importer/diamond_left.cellml"))
@@ -66,7 +69,7 @@ class ValidatorTestCase(unittest.TestCase):
         self.assertEqual(file_contents("importer/diamond_left.cellml"), printer.printModel(left))
 
 
-    def test_add_moodel(self):
+    def test_add_model(self):
         from libcellml import Component, Importer, Model, Parser
 
         parser = Parser()
@@ -89,7 +92,7 @@ class ValidatorTestCase(unittest.TestCase):
         self.assertEqual(0, importer.issueCount())
         self.assertFalse(model.hasUnresolvedImports())
 
-    def test_replace_moodel(self):
+    def test_replace_model(self):
         from libcellml import Component, Importer, Model, Parser
 
         parser = Parser()
@@ -114,19 +117,6 @@ class ValidatorTestCase(unittest.TestCase):
 
         self.assertEqual(0, importer.issueCount())
         self.assertFalse(model.hasUnresolvedImports())
-
-    def test_dependencies(self):
-        from libcellml import Importer, Parser
-
-        parser = Parser()
-        importer = Importer()
-
-        model = parser.parseModel(file_contents("importer/diamond.cellml"))
-
-        importer.resolveImports(model, resource_path("importer/"))
-
-        self.assertEqual(3, importer.externalDependencyCount())
-        self.assertEqual(("", ""), importer.externalDependency(999))
 
     def test_flatten(self):
         from libcellml import Importer, Parser
