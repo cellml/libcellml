@@ -96,4 +96,3 @@
 
 %include "libcellml/types.h"
 %include "libcellml/reset.h"
-
