@@ -95,6 +95,26 @@ public:
      */
     void setImportReference(const std::string &reference);
 
+    /**
+     * @brief Test whether this imported entity has been resolved.
+     *
+     * Returns @c true if the import and any dependencies are resolved, otherwise @c false.
+     *
+     * @return @c true if the import is resolved, @c false otherwise.
+     */
+    bool isResolved() const;
+
+    /**
+     * @brief Set the resolution status of this imported entity.
+     *
+     * Set the resolution status of this imported entity.  When @c true, this 
+     * indicates that the item and all its dependent children have been resolved.
+     * Otherwise, @c false.
+     * 
+     * @param status A boolean indicating import resolution status.
+     */
+    void setResolved(bool status);
+
 protected:
     ImportedEntity(); /**< Constructor */
 
