@@ -147,22 +147,6 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(8, annotator.duplicateCount("duplicateId1"))
         self.assertEqual(7, annotator.duplicateCount("duplicateId3"))
 
-    def test_dictionary(self):
-        from libcellml import Annotator, Model, Parser
-
-        annotator = Annotator()
-        parser = Parser()
-
-        model = parser.parseModel(file_contents("annotator/unique_ids.cellml"))
-        annotator.setModel(model)
-
-        self.assertIn("component_ref_1", annotator.dictionary())
-
-        model = parser.parseModel(file_contents("annotator/lots_of_duplicate_ids.cellml"))
-        annotator.setModel(model)
-
-        self.assertIn("duplicateId4", annotator.dictionary())
-
     def test_has_model(self):
         from libcellml import Annotator, Model, Parser
 
@@ -543,61 +527,6 @@ class AnnotatorTestCase(unittest.TestCase):
         v_p[1] = v2
         self.assertEqual("ray", v_p.first.name())
         self.assertEqual("charles", v_p.second.name())
-
-    def test_id_cellmlelement_map_coverage(self):
-        from libcellml import Annotator, Model, Parser, CellMLElement
-
-        annotator = Annotator()
-        parser = Parser()
-
-        model = parser.parseModel(file_contents("annotator/unique_ids.cellml"))
-        annotator.setModel(model)
-
-        d = annotator.dictionary()
-        self.assertEqual(24, len(d))
-
-        def cover_swig_dict(d):
-            print()
-            print('=============')
-            print(d)
-            print(CellMLElement)
-            print(dir(CellMLElement))
-            print(CellMLElement.COMPONENT)
-            print(type(CellMLElement.COMPONENT))
-            print(d['component_2'])
-            v = d['component_2']
-            print(dir(v))
-            print(type(v))
-            it = d.iterator()
-            print(dir(it))
-
-            d.end()
-            d.begin()
-            d.rend()
-            d.rbegin()
-            self.assertEqual(1, d.count('component_2'))
-            self.assertFalse(d.empty())
-            d.lower_bound('component_2')
-            d.upper_bound('component_2')
-            d.equal_range('component_2')
-
-            a = d.find('component_2').value()
-            print(" = here =")
-            print(a)
-            print(dir(a))
-            print(type(a))
-            self.assertEqual(3, a[1])
-
-            for entry in d:
-                pass
-
-            for key, value in d.iteritems():
-                print(key, value)
-
-            d.erase('component_2')
-            d.clear()
-
-        #cover_swig_dict()
 
 
 if __name__ == '__main__':

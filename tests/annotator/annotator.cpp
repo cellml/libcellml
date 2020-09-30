@@ -1669,43 +1669,6 @@ TEST(Annotator, listAllIds)
     EXPECT_EQ(std::vector<std::string>(), ids);
 }
 
-TEST(Annotator, retrieveDictionary)
-{
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(modelStringUniqueIds);
-    auto annotator = libcellml::Annotator::create();
-    std::multimap<std::string, libcellml::CellMLElement> expectedDict = {
-        {"component_1", libcellml::CellMLElement::COMPONENT},
-        {"component_2", libcellml::CellMLElement::COMPONENT},
-        {"component_3", libcellml::CellMLElement::COMPONENT},
-        {"component_ref_1", libcellml::CellMLElement::COMPONENT_REF},
-        {"component_ref_2", libcellml::CellMLElement::COMPONENT_REF},
-        {"connection_1", libcellml::CellMLElement::CONNECTION},
-        {"encapsulation_1", libcellml::CellMLElement::ENCAPSULATION},
-        {"import_1", libcellml::CellMLElement::IMPORT},
-        {"import_2", libcellml::CellMLElement::IMPORT},
-        {"map_variables_1", libcellml::CellMLElement::MAP_VARIABLES},
-        {"map_variables_2", libcellml::CellMLElement::MAP_VARIABLES},
-        {"model_1", libcellml::CellMLElement::MODEL},
-        {"reset_1", libcellml::CellMLElement::RESET},
-        {"reset_value_1", libcellml::CellMLElement::RESET_VALUE},
-        {"test_value_1", libcellml::CellMLElement::TEST_VALUE},
-        {"unit_1", libcellml::CellMLElement::UNIT},
-        {"units_1", libcellml::CellMLElement::UNITS},
-        {"units_2", libcellml::CellMLElement::UNITS},
-        {"units_3", libcellml::CellMLElement::UNITS},
-        {"units_4", libcellml::CellMLElement::UNITS},
-        {"variable_1", libcellml::CellMLElement::VARIABLE},
-        {"variable_2", libcellml::CellMLElement::VARIABLE},
-        {"variable_3", libcellml::CellMLElement::VARIABLE},
-        {"variable_4", libcellml::CellMLElement::VARIABLE},
-    };
-
-    annotator->setModel(model);
-    auto dict = annotator->dictionary();
-    EXPECT_EQ(expectedDict, dict);
-}
-
 TEST(Annotator, retrieveDuplicateIdItemLists)
 {
     std::vector<std::string> ids = {"duplicateId1", "duplicateId2", "duplicateId3", "duplicateId4"};
