@@ -197,7 +197,10 @@ bool updateUnitMultiplier(const UnitsPtr &units, int direction, double &multipli
                 if (model != nullptr) {
                     auto refUnits = model->units(ref);
                     double branchMult = 0.0;
-                    updated = updateUnitMultiplier(refUnits, 1, branchMult);
+                    // Return false when we can't find a valid prefix.
+                    if (!updateUnitMultiplier(refUnits, 1, branchMult)) {
+                        return false;
+                    }
                     // Make the direction positive on all branches, direction is only applied at the end.
                     localMultiplier += mult + branchMult * exp + prefixMult;
                 } else {
@@ -454,16 +457,11 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
         double multiplier = 0.0;
-
         updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
         updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
 
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
-        }
-
-        if (units1->name() == units2->name()) {
-            return 1.0;
         }
     }
 

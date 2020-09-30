@@ -164,6 +164,7 @@ public:
         UNDEFINED,
 
         // Specification errors.
+        XML,
         DATA_REPR_IDENTIFIER_UNICODE,
         DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
         DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM,
@@ -237,8 +238,6 @@ public:
 
         // Issues not present in the normative specification:
         MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
-        LIBXML2_ISSUE,
-
     };
 
     /**
