@@ -6,7 +6,7 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %module(package="libcellml") types
 
 %include <stdint.i>
-%include <std_multimap.i>
+%include <my_std_multimap.i>
 %include <std_pair.i>
 %include <std_shared_ptr.i>
 %include <std_string.i>
@@ -32,6 +32,8 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Validator)
 %shared_ptr(libcellml::Variable)
 
+//%import "enums.i"
+
 %{
 #include "libcellml/types.h"
 %}
@@ -43,10 +45,16 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 
 %include "libcellml/types.h"
 
+namespace libcellml {
+//enum CellMLElement {COMPONENT, COMPONENT_REF, MAR, APR, MAY, JUN, JUL, AUG,
+//             SEP, OCT, NOV, DEC, UNITS, VARIABLE};
+}
+
+//typedef std::multimap< std::string, libcellml::CellMLElement>  IdCellMLElementMapSWIG;
+%template() std::multimap< std::string, libcellml::CellMLElement>;
 // Currently not able to define these templates here, still looking for a solution.
 //%template(UnitItem) std::pair<libcellml::UnitsPtr, size_t>;
 //%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;
-%template(IdCellMLElementMap) std::multimap< std::string, libcellml::CellMLElement>;
 
 // Shared typemaps
 
