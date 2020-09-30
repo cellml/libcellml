@@ -25,6 +25,7 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/variable.h"
 
+#include "commonutils.h"
 #include "internaltypes.h"
 
 namespace libcellml {
@@ -361,27 +362,6 @@ bool areEqual(double value1, double value2);
  * @return The @c std::string SHA-1 value.
  */
 std::string sha1(const std::string &string);
-
-/**
- * @brief Get the @c Model that the entity is owned by.
- *
- * Travel up the entities hierarchy to find the owning model. If
- * the entity doesn't have an owning model return the @c nullptr.
- *
- * @param entity The entity to get the owning model for.
- * @return The owning @c Model or the @c nullptr if no model owns this entity.
- */
-ModelPtr owningModel(const EntityConstPtr &entity);
-
-/**
- * @brief Get the @c Component that the variable is owned by.
- *
- * Return the owning component for this variable.
- *
- * @param entity The entity to get the owning component for.
- * @return The owning @c Component of this entity.
- */
-ComponentPtr owningComponent(const EntityConstPtr &entity);
 
 /**
  * @brief Remove the given component from the given entity.

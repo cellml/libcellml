@@ -26,6 +26,10 @@ limitations under the License.
 
 #include "test_resources.h"
 
+#define TEST_UTILS
+#include "../src/commonutils.cpp"
+#undef TEST_UTILS
+
 std::string resourcePath(const std::string &resourceRelativePath)
 {
     return TESTS_RESOURCE_LOCATION + "/" + resourceRelativePath;
@@ -402,21 +406,4 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
     }
     EXPECT_EQ(r1->testValueId(), r2->testValueId());
     EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
-}
-
-libcellml::ModelPtr owningModel(const libcellml::EntityConstPtr &entity)
-{
-    auto model = std::dynamic_pointer_cast<libcellml::Model>(entity->parent());
-    auto component = owningComponent(entity);
-    while ((model == nullptr) && (component != nullptr) && component->parent()) {
-        model = std::dynamic_pointer_cast<libcellml::Model>(component->parent());
-        component = owningComponent(component);
-    }
-
-    return model;
-}
-
-libcellml::ComponentPtr owningComponent(const libcellml::EntityConstPtr &entity)
-{
-    return std::dynamic_pointer_cast<libcellml::Component>(entity->parent());
 }

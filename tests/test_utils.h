@@ -22,6 +22,10 @@ limitations under the License.
 
 #include "test_exportdefinitions.h"
 
+#define TEST_UTILS
+#include "../src/commonutils.h"
+#undef TEST_UTILS
+
 const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
 const std::string NON_EMPTY_MATH =
@@ -102,9 +106,6 @@ void TEST_EXPORT compareUnits(const libcellml::UnitsPtr &u1, const libcellml::Un
 void TEST_EXPORT compareComponent(const libcellml::ComponentPtr &c1, const libcellml::ComponentPtr &c2, const libcellml::EntityPtr &expectedParent = nullptr);
 void TEST_EXPORT compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2);
 void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::ModelPtr &m2);
-
-libcellml::ModelPtr TEST_EXPORT owningModel(const libcellml::EntityConstPtr &entity);
-libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::EntityConstPtr &entity);
 
 #define EXPECT_EQ_ISSUES(issues, logger) \
     SCOPED_TRACE("Issue occured here."); \
