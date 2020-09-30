@@ -89,57 +89,31 @@ TEST(Importer, warningCircularImportReferencesUnits)
 
 TEST(Importer, warningUnrequiredCircularDependencyComponent)
 {
-    // This test is intended to show what happens when one model attempts to import a concrete component from a
-    // second model, where the second model has unrelated circular dependencies:
-    //   - model1 imports component1 from model2
-    //   - model2 defines component1
-    //   - model2 also defines a circular dependency unrelated to component1
-
-    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve components in model 'circularImport3'. The dependency loop is:\n"
-                                 " - component 'c' is imported from 'i_am_ok_but_my_sibling_is_cyclic' in 'circularImport_1.cellml';\n"
-                                 " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml';\n"
-                                 " - component 'c2' is imported from 'c3' in 'circularImport_3.cellml';\n"
-                                 " - component 'c3' is imported from 'i_am_cyclic' in 'circularImport_1.cellml'; and\n"
-                                 " - component 'i_am_cyclic' is imported from 'c2' in 'circularImport_2.cellml'.";
-
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/master1.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
-    EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ(size_t(1), importer->warningCount());
-    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+
+    // Expect no issues, as the circular component dependency is not instantiated.
+    EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
 TEST(Importer, warningUnrequiredCircularDependencyUnits)
 {
-    // This test is intended to show what happens when one model attempts to import a concrete units from a
-    // second model, where the second model has unrelated circular dependencies:
-    //   - model1 imports units1 from model2
-    //   - model2 defines units1
-    //   - model2 also defines a circular dependency unrelated to units1
-
-    std::string warningMessage = "Cyclic dependencies were found when attempting to resolve units in model 'circularImport3'. The dependency loop is:\n"
-                                 " - units 'c' is imported from 'i_am_ok_but_my_sibling_is_cyclic' in 'circularUnits_1.cellml';\n"
-                                 " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml';\n"
-                                 " - units 'u2' is imported from 'u3' in 'circularUnits_3.cellml';\n"
-                                 " - units 'u3' is imported from 'i_am_cyclic' in 'circularUnits_1.cellml'; and\n"
-                                 " - units 'i_am_cyclic' is imported from 'u2' in 'circularUnits_2.cellml'.";
-
     auto parser = libcellml::Parser::create();
     auto importer = libcellml::Importer::create();
     auto model = parser->parseModel(fileContents("importer/master2.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_FALSE(model->hasUnresolvedImports());
-    EXPECT_EQ(size_t(1), importer->issueCount());
-    EXPECT_EQ(size_t(1), importer->warningCount());
-    EXPECT_EQ(warningMessage, importer->warning(0)->description());
+
+    // Expect no issues as the circular dependency is not instantiated.
+    EXPECT_EQ(size_t(0), importer->issueCount());
 }
 
-TEST(Model, missingUnitsFromImportOfCnTerms)
+TEST(Importer, missingUnitsFromImportOfCnTerms)
 {
     // This test is intended to show that parsing a model and importing
     // it have the same end result.
@@ -165,7 +139,7 @@ TEST(Model, missingUnitsFromImportOfCnTerms)
     EXPECT_EQ(size_t(0), validator->errorCount());
 }
 
-TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
+TEST(Importer, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -244,7 +218,7 @@ TEST(Model, importingComponentWithCnUnitsThatAreAlreadyDefinedInImportingModel)
     EXPECT_EQ(e, printer->printModel(model));
 }
 
-TEST(Model, importUnitsNotDuplicated)
+TEST(Importer, importUnitsNotDuplicated)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -344,6 +318,12 @@ TEST(Importer, accessImportedModelLibrary)
     // Library should contain left, right, and one instance (not two) of the point.
     EXPECT_EQ(size_t(3), importer->libraryCount());
 
+    // Test that the library items have the expected keys.
+    EXPECT_EQ(resourcePath("importer/diamond_left.cellml"), importer->key(0));
+    EXPECT_EQ(resourcePath("importer/diamond_point.cellml"), importer->key(1));
+    EXPECT_EQ(resourcePath("importer/diamond_right.cellml"), importer->key(2));
+    EXPECT_EQ("", importer->key(999));
+
     // Access library items by their URL.
     auto left = importer->library(resourcePath("importer/diamond_left.cellml"));
     auto right = importer->library(resourcePath("importer/diamond_right.cellml"));
@@ -442,33 +422,6 @@ TEST(Importer, getNonexistentModel)
     auto model = libcellml::Model::create("model");
     importer->addModel(model, "howdy");
     EXPECT_EQ(nullptr, importer->library("bonjour"));
-}
-
-TEST(Importer, getListOfDependencies)
-{
-    // This test shows how a model can be interrogated to return a list of its dependencies/URLs.
-    // These then become the URL "keys" that must be supplied to the importer, if their actual location
-    // should not be used or is inaccessible.
-
-    // Note that in order to resolve the dependencies further than the first generation, the models will
-    // need to be instantiated and saved anyway.  The external dependencies are those which, during the
-    // resolution for this model, were sourced from locations outside the library.  They will have since
-    // been saved to the importer library, and subsequent calls to resolveImports for those same imported
-    // files will not change the dependencies list.
-
-    auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/diamond.cellml"));
-    auto importer = libcellml::Importer::create();
-
-    importer->resolveImports(model, resourcePath("importer/"));
-
-    EXPECT_EQ(size_t(3), importer->externalDependencyCount());
-    for (size_t e = 0; e < importer->externalDependencyCount(); ++e) {
-        auto info = importer->externalDependency(e);
-        EXPECT_NE(nullptr, importer->library(info.first));
-    }
-    std::pair<std::string, std::string> empty;
-    EXPECT_EQ(empty, importer->externalDependency(999));
 }
 
 TEST(Importer, library)
@@ -607,6 +560,7 @@ TEST(Importer, resolveImportsUsingDifferentAPIModels)
     model->addComponent(libcellml::Component::create("componentIWillImport"));
     model->addUnits(libcellml::Units::create("unitsThatIWillImport"));
     auto imp1 = libcellml::ImportSource::create();
+
     imp1->setUrl("flavourOfTheMonth"); // Set URL to be an arbitrary string.
     model->component(0)->setImportSource(imp1); // Set the same import source for both units and component.
     model->units(0)->setImportSource(imp1);
@@ -621,6 +575,7 @@ TEST(Importer, resolveImportsUsingDifferentAPIModels)
     EXPECT_EQ(size_t(0), importer->issueCount());
     EXPECT_FALSE(model->hasUnresolvedImports());
     auto flatModel = importer->flattenModel(model);
+    ASSERT_NE(nullptr, flatModel);
     EXPECT_EQ("vanilla", flatModel->component(0)->variable(0)->name());
 
     // But now the flavour of the month changes, and you have a better definition for componentThatINeed
@@ -635,11 +590,14 @@ TEST(Importer, resolveImportsUsingDifferentAPIModels)
     EXPECT_TRUE(importer->replaceModel(source2, "flavourOfTheMonth"));
     // Resolve the model's imports again against the new "flavour".
     importer->clearImports(model);
-    importer->resolveImports(model, "");
+    EXPECT_TRUE(importer->resolveImports(model, ""));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+    EXPECT_FALSE(model->hasUnresolvedImports());
 
     // Check that we now have a variable called "chocolate" in the flattened model.
-    flatModel = importer->flattenModel(model);
-    EXPECT_EQ("chocolate", flatModel->component(0)->variable(0)->name());
+    auto flatModel2 = importer->flattenModel(model);
+    ASSERT_NE(nullptr, flatModel2);
+    EXPECT_EQ("chocolate", flatModel2->component(0)->variable(0)->name());
 }
 
 TEST(Importer, importEncapsulatedChildren)
@@ -711,11 +669,10 @@ TEST(Importer, importFilesWithSameName)
 
     importer->resolveImports(model, resourcePath("importer/"));
     EXPECT_EQ(size_t(0), importer->issueCount());
+    printIssues(importer);
 
     // 4 items in the library.
     EXPECT_EQ(size_t(4), importer->libraryCount());
-    // 3 of them are resolved from external locations -> have absolute URLs as keys.
-    EXPECT_EQ(size_t(3), importer->externalDependencyCount());
 
     EXPECT_FALSE(model->hasUnresolvedImports());
 
@@ -759,4 +716,141 @@ TEST(Importer, importSourceGetSetModel)
 
     importsource->setModel(nullptr);
     EXPECT_EQ(nullptr, importsource->model());
+}
+
+TEST(Importer, resolveWithMissingItems)
+{
+    std::vector<std::string> e = {
+        "Import of units 'i_dont_exist' requires units named 'i_dont_exist' which cannot be found.",
+        "Import of component 'i_dont_exist' requires component named 'i_dont_exist' which cannot be found.",
+    };
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_nonexistent_items.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(2), importer->issueCount());
+    EXPECT_EQ_ISSUES(e, importer);
+}
+
+TEST(Importer, resolveWithMissingChildComponents)
+{
+    std::string e = "Import of component 'child' requires component named 'i_dont_exist' which cannot be found.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_children.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(Importer, resolveWithPresentChildUnits)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_units_with_present_children.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->issueCount());
+}
+
+TEST(Importer, resolveWithMissingChildUnits)
+{
+    std::string e = "Import of units 'units1' requires units named 'units_with_imaginary_children', which relies on child units named 'I_dont_exist', which cannot be found.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_units_with_missing_children.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(Importer, resolveWithMissingChildDependentUnits)
+{
+    std::string e = "Import of component 'component' from 'concrete' requires units named 'other_units_that_dont_exist' which cannot be found.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_component_with_missing_units.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(Importer, resolveWithChildUnitsImportedFromMissingModel)
+{
+    std::string e = "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "missing_file.cellml' failed: the file could not be opened.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_units_with_child_units_missing_model.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(Importer, resolveComponentWithUnitsMissingModel)
+{
+    std::string e = "The attempt to resolve imports with the model at '" + resourcePath("importer/") + "missing_model.cellml' failed: the file could not be opened.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/importing_component_with_imported_units_missing_model.cellml"));
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->issueCount());
+    EXPECT_EQ(e, importer->issue(0)->description());
+}
+
+TEST(Importer, resolveImportsOfGrandchildComponents)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/nested_components.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/source.cellml"), importer->key(0));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, resolveImportsOfGrandchildUnits)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/nested_units.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->libraryCount());
+    EXPECT_EQ(resourcePath("importer/source_units.cellml"), importer->key(0));
+    EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(Importer, complicatedHHImportMissingGateModel)
+{
+    // In this test the generic gate model which is imported by deeply encapsulated components
+    // through three generations of imports, is missing. It's used here to give coverage.
+    auto e = "The attempt to resolve imports with the model at '"
+             + resourcePath("importer/HH/GateModel.cellml")
+             + "' failed: the file could not be opened.";
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/HH/MembraneModel.cellml"));
+    auto importer = libcellml::Importer::create();
+
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    importer->resolveImports(model, resourcePath("importer/HH/"));
+    EXPECT_TRUE(model->hasUnresolvedImports()); // Expect that the missing GateModel.cellml file can't be found.
+    EXPECT_EQ(size_t(2), importer->errorCount());
+    EXPECT_EQ(e, importer->error(0)->description());
+    EXPECT_EQ(e, importer->error(1)->description());
 }

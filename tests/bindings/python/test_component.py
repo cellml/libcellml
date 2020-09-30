@@ -11,7 +11,7 @@ class ComponentTestCase(unittest.TestCase):
 
         # Test create/copy/destroy
         x = Component()
-        del(x)
+        del x
 
         y = Component("c3")
         self.assertEqual("c3", y.name())
@@ -109,7 +109,7 @@ class ComponentTestCase(unittest.TestCase):
         c.addVariable(v)
         self.assertTrue(c.hasVariable(v))
         self.assertFalse(c.hasVariable(Variable()))
-        del(c, v)
+        del [c, v]
 
         # bool hasVariable(const std::string &name)
         c = Component()
@@ -128,7 +128,7 @@ class ComponentTestCase(unittest.TestCase):
         vTaken = c.takeVariable(0)
         self.assertEqual('orange', vTaken.name())
         self.assertTrue(c.variableCount() == 1)
-        del(c, v1, v2, vTaken, name)
+        del [c, v1, v2, vTaken, name]
 
     def test_remove_variable(self):
         from libcellml import Component, Variable
@@ -143,7 +143,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertFalse(c.removeVariable(1))
         self.assertTrue(c.removeVariable(0))
         self.assertFalse(c.removeVariable(0))
-        del(c)
+        del c
 
         # bool removeVariable(const std::string &name)
         c = Component()
@@ -158,7 +158,7 @@ class ComponentTestCase(unittest.TestCase):
         c.addVariable(v1)
         self.assertTrue(c.removeVariable(name))
         self.assertFalse(c.removeVariable(name))
-        del(c, v1, name)
+        del [c, v1, name]
 
         # bool removeVariable(const VariablePtr &variable)
         c = Component()
@@ -201,7 +201,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertIsNone(c.variable(-1))
         self.assertIsNotNone(c.variable(0))
         self.assertEqual(c.variable(0).name(), name)
-        del(c, v, name)
+        del [c, v, name]
 
         # VariablePtr variable(const std::string &name)
         c = Component()
@@ -280,6 +280,18 @@ class ComponentTestCase(unittest.TestCase):
 
         self.assertRaises(AttributeError, ComponentEntity)
 
+    def test_requires_imports(self):
+        from libcellml import Component
+
+        c = Component("banana")
+        self.assertFalse(c.requiresImports())
+
+    def test_resolved(self):
+        from libcellml import Component
+        b = Component("banana")
+        self.assertFalse(b.isResolved())
+        b.setResolved(True)
+        self.assertTrue(b.isResolved())
 
 if __name__ == '__main__':
     unittest.main()

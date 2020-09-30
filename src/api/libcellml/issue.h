@@ -103,7 +103,6 @@ public:
         COMPONENT,
         CONNECTION,
         ENCAPSULATION,
-        GENERATOR,
         IMPORT,
         MATHML,
         MODEL,
@@ -206,9 +205,12 @@ public:
         MAP_VARIABLES_VARIABLE1,
         MAP_VARIABLES_VARIABLE2,
         MAP_VARIABLES_UNIQUE,
+        MAP_VARIABLES_AVAILABLE_INTERFACE,
 
         // Issues not present in the normative specification:
-        MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION
+        MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
+        LIBXML2_ISSUE,
+
     };
 
     /**

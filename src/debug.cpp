@@ -16,10 +16,13 @@ limitations under the License.
 
 #include "debug.h"
 
+#include "libcellml/analyserequationast.h"
 #include "libcellml/generator.h"
 #include "libcellml/variable.h"
 
-#undef NAN
+#ifdef NAN
+#    undef NAN
+#endif
 
 namespace libcellml {
 
@@ -74,23 +77,23 @@ void printStringStringMap(const StringStringMap &map)
 static const std::string SPACES = "  ";
 static const std::string TRUNK = "  │";
 
-struct GeneratorEquationAstTrunk
+struct AnalyserEquationAstTrunk
 {
-    GeneratorEquationAstTrunk *mPrev;
+    AnalyserEquationAstTrunk *mPrev;
     std::string mStr;
 
-    GeneratorEquationAstTrunk(GeneratorEquationAstTrunk *prev,
-                              const std::string &str);
+    AnalyserEquationAstTrunk(AnalyserEquationAstTrunk *prev,
+                             const std::string &str);
 };
 
-GeneratorEquationAstTrunk::GeneratorEquationAstTrunk(GeneratorEquationAstTrunk *prev,
-                                                     const std::string &str)
+AnalyserEquationAstTrunk::AnalyserEquationAstTrunk(AnalyserEquationAstTrunk *prev,
+                                                   const std::string &str)
     : mPrev(prev)
     , mStr(str)
 {
 }
 
-void doPrintAst(GeneratorEquationAstTrunk *trunk)
+void doPrintAst(AnalyserEquationAstTrunk *trunk)
 {
     if (trunk == nullptr) {
         return;
@@ -106,294 +109,294 @@ void doPrintAst(GeneratorEquationAstTrunk *trunk)
     std::cout << trunk->mStr;
 }
 
-std::string doPrintAst(const GeneratorEquationAstPtr &ast)
+std::string doPrintAst(const AnalyserEquationAstPtr &ast)
 {
     std::string res;
 
-    switch (ast->mType) {
+    switch (ast->type()) {
         // Assignment.
 
-    case GeneratorEquationAst::Type::ASSIGNMENT:
+    case AnalyserEquationAst::Type::ASSIGNMENT:
         res = "ASSIGNMENT";
 
         break;
 
         // Relational and logical operators.
 
-    case GeneratorEquationAst::Type::EQ:
+    case AnalyserEquationAst::Type::EQ:
         res = "EQ";
 
         break;
-    case GeneratorEquationAst::Type::NEQ:
+    case AnalyserEquationAst::Type::NEQ:
         res = "NEQ";
 
         break;
-    case GeneratorEquationAst::Type::LT:
+    case AnalyserEquationAst::Type::LT:
         res = "LT";
 
         break;
-    case GeneratorEquationAst::Type::LEQ:
+    case AnalyserEquationAst::Type::LEQ:
         res = "LEQ";
 
         break;
-    case GeneratorEquationAst::Type::GT:
+    case AnalyserEquationAst::Type::GT:
         res = "GT";
 
         break;
-    case GeneratorEquationAst::Type::GEQ:
+    case AnalyserEquationAst::Type::GEQ:
         res = "LEQ";
 
         break;
-    case GeneratorEquationAst::Type::AND:
+    case AnalyserEquationAst::Type::AND:
         res = "AND";
 
         break;
-    case GeneratorEquationAst::Type::OR:
+    case AnalyserEquationAst::Type::OR:
         res = "OR";
 
         break;
-    case GeneratorEquationAst::Type::XOR:
+    case AnalyserEquationAst::Type::XOR:
         res = "XOR";
 
         break;
-    case GeneratorEquationAst::Type::NOT:
+    case AnalyserEquationAst::Type::NOT:
         res = "NOT";
 
         break;
 
         // Arithmetic operators.
 
-    case GeneratorEquationAst::Type::PLUS:
+    case AnalyserEquationAst::Type::PLUS:
         res = "PLUS";
 
         break;
-    case GeneratorEquationAst::Type::MINUS:
+    case AnalyserEquationAst::Type::MINUS:
         res = "MINUS";
 
         break;
-    case GeneratorEquationAst::Type::TIMES:
+    case AnalyserEquationAst::Type::TIMES:
         res = "TIMES";
 
         break;
-    case GeneratorEquationAst::Type::DIVIDE:
+    case AnalyserEquationAst::Type::DIVIDE:
         res = "DIVIDE";
 
         break;
-    case GeneratorEquationAst::Type::POWER:
+    case AnalyserEquationAst::Type::POWER:
         res = "POWER";
 
         break;
-    case GeneratorEquationAst::Type::ROOT:
+    case AnalyserEquationAst::Type::ROOT:
         res = "ROOT";
 
         break;
-    case GeneratorEquationAst::Type::ABS:
+    case AnalyserEquationAst::Type::ABS:
         res = "ABS";
 
         break;
-    case GeneratorEquationAst::Type::EXP:
+    case AnalyserEquationAst::Type::EXP:
         res = "EXP";
 
         break;
-    case GeneratorEquationAst::Type::LN:
+    case AnalyserEquationAst::Type::LN:
         res = "LN";
 
         break;
-    case GeneratorEquationAst::Type::LOG:
+    case AnalyserEquationAst::Type::LOG:
         res = "LOG";
 
         break;
-    case GeneratorEquationAst::Type::CEILING:
+    case AnalyserEquationAst::Type::CEILING:
         res = "CEILING";
 
         break;
-    case GeneratorEquationAst::Type::FLOOR:
+    case AnalyserEquationAst::Type::FLOOR:
         res = "FLOOR";
 
         break;
-    case GeneratorEquationAst::Type::MIN:
+    case AnalyserEquationAst::Type::MIN:
         res = "MIN";
 
         break;
-    case GeneratorEquationAst::Type::MAX:
+    case AnalyserEquationAst::Type::MAX:
         res = "MAX";
 
         break;
-    case GeneratorEquationAst::Type::REM:
+    case AnalyserEquationAst::Type::REM:
         res = "REM";
 
         break;
 
         // Calculus elements.
 
-    case GeneratorEquationAst::Type::DIFF:
+    case AnalyserEquationAst::Type::DIFF:
         res = "DIFF";
 
         break;
 
         // Trigonometric operators.
 
-    case GeneratorEquationAst::Type::SIN:
+    case AnalyserEquationAst::Type::SIN:
         res = "SIN";
 
         break;
-    case GeneratorEquationAst::Type::COS:
+    case AnalyserEquationAst::Type::COS:
         res = "COS";
 
         break;
-    case GeneratorEquationAst::Type::TAN:
+    case AnalyserEquationAst::Type::TAN:
         res = "TAN";
 
         break;
-    case GeneratorEquationAst::Type::SEC:
+    case AnalyserEquationAst::Type::SEC:
         res = "SEC";
 
         break;
-    case GeneratorEquationAst::Type::CSC:
+    case AnalyserEquationAst::Type::CSC:
         res = "CSC";
 
         break;
-    case GeneratorEquationAst::Type::COT:
+    case AnalyserEquationAst::Type::COT:
         res = "COT";
 
         break;
-    case GeneratorEquationAst::Type::SINH:
+    case AnalyserEquationAst::Type::SINH:
         res = "SINH";
 
         break;
-    case GeneratorEquationAst::Type::COSH:
+    case AnalyserEquationAst::Type::COSH:
         res = "COSH";
 
         break;
-    case GeneratorEquationAst::Type::TANH:
+    case AnalyserEquationAst::Type::TANH:
         res = "TANH";
 
         break;
-    case GeneratorEquationAst::Type::SECH:
+    case AnalyserEquationAst::Type::SECH:
         res = "SECH";
 
         break;
-    case GeneratorEquationAst::Type::CSCH:
+    case AnalyserEquationAst::Type::CSCH:
         res = "CSCH";
 
         break;
-    case GeneratorEquationAst::Type::COTH:
+    case AnalyserEquationAst::Type::COTH:
         res = "COTH";
 
         break;
-    case GeneratorEquationAst::Type::ASIN:
+    case AnalyserEquationAst::Type::ASIN:
         res = "ASIN";
 
         break;
-    case GeneratorEquationAst::Type::ACOS:
+    case AnalyserEquationAst::Type::ACOS:
         res = "ACOS";
 
         break;
-    case GeneratorEquationAst::Type::ATAN:
+    case AnalyserEquationAst::Type::ATAN:
         res = "ATAN";
 
         break;
-    case GeneratorEquationAst::Type::ASEC:
+    case AnalyserEquationAst::Type::ASEC:
         res = "ASEC";
 
         break;
-    case GeneratorEquationAst::Type::ACSC:
+    case AnalyserEquationAst::Type::ACSC:
         res = "ACSC";
 
         break;
-    case GeneratorEquationAst::Type::ACOT:
+    case AnalyserEquationAst::Type::ACOT:
         res = "ACOT";
 
         break;
-    case GeneratorEquationAst::Type::ASINH:
+    case AnalyserEquationAst::Type::ASINH:
         res = "ASINH";
 
         break;
-    case GeneratorEquationAst::Type::ACOSH:
+    case AnalyserEquationAst::Type::ACOSH:
         res = "ACOSH";
 
         break;
-    case GeneratorEquationAst::Type::ATANH:
+    case AnalyserEquationAst::Type::ATANH:
         res = "ATANH";
 
         break;
-    case GeneratorEquationAst::Type::ASECH:
+    case AnalyserEquationAst::Type::ASECH:
         res = "ASECH";
 
         break;
-    case GeneratorEquationAst::Type::ACSCH:
+    case AnalyserEquationAst::Type::ACSCH:
         res = "ACSCH";
 
         break;
-    case GeneratorEquationAst::Type::ACOTH:
+    case AnalyserEquationAst::Type::ACOTH:
         res = "ACOTH";
 
         break;
 
         // Piecewise statement.
 
-    case GeneratorEquationAst::Type::PIECEWISE:
+    case AnalyserEquationAst::Type::PIECEWISE:
         res = "PIECEWISE";
 
         break;
-    case GeneratorEquationAst::Type::PIECE:
+    case AnalyserEquationAst::Type::PIECE:
         res = "PIECE";
 
         break;
-    case GeneratorEquationAst::Type::OTHERWISE:
+    case AnalyserEquationAst::Type::OTHERWISE:
         res = "OTHERWISE";
 
         break;
 
         // Token elements.
 
-    case GeneratorEquationAst::Type::CI:
-        res = ast->mVariable->name();
+    case AnalyserEquationAst::Type::CI:
+        res = ast->variable()->name();
 
         break;
-    case GeneratorEquationAst::Type::CN:
-        res = ast->mValue;
+    case AnalyserEquationAst::Type::CN:
+        res = ast->value();
 
         break;
 
         // Qualifier elements.
 
-    case GeneratorEquationAst::Type::DEGREE:
+    case AnalyserEquationAst::Type::DEGREE:
         res = "DEGREE";
 
         break;
-    case GeneratorEquationAst::Type::LOGBASE:
+    case AnalyserEquationAst::Type::LOGBASE:
         res = "LOGBASE";
 
         break;
-    case GeneratorEquationAst::Type::BVAR:
+    case AnalyserEquationAst::Type::BVAR:
         res = "BVAR";
 
         break;
 
         // Constants.
 
-    case GeneratorEquationAst::Type::TRUE:
+    case AnalyserEquationAst::Type::TRUE:
         res = "TRUE";
 
         break;
-    case GeneratorEquationAst::Type::FALSE:
+    case AnalyserEquationAst::Type::FALSE:
         res = "FALSE";
 
         break;
-    case GeneratorEquationAst::Type::E:
+    case AnalyserEquationAst::Type::E:
         res = "E";
 
         break;
-    case GeneratorEquationAst::Type::PI:
+    case AnalyserEquationAst::Type::PI:
         res = "PI";
 
         break;
-    case GeneratorEquationAst::Type::INF:
+    case AnalyserEquationAst::Type::INF:
         res = "INF";
 
         break;
-    case GeneratorEquationAst::Type::NAN:
+    case AnalyserEquationAst::Type::NAN:
         res = "NAN";
 
         break;
@@ -402,17 +405,17 @@ std::string doPrintAst(const GeneratorEquationAstPtr &ast)
     return res;
 }
 
-void doPrintAst(const GeneratorEquationAstPtr &ast,
-                GeneratorEquationAstTrunk *prevTrunk, bool isLeft)
+void doPrintAst(const AnalyserEquationAstPtr &ast,
+                AnalyserEquationAstTrunk *prevTrunk, bool isLeft)
 {
     if (ast == nullptr) {
         return;
     }
 
     std::string prevStr = SPACES;
-    GeneratorEquationAstTrunk trunk(prevTrunk, prevStr);
+    AnalyserEquationAstTrunk trunk(prevTrunk, prevStr);
 
-    doPrintAst(ast->mLeft, &trunk, true);
+    doPrintAst(ast->leftChild(), &trunk, true);
 
     if (prevTrunk == nullptr) {
         trunk.mStr = "──";
@@ -434,10 +437,10 @@ void doPrintAst(const GeneratorEquationAstPtr &ast,
 
     trunk.mStr = TRUNK;
 
-    doPrintAst(ast->mRight, &trunk, false);
+    doPrintAst(ast->rightChild(), &trunk, false);
 }
 
-void printAst(const GeneratorEquationAstPtr &ast)
+void printAst(const AnalyserEquationAstPtr &ast)
 {
     doPrintAst(ast, nullptr, false);
 }

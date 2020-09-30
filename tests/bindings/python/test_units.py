@@ -10,7 +10,7 @@ class UnitsTestCase(unittest.TestCase):
         from libcellml import Units
 
         x = Units()
-        del(x)
+        del x
 
         y = Units("mine")
         self.assertEqual("mine", y.name())
@@ -98,7 +98,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', 'b', 0)
         u.addUnit('a', 'b', 3, 3)
         u.addUnit('a', 'b', 0.1, -1.2)
-        del(u)
+        del u
 
         # void addUnit(const std::string &reference, int prefix,
         #   double exponent, double multiplier=1.0)
@@ -114,20 +114,20 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', -1, -1, 3)
         u.addUnit('a', -1, -1, 2.3)
         u.addUnit('a', -1, 1.2, 3.4)
-        del(u)
+        del u
 
         # void addUnit(const std::string &reference, double exponent)
         u = Units()
         u.addUnit('a', 1.0)
         # TODO Ints get converted to Prefix enum, not to double!
         # u.addUnit('a', -1)
-        del(u)
+        del u
 
         # void addUnit(const std::string &reference)
         u = Units()
         u.addUnit('')
         u.addUnit('a')
-        del(u)
+        del u
 
         # void addUnit(StandardUnit standardRef, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
@@ -138,7 +138,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, 'pico', 1.0, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, 'pico', 1, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, 'pico', -1, 2)
-        del(u)
+        del u
 
         # void addUnit(StandardUnit standardRef, int prefix,
         #   double exponent, double multiplier=1.0)
@@ -147,7 +147,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, -1, -1.0)
         u.addUnit(Units.StandardUnit.KATAL, 1, 1.0, 1.0)
         u.addUnit(Units.StandardUnit.KATAL, -1, -1.0, 1.0, 'id')
-        del(u)
+        del u
 
         # void addUnit(StandardUnit standardRef, double exponent)
         # Hidden to avoid confusion with addUnit(StandardUnit, Prefix, double,
@@ -156,7 +156,7 @@ class UnitsTestCase(unittest.TestCase):
         # void addUnit(StandardUnit standardRef)
         u = Units()
         u.addUnit(Units.StandardUnit.KATAL)
-        del(u)
+        del u
 
     def test_unit_attributes(self):
         from libcellml import Units
@@ -174,7 +174,7 @@ class UnitsTestCase(unittest.TestCase):
         x = u.unitAttributes(1)
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['', '', 1.0, 1.0, ''])
-        del(u, x)
+        del [u, x]
 
         # void unitAttributes(const std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier) const;
@@ -189,7 +189,7 @@ class UnitsTestCase(unittest.TestCase):
         x = u.unitAttributes('few')
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['few', 'bars', 4.3, 2.1, 'job'])
-        del(u, x)
+        del [u, x]
 
         # This method conflicts with unitAttributes(size_t, ...)
         # void unitAttributes(StandardUnit standardRef, std::string &prefix,
@@ -208,7 +208,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertFalse(u.removeUnit(-1))
         self.assertTrue(u.removeUnit(0))
         self.assertFalse(u.removeUnit(0))
-        del(u)
+        del [u]
 
         # bool removeUnit(const std::string &reference)
         u = Units()
@@ -217,7 +217,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertFalse(u.removeUnit('hi'))
         self.assertTrue(u.removeUnit('hello'))
         self.assertFalse(u.removeUnit('hello'))
-        del(u)
+        del [u]
 
         # This method conflicts with removeUnit(size_t)
         # bool removeUnit(StandardUnit standardRef)

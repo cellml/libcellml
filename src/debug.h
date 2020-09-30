@@ -19,7 +19,6 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
-#include "generatorequationast.h"
 #include "internaltypes.h"
 
 namespace libcellml {
@@ -97,7 +96,7 @@ private:
 void printStack(const IndexStack &stack);
 void printEquivalenceMap(const EquivalenceMap &map);
 void printStringStringMap(const StringStringMap &map);
-void printAst(const GeneratorEquationAstPtr &ast);
 void printConnectionMap(const ConnectionMap &map);
+void printAst(const AnalyserEquationAstPtr &ast);
 
 } // namespace libcellml
