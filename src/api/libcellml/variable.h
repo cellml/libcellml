@@ -22,7 +22,7 @@ limitations under the License.
 #include "libcellml/namedentity.h"
 #include "libcellml/types.h"
 
-#ifndef SWIG
+#if defined(_WIN32) && !defined(SWIG)
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
 #endif
 
@@ -428,6 +428,29 @@ public:
      * @return @c true if the interface type is the same as the given interface type, @c false otherwise.
      */
     bool hasInterfaceType(InterfaceType interfaceType) const;
+
+    /**
+     * @brief Test if this variable permits access through the @p interfaceType.
+     *
+     * Test if this variable permits access through the @p interfaceType. The results
+     * will be given according to this truth table:
+     * 
+     *    Parameter (right) /
+     *   Stored value (below) | none | public | private | public_and_private  
+     *   ---------------------+------+--------+---------+-------------------
+     *                   none | T    | F      | F       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *                 public | T    | T      | F       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *                private | T    | F      | T       | F
+     *   ---------------------+------+--------+---------+-------------------
+     *     public_and_private | T    | T      | T       | T
+     *
+     * @param interfaceType The interface type to test for.
+     *
+     * @return @c true if the interface type is permitted, @c false otherwise.
+     */
+    bool permitsInterfaceType(InterfaceType interfaceType) const;
 
     /**
      * @brief Create a clone of this variable.

@@ -55,6 +55,13 @@ public:
     void addIssue(const IssuePtr &issue);
 
     /**
+     *  Add a vector of issues to the logger.
+     * 
+     * @param issues A @c std::vector of @c IssuePtr items to add.
+     */
+    void addIssues(const std::vector<IssuePtr> &issues);
+
+    /**
      * @brief Get the number of issues.
      *
      * Return the number of issues of any level currently stored in the logger.

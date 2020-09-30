@@ -24,6 +24,11 @@ limitations under the License.
  *
  * This is the source code documentation for the libCellML C++ library.
  */
+#include "libcellml/analyser.h"
+#include "libcellml/analyserequation.h"
+#include "libcellml/analyserequationast.h"
+#include "libcellml/analysermodel.h"
+#include "libcellml/analyservariable.h"
 #include "libcellml/annotator.h"
 #include "libcellml/component.h"
 #include "libcellml/generator.h"

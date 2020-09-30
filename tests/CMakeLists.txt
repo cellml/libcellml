@@ -27,6 +27,7 @@ mark_as_advanced(gtest_force_shared_crt)
 # to the LIBCELLML_TESTS list.  Any source files for the
 # test must be set to <test_name>_SRCS, likewise for
 # header files <test_name>_HDRS.
+include(analyser/tests.cmake)
 include(annotator/tests.cmake)
 include(clone/tests.cmake)
 include(component/tests.cmake)

@@ -485,6 +485,19 @@ bool Variable::hasInterfaceType(InterfaceType interfaceType) const
     return mPimpl->mInterfaceType == interfaceTypeToString.find(interfaceType)->second;
 }
 
+bool Variable::permitsInterfaceType(InterfaceType interfaceType) const
+{
+    std::string testString = interfaceTypeToString.find(interfaceType)->second;
+
+    if ((testString == "none") || testString.empty()) {
+        return true;
+    }
+    if (mPimpl->mInterfaceType == "public_and_private") {
+        return true;
+    }
+    return testString == mPimpl->mInterfaceType;
+}
+
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
 {
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {

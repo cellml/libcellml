@@ -46,13 +46,11 @@ using InterfaceTypePair = std::pair<Variable::InterfaceType, Variable::Interface
 
 using VariablePtrs = std::vector<VariablePtr>; /**< Type definition for list of variables. */
 
+using IdMap = std::map<std::string, std::pair<int, std::vector<std::string>>>; /**< Type definition for map of IDs in Validator. **/
 using ImportLibrary = std::map<std::string, ModelPtr>; /** Type definition for library map of imported models. */
 using IdList = std::unordered_set<std::string>; /**< Type definition for list of ids. */
 
 using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
-//using ComponentEntityWeakPtr = std::weak_ptr<ComponentEntity>; /**< Type definition for weak component entity pointer. */
-//using EntityWeakPtr = std::weak_ptr<Entity>; /**< Type definition for weak entity pointer. */
-//using ImportedEntityWeakPtr = std::weak_ptr<ImportedEntity>; /**< Type definition for weak imported entity pointer. */
 using ImportSourceWeakPtr = std::weak_ptr<ImportSource>; /**< Type definition for weak import source pointer. */
 using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
 using ResetWeakPtr = std::weak_ptr<Reset>; /**< Type definition for weak reset pointer. */
@@ -63,4 +61,5 @@ using UnitWeakItem = std::pair<UnitsWeakPtr, size_t>;
 using VariableWeakPair = std::pair<VariableWeakPtr, VariableWeakPtr>; /**< Type definition for VariablePtr pair.*/
 
 using ConnectionMap = std::map<VariablePtr, VariablePtr>;
+
 } // namespace libcellml

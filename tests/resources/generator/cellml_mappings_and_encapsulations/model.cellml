@@ -25,6 +25,9 @@
     <units name="milli_mole">
         <unit prefix="milli" units="mole"/>
     </units>
+    <units name="per_ms">
+        <unit exponent="-1" units="ms"/>
+    </units>
     <component name="environment">
         <variable interface="public" name="t" units="ms"/>
     </component>
