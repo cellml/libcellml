@@ -1,8 +1,8 @@
 #
 # Tests if all CellML bindings have docstrings set.
 #
-import unittest
 import types
+import unittest
 
 
 class DocstringTestCase(unittest.TestCase):

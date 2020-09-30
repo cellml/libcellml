@@ -10,7 +10,7 @@ class ResetTestCase(unittest.TestCase):
         from libcellml import Reset
 
         x = Reset()
-        del(x)
+        del x
 
     def test_set_get_variable(self):
         from libcellml import Reset
@@ -128,4 +128,3 @@ class ResetTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<model name="variable_initialized_twice" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+<model name="variable_initialised_twice" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <component name="main">
-        <variable initial_value="0" name="x" units="dimensionless"/>
-        <variable initial_value="0" name="y" units="dimensionless"/>
+        <variable name="x" units="dimensionless" initial_value="0" interface="public"/>
+        <variable name="y" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -12,8 +12,8 @@
         </math>
     </component>
     <component name="sub">
-        <variable initial_value="0" name="x" units="dimensionless"/>
-        <variable initial_value="0" name="y" units="dimensionless"/>
+        <variable name="x" units="dimensionless" initial_value="0" interface="public"/>
+        <variable name="y" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>

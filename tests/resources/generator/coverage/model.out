@@ -78,7 +78,7 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-void initializeStatesAndConstants(double *states, double *variables)
+void initialiseStatesAndConstants(double *states, double *variables)
 {
     variables[0] = 1.0;
     variables[1] = 2.0;
@@ -278,6 +278,5 @@ void computeRates(double voi, double *states, double *rates, double *variables)
     rates[0] = 1.0;
 }
 
-// We should have computeVariables() here, but we replaced it with this comment
-// and no code template that can be replaced so that our replace() method can
-// is forced to return an empty string, ensuring 100% coverage using llvm-cov...
+// The x's below are to ensure that we get 100% coverage in our SHA-1 utility.
+// xxxxxxxxxxxxxxxxxxxxxxx
