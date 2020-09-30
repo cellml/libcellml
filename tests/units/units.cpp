@@ -2522,6 +2522,20 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModels)
     EXPECT_EQ(1.0, scaling);
 }
 
+TEST(Units, scalingFactorBetweenUnitsSameNameLostChildren)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("oranges");
+    model1->addUnits(u1);
+
+    auto model2 = model1->clone();
+    auto u2 = model2->units(0);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(0.0, scaling);
+}
+
 TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
 {
     auto model1 = libcellml::Model::create("model1");
@@ -2534,6 +2548,19 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
 
     auto scaling = libcellml::Units::scalingFactor(u1, u2);
     EXPECT_EQ(0.0, scaling);
+}
+
+TEST(Units, Units_scalingFactorBetweenBaseUnitsSameName)
+{
+    auto model = libcellml::Model::create("model");
+    auto u1 = libcellml::Units::create("units");
+    model->addUnits(u1);
+
+    auto u2 = libcellml::Units::create("units");
+    model->addUnits(u2);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1.0, scaling);
 }
 
 TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModelsDifferentScale)
