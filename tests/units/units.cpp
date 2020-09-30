@@ -2571,7 +2571,7 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
     EXPECT_EQ(0.0, scaling);
 }
 
-TEST(Units, Units_scalingFactorBetweenBaseUnitsSameName)
+TEST(Units, scalingFactorBetweenBaseUnitsSameName)
 {
     auto model = libcellml::Model::create("model");
     auto u1 = libcellml::Units::create("units");
