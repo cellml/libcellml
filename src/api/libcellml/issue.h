@@ -58,7 +58,6 @@ public:
      *
      * The default values for the enumerations are::
      *
-     *   - libcellml::Issue::Cause::UNDEFINED;
      *   - libcellml::Issue::Level::ERROR;
      *   - libcellml::Issue::ReferenceRule::UNDEFINED;
      *
