@@ -391,7 +391,10 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         loadConnection(model, connectionNode);
     }
 
-    model->linkUnits();
+    // Link units to their names.
+    std::vector<IssuePtr> issueList;
+    traverseComponentEntityTreeLinkingUnits(model, issueList);
+    mParser->addIssues(issueList);
 }
 
 std::string cleanMath(const std::string &math)
