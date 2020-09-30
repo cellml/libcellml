@@ -21,7 +21,6 @@ limitations under the License.
 #include "libcellml/generatorprofile.h"
 
 #include <cmath>
-#include <string>
 
 #include "utilities.h"
 
@@ -81,7 +80,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mSquareString;
     std::string mAbsoluteValueString;
     std::string mExponentialString;
-    std::string mNapierianLogarithmString;
+    std::string mNaturalLogarithmString;
     std::string mCommonLogarithmString;
     std::string mCeilingString;
     std::string mFloorString;
@@ -224,8 +223,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
 
-    std::string mInterfaceInitializeStatesAndConstantsMethodString;
-    std::string mImplementationInitializeStatesAndConstantsMethodString;
+    std::string mInterfaceInitialiseStatesAndConstantsMethodString;
+    std::string mImplementationInitialiseStatesAndConstantsMethodString;
 
     std::string mInterfaceComputeComputedConstantsMethodString;
     std::string mImplementationComputeComputedConstantsMethodString;
@@ -240,8 +239,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
-    std::string mOpenArrayInitializerString;
-    std::string mCloseArrayInitializerString;
+    std::string mOpenArrayInitialiserString;
+    std::string mCloseArrayInitialiserString;
 
     std::string mOpenArrayString;
     std::string mCloseArrayString;
@@ -303,7 +302,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mSquareString = "";
         mAbsoluteValueString = "fabs";
         mExponentialString = "exp";
-        mNapierianLogarithmString = "log";
+        mNaturalLogarithmString = "log";
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
@@ -526,8 +525,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables);\n";
-        mImplementationInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n"
+        mInterfaceInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables);\n";
+        mImplementationInitialiseStatesAndConstantsMethodString = "void initialiseStatesAndConstants(double *states, double *variables)\n"
                                                                   "{\n"
                                                                   "<CODE>"
                                                                   "}\n";
@@ -553,8 +552,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitializerString = "{";
-        mCloseArrayInitializerString = "}";
+        mOpenArrayInitialiserString = "{";
+        mCloseArrayInitialiserString = "}";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
@@ -608,7 +607,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mSquareString = "";
         mAbsoluteValueString = "fabs";
         mExponentialString = "exp";
-        mNapierianLogarithmString = "log";
+        mNaturalLogarithmString = "log";
         mCommonLogarithmString = "log10";
         mCeilingString = "ceil";
         mFloorString = "floor";
@@ -818,9 +817,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInterfaceInitializeStatesAndConstantsMethodString = "";
-        mImplementationInitializeStatesAndConstantsMethodString = "\n"
-                                                                  "def initialize_states_and_constants(states, variables):\n"
+        mInterfaceInitialiseStatesAndConstantsMethodString = "";
+        mImplementationInitialiseStatesAndConstantsMethodString = "\n"
+                                                                  "def initialise_states_and_constants(states, variables):\n"
                                                                   "<CODE>";
 
         mInterfaceComputeComputedConstantsMethodString = "";
@@ -842,8 +841,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mOpenArrayInitializerString = "[";
-        mCloseArrayInitializerString = "]";
+        mOpenArrayInitialiserString = "[";
+        mCloseArrayInitialiserString = "]";
 
         mOpenArrayString = "[";
         mCloseArrayString = "]";
@@ -1192,14 +1191,14 @@ void GeneratorProfile::setExponentialString(const std::string &exponentialString
     mPimpl->mExponentialString = exponentialString;
 }
 
-std::string GeneratorProfile::napierianLogarithmString() const
+std::string GeneratorProfile::naturalLogarithmString() const
 {
-    return mPimpl->mNapierianLogarithmString;
+    return mPimpl->mNaturalLogarithmString;
 }
 
-void GeneratorProfile::setNapierianLogarithmString(const std::string &napierianLogarithmString)
+void GeneratorProfile::setNaturalLogarithmString(const std::string &naturalLogarithmString)
 {
-    mPimpl->mNapierianLogarithmString = napierianLogarithmString;
+    mPimpl->mNaturalLogarithmString = naturalLogarithmString;
 }
 
 std::string GeneratorProfile::commonLogarithmString() const
@@ -2232,24 +2231,24 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
     mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::interfaceInitializeStatesAndConstantsMethodString() const
+std::string GeneratorProfile::interfaceInitialiseStatesAndConstantsMethodString() const
 {
-    return mPimpl->mInterfaceInitializeStatesAndConstantsMethodString;
+    return mPimpl->mInterfaceInitialiseStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString)
+void GeneratorProfile::setInterfaceInitialiseStatesAndConstantsMethodString(const std::string &interfaceInitialiseStatesAndConstantsMethodString)
 {
-    mPimpl->mInterfaceInitializeStatesAndConstantsMethodString = interfaceInitializeStatesAndConstantsMethodString;
+    mPimpl->mInterfaceInitialiseStatesAndConstantsMethodString = interfaceInitialiseStatesAndConstantsMethodString;
 }
 
-std::string GeneratorProfile::implementationInitializeStatesAndConstantsMethodString() const
+std::string GeneratorProfile::implementationInitialiseStatesAndConstantsMethodString() const
 {
-    return mPimpl->mImplementationInitializeStatesAndConstantsMethodString;
+    return mPimpl->mImplementationInitialiseStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setImplementationInitializeStatesAndConstantsMethodString(const std::string &implementationInitializeStatesAndConstantsMethodString)
+void GeneratorProfile::setImplementationInitialiseStatesAndConstantsMethodString(const std::string &implementationInitialiseStatesAndConstantsMethodString)
 {
-    mPimpl->mImplementationInitializeStatesAndConstantsMethodString = implementationInitializeStatesAndConstantsMethodString;
+    mPimpl->mImplementationInitialiseStatesAndConstantsMethodString = implementationInitialiseStatesAndConstantsMethodString;
 }
 
 std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const
@@ -2332,24 +2331,24 @@ void GeneratorProfile::setIndentString(const std::string &indentString)
     mPimpl->mIndentString = indentString;
 }
 
-std::string GeneratorProfile::openArrayInitializerString() const
+std::string GeneratorProfile::openArrayInitialiserString() const
 {
-    return mPimpl->mOpenArrayInitializerString;
+    return mPimpl->mOpenArrayInitialiserString;
 }
 
-void GeneratorProfile::setOpenArrayInitializerString(const std::string &openArrayInitializerString)
+void GeneratorProfile::setOpenArrayInitialiserString(const std::string &openArrayInitialiserString)
 {
-    mPimpl->mOpenArrayInitializerString = openArrayInitializerString;
+    mPimpl->mOpenArrayInitialiserString = openArrayInitialiserString;
 }
 
-std::string GeneratorProfile::closeArrayInitializerString() const
+std::string GeneratorProfile::closeArrayInitialiserString() const
 {
-    return mPimpl->mCloseArrayInitializerString;
+    return mPimpl->mCloseArrayInitialiserString;
 }
 
-void GeneratorProfile::setCloseArrayInitializerString(const std::string &closeArrayInitializerString)
+void GeneratorProfile::setCloseArrayInitialiserString(const std::string &closeArrayInitialiserString)
 {
-    mPimpl->mCloseArrayInitializerString = closeArrayInitializerString;
+    mPimpl->mCloseArrayInitialiserString = closeArrayInitialiserString;
 }
 
 std::string GeneratorProfile::openArrayString() const

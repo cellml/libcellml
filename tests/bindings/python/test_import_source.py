@@ -10,7 +10,7 @@ class ImportSourceTestCase(unittest.TestCase):
         from libcellml import ImportSource
 
         x = ImportSource()
-        del(x)
+        del x
 
     def test_inheritance(self):
         import libcellml
@@ -65,7 +65,6 @@ class ImportSourceTestCase(unittest.TestCase):
         xCloned = x.clone()
         self.assertEqual(xCloned.url(), sourceUrl)
 
-
     def test_component(self):
         from libcellml import ImportSource, Component
 
@@ -89,7 +88,6 @@ class ImportSourceTestCase(unittest.TestCase):
 
         self.assertEqual(0, x.componentCount())
 
-
     def test_units(self):
         from libcellml import ImportSource, Units
 
@@ -112,7 +110,6 @@ class ImportSourceTestCase(unittest.TestCase):
         x.removeAllUnits()
 
         self.assertEqual(0, x.unitsCount())
-
 
 
 if __name__ == '__main__':

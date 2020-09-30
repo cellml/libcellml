@@ -10,7 +10,7 @@ class PrinterTestCase(unittest.TestCase):
         from libcellml import Printer
 
         x = Printer()
-        del(x)
+        del x
 
     def test_print_model(self):
         from libcellml import Printer, Model

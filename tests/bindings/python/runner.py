@@ -1,18 +1,19 @@
-import coverage
 import os
 import sys
 import unittest
 
+import coverage
+
 args = sys.argv[:]
-args.pop(0) # Remove program name.
+args.pop(0)  # Remove program name.
 
 configuration = ""
 if len(args):
-  configuration = args.pop(0)
+    configuration = args.pop(0)
 
 arg1 = ""
 if len(args):
-  arg1 = args.pop(0)
+    arg1 = args.pop(0)
 
 suite = unittest.TestLoader().discover(".")
 
@@ -29,6 +30,6 @@ cov.stop()
 cov.save()
 
 if arg1 == "html":
-  cov.html_report(directory='coverage_html_report')
+    cov.html_report(directory='coverage_html_report')
 else:
-  cov.report()
+    cov.report()

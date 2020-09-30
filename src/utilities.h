@@ -451,6 +451,25 @@ bool isStandardPrefixName(const std::string &name);
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
 
 /**
+ * @brief Test to determine if @p variable1 and @p variable2 are the same or
+ * (directly or indirectly) equivalent.
+ *
+ * Test to see if @p variable1 is the same or (directly or indirectly)
+ * equivalent to @p variable2. Returns @c true if @p variable1 is the same or
+ * (directly or indirectly) equivalent to @p variable2 and @c false otherwise.
+ *
+ * @param variable1 The @c Variable to test if it is the same or (directly or
+ * indirectly) equivalent to @p variable2.
+ * @param variable2 The @c Variable that is potentially the same or (directly or
+ * indirectly) equivalent to @p variable1.
+ *
+ * @return @c true if @p variable1 is the same or (directly or indirectly)
+ * equivalent to @p variable2 and @c false otherwise.
+ */
+bool isSameOrEquivalentVariable(const VariablePtr &variable1,
+                                const VariablePtr &variable2);
+
+/**
  * @brief Test to determine if @p entity1 is a child of @p entity2.
  *
  * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
@@ -638,5 +657,6 @@ EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack 
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+std::string replace(std::string string, const std::string &from, const std::string &to);
 
 } // namespace libcellml
