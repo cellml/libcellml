@@ -510,7 +510,7 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
 {
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         auto map = createConnectionMap(variable1, variable2);
-        for(auto & it : map) {
+        for (auto &it : map) {
             it.first->mPimpl->setEquivalentConnectionId(it.second, connectionId);
             it.second->mPimpl->setEquivalentConnectionId(it.first, connectionId);
         }
@@ -535,7 +535,7 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
     std::string id;
     if (variable1->hasEquivalentVariable(variable2, true) && variable2->hasEquivalentVariable(variable1, true)) {
         auto map = createConnectionMap(variable1, variable2);
-        for(auto & it : map) {
+        for (auto &it : map) {
             id = it.first->mPimpl->equivalentConnectionId(it.second);
         }
         if (id.empty()) {
