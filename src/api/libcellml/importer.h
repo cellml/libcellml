@@ -56,9 +56,9 @@ public:
      * resources and having no imports.
      *
      * @sa clone
-     * 
+     *
      * @param model A @c ModelPtr whose imports will be resolved.
-     * 
+     *
      * @return If the operation is successful, a new @c ModelPtr to the flattened model; otherwise, the @c nullptr.
      */
     ModelPtr flattenModel(const ModelPtr &model);
@@ -121,7 +121,7 @@ public:
      *
      * If the given key already exists in the library, the function will return false
      * and the library will not be changed.
-     * 
+     *
      * @sa replaceModel
      *
      * @param model a @c ModelPtr instance to add.
@@ -152,7 +152,7 @@ public:
 
     /**
      * @brief Clear the links with other models from all import sources.
-     * 
+     *
      * Clear the links with other models from all import sources.
      */
     void clearImports(ModelPtr &model);

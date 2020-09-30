@@ -103,7 +103,6 @@ public:
         COMPONENT,
         CONNECTION,
         ENCAPSULATION,
-        GENERATOR,
         IMPORT,
         MATHML,
         MODEL,
