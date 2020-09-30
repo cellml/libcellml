@@ -2551,3 +2551,28 @@ TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModelsDifferentScale)
     auto scaling = libcellml::Units::scalingFactor(u1, u2);
     EXPECT_EQ(1000.0, scaling);
 }
+
+TEST(Units, unknownUnitsScalingFactorCompatible)
+{
+    auto model = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("banana");
+
+    model->addUnits(u1);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u1, true);
+    EXPECT_EQ(0.0, scaling);
+}
+
+TEST(Units, unknownUnitsScalingFactorIncompatible)
+{
+    auto model = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("banana");
+
+    model->addUnits(u1);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u1, false);
+    EXPECT_EQ(1.0, scaling);
+}
+
