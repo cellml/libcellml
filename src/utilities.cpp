@@ -27,6 +27,8 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
+#include "libcellml/issue.h"
+#include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/namedentity.h"
 #include "libcellml/reset.h"
@@ -466,6 +468,12 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     }
 
     return index;
+}
+
+bool isSameOrEquivalentVariable(const VariablePtr &variable1,
+                                const VariablePtr &variable2)
+{
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
 }
 
 bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
@@ -915,6 +923,7 @@ void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model
         }
     }
 }
+
 void listComponentIds(const ComponentPtr &component, IdList &idList)
 {
     std::string id = component->id();
@@ -1047,6 +1056,86 @@ std::string makeUniqueId(IdList &idList)
     }
     idList.insert(id);
     return id;
+}
+
+bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
+{
+    bool status = true;
+    for (size_t index = 0; index < component->variableCount(); ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            if (model == owningModel(v)) {
+                // Units are already linked, and exist in this model.
+                continue;
+            }
+            if ((model == nullptr) && !isStandardUnit(u)) {
+                model = owningModel(component);
+                if (model->hasUnits(u->name())) {
+                    v->setUnits(model->units(u->name()));
+                } else {
+                    auto issue = Issue::create();
+                    issue->setDescription("Model does not contain the units '" + u->name() + "' required by variable '" + v->name() + "' in component '" + component->name() + "'.");
+                    issue->setLevel(Issue::Level::WARNING);
+                    issue->setVariable(v);
+                    issueList.push_back(issue);
+                    status = false;
+                }
+            } else if (model != nullptr) {
+                auto issue = Issue::create();
+                issue->setDescription("The units '" + u->name() + "' assigned to variable '" + v->name() + "' in component '" + component->name() + "' belong to a different model, '" + model->name() + "'.");
+                issue->setLevel(Issue::Level::WARNING);
+                issue->setVariable(v);
+                issueList.push_back(issue);
+                status = false;
+            }
+        }
+    }
+    return status;
+}
+
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
+{
+    std::vector<IssuePtr> issueList;
+    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
+}
+
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList)
+{
+    auto component = std::dynamic_pointer_cast<Component>(componentEntity);
+    bool status = (component != nullptr) ?
+                      linkComponentVariableUnits(component, issueList) :
+                      true;
+    for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
+        auto c = componentEntity->component(index);
+        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
+    }
+    return status;
+}
+
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
+{
+    bool unlinked = false;
+    for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
+        auto v = component->variable(index);
+        auto u = v->units();
+        if (u != nullptr) {
+            auto model = owningModel(u);
+            unlinked = ((model == nullptr) && !isStandardUnit(u)) || (owningModel(component) != model);
+        }
+    }
+    return unlinked;
+}
+
+std::string replace(std::string string, const std::string &from, const std::string &to)
+{
+    auto index = string.find(from);
+
+    return (index == std::string::npos) ?
+               string :
+               string.replace(index, from.length(), to);
 }
 
 } // namespace libcellml

@@ -539,7 +539,8 @@ TEST(Validator, validMathInMultipleMathMLBlocksInvalidMathTagDuplicateIDs)
         "Math root node is of invalid type 'banana' on component 'componentName'. A valid math root node should be of type 'math'.",
         "Duplicated id attribute 'myId' has been found in:\n"
         " - MathML cn element in math in component 'componentName'; and\n"
-        " - MathML ci element 'B' in math in component 'componentName'.\n"};
+        " - MathML ci element 'B' in math in component 'componentName'.\n",
+    };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
@@ -2652,6 +2653,10 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
 
+    const std::vector<std::string> expectedIssues = {
+        "Variable 't2' in component 'nGate' has a units reference 'millisecond' which is neither standard nor defined in the parent model.",
+    };
+
     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
                      "  <units name=\"millisecond\">"
@@ -2676,6 +2681,7 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 
     // Linking the units to the model fixes the problem
     model->linkUnits();

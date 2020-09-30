@@ -719,9 +719,13 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
     auto e = printer->printModel(modelNonImportVersion);
     EXPECT_EQ(e, a);
 
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
     auto generator = libcellml::Generator::create();
 
-    generator->processModel(model);
+    generator->setModel(analyser->model());
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());
