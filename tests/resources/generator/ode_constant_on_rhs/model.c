@@ -35,7 +35,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initializeStatesAndConstants(double *states, double *variables)
+void initialiseStatesAndConstants(double *states, double *variables)
 {
     states[0] = 1.0;
 }

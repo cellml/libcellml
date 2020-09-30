@@ -124,6 +124,7 @@ public:
     /**
      * @overload
      */
+
     static IssuePtr create(ItemType type, const VariablePtr &variable) noexcept;
 
     /**
