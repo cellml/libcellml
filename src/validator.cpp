@@ -842,7 +842,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("LibXml2 error: " + doc->xmlError(i));
-                issue->setCause(Issue::Cause::XML);
+                issue->setCause(ItemType::XML);
                 issue->setReferenceRule(Issue::ReferenceRule::XML);
                 mValidator->addIssue(issue);
             }
@@ -860,7 +860,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             IssuePtr issue = Issue::create();
             issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->setComponent(component);
-            issue->setCause(Issue::Cause::XML);
+            issue->setCause(ItemType::XML);
             issue->setReferenceRule(Issue::ReferenceRule::XML);
 
             mValidator->addIssue(issue);
@@ -949,7 +949,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
             } else if (attribute->inNamespaceUri(CELLML_2_0_NS)) {
                 cellmlAttributesToRemove.push_back(attribute);
                 IssuePtr issue = Issue::create();
-                issue->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.");
+                issue->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace. Attribute 'units' is the only CellML namespace attribute allowed.");
                 issue->setMath(component);
                 issue->setCause(ItemType::MATHML);
                 issue->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
