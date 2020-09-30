@@ -89,18 +89,15 @@ void XmlDoc::parse(const std::string &input)
     xmlCleanupGlobals();
 }
 
-void XmlDoc::parseMathML(const std::string &input, bool validate)
+void XmlDoc::parseMathML(const std::string &input)
 {
     xmlInitParser();
-    std::string mathmlString = input;
-    if (validate) {
-        mathmlString = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">" + mathmlString;
-    }
+    std::string mathmlString = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">" + input;
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *>(this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr,
-                                        validate ? XML_PARSE_DTDVALID : 0);
+                                        XML_PARSE_DTDVALID);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
     xmlCleanupParser();
