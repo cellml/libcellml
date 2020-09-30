@@ -283,7 +283,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
         EXPECT_EQ("", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::XML:
-        EXPECT_EQ("", e->referenceHeading());
+        EXPECT_EQ("1.2.1", e->referenceHeading());
         break;
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE:
         EXPECT_EQ("3.10.8", e->referenceHeading());
