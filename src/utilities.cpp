@@ -1065,7 +1065,7 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
                 // Units are already linked, and exist in this model.
                 continue;
             }
-            if (model == nullptr && !isStandardUnit(u)) {
+            if ((model == nullptr) && !isStandardUnit(u)) {
                 model = owningModel(component);
                 if (model->hasUnits(u->name())) {
                     v->setUnits(model->units(u->name()));
