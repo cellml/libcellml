@@ -8,9 +8,13 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
+from libcellml.analyser import Analyser
+from libcellml.analyserequation import AnalyserEquation
+from libcellml.analyserequationast import AnalyserEquationAst
+from libcellml.analysermodel import AnalyserModel
+from libcellml.analyservariable import AnalyserVariable
 from libcellml.component import Component
 from libcellml.generator import Generator
-from libcellml.generator import GeneratorVariable
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importer import Importer
 from libcellml.importsource import ImportSource
@@ -46,7 +50,104 @@ def convert(base, enum, variables, new_base=None):
         setattr(base if new_base is None else new_base, enum, obj)
 
 
-convert(Generator, 'ModelType', [
+convert(AnalyserEquation, 'Type', [
+    'TRUE_CONSTANT',
+    'VARIABLE_BASED_CONSTANT',
+    'RATE',
+    'ALGEBRAIC',
+])
+convert(AnalyserEquationAst, 'Type', [
+    'ASSIGNMENT',
+
+    # Relational and logical operators.
+
+    'EQ',
+    'NEQ',
+    'LT',
+    'LEQ',
+    'GT',
+    'GEQ',
+    'AND',
+    'OR',
+    'XOR',
+    'NOT',
+
+    # Arithmetic operators.
+
+    'PLUS',
+    'MINUS',
+    'TIMES',
+    'DIVIDE',
+    'POWER',
+    'ROOT',
+    'ABS',
+    'EXP',
+    'LN',
+    'LOG',
+    'CEILING',
+    'FLOOR',
+    'MIN',
+    'MAX',
+    'REM',
+
+    # Calculus elements.
+
+    'DIFF',
+
+    # Trigonometric operators.
+
+    'SIN',
+    'COS',
+    'TAN',
+    'SEC',
+    'CSC',
+    'COT',
+    'SINH',
+    'COSH',
+    'TANH',
+    'SECH',
+    'CSCH',
+    'COTH',
+    'ASIN',
+    'ACOS',
+    'ATAN',
+    'ASEC',
+    'ACSC',
+    'ACOT',
+    'ASINH',
+    'ACOSH',
+    'ATANH',
+    'ASECH',
+    'ACSCH',
+    'ACOTH',
+
+    # Piecewise statement.
+
+    'PIECEWISE',
+    'PIECE',
+    'OTHERWISE',
+
+    # Token elements.
+
+    'CI',
+    'CN',
+
+    # Qualifier elements.
+
+    'DEGREE',
+    'LOGBASE',
+    'BVAR',
+
+    # Constants.
+
+    'TRUE',
+    'FALSE',
+    'E',
+    'PI',
+    'INF',
+    'NAN',
+])
+convert(AnalyserModel, 'Type', [
     'UNKNOWN',
     'ALGEBRAIC',
     'ODE',
@@ -55,22 +156,21 @@ convert(Generator, 'ModelType', [
     'OVERCONSTRAINED',
     'UNSUITABLY_CONSTRAINED',
 ])
-convert(GeneratorProfile, 'Profile', [
-    'C',
-    'PYTHON',
-])
-convert(GeneratorVariable, 'Type', [
+convert(AnalyserVariable, 'Type', [
     'VARIABLE_OF_INTEGRATION',
     'STATE',
     'CONSTANT',
     'COMPUTED_CONSTANT',
     'ALGEBRAIC',
 ])
+convert(GeneratorProfile, 'Profile', [
+    'C',
+    'PYTHON',
+])
 convert(Issue, 'Cause', [
     'COMPONENT',
     'CONNECTION',
     'ENCAPSULATION',
-    'GENERATOR',
     'IMPORT',
     'MATHML',
     'MODEL',
