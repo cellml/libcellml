@@ -456,10 +456,6 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
     bool updateUnits2 = false;
 
     if ((units1 != nullptr) && (units2 != nullptr)) {
-        if ((owningModel(units1) == owningModel(units2)) && (units1->name() == units2->name())) {
-            return 1.0;
-        }
-
         double multiplier = 0.0;
         updateUnits1 = updateUnitMultiplier(units1, -1, multiplier);
         updateUnits2 = updateUnitMultiplier(units2, 1, multiplier);
