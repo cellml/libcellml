@@ -16,7 +16,6 @@ limitations under the License.
 
 #pragma once
 
-#include <functional>
 #include <iostream>
 #include <libcellml>
 #include <sstream>
@@ -74,7 +73,8 @@ private:
     bool mNewLine;
 };
 
-void TEST_EXPORT timeit(std::function<void()> func);
+std::chrono::steady_clock::time_point TEST_EXPORT timeNow();
+int TEST_EXPORT elapsedTime(const std::chrono::steady_clock::time_point &startTime);
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 std::string TEST_EXPORT fileContents(const std::string &fileName);
