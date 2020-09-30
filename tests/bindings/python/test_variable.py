@@ -10,7 +10,7 @@ class VariableTestCase(unittest.TestCase):
         from libcellml import Variable
 
         x = Variable()
-        del(x)
+        del x
 
         y = Variable("nice")
         self.assertEqual("nice", y.name())
@@ -33,7 +33,8 @@ class VariableTestCase(unittest.TestCase):
 
     def test_id(self):
         from libcellml import Variable
-        from libcellml.variable import Variable_setEquivalenceMappingId, Variable_setEquivalenceConnectionId, Variable_equivalenceMappingId, Variable_equivalenceConnectionId
+        from libcellml.variable import Variable_setEquivalenceMappingId, Variable_setEquivalenceConnectionId, \
+            Variable_equivalenceMappingId, Variable_equivalenceConnectionId
         from libcellml.variable import Variable_removeEquivalenceMappingId, Variable_removeEquivalenceConnectionId
 
         v1 = Variable("v1")
@@ -224,7 +225,7 @@ class VariableTestCase(unittest.TestCase):
         v.setUnits('')
         v.setUnits('Hello')
         v.setUnits('')
-        del(v)
+        del v
 
         # void setUnits(const UnitsPtr &units)
         name = 'tiger'
@@ -288,11 +289,11 @@ class VariableTestCase(unittest.TestCase):
         self.assertNotEqual(
             Variable.InterfaceType.NONE,
             Variable.InterfaceType.PRIVATE,
-            )
+        )
         self.assertNotEqual(
             Variable.InterfaceType.PUBLIC,
             Variable.InterfaceType.PUBLIC_AND_PRIVATE,
-            )
+        )
 
     def test_set_interface_type(self):
         from libcellml import Variable
@@ -316,12 +317,12 @@ class VariableTestCase(unittest.TestCase):
         self.assertRaises(
             RuntimeError, v.setInterfaceType,
             Variable.InterfaceType.PUBLIC_AND_PRIVATE + 1)
-        del(v)
+        del v
 
         # void setInterfaceType(const std::string &interfaceType)
         v = Variable()
         v.setInterfaceType('not an interface type')
-        del(v)
+        del v
 
     def test_interface_type(self):
         from libcellml import Variable
@@ -401,8 +402,6 @@ class VariableTestCase(unittest.TestCase):
         vCloned = v.clone()
         self.assertEqual("sodium", vCloned.name())
         self.assertEqual("kg_per_ml", vCloned.units().name())
-
-
 
 
 if __name__ == '__main__':
