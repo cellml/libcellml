@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="parabolic_approx_sin" id="parabolic_approx_sin">
+<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="parabolic_approx_sin">
 
 
-  <component name="sin" id="sin">
-    <variable id="x" units="dimensionless" name="x" interface="public_and_private"/>
-    <variable id="sin" units="dimensionless" name="sin" interface="public_and_private"/>
+  <component name="sin">
+    <variable units="dimensionless" name="x" interface="public_and_private"/>
+    <variable units="dimensionless" name="sin" interface="public_and_private"/>
     <variable units="dimensionless" name="k2_oPi" interface="public_and_private"/>
     <variable units="dimensionless" name="k2Pi" interface="public_and_private"/>
     <variable units="dimensionless" name="kPi_2" interface="public_and_private"/>
@@ -12,32 +12,32 @@
     <variable units="dimensionless" name="z" interface="public_and_private"/>
     <variable units="dimensionless" name="C" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
-      <apply id="k2_oPi"><eq/>
+      <apply><eq/>
         <ci>k2_oPi</ci>
         <apply><divide/>
           <cn cellml:units="dimensionless">2.0</cn>
           <pi/>
         </apply>
       </apply>
-      <apply id="k2Pi"><eq/>
+      <apply><eq/>
         <ci>k2Pi</ci>
         <apply><times/>
           <cn cellml:units="dimensionless">2.0</cn>
           <pi/>
         </apply>
       </apply>
-      <apply id="kPi_2"><eq/>
+      <apply><eq/>
         <ci>kPi_2</ci>
         <apply><divide/>
           <pi/>
           <cn cellml:units="dimensionless">2.0</cn>
         </apply>
       </apply>
-      <apply id="kPi"><eq/>
+      <apply><eq/>
         <ci>kPi</ci>
         <pi/>
       </apply>
-      <apply id="kPi_32"><eq/>
+      <apply><eq/>
         <ci>kPi_32</ci>
         <apply><divide/>
           <apply><times/>
@@ -48,7 +48,7 @@
         </apply>
       </apply>
 
-      <apply id="z"><eq/>
+      <apply><eq/>
         <ci>z</ci>
         <piecewise>
           <piece>
@@ -111,7 +111,7 @@
         </piecewise>
       </apply>
 
-      <apply id="sin"><eq/>
+      <apply><eq/>
         <ci>sin</ci>
         <piecewise>
           <piece>

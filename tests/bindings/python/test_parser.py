@@ -10,7 +10,7 @@ class ParserTestCase(unittest.TestCase):
         from libcellml import Parser
 
         x = Parser()
-        del(x)
+        del x
 
     def test_inheritance(self):
         import libcellml
