@@ -219,7 +219,7 @@ TEST(Analyser, nonExistingInitialisingVariable)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' has an invalid initial value 'k'. Initial values must be a real number string or a variable reference.",
+        "Variable 'x' in component 'main' has an invalid initial value 'k'. Initial values must be a real number string or a variable reference.",
     };
     const std::vector<libcellml::ItemType> expectedCauses = {
         libcellml::ItemType::VARIABLE,
