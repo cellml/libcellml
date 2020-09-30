@@ -720,8 +720,10 @@ TEST(Importer, importSourceGetSetModel)
 
 TEST(Importer, resolveWithMissingItems)
 {
-    std::vector<std::string> e = {"Import of units 'i_dont_exist' requires units named 'i_dont_exist' which cannot be found.",
-                                  "Import of component 'i_dont_exist' requires component named 'i_dont_exist' which cannot be found."};
+    std::vector<std::string> e = {
+        "Import of units 'i_dont_exist' requires units named 'i_dont_exist' which cannot be found.",
+        "Import of component 'i_dont_exist' requires component named 'i_dont_exist' which cannot be found.",
+    };
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(fileContents("importer/importing_nonexistent_items.cellml"));
     EXPECT_EQ(size_t(0), parser->issueCount());

@@ -362,7 +362,7 @@ void Validator::validateModel(const ModelPtr &model)
     // Check for a valid name attribute.
     if (!mPimpl->isCellmlIdentifier(model->name())) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Model does not have a valid name attribute.");
+        issue->setDescription("Model '" + model->name() + "' does not have a valid name attribute.");
         issue->setModel(model);
         issue->setReferenceRule(Issue::ReferenceRule::MODEL_NAME);
         addIssue(issue);
@@ -500,7 +500,7 @@ void Validator::ValidatorImpl::validateImportedComponent(const ComponentPtr &com
     if (!isCellmlIdentifier(component->name())) {
         IssuePtr issue = Issue::create();
         issue->setComponent(component);
-        issue->setDescription("Imported component does not have a valid name attribute.");
+        issue->setDescription("Imported component '" + component->name() + "' does not have a valid name attribute.");
         issue->setReferenceRule(Issue::ReferenceRule::IMPORT_COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
@@ -544,7 +544,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     if (!isCellmlIdentifier(component->name())) {
         IssuePtr issue = Issue::create();
         issue->setComponent(component);
-        issue->setDescription("Component does not have a valid name attribute.");
+        issue->setDescription("Component '" + component->name() + "' does not have a valid name attribute.");
         issue->setReferenceRule(Issue::ReferenceRule::COMPONENT_NAME);
         mValidator->addIssue(issue);
     }
@@ -591,10 +591,10 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         IssuePtr issue = Issue::create();
         issue->setUnits(units);
         if (units->isImport()) {
-            issue->setDescription("Imported units does not have a valid name attribute.");
+            issue->setDescription("Imported units '" + units->name() + "' does not have a valid name attribute.");
             issue->setReferenceRule(Issue::ReferenceRule::IMPORT_UNITS_NAME);
         } else {
-            issue->setDescription("Units does not have a valid name attribute.");
+            issue->setDescription("Units '" + units->name() + "' does not have a valid name attribute.");
             issue->setReferenceRule(Issue::ReferenceRule::UNITS_NAME);
         }
         mValidator->addIssue(issue);
@@ -635,7 +635,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         }
     } else {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference.");
+        issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'.");
         issue->setUnits(units);
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
@@ -669,7 +669,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(variable->name())) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Variable does not have a valid name attribute.");
+        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid name attribute.");
         issue->setVariable(variable);
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_NAME);
         mValidator->addIssue(issue);
@@ -678,7 +678,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     std::string unitsName = variable->units() != nullptr ? variable->units()->name() : "";
     if (!isCellmlIdentifier(unitsName)) {
         IssuePtr issue = Issue::create();
-        issue->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
+        issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' does not have a valid units attribute. The attribute given is '" + unitsName + "'.");
         issue->setVariable(variable);
         issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_UNITS);
         mValidator->addIssue(issue);
@@ -698,7 +698,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         std::string interfaceType = variable->interfaceType();
         if ((interfaceType != "public") && (interfaceType != "private") && (interfaceType != "none") && (interfaceType != "public_and_private")) {
             IssuePtr issue = Issue::create();
-            issue->setDescription("Variable '" + variable->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
+            issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
             issue->setVariable(variable);
             issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_INTERFACE);
             mValidator->addIssue(issue);
@@ -712,7 +712,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             // Otherwise, check that the initial value can be converted to a double
             if (!isCellMLReal(initialValue)) {
                 IssuePtr issue = Issue::create();
-                issue->setDescription("Variable '" + variable->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
+                issue->setDescription("Variable '" + variable->name() + "' in component '" + owningComponent(variable)->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
                 issue->setVariable(variable);
                 issue->setReferenceRule(Issue::ReferenceRule::VARIABLE_INITIAL_VALUE);
                 mValidator->addIssue(issue);
@@ -843,7 +843,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
                 IssuePtr issue = Issue::create();
                 issue->setDescription("LibXml2 error: " + doc->xmlError(i));
                 issue->setCause(Issue::Cause::XML);
-                issue->setReferenceRule(Issue::ReferenceRule::LIBXML2_ISSUE);
+                issue->setReferenceRule(Issue::ReferenceRule::XML);
                 mValidator->addIssue(issue);
             }
         }
@@ -853,7 +853,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             issue->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
             issue->setCause(Issue::Cause::XML);
             issue->setComponent(component);
-            issue->setReferenceRule(Issue::ReferenceRule::LIBXML2_ISSUE);
+            issue->setReferenceRule(Issue::ReferenceRule::XML);
             mValidator->addIssue(issue);
             return;
         }
@@ -862,7 +862,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             issue->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
             issue->setComponent(component);
             issue->setCause(Issue::Cause::XML);
-            issue->setReferenceRule(Issue::ReferenceRule::LIBXML2_ISSUE);
+            issue->setReferenceRule(Issue::ReferenceRule::XML);
             mValidator->addIssue(issue);
             return;
         }
@@ -949,7 +949,7 @@ void Validator::ValidatorImpl::validateAndCleanCnNode(const XmlNodePtr &node, co
             } else if (attribute->inNamespaceUri(CELLML_2_0_NS)) {
                 cellmlAttributesToRemove.push_back(attribute);
                 IssuePtr issue = Issue::create();
-                issue->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.  Attribute 'units' is the only CellML namespace attribute allowed.");
+                issue->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace. Attribute 'units' is the only CellML namespace attribute allowed.");
                 issue->setComponent(component);
                 issue->setCause(Issue::Cause::MATHML);
                 issue->setReferenceRule(Issue::ReferenceRule::MATH_MATHML);
