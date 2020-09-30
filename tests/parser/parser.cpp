@@ -2216,9 +2216,6 @@ TEST(Parser, raiseIssueMissingUnits)
     std::vector<std::string> expectedIssues = {"Model does not contain the units 'nothing_to_find_here' required by variable 'my_units_are_missing' in component 'component'."};
     std::string modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                               "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
-                              "  <units name=\"units_with_children_missing\">\n"
-                              "    <unit units=\"i_dont_exist\"/>\n"
-                              "  </units>\n"
                               "  <component name=\"component\">\n"
                               "    <variable name=\"my_units_are_missing\" units=\"nothing_to_find_here\"/>\n"
                               "  </component>\n"
