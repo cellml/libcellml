@@ -4,8 +4,8 @@
         <unit exponent="-1" units="second"/>
     </units>
     <component name="main">
-        <variable interface="public" name="time" units="second"/>
-        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="time" units="second" interface="public"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -21,8 +21,8 @@
         </math>
     </component>
     <component name="sub">
-        <variable interface="public_and_private" name="time" units="second"/>
-        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="time" units="second" interface="public_and_private"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -38,8 +38,8 @@
         </math>
     </component>
     <component name="sub_sub">
-        <variable interface="public" name="time" units="second"/>
-        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="time" units="second" interface="public"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -56,7 +56,7 @@
     </component>
     <component name="sub_sub_sub">
         <variable name="other_time" units="second"/>
-        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>

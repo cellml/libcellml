@@ -1450,7 +1450,6 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
         case libcellml::Issue::Cause::RESET:
         case libcellml::Issue::Cause::UNDEFINED:
         case libcellml::Issue::Cause::XML:
-        case libcellml::Issue::Cause::GENERATOR:
             break;
         }
     }

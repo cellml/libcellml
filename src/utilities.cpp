@@ -468,6 +468,12 @@ size_t getVariableIndexInComponent(const ComponentPtr &component, const Variable
     return index;
 }
 
+bool isSameOrEquivalentVariable(const VariablePtr &variable1,
+                                const VariablePtr &variable2)
+{
+    return (variable1 == variable2) || variable1->hasEquivalentVariable(variable2, true);
+}
+
 bool isEntityChildOf(const EntityPtr &entity1, const EntityPtr &entity2)
 {
     return entity1->parent() == entity2;
@@ -1047,6 +1053,15 @@ std::string makeUniqueId(IdList &idList)
     }
     idList.insert(id);
     return id;
+}
+
+std::string replace(std::string string, const std::string &from, const std::string &to)
+{
+    auto index = string.find(from);
+
+    return (index == std::string::npos) ?
+               string :
+               string.replace(index, from.length(), to);
 }
 
 } // namespace libcellml

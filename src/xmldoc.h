@@ -53,10 +53,8 @@ public:
      * Parses the @p input @c std::string as a MathML string.
      *
      * @param input The @c std::string to parse.
-     * @param validate Optional parameter to determine whether validation
-     * against the MathML DTD should be done.
      */
-    void parseMathML(const std::string &input, bool validate = true);
+    void parseMathML(const std::string &input);
 
     /**
      * @brief Convert this @c XmlDoc content into a pretty-print @c std::string.
