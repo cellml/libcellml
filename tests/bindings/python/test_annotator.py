@@ -324,6 +324,7 @@ class AnnotatorTestCase(unittest.TestCase):
         from libcellml import Annotator, CellMLElement, Component, Model, Units
         from libcellml.annotator import UnitItem
         #from libcellml.types import UnitItem
+        from libcellml.enums import CellMLElement_UNDEFINED
 
         annotator = Annotator()
         model = Model()
@@ -356,11 +357,11 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("", component2.id())
         self.assertEqual("b4da56", units.unitId(0))
 
-        self.assertEqual("", annotator.assignId(None, CellMLElement.UNDEFINED))
+        self.assertEqual("", annotator.assignId(None, CellMLElement_UNDEFINED))
 
     def test_auto_ids_group(self):
         from libcellml import Annotator, CellMLElement, Component, Model
-
+        from libcellml.enums import CellMLElement_COMPONENT
         annotator = Annotator()
         model = Model()
         component1 = Component("c1")
@@ -378,7 +379,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("", component2.id())
         self.assertEqual("", component3.id())
 
-        annotator.assignIds(CellMLElement.COMPONENT)
+        annotator.assignIds(CellMLElement_COMPONENT)
 
         self.assertEqual("", model.id())
         self.assertEqual("b4da55", component1.id())
@@ -553,22 +554,50 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator.setModel(model)
 
         d = annotator.dictionary()
-        #it = d.iterator()
+        self.assertEqual(24, len(d))
 
-        print()
-        print(d)
-        print(dir(d))
-        print(CellMLElement)
-        print(dir(CellMLElement))
-        print(CellMLElement.COMPONENT)
-        print(type(CellMLElement.COMPONENT))
-        print('=============')
-        print(d['component_2'])
-        v = d['component_2']
-        print(dir(v))
-        print(type(v))
-        for entry in d:
-            print('entry: ', entry)
+        def cover_swig_dict(d):
+            print()
+            print('=============')
+            print(d)
+            print(CellMLElement)
+            print(dir(CellMLElement))
+            print(CellMLElement.COMPONENT)
+            print(type(CellMLElement.COMPONENT))
+            print(d['component_2'])
+            v = d['component_2']
+            print(dir(v))
+            print(type(v))
+            it = d.iterator()
+            print(dir(it))
+
+            d.end()
+            d.begin()
+            d.rend()
+            d.rbegin()
+            self.assertEqual(1, d.count('component_2'))
+            self.assertFalse(d.empty())
+            d.lower_bound('component_2')
+            d.upper_bound('component_2')
+            d.equal_range('component_2')
+
+            a = d.find('component_2').value()
+            print(" = here =")
+            print(a)
+            print(dir(a))
+            print(type(a))
+            self.assertEqual(3, a[1])
+
+            for entry in d:
+                pass
+
+            for key, value in d.iteritems():
+                print(key, value)
+
+            d.erase('component_2')
+            d.clear()
+
+        #cover_swig_dict()
 
 
 if __name__ == '__main__':

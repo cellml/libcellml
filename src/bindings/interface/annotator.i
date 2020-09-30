@@ -159,6 +159,7 @@
 "Private: Utility function to set a unique id for the unit located by the given index and units.";
 
 %{
+#include <iostream>
 #include "libcellml/annotator.h"
 %}
 
@@ -177,7 +178,7 @@
 //%ignore libcellml::Annotator::connection;
 //%ignore libcellml::Annotator::mapVariables;
 %ignore libcellml::Annotator::assignId(const AnyItem &item);
-//%ignore libcellml::Annotator::dictionary;
+%ignore libcellml::Annotator::dictionary;
 //%ignore libcellml::Annotator::assignUnitId;
 
 //typedef std::pair<libcellml::UnitsPtr, size_t> libcellml::UnitItem;
@@ -192,7 +193,8 @@ from libcellml import CellMLElement
 //}
 
 %template() std::vector<std::string>;
-%include "libcellml/types.h"
+%template() std::vector<libcellml::CellMLElement>;
+
 %include "libcellml/annotator.h"
 
 %template(UnitItem) std::pair< libcellml::UnitsPtr, size_t >;
@@ -210,6 +212,7 @@ from libcellml import CellMLElement
 //%template(AnyItem) std::pair< libcellml::CellMLElement, libcellml::EntityPtr >;
 //typedef std::shared_ptr< libcellml::Units > UnitsPtr;
 //typedef std::shared_ptr< libcellml::VariablePtr > VariablePtr;
+
 
 %extend libcellml::Annotator {
 
@@ -281,6 +284,21 @@ from libcellml import CellMLElement
 //        }
 //        return rtn;
 //    }
+    std::vector<std::string> _dictionaryFirst() {
+        std::vector<std::string> rtn;
+        for( auto &i : $self->dictionary()) {
+            rtn.push_back(i.first);
+        }
+        return rtn;
+    }
+    std::vector<enum libcellml::CellMLElement> _dictionarySecond() {
+        std::vector<enum libcellml::CellMLElement> rtn;
+        for( auto &i : $self->dictionary()) {
+        std::cout << "element: " << cellMLElementAsString(i.second) << std::endl;
+            rtn.push_back(i.second);
+        }
+        return rtn;
+    }
 
 %pythoncode %{
 
@@ -390,27 +408,33 @@ from libcellml import CellMLElement
             itemsList.append(items_with_id)
         return itemsList
 
-#    def dictionary(self):
-#        r"""Return a dictionary of all id strings and their type within the stored model."""
-#        rtn = {}
-#        print()
-#        print("dictionary")
-#        d = _annotator.Annotator_dictionary(self)
-#        print(d)
-#        for entry in d:
-#            print("entry: ", entry)
+    def dictionary(self):
+        r"""Return a dictionary of all id strings and their type within the stored model."""
+        rtn = {}
+        #print()
+        #print("dictionary")
+        #d = _annotator.Annotator_dictionary(self)
+        #print(d)
+        #for entry in d:
+        #    print("entry: ", entry)
 
-#        t = d.next()
-#        while t is not None:
-#            print(t)
+        #t = d.next()
+        #while t is not None:
+        #    print(t)
 
-#        for k, v in zip(_annotator.Annotator__dictionaryForSWIG(self, True), _annotator.Annotator__dictionaryForSWIG(self, False)):
-#            if k in rtn:
-#                rtn[k].append(v)
-#            else:
-#                rtn[k] = [v]
+        f = _annotator.Annotator__dictionaryFirst(self)
+        s = _annotator.Annotator__dictionarySecond(self)
+        print()
+        print("========")
+        print(f)
+        print(s)
+        for k, v in zip(_annotator.Annotator__dictionaryFirst(self), _annotator.Annotator__dictionarySecond(self)):
+            if k in rtn:
+                rtn[k].append(v)
+            else:
+                rtn[k] = [v]
 
-#        return rtn
+        return rtn
 %}
 
 
