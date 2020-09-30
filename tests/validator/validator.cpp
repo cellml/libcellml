@@ -2653,7 +2653,9 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
     auto parser = libcellml::Parser::create();
     auto validator = libcellml::Validator::create();
 
-    std::string e = "Variable 't2' in component 'nGate' has a units reference 'millisecond' which is neither standard nor defined in the parent model.";
+    const std::vector<std::string> expectedIssues = {
+        "Variable 't2' in component 'nGate' has a units reference 'millisecond' which is neither standard nor defined in the parent model.",
+    };
 
     std::string in = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                      "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"error_in_units\">"
@@ -2679,7 +2681,7 @@ TEST(Validator, refToUnitsByNameNeedsLinkUnitsToValidate)
 
     validator->validateModel(model);
     EXPECT_EQ(size_t(1), validator->errorCount());
-    EXPECT_EQ(e, validator->issue(0)->description());
+    EXPECT_EQ_ISSUES(expectedIssues, validator);
 
     // Linking the units to the model fixes the problem
     model->linkUnits();
