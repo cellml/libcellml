@@ -98,6 +98,8 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
         std::cout << indent << FIXED_INDENT << FIXED_INDENT;
         std::cout << "[" << v + 1 << "]: " << component->variable(v)->name();
         if (component->variable(v)->units() != nullptr) {
+          
+          
             std::cout << " [" << component->variable(v)->units()->name() << "]";
         }
         if (component->variable(v)->initialValue() != "") {
@@ -195,15 +197,18 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesCauses(const std::vector<std::string> &issues,
-                             const std::vector<libcellml::ItemType> &causes,
-                             const libcellml::LoggerPtr &logger)
+void expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
+                                   const std::vector<libcellml::Issue::Cause> &causes,
+                                   const std::vector<libcellml::Issue::Level> &levels,
+                                   const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
     EXPECT_EQ(causes.size(), logger->issueCount());
+    EXPECT_EQ(levels.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
         EXPECT_EQ(causes.at(i), logger->issue(i)->cause());
+        EXPECT_EQ(levels.at(i), logger->issue(i)->level());
     }
 }
 

@@ -22,7 +22,7 @@ limitations under the License.
 #include "libcellml/namedentity.h"
 #include "libcellml/types.h"
 
-#ifndef SWIG
+#if defined(_WIN32) && !defined(SWIG)
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
 #endif
 

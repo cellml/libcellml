@@ -16,31 +16,31 @@ class IssueTestCase(unittest.TestCase):
         from libcellml import Variable
 
         e1 = Issue()
-        del(e1)
+        del e1
 
         c = Component()
         e2 = Issue(c)
-        del(e2)
+        del e2
 
         i = ImportSource()
         e3 = Issue(i)
-        del(e3)
+        del e3
 
         m = Model()
         e4 = Issue(m)
-        del(e4)
+        del e4
 
         r = Reset()
         e5 = Issue(r)
-        del(e5)
+        del e5
 
         u = Units()
         e6 = Issue(u)
-        del(e6)
+        del e6
 
         v = Variable()
         e7 = Issue(v)
-        del(e7)
+        del e7
 
     def test_cause_enum(self):
         import libcellml
@@ -164,7 +164,7 @@ class IssueTestCase(unittest.TestCase):
                           Issue.ReferenceRule.UNDEFINED - 1)
         self.assertRaises(RuntimeError, e.setReferenceRule,
                           Issue.ReferenceRule.MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION + 1)
-        del(e)
+        del e
 
     def test_set_description(self):
         from libcellml import Issue
@@ -183,7 +183,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(e.description(), '')
         e.setDescription(d)
         self.assertEqual(e.description(), d)
-        del(d, e)
+        del [d, e]
 
     def test_set_cause(self):
         from libcellml import Issue

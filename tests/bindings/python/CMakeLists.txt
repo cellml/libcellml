@@ -13,6 +13,8 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 set(TEST_SRCS
+  test_analyser.py
+  test_analyser_equation_ast.py
   test_component.py
   test_docstrings.py
   test_entity.py

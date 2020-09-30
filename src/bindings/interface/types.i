@@ -5,12 +5,16 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 */
 %include <std_shared_ptr.i>
 
+%shared_ptr(libcellml::Analyser)
+%shared_ptr(libcellml::AnalyserEquation)
+%shared_ptr(libcellml::AnalyserEquationAst)
+%shared_ptr(libcellml::AnalyserModel)
+%shared_ptr(libcellml::AnalyserVariable)
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
 %shared_ptr(libcellml::Generator)
 %shared_ptr(libcellml::GeneratorProfile)
-%shared_ptr(libcellml::GeneratorVariable)
 %shared_ptr(libcellml::Importer)
 %shared_ptr(libcellml::ImportSource)
 %shared_ptr(libcellml::ImportedEntity)
@@ -27,12 +31,12 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 
 // Shared typemaps
 
-%typemap(in) libcellml::Generator::ModelType (int val, int ecode) {
+%typemap(in) libcellml::AnalyserEquationAst::Type (int val, int ecode) {
   ecode = SWIG_AsVal(int)($input, &val);
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
-    if (val < %static_cast($type::UNKNOWN, int) || %static_cast($type::UNSUITABLY_CONSTRAINED, int) < val) {
+    if (val < %static_cast($type::ASSIGNMENT, int) || %static_cast($type::NAN, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val,$basetype);

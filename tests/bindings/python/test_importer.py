@@ -68,7 +68,6 @@ class ValidatorTestCase(unittest.TestCase):
 
         self.assertEqual(file_contents("importer/diamond_left.cellml"), printer.printModel(left))
 
-
     def test_add_model(self):
         from libcellml import Component, Importer, Model, Parser
 
