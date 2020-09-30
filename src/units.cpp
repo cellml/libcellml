@@ -463,11 +463,6 @@ double Units::scalingFactor(const UnitsPtr &units1, const UnitsPtr &units2, bool
         if (updateUnits1 && updateUnits2) {
             return std::pow(10, multiplier);
         }
-        // If we get to this stage, the two units are be base units with the same name,
-        // and could be in the same or different models.
-        if (units1->name() == units2->name()) {
-            return 1.0;
-        }
     }
 
     return 0.0;
