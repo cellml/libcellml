@@ -539,7 +539,8 @@ TEST(Validator, validMathInMultipleMathMLBlocksInvalidMathTagDuplicateIDs)
         "Math root node is of invalid type 'banana' on component 'componentName'. A valid math root node should be of type 'math'.",
         "Duplicated id attribute 'myId' has been found in:\n"
         " - MathML cn element in math in component 'componentName'; and\n"
-        " - MathML ci element 'B' in math in component 'componentName'.\n"};
+        " - MathML ci element 'B' in math in component 'componentName'.\n",
+    };
     libcellml::ValidatorPtr v = libcellml::Validator::create();
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::ComponentPtr c = libcellml::Component::create();
