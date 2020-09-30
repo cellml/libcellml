@@ -92,7 +92,6 @@ class LoggerTestCase(unittest.TestCase):
 
         self.assertRaises(AttributeError, Logger)
 
-
     def test_issue_types(self):
         from libcellml import Parser, Issue
 
