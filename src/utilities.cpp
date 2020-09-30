@@ -1127,6 +1127,7 @@ bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
         }
     }
     return unlinked;
+}
 
 std::string replace(std::string string, const std::string &from, const std::string &to)
 {
