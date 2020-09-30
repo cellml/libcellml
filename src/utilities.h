@@ -595,24 +595,24 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
  *
  * Returns @c true if all variables in the component can be linked to their units, or
  * @c false otherwise.
- * @param component The component to check.
  *
+ * @param componentEntity The component entity to check.
  *
  * @return @c true upon success; @c false if not all variables could be linked to units.
  */
-bool traverseComponentTreeLinkingUnits(const ComponentPtr &component);
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity);
 
 /**
  * @overload
  *
  *  Utility function used when linking units names to their corresponding @c Units items.
- * @param component The component to check.
  *
+ * @param componentEntity The component entity to check.
  * @param issueList An optional @c std::vector of @c IssuePtr items which is used to record cases of missing units.
  *
  * @return @c true upon success; @c false if not all variables could be linked to units.
  * */
-bool traverseComponentTreeLinkingUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList);
 
 /**
  * @brief Test whether a component contains variables naming units which have not yet

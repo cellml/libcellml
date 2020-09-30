@@ -321,12 +321,7 @@ bool Model::removeAllImportSources()
 
 bool Model::linkUnits()
 {
-    bool status = true;
-    for (size_t index = 0; index < componentCount(); ++index) {
-        auto c = component(index);
-        status = status && traverseComponentTreeLinkingUnits(c);
-    }
-    return status;
+    return traverseComponentEntityTreeLinkingUnits(shared_from_this());
 }
 
 bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)

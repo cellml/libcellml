@@ -1090,18 +1090,21 @@ bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<Issue
     return status;
 }
 
-bool traverseComponentTreeLinkingUnits(const ComponentPtr &component)
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity)
 {
     std::vector<IssuePtr> issueList;
-    return traverseComponentTreeLinkingUnits(component, issueList);
+    return traverseComponentEntityTreeLinkingUnits(componentEntity, issueList);
 }
 
-bool traverseComponentTreeLinkingUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList)
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList)
 {
-    bool status = linkComponentVariableUnits(component, issueList);
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        auto c = component->component(index);
-        status = status && traverseComponentTreeLinkingUnits(c, issueList);
+    auto component = std::dynamic_pointer_cast<Component>(componentEntity);
+    bool status = (component != nullptr) ?
+                      linkComponentVariableUnits(component, issueList) :
+                      true;
+    for (size_t index = 0; index < componentEntity->componentCount(); ++index) {
+        auto c = componentEntity->component(index);
+        status = traverseComponentEntityTreeLinkingUnits(c, issueList) && status;
     }
     return status;
 }
