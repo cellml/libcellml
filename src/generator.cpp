@@ -189,7 +189,6 @@ AnalyserVariablePtr Generator::GeneratorImpl::analyserVariable(const VariablePtr
                     break;
                 }
             }
-
         }
     }
 

@@ -1153,7 +1153,6 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
                 err->setMapVariables(std::make_pair(variable, equivalentVariable));
-                // err->setCause(Issue::Cause::UNITS);
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1393,7 +1392,7 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
                 issue->setModel(model);
                 issue->setCause(ItemType::UNITS);
                 issue->setReferenceRule(Issue::ReferenceRule::UNIT_CIRCULAR_REF);
-              
+
                 mValidator->addIssue(issue);
                 reportedIssueList.push_back(hash);
             }

@@ -98,8 +98,6 @@ void printComponent(const libcellml::ComponentPtr &component, size_t c, const st
         std::cout << indent << FIXED_INDENT << FIXED_INDENT;
         std::cout << "[" << v + 1 << "]: " << component->variable(v)->name();
         if (component->variable(v)->units() != nullptr) {
-          
-          
             std::cout << " [" << component->variable(v)->units()->name() << "]";
         }
         if (component->variable(v)->initialValue() != "") {
@@ -198,7 +196,7 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
 }
 
 void expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
-                                   const std::vector<libcellml::Issue::Cause> &causes,
+                                   const std::vector<libcellml::ItemType> &causes,
                                    const std::vector<libcellml::Issue::Level> &levels,
                                    const libcellml::LoggerPtr &logger)
 {
