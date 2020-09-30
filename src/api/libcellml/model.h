@@ -279,9 +279,11 @@ public:
      * one from the model).
      *
      * If a @c Variable has units that are not found in the model
-     * then the units will remain unlinked.
+     * then the units will remain unlinked, and this will return @c false.
+     * 
+     * @return @c true upon success; @c false if some units have not been linked.
      */
-    void linkUnits();
+    bool linkUnits();
 
     /**
      * @brief Test to determine if any variable units are not linked to model units.

@@ -137,6 +137,13 @@ void Logger::addIssue(const IssuePtr &issue)
     }
 }
 
+void Logger::addIssues(const std::vector<IssuePtr> &issues)
+{
+    for (auto &issue : issues) {
+        addIssue(issue);
+    }
+}
+
 size_t Logger::issueCount() const
 {
     return mPimpl->mIssues.size();

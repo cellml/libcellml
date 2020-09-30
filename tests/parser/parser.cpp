@@ -951,6 +951,7 @@ TEST(Parser, variableAttributeAndChildIssues)
         "  </component>\n"
         "</model>\n";
     const std::string expectError1 = "Variable 'Na' has an invalid attribute 'lame'.";
+    const std::string expectWarning1 = "Model does not contain the units 'daves' required by variable 'Na' in component 'randy'.";
     const std::string in2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -965,14 +966,16 @@ TEST(Parser, variableAttributeAndChildIssues)
 
     libcellml::ParserPtr p = libcellml::Parser::create();
     p->parseModel(in1);
-    EXPECT_EQ(size_t(1), p->issueCount());
-    EXPECT_EQ(expectError1, p->issue(0)->description());
+    EXPECT_EQ(size_t(1), p->errorCount());
+    EXPECT_EQ(size_t(1), p->warningCount());
+    EXPECT_EQ(expectError1, p->error(0)->description());
+    EXPECT_EQ(expectWarning1, p->warning(0)->description());
 
     p->removeAllIssues();
     p->parseModel(in2);
-    EXPECT_EQ(size_t(2), p->issueCount());
-    EXPECT_EQ(expectError2, p->issue(0)->description());
-    EXPECT_EQ(expectError3, p->issue(1)->description());
+    EXPECT_EQ(size_t(2), p->errorCount());
+    EXPECT_EQ(expectError2, p->error(0)->description());
+    EXPECT_EQ(expectError3, p->error(1)->description());
 }
 
 TEST(Parser, emptyConnections)
@@ -1301,6 +1304,8 @@ TEST(Parser, connectionVariable1Missing)
         "</model>\n";
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' does not have a valid variable_1 in a map_variables element.",
+        "Model does not contain the units 'scrat' required by variable 'variable_bob' in component 'component_bob'.",
+        "Model does not contain the units 'gone' required by variable 'variable_dave' in component 'component_dave'.",
     };
 
     // Parse
@@ -1327,6 +1332,8 @@ TEST(Parser, connectionErrorNoMapVariablesType)
     const std::vector<std::string> expectedIssues = {
         "Connection in model '' has an invalid child element 'map_variabels'.",
         "Connection in model '' does not have a map_variables element.",
+        "Model does not contain the units 'scrat' required by variable 'variable1' in component 'component1'.",
+        "Model does not contain the units 'phils' required by variable 'variable2' in component 'component2'.",
     };
 
     libcellml::ParserPtr p = libcellml::Parser::create();
@@ -1551,6 +1558,9 @@ TEST(Parser, invalidModelWithTextInAllElements)
 
 TEST(Parser, parseIds)
 {
+    std::vector<std::string> e = {
+        "Model does not contain the units 'blob' required by variable 'variable1' in component 'component2'.",
+    };
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
@@ -1570,7 +1580,7 @@ TEST(Parser, parseIds)
     libcellml::ParserPtr p = libcellml::Parser::create();
     libcellml::ModelPtr model = p->parseModel(in);
 
-    EXPECT_EQ(size_t(0), p->issueCount());
+    EXPECT_EQ_ISSUES(e, p);
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
     EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
@@ -2202,4 +2212,21 @@ TEST(Parser, parseAndPrintSeparateAndCombinedImports)
     auto printer = libcellml::Printer::create();
     EXPECT_EQ(separateInString, printer->printModel(modelSeparate));
     EXPECT_EQ(combinedInString, printer->printModel(modelCombined));
+}
+
+TEST(Parser, raiseIssueMissingUnits)
+{
+    std::vector<std::string> expectedIssues = {
+        "Model does not contain the units 'nothing_to_find_here' required by variable 'my_units_are_missing' in component 'component'.",
+    };
+    std::string modelString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                              "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+                              "  <component name=\"component\">\n"
+                              "    <variable name=\"my_units_are_missing\" units=\"nothing_to_find_here\"/>\n"
+                              "  </component>\n"
+                              "</model>\n";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelString);
+    EXPECT_EQ_ISSUES(expectedIssues, parser);
 }
