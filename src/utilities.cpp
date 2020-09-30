@@ -417,23 +417,6 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-ModelPtr owningModel(const EntityConstPtr &entity)
-{
-    auto model = std::dynamic_pointer_cast<Model>(entity->parent());
-    auto component = owningComponent(entity);
-    while ((model == nullptr) && (component != nullptr) && component->parent()) {
-        model = std::dynamic_pointer_cast<Model>(component->parent());
-        component = owningComponent(component);
-    }
-
-    return model;
-}
-
-ComponentPtr owningComponent(const EntityConstPtr &entity)
-{
-    return std::dynamic_pointer_cast<Component>(entity->parent());
-}
-
 bool isStandardUnitName(const std::string &name)
 {
     return standardUnitsList.count(name) != 0;
