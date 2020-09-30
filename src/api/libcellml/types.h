@@ -73,6 +73,4 @@ using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition f
 using UnitItem = std::pair<UnitsPtr, size_t>;
 using AnyItem = std::pair<CellMLElement, std::any>;
 
-using IdCellMLElementMap = std::multimap<std::string, CellMLElement>;
-
 } // namespace libcellml

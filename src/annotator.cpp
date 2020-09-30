@@ -525,15 +525,6 @@ std::vector<std::string> Annotator::ids()
     return ids;
 }
 
-IdCellMLElementMap Annotator::dictionary()
-{
-    IdCellMLElementMap dict;
-    for (auto &i : mPimpl->mIdList) {
-        dict.insert(std::make_pair(i.first, i.second.first));
-    }
-    return dict;
-}
-
 ComponentPtr Annotator::component(const std::string &id)
 {
     ComponentPtr component = nullptr;
