@@ -53,10 +53,10 @@
 "Return the UnitsPtr and index whose Unit is with given id.";
 
 %feature("docstring") libcellml::Annotator::connection
-"Return a pair of VariablePtrs that define a connection with given id.";
+"Return a VariablePair that defines a connection with given id.";
 
 %feature("docstring") libcellml::Annotator::mapVariables
-"Return a pair of VariablePtrs that define a map_variables with given id.";
+"Return a VariablePair that defines a map_variables with given id.";
 
 %feature("docstring") libcellml::Annotator::assignAllIds
 "Traverse the stored model and set any blank id fields to an automatically generated id.";
@@ -71,7 +71,7 @@
 "Clear all the id strings in the given or stored model.";
 
 %feature("docstring") libcellml::Annotator::isUnique
-"Return `true` if the given string is not duplicated in the stored model, or `false` otherwise.";
+"Return `true` if the given string occurs exactly once as an id in the stored model, `false` otherwise.";
 
 %feature("docstring") libcellml::Annotator::ids
 "Return a list of all id strings within the stored model.";
@@ -86,7 +86,7 @@
 "Assign an automatically generated, unique id to the given component's encapsulation.";
 
 %feature("docstring") libcellml::Annotator::assignConnectionId
-"Assign an automatically generated, unique id to the connection between the given variables.";
+"Assign an automatically generated, unique id to the connection defined by the given variables.";
 
 %feature("docstring") libcellml::Annotator::assignEncapsulationId
 "Assign an automatically generated, unique id to the encapsulation of the given model.";

@@ -8,14 +8,15 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
+from libcellml.enums import CellMLElement
+
 from libcellml.analyser import Analyser
 from libcellml.analyserequation import AnalyserEquation
 from libcellml.analyserequationast import AnalyserEquationAst
 from libcellml.analysermodel import AnalyserModel
 from libcellml.analyservariable import AnalyserVariable
+from libcellml.annotator import Annotator
 from libcellml.component import Component
-#from libcellml import enums
-from libcellml.enums import CellMLElement
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importer import Importer
@@ -50,26 +51,6 @@ def convert(base, enum, variables, new_base=None):
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
 
-#convert(enums, 'CellMLElement', [
-#        'COMPONENT',
-#        'COMPONENT_REF',
-#        'CONNECTION',
-#        'ENCAPSULATION',
-#        'IMPORT',
-#        'MAP_VARIABLES',
-#        'MATHML',
-#        'MODEL',
-#        'RESET',
-#        'RESET_VALUE',
-#        'TEST_VALUE',
-#        'UNDEFINED',
-#        'UNIT',
-#        'UNITS',
-#        'VARIABLE'
-#], libcellml)
-
-# The Annotator class relies on the CellMLElmement declaration above.
-from libcellml.annotator import Annotator
 
 convert(AnalyserEquation, 'Type', [
     'TRUE_CONSTANT',
