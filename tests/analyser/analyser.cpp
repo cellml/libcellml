@@ -19,7 +19,7 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <libcellml>
-
+#if 0
 TEST(Analyser, initialisedVariableOfIntegration)
 {
     auto parser = libcellml::Parser::create();
@@ -404,4 +404,37 @@ TEST(Analyser, coverage)
     ast->setValue({});
     ast->setVariable(libcellml::Variable::create());
     ast->setParent(libcellml::AnalyserEquationAst::create());
+}
+
+#endif
+
+TEST(Analyser, KRM)
+{
+    // STEP 1: Parse an existing model from a CellML file.
+    //         The Parser class is used to deserialise a CellML string into a Model instance.
+    //         This means that you're responsible for finding, opening and reading the *.cellml
+    //         file into a single string.  The Parser will then read that string and return a model.
+
+    //  1.a Read a CellML file into a std::string.
+    //  1.b Create a Parser item.
+    auto parser = libcellml::Parser::create();
+
+    //  1.c Use the parser to deserialise the contents of the string you've read and return the model.
+    auto model = parser->parseModel(fileContents("KRM/MembraneModel.cellml"));
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    printIssues(validator);
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("KRM/"));
+    printIssues(importer);
+
+    auto flatModel = importer->flattenModel(model);
+    validator->validateModel(flatModel);
+    printIssues(validator);
+
+    auto analyser = libcellml::Analyser::create();
+    analyser->analyseModel(flatModel);
+    printIssues(analyser);
 }
