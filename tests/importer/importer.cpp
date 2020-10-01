@@ -854,3 +854,26 @@ TEST(Importer, complicatedHHImportMissingGateModel)
     EXPECT_EQ(e, importer->error(0)->description());
     EXPECT_EQ(e, importer->error(1)->description());
 }
+
+TEST(Importer, clearIssuesAfterEachResolve)
+{
+    auto inString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"someModel\">\n"
+        "   <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"components_concrete.cellml\">\n"
+        "       <component component_ref=\"i_dont_exist\" name=\"importedComponent\"/>\n"
+        "   </import>\n"
+        "</model>";
+
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(inString);
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(1), importer->errorCount());
+
+    // Fix import reference.
+    importer->issue(0)->component()->setImportReference("component3");
+    importer->resolveImports(model, resourcePath("importer/"));
+    EXPECT_EQ(size_t(0), importer->errorCount());
+}

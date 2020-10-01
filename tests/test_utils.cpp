@@ -41,6 +41,30 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
+std::map<libcellml::ItemType, std::string> itemTypeToString =
+    {{libcellml::ItemType::COMPONENT, "COMPONENT"},
+     {libcellml::ItemType::COMPONENT_REF, "COMPONENT_REF"},
+     {libcellml::ItemType::CONNECTION, "CONNECTION"},
+     {libcellml::ItemType::ENCAPSULATION, "ENCAPSULATION"},
+     {libcellml::ItemType::IMPORT, "IMPORT"},
+     {libcellml::ItemType::ISSUE, "ISSUE"},
+     {libcellml::ItemType::MAP_VARIABLES, "MAP_VARIABLES"},
+     {libcellml::ItemType::MATHML, "MATHML"},
+     {libcellml::ItemType::MODEL, "MODEL"},
+     {libcellml::ItemType::RESET, "RESET"},
+     {libcellml::ItemType::RESET_VALUE, "RESET_VALUE"},
+     {libcellml::ItemType::TEST_VALUE, "TEST_VALUE"},
+     {libcellml::ItemType::UNDEFINED, "UNDEFINED"},
+     {libcellml::ItemType::UNIT, "UNIT"},
+     {libcellml::ItemType::UNITS, "UNITS"},
+     {libcellml::ItemType::VARIABLE, "VARIABLE"},
+     {libcellml::ItemType::XML, "XML"}};
+
+std::string getItemTypeAsString(libcellml::ItemType t)
+{
+    return itemTypeToString.at(t);
+}
+
 void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
 {
     int width = int(floor(log10(l->errorCount())));
@@ -73,6 +97,7 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         }
         std::cout << std::endl
                   << l->issue(i)->description() << std::endl;
+        std::cout << "Stored item type is: " << getItemTypeAsString(l->issue(i)->itemType()) << std::endl;
     }
 }
 
