@@ -1467,7 +1467,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_EQ("b4da56", annotator->assignId(model->component("component2"), libcellml::CellMLElement::COMPONENT_REF));
     EXPECT_EQ("b4da56", model->component("component2")->encapsulationId());
 
-    EXPECT_EQ("b4da57", annotator->assignId(connection));
+    EXPECT_EQ("b4da57", annotator->assignId(connection, libcellml::CellMLElement::CONNECTION));
     EXPECT_EQ("b4da57", libcellml::Variable::equivalenceConnectionId(connection.first, connection.second));
 
     EXPECT_EQ("b4da58", annotator->assignId(model, libcellml::CellMLElement::ENCAPSULATION));
@@ -1476,7 +1476,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
     EXPECT_EQ("b4da59", annotator->assignId(model->importSource(0)));
     EXPECT_EQ("b4da59", model->importSource(0)->id());
 
-    EXPECT_EQ("b4da5a", annotator->assignId(mapping, libcellml::CellMLElement::MAP_VARIABLES));
+    EXPECT_EQ("b4da5a", annotator->assignId(mapping));
     EXPECT_EQ("b4da5a", libcellml::Variable::equivalenceMappingId(mapping.first, mapping.second));
 
     EXPECT_EQ("b4da5b", annotator->assignId(model));
@@ -1511,7 +1511,7 @@ TEST(Annotator, automaticIdAllItemsEntityType)
         model->component("component2")->variable("variable2")->equivalentVariable(0),
         model->component("component2")->variable("variable2"));
 
-    EXPECT_EQ("b4da62", annotator->assignId(connection2));
+    EXPECT_EQ("b4da62", annotator->assignId(connection2, libcellml::CellMLElement::CONNECTION));
     EXPECT_EQ("b4da62", libcellml::Variable::equivalenceConnectionId(connection2.first, connection2.second));
 
     EXPECT_EQ("b4da63", annotator->assignId(mapping2, libcellml::CellMLElement::MAP_VARIABLES));
@@ -2069,7 +2069,7 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
         model->component("component2")->variable("variable1"),
         model->component("component2")->variable("variable1")->equivalentVariable(0));
     libcellml::Variable::setEquivalenceConnectionId(connection.first, connection.second, "changed");
-    EXPECT_EQ("b4da57", annotator->assignId(connection));
+    EXPECT_EQ("b4da57", annotator->assignId(connection, libcellml::CellMLElement::CONNECTION));
     EXPECT_EQ("b4da57", libcellml::Variable::equivalenceConnectionId(connection.first, connection.second));
 
     model->setEncapsulationId("changed");
