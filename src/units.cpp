@@ -384,15 +384,11 @@ void Units::unitAttributes(size_t index, std::string &reference, std::string &pr
 
 bool Units::setUnitId(size_t index, const std::string &id) const
 {
-    Unit u;
     if (index < mPimpl->mUnits.size()) {
-        u = mPimpl->mUnits[index];
-    } else {
-        return false;
+        mPimpl->mUnits[index].mId = id;
+        return true;
     }
-    u.mId = id;
-    mPimpl->mUnits[index] = u;
-    return true;
+    return false;
 }
 
 std::string Units::unitId(size_t index)

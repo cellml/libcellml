@@ -19,13 +19,16 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <cmath>
-#include <ctime>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 
 #include "test_resources.h"
+
+#define TEST_UTILS
+#include "../src/commonutils.cpp"
+#undef TEST_UTILS
 
 std::string resourcePath(const std::string &resourceRelativePath)
 {
@@ -42,15 +45,14 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void timeit(std::function<void()> func)
+std::chrono::steady_clock::time_point timeNow()
 {
-    std::clock_t start = std::clock();
+    return std::chrono::steady_clock::now();
+}
 
-    func();
-
-    int ms = (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000);
-
-    std::cout << "Finished in " << ms << "ms" << std::endl;
+int elapsedTime(const std::chrono::steady_clock::time_point &startTime)
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(timeNow() - startTime).count();
 }
 
 void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
@@ -404,21 +406,4 @@ void compareReset(const libcellml::ResetPtr &r1, const libcellml::ResetPtr &r2)
     }
     EXPECT_EQ(r1->testValueId(), r2->testValueId());
     EXPECT_EQ(r1->resetValueId(), r2->resetValueId());
-}
-
-libcellml::ModelPtr owningModel(const libcellml::EntityConstPtr &entity)
-{
-    auto model = std::dynamic_pointer_cast<libcellml::Model>(entity->parent());
-    auto component = owningComponent(entity);
-    while ((model == nullptr) && (component != nullptr) && component->parent()) {
-        model = std::dynamic_pointer_cast<libcellml::Model>(component->parent());
-        component = owningComponent(component);
-    }
-
-    return model;
-}
-
-libcellml::ComponentPtr owningComponent(const libcellml::EntityConstPtr &entity)
-{
-    return std::dynamic_pointer_cast<libcellml::Component>(entity->parent());
 }
