@@ -19,7 +19,7 @@ limitations under the License.
 #include "internaltypes.h"
 
 #ifndef TEST_UTILS
-#define TEST_EXPORT
+#    define TEST_EXPORT
 
 namespace libcellml {
 #endif
@@ -48,5 +48,5 @@ libcellml::ComponentPtr TEST_EXPORT owningComponent(const libcellml::EntityConst
 #ifndef TEST_UTILS
 } // namespace libcellml
 
-#undef TEST_EXPORT
+#    undef TEST_EXPORT
 #endif
