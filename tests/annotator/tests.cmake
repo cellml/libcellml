@@ -5,7 +5,7 @@ set(CURRENT_TEST annotator)
 #    ctest -R <category-label>
 # which will run the tests matching this category-label.
 # Can be left empty (or just not set)
-set(${CURRENT_TEST}_CATEGORY io)
+set(${CURRENT_TEST}_CATEGORY utils)
 list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Using absolute path relative to this file
 set(${CURRENT_TEST}_SRCS
