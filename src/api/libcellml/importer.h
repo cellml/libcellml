@@ -56,9 +56,9 @@ public:
      * resources and having no imports.
      *
      * @sa clone
-     * 
+     *
      * @param model A @c ModelPtr whose imports will be resolved.
-     * 
+     *
      * @return If the operation is successful, a new @c ModelPtr to the flattened model; otherwise, the @c nullptr.
      */
     ModelPtr flattenModel(const ModelPtr &model);
@@ -71,8 +71,10 @@ public:
      * the full path to the source model relative to this one.
      * @param model The @c Model whose imports need resolution.
      * @param baseFile The @c std::string location on local disk of the source @c Model.
+     * 
+     * @return @c true if all imports have been resolved successfully, @c false otherwise.
      */
-    void resolveImports(ModelPtr &model, const std::string &baseFile);
+    bool resolveImports(ModelPtr &model, const std::string &baseFile);
 
     /**
      * @brief Return the number of models present in the importer's library.
@@ -103,12 +105,23 @@ public:
     ModelPtr library(const size_t &index);
 
     /**
+     * @brief Get the key string under which a model is stored in the library, at the given @p index.
+     * 
+     * Get the key string under which a model is stored in the library, at the given @p index.
+     * 
+     * @param index The index of the key to return.
+     * 
+     * @return If successful, a string under which the model has been stored, or an empty string otherwise.
+     */
+    std::string key(const size_t &index);
+
+    /**
      * @brief Manually add a local @c ModelPtr model instance to the importer library,
      *        using the given @p key as a reference.
      *
      * If the given key already exists in the library, the function will return false
      * and the library will not be changed.
-     * 
+     *
      * @sa replaceModel
      *
      * @param model a @c ModelPtr instance to add.
@@ -138,32 +151,8 @@ public:
     bool replaceModel(const ModelPtr &model, const std::string &key);
 
     /**
-     * @brief Retrieve the pair of URL key and import reference at the given index.
-     *
-     * This is taken from the list of dependencies for the models which have been resolved,
-     * and is what will break if those external files are ever moved or renamed.
-     *
-     * The first attribute of the returned pair is the URL at which the imported model was
-     * accessed and under which it is now stored in the library as its key, and the second attribute
-     * is the import reference.
-     *
-     * @return a @c std::pair of @c std::strings.
-     */
-    std::pair<std::string, std::string> externalDependency(size_t index) const;
-
-    /**
-     * @brief Get the number of external dependencies in the library.
-     *
-     * Return the number of dependencies for the models which have been resolved by this
-     * importer.
-     *
-     * @return the number of external dependencies.
-     */
-    size_t externalDependencyCount() const;
-
-    /**
      * @brief Clear the links with other models from all import sources.
-     * 
+     *
      * Clear the links with other models from all import sources.
      */
     void clearImports(ModelPtr &model);

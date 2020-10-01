@@ -594,6 +594,27 @@ TEST(Units, cannotLinkUnitsNotAddedToModel)
     EXPECT_TRUE(m->hasUnlinkedUnits());
 }
 
+TEST(Units, linkingToUnitsInAnotherModelReturnsUnlinked)
+{
+    auto m1 = libcellml::Model::create("m1");
+    auto m2 = libcellml::Model::create("m2");
+    auto c1 = libcellml::Component::create("c1");
+    auto u1 = libcellml::Units::create("u1");
+    auto v1 = libcellml::Variable::create("v1");
+    auto v2 = libcellml::Variable::create("v2");
+
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    m1->addComponent(c1);
+    v1->setUnits(u1);
+    v2->setUnits("second");
+
+    m2->addUnits(u1); // Units assigned to v1 exist in a different model.
+
+    EXPECT_FALSE(m1->linkUnits());
+    EXPECT_TRUE(m1->hasUnlinkedUnits());
+}
+
 TEST(Units, multiply)
 {
     const std::string e =
@@ -2468,4 +2489,113 @@ TEST(Units, addUnitsMultipleTimes)
     // We can't add the same units more than once, hence we still have one
     // units.
     EXPECT_EQ(size_t(1), model->unitsCount());
+}
+
+TEST(Units, childUnitsWithIllegalPrefix)
+{
+    auto model = libcellml::Model::create("model");
+
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+    auto u3 = libcellml::Units::create("u3");
+    auto u4 = libcellml::Units::create("u4");
+    auto u5 = libcellml::Units::create("u5");
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
+
+    u5->addUnit("u4");
+    u4->addUnit("u3");
+    u3->addUnit("u2", "notAPrefix");
+    u2->addUnit("second");
+    u1->addUnit("second", "milli");
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u5);
+    EXPECT_EQ(0.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenSameUnits)
+{
+    auto model = libcellml::Model::create("model");
+    auto u1 = libcellml::Units::create("u1");
+    auto u2 = libcellml::Units::create("u2");
+    u1->addUnit("u2");
+    model->addUnits(u1);
+    model->addUnits(u2);
+    auto scaling = libcellml::Units::scalingFactor(u1, u1);
+    EXPECT_EQ(1.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModels)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("second", "milli");
+    model1->addUnits(u1);
+
+    auto model2 = model1->clone();
+    auto u2 = model2->units(0);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenUnitsSameNameLostChildren)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("oranges");
+    model1->addUnits(u1);
+
+    auto model2 = model1->clone();
+    auto u2 = model2->units(0);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(0.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenUnitsSameNameDifferentDefinitions)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("second", "milli");
+    model1->addUnits(u1);
+
+    auto u2 = libcellml::Units::create("units");
+    u2->addUnit("volt");
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(0.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenBaseUnitsSameName)
+{
+    auto model = libcellml::Model::create("model");
+    auto u1 = libcellml::Units::create("units");
+    model->addUnits(u1);
+
+    auto u2 = libcellml::Units::create("units");
+    model->addUnits(u2);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1.0, scaling);
+}
+
+TEST(Units, scalingFactorBetweenUnitsSameNameDifferentModelsDifferentScale)
+{
+    auto model1 = libcellml::Model::create("model1");
+    auto u1 = libcellml::Units::create("units");
+    u1->addUnit("second", "milli");
+    model1->addUnits(u1);
+
+    auto model2 = libcellml::Model::create("model2");
+    auto u2 = libcellml::Units::create("units");
+    u2->addUnit("second");
+    model2->addUnits(u2);
+
+    auto scaling = libcellml::Units::scalingFactor(u1, u2);
+    EXPECT_EQ(1000.0, scaling);
 }

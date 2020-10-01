@@ -111,6 +111,10 @@ Only the first matching Units is removed and returned.";
 #include "libcellml/model.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %shared_ptr(libcellml::Model);
 %create_constructor(Model);
 %create_name_constructor(Model);
