@@ -391,7 +391,10 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         loadConnection(model, connectionNode);
     }
 
-    model->linkUnits();
+    // Link units to their names.
+    std::vector<IssuePtr> issueList;
+    traverseComponentEntityTreeLinkingUnits(model, issueList);
+    mParser->addIssues(issueList);
 }
 
 std::string cleanMath(const std::string &math)
@@ -1031,7 +1034,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
         }
         attribute = attribute->next();
     }
-    if ((!parentComponent) && (parentComponentName.empty())) {
+    if (!parentComponent && parentComponentName.empty()) {
         IssuePtr issue = Issue::create();
         issue->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
         issue->setModel(model);
@@ -1071,9 +1074,15 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             mParser->addIssue(issue);
         }
 
-        if ((parentComponent) && (childComponent)) {
+        if (childComponent) {
             // Set parent/child encapsulation relationship.
-            parentComponent->addComponent(childComponent);
+            if (parentComponent) {
+                parentComponent->addComponent(childComponent);
+            } else {
+                // Making sure that children which were taken from parents above, but have
+                // invalid parents, are still included in the model.
+                model->addComponent(childComponent);
+            }
         }
         childComponentNode = childComponentNode->next();
     }

@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<model name="initialized_variable_of_integration" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+<model name="initialised_variable_of_integration" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="per_second">
         <unit exponent="-1" units="second"/>
     </units>
     <component name="my_component">
-        <variable initial_value="0" name="time" units="second"/>
-        <variable initial_value="0" name="x" units="dimensionless"/>
+        <variable name="time" units="second" initial_value="0"/>
+        <variable name="x" units="dimensionless" initial_value="0"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>

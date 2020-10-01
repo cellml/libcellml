@@ -18,6 +18,10 @@
 #include "libcellml/parser.h"
 %}
 
+%pythoncode %{
+# libCellML generated wrapper code starts here.
+%}
+
 %create_constructor(Parser)
 
 %include "libcellml/types.h"

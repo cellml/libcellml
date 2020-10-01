@@ -319,53 +319,9 @@ bool Model::removeAllImportSources()
     return status;
 }
 
-void linkComponentVariableUnits(const ComponentPtr &component)
+bool Model::linkUnits()
 {
-    for (size_t index = 0; index < component->variableCount(); ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-        if (u != nullptr) {
-            auto model = owningModel(u);
-            if (model == nullptr && !isStandardUnit(u)) {
-                model = owningModel(component);
-                if (model->hasUnits(u->name())) {
-                    v->setUnits(model->units(u->name()));
-                }
-            }
-        }
-    }
-}
-
-void traverseComponentTreeLinkingUnits(const ComponentPtr &component)
-{
-    linkComponentVariableUnits(component);
-    for (size_t index = 0; index < component->componentCount(); ++index) {
-        auto c = component->component(index);
-        traverseComponentTreeLinkingUnits(c);
-    }
-}
-
-void Model::linkUnits()
-{
-    for (size_t index = 0; index < componentCount(); ++index) {
-        auto c = component(index);
-        traverseComponentTreeLinkingUnits(c);
-    }
-}
-
-bool areComponentVariableUnitsUnlinked(const ComponentPtr &component)
-{
-    bool unlinked = false;
-    for (size_t index = 0; index < component->variableCount() && !unlinked; ++index) {
-        auto v = component->variable(index);
-        auto u = v->units();
-        if (u != nullptr) {
-            auto model = owningModel(u);
-            unlinked = model == nullptr && !isStandardUnit(u);
-        }
-    }
-
-    return unlinked;
+    return traverseComponentEntityTreeLinkingUnits(shared_from_this());
 }
 
 bool traverseComponentTreeForUnlinkedUnits(const ComponentPtr &component)
@@ -475,6 +431,45 @@ bool Model::hasImports() const
     return importsPresent;
 }
 
+void fixComponentUnits(const ModelPtr &model, const ComponentPtr &component)
+{
+    for (size_t v = 0; v < component->variableCount(); ++v) {
+        auto variable = component->variable(v);
+        if (variable->units() != nullptr) {
+            // Find the units in the model and switch out.
+            auto units = model->units(variable->units()->name());
+            if (units != nullptr) {
+                variable->setUnits(units);
+            }
+        }
+    }
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        fixComponentUnits(model, component->component(c));
+    }
+}
+
+void fixImportSourceUnits(const ImportSourcePtr &i1, ImportSourcePtr &i2)
+{
+    auto m2 = owningModel(i2);
+
+    // Go through all the imported units in this import source and update their sources.
+    for (size_t index = 0; index < i1->unitsCount(); ++index) {
+        auto u1 = i1->units(index);
+        auto u2 = m2->units(u1->name());
+        u2->setImportSource(i2);
+    }
+}
+
+void fixImportSourceComponents(const ImportSourcePtr &i1, ImportSourcePtr &i2)
+{
+    auto m2 = owningModel(i2);
+    for (size_t index = 0; index < i1->componentCount(); ++index) {
+        auto c1 = i1->component(index);
+        auto c2 = m2->component(c1->name(), true);
+        c2->setImportSource(i2);
+    }
+}
+
 ModelPtr Model::clone() const
 {
     auto m = create();
@@ -490,6 +485,22 @@ ModelPtr Model::clone() const
 
     for (size_t index = 0; index < componentCount(); ++index) {
         m->addComponent(component(index)->clone());
+    }
+
+    for (size_t index = 0; index < m->componentCount(); ++index) {
+        fixComponentUnits(m, m->component(index));
+    }
+
+    // Remove all import sources from the cloned model as they will
+    // be duplicates.  The real ones will be copied below.
+    m->removeAllImportSources();
+
+    for (size_t index = 0; index < importSourceCount(); ++index) {
+        auto i1 = importSource(index);
+        auto i2 = i1->clone();
+        m->addImportSource(i2);
+        fixImportSourceUnits(i1, i2);
+        fixImportSourceComponents(i1, i2);
     }
 
     // Generate equivalence map starting from the models components.
@@ -520,7 +531,7 @@ bool Model::fixVariableInterfaces()
         Variable::InterfaceType interfaceType = determineInterfaceType(variable);
         if (interfaceType == Variable::InterfaceType::NONE) {
             allOk = false;
-        } else if (!variable->hasInterfaceType(interfaceType)) {
+        } else if (!variable->permitsInterfaceType(interfaceType)) {
             variable->setInterfaceType(interfaceType);
         }
     }

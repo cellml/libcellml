@@ -45,6 +45,11 @@ configure_file(
 )
 
 set(SOURCE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequation.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyserequationast.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analysermodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/analyservariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
@@ -72,9 +77,15 @@ set(SOURCE_FILES
 )
 
 set(GIT_API_HEADER_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequation.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyserequationast.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analysermodel.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/analyservariable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enums.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h

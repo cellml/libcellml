@@ -107,6 +107,7 @@ TEST(ModelFlattening, importedUnits)
     auto importer = libcellml::Importer::create();
 
     modelWithUnitsImports = importer->flattenModel(modelWithUnitsImports);
+    EXPECT_EQ(size_t(0), modelWithUnitsImports->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -195,6 +196,8 @@ TEST(ModelFlattening, importedComponent)
 
     auto importer = libcellml::Importer::create();
     modelWithComponentImport = importer->flattenModel(modelWithComponentImport);
+
+    EXPECT_EQ(size_t(0), modelWithComponentImport->importSourceCount());
 
     auto printer = libcellml::Printer::create();
 
@@ -716,9 +719,13 @@ TEST(ModelFlattening, hodgkinHuxleyDefinedUsingImports)
     auto e = printer->printModel(modelNonImportVersion);
     EXPECT_EQ(e, a);
 
+    auto analyser = libcellml::Analyser::create();
+
+    analyser->analyseModel(model);
+
     auto generator = libcellml::Generator::create();
 
-    generator->processModel(model);
+    generator->setModel(analyser->model());
 
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.h"), generator->interfaceCode());
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.c"), generator->implementationCode());

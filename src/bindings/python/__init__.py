@@ -8,9 +8,14 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 """
 
 import libcellml
+from libcellml.analyser import Analyser
+from libcellml.analyserequation import AnalyserEquation
+from libcellml.analyserequationast import AnalyserEquationAst
+from libcellml.analysermodel import AnalyserModel
+from libcellml.analyservariable import AnalyserVariable
 from libcellml.component import Component
+from libcellml.enums import *
 from libcellml.generator import Generator
-from libcellml.generator import GeneratorVariable
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importer import Importer
 from libcellml.importsource import ImportSource
@@ -40,16 +45,109 @@ def convert(base, enum, variables, new_base=None):
             setattr(obj, var, getattr(base, enum + '_' + var))
             delattr(base, enum + '_' + var)
             converting = True
-        elif hasattr(base, var):
-            # Swig 3.0.0, 3.0.1, 3.0.2
-            setattr(obj, var, getattr(base, var))
-            delattr(base, var)
-            converting = True
+
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
 
 
-convert(Generator, 'ModelType', [
+convert(AnalyserEquation, 'Type', [
+    'TRUE_CONSTANT',
+    'VARIABLE_BASED_CONSTANT',
+    'RATE',
+    'ALGEBRAIC',
+])
+convert(AnalyserEquationAst, 'Type', [
+    'ASSIGNMENT',
+
+    # Relational and logical operators.
+
+    'EQ',
+    'NEQ',
+    'LT',
+    'LEQ',
+    'GT',
+    'GEQ',
+    'AND',
+    'OR',
+    'XOR',
+    'NOT',
+
+    # Arithmetic operators.
+
+    'PLUS',
+    'MINUS',
+    'TIMES',
+    'DIVIDE',
+    'POWER',
+    'ROOT',
+    'ABS',
+    'EXP',
+    'LN',
+    'LOG',
+    'CEILING',
+    'FLOOR',
+    'MIN',
+    'MAX',
+    'REM',
+
+    # Calculus elements.
+
+    'DIFF',
+
+    # Trigonometric operators.
+
+    'SIN',
+    'COS',
+    'TAN',
+    'SEC',
+    'CSC',
+    'COT',
+    'SINH',
+    'COSH',
+    'TANH',
+    'SECH',
+    'CSCH',
+    'COTH',
+    'ASIN',
+    'ACOS',
+    'ATAN',
+    'ASEC',
+    'ACSC',
+    'ACOT',
+    'ASINH',
+    'ACOSH',
+    'ATANH',
+    'ASECH',
+    'ACSCH',
+    'ACOTH',
+
+    # Piecewise statement.
+
+    'PIECEWISE',
+    'PIECE',
+    'OTHERWISE',
+
+    # Token elements.
+
+    'CI',
+    'CN',
+
+    # Qualifier elements.
+
+    'DEGREE',
+    'LOGBASE',
+    'BVAR',
+
+    # Constants.
+
+    'TRUE',
+    'FALSE',
+    'E',
+    'PI',
+    'INF',
+    'NAN',
+])
+convert(AnalyserModel, 'Type', [
     'UNKNOWN',
     'ALGEBRAIC',
     'ODE',
@@ -58,10 +156,32 @@ convert(Generator, 'ModelType', [
     'OVERCONSTRAINED',
     'UNSUITABLY_CONSTRAINED',
 ])
+
+convert(AnalyserVariable, 'Type', [
+    'VARIABLE_OF_INTEGRATION',
+    'STATE',
+    'CONSTANT',
+    'COMPUTED_CONSTANT',
+    'ALGEBRAIC',
+])
 convert(GeneratorProfile, 'Profile', [
     'C',
     'PYTHON',
 ])
+convert(Issue, 'Cause', [
+    'COMPONENT',
+    'CONNECTION',
+    'ENCAPSULATION',
+    'IMPORT',
+    'MATHML',
+    'MODEL',
+    'RESET',
+    'UNDEFINED',
+    'UNITS',
+    'VARIABLE',
+    'XML',
+])
+
 convert(Issue, 'Level', [
     'ERROR',
     'WARNING',
@@ -70,6 +190,7 @@ convert(Issue, 'Level', [
 ])
 convert(Issue, 'ReferenceRule', [
     'UNDEFINED',
+    'XML',
     'DATA_REPR_IDENTIFIER_UNICODE',
     'DATA_REPR_IDENTIFIER_LATIN_ALPHANUM',
     'DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM',
@@ -202,8 +323,7 @@ convert(Variable, 'InterfaceType', [
     'PUBLIC',
     'PUBLIC_AND_PRIVATE',
 ])
-
-convert(libcellml, 'ItemType', [
+convert(libcellml.enums, 'ItemType', [
     'COMPONENT',
     'COMPONENT_REF',
     'CONNECTION',
@@ -221,7 +341,7 @@ convert(libcellml, 'ItemType', [
     'UNITS',
     'VARIABLE',
     'XML',
-])
+], new_base=libcellml)
 
 
 del (convert, libcellml)

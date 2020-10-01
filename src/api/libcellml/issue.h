@@ -43,23 +43,21 @@ public:
      * Factory method to create an @c Issue.  Can create a
      * blank issue with::
      *
-     *   IssuePtr issue = libcellml::Issue::create();
+     *   auto issue = libcellml::Issue::create();
      *
      * or an issue with one of the following types as a parameter::
-     *
      * 
-     * KRM change this:
-     * 
-     *   - libcellml::ComponentPtr
-     *   - libcellml::ImportSourcePtr
-     *   - libcellml::ModelPtr
-     *   - libcellml::ResetPtr
-     *   - libcellml::UnitsPtr
-     *   - libcellml::VariablePtr
+     *   - libcellml::ComponentPtr (defaults the item type to ItemType::COMPONENT);
+     *   - libcellml::ImportSourcePtr (defaults the item type to ItemType::IMPORT);
+     *   - libcellml::ModelPtr (defaults the item type to ItemType::MODEL);
+     *   - libcellml::ResetPtr (defaults the item type to ItemType::RESET);
+     *   - libcellml::UnitItem (defaults the item type to ItemType::UNIT);
+     *   - libcellml::UnitsPtr (defaults the item type to ItemType::UNITS);
+     *   - libcellml::VariablePtr (defaults the item type to ItemType::VARIABLE); or
+     *   - libcellml::ItemType, std::any.
      *
      * The default values for the enumerations are::
      *
-     *   - libcellml::Issue::Cause::UNDEFINED;
      *   - libcellml::Issue::Level::ERROR;
      *   - libcellml::Issue::ReferenceRule::UNDEFINED;
      *
@@ -125,6 +123,7 @@ public:
     /**
      * @overload
      */
+
     static IssuePtr create(ItemType type, const VariablePtr &variable) noexcept;
 
     /**
@@ -165,6 +164,7 @@ public:
         UNDEFINED,
 
         // Specification errors.
+        XML,
         DATA_REPR_IDENTIFIER_UNICODE,
         DATA_REPR_IDENTIFIER_LATIN_ALPHANUM,
         DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM,
@@ -234,9 +234,10 @@ public:
         MAP_VARIABLES_VARIABLE1,
         MAP_VARIABLES_VARIABLE2,
         MAP_VARIABLES_UNIQUE,
+        MAP_VARIABLES_AVAILABLE_INTERFACE,
 
         // Issues not present in the normative specification:
-        MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION
+        MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
     };
 
     /**
@@ -263,16 +264,17 @@ public:
      * Set the @p cause of this issue from the options available in
      * @c Issue::Cause.
      * 
-     * @param cause The @c Issue::Cause to set. KRM update this
+     * @param cause The @c Issue::Cause to set.
      */
     void setCause(ItemType cause);
 
     /**
      * @brief Get the cause of this issue.
      *
-     * Get the @c cause of this issue. If no cause has been set for
-     * this issue, will return Cause::UNDEFINED.
-     * KRM update this ...
+     * Get the @c cause of this issue. If no cause has been explicitly
+     * set, this function will return the stored item type.
+     * 
+     * @sa itemType.
      *
      * @return The @c Issue::Cause set for this issue. 
      */
@@ -338,141 +340,273 @@ public:
     std::string referenceHeading() const;
 
     /**
-     * @brief Set the component for this component issue.
+     * @brief Set the component relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::COMPONENT.
      *
-     * Set the @p component that this component issue is relevant to.
-     *
-     * @param component A pointer to the component that this component issue is relevant to.
+     * @param component A @c ComponentPtr relevant to this issue.
      */
     void setComponent(const ComponentPtr &component);
 
     /**
-     * @brief Get the component for this issue.
+     * Get the component relevant to this issue.
      *
-     * Get the component that this issue is relevant to.
-     *
-     * @return A pointer to the component that this issue was raised on. If no
-     * component has been set for this issue, return a @c nullptr.
+     * @return A @c Component relevant to this issue, or 
+     *         a @c nullptr if the internal type is not @c ItemType::COMPONENT.
      */
     ComponentPtr component() const;
 
     /**
-     * @brief Set the @p import source for this issue.
+     * @brief Set the import source for this issue.
      *
-     * Set the @c ImportSourcePtr @p importSource object that this issue is
-     * relevant to.
+     * The internal type will be set to @c ItemType::IMPORT.
      *
-     * @param importSource A pointer to the import source that this issue is
-     * relevant to.
+     * @param importSource A @c ImportSourcePtr relevant to this issue.
      */
     void setImportSource(const ImportSourcePtr &importSource);
 
     /**
-     * @brief Get the import source for this issue.
+     * Get the import source relevant to this issue.
      *
-     * Get the @c ImportSourcePtr import source for this issue.
-     *
-     * @return A pointer to the import source this issue was raised on. If no
-     * import source has been set for this issue, return a @c nullptr.
+     * @return An @c ImportSourcePtr relevant to this issue, or 
+     *         a @c nullptr if the internal type is not @c ItemType::IMPORT.
      */
     ImportSourcePtr importSource() const;
 
     /**
-     * @brief Set the @p model for this issue.
+     * @brief Set the model for this issue.
      *
-     * Set the @p model that this issue is relevant to.
+     * The internal type will be set to @c ItemType::MODEL.
      *
-     * @param model A pointer to the model that this issue is relevant to.
+     * @param model A @c ModelPtr relevant to this issue.
      */
     void setModel(const ModelPtr &model);
 
     /**
-     * @brief Get the model for this issue.
+     * Get the model relevant to this issue.
      *
-     * Get the model that this issue is relevant to.
-     *
-     * @return A pointer to the model that this issue was raised on.
-     * If no model has been set for this issue, return a @c nullptr.
+     * @return A @c ModelPtr relevant to this issue, or 
+     *         a @c nullptr if the internal type is not @c ItemType::MODEL.
      */
     ModelPtr model() const;
 
     /**
      * @brief Set the units for this issue.
      *
-     * Set the @p units that this issue is relevant to.
+     * The internal type will be set to @c ItemType::UNITS.
      *
-     * @param units A pointer to the units this issue is relevant to.
+     * @param units A @c UnitsPtr relevant to this issue.
      */
     void setUnits(const UnitsPtr &units);
 
     /**
-     * @brief Get the units for this issue.
+     * Get the units relevant to this issue.
      *
-     * Get the units that this issue is relevant to.
-     *
-     * @return A pointer to the units that this issue was raised on.
-     * If no units has been set for this issue, return a @c nullptr.
+     * @return A @c UnitsPtr relevant to this issue, or 
+     *         a @c nullptr if the internal type is not @c ItemType::UNITS.
      */
     UnitsPtr units() const;
 
     /**
      * @brief Set the variable for this issue.
      *
-     * Set the @p variable that this issue is relevant to.
+     * The internal type will be set to @c ItemType::VARIABLE.
      *
-     * @param variable A pointer to the variable this issue is relevant to.
+     * @param variable A @c VariablePtr relevant to this issue.
      */
     void setVariable(const VariablePtr &variable);
 
     /**
-     * @brief Get the variable for this issue.
+     * Get the variable relevant to this issue.
      *
-     * Get the variable that this issue is relevant to.
-     *
-     * @return A pointer to the variable this variable issue was raised on.
-     * If no variable has been set for this issue, return a @c nullptr.
+     * @return A @c VariablePtr relevant to this issue, or 
+     *         a @c nullptr if the internal type is not @c ItemType::VARIABLE.
      */
     VariablePtr variable() const;
 
     /**
      * @brief Set the reset for this issue.
      *
-     * Set the @p reset that this issue is relevant to.
+     * The internal type will be set to @c ItemType::RESET.
      *
-     * @param reset A pointer to the reset this issue is relevant to.
+     * @param reset A @c ResetPtr relevant to this issue.
      */
     void setReset(const ResetPtr &reset);
 
     /**
-     * @brief Get the reset for this issue.
+     * Get the reset relevant to this issue.
      *
-     * Get the reset that this issue is relevant to.
-     *
-     * @return A pointer to the reset this reset issue was raised on.
-     * If no reset has been set for this issue, return a @c nullptr.
+     * @return A @c ResetPtr relevant to this issue, or @c nullptr
+     *         if the internal type is not @c ItemType::RESET.
      */
     ResetPtr reset() const;
 
-    // KRM needs docstrings.
+    /**
+     * @brief Set the component whose MathML is relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::MATHML.
+     *
+     * @param component The @c ComponentPtr whose MathML is relevant to this issue.
+     */
     void setMath(const ComponentPtr &component);
-    ComponentPtr math() const;
-    void setConnection(const VariablePair &pair);
-    VariablePair connection() const;
-    void setMapVariables(const VariablePair &pair);
-    VariablePair mapVariables() const;
-    void setResetValue(const ResetPtr &reset);
-    ResetPtr resetValue() const;
-    void setTestValue(const ResetPtr &reset);
-    ResetPtr testValue() const;
-    void setUnit(const UnitItem &unit);
-    UnitItem unit() const;
-    void setEncapsulation(const ModelPtr &model);
-    ModelPtr encapsulation() const;
-    void setComponentRef(const ComponentPtr &component);
-    ComponentPtr componentRef() const;
-    void setItem(const AnyItem &item);
-    AnyItem item() const;
 
+    /**
+     * Get the component whose MathML is relevant to this issue.
+     * 
+     * @return A @c ComponentPtr whose MathML is relevant to this issue, or @c nullptr
+     *         if the internal type is not @c ItemType::MATHML.
+     */
+    ComponentPtr math() const;
+
+    /**
+     * @brief Set the connection relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::CONNECTION.
+     *
+     * @param pair The @c VariablePair whose connection is relevant to this issue.
+     */
+    void setConnection(const VariablePair &pair);
+
+    /**
+     * Get the connection relevant to this issue.
+     * 
+     * @return A @c VariablePair representing the connection relevant to this issue,
+     *         or @c std::pair(nullptr,nullptr) if the internal type is not @c ItemType::CONNECTION.
+     */
+    VariablePair connection() const;
+
+    /**
+     * @brief Set the variable mapping relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::MAP_VARIABLES.
+     *
+     * @param pair The @c VariablePair whose equivalence is relevant to this issue.
+     */
+    void setMapVariables(const VariablePair &pair);
+
+    /**
+     * Get the equivalent variable pair relevant to this issue.
+     * 
+     * @return A @c VariablePair representing the variable equivalence relevant to this issue,
+     *         or @c std::pair(nullptr,nullptr) if the internal type is not @c ItemType::MAP_VARIABLES.
+     */
+    VariablePair mapVariables() const;
+
+    /**
+     * @brief Set the reset whose reset value is relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::RESET_VALUE.
+     *
+     * @param reset A @c ResetPtr whose reset value is relevant to this issue.
+     */
+    void setResetValue(const ResetPtr &reset);
+
+    /**
+     * Get the reset whose reset value is relevant to this issue.
+     *
+     * @return A @c ResetPtr whose reset value is relevant to this issue,
+     *         or @c nullptr if the internal type is not @c ItemType::RESET_VALUE.
+     */
+    ResetPtr resetValue() const;
+
+    /**
+     * @brief Set the reset whose test value is relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::TEST_VALUE.
+     *
+     * @param reset A @c ResetPtr whose test value is relevant to this issue.
+     */
+    void setTestValue(const ResetPtr &reset);
+
+    /**
+     * Get the reset whose test value is relevant to this issue.
+     *
+     * @return A @c ResetPtr whose test value is relevant to this issue,
+     *         or @c nullptr if the internal type is not @c ItemType::MAP_VARIABLES.
+     */
+    ResetPtr testValue() const;
+
+    /**
+     * @brief Set the @c UnitItem whose relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::UNIT.
+     *
+     * @param unit A @c UnitItem relevant to this issue.
+     */
+    void setUnit(const UnitItem &unit);
+
+    /**
+     * Get the unit relevant to this issue.
+     *
+     * @return A @c UnitItem relevant to this issue,
+     *         or @c std::pair(nullptr,0) if the internal type is not @c ItemType::UNIT.
+     */
+    UnitItem unit() const;
+
+    /**
+     * @brief Set the @c ModelPtr whose encapsulation is relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::ENCAPSULATION.
+     *
+     * @param model A @c ModelPtr whose encapsulation is relevant to this issue.
+     */
+    void setEncapsulation(const ModelPtr &model);
+
+    /**
+     * Get the @c ModelPtr whose encapsulation is relevant to this issue.
+     *
+     * @return A @c ModelPtr whose encapsulation relevant to this issue,
+     *         or @c nullptr if the internal type is not @c ItemType::ENCAPSULATION.
+     */
+    ModelPtr encapsulation() const;
+
+    /**
+     * @brief Set the @c ComponentPtr whose encapsulation position is relevant to this issue.
+     * 
+     * The internal type will be set to @c ItemType::COMPONENT_REF.
+     *
+     * @param component A @c ComponentPtr whose encapsulation position is relevant to this issue.
+     */
+    void setComponentRef(const ComponentPtr &component);
+
+    /**
+     * Get the @c ComponentPtr whose encapsulation is relevant to this issue.
+     *
+     * @return A @c ComponentPtr whose encapsulation relevant to this issue,
+     *         or @c nullptr if the internal type is not @c ItemType::COMPONENT_REF.
+     */
+    ComponentPtr componentRef() const;
+
+    /**
+     * Get the @c ItemType enum for the stored item.
+     * 
+     * @return The @c ItemType enum for the stored item, or @c ItemType::UNDEFINED if none.
+     */
+    ItemType itemType() const;
+
+    /**
+     * @brief Set an @c std::any item relevant to this issue.
+     * 
+     * @param item An @c std::any item relevant to this issue.
+     * @param type An @c ItemType enum.
+     */
+    void setItem(ItemType type, const std::any &item);
+
+    /**
+     * Get the stored item as an @c std::any item.
+     * 
+     * Note that the stored @c ItemType can be retrieved using @sa itemType().
+     * 
+     * @return An @c std::any item related to this issue.
+     */
+    std::any item() const;
+
+    /**
+     * @brief Clear the stored item.
+     * 
+     * The internal type will be set to @c ItemType::UNDEFINED.
+     */
+    void clearItem();
 
 private:
     Issue(); /**< Constructor */

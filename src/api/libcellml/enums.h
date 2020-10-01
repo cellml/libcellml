@@ -19,12 +19,11 @@ limitations under the License.
 #include <memory>
 
 namespace libcellml {
+
 /**
  * @brief The ItemType enum class.
  *
- * 
  */
-// KRM not sure how to get this working with SWIG.
 enum class ItemType
 {
     COMPONENT,

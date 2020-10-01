@@ -19,10 +19,15 @@ endif()
 # Add swig interface files
 # Note: These filenames double as (generated .so file) module names!
 set(SWIG_INTERFACE_SRCS
+    ../interface/analyser.i
+    ../interface/analyserequation.i
+    ../interface/analyserequationast.i
+    ../interface/analysermodel.i
+    ../interface/analyservariable.i
     ../interface/component.i
     ../interface/componententity.i
     ../interface/entity.i
-    ../interface/enums.i  # KRM
+    ../interface/enums.i  
     ../interface/generator.i
     ../interface/generatorprofile.i
     ../interface/importer.i
@@ -48,6 +53,10 @@ set(SWIG_GENERATED_INTERMEDIARIES_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/swig_int
 set(LIBCELLML_PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}${_CFGDIR}/libcellml)
 set(_SWIG_GENERATED_PYTHON_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/swig_generated_python_files)
 set(FINALISE_PYTHON_BINDINGS_ARGUMENTS -DLIBCELLML_PYTHON_PACKAGE_DIR=${LIBCELLML_PYTHON_PACKAGE_DIR})
+
+if(LIBCELLML_PYTHON_COVERAGE)
+  set(PYTHON_COVERAGE_WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "The directory for the Python coverage script to run in.")
+endif()
 
 # Configure for C++
 if(${CMAKE_VERSION} VERSION_LESS 3.11)

@@ -123,7 +123,7 @@ bool Component::doAddComponent(const ComponentPtr &component)
     return ComponentEntity::doAddComponent(component);
 }
 
-void Component::setImportSource(ImportSourcePtr &importSource)
+void Component::doSetImportSource(const ImportSourcePtr &importSource)
 {
     auto component = shared_from_this();
     auto oldImportSource = component->importSource();
@@ -141,7 +141,7 @@ void Component::setImportSource(ImportSourcePtr &importSource)
         oldImportSource->removeComponent(component, false);
     }
 
-    ImportedEntity::setImportSource(importSource);
+    ImportedEntity::doSetImportSource(importSource);
 }
 
 void Component::setSourceComponent(ImportSourcePtr &importSource, const std::string &name)
@@ -430,6 +430,24 @@ ComponentPtr Component::clone() const
     }
 
     return c;
+}
+
+bool doRequiresImport(const ComponentPtr &thisComponent)
+{
+    if (thisComponent->isImport()) {
+        return true;
+    }
+    for (size_t c = 0; c < thisComponent->componentCount(); ++c) {
+        if (doRequiresImport(thisComponent->component(c))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Component::requiresImports()
+{
+    return doRequiresImport(shared_from_this());
 }
 
 } // namespace libcellml

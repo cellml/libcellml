@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%include <std_pair.i>
 %include <std_string.i>
 
 %import "createconstructor.i"
@@ -38,20 +39,21 @@ Returns True if the model was added, and False if the URL key already exists."
 Returns True if the URL key is found in the library and the model is added,
 and False if the URL key does not exist."
 
-%feature("docstring") libcellml::Importer::externalDependencyCount
-"Returns the number of external dependencies accessed while resolving all
-the models passed to this importer."
-
-%feature("docstring") libcellml::Importer::externalDependency
-"Returns a pairs of strings at the given index. The first item in the pair is the external URL
-at which imports for models which have been resolved by the importer were accessed (and under
-which are now stored in the library). The second item is the import reference."
-
 %feature("docstring") libcellml::Importer::clearImports
 "Clears the links with other models from all import sources."
 
+%feature("docstring") libcellml::Importer::key
+"Returns a string corresponding to the key at which a model is stored in the 
+library by index, or an empty string if the index is out of range."
+
 %{
 #include "libcellml/importer.h"
+%}
+
+%template(StringPair) std::pair<std::string, std::string>;
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 %create_constructor(Importer)

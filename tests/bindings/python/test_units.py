@@ -10,7 +10,7 @@ class UnitsTestCase(unittest.TestCase):
         from libcellml import Units
 
         x = Units()
-        del(x)
+        del x
 
         y = Units("mine")
         self.assertEqual("mine", y.name())
@@ -31,6 +31,11 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(x.id(), '')
         x.setId(idx)
         self.assertEqual(x.id(), idx)
+
+    def test_create_imported_entity(self):
+        from libcellml.importedentity import ImportedEntity
+
+        self.assertRaises(AttributeError, ImportedEntity)
 
     def test_standard_unit(self):
         from libcellml import Units
@@ -93,7 +98,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', 'b', 0)
         u.addUnit('a', 'b', 3, 3)
         u.addUnit('a', 'b', 0.1, -1.2)
-        del(u)
+        del u
 
         # void addUnit(const std::string &reference, int prefix,
         #   double exponent, double multiplier=1.0)
@@ -109,20 +114,20 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', -1, -1, 3)
         u.addUnit('a', -1, -1, 2.3)
         u.addUnit('a', -1, 1.2, 3.4)
-        del(u)
+        del u
 
         # void addUnit(const std::string &reference, double exponent)
         u = Units()
         u.addUnit('a', 1.0)
         # TODO Ints get converted to Prefix enum, not to double!
         # u.addUnit('a', -1)
-        del(u)
+        del u
 
         # void addUnit(const std::string &reference)
         u = Units()
         u.addUnit('')
         u.addUnit('a')
-        del(u)
+        del u
 
         # void addUnit(StandardUnit standardRef, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
@@ -133,7 +138,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, 'pico', 1.0, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, 'pico', 1, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, 'pico', -1, 2)
-        del(u)
+        del u
 
         # void addUnit(StandardUnit standardRef, int prefix,
         #   double exponent, double multiplier=1.0)
@@ -142,7 +147,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, -1, -1.0)
         u.addUnit(Units.StandardUnit.KATAL, 1, 1.0, 1.0)
         u.addUnit(Units.StandardUnit.KATAL, -1, -1.0, 1.0, 'id')
-        del(u)
+        del u
 
         # void addUnit(StandardUnit standardRef, double exponent)
         # Hidden to avoid confusion with addUnit(StandardUnit, Prefix, double,
@@ -151,7 +156,7 @@ class UnitsTestCase(unittest.TestCase):
         # void addUnit(StandardUnit standardRef)
         u = Units()
         u.addUnit(Units.StandardUnit.KATAL)
-        del(u)
+        del u
 
     def test_unit_attributes(self):
         from libcellml import Units
@@ -169,7 +174,7 @@ class UnitsTestCase(unittest.TestCase):
         x = u.unitAttributes(1)
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['', '', 1.0, 1.0, ''])
-        del(u, x)
+        del [u, x]
 
         # void unitAttributes(const std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier) const;
@@ -184,7 +189,7 @@ class UnitsTestCase(unittest.TestCase):
         x = u.unitAttributes('few')
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['few', 'bars', 4.3, 2.1, 'job'])
-        del(u, x)
+        del [u, x]
 
         # This method conflicts with unitAttributes(size_t, ...)
         # void unitAttributes(StandardUnit standardRef, std::string &prefix,
@@ -203,7 +208,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertFalse(u.removeUnit(-1))
         self.assertTrue(u.removeUnit(0))
         self.assertFalse(u.removeUnit(0))
-        del(u)
+        del [u]
 
         # bool removeUnit(const std::string &reference)
         u = Units()
@@ -212,7 +217,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertFalse(u.removeUnit('hi'))
         self.assertTrue(u.removeUnit('hello'))
         self.assertFalse(u.removeUnit('hello'))
-        del(u)
+        del [u]
 
         # This method conflicts with removeUnit(size_t)
         # bool removeUnit(StandardUnit standardRef)
@@ -248,6 +253,73 @@ class UnitsTestCase(unittest.TestCase):
         i = ImportSource()
         u = Units()
         u.setSourceUnits(i, 'hello')
+
+        self.assertTrue(u.isImport())
+
+    def test_import_units(self):
+        from libcellml import Units, ImportSource
+
+        i = ImportSource()
+        u = Units()
+
+        u.setImportSource(i)
+        u.setImportReference("Volt")
+
+        self.assertTrue(u.isImport())
+
+    def test_requires_imports(self):
+        from libcellml import Units
+
+        u = Units("Volt")
+        self.assertFalse(u.requiresImports())
+
+    def test_scaling_factor(self):
+        from libcellml import Units
+        from libcellml.units import Units_scalingFactor
+
+        u1 = Units("BigVolts")
+        u1.addUnit("volt", 0, 1, 1000)
+
+        u2 = Units("LittleVolts")
+        u2.addUnit("volt")
+
+        self.assertEqual(0.001, Units.scalingFactor(u1, u2))
+        self.assertEqual(0.001, Units_scalingFactor(u1, u2))
+
+    def test_compatible(self):
+        from libcellml import Units
+        from libcellml.units import Units_compatible
+
+        u1 = Units("BigVolts")
+        u1.addUnit("volt", 0, 1, 1000)
+
+        u2 = Units("LittleVolts")
+        u2.addUnit("volt")
+
+        self.assertTrue(Units.compatible(u1, u2))
+        self.assertTrue(Units_compatible(u1, u2))
+
+    def test_equivalent(self):
+        from libcellml import Units
+        from libcellml.units import Units_equivalent
+
+        u1 = Units("BigVolts")
+        u1.addUnit("volt", 0, 1, 1000)
+
+        u2 = Units("LittleVolts")
+        u2.addUnit("volt")
+
+        self.assertFalse(Units.equivalent(u1, u2))
+        self.assertFalse(Units_equivalent(u1, u2))
+
+    def test_clone(self):
+        from libcellml import Units
+
+        u = Units("BigVolts")
+        u.addUnit("volt", 0, 1, 1000)
+
+        uCloned = u.clone()
+        self.assertEqual(1, uCloned.unitCount())
 
 
 if __name__ == '__main__':

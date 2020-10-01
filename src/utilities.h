@@ -451,6 +451,25 @@ bool isStandardPrefixName(const std::string &name);
 size_t getVariableIndexInComponent(const ComponentPtr &component, const VariablePtr &variable);
 
 /**
+ * @brief Test to determine if @p variable1 and @p variable2 are the same or
+ * (directly or indirectly) equivalent.
+ *
+ * Test to see if @p variable1 is the same or (directly or indirectly)
+ * equivalent to @p variable2. Returns @c true if @p variable1 is the same or
+ * (directly or indirectly) equivalent to @p variable2 and @c false otherwise.
+ *
+ * @param variable1 The @c Variable to test if it is the same or (directly or
+ * indirectly) equivalent to @p variable2.
+ * @param variable2 The @c Variable that is potentially the same or (directly or
+ * indirectly) equivalent to @p variable1.
+ *
+ * @return @c true if @p variable1 is the same or (directly or indirectly)
+ * equivalent to @p variable2 and @c false otherwise.
+ */
+bool isSameOrEquivalentVariable(const VariablePtr &variable1,
+                                const VariablePtr &variable2);
+
+/**
  * @brief Test to determine if @p entity1 is a child of @p entity2.
  *
  * Test to see if @p entity1 is a child of @p entity2.  Returns @c true if
@@ -578,14 +597,66 @@ IdList listIds(const ModelPtr &model);
  */
 std::string makeUniqueId(IdList &idList);
 
+/**
+ * Function to support linking units names to their corresponding @c Units items.
+ *
+ * @param component The component to check.
+ * @param issueList A vector of @c IssuePtr items in which unlinked units are recorded for reporting.
+ *
+ * @return @c true if all variables have been successfully linked to units, @c false otherwise.
+ */
+bool linkComponentVariableUnits(const ComponentPtr &component, std::vector<IssuePtr> &issueList);
+
+/**
+ * @overload
+ *
+ * @brief Utility function used when linking units names to their corresponding @c Units items.
+ *
+ * Returns @c true if all variables in the component can be linked to their units, or
+ * @c false otherwise.
+ *
+ * @param componentEntity The component entity to check.
+ *
+ * @return @c true upon success; @c false if not all variables could be linked to units.
+ */
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity);
+
+/**
+ * @overload
+ *
+ *  Utility function used when linking units names to their corresponding @c Units items.
+ *
+ * @param componentEntity The component entity to check.
+ * @param issueList An optional @c std::vector of @c IssuePtr items which is used to record cases of missing units.
+ *
+ * @return @c true upon success; @c false if not all variables could be linked to units.
+ * */
+bool traverseComponentEntityTreeLinkingUnits(const ComponentEntityPtr &componentEntity, std::vector<IssuePtr> &issueList);
+
+/**
+ * @brief Test whether a component contains variables naming units which have not yet
+ *        been linked to @c Units items.
+ *
+ * Utility function used when linking units names to their corresponding @c Units items. It
+ * will return a value of @c true when there are variables without linked units, or @c false
+ * otherwise.
+ *
+ * @param component The component to check.
+ *
+ * @return @c true when unlinked variables are found, @c false otherwise.
+ */
+bool areComponentVariableUnitsUnlinked(const ComponentPtr &component);
+
 void recordVariableEquivalences(const ComponentPtr &component, EquivalenceMap &equivalenceMap, IndexStack &indexStack);
 void generateEquivalenceMap(const ComponentPtr &component, EquivalenceMap &map, IndexStack &indexStack);
 void applyEquivalenceMapToModel(const EquivalenceMap &map, const ModelPtr &model);
 NameList componentNames(const ModelPtr &model);
+NameList unitsNamesUsed(const ComponentPtr &component);
 IndexStack reverseEngineerIndexStack(const ComponentPtr &component);
 EquivalenceMap rebaseEquivalenceMap(const EquivalenceMap &map, const IndexStack &originStack, const IndexStack &destinationStack);
 std::vector<UnitsPtr> unitsUsed(const ModelPtr &model, const ComponentPtr &component);
 ComponentNameMap createComponentNamesMap(const ComponentPtr &component);
 void findAndReplaceComponentsCnUnitsNames(const ComponentPtr &component, const StringStringMap &replaceMap);
+std::string replace(std::string string, const std::string &from, const std::string &to);
 
 } // namespace libcellml
