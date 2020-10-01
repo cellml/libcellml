@@ -1047,7 +1047,7 @@ ConnectionMap createConnectionMap(const VariablePtr &variable1, const VariablePt
 
     ComponentPtr component1 = owningComponent(variable1);
     ComponentPtr component2 = owningComponent(variable2);
-    if (component1 && component2) {
+    if ((component1 != nullptr) && (component2 != nullptr)) {
         for (size_t i = 0; i < component1->variableCount(); ++i) {
             auto v = component1->variable(i);
             for (const auto &vEquiv : equivalentVariables(v)) {
