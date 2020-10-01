@@ -388,7 +388,6 @@ bool Units::setUnitId(size_t index, const std::string &id) const
         mPimpl->mUnits[index].mId = id;
         return true;
     }
-
     return false;
 }
 
