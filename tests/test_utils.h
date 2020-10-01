@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include <chrono>
 #include <iostream>
 #include <libcellml>
 #include <sstream>
