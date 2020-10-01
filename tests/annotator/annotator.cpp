@@ -1725,8 +1725,6 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
 
     };
 
-    libcellml::VariablePair pair;
-    libcellml::VariablePair reversePair;
     libcellml::VariablePair testPair;
 
     auto annotator = libcellml::Annotator::create();
@@ -1746,16 +1744,28 @@ TEST(Annotator, retrieveDuplicateIdItemLists)
                 EXPECT_EQ(std::any_cast<libcellml::ComponentPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ComponentPtr>(item.second));
                 break;
             case libcellml::CellMLElement::CONNECTION:
-            case libcellml::CellMLElement::MAP_VARIABLES:
-                pair = std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second);
+                // A bit of a nonsense test because 'variable1' and 'variable2' are the only variables in this particular model.
                 testPair = std::any_cast<libcellml::VariablePair>(item.second);
-                // TODO not sure how best to test these.
-                // EXPECT_TRUE(((pair.first == testPair.first) && (pair.second == testPair.second)) || ((pair.second == testPair.first) && (pair.first == testPair.second)));
-
-                // EXPECT_TRUE(((std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).first == std::any_cast<libcellml::VariablePair>(item.second).first) &&
-                // (std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).second == std::any_cast<libcellml::VariablePair>(item.second).second))||
-                // ((std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).second == std::any_cast<libcellml::VariablePair>(item.second).first) &&
-                // (std::any_cast<libcellml::VariablePair>(expectedItems[id][index].second).first == std::any_cast<libcellml::VariablePair>(item.second).second)));
+                EXPECT_TRUE("variable1" == testPair.first->name() || "variable2" == testPair.first->name());
+                EXPECT_TRUE("variable1" == testPair.second->name() || "variable2" == testPair.second->name());
+                break;
+            case libcellml::CellMLElement::MAP_VARIABLES:
+                testPair = std::any_cast<libcellml::VariablePair>(item.second);
+                if (id == "duplicateId1") {
+                    EXPECT_EQ("variable1", testPair.first->name());
+                    EXPECT_EQ("variable1", testPair.second->name());
+                } else if (id == "duplicateId3") {
+                    EXPECT_EQ("variable2", testPair.first->name());
+                    EXPECT_EQ("variable2", testPair.second->name());
+                } else if (id == "duplicateId4") {
+                    if (testPair.first->name() == "variable1") {
+                        EXPECT_EQ("variable1", testPair.first->name());
+                        EXPECT_EQ("variable1", testPair.second->name());
+                    } else {
+                        EXPECT_EQ("variable2", testPair.first->name());
+                        EXPECT_EQ("variable2", testPair.second->name());
+                    }
+                }
                 break;
             case libcellml::CellMLElement::ENCAPSULATION:
                 EXPECT_EQ(std::any_cast<libcellml::ModelPtr>(expectedItems[id][index].second), std::any_cast<libcellml::ModelPtr>(item.second));
@@ -2105,4 +2115,17 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     model->component("component2")->variable(0)->setId("changed");
     EXPECT_EQ("b4da61", annotator->assignId(model->component("component2")->variable(0)));
     EXPECT_EQ("b4da61", model->component("component2")->variable(0)->id());
+}
+
+TEST(Annotator, retreiveItemByIndex)
+{
+    auto annotator = libcellml::Annotator::create();
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(modelStringLotsOfDuplicateIds);
+
+    annotator->setModel(model);
+
+    EXPECT_EQ(nullptr, annotator->component("duplicateId4", 5));
+    EXPECT_EQ("component1", annotator->component("duplicateId4", 1)->name());
+    EXPECT_EQ("component4", annotator->component("duplicateId4", 2)->name());
 }

@@ -1648,9 +1648,9 @@ std::string Annotator::assignId(const UnitsPtr &units, size_t index)
     return mPimpl->setAutoId(std::make_pair(CellMLElement::UNIT, std::make_pair(units, index)));
 }
 
-std::string Annotator::assignId(const UnitItem &item)
+std::string Annotator::assignId(const UnitItem &unitItem)
 {
-    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNIT, item));
+    return mPimpl->setAutoId(std::make_pair(CellMLElement::UNIT, unitItem));
 }
 
 std::string Annotator::assignId(const VariablePtr &variable)

@@ -77,8 +77,49 @@ using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units p
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
 
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
+/**
+ * @brief Type definition for VariablePtr pair.
+ *
+ * A VariablePair is a pair containing two @ref VariablePtrs.
+ * It may be used to define:
+ *  - a connection between parent components; or
+ *  - an equivalence between two variables;
+ */
+using VariablePair = std::pair<VariablePtr, VariablePtr>; /**<  */
+
+/**
+ * @brief Type definition for UnitsPtr and Unit index pair.
+ *
+ * A UnitItem is a pair containing a @ref UnitsPtr to the parent Units item, and
+ * the index to the Unit item within the @ref Units.
+ */
 using UnitItem = std::pair<UnitsPtr, size_t>;
+
+/**
+ * @brief Type definition for CellMLElement and a std::any.
+ *
+ * An AnyItem is a @c std::pair containing:
+ *  - a @ref CellMLElement enum, and
+ *  - a @c std::any item.
+ *
+ * Use @c std::any_cast to cast the item to its underlying type.
+ *
+ * Casts to use for the second item in the pair are mapped according to the following statements:
+ *  - CellMLElement::COMPONENT => std::any_cast<ComponentPtr>.
+ *  - CellMLElement::COMPONENT_REF => std::any_cast<ComponentPtr>.
+ *  - CellMLElement::CONNECTION => std::any_cast<VariablePair>.
+ *  - CellMLElement::ENCAPSULATION => std::any_cast<ModelPtr>.
+ *  - CellMLElement::IMPORT => std::any_cast<ImportSourcePtr>.
+ *  - CellMLElement::MAP_VARIABLES => std::any_cast<VariablePair>.
+ *  - CellMLElement::MODEL => std::any_cast<ModelPtr>.
+ *  - CellMLElement::RESET => std::any_cast<ResetPtr>.
+ *  - CellMLElement::RESET_VALUE => std::any_cast<ResetPtr>.
+ *  - CellMLElement::TEST_VALUE => std::any_cast<ResetPtr>.
+ *  - CellMLElement::UNDEFINED => not castable.
+ *  - CellMLElement::UNIT => std::any_cast<UnitItem>.
+ *  - CellMLElement::UNITS => std::any_cast<UnitsPtr>.
+ *  - CellMLElement::VARIABLE => std::any_cast<VariablePtr>.
+ */
 using AnyItem = std::pair<CellMLElement, std::any>;
 
 } // namespace libcellml
