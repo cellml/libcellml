@@ -263,8 +263,6 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     // of our equation and set its order, if the (ODE) variable is a state,
     // computed constant or algebraic variable.
 
-    auto relevantCheck = false;
-
     if (mVariables.size() + mOdeVariables.size() == 1) {
         auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
@@ -305,11 +303,11 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
             mVariable = variable;
 
-            relevantCheck = true;
+            return true;
         }
     }
 
-    return relevantCheck;
+    return false;
 }
 
 /**
