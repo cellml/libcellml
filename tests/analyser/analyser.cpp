@@ -325,12 +325,15 @@ TEST(Analyser, overconstrainedTwoVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x' or 'y' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' is computed more than once.",
+        "Variable 'y' in component 'my_component' is computed more than once.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
 
@@ -351,12 +354,18 @@ TEST(Analyser, overconstrainedThreeVariables)
     EXPECT_EQ(size_t(0), parser->issueCount());
 
     const std::vector<std::string> expectedIssues = {
-        "Variable 'x', 'y' or 'z' in component 'my_component' is computed more than once.",
+        "Variable 'x' in component 'my_component' is computed more than once.",
+        "Variable 'y' in component 'my_component' is computed more than once.",
+        "Variable 'z' in component 'my_component' is computed more than once.",
     };
     const std::vector<libcellml::Issue::Cause> expectedCauses = {
         libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
+        libcellml::Issue::Cause::VARIABLE,
     };
     const std::vector<libcellml::Issue::Level> expectedLevels = {
+        libcellml::Issue::Level::ERROR,
+        libcellml::Issue::Level::ERROR,
         libcellml::Issue::Level::ERROR,
     };
 
