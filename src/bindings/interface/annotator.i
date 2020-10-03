@@ -50,7 +50,7 @@
 "Return the ComponentPtr with the given component_ref id.";
 
 %feature("docstring") libcellml::Annotator::unit
-"Return the UnitsPtr and index whose Unit is with given id.";
+"Returns a UnitItem a pair consisting of UnitsPtr and index which defines the Unit with the given id.";
 
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given id.";
@@ -86,7 +86,7 @@
 "Assign an automatically generated, unique id to the given component's encapsulation.";
 
 %feature("docstring") libcellml::Annotator::assignConnectionId
-"Assign an automatically generated, unique id to the connection defined by the given variables.";
+"Assign an automatically generated, unique id to the connection defined by the VariablePair.";
 
 %feature("docstring") libcellml::Annotator::assignEncapsulationId
 "Assign an automatically generated, unique id to the encapsulation of the given model.";
@@ -95,7 +95,7 @@
 "Assign an automatically generated, unique id to the given import source.";
 
 %feature("docstring") libcellml::Annotator::assignMapVariablesId
-"Assign an automatically generated, unique id to the equivalence between the given variables.";
+"Assign an automatically generated, unique id to the equivalence defined by the VariablePair.";
 
 %feature("docstring") libcellml::Annotator::assignModelId
 "Assign an automatically generated, unique id to the given model.";
@@ -123,9 +123,6 @@
 
 %feature("docstring") libcellml::Annotator::hasModel
 "Report whether the annotator has a model assigned or not.";
-
-%feature("docstring") libcellml::Annotator::dictionary
-"Return the dictionary of ids to CellMLElement for this model.";
 
 // PRIVATE: Functions only written to support bindings. They are not
 // intended to be called from anywhere other than this file.
