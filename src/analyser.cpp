@@ -140,6 +140,7 @@ struct AnalyserInternalEquation
 
     std::vector<AnalyserInternalVariablePtr> mVariables;
     std::vector<AnalyserInternalVariablePtr> mOdeVariables;
+    std::vector<AnalyserInternalVariablePtr> mAllVariables;
 
     AnalyserInternalVariablePtr mVariable;
     ComponentPtr mComponent = nullptr;
@@ -171,6 +172,7 @@ void AnalyserInternalEquation::addVariable(const AnalyserInternalVariablePtr &va
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
+        mAllVariables.push_back(variable);
     }
 }
 
@@ -178,6 +180,7 @@ void AnalyserInternalEquation::addOdeVariable(const AnalyserInternalVariablePtr 
 {
     if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
         mOdeVariables.push_back(odeVariable);
+        mAllVariables.push_back(odeVariable);
     }
 }
 
@@ -214,23 +217,10 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
                                      size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
-    // everything is fine) or if there is one known (ODE) variable left (i.e.
-    // this equation is an overconstraint).
+    // everything is fine).
 
     if (mOrder != MAX_SIZE_T) {
         return false;
-    }
-
-    if (mVariables.size() + mOdeVariables.size() == 1) {
-        auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
-
-        if ((variable->mIndex != MAX_SIZE_T)
-            && (variable->mType != AnalyserInternalVariable::Type::UNKNOWN)
-            && (variable->mType != AnalyserInternalVariable::Type::SHOULD_BE_STATE)) {
-            variable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
-
-            return false;
-        }
     }
 
     // Determine, from the (new) known (ODE) variables, whether the equation is
@@ -257,15 +247,26 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
     mVariables.erase(std::remove_if(mVariables.begin(), mVariables.end(), isKnownVariable), mVariables.end());
     mOdeVariables.erase(std::remove_if(mOdeVariables.begin(), mOdeVariables.end(), isKnownOdeVariable), mOdeVariables.end());
 
+    // If there is no (ODE) variable left then it means that the equation is an
+    // overconstraint).
+
+    auto unknownVariablesOrOdeVariablesLeft = mVariables.size() + mOdeVariables.size();
+
+    if (unknownVariablesOrOdeVariablesLeft == 0) {
+        for (const auto &variable : mAllVariables) {
+            variable->mType = AnalyserInternalVariable::Type::OVERCONSTRAINED;
+        }
+
+        return false;
+    }
+
     // If there is one (ODE) variable left then update its variable (to be the
     // corresponding one in the component in which the equation is), its type
     // (if it is currently unknown), determine its index and determine the type
     // of our equation and set its order, if the (ODE) variable is a state,
     // computed constant or algebraic variable.
 
-    auto relevantCheck = false;
-
-    if (mVariables.size() + mOdeVariables.size() == 1) {
+    if (unknownVariablesOrOdeVariablesLeft == 1) {
         auto variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         for (size_t i = 0; i < mComponent->variableCount(); ++i) {
@@ -305,11 +306,11 @@ bool AnalyserInternalEquation::check(size_t &equationOrder, size_t &stateIndex,
 
             mVariable = variable;
 
-            relevantCheck = true;
+            return true;
         }
     }
 
-    return relevantCheck;
+    return false;
 }
 
 /**
