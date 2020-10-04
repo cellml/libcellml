@@ -235,8 +235,7 @@ ModelPtr Parser::parseModel(const std::string &input)
     if (input.empty()) {
         IssuePtr issue = Issue::create();
         issue->setDescription("Model string is empty.");
-        issue->setCause(ItemType::XML);
-        issue->setModel(model);
+        issue->setReferenceRule(Issue::ReferenceRule::XML);
         addIssue(issue);
     } else {
         mPimpl->updateModel(model, input);
@@ -258,7 +257,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             IssuePtr issue = Issue::create();
             issue->setDescription("LibXml2 error: " + doc->xmlError(i));
-            issue->setCause(ItemType::XML);
+            issue->setReferenceRule(Issue::ReferenceRule::XML);
             mParser->addIssue(issue);
         }
     }
@@ -266,7 +265,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     if (!node) {
         IssuePtr issue = Issue::create();
         issue->setDescription("Could not get a valid XML root node from the provided input.");
-        issue->setCause(ItemType::XML);
+        issue->setReferenceRule(Issue::ReferenceRule::XML);
         mParser->addIssue(issue);
         return;
     }
