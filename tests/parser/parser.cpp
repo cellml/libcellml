@@ -1394,7 +1394,7 @@ TEST(Parser, invalidImportsAndGetIssue)
 TEST(Parser, invalidModelWithDifferentCausesOfIssues)
 {
     // Check for all causes of issues.
-    std::vector<bool> foundCause(9, false);
+    std::vector<bool> foundCause(8, false);
 
     // Trigger CellML entity issues
     const std::string in =
@@ -1461,7 +1461,6 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
         case libcellml::ItemType::TEST_VALUE:
         case libcellml::ItemType::UNDEFINED:
         case libcellml::ItemType::UNIT:
-        case libcellml::ItemType::XML:
             break;
         }
     }
@@ -1474,21 +1473,6 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     EXPECT_EQ(size_t(1), parser2->issueCount());
     if (parser2->issue(0)->cause() == libcellml::ItemType::UNDEFINED) {
         foundCause.at(7) = true;
-    }
-
-    // Trigger an XML issue
-    const std::string input3 = "jarjarbinks";
-    const std::vector<std::string> expectedIssues3 = {
-        "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input.",
-    };
-    libcellml::ParserPtr parser3 = libcellml::Parser::create();
-    parser3->parseModel(input3);
-    EXPECT_EQ_ISSUES(expectedIssues3, parser3);
-    for (size_t i = 0; i < parser3->issueCount(); ++i) {
-        if (parser3->issue(i)->cause() == libcellml::ItemType::XML) {
-            foundCause.at(8) = true;
-        }
     }
 
     // Check that we've found all the possible issue types
