@@ -1454,7 +1454,6 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
             foundCause.at(6) = true;
             break;
         case libcellml::ItemType::COMPONENT_REF:
-        case libcellml::ItemType::ISSUE:
         case libcellml::ItemType::MAP_VARIABLES:
         case libcellml::ItemType::MATHML:
         case libcellml::ItemType::RESET:
@@ -1463,12 +1462,6 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
         case libcellml::ItemType::UNDEFINED:
         case libcellml::ItemType::UNIT:
         case libcellml::ItemType::XML:
-        case libcellml::ItemType::RESET_VALUE:
-        case libcellml::ItemType::TEST_VALUE:
-        case libcellml::ItemType::MAP_VARIABLES:
-        case libcellml::ItemType::COMPONENT_REF:
-        case libcellml::ItemType::ISSUE:
-        case libcellml::ItemType::UNIT:
             break;
         }
     }
