@@ -627,6 +627,34 @@ TEST(Issue, undefinedIssueUrl)
     EXPECT_EQ(e, issue->referenceHeading());
 }
 
+TEST(Issue, componentValid)
+{
+    auto issue = libcellml::Issue::create();
+    auto component = libcellml::Component::create("component");
+
+    issue->setLevel(libcellml::Issue::Level::MESSAGE);
+    issue->setDescription("Not a real component");
+    issue->setComponent(component);
+
+    EXPECT_EQ(libcellml::Issue::Level::MESSAGE, issue->level());
+    EXPECT_EQ("Not a real component", issue->description());
+    EXPECT_EQ(component, issue->component());
+}
+
+TEST(Issue, componentInvalid)
+{
+    auto issue = libcellml::Issue::create();
+    libcellml::ComponentPtr component;
+
+    issue->setLevel(libcellml::Issue::Level::MESSAGE);
+    issue->setDescription("Not a real component");
+    issue->setComponent(component);
+
+    EXPECT_EQ(libcellml::Issue::Level::MESSAGE, issue->level());
+    EXPECT_EQ("Not a real component", issue->description());
+    EXPECT_EQ(nullptr, issue->component());
+}
+
 TEST(Issue, setGetItems)
 {
     auto model = libcellml::Model::create("model");
@@ -786,7 +814,7 @@ TEST(Issue, createMismatchedTypeReturnsNull)
     EXPECT_EQ(nullptr, libcellml::Issue::create(std::make_pair(variable1, variable2), libcellml::ItemType::VARIABLE));
 }
 
-TEST(ISSUE, createIssueWithNullptr)
+TEST(Issue, createIssueWithNullptr)
 {
     libcellml::ModelPtr model;
     libcellml::ComponentPtr component;
@@ -1188,4 +1216,39 @@ TEST(Issue, clearStoredItem)
     issue->clear();
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+}
+
+TEST(Issue, clear)
+{
+    auto issue = libcellml::Issue::create();
+    auto model = libcellml::Model::create();
+
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->cause());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ("", issue->description());
+    EXPECT_EQ(libcellml::Issue::Level::ERROR, issue->level());
+    EXPECT_EQ(libcellml::Issue::ReferenceRule::UNDEFINED, issue->referenceRule());
+
+    issue->setModel(model);
+    issue->setCause(libcellml::ItemType::COMPONENT);
+    issue->setDescription("description");
+    issue->setLevel(libcellml::Issue::Level::MESSAGE);
+    issue->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_CHILD);
+
+    EXPECT_EQ(model, issue->model());
+    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->cause());
+    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ("description", issue->description());
+    EXPECT_EQ(libcellml::Issue::Level::MESSAGE, issue->level());
+    EXPECT_EQ(libcellml::Issue::ReferenceRule::CONNECTION_CHILD, issue->referenceRule());
+
+    issue->clear();
+
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->cause());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ("", issue->description());
+    EXPECT_EQ(libcellml::Issue::Level::ERROR, issue->level());
+    EXPECT_EQ(libcellml::Issue::ReferenceRule::UNDEFINED, issue->referenceRule());
 }
