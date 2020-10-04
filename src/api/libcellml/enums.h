@@ -31,7 +31,6 @@ enum class ItemType
     CONNECTION,
     ENCAPSULATION,
     IMPORT,
-    ISSUE,
     MAP_VARIABLES,
     MATHML,
     MODEL,
