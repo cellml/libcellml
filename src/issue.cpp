@@ -358,7 +358,7 @@ UnitItem Issue::unit() const
 
 void Issue::setConnection(const VariablePair &pair)
 {
-    pair.first && pair.second ? setItem(ItemType::CONNECTION, pair) : clear();
+    (pair.first && pair.second) ? setItem(ItemType::CONNECTION, pair) : clear();
 }
 
 VariablePair Issue::connection() const
@@ -371,7 +371,7 @@ VariablePair Issue::connection() const
 
 void Issue::setMapVariables(const VariablePair &pair)
 {
-    pair.first && pair.second ? setItem(ItemType::MAP_VARIABLES, pair) : clear();
+    (pair.first && pair.second) ? setItem(ItemType::MAP_VARIABLES, pair) : clear();
 }
 
 VariablePair Issue::mapVariables() const
