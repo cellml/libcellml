@@ -227,21 +227,21 @@ public:
      * @brief Set the cause of this issue.
      *
      * Set the @p cause of this issue from the options available in
-     * @c Issue::Cause.
+     * @ref libcellml::ItemType.
      * 
-     * @param cause The @c Issue::Cause to set.
+     * @param cause The @ref libcellml::ItemType to set.
      */
     void setCause(ItemType cause);
 
     /**
      * @brief Get the cause of this issue.
      *
-     * Get the @c cause of this issue. If no cause has been explicitly
+     * Get the cause of this issue. If no cause has been explicitly
      * set, this function will return the stored item type.
      * 
      * @sa itemType.
      *
-     * @return The @c Issue::Cause set for this issue. 
+     * @return The @ref libcellml::ItemType set for this issue.
      */
     ItemType cause() const;
 
