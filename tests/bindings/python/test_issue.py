@@ -313,7 +313,6 @@ class IssueTestCase(unittest.TestCase):
     def test_variable(self):
         from libcellml import Issue, Variable
 
-        # VariablePtr variable()
         e = Issue()
         self.assertIsNone(e.variable())
         name = 'var'
@@ -322,6 +321,26 @@ class IssueTestCase(unittest.TestCase):
         e.setVariable(v)
         self.assertIsInstance(e.variable(), Variable)
         self.assertEqual(e.variable().name(), name)
+
+    def test_math(self):
+        from libcellml import Issue, Component
+
+        e = Issue()
+        self.assertIsNone(e.math())
+        c = Component("comp")
+        e.setMath(c)
+        self.assertIsInstance(e.math(), Component)
+        self.assertEqual(e.math().name(), "comp")
+
+    def test_component_ref(self):
+        from libcellml import Issue, Component
+
+        e = Issue()
+        self.assertIsNone(e.math())
+        c = Component("comp")
+        e.setComponentRef(c)
+        self.assertIsInstance(e.componentRef(), Component)
+        self.assertEqual(e.componentRef().name(), "comp")
 
     def test_set_reset(self):
         from libcellml import Issue, Reset
@@ -343,6 +362,197 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(e.reset(), Reset)
         self.assertEqual(e.reset().id(), name)
 
+    def test_reset_value(self):
+        from libcellml import Issue, Reset
+
+        # ResetPtr reset() const;
+        e = Issue()
+        self.assertIsNone(e.reset())
+        name = 'res'
+        r = Reset()
+        r.setId(name)
+        e.setResetValue(r)
+        self.assertIsInstance(e.resetValue(), Reset)
+        self.assertEqual(e.resetValue().id(), name)
+
+    def test_test_value(self):
+        from libcellml import Issue, Reset
+
+        # ResetPtr reset() const;
+        e = Issue()
+        self.assertIsNone(e.reset())
+        name = 'res'
+        r = Reset()
+        r.setId(name)
+        e.setTestValue(r)
+        self.assertIsInstance(e.testValue(), Reset)
+        self.assertEqual(e.testValue().id(), name)
+
+    def test_encapsulation(self):
+        from libcellml import Issue, Model
+
+        e = Issue()
+        self.assertIsNone(e.model())
+        name = 'moodle'
+        m = Model()
+        m.setName(name)
+        e.setEncapsulation(m)
+        self.assertIsInstance(e.encapsulation(), Model)
+        self.assertEqual(e.encapsulation().name(), name)
+
+    def test_connection(self):
+        from libcellml import Issue, Variable
+        from libcellml.issue import VariablePair
+
+        e = Issue()
+        self.assertIsNone(e.connection()[0])
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+
+        e.setConnection(VariablePair(v1, v2))
+        p = e.connection()
+        self.assertIsInstance(p[0], Variable)
+        self.assertEqual(p[0].name(), "v1")
+        self.assertEqual(p[1].name(), "v2")
+
+    def test_map_variables(self):
+        from libcellml import Issue, Variable
+        from libcellml.issue import VariablePair
+
+        e = Issue()
+        self.assertIsNone(e.mapVariables()[0])
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+
+        e.setMapVariables(VariablePair(v1, v2))
+        p = e.mapVariables()
+        self.assertIsInstance(p[0], Variable)
+        self.assertEqual(p[0].name(), "v1")
+        self.assertEqual(p[1].name(), "v2")
+
+    def test_unit_item(self):
+        from libcellml import Issue, Units
+        from libcellml.issue import UnitItem
+
+        e = Issue()
+        self.assertIsNone(e.unit()[0])
+        u = Units("my_units")
+
+        e.setUnit(UnitItem(u, 3))
+        ui = e.unit()
+        self.assertIsInstance(ui[0], Units)
+        self.assertEqual(ui[0].name(), "my_units")
+        self.assertEqual(ui[1], 3)
+
+    def test_item(self):
+        from libcellml import Component, Issue, ImportSource, Model
+        from libcellml import Reset, Units, Variable, ItemType
+        from libcellml.issue import UnitItem, VariablePair
+
+        i = Issue()
+
+        item = i.item()
+        self.assertEqual(ItemType.UNDEFINED, item[0])
+        self.assertIsNone(item[1])
+
+        i.setItem(ItemType.VARIABLE, Variable("v"))
+        vItem = i.item()
+        self.assertEqual(ItemType.VARIABLE, vItem[0])
+        self.assertEqual("v", vItem[1].name())
+
+        i.setItem(ItemType.UNITS, Units("u"))
+        uItem = i.item()
+        self.assertEqual(ItemType.UNITS, uItem[0])
+        self.assertEqual("u", uItem[1].name())
+
+        i.setItem(ItemType.UNIT, UnitItem(Units("ui"), 2))
+        uiItem = i.item()
+        self.assertEqual(ItemType.UNIT, uiItem[0])
+        self.assertEqual("ui", uiItem[1][0].name())
+        self.assertEqual(2, uiItem[1][1])
+
+        i.setItem(ItemType.CONNECTION, VariablePair(Variable("v1"), Variable("v2")))
+        vpItem = i.item()
+        self.assertEqual(ItemType.CONNECTION, vpItem[0])
+        self.assertEqual("v1", vpItem[1].first.name())
+        self.assertEqual("v2", vpItem[1].second.name())
+
+        i.setItem(ItemType.MAP_VARIABLES, VariablePair(Variable("v3"), Variable("v4")))
+        vpItem = i.item()
+        self.assertEqual(ItemType.MAP_VARIABLES, vpItem[0])
+        self.assertEqual("v3", vpItem[1].first.name())
+        self.assertEqual("v4", vpItem[1].second.name())
+
+        r = Reset()
+        r.setId("r")
+        i.setItem(ItemType.RESET, r)
+        rItem = i.item()
+        self.assertEqual(ItemType.RESET, rItem[0])
+        self.assertEqual("r", rItem[1].id())
+
+        r.setId("r1")
+        i.setItem(ItemType.RESET_VALUE, r)
+        rItem = i.item()
+        self.assertEqual(ItemType.RESET_VALUE, rItem[0])
+        self.assertEqual("r1", rItem[1].id())
+
+        r.setId("r2")
+        i.setItem(ItemType.TEST_VALUE, r)
+        rItem = i.item()
+        self.assertEqual(ItemType.TEST_VALUE, rItem[0])
+        self.assertEqual("r2", rItem[1].id())
+
+        i.setItem(ItemType.MODEL, Model("m"))
+        mItem = i.item()
+        self.assertEqual(ItemType.MODEL, mItem[0])
+        self.assertEqual("m", mItem[1].name())
+
+        i.setItem(ItemType.ENCAPSULATION, Model("e"))
+        mItem = i.item()
+        self.assertEqual(ItemType.ENCAPSULATION, mItem[0])
+        self.assertEqual("e", mItem[1].name())
+
+        iS  = ImportSource()
+        iS.setId("is")
+        i.setItem(ItemType.IMPORT, iS)
+        isItem = i.item()
+        self.assertEqual(ItemType.IMPORT, isItem[0])
+        self.assertEqual("is", isItem[1].id())
+
+        i.setItem(ItemType.COMPONENT, Component("c"))
+        cItem = i.item()
+        self.assertEqual(ItemType.COMPONENT, cItem[0])
+        self.assertEqual("c", cItem[1].name())
+
+        i.setItem(ItemType.COMPONENT_REF, Component("c1"))
+        cItem = i.item()
+        self.assertEqual(ItemType.COMPONENT_REF, cItem[0])
+        self.assertEqual("c1", cItem[1].name())
+
+    def test_item_bad_input(self):
+        from libcellml import Issue, Variable, ItemType
+
+        i = Issue()
+        self.assertRaises(TypeError, i.setItem, ItemType.COMPONENT_REF, Variable("v1"))
+        cItem = i.item()
+        self.assertEqual(ItemType.UNDEFINED, cItem[0])
+        self.assertIsNone(cItem[1])
+
+    def test_clear(self):
+        from libcellml import Issue, Variable, ItemType
+
+        i = Issue()
+        i.clear()
+        self.assertEqual(ItemType.UNDEFINED, i.itemType())
+
+        v1 = Variable("v1")
+        i.setVariable(v1)
+
+        self.assertEqual(ItemType.VARIABLE, i.itemType())
+
+        i.clear()
+        self.assertEqual(ItemType.UNDEFINED, i.itemType())
+
     def test_url(self):
         from libcellml import Issue
 
@@ -358,6 +568,35 @@ class IssueTestCase(unittest.TestCase):
 
         e.setLevel(Issue.Level.HINT)
         self.assertEqual(Issue.Level.HINT, e.level())
+
+    def test_unit_item_coverage(self):
+        from libcellml import Units
+        from libcellml.issue import UnitItem
+        #from libcellml.types import UnitItem
+
+        u = Units("bob")
+        u_i = UnitItem()
+        self.assertEqual(2, len(u_i))
+        self.assertEqual("(None, 0)", str(u_i))
+        u_i[0] = u
+        u_i[1] = 4
+        self.assertEqual("bob", u_i.first.name())
+        self.assertEqual(4, u_i.second)
+
+    def test_variable_pair_coverage(self):
+        from libcellml import Variable
+        from libcellml.issue import VariablePair
+        #from libcellml.types import UnitItem
+
+        v1 = Variable("ray")
+        v2 = Variable("charles")
+        v_p = VariablePair()
+        self.assertEqual(2, len(v_p))
+        self.assertEqual("(None, None)", str(v_p))
+        v_p[0] = v1
+        v_p[1] = v2
+        self.assertEqual("ray", v_p.first.name())
+        self.assertEqual("charles", v_p.second.name())
 
 
 if __name__ == '__main__':

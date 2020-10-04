@@ -323,25 +323,24 @@ convert(Variable, 'InterfaceType', [
     'PUBLIC',
     'PUBLIC_AND_PRIVATE',
 ])
-convert(libcellml.enums, 'ItemType', [
-    'COMPONENT',
-    'COMPONENT_REF',
-    'CONNECTION',
-    'ENCAPSULATION',
-    'IMPORT',
-    'ISSUE',
-    'MAP_VARIABLES',
-    'MATHML',
-    'MODEL',
-    'RESET',
-    'RESET_VALUE',
-    'TEST_VALUE',
-    'UNDEFINED',
-    'UNIT',
-    'UNITS',
-    'VARIABLE',
-    'XML',
-], new_base=libcellml)
+#convert(libcellml.enums, 'ItemType', [
+#    'COMPONENT',
+#    'COMPONENT_REF',
+#    'CONNECTION',
+#    'ENCAPSULATION',
+#    'IMPORT',
+#    'MAP_VARIABLES',
+#    'MATHML',
+#    'MODEL',
+#    'RESET',
+#    'RESET_VALUE',
+#    'TEST_VALUE',
+#    'UNDEFINED',
+#    'UNIT',
+#    'UNITS',
+#    'VARIABLE',
+#    'XML',
+#], new_base=libcellml)
 
 
 del (convert, libcellml)
