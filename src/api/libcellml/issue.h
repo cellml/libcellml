@@ -48,13 +48,13 @@ public:
      * or an issue with one of the following types as a parameter::
      * 
      *   - libcellml::ComponentPtr (defaults the item type to ItemType::COMPONENT);
-     *   - libcellml::ImportSourcePtr;
+     *   - libcellml::ImportSourcePtr (defaults the item type to ItemType::IMPORT);
      *   - libcellml::ModelPtr (defaults the item type to ItemType::MODEL);
      *   - libcellml::ResetPtr (defaults the item type to ItemType::RESET);
-     *   - libcellml::UnitItem;
+     *   - libcellml::UnitItem (defaults the item type to ItemType::UNIT);
      *   - libcellml::UnitsPtr (defaults the item type to ItemType::UNITS);
      *   - libcellml::VariablePair (defaults the item type to ItemType::MAP_VARIABLES);
-     *   - libcellml::VariablePtr; or
+     *   - libcellml::VariablePtr (defaults the item type to ItemType::VARIABLE); or
      *   - libcellml::ItemType, std::any.
      *
      * The default values for the enumerations are::
