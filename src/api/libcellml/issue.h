@@ -46,7 +46,7 @@ public:
      *   auto issue = libcellml::Issue::create();
      *
      * or an issue with one of the following types as a parameter::
-     * 
+     *
      *   - libcellml::ComponentPtr (defaults the item type to ItemType::COMPONENT);
      *   - libcellml::ImportSourcePtr (defaults the item type to ItemType::IMPORT);
      *   - libcellml::ModelPtr (defaults the item type to ItemType::MODEL);
@@ -284,7 +284,7 @@ public:
 
     /**
      * @brief Set the component relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::COMPONENT.
      *
      * @param component A @c ComponentPtr relevant to this issue.
@@ -294,7 +294,7 @@ public:
     /**
      * Get the component relevant to this issue.
      *
-     * @return A @c Component relevant to this issue, or 
+     * @return A @c Component relevant to this issue, or
      *         a @c nullptr if the internal type is not @c ItemType::COMPONENT.
      */
     ComponentPtr component() const;
@@ -311,7 +311,7 @@ public:
     /**
      * Get the import source relevant to this issue.
      *
-     * @return An @c ImportSourcePtr relevant to this issue, or 
+     * @return An @c ImportSourcePtr relevant to this issue, or
      *         a @c nullptr if the internal type is not @c ItemType::IMPORT.
      */
     ImportSourcePtr importSource() const;
@@ -328,7 +328,7 @@ public:
     /**
      * Get the model relevant to this issue.
      *
-     * @return A @c ModelPtr relevant to this issue, or 
+     * @return A @c ModelPtr relevant to this issue, or
      *         a @c nullptr if the internal type is not @c ItemType::MODEL.
      */
     ModelPtr model() const;
@@ -345,7 +345,7 @@ public:
     /**
      * Get the units relevant to this issue.
      *
-     * @return A @c UnitsPtr relevant to this issue, or 
+     * @return A @c UnitsPtr relevant to this issue, or
      *         a @c nullptr if the internal type is not @c ItemType::UNITS.
      */
     UnitsPtr units() const;
@@ -362,7 +362,7 @@ public:
     /**
      * Get the variable relevant to this issue.
      *
-     * @return A @c VariablePtr relevant to this issue, or 
+     * @return A @c VariablePtr relevant to this issue, or
      *         a @c nullptr if the internal type is not @c ItemType::VARIABLE.
      */
     VariablePtr variable() const;
@@ -386,7 +386,7 @@ public:
 
     /**
      * @brief Set the component whose MathML is relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::MATHML.
      *
      * @param component The @c ComponentPtr whose MathML is relevant to this issue.
@@ -395,7 +395,7 @@ public:
 
     /**
      * Get the component whose MathML is relevant to this issue.
-     * 
+     *
      * @return A @c ComponentPtr whose MathML is relevant to this issue, or @c nullptr
      *         if the internal type is not @c ItemType::MATHML.
      */
@@ -403,7 +403,7 @@ public:
 
     /**
      * @brief Set the connection relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::CONNECTION.
      *
      * @param pair The @c VariablePair whose connection is relevant to this issue.
@@ -412,7 +412,7 @@ public:
 
     /**
      * Get the connection relevant to this issue.
-     * 
+     *
      * @return A @c VariablePair representing the connection relevant to this issue,
      *         or @c std::pair(nullptr,nullptr) if the internal type is not @c ItemType::CONNECTION.
      */
@@ -420,7 +420,7 @@ public:
 
     /**
      * @brief Set the variable mapping relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::MAP_VARIABLES.
      *
      * @param pair The @c VariablePair whose equivalence is relevant to this issue.
@@ -429,7 +429,7 @@ public:
 
     /**
      * Get the equivalent variable pair relevant to this issue.
-     * 
+     *
      * @return A @c VariablePair representing the variable equivalence relevant to this issue,
      *         or @c std::pair(nullptr,nullptr) if the internal type is not @c ItemType::MAP_VARIABLES.
      */
@@ -437,7 +437,7 @@ public:
 
     /**
      * @brief Set the reset whose reset value is relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::RESET_VALUE.
      *
      * @param reset A @c ResetPtr whose reset value is relevant to this issue.
@@ -454,7 +454,7 @@ public:
 
     /**
      * @brief Set the reset whose test value is relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::TEST_VALUE.
      *
      * @param reset A @c ResetPtr whose test value is relevant to this issue.
@@ -471,7 +471,7 @@ public:
 
     /**
      * @brief Set the @c UnitItem whose relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::UNIT.
      *
      * @param unit A @c UnitItem relevant to this issue.
@@ -488,7 +488,7 @@ public:
 
     /**
      * @brief Set the @c ModelPtr whose encapsulation is relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::ENCAPSULATION.
      *
      * @param model A @c ModelPtr whose encapsulation is relevant to this issue.
@@ -505,7 +505,7 @@ public:
 
     /**
      * @brief Set the @c ComponentPtr whose encapsulation position is relevant to this issue.
-     * 
+     *
      * The internal type will be set to @c ItemType::COMPONENT_REF.
      *
      * @param component A @c ComponentPtr whose encapsulation position is relevant to this issue.
@@ -524,14 +524,14 @@ public:
      * @brief Get the @ref ItemType enum for the stored item.
      *
      * Get the @ref ItemType enum for the stored item.
-     * 
+     *
      * @return The @ref ItemType enum for the stored item, or @ref ItemType::UNDEFINED if none.
      */
     ItemType itemType() const;
 
     /**
      * @brief Set an @c std::any item relevant to this issue.
-     * 
+     *
      * Set an @c std::any item relevant to this issue.
      *
      * @param item An @c std::any item relevant to this issue.
@@ -541,17 +541,17 @@ public:
 
     /**
      * Get the stored item as an @c std::any item.
-     * 
+     *
      * Get the stored item as an @c std::any item.
      * Note that the stored @ref ItemType can be retrieved using itemType().
-     * 
+     *
      * @return A @c std::any item related to this issue.
      */
     std::any item() const;
 
     /**
      * @brief Clear the stored item.
-     * 
+     *
      * Clear the issue returning it to its initial state.
      */
     void clear();
