@@ -862,11 +862,13 @@ TEST(Importer, clearModelImportsBeforeResolving)
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("importer/"));
 
-    EXPECT_EQ(size_t(0), importer->errorCount());
+    EXPECT_EQ(size_t(1), importer->errorCount());
+    EXPECT_EQ(size_t(1), importer->warningCount());
 
     model->component("controller", true)->importSource()->setUrl("SodiumChannelController.cellml");
 
     // This will segfault because the URL has been changed, but the model associated with it in the
     // resolved import source has not.
     importer->resolveImports(model, resourcePath("importer/"));
+    
 }
