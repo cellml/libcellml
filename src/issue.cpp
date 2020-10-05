@@ -19,13 +19,12 @@ limitations under the License.
 #include <map>
 #include <string>
 
-#include "libcellml/enums.h"
-#include "libcellml/types.h"
-
 #include "libcellml/component.h"
+#include "libcellml/enums.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
+#include "libcellml/types.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
