@@ -46,7 +46,15 @@ struct Issue::IssueImpl
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
     std::any mItem;
     ItemType mItemType = ItemType::UNDEFINED;
+
+    void clearItem();
 };
+
+void Issue::IssueImpl::clearItem()
+{
+    mItemType = ItemType::UNDEFINED;
+    mItem = nullptr;
+}
 
 Issue::Issue()
     : mPimpl(new IssueImpl())
@@ -254,7 +262,11 @@ std::any Issue::item() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    component ? setItem(ItemType::COMPONENT, component) : clear();
+    if (component) {
+        setItem(ItemType::COMPONENT, component);
+    } else if (mPimpl->mItemType == ItemType::COMPONENT) {
+        mPimpl->clearItem();
+    }
 }
 
 ComponentPtr Issue::component() const
@@ -267,7 +279,11 @@ ComponentPtr Issue::component() const
 
 void Issue::setComponentRef(const ComponentPtr &component)
 {
-    component ? setItem(ItemType::COMPONENT_REF, component) : clear();
+    if (component) {
+        setItem(ItemType::COMPONENT_REF, component);
+    } else if (mPimpl->mItemType == ItemType::COMPONENT_REF) {
+        mPimpl->clearItem();
+    }
 }
 
 ComponentPtr Issue::componentRef() const
@@ -280,7 +296,11 @@ ComponentPtr Issue::componentRef() const
 
 void Issue::setMath(const ComponentPtr &component)
 {
-    component ? setItem(ItemType::MATHML, component) : clear();
+    if (component) {
+        setItem(ItemType::MATHML, component);
+    } else if (mPimpl->mItemType == ItemType::MATHML) {
+        mPimpl->clearItem();
+    }
 }
 
 ComponentPtr Issue::math() const
@@ -293,7 +313,11 @@ ComponentPtr Issue::math() const
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
-    importSource ? setItem(ItemType::IMPORT, importSource) : clear();
+    if (importSource) {
+        setItem(ItemType::IMPORT, importSource);
+    } else if (mPimpl->mItemType == ItemType::IMPORT) {
+        mPimpl->clearItem();
+    }
 }
 
 ImportSourcePtr Issue::importSource() const
@@ -306,7 +330,11 @@ ImportSourcePtr Issue::importSource() const
 
 void Issue::setModel(const ModelPtr &model)
 {
-    model ? setItem(ItemType::MODEL, model) : clear();
+    if (model) {
+        setItem(ItemType::MODEL, model);
+    } else if (mPimpl->mItemType == ItemType::MODEL) {
+        mPimpl->clearItem();
+    }
 }
 
 ModelPtr Issue::model() const
@@ -319,7 +347,11 @@ ModelPtr Issue::model() const
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-    model ? setItem(ItemType::ENCAPSULATION, model) : clear();
+   if (model) {
+        setItem(ItemType::ENCAPSULATION, model);
+   } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
+       mPimpl->clearItem();
+   }
 }
 
 ModelPtr Issue::encapsulation() const
@@ -332,7 +364,11 @@ ModelPtr Issue::encapsulation() const
 
 void Issue::setUnits(const UnitsPtr &units)
 {
-    units ? setItem(ItemType::UNITS, units) : clear();
+    if (units) {
+        setItem(ItemType::UNITS, units);
+    } else if (mPimpl->mItemType == ItemType::UNITS) {
+        mPimpl->clearItem();
+    }
 }
 
 UnitsPtr Issue::units() const
@@ -345,7 +381,11 @@ UnitsPtr Issue::units() const
 
 void Issue::setUnit(const UnitItem &unit)
 {
-    unit.first ? setItem(ItemType::UNIT, unit) : clear();
+    if (unit.first) {
+        setItem(ItemType::UNIT, unit);
+    } else if (mPimpl->mItemType == ItemType::UNIT) {
+        mPimpl->clearItem();
+    }
 }
 
 UnitItem Issue::unit() const
@@ -358,7 +398,11 @@ UnitItem Issue::unit() const
 
 void Issue::setConnection(const VariablePair &pair)
 {
-    (pair.first && pair.second) ? setItem(ItemType::CONNECTION, pair) : clear();
+    if (pair.first && pair.second) {
+        setItem(ItemType::CONNECTION, pair);
+    } else if (mPimpl->mItemType == ItemType::CONNECTION) {
+        mPimpl->clearItem();
+    }
 }
 
 VariablePair Issue::connection() const
@@ -371,7 +415,11 @@ VariablePair Issue::connection() const
 
 void Issue::setMapVariables(const VariablePair &pair)
 {
-    (pair.first && pair.second) ? setItem(ItemType::MAP_VARIABLES, pair) : clear();
+    if (pair.first && pair.second) {
+        setItem(ItemType::MAP_VARIABLES, pair);
+    } else if (mPimpl->mItemType == ItemType::MAP_VARIABLES) {
+        mPimpl->clearItem();
+    }
 }
 
 VariablePair Issue::mapVariables() const
@@ -384,7 +432,11 @@ VariablePair Issue::mapVariables() const
 
 void Issue::setVariable(const VariablePtr &variable)
 {
-    variable ? setItem(ItemType::VARIABLE, variable) : clear();
+    if (variable) {
+        setItem(ItemType::VARIABLE, variable);
+    } else if (mPimpl->mItemType == ItemType::VARIABLE) {
+        mPimpl->clearItem();
+    }
 }
 
 VariablePtr Issue::variable() const
@@ -397,7 +449,11 @@ VariablePtr Issue::variable() const
 
 void Issue::setReset(const ResetPtr &reset)
 {
-    reset ? setItem(ItemType::RESET, reset) : clear();
+    if (reset) {
+        setItem(ItemType::RESET, reset);
+    } else if (mPimpl->mItemType == ItemType::RESET) {
+        mPimpl->clearItem();
+    }
 }
 
 ResetPtr Issue::reset() const
@@ -410,7 +466,11 @@ ResetPtr Issue::reset() const
 
 void Issue::setResetValue(const ResetPtr &reset)
 {
-    reset ? setItem(ItemType::RESET_VALUE, reset) : clear();
+    if (reset) {
+        setItem(ItemType::RESET_VALUE, reset);
+    } else if (mPimpl->mItemType == ItemType::RESET_VALUE) {
+        mPimpl->clearItem();
+    }
 }
 
 ResetPtr Issue::resetValue() const
@@ -423,7 +483,11 @@ ResetPtr Issue::resetValue() const
 
 void Issue::setTestValue(const ResetPtr &reset)
 {
-    reset ? setItem(ItemType::TEST_VALUE, reset) : clear();
+    if (reset) {
+        setItem(ItemType::TEST_VALUE, reset);
+    } else if (mPimpl->mItemType == ItemType::TEST_VALUE) {
+        mPimpl->clearItem();
+    }
 }
 
 ResetPtr Issue::testValue() const
@@ -436,10 +500,9 @@ ResetPtr Issue::testValue() const
 
 void Issue::clear()
 {
+    mPimpl->clearItem();
     mPimpl->mCause = ItemType::UNDEFINED;
     mPimpl->mDescription = "";
-    mPimpl->mItem.reset();
-    mPimpl->mItemType = ItemType::UNDEFINED;
     mPimpl->mLevel = Issue::Level::ERROR;
     mPimpl->mReferenceRule = Issue::ReferenceRule::UNDEFINED;
 }
