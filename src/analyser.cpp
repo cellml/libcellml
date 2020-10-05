@@ -925,7 +925,6 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
             issue->setVariable(variable);
-            issue->setCause(ItemType::VARIABLE);
             mAnalyser->addIssue(issue);
         }
 
@@ -1060,7 +1059,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' and variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' cannot both be the variable of integration.");
-            issue->setCause(ItemType::VARIABLE);
             issue->setVariable(variable);
             mAnalyser->addIssue(issue);
         }
@@ -1081,7 +1079,6 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
             issue->setDescription("The differential equation for variable '" + variable->name()
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' must be of the first order.");
-            issue->setCause(ItemType::MATHML);
             issue->setMath(owningComponent(variable));
             mAnalyser->addIssue(issue);
         }

@@ -41,7 +41,6 @@ namespace libcellml {
 struct Issue::IssueImpl
 {
     std::string mDescription; /**< The string description for why this issue was raised. */
-    ItemType mCause = ItemType::UNDEFINED; /**< The ItemType enum value for the cause of this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
     std::any mItem;
@@ -213,17 +212,6 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-void Issue::setCause(ItemType cause)
-{
-    mPimpl->mCause = cause;
-}
-
-ItemType Issue::cause() const
-{
-    // Returns the cause, if set independently, or the stored item type if not.
-    return mPimpl->mCause != ItemType::UNDEFINED ? mPimpl->mCause : mPimpl->mItemType;
-}
-
 ItemType Issue::itemType() const
 {
     return mPimpl->mItemType;
@@ -251,42 +239,41 @@ Issue::ReferenceRule Issue::referenceRule() const
 
 void Issue::setItem(ItemType type, const std::any &item)
 {
-    mPimpl->mItem = item;
     mPimpl->mItemType = type;
     try {
         switch (type) {
         case ItemType::COMPONENT:
         case ItemType::COMPONENT_REF:
         case ItemType::MATHML:
-            std::any_cast<ComponentPtr>(item);
+            mPimpl->mItem = std::any_cast<ComponentPtr>(item);
             break;
         case ItemType::CONNECTION:
         case ItemType::MAP_VARIABLES:
-            std::any_cast<VariablePair>(item);
+            mPimpl->mItem = std::any_cast<VariablePair>(item);
             break;
         case ItemType::ENCAPSULATION:
         case ItemType::MODEL:
-            std::any_cast<ModelPtr>(item);
+            mPimpl->mItem = std::any_cast<ModelPtr>(item);
             break;
         case ItemType::IMPORT:
-            std::any_cast<ImportSourcePtr>(item);
+            mPimpl->mItem = std::any_cast<ImportSourcePtr>(item);
             break;
         case ItemType::RESET:
         case ItemType::RESET_VALUE:
         case ItemType::TEST_VALUE:
-            std::any_cast<ResetPtr>(item);
+            mPimpl->mItem = std::any_cast<ResetPtr>(item);
             break;
         case ItemType::UNDEFINED:
             mPimpl->clearItem();
             break;
         case ItemType::UNIT:
-            std::any_cast<UnitItem>(item);
+            mPimpl->mItem = std::any_cast<UnitItem>(item);
             break;
         case ItemType::UNITS:
-            std::any_cast<UnitsPtr>(item);
+            mPimpl->mItem = std::any_cast<UnitsPtr>(item);
             break;
         case ItemType::VARIABLE:
-            std::any_cast<VariablePtr>(item);
+            mPimpl->mItem = std::any_cast<VariablePtr>(item);
             break;
         }
     } catch (std::bad_any_cast &) {
@@ -386,11 +373,11 @@ ModelPtr Issue::model() const
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-   if (model) {
+    if (model) {
         setItem(ItemType::ENCAPSULATION, model);
-   } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
-       mPimpl->clearItem();
-   }
+    } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
+        mPimpl->clearItem();
+    }
 }
 
 ModelPtr Issue::encapsulation() const
@@ -540,7 +527,6 @@ ResetPtr Issue::testValue() const
 void Issue::clear()
 {
     mPimpl->clearItem();
-    mPimpl->mCause = ItemType::UNDEFINED;
     mPimpl->mDescription = "";
     mPimpl->mLevel = Issue::Level::ERROR;
     mPimpl->mReferenceRule = Issue::ReferenceRule::UNDEFINED;
