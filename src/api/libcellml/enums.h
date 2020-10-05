@@ -41,7 +41,6 @@ enum class ItemType
     UNIT,
     UNITS,
     VARIABLE,
-    XML,
 };
 
 } // namespace libcellml

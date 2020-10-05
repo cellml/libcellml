@@ -14,7 +14,7 @@ from libcellml.analyserequationast import AnalyserEquationAst
 from libcellml.analysermodel import AnalyserModel
 from libcellml.analyservariable import AnalyserVariable
 from libcellml.component import Component
-from libcellml.enums import *
+from libcellml.enums import ItemType
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importer import Importer
@@ -323,24 +323,5 @@ convert(Variable, 'InterfaceType', [
     'PUBLIC',
     'PUBLIC_AND_PRIVATE',
 ])
-#convert(libcellml.enums, 'ItemType', [
-#    'COMPONENT',
-#    'COMPONENT_REF',
-#    'CONNECTION',
-#    'ENCAPSULATION',
-#    'IMPORT',
-#    'MAP_VARIABLES',
-#    'MATHML',
-#    'MODEL',
-#    'RESET',
-#    'RESET_VALUE',
-#    'TEST_VALUE',
-#    'UNDEFINED',
-#    'UNIT',
-#    'UNITS',
-#    'VARIABLE',
-#    'XML',
-#], new_base=libcellml)
-
 
 del (convert, libcellml)
