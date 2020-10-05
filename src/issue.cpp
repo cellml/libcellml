@@ -253,6 +253,45 @@ void Issue::setItem(ItemType type, const std::any &item)
 {
     mPimpl->mItem = item;
     mPimpl->mItemType = type;
+    try {
+        switch (type) {
+        case ItemType::COMPONENT:
+        case ItemType::COMPONENT_REF:
+        case ItemType::MATHML:
+            std::any_cast<ComponentPtr>(item);
+            break;
+        case ItemType::CONNECTION:
+        case ItemType::MAP_VARIABLES:
+            std::any_cast<VariablePair>(item);
+            break;
+        case ItemType::ENCAPSULATION:
+        case ItemType::MODEL:
+            std::any_cast<ModelPtr>(item);
+            break;
+        case ItemType::IMPORT:
+            std::any_cast<ImportSourcePtr>(item);
+            break;
+        case ItemType::RESET:
+        case ItemType::RESET_VALUE:
+        case ItemType::TEST_VALUE:
+            std::any_cast<ResetPtr>(item);
+            break;
+        case ItemType::UNDEFINED:
+            mPimpl->clearItem();
+            break;
+        case ItemType::UNIT:
+            std::any_cast<UnitItem>(item);
+            break;
+        case ItemType::UNITS:
+            std::any_cast<UnitsPtr>(item);
+            break;
+        case ItemType::VARIABLE:
+            std::any_cast<VariablePtr>(item);
+            break;
+        }
+    } catch (std::bad_any_cast &) {
+        mPimpl->clearItem();
+    }
 }
 
 std::any Issue::item() const
