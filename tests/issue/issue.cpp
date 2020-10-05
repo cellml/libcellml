@@ -1242,6 +1242,8 @@ TEST(Issue, clearStoredItem)
     EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
 
     issue->setModel(model);
+    EXPECT_EQ(model, issue->model());
+    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
 
     // Clear by calling the clear function.
     issue->clear();
