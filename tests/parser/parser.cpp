@@ -1473,18 +1473,12 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
         foundCause.at(6) = true;
     }
 
-    size_t index = 0;
-    for (auto state: foundCause) {
-        SCOPED_TRACE(index);
-        EXPECT_TRUE(state);
-        index++;
-    }
     // Check that we've found all the possible issue types
-    bool foundAllCauses = false;
-    if (std::all_of(foundCause.begin(), foundCause.end(), [](bool i) { return i; })) {
-        foundAllCauses = true;
+    size_t index = 0;
+    for (auto state : foundCause) {
+        SCOPED_TRACE(index++);
+        EXPECT_TRUE(state);
     }
-    EXPECT_TRUE(foundAllCauses);
 }
 
 TEST(Parser, invalidModelWithTextInAllElements)
