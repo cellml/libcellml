@@ -42,7 +42,7 @@ class IssueTestCase(unittest.TestCase):
         e7 = Issue(v)
         del e7
 
-    def test_cause_enum(self):
+    def test_item_type_enum(self):
         import libcellml
         from libcellml import Issue
         from libcellml import ItemType
@@ -59,12 +59,6 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(ItemType.UNITS, int)
         self.assertIsInstance(ItemType.UNIT, int)
         self.assertIsInstance(ItemType.VARIABLE, int)
-
-        # Test conversion to enum
-        e = Issue()
-        e.setCause(ItemType.COMPONENT)
-        self.assertRaises(RuntimeError, e.setCause, ItemType.COMPONENT - 1)
-        self.assertRaises(RuntimeError, e.setCause, ItemType.VARIABLE + 1)
 
     def test_reference_rule_enum(self):
         from libcellml import Issue
@@ -184,23 +178,6 @@ class IssueTestCase(unittest.TestCase):
         e.setDescription(d)
         self.assertEqual(e.description(), d)
         del [d, e]
-
-    def test_set_cause(self):
-        from libcellml import Issue
-        from libcellml import ItemType
-
-        # void setCause(Cause cause)
-        e = Issue()
-        e.setCause(ItemType.CONNECTION)
-
-    def test_cause(self):
-        from libcellml import Issue
-        from libcellml import ItemType
-        # Cause cause()
-        e = Issue()
-        self.assertEqual(e.cause(), ItemType.UNDEFINED)
-        e.setCause(ItemType.MATHML)
-        self.assertEqual(e.cause(), ItemType.MATHML)
 
     def test_set_rule(self):
         from libcellml import Issue

@@ -41,7 +41,6 @@ namespace libcellml {
 struct Issue::IssueImpl
 {
     std::string mDescription; /**< The string description for why this issue was raised. */
-    ItemType mCause = ItemType::UNDEFINED; /**< The ItemType enum value for the cause of this issue. */
     Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this issue. */
     Issue::ReferenceRule mReferenceRule = Issue::ReferenceRule::UNDEFINED; /**< The Issue::ReferenceRule enum value for this issue. */
     std::any mItem;
@@ -213,17 +212,6 @@ std::string Issue::description() const
     return mPimpl->mDescription;
 }
 
-void Issue::setCause(ItemType cause)
-{
-    mPimpl->mCause = cause;
-}
-
-ItemType Issue::cause() const
-{
-    // Returns the cause, if set independently, or the stored item type if not.
-    return mPimpl->mCause != ItemType::UNDEFINED ? mPimpl->mCause : mPimpl->mItemType;
-}
-
 ItemType Issue::itemType() const
 {
     return mPimpl->mItemType;
@@ -385,11 +373,11 @@ ModelPtr Issue::model() const
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-   if (model) {
+    if (model) {
         setItem(ItemType::ENCAPSULATION, model);
-   } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
-       mPimpl->clearItem();
-   }
+    } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
+        mPimpl->clearItem();
+    }
 }
 
 ModelPtr Issue::encapsulation() const
@@ -539,7 +527,6 @@ ResetPtr Issue::testValue() const
 void Issue::clear()
 {
     mPimpl->clearItem();
-    mPimpl->mCause = ItemType::UNDEFINED;
     mPimpl->mDescription = "";
     mPimpl->mLevel = Issue::Level::ERROR;
     mPimpl->mReferenceRule = Issue::ReferenceRule::UNDEFINED;

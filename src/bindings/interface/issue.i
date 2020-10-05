@@ -17,13 +17,6 @@
 %feature("docstring") libcellml::Issue::setDescription
 "Sets a string description for why this issue was raised.";
 
-%feature("docstring") libcellml::Issue::cause
-"Get the ``cause`` of this issue. If no cause has been set for this issue, will
-return Cause::UNDEFINED.";
-
-%feature("docstring") libcellml::Issue::setCause
-"Sets the ``cause`` of this issue.";
-
 %feature("docstring") libcellml::Issue::level
 "Get the ``level`` of this issue. If no level has been set for this issue,
 Level::ERROR will be returned.";

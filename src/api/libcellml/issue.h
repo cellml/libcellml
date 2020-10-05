@@ -224,28 +224,6 @@ public:
     std::string description() const;
 
     /**
-     * @brief Set the cause of this issue.
-     *
-     * Set the @p cause of this issue from the options available in
-     * @ref libcellml::ItemType.
-     * 
-     * @param cause The @ref libcellml::ItemType to set.
-     */
-    void setCause(ItemType cause);
-
-    /**
-     * @brief Get the cause of this issue.
-     *
-     * Get the cause of this issue. If no cause has been explicitly
-     * set, this function will return the stored item type.
-     * 
-     * @sa itemType.
-     *
-     * @return The @ref libcellml::ItemType set for this issue.
-     */
-    ItemType cause() const;
-
-    /**
      * @brief Set the level of this issue.
      *
      * Set the @p level of this issue from the options available in
