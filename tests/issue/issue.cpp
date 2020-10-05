@@ -839,6 +839,52 @@ TEST(Issue, createIssueWithNullptr)
     EXPECT_EQ(nullptr, libcellml::Issue::create(import));
 }
 
+TEST(Issue, setItemWithNullptr)
+{
+    libcellml::ModelPtr model;
+    libcellml::ComponentPtr component;
+    libcellml::ResetPtr reset;
+    libcellml::VariablePair pair1 = std::make_pair(nullptr, nullptr);
+    libcellml::VariablePair pair2 = std::make_pair(nullptr, libcellml::Variable::create("v1"));
+    libcellml::VariablePair pair3 = std::make_pair(libcellml::Variable::create("v2"), nullptr);
+    libcellml::VariablePtr variable;
+    libcellml::UnitsPtr units;
+    libcellml::UnitItem unitItem = std::make_pair(nullptr, 0);
+    libcellml::ImportSourcePtr import;
+
+    auto issue = libcellml::Issue::create();
+
+    issue->setItem(libcellml::ItemType::COMPONENT, component);
+    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::CONNECTION, pair1);
+    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::CONNECTION, pair2);
+    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::CONNECTION, pair3);
+    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::ENCAPSULATION, model);
+    EXPECT_EQ(libcellml::ItemType::ENCAPSULATION, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::IMPORT, import);
+    EXPECT_EQ(libcellml::ItemType::IMPORT, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::RESET, reset);
+    EXPECT_EQ(libcellml::ItemType::RESET, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::UNIT, unitItem);
+    EXPECT_EQ(libcellml::ItemType::UNIT, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::UNITS, units);
+    EXPECT_EQ(libcellml::ItemType::UNITS, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::VARIABLE, variable);
+    EXPECT_EQ(libcellml::ItemType::VARIABLE, issue->itemType());
+}
+
 TEST(Issue, getMismatchedTypeReturnsNullComponent)
 {
     auto component = libcellml::Component::create("component");
@@ -1264,4 +1310,30 @@ TEST(Issue, clear)
     EXPECT_EQ("", issue->description());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, issue->level());
     EXPECT_EQ(libcellml::Issue::ReferenceRule::UNDEFINED, issue->referenceRule());
+}
+
+TEST(Issue, setItemMisMatchingType)
+{
+    auto issue = libcellml::Issue::create();
+    auto model = libcellml::Model::create();
+
+    issue->setItem(libcellml::ItemType::MATHML, model);
+
+    EXPECT_EQ(nullptr, issue->math());
+}
+
+TEST(Issue, setItemUndefined)
+{
+    auto issue = libcellml::Issue::create();
+    auto model = libcellml::Model::create();
+
+    issue->setItem(libcellml::ItemType::MODEL, model);
+
+    EXPECT_EQ(model, issue->model());
+    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+
+    issue->setItem(libcellml::ItemType::UNDEFINED, model);
+
+    EXPECT_EQ(nullptr, issue->model());
+    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
 }
