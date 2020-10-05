@@ -19,6 +19,7 @@ limitations under the License.
 #include <memory>
 
 namespace libcellml {
+
 /**
  * @brief The ItemType enum class.
  *
@@ -30,7 +31,6 @@ enum class ItemType
     CONNECTION,
     ENCAPSULATION,
     IMPORT,
-    ISSUE,
     MAP_VARIABLES,
     MATHML,
     MODEL,

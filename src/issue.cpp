@@ -112,16 +112,9 @@ IssuePtr Issue::create() noexcept
     return std::shared_ptr<Issue> {new Issue {}};
 }
 
-IssuePtr Issue::create(const ComponentPtr &component) noexcept
+IssuePtr Issue::create(const ComponentPtr &component, ItemType type) noexcept
 {
-    // Defaults to COMPONENT type.
-    return create(ItemType::COMPONENT, component);
-}
-
-IssuePtr Issue::create(ItemType type, const ComponentPtr &component) noexcept
-{
-    // Acceptable types: COMPONENT, COMPONENT_REF, MATHML.
-    if ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF) || (type == ItemType::MATHML)) {
+    if (component && ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF) || (type == ItemType::MATHML))) {
         auto issue = std::shared_ptr<Issue> {new Issue {component}};
         issue->mPimpl->mItemType = type;
         return issue;
@@ -131,30 +124,18 @@ IssuePtr Issue::create(ItemType type, const ComponentPtr &component) noexcept
 
 IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 {
-    // Defaults to IMPORT type.
-    return create(ItemType::IMPORT, importSource);
-}
-
-IssuePtr Issue::create(ItemType type, const ImportSourcePtr &importSource) noexcept
-{
-    if (type == ItemType::IMPORT) {
+    if (importSource) {
         auto issue = std::shared_ptr<Issue> {new Issue {importSource}};
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mItemType = ItemType::IMPORT;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(const ModelPtr &model) noexcept
-{
-    // Defaults to MODEL type.
-    return create(ItemType::MODEL, model);
-}
-
-IssuePtr Issue::create(ItemType type, const ModelPtr &model) noexcept
+IssuePtr Issue::create(const ModelPtr &model, ItemType type) noexcept
 {
     // Acceptable type values are: ENCAPSULATION, MODEL.
-    if ((type == ItemType::MODEL) || (type == ItemType::ENCAPSULATION)) {
+    if (model && ((type == ItemType::MODEL) || (type == ItemType::ENCAPSULATION))) {
         auto issue = std::shared_ptr<Issue> {new Issue {model}};
         issue->mPimpl->mItemType = type;
         return issue;
@@ -162,16 +143,10 @@ IssuePtr Issue::create(ItemType type, const ModelPtr &model) noexcept
     return nullptr;
 }
 
-IssuePtr Issue::create(const ResetPtr &reset) noexcept
-{
-    // Defaults to RESET type.
-    return create(ItemType::RESET, reset);
-}
-
-IssuePtr Issue::create(ItemType type, const ResetPtr &reset) noexcept
+IssuePtr Issue::create(const ResetPtr &reset, ItemType type) noexcept
 {
     // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
-    if ((type == ItemType::RESET) || (type == ItemType::RESET_VALUE) || (type == ItemType::TEST_VALUE)) {
+    if (reset && ((type == ItemType::RESET) || (type == ItemType::RESET_VALUE) || (type == ItemType::TEST_VALUE))) {
         auto issue = std::shared_ptr<Issue> {new Issue {reset}};
         issue->mPimpl->mItemType = type;
         return issue;
@@ -181,16 +156,9 @@ IssuePtr Issue::create(ItemType type, const ResetPtr &reset) noexcept
 
 IssuePtr Issue::create(const UnitsPtr &units) noexcept
 {
-    // Defaults to UNITS type.
-    return create(ItemType::UNITS, units);
-}
-
-IssuePtr Issue::create(ItemType type, const UnitsPtr &units) noexcept
-{
-    // Acceptable type values are: UNITS.
-    if (type == ItemType::UNITS) {
+    if (units) {
         auto issue = std::shared_ptr<Issue> {new Issue {units}};
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mItemType = ItemType::UNITS;
         return issue;
     }
     return nullptr;
@@ -198,40 +166,27 @@ IssuePtr Issue::create(ItemType type, const UnitsPtr &units) noexcept
 
 IssuePtr Issue::create(const VariablePtr &variable) noexcept
 {
-    return create(ItemType::VARIABLE, variable);
-}
-
-IssuePtr Issue::create(ItemType type, const VariablePtr &variable) noexcept
-{
-    // No difference here, VARIABLE is not overloaded.
-    if (type == ItemType::VARIABLE) {
+    if (variable) {
         auto issue = std::shared_ptr<Issue> {new Issue {variable}};
-        issue->mPimpl->mItemType = type;
+        issue->mPimpl->mItemType = ItemType::VARIABLE;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(const UnitItem &unit) noexcept
+IssuePtr Issue::create(const UnitItem &unitItem) noexcept
 {
-    return create(ItemType::UNIT, unit);
-}
-
-IssuePtr Issue::create(ItemType type, const UnitItem &unit) noexcept
-{
-    // Acceptable type values are: UNIT.
-    if (type == ItemType::UNIT) {
-        auto issue = std::shared_ptr<Issue> {new Issue {unit}};
-        issue->mPimpl->mItemType = type;
+    if (unitItem.first) {
+        auto issue = std::shared_ptr<Issue> {new Issue {unitItem}};
+        issue->mPimpl->mItemType = ItemType::UNIT;
         return issue;
     }
     return nullptr;
 }
 
-IssuePtr Issue::create(ItemType type, const VariablePair &variablePair) noexcept
+IssuePtr Issue::create(const VariablePair &variablePair, ItemType type) noexcept
 {
-    // Acceptable type values are: CONNECTION, MAP_VARIABLES.
-    if ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES)) {
+    if (variablePair.first && variablePair.second && ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES))) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
         issue->mPimpl->mItem = std::make_any<VariablePair>(variablePair);
         issue->mPimpl->mItemType = type;
@@ -258,10 +213,7 @@ void Issue::setCause(ItemType cause)
 ItemType Issue::cause() const
 {
     // Returns the cause, if set independently, or the stored item type if not.
-    if (mPimpl->mCause != ItemType::UNDEFINED) {
-        return mPimpl->mCause;
-    }
-    return mPimpl->mItemType;
+    return mPimpl->mCause != ItemType::UNDEFINED ? mPimpl->mCause : mPimpl->mItemType;
 }
 
 ItemType Issue::itemType() const
@@ -302,11 +254,7 @@ std::any Issue::item() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    if (component == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::COMPONENT, component);
+    component ? setItem(ItemType::COMPONENT, component) : clear();
 }
 
 ComponentPtr Issue::component() const
@@ -319,11 +267,7 @@ ComponentPtr Issue::component() const
 
 void Issue::setComponentRef(const ComponentPtr &component)
 {
-    if (component == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::COMPONENT_REF, component);
+    component ? setItem(ItemType::COMPONENT_REF, component) : clear();
 }
 
 ComponentPtr Issue::componentRef() const
@@ -336,11 +280,7 @@ ComponentPtr Issue::componentRef() const
 
 void Issue::setMath(const ComponentPtr &component)
 {
-    if (component == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::MATHML, component);
+    component ? setItem(ItemType::MATHML, component) : clear();
 }
 
 ComponentPtr Issue::math() const
@@ -353,11 +293,7 @@ ComponentPtr Issue::math() const
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
-    if (importSource == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::IMPORT, importSource);
+    importSource ? setItem(ItemType::IMPORT, importSource) : clear();
 }
 
 ImportSourcePtr Issue::importSource() const
@@ -370,11 +306,7 @@ ImportSourcePtr Issue::importSource() const
 
 void Issue::setModel(const ModelPtr &model)
 {
-    if (model == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::MODEL, model);
+    model ? setItem(ItemType::MODEL, model) : clear();
 }
 
 ModelPtr Issue::model() const
@@ -387,11 +319,7 @@ ModelPtr Issue::model() const
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-    if (model == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::ENCAPSULATION, model);
+    model ? setItem(ItemType::ENCAPSULATION, model) : clear();
 }
 
 ModelPtr Issue::encapsulation() const
@@ -404,11 +332,7 @@ ModelPtr Issue::encapsulation() const
 
 void Issue::setUnits(const UnitsPtr &units)
 {
-    if (units == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::UNITS, units);
+    units ? setItem(ItemType::UNITS, units) : clear();
 }
 
 UnitsPtr Issue::units() const
@@ -421,11 +345,7 @@ UnitsPtr Issue::units() const
 
 void Issue::setUnit(const UnitItem &unit)
 {
-    if (unit.first == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::UNIT, unit);
+    unit.first ? setItem(ItemType::UNIT, unit) : clear();
 }
 
 UnitItem Issue::unit() const
@@ -438,11 +358,7 @@ UnitItem Issue::unit() const
 
 void Issue::setConnection(const VariablePair &pair)
 {
-    if ((pair.first == nullptr) && (pair.second == nullptr)) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::CONNECTION, pair);
+    (pair.first && pair.second) ? setItem(ItemType::CONNECTION, pair) : clear();
 }
 
 VariablePair Issue::connection() const
@@ -455,11 +371,7 @@ VariablePair Issue::connection() const
 
 void Issue::setMapVariables(const VariablePair &pair)
 {
-    if ((pair.first == nullptr) && (pair.second == nullptr)) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::MAP_VARIABLES, pair);
+    (pair.first && pair.second) ? setItem(ItemType::MAP_VARIABLES, pair) : clear();
 }
 
 VariablePair Issue::mapVariables() const
@@ -472,11 +384,7 @@ VariablePair Issue::mapVariables() const
 
 void Issue::setVariable(const VariablePtr &variable)
 {
-    if (variable == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::VARIABLE, variable);
+    variable ? setItem(ItemType::VARIABLE, variable) : clear();
 }
 
 VariablePtr Issue::variable() const
@@ -489,11 +397,7 @@ VariablePtr Issue::variable() const
 
 void Issue::setReset(const ResetPtr &reset)
 {
-    if (reset == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::RESET, reset);
+    reset ? setItem(ItemType::RESET, reset) : clear();
 }
 
 ResetPtr Issue::reset() const
@@ -506,11 +410,7 @@ ResetPtr Issue::reset() const
 
 void Issue::setResetValue(const ResetPtr &reset)
 {
-    if (reset == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::RESET_VALUE, reset);
+    reset ? setItem(ItemType::RESET_VALUE, reset) : clear();
 }
 
 ResetPtr Issue::resetValue() const
@@ -523,11 +423,7 @@ ResetPtr Issue::resetValue() const
 
 void Issue::setTestValue(const ResetPtr &reset)
 {
-    if (reset == nullptr) {
-        clearItem();
-        return;
-    }
-    setItem(ItemType::TEST_VALUE, reset);
+    reset ? setItem(ItemType::TEST_VALUE, reset) : clear();
 }
 
 ResetPtr Issue::testValue() const
@@ -538,10 +434,14 @@ ResetPtr Issue::testValue() const
     return std::any_cast<ResetPtr>(mPimpl->mItem);
 }
 
-void Issue::clearItem()
+void Issue::clear()
 {
-    mPimpl->mItemType = ItemType::UNDEFINED;
+    mPimpl->mCause = ItemType::UNDEFINED;
+    mPimpl->mDescription = "";
     mPimpl->mItem.reset();
+    mPimpl->mItemType = ItemType::UNDEFINED;
+    mPimpl->mLevel = Issue::Level::ERROR;
+    mPimpl->mReferenceRule = Issue::ReferenceRule::UNDEFINED;
 }
 
 /**

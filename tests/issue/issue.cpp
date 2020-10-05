@@ -752,20 +752,20 @@ TEST(Issue, createCorrectType)
     auto unit = std::make_pair(units, 0);
     auto pair = std::make_pair(variable1, variable2);
 
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::COMPONENT, component));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::COMPONENT_REF, component));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::MATHML, component));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::VARIABLE, variable1));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::MODEL, model));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::ENCAPSULATION, model));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::IMPORT, import));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::RESET, reset));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::RESET_VALUE, reset));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::TEST_VALUE, reset));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::UNITS, units));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::UNIT, unit));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::CONNECTION, pair));
-    EXPECT_NE(nullptr, libcellml::Issue::create(libcellml::ItemType::MAP_VARIABLES, pair));
+    EXPECT_NE(nullptr, libcellml::Issue::create(component));
+    EXPECT_NE(nullptr, libcellml::Issue::create(component, libcellml::ItemType::COMPONENT_REF));
+    EXPECT_NE(nullptr, libcellml::Issue::create(component, libcellml::ItemType::MATHML));
+    EXPECT_NE(nullptr, libcellml::Issue::create(variable1));
+    EXPECT_NE(nullptr, libcellml::Issue::create(model));
+    EXPECT_NE(nullptr, libcellml::Issue::create(model, libcellml::ItemType::ENCAPSULATION));
+    EXPECT_NE(nullptr, libcellml::Issue::create(import));
+    EXPECT_NE(nullptr, libcellml::Issue::create(reset));
+    EXPECT_NE(nullptr, libcellml::Issue::create(reset, libcellml::ItemType::RESET_VALUE));
+    EXPECT_NE(nullptr, libcellml::Issue::create(reset, libcellml::ItemType::TEST_VALUE));
+    EXPECT_NE(nullptr, libcellml::Issue::create(units));
+    EXPECT_NE(nullptr, libcellml::Issue::create(unit));
+    EXPECT_NE(nullptr, libcellml::Issue::create(pair, libcellml::ItemType::CONNECTION));
+    EXPECT_NE(nullptr, libcellml::Issue::create(pair));
 }
 
 TEST(Issue, createMismatchedTypeReturnsNull)
@@ -780,14 +780,35 @@ TEST(Issue, createMismatchedTypeReturnsNull)
     units->addUnit("second");
     auto unit = std::make_pair(units, 0);
 
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, component));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, variable1));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, model));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, import));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, reset));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, units));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, unit));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::ItemType::ISSUE, std::make_pair(variable1, variable2)));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(component, libcellml::ItemType::MODEL));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(model, libcellml::ItemType::MATHML));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(reset, libcellml::ItemType::IMPORT));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(std::make_pair(variable1, variable2), libcellml::ItemType::VARIABLE));
+}
+
+TEST(ISSUE, createIssueWithNullptr)
+{
+    libcellml::ModelPtr model;
+    libcellml::ComponentPtr component;
+    libcellml::ResetPtr reset;
+    libcellml::VariablePair pair1 = std::make_pair(nullptr, nullptr);
+    libcellml::VariablePair pair2 = std::make_pair(nullptr, libcellml::Variable::create("v1"));
+    libcellml::VariablePair pair3 = std::make_pair(libcellml::Variable::create("v2"), nullptr);
+    libcellml::VariablePtr variable;
+    libcellml::UnitsPtr units;
+    libcellml::UnitItem unitItem = std::make_pair(nullptr, 0);
+    libcellml::ImportSourcePtr import;
+
+    EXPECT_EQ(nullptr, libcellml::Issue::create(component));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(model));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(reset));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(pair1));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(pair2));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(pair3));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(units));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(unitItem));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(variable));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(import));
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullComponent)
@@ -1163,8 +1184,8 @@ TEST(Issue, clearStoredItem)
 
     issue->setModel(model);
 
-    // Clear by calling the clearItem function.
-    issue->clearItem();
+    // Clear by calling the clear function.
+    issue->clear();
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
 }

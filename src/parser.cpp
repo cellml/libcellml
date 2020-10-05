@@ -972,7 +972,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     if (!variable2Missing) {
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Variable '" + iterInfo[1] + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
-                        issue->setComponent(component1);
+                        issue->setComponent(component2);
                         issue->setCause(ItemType::CONNECTION);
                         issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
                         mParser->addIssue(issue);
@@ -1034,7 +1034,7 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
         }
         attribute = attribute->next();
     }
-    if ((!parentComponent) && (parentComponentName.empty())) {
+    if (!parentComponent && parentComponentName.empty()) {
         IssuePtr issue = Issue::create();
         issue->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref element.");
         issue->setModel(model);
@@ -1074,9 +1074,15 @@ ComponentPtr Parser::ParserImpl::loadComponentRef(const ModelPtr &model, const X
             mParser->addIssue(issue);
         }
 
-        if ((parentComponent) && (childComponent)) {
+        if (childComponent) {
             // Set parent/child encapsulation relationship.
-            parentComponent->addComponent(childComponent);
+            if (parentComponent) {
+                parentComponent->addComponent(childComponent);
+            } else {
+                // Making sure that children which were taken from parents above, but have
+                // invalid parents, are still included in the model.
+                model->addComponent(childComponent);
+            }
         }
         childComponentNode = childComponentNode->next();
     }
