@@ -1394,7 +1394,7 @@ TEST(Parser, invalidImportsAndGetIssue)
 TEST(Parser, invalidModelWithDifferentCausesOfIssues)
 {
     // Check for all causes of issues.
-    std::vector<bool> foundCause(8, false);
+    std::vector<bool> foundCause(7, false);
 
     // Trigger CellML entity issues
     const std::string in =
@@ -1435,25 +1435,23 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
         case libcellml::ItemType::COMPONENT:
             foundCause.at(0) = true;
             break;
-        case libcellml::ItemType::CONNECTION:
+        case libcellml::ItemType::ENCAPSULATION:
             foundCause.at(1) = true;
             break;
-        case libcellml::ItemType::ENCAPSULATION:
+        case libcellml::ItemType::IMPORT:
             foundCause.at(2) = true;
             break;
-        case libcellml::ItemType::IMPORT:
+        case libcellml::ItemType::MODEL:
             foundCause.at(3) = true;
             break;
-        case libcellml::ItemType::MODEL:
+        case libcellml::ItemType::UNITS:
             foundCause.at(4) = true;
             break;
-        case libcellml::ItemType::UNITS:
+        case libcellml::ItemType::VARIABLE:
             foundCause.at(5) = true;
             break;
-        case libcellml::ItemType::VARIABLE:
-            foundCause.at(6) = true;
-            break;
         case libcellml::ItemType::COMPONENT_REF:
+        case libcellml::ItemType::CONNECTION:
         case libcellml::ItemType::MAP_VARIABLES:
         case libcellml::ItemType::MATHML:
         case libcellml::ItemType::RESET:
@@ -1472,9 +1470,15 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
     if (parser2->issue(0)->itemType() == libcellml::ItemType::UNDEFINED) {
-        foundCause.at(7) = true;
+        foundCause.at(6) = true;
     }
 
+    size_t index = 0;
+    for (auto state: foundCause) {
+        SCOPED_TRACE(index);
+        EXPECT_TRUE(state);
+        index++;
+    }
     // Check that we've found all the possible issue types
     bool foundAllCauses = false;
     if (std::all_of(foundCause.begin(), foundCause.end(), [](bool i) { return i; })) {
