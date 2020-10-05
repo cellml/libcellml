@@ -5,6 +5,7 @@
 %include <std_string.i>
 
 %import "createconstructor.i"
+%import "enums.i"
 %import "types.i"
 
 %feature("docstring") libcellml::Issue
@@ -127,34 +128,11 @@ Level::ERROR will be returned.";
 %feature("docstring") libcellml::Issue::setTestValue
 "Sets the :class:`Reset` containing the test value relevant to this issue (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::item
-"Get the :class:`AnyItem` relevant to this issue (or ``None``).";
-
 %feature("docstring") libcellml::Issue::itemType
 "Get the type of this issue.";
 
-%feature("docstring") libcellml::Issue::setItem
-"Set the :class:`AnyItem` item related to this issue.";
-
-%feature("docstring") libcellml::Issue::clearItem
-"Remove the stored item related to this issue.";
-
-// Private classes, only used in bindings.
-
-%feature("docstring") libcellml::Issue::itemTypeForSWIG
-"PRIVATE: Gets the type of this issue.";
-
-%feature("docstring") libcellml::Issue::unitIndexForSWIG
-"PRIVATE: Gets the index of the :class:`UnitItem` related to this issue.";
-
-%feature("docstring") libcellml::Issue::unitParentForSWIG
-"PRIVATE: Gets the parent :class:`UnitsPtr` of a :class:`UnitItem` related to this issue.";
-
-%feature("docstring") libcellml::Issue::connectionForSWIG
-"PRIVATE: Gets the individual :class:`VariablePtr` items for a connection.";
-
-%feature("docstring") libcellml::Issue::mapVariablesForSWIG
-"PRIVATE: Gets the individual :class:`VariablePtr` items for a variable equivalence.";
+%feature("docstring") libcellml::Issue::clear
+"Clear the issue to its empty state.";
 
 %{
 #include "libcellml/issue.h"
@@ -162,125 +140,118 @@ Level::ERROR will be returned.";
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
+
+from libcellml import ItemType
 %}
 
 %create_constructor(Issue)
+
+%ignore libcellml::Issue::item;
+%ignore libcellml::Issue::setItem;
+
 %extend libcellml::Issue {
     Issue(const ComponentPtr &component) {
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(component));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
+
     Issue(const ImportSourcePtr &importSource) {
         auto ptr = new std::shared_ptr<  libcellml::Issue >(libcellml::Issue::create(importSource));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
+
     Issue(const ModelPtr &model) {
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(model));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
+
     Issue(const ResetPtr &reset) {
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(reset));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
+
     Issue(const UnitsPtr &units) {
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(units));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
-    Issue(const UnitItem &unit) {
-        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
+
+    Issue(const UnitItem &unitItem) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unitItem));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
+
     Issue(const VariablePtr &variable) {
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(variable));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
-   int itemTypeForSWIG()
-    {
-        return static_cast<int>($self->itemType());
-    }
-
-    int unitIndexForSWIG(const std::string &id, size_t index)
-    {
-        auto u = $self->unit();
-        if(u.first == nullptr){
-            return -1;
-        }
-        return u.second;
-    }
-
-    UnitsPtr unitParentForSWIG(const std::string &id, size_t index)
-    {
-        auto u = $self->unit();
-        return u.first;
-    }
-
-    VariablePtr connectionForSWIG(const std::string &id, bool useFirst, const size_t &index)
-    {
-        auto vPair = $self->connection();
-        if (useFirst) {
-            return vPair.first;
-        }
-        return vPair.second;
-    }
-    VariablePtr mapVariablesForSWIG(const std::string &id, bool useFirst, const size_t &index)
-    {
-        auto vPair = $self->mapVariables();
-        if (useFirst) {
-            return vPair.first;
-        }
-        return vPair.second;
-    }
-
     %pythoncode %{
-        
-        def item(self):
-            r"""Retrieve the stored item."""
+        def setItem(self, itemType, item):
+            r"""Set the item by item type related to this issue."""
+            if itemType == ItemType.COMPONENT:
+                _issue.Issue_setComponent(self, item)
+            elif itemType == ItemType.COMPONENT_REF:
+                _issue.Issue_setComponentRef(self, item)
+            elif itemType == ItemType.CONNECTION:
+               _issue.Issue_setConnection(self, item)
+            elif itemType == ItemType.ENCAPSULATION:
+               _issue.Issue_setEncapsulation(self, item)
+            elif itemType == ItemType.IMPORT:
+               _issue.Issue_setImportSource(self, item)
+            elif itemType == ItemType.MAP_VARIABLES:
+               _issue.Issue_setMapVariables(self, item)
+            elif itemType == ItemType.MODEL:
+               _issue.Issue_setModel(self, item)
+            elif itemType == ItemType.RESET:
+               _issue.Issue_setReset(self, item)
+            elif itemType == ItemType.RESET_VALUE:
+               _issue.Issue_setResetValue(self, item)
+            elif itemType == ItemType.TEST_VALUE:
+                _issue.Issue_setTestValue(self, item)
+            elif itemType == ItemType.UNIT:
+               _issue.Issue_setUnit(self, item)
+            elif itemType == ItemType.UNITS:
+               _issue.Issue_setUnits(self, item)
+            elif itemType == ItemType.VARIABLE:
+                _issue.Issue_setVariable(self, item)
 
-            type = _issue.Issue_itemTypeForSWIG(self, id, index)
-            if type == ItemType.UNDEFINED:
-                return (type, None)
-            elif type == ItemType.COMPONENT:
-                return (type, _issue.Issue_component(self, id, index))
-            elif type == ItemType.COMPONENT_REF:
-                return (type, _issue.Issue_componentRef(self, id, index))
-            elif type == ItemType.CONNECTION:
-                first = _issue.Issue_connectionForSWIG(self, id, True, index)
-                second = _issue.Issue_connectionForSWIG(self, id, False, index)
-                return (type, (first, second))
-            elif type == ItemType.ENCAPSULATION:
-                return (type, _issue.Issue_encapsulation(self, id, index))
-            elif type == ItemType.IMPORT:
-                return (type, _issue.Issue_importSource(self, id, index))
-            elif type == ItemType.ISSUE:
-                return (type, _issue.Issue_issue(self, id, index))
-            elif type == ItemType.MAP_VARIABLES:
-                first = _issue.Issue_mapVariablesForSWIG(self, id, True, index)
-                second = _issue.Issue_mapVariablesForSWIG(self, id, False, index)
-                return (type, (first, second))
-            elif type == ItemType.MODEL:
-                return (type, _issue.Issue_model(self, id, index))
-            elif type == ItemType.RESET:
-                return (type, _issue.Issue_reset(self, id, index))
-            elif type == ItemType.RESET_VALUE:
-                return (type, _issue.Issue_resetValue(self, id, index))
-            elif type == ItemType.TEST_VALUE:
-                return (type, _issue.Issue_testValue(self, id, index)) 
-            elif type == ItemType.UNIT:
-                first = _issue.Issue_unitParentForSWIG(self, id, index)
-                second = _issue.Issue_unitIndexForSWIG(self, id, index)
-                return (type, (first, second))
-            elif type == ItemType.UNITS:
-                return (type, _issue.Issue_units(self, id, index))
-            elif type == ItemType.VARIABLE:
-                return (type, _issue.Issue_variable(self, id, index))
-            return (-1, None)
+        def item(self):
+            r"""Get the item relevant to this issue by item type (or ``None``)."""
+
+            itemType = _issue.Issue_itemType(self)
+            if itemType == ItemType.COMPONENT:
+                return (itemType, _issue.Issue_component(self))
+            elif itemType == ItemType.COMPONENT_REF:
+                return (itemType, _issue.Issue_componentRef(self))
+            elif itemType == ItemType.CONNECTION:
+                return (itemType, _issue.Issue_connection(self))
+            elif itemType == ItemType.ENCAPSULATION:
+                return (itemType, _issue.Issue_encapsulation(self))
+            elif itemType == ItemType.IMPORT:
+                return (itemType, _issue.Issue_importSource(self))
+            elif itemType == ItemType.MAP_VARIABLES:
+                return (itemType, _issue.Issue_mapVariables(self))
+            elif itemType == ItemType.MODEL:
+                return (itemType, _issue.Issue_model(self))
+            elif itemType == ItemType.RESET:
+                return (itemType, _issue.Issue_reset(self))
+            elif itemType == ItemType.RESET_VALUE:
+                return (itemType, _issue.Issue_resetValue(self))
+            elif itemType == ItemType.TEST_VALUE:
+                return (itemType, _issue.Issue_testValue(self))
+            elif itemType == ItemType.UNIT:
+                return (itemType, _issue.Issue_unit(self))
+            elif itemType == ItemType.UNITS:
+                return (itemType, _issue.Issue_units(self))
+            elif itemType == ItemType.VARIABLE:
+                return (itemType, _issue.Issue_variable(self))
+            return (ItemType.UNDEFINED, None)
 
         %}
     }
 
-
-%include "libcellml/enums.h"
-%include "libcellml/exportdefinitions.h"
 %include "libcellml/types.h"
 %include "libcellml/issue.h"
+
+%template(UnitItem) std::pair<libcellml::UnitsPtr, size_t>;
+%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;

@@ -1453,16 +1453,15 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
         case (libcellml::ItemType::VARIABLE):
             foundCause.at(6) = true;
             break;
+        case libcellml::ItemType::COMPONENT_REF:
+        case libcellml::ItemType::MAP_VARIABLES:
         case libcellml::ItemType::MATHML:
         case libcellml::ItemType::RESET:
-        case libcellml::ItemType::UNDEFINED:
-        case libcellml::ItemType::XML:
         case libcellml::ItemType::RESET_VALUE:
         case libcellml::ItemType::TEST_VALUE:
-        case libcellml::ItemType::MAP_VARIABLES:
-        case libcellml::ItemType::COMPONENT_REF:
-        case libcellml::ItemType::ISSUE:
+        case libcellml::ItemType::UNDEFINED:
         case libcellml::ItemType::UNIT:
+        case libcellml::ItemType::XML:
             break;
         }
     }
@@ -2234,5 +2233,30 @@ TEST(Parser, raiseIssueMissingUnits)
 
     auto parser = libcellml::Parser::create();
     auto model = parser->parseModel(modelString);
+    EXPECT_EQ_ISSUES(expectedIssues, parser);
+}
+
+TEST(Parser, parserDoesNotDeleteChildrenOfInvalidEncapsulation)
+{
+    auto inString =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"segfault\">\n"
+        "   <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"importMe.cellml\">\n"
+        "        <component component_ref=\"importMe\" name=\"importedChild\"/>\n"
+        "   </import>\n"
+        "   <component name=\"parentName!\"/>\n"
+        "   <encapsulation>\n"
+        "       <component_ref component=\"parentName\">\n"
+        "           <component_ref component=\"importedChild\"/>\n"
+        "       </component_ref>\n"
+        "   </encapsulation>\n"
+        "</model>";
+
+    std::vector<std::string> expectedIssues = {
+        "Encapsulation in model 'segfault' specifies 'parentName' as a component in a component_ref but it does not exist in the model.",
+        "Encapsulation in model 'segfault' specifies an invalid parent component_ref that also does not have any children."};
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(inString);
+    EXPECT_EQ(size_t(2), parser->errorCount());
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 }

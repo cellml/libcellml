@@ -248,7 +248,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         }
     } else {
         auto issue = Issue::create();
-        issue->setDescription("Import of component '" + importComponent->name() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
+        issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
         issue->setComponent(importComponent);
         mImporter->addIssue(issue);
         return false;
@@ -294,7 +294,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
             auto sourceUnit = sourceModel->units(reference);
             if (sourceUnit == nullptr) {
                 auto issue = Issue::create();
-                issue->setDescription("Import of units '" + importUnits->name() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
+                issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
                 issue->setUnits(sourceUnits);
                 mImporter->addIssue(issue);
                 return false;
@@ -307,7 +307,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         }
     } else {
         auto issue = Issue::create();
-        issue->setDescription("Import of units '" + importUnits->name() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
+        issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
         issue->setUnits(importUnits);
         mImporter->addIssue(issue);
         return false;

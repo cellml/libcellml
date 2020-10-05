@@ -4,6 +4,7 @@ Provides support for shared pointers declared in types.h.
 Only meant to be included, shouldn't be passed to cmake as a module!
 */
 %include <std_shared_ptr.i>
+%include <std_pair.i>
 
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)
@@ -28,6 +29,11 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Units)
 %shared_ptr(libcellml::Validator)
 %shared_ptr(libcellml::Variable)
+
+
+%{
+#include "libcellml/types.h"
+%}
 
 // Shared typemaps
 

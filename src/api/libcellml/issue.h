@@ -48,12 +48,13 @@ public:
      * or an issue with one of the following types as a parameter::
      * 
      *   - libcellml::ComponentPtr (defaults the item type to ItemType::COMPONENT);
-     *   - libcellml::ImportSourcePtr (defaults the item type to ItemType::IMPORT);
+     *   - libcellml::ImportSourcePtr;
      *   - libcellml::ModelPtr (defaults the item type to ItemType::MODEL);
      *   - libcellml::ResetPtr (defaults the item type to ItemType::RESET);
-     *   - libcellml::UnitItem (defaults the item type to ItemType::UNIT);
+     *   - libcellml::UnitItem;
      *   - libcellml::UnitsPtr (defaults the item type to ItemType::UNITS);
-     *   - libcellml::VariablePtr (defaults the item type to ItemType::VARIABLE); or
+     *   - libcellml::VariablePair (defaults the item type to ItemType::MAP_VARIABLES);
+     *   - libcellml::VariablePtr; or
      *   - libcellml::ItemType, std::any.
      *
      * The default values for the enumerations are::
@@ -68,12 +69,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const ComponentPtr &component) noexcept;
-
-    /**
-     * @overload
-     */
-    static IssuePtr create(ItemType type, const ComponentPtr &component) noexcept;
+    static IssuePtr create(const ComponentPtr &component, ItemType type = ItemType::COMPONENT) noexcept;
 
     /**
      * @overload
@@ -83,27 +79,12 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(ItemType type, const ImportSourcePtr &importSource) noexcept;
+    static IssuePtr create(const ModelPtr &model, ItemType type = ItemType::MODEL) noexcept;
 
     /**
      * @overload
      */
-    static IssuePtr create(const ModelPtr &model) noexcept;
-
-    /**
-     * @overload
-     */
-    static IssuePtr create(ItemType type, const ModelPtr &model) noexcept;
-
-    /**
-     * @overload
-     */
-    static IssuePtr create(const ResetPtr &reset) noexcept;
-
-    /**
-     * @overload
-     */
-    static IssuePtr create(ItemType type, const ResetPtr &reset) noexcept;
+    static IssuePtr create(const ResetPtr &reset, ItemType type = ItemType::RESET) noexcept;
 
     /**
      * @overload
@@ -113,33 +94,17 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(ItemType type, const UnitsPtr &units) noexcept;
-
-    /**
-     * @overload
-     */
     static IssuePtr create(const VariablePtr &variable) noexcept;
 
     /**
      * @overload
      */
-
-    static IssuePtr create(ItemType type, const VariablePtr &variable) noexcept;
-
-    /**
-     * @overload
-     */
-    static IssuePtr create(ItemType type, const VariablePair &variablePair) noexcept;
+    static IssuePtr create(const VariablePair &variablePair, ItemType type = ItemType::MAP_VARIABLES) noexcept;
 
     /**
      * @overload
      */
-    static IssuePtr create(const UnitItem &unit) noexcept;
-
-    /**
-     * @overload
-     */
-    static IssuePtr create(ItemType type, const UnitItem &unit) noexcept;
+    static IssuePtr create(const UnitItem &unitItem) noexcept;
 
     /**
      * @brief The issue Level enum class.
@@ -262,21 +227,21 @@ public:
      * @brief Set the cause of this issue.
      *
      * Set the @p cause of this issue from the options available in
-     * @c Issue::Cause.
+     * @ref libcellml::ItemType.
      * 
-     * @param cause The @c Issue::Cause to set.
+     * @param cause The @ref libcellml::ItemType to set.
      */
     void setCause(ItemType cause);
 
     /**
      * @brief Get the cause of this issue.
      *
-     * Get the @c cause of this issue. If no cause has been explicitly
+     * Get the cause of this issue. If no cause has been explicitly
      * set, this function will return the stored item type.
      * 
      * @sa itemType.
      *
-     * @return The @c Issue::Cause set for this issue. 
+     * @return The @ref libcellml::ItemType set for this issue.
      */
     ItemType cause() const;
 
@@ -578,15 +543,19 @@ public:
     ComponentPtr componentRef() const;
 
     /**
-     * Get the @c ItemType enum for the stored item.
+     * @brief Get the @ref ItemType enum for the stored item.
+     *
+     * Get the @ref ItemType enum for the stored item.
      * 
-     * @return The @c ItemType enum for the stored item, or @c ItemType::UNDEFINED if none.
+     * @return The @ref ItemType enum for the stored item, or @ref ItemType::UNDEFINED if none.
      */
     ItemType itemType() const;
 
     /**
      * @brief Set an @c std::any item relevant to this issue.
      * 
+     * Set an @c std::any item relevant to this issue.
+     *
      * @param item An @c std::any item relevant to this issue.
      * @param type An @c ItemType enum.
      */
@@ -595,18 +564,19 @@ public:
     /**
      * Get the stored item as an @c std::any item.
      * 
-     * Note that the stored @c ItemType can be retrieved using @sa itemType().
+     * Get the stored item as an @c std::any item.
+     * Note that the stored @ref ItemType can be retrieved using itemType().
      * 
-     * @return An @c std::any item related to this issue.
+     * @return A @c std::any item related to this issue.
      */
     std::any item() const;
 
     /**
      * @brief Clear the stored item.
      * 
-     * The internal type will be set to @c ItemType::UNDEFINED.
+     * Clear the issue returning it to its initial state.
      */
-    void clearItem();
+    void clear();
 
 private:
     Issue(); /**< Constructor */
