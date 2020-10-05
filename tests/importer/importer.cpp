@@ -854,3 +854,19 @@ TEST(Importer, complicatedHHImportMissingGateModel)
     EXPECT_EQ(e, importer->error(0)->description());
     EXPECT_EQ(e, importer->error(1)->description());
 }
+
+TEST(Importer, clearModelImportsBeforeResolving)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/sodiumChannelModel_broken.cellml"));
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/"));
+
+    EXPECT_EQ(size_t(0), importer->errorCount());
+
+    model->component("controller", true)->importSource()->setUrl("SodiumChannelController.cellml");
+
+    // This will segfault because the URL has been changed, but the model associated with it in the
+    // resolved import source has not.
+    importer->resolveImports(model, resourcePath("importer/"));
+}

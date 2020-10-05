@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" name="controllers">
+  <units name="ms">
+    <unit prefix="milli" units="second"/>
+  </units>
+  <units name="mV">
+    <unit prefix="milli" units="volt"/>
+  </units>
+  <units name="mS_per_cm2">
+    <unit prefix="milli" units="siemens"/>
+    <unit prefix="centi" units="metre" exponent="-2"/>
+  </units>
+  <component name="controller">
+    <variable name="t" units="ms" interface="public_and_private"/>
+    <variable name="V" units="mV" interface="public_and_private"/>
+    <math xmlns="http://www.w3.org/1998/Math/MathML"
+      xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+      <apply>
+        <eq/>
+        <ci>V</ci>
+        <piecewise>
+          <piece>
+            <cn cellml:units="mV">-85</cn>
+            <apply><lt/>
+              <ci>t</ci>
+              <cn cellml:units="ms">5</cn>
+            </apply>
+          </piece>
+          <piece>
+            <cn cellml:units="mV">-85</cn>
+            <apply><gt/>
+              <ci>t</ci>
+              <cn cellml:units="ms">15</cn>
+            </apply>
+          </piece>
+          <otherwise>
+            <cn cellml:units="mV">-20</cn>
+          </otherwise>
+        </piecewise>
+      </apply>
+    </math>
+  </component>
+</model>
