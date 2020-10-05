@@ -353,7 +353,7 @@ bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
     std::vector<std::tuple<std::string, std::string, std::string>> history = {};
     bool status = true;
 
-    // clearImports(model);
+    clearImports(model);
 
     for (size_t i = 0; i < model->importSourceCount(); ++i) {
         auto imp = model->importSource(i);
