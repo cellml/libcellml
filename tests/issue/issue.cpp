@@ -1218,6 +1218,19 @@ TEST(Issue, clearStoredItem)
     EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
 }
 
+TEST(Issue, cannotCrossClearStoredItem)
+{
+    auto model = libcellml::Model::create();
+    auto issue = libcellml::Issue::create(model);
+    EXPECT_EQ(model, issue->model());
+    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+
+    // Cannot clear by setting to nullptr through another type.
+    issue->setEncapsulation(nullptr);
+    EXPECT_EQ(model, issue->model());
+    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+}
+
 TEST(Issue, clear)
 {
     auto issue = libcellml::Issue::create();
