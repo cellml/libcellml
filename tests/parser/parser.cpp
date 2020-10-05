@@ -1431,26 +1431,26 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->cause()) {
+        switch (parser->issue(i)->itemType()) {
         case libcellml::ItemType::COMPONENT:
             foundCause.at(0) = true;
             break;
-        case (libcellml::ItemType::CONNECTION):
+        case libcellml::ItemType::CONNECTION:
             foundCause.at(1) = true;
             break;
-        case (libcellml::ItemType::ENCAPSULATION):
+        case libcellml::ItemType::ENCAPSULATION:
             foundCause.at(2) = true;
             break;
-        case (libcellml::ItemType::IMPORT):
+        case libcellml::ItemType::IMPORT:
             foundCause.at(3) = true;
             break;
-        case (libcellml::ItemType::MODEL):
+        case libcellml::ItemType::MODEL:
             foundCause.at(4) = true;
             break;
-        case (libcellml::ItemType::UNITS):
+        case libcellml::ItemType::UNITS:
             foundCause.at(5) = true;
             break;
-        case (libcellml::ItemType::VARIABLE):
+        case libcellml::ItemType::VARIABLE:
             foundCause.at(6) = true;
             break;
         case libcellml::ItemType::COMPONENT_REF:
@@ -1471,7 +1471,7 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->cause() == libcellml::ItemType::UNDEFINED) {
+    if (parser2->issue(0)->itemType() == libcellml::ItemType::UNDEFINED) {
         foundCause.at(7) = true;
     }
 
