@@ -858,7 +858,7 @@ TEST(Importer, complicatedHHImportMissingGateModel)
 TEST(Importer, clearModelImportsBeforeResolving)
 {
     auto parser = libcellml::Parser::create();
-    auto model = parser->parseModel(fileContents("importer/sodiumChannelModel_broken.cellml"));
+    auto model = parser->parseModel(fileContents("importer/SodiumChannelModel_broken.cellml"));
     auto importer = libcellml::Importer::create();
     importer->resolveImports(model, resourcePath("importer/"));
 
