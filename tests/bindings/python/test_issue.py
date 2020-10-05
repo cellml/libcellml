@@ -59,18 +59,18 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(ItemType.UNITS, int)
         self.assertIsInstance(ItemType.UNIT, int)
         self.assertIsInstance(ItemType.VARIABLE, int)
-        self.assertIsInstance(ItemType.XML, int)
 
         # Test conversion to enum
         e = Issue()
         e.setCause(ItemType.COMPONENT)
         self.assertRaises(RuntimeError, e.setCause, ItemType.COMPONENT - 1)
-        self.assertRaises(RuntimeError, e.setCause, ItemType.XML + 1)
+        self.assertRaises(RuntimeError, e.setCause, ItemType.VARIABLE + 1)
 
     def test_reference_rule_enum(self):
         from libcellml import Issue
 
         self.assertIsInstance(Issue.ReferenceRule.UNDEFINED, int)
+        self.assertIsInstance(Issue.ReferenceRule.XML, int)
         self.assertIsInstance(
             Issue.ReferenceRule.DATA_REPR_IDENTIFIER_UNICODE, int)
         self.assertIsInstance(
