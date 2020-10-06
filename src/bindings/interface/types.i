@@ -3,8 +3,8 @@ Provides support for shared pointers declared in types.h.
 
 Only meant to be included, shouldn't be passed to cmake as a module!
 */
-%include <std_shared_ptr.i>
 %include <std_pair.i>
+%include <std_shared_ptr.i>
 
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)

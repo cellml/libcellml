@@ -19,13 +19,12 @@ limitations under the License.
 #include <map>
 #include <string>
 
-#include "libcellml/enums.h"
-#include "libcellml/types.h"
-
 #include "libcellml/component.h"
+#include "libcellml/enums.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
+#include "libcellml/types.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
@@ -121,7 +120,7 @@ IssuePtr Issue::create() noexcept
 
 IssuePtr Issue::create(const ComponentPtr &component, ItemType type) noexcept
 {
-    if (component && ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF) || (type == ItemType::MATHML))) {
+    if ((component != nullptr) && ((type == ItemType::COMPONENT) || (type == ItemType::COMPONENT_REF) || (type == ItemType::MATHML))) {
         auto issue = std::shared_ptr<Issue> {new Issue {component}};
         issue->mPimpl->mItemType = type;
         return issue;
@@ -131,7 +130,7 @@ IssuePtr Issue::create(const ComponentPtr &component, ItemType type) noexcept
 
 IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 {
-    if (importSource) {
+    if (importSource != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {importSource}};
         issue->mPimpl->mItemType = ItemType::IMPORT;
         return issue;
@@ -142,7 +141,7 @@ IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 IssuePtr Issue::create(const ModelPtr &model, ItemType type) noexcept
 {
     // Acceptable type values are: ENCAPSULATION, MODEL.
-    if (model && ((type == ItemType::MODEL) || (type == ItemType::ENCAPSULATION))) {
+    if ((model != nullptr) && ((type == ItemType::MODEL) || (type == ItemType::ENCAPSULATION))) {
         auto issue = std::shared_ptr<Issue> {new Issue {model}};
         issue->mPimpl->mItemType = type;
         return issue;
@@ -153,7 +152,7 @@ IssuePtr Issue::create(const ModelPtr &model, ItemType type) noexcept
 IssuePtr Issue::create(const ResetPtr &reset, ItemType type) noexcept
 {
     // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
-    if (reset && ((type == ItemType::RESET) || (type == ItemType::RESET_VALUE) || (type == ItemType::TEST_VALUE))) {
+    if ((reset != nullptr) && ((type == ItemType::RESET) || (type == ItemType::RESET_VALUE) || (type == ItemType::TEST_VALUE))) {
         auto issue = std::shared_ptr<Issue> {new Issue {reset}};
         issue->mPimpl->mItemType = type;
         return issue;
@@ -163,7 +162,7 @@ IssuePtr Issue::create(const ResetPtr &reset, ItemType type) noexcept
 
 IssuePtr Issue::create(const UnitsPtr &units) noexcept
 {
-    if (units) {
+    if (units != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {units}};
         issue->mPimpl->mItemType = ItemType::UNITS;
         return issue;
@@ -173,7 +172,7 @@ IssuePtr Issue::create(const UnitsPtr &units) noexcept
 
 IssuePtr Issue::create(const VariablePtr &variable) noexcept
 {
-    if (variable) {
+    if (variable != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {variable}};
         issue->mPimpl->mItemType = ItemType::VARIABLE;
         return issue;
@@ -183,7 +182,7 @@ IssuePtr Issue::create(const VariablePtr &variable) noexcept
 
 IssuePtr Issue::create(const UnitItem &unitItem) noexcept
 {
-    if (unitItem.first) {
+    if (unitItem.first != nullptr) {
         auto issue = std::shared_ptr<Issue> {new Issue {unitItem}};
         issue->mPimpl->mItemType = ItemType::UNIT;
         return issue;
@@ -193,7 +192,7 @@ IssuePtr Issue::create(const UnitItem &unitItem) noexcept
 
 IssuePtr Issue::create(const VariablePair &variablePair, ItemType type) noexcept
 {
-    if (variablePair.first && variablePair.second && ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES))) {
+    if ((variablePair.first != nullptr) && (variablePair.second != nullptr) && ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES))) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
         issue->mPimpl->mItem = std::make_any<VariablePair>(variablePair);
         issue->mPimpl->mItemType = type;
@@ -288,7 +287,7 @@ std::any Issue::item() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    if (component) {
+    if (component != nullptr) {
         setItem(ItemType::COMPONENT, component);
     } else if (mPimpl->mItemType == ItemType::COMPONENT) {
         mPimpl->clearItem();
@@ -305,7 +304,7 @@ ComponentPtr Issue::component() const
 
 void Issue::setComponentRef(const ComponentPtr &component)
 {
-    if (component) {
+    if (component != nullptr) {
         setItem(ItemType::COMPONENT_REF, component);
     } else if (mPimpl->mItemType == ItemType::COMPONENT_REF) {
         mPimpl->clearItem();
@@ -322,7 +321,7 @@ ComponentPtr Issue::componentRef() const
 
 void Issue::setMath(const ComponentPtr &component)
 {
-    if (component) {
+    if (component != nullptr) {
         setItem(ItemType::MATHML, component);
     } else if (mPimpl->mItemType == ItemType::MATHML) {
         mPimpl->clearItem();
@@ -339,7 +338,7 @@ ComponentPtr Issue::math() const
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
-    if (importSource) {
+    if (importSource != nullptr) {
         setItem(ItemType::IMPORT, importSource);
     } else if (mPimpl->mItemType == ItemType::IMPORT) {
         mPimpl->clearItem();
@@ -356,7 +355,7 @@ ImportSourcePtr Issue::importSource() const
 
 void Issue::setModel(const ModelPtr &model)
 {
-    if (model) {
+    if (model != nullptr) {
         setItem(ItemType::MODEL, model);
     } else if (mPimpl->mItemType == ItemType::MODEL) {
         mPimpl->clearItem();
@@ -373,7 +372,7 @@ ModelPtr Issue::model() const
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-    if (model) {
+    if (model != nullptr) {
         setItem(ItemType::ENCAPSULATION, model);
     } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
         mPimpl->clearItem();
@@ -390,7 +389,7 @@ ModelPtr Issue::encapsulation() const
 
 void Issue::setUnits(const UnitsPtr &units)
 {
-    if (units) {
+    if (units != nullptr) {
         setItem(ItemType::UNITS, units);
     } else if (mPimpl->mItemType == ItemType::UNITS) {
         mPimpl->clearItem();
@@ -407,7 +406,7 @@ UnitsPtr Issue::units() const
 
 void Issue::setUnit(const UnitItem &unit)
 {
-    if (unit.first) {
+    if (unit.first != nullptr) {
         setItem(ItemType::UNIT, unit);
     } else if (mPimpl->mItemType == ItemType::UNIT) {
         mPimpl->clearItem();
@@ -424,7 +423,7 @@ UnitItem Issue::unit() const
 
 void Issue::setConnection(const VariablePair &pair)
 {
-    if (pair.first && pair.second) {
+    if ((pair.first != nullptr) && (pair.second != nullptr)) {
         setItem(ItemType::CONNECTION, pair);
     } else if (mPimpl->mItemType == ItemType::CONNECTION) {
         mPimpl->clearItem();
@@ -441,7 +440,7 @@ VariablePair Issue::connection() const
 
 void Issue::setMapVariables(const VariablePair &pair)
 {
-    if (pair.first && pair.second) {
+    if ((pair.first != nullptr) && (pair.second != nullptr)) {
         setItem(ItemType::MAP_VARIABLES, pair);
     } else if (mPimpl->mItemType == ItemType::MAP_VARIABLES) {
         mPimpl->clearItem();
@@ -458,7 +457,7 @@ VariablePair Issue::mapVariables() const
 
 void Issue::setVariable(const VariablePtr &variable)
 {
-    if (variable) {
+    if (variable != nullptr) {
         setItem(ItemType::VARIABLE, variable);
     } else if (mPimpl->mItemType == ItemType::VARIABLE) {
         mPimpl->clearItem();
@@ -475,7 +474,7 @@ VariablePtr Issue::variable() const
 
 void Issue::setReset(const ResetPtr &reset)
 {
-    if (reset) {
+    if (reset != nullptr) {
         setItem(ItemType::RESET, reset);
     } else if (mPimpl->mItemType == ItemType::RESET) {
         mPimpl->clearItem();
@@ -492,7 +491,7 @@ ResetPtr Issue::reset() const
 
 void Issue::setResetValue(const ResetPtr &reset)
 {
-    if (reset) {
+    if (reset != nullptr) {
         setItem(ItemType::RESET_VALUE, reset);
     } else if (mPimpl->mItemType == ItemType::RESET_VALUE) {
         mPimpl->clearItem();
@@ -509,7 +508,7 @@ ResetPtr Issue::resetValue() const
 
 void Issue::setTestValue(const ResetPtr &reset)
 {
-    if (reset) {
+    if (reset != nullptr) {
         setItem(ItemType::TEST_VALUE, reset);
     } else if (mPimpl->mItemType == ItemType::TEST_VALUE) {
         mPimpl->clearItem();
