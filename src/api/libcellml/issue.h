@@ -215,7 +215,7 @@ public:
         MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION,
 
         // Placeholder for further references:
-        TODO
+        NOT_SPECIFIED
     };
 
     /**
