@@ -20,6 +20,7 @@ limitations under the License.
 #include <memory>
 
 #include "libcellml/enums.h"
+#include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
 
@@ -75,6 +76,79 @@ using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared v
 
 using AnyItem = std::pair<ItemType, std::any>; /**< Type definition for the AnyItem pair. */
 using UnitItem = std::pair<UnitsPtr, size_t>; /**< Type definition for the UnitItem pair. */
-using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
+
+class VariablePair;
+using VariablePairPtr = std::shared_ptr<VariablePair>;
+
+/**
+ * @brief The VariablePair class
+ *
+ * The VariablePair class can be used to describe connections
+ * or map variables in CellML.
+ */
+class LIBCELLML_EXPORT VariablePair
+{
+public:
+    ~VariablePair(); /**< Destructor. */
+    VariablePair(const VariablePair &rhs) = delete; /**< Copy constructor. */
+    VariablePair(VariablePair &&rhs) noexcept = delete; /**< Move constructor. */
+    VariablePair &operator=(VariablePair rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a variable pair object.
+     *
+     * Factory method to create a @ref VariablePairPtr.  Create a
+     * blank model with::
+     *
+     *   VariablePairPtr variablePair = libcellml::VariablePairPtr::create();
+     *
+     * or a variable pair with variable 1 and variable 2 with::
+     *
+     *   VariablePairPtr variablePair = libcellml::VariablePairPtr::create(variable1, variable2);
+     *
+     * @return A smart pointer to a @ref VariablePairPtr object.
+     */
+    static VariablePairPtr create() noexcept;
+
+    /**
+     * @overload
+     */
+    static VariablePairPtr create(const VariablePtr &variable1, const VariablePtr &variable2) noexcept;
+
+    /**
+     * @brief Get the first variable in the pair.
+     *
+     * Get the first variable in the pair.
+     *
+     * @return The first variable in the pair.
+     */
+    VariablePtr variable1() const;
+
+    /**
+     * @brief Get the second variable in the pair.
+     *
+     * Get the second variable in the pair.
+     *
+     * @return The second variable in the pair.
+     */
+    VariablePtr variable2() const;
+
+    /**
+     * @brief Test to see if this variable pair is valid.
+     *
+     * Test to see if both the variables in this variable pair are
+     * not @c nullptr.
+     *
+     * @return @c true if this variable pair is valid, @c false otherwise.
+     */
+    bool isValid() const;
+
+private:
+    VariablePair(); /**< Constructor. */
+    explicit VariablePair(const VariablePtr &variable1, const VariablePtr &variable2); /**< Constructor with two variables as parameters. */
+
+    struct VariablePairImpl; /**< Forward declaration for pImpl idiom. */
+    VariablePairImpl *mPimpl; /**< Private member to implementation pointer. */
+};
 
 } // namespace libcellml

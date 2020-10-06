@@ -32,10 +32,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Issue
 {
 public:
-    virtual ~Issue(); /**< Destructor */
-    Issue(const Issue &rhs) = delete; /**< Copy constructor */
-    Issue(Issue &&rhs) noexcept = delete; /**< Move constructor */
-    Issue &operator=(Issue rhs) = delete; /**< Assignment operator */
+    virtual ~Issue(); /**< Destructor. */
+    Issue(const Issue &rhs) = delete; /**< Copy constructor. */
+    Issue(Issue &&rhs) noexcept = delete; /**< Move constructor. */
+    Issue &operator=(Issue rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create an @c Issue object.
@@ -99,7 +99,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const VariablePair &variablePair, ItemType type = ItemType::MAP_VARIABLES) noexcept;
+    static IssuePtr create(const VariablePairPtr &variablePair, ItemType type = ItemType::MAP_VARIABLES) noexcept;
 
     /**
      * @overload
@@ -404,28 +404,50 @@ public:
     /**
      * @brief Set the connection relevant to this issue.
      *
-     * The internal type will be set to @c ItemType::CONNECTION.
+     * Set the connection for this issue defined by the variable pair.
+     * The internal type will be set to @ref ItemType::CONNECTION.
      *
-     * @param pair The @c VariablePair whose connection is relevant to this issue.
+     * @param pair The @ref VariablePair whose connection is relevant to this issue.
      */
-    void setConnection(const VariablePair &pair);
+    void setConnection(const VariablePairPtr &pair);
+
+    /**
+     * @brief Set the connection relevant to this issue.
+     *
+     * Set the connection for this issue defined by the given variables.
+     * The item type will be set to @ref ItemType::CONNECTION.
+     *
+     * @param pair The @ref VariablePair whose connection is relevant to this issue.
+     */
+    void setConnection(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * Get the connection relevant to this issue.
      *
-     * @return A @c VariablePair representing the connection relevant to this issue,
+     * @return A @ref VariablePairPtr representing the connection relevant to this issue,
      *         or @c std::pair(nullptr,nullptr) if the internal type is not @c ItemType::CONNECTION.
      */
-    VariablePair connection() const;
+    VariablePairPtr connection() const;
 
     /**
      * @brief Set the variable mapping relevant to this issue.
      *
-     * The internal type will be set to @c ItemType::MAP_VARIABLES.
+     * Set the variable mapping for this issue defined by the variable pair.
+     * The item type will be set to @ref ItemType::MAP_VARIABLES.
      *
-     * @param pair The @c VariablePair whose equivalence is relevant to this issue.
+     * @param pair The @ref VariablePair whose equivalence is relevant to this issue.
      */
-    void setMapVariables(const VariablePair &pair);
+    void setMapVariables(const VariablePairPtr &pair);
+
+    /**
+     * @brief Set the variable mapping relevant to this issue.
+     *
+     * Set the variable mapping for this issue defined by the given variables.
+     * The item type will be set to @ref ItemType::MAP_VARIABLES.
+     *
+     * @param pair The @ref VariablePair whose connection is relevant to this issue.
+     */
+    void setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * Get the equivalent variable pair relevant to this issue.
@@ -433,7 +455,7 @@ public:
      * @return A @c VariablePair representing the variable equivalence relevant to this issue,
      *         or @c std::pair(nullptr,nullptr) if the internal type is not @c ItemType::MAP_VARIABLES.
      */
-    VariablePair mapVariables() const;
+    VariablePairPtr mapVariables() const;
 
     /**
      * @brief Set the reset whose reset value is relevant to this issue.
@@ -557,7 +579,7 @@ public:
     void clear();
 
 private:
-    Issue(); /**< Constructor */
+    Issue(); /**< Constructor. */
 
     /**
      * @brief Constructs an Issue for the component.
@@ -623,7 +645,7 @@ private:
     explicit Issue(const UnitItem &unit);
 
     struct IssueImpl; /**< Forward declaration for pImpl idiom. */
-    IssueImpl *mPimpl; /**< Private member to implementation pointer */
+    IssueImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 } // namespace libcellml

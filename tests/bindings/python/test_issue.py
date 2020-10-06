@@ -378,34 +378,32 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(e.encapsulation().name(), name)
 
     def test_connection(self):
-        from libcellml import Issue, Variable
-        from libcellml.issue import VariablePair
+        from libcellml import Issue, Variable, VariablePair
 
         e = Issue()
-        self.assertIsNone(e.connection()[0])
+        self.assertIsNone(e.connection().variable1())
         v1 = Variable("v1")
         v2 = Variable("v2")
 
         e.setConnection(VariablePair(v1, v2))
         p = e.connection()
-        self.assertIsInstance(p[0], Variable)
-        self.assertEqual(p[0].name(), "v1")
-        self.assertEqual(p[1].name(), "v2")
+        self.assertIsInstance(p.variable1(), Variable)
+        self.assertEqual(p.variable1().name(), "v1")
+        self.assertEqual(p.variable2().name(), "v2")
 
     def test_map_variables(self):
-        from libcellml import Issue, Variable
-        from libcellml.issue import VariablePair
+        from libcellml import Issue, Variable, VariablePair
 
         e = Issue()
-        self.assertIsNone(e.mapVariables()[0])
+        self.assertIsNone(e.mapVariables().variable1())
         v1 = Variable("v1")
         v2 = Variable("v2")
 
         e.setMapVariables(VariablePair(v1, v2))
         p = e.mapVariables()
-        self.assertIsInstance(p[0], Variable)
-        self.assertEqual(p[0].name(), "v1")
-        self.assertEqual(p[1].name(), "v2")
+        self.assertIsInstance(p.variable1(), Variable)
+        self.assertEqual(p.variable1().name(), "v1")
+        self.assertEqual(p.variable2().name(), "v2")
 
     def test_unit_item(self):
         from libcellml import Issue, Units
@@ -423,8 +421,8 @@ class IssueTestCase(unittest.TestCase):
 
     def test_item(self):
         from libcellml import Component, Issue, ImportSource, Model
-        from libcellml import Reset, Units, Variable, ItemType
-        from libcellml.issue import UnitItem, VariablePair
+        from libcellml import Reset, Units, Variable, ItemType, VariablePair
+        from libcellml.issue import UnitItem
 
         i = Issue()
 
@@ -448,17 +446,21 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual("ui", uiItem[1][0].name())
         self.assertEqual(2, uiItem[1][1])
 
-        i.setItem(ItemType.CONNECTION, VariablePair(Variable("v1"), Variable("v2")))
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        i.setItem(ItemType.CONNECTION, VariablePair(v1, v2))
         vpItem = i.item()
         self.assertEqual(ItemType.CONNECTION, vpItem[0])
-        self.assertEqual("v1", vpItem[1].first.name())
-        self.assertEqual("v2", vpItem[1].second.name())
+        self.assertEqual("v1", vpItem[1].variable1().name())
+        self.assertEqual("v2", vpItem[1].variable2().name())
 
-        i.setItem(ItemType.MAP_VARIABLES, VariablePair(Variable("v3"), Variable("v4")))
+        v3 = Variable("v3")
+        v4 = Variable("v4")
+        i.setItem(ItemType.MAP_VARIABLES, VariablePair(v3, v4))
         vpItem = i.item()
         self.assertEqual(ItemType.MAP_VARIABLES, vpItem[0])
-        self.assertEqual("v3", vpItem[1].first.name())
-        self.assertEqual("v4", vpItem[1].second.name())
+        self.assertEqual("v3", vpItem[1].variable1().name())
+        self.assertEqual("v4", vpItem[1].variable2().name())
 
         r = Reset()
         r.setId("r")
@@ -561,19 +563,13 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(4, u_i.second)
 
     def test_variable_pair_coverage(self):
-        from libcellml import Variable
-        from libcellml.issue import VariablePair
-        #from libcellml.types import UnitItem
+        from libcellml import Variable, VariablePair
 
         v1 = Variable("ray")
         v2 = Variable("charles")
-        v_p = VariablePair()
-        self.assertEqual(2, len(v_p))
-        self.assertEqual("(None, None)", str(v_p))
-        v_p[0] = v1
-        v_p[1] = v2
-        self.assertEqual("ray", v_p.first.name())
-        self.assertEqual("charles", v_p.second.name())
+        v_p = VariablePair(v1, v2)
+
+        self.assertTrue(v_p.isValid())
 
 
 if __name__ == '__main__':

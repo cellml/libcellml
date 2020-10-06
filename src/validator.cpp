@@ -1089,16 +1089,16 @@ void Validator::ValidatorImpl::validateVariableInterface(const VariablePtr &vari
             const auto equivalentVariable = variable->equivalentVariable(index);
             auto equivalentComponent = owningComponent(equivalentVariable);
             if (equivalentComponent != nullptr && !reachableEquivalence(variable, equivalentVariable)) {
-                VariablePair reversePair = std::make_pair(equivalentVariable, variable);
-                auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+                auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
+                                       [equivalentVariable, variable](VariablePairPtr in) { return (in->variable1() == equivalentVariable && in->variable2() == variable); });
                 if (it == alreadyReported.end()) {
-                    VariablePair pair = std::make_pair(variable, equivalentVariable);
+                    VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                     alreadyReported.push_back(pair);
                     std::string equivalentComponentName = equivalentComponent->name();
 
                     IssuePtr err = Issue::create();
                     err->setDescription("The equivalence between '" + variable->name() + "' in component '" + componentName + "'  and '" + equivalentVariable->name() + "' in component '" + equivalentComponentName + "' is invalid. Component '" + componentName + "' and '" + equivalentComponentName + "' are neither siblings nor in a parent/child relationship.");
-                    err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                    err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                     err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE);
                     mValidator->addIssue(err);
                 }
@@ -1132,17 +1132,17 @@ void Validator::ValidatorImpl::validateEquivalenceUnits(const ModelPtr &model, c
         }
         double multiplier = 0.0;
         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints, multiplier)) {
-            VariablePair reversePair = std::make_pair(equivalentVariable, variable);
-            auto it = std::find(alreadyReported.begin(), alreadyReported.end(), reversePair);
+            auto it = std::find_if(alreadyReported.begin(), alreadyReported.end(),
+                                   [equivalentVariable, variable](VariablePairPtr in) { return (in->variable1() == equivalentVariable && in->variable2() == variable); });
             if (it == alreadyReported.end()) {
-                VariablePair pair = std::make_pair(variable, equivalentVariable);
+                VariablePairPtr pair = VariablePair::create(variable, equivalentVariable);
                 ComponentPtr parentComponent = owningComponent(variable);
                 alreadyReported.push_back(pair);
                 auto unitsName = variable->units() == nullptr ? "" : variable->units()->name();
                 auto equivalentUnitsName = equivalentVariable->units() == nullptr ? "" : equivalentVariable->units()->name();
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + variable->name() + "' in component '" + parentComponent->name() + "' has units of '" + unitsName + "' and an equivalent variable '" + equivalentVariable->name() + "' in component '" + equivalentComponent->name() + "' with non-matching units of '" + equivalentUnitsName + "'. The mismatch is: " + hints);
-                err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION);
                 mValidator->addIssue(err);
             }
@@ -1159,7 +1159,7 @@ void Validator::ValidatorImpl::validateEquivalenceStructure(const VariablePtr &v
             if (component == nullptr) {
                 IssuePtr err = Issue::create();
                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but '" + equivalentVariable->name() + "' has no parent component.");
-                err->setMapVariables(std::make_pair(variable, equivalentVariable));
+                err->setMapVariables(VariablePair::create(variable, equivalentVariable));
                 err->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mValidator->addIssue(err);
             }

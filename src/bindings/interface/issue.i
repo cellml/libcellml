@@ -178,6 +178,11 @@ from libcellml import ItemType
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
+    Issue(const VariablePairPtr &pair) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(pair));
+        return reinterpret_cast<libcellml::Issue *>(ptr);
+    }
+
     %pythoncode %{
         def setItem(self, itemType, item):
             r"""Set the item by item type related to this issue."""
@@ -243,8 +248,7 @@ from libcellml import ItemType
         %}
     }
 
-%include "libcellml/types.h"
 %include "libcellml/issue.h"
 
 %template(UnitItem) std::pair<libcellml::UnitsPtr, size_t>;
-%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;
+//%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;
