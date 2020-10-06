@@ -237,7 +237,7 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
     }
     // Imports.
     ImportSourcePtr importSource = component->importSource();
-    if (component->isImport() && importSource != nullptr) {
+    if (component->isImport() && (importSource != nullptr)) {
         id = importSource->id();
         if (!id.empty()) {
             auto entry = convertToWeak(std::make_pair(CellMLElement::IMPORT, importSource));
@@ -458,7 +458,7 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
     if (!mAnnotator->hasModel()) {
         addIssueNoModel();
         exists = false;
-    } else if (mIdList.count(id) <= index || mIdList.count(id) == 0) {
+    } else if ((mIdList.count(id) <= index) || (mIdList.count(id) == 0)) {
         addIssueNotFound(id);
         exists = false;
     }
@@ -1371,10 +1371,10 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
     if (type == CellMLElement::UNIT) {
         auto unitItem = std::any_cast<UnitItem>(item.second);
         modelBased = owningModel(unitItem.first) == model;
-    } else if (type == CellMLElement::MODEL || type == CellMLElement::ENCAPSULATION) {
+    } else if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
         auto entity = std::any_cast<ModelPtr>(item.second);
         modelBased = entity == model;
-    } else if (type == CellMLElement::RESET || type == CellMLElement::TEST_VALUE || type == CellMLElement::RESET_VALUE) {
+    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
         auto entity = std::any_cast<ResetPtr>(item.second);
         modelBased = owningModel(entity) == model;
     } else if (type == CellMLElement::UNITS) {
@@ -1386,10 +1386,10 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
     } else if (type == CellMLElement::VARIABLE) {
         auto entity = std::any_cast<VariablePtr>(item.second);
         modelBased = owningModel(entity) == model;
-    } else if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+    } else if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         auto entity = std::any_cast<ComponentPtr>(item.second);
         modelBased = owningModel(entity) == model;
-    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         auto variablePair = std::any_cast<VariablePair>(item.second);
         modelBased = owningModel(variablePair.first) == model && owningModel(variablePair.second) == model;
     }
@@ -1405,9 +1405,9 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyItem &itemWeak, const AnyItem
         auto unit1 = std::any_cast<UnitWeakItem>(itemWeak.second);
         auto unit2 = std::any_cast<UnitWeakItem>(item.second);
         itemsEqual = equals(unit1.first, unit2.first) && unit1.second == unit2.second;
-    } else if (type == CellMLElement::MODEL || type == CellMLElement::ENCAPSULATION) {
+    } else if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
         itemsEqual = equals(std::any_cast<ModelWeakPtr>(itemWeak.second), std::any_cast<ModelWeakPtr>(item.second));
-    } else if (type == CellMLElement::RESET || type == CellMLElement::TEST_VALUE || type == CellMLElement::RESET_VALUE) {
+    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
         itemsEqual = equals(std::any_cast<ResetWeakPtr>(itemWeak.second), std::any_cast<ResetWeakPtr>(item.second));
     } else if (type == CellMLElement::UNITS) {
         itemsEqual = equals(std::any_cast<UnitsWeakPtr>(itemWeak.second), std::any_cast<UnitsWeakPtr>(item.second));
@@ -1415,9 +1415,9 @@ bool Annotator::AnnotatorImpl::itemsEqual(const AnyItem &itemWeak, const AnyItem
         itemsEqual = equals(std::any_cast<ImportSourceWeakPtr>(itemWeak.second), std::any_cast<ImportSourceWeakPtr>(item.second));
     } else if (type == CellMLElement::VARIABLE) {
         itemsEqual = equals(std::any_cast<VariableWeakPtr>(itemWeak.second), std::any_cast<VariableWeakPtr>(item.second));
-    } else if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+    } else if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         itemsEqual = equals(std::any_cast<ComponentWeakPtr>(itemWeak.second), std::any_cast<ComponentWeakPtr>(item.second));
-    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         auto pair1 = std::any_cast<VariableWeakPair>(itemWeak.second);
         auto pair2 = std::any_cast<VariableWeakPair>(item.second);
         itemsEqual = (equals(pair1.first, pair2.first) && equals(pair1.second, pair2.second)) || (equals(pair1.first, pair2.second) && equals(pair1.second, pair2.first));
@@ -1438,7 +1438,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
         } catch (std::bad_any_cast &) {
             valid = false;
         }
-    } else if (type == CellMLElement::MODEL || type == CellMLElement::ENCAPSULATION) {
+    } else if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
         try {
             auto entity = std::any_cast<ModelPtr>(item.second);
             if (entity) {
@@ -1447,7 +1447,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
         } catch (std::bad_any_cast &) {
             valid = false;
         }
-    } else if (type == CellMLElement::RESET || type == CellMLElement::TEST_VALUE || type == CellMLElement::RESET_VALUE) {
+    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
         try {
             auto entity = std::any_cast<ResetPtr>(item.second);
             if (entity) {
@@ -1483,7 +1483,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
         } catch (std::bad_any_cast &) {
             valid = false;
         }
-    } else if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+    } else if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         try {
             auto entity = std::any_cast<ComponentPtr>(item.second);
             if (entity) {
@@ -1492,7 +1492,7 @@ bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
         } catch (std::bad_any_cast &) {
             valid = false;
         }
-    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         try {
             auto pair = std::any_cast<VariablePair>(item.second);
             if (pair.first && pair.second) {
