@@ -58,7 +58,7 @@ struct Importer::ImporterImpl
     ImportLibrary mLibrary;
 
     IssuePtr makeIssueCyclicDependency(const ModelPtr &model, Type type,
-                                   std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
+                                       std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
 
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchImportSource(const ImportSourcePtr &importSource, Type type, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history);
@@ -150,6 +150,7 @@ bool Importer::ImporterImpl::fetchModel(const ImportSourcePtr &importSource, con
             auto issue = Issue::create();
             issue->setDescription("The attempt to resolve imports with the model at '" + url + "' failed: the file could not be opened.");
             issue->setImportSource(importSource);
+            issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
             mImporter->addIssue(issue);
             return false;
         }
@@ -241,6 +242,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
                 auto issue = Issue::create();
                 issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importReference() + "' requires units named '" + unitName + "' which cannot be found.");
                 issue->setComponent(importComponent);
+                issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
                 mImporter->addIssue(issue);
                 return false;
             }
@@ -252,6 +254,7 @@ bool Importer::ImporterImpl::fetchComponent(const ComponentPtr &importComponent,
         auto issue = Issue::create();
         issue->setDescription("Import of component '" + importComponent->name() + "' from '" + importComponent->importSource()->url() + "' requires component named '" + importComponent->importReference() + "' which cannot be found.");
         issue->setComponent(importComponent);
+        issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
         mImporter->addIssue(issue);
         return false;
     }
@@ -298,6 +301,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
                 auto issue = Issue::create();
                 issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "', which relies on child units named '" + reference + "', which cannot be found.");
                 issue->setUnits(sourceUnits);
+                issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
                 mImporter->addIssue(issue);
                 return false;
             }
@@ -311,6 +315,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
         auto issue = Issue::create();
         issue->setDescription("Import of units '" + importUnits->name() + "' from '" + importUnits->importSource()->url() + "' requires units named '" + importUnits->importReference() + "' which cannot be found.");
         issue->setUnits(importUnits);
+        issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
         mImporter->addIssue(issue);
         return false;
     }
@@ -320,8 +325,8 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 }
 
 IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
-                                                       Type type,
-                                                       std::vector<std::tuple<std::string, std::string, std::string>> &history) const
+                                                           Type type,
+                                                           std::vector<std::tuple<std::string, std::string, std::string>> &history) const
 {
     std::string msg = "Cyclic dependencies were found when attempting to resolve "
                       + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
