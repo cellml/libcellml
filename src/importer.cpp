@@ -57,7 +57,7 @@ struct Importer::ImporterImpl
 
     ImportLibrary mLibrary;
 
-    void makeIssueCyclicDependency(const ModelPtr &model, Type type,
+    IssuePtr makeIssueCyclicDependency(const ModelPtr &model, Type type,
                                    std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
 
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
@@ -180,7 +180,9 @@ bool Importer::ImporterImpl::fetchImportSource(const ImportSourcePtr &importSour
     }
     auto model = mLibrary[url];
     if (!checkForCycles(model, history)) {
-        makeIssueCyclicDependency(model, type, history);
+        auto issue = makeIssueCyclicDependency(model, type, history);
+        issue->setImportSource(importSource);
+        mImporter->addIssue(issue);
         return false;
     }
     return true;
@@ -317,7 +319,7 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
     return true;
 }
 
-void Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
+IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
                                                        Type type,
                                                        std::vector<std::tuple<std::string, std::string, std::string>> &history) const
 {
@@ -344,8 +346,8 @@ void Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
     issue->setDescription(msg);
     issue->setLevel(Issue::Level::WARNING);
     issue->setReferenceRule(Issue::ReferenceRule::IMPORT_EQUIVALENT);
-    mImporter->addIssue(issue);
     std::vector<std::tuple<std::string, std::string, std::string>>().swap(history);
+    return issue;
 }
 
 bool Importer::resolveImports(ModelPtr &model, const std::string &baseFile)
