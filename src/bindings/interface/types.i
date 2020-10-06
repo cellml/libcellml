@@ -1,8 +1,10 @@
 /*
 Provides support for shared pointers declared in types.h.
-
-Only meant to be included, shouldn't be passed to cmake as a module!
 */
+%module(package="libcellml") types
+
+#define LIBCELLML_EXPORT
+
 %include <std_pair.i>
 %include <std_shared_ptr.i>
 
@@ -29,10 +31,28 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Units)
 %shared_ptr(libcellml::Validator)
 %shared_ptr(libcellml::Variable)
+%shared_ptr(libcellml::VariablePair)
 
+%feature("docstring") libcellml::VariablePair
+"A class for describing a variable pair.";
+
+%feature("docstring") libcellml::VariablePair::variable1
+"Return the first variable in the pair of variables.";
+
+%feature("docstring") libcellml::VariablePair::variable2
+"Return the second variable in the pair of variables.";
+
+%feature("docstring") libcellml::VariablePair::isValid
+"Test if the pair is valid.";
+
+%import "createconstructor.i"
 
 %{
 #include "libcellml/types.h"
+%}
+
+%pythoncode %{
+# libCellML generated wrapper code starts here.
 %}
 
 // Shared typemaps
@@ -132,3 +152,15 @@ Only meant to be included, shouldn't be passed to cmake as a module!
     $1 = %static_cast(val,$basetype);
   }
 }
+
+%create_constructor(VariablePair)
+
+%extend libcellml::VariablePair {
+    VariablePair(const VariablePtr &variable1, const VariablePtr &variable2) {
+        auto ptr = new std::shared_ptr<libcellml::VariablePair>(libcellml::VariablePair::create(variable1, variable2));
+        return reinterpret_cast<libcellml::VariablePair *>(ptr);
+    }
+
+}
+
+%include "libcellml/types.h"

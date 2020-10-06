@@ -190,11 +190,11 @@ IssuePtr Issue::create(const UnitItem &unitItem) noexcept
     return nullptr;
 }
 
-IssuePtr Issue::create(const VariablePair &variablePair, ItemType type) noexcept
+IssuePtr Issue::create(const VariablePairPtr &variablePair, ItemType type) noexcept
 {
-    if ((variablePair.first != nullptr) && (variablePair.second != nullptr) && ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES))) {
+    if ((variablePair->isValid()) && ((type == ItemType::CONNECTION) || (type == ItemType::MAP_VARIABLES))) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
-        issue->mPimpl->mItem = std::make_any<VariablePair>(variablePair);
+        issue->mPimpl->mItem = variablePair;
         issue->mPimpl->mItemType = type;
         return issue;
     }
@@ -248,7 +248,7 @@ void Issue::setItem(ItemType type, const std::any &item)
             break;
         case ItemType::CONNECTION:
         case ItemType::MAP_VARIABLES:
-            mPimpl->mItem = std::any_cast<VariablePair>(item);
+            mPimpl->mItem = std::any_cast<VariablePairPtr>(item);
             break;
         case ItemType::ENCAPSULATION:
         case ItemType::MODEL:
@@ -421,38 +421,50 @@ UnitItem Issue::unit() const
     return std::any_cast<UnitItem>(mPimpl->mItem);
 }
 
-void Issue::setConnection(const VariablePair &pair)
+void Issue::setConnection(const VariablePairPtr &pair)
 {
-    if ((pair.first != nullptr) && (pair.second != nullptr)) {
+    if ((pair->isValid())) {
         setItem(ItemType::CONNECTION, pair);
     } else if (mPimpl->mItemType == ItemType::CONNECTION) {
         mPimpl->clearItem();
     }
 }
 
-VariablePair Issue::connection() const
+void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    if (mPimpl->mItemType != ItemType::CONNECTION) {
-        return std::make_pair(nullptr, nullptr);
-    }
-    return std::any_cast<VariablePair>(mPimpl->mItem);
+    auto pair = VariablePair::create(variable1, variable2);
+    setConnection(pair);
 }
 
-void Issue::setMapVariables(const VariablePair &pair)
+VariablePairPtr Issue::connection() const
 {
-    if ((pair.first != nullptr) && (pair.second != nullptr)) {
+    if (mPimpl->mItemType != ItemType::CONNECTION) {
+        return VariablePair::create();
+    }
+    return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+}
+
+void Issue::setMapVariables(const VariablePairPtr &pair)
+{
+    if ((pair->isValid())) {
         setItem(ItemType::MAP_VARIABLES, pair);
     } else if (mPimpl->mItemType == ItemType::MAP_VARIABLES) {
         mPimpl->clearItem();
     }
 }
 
-VariablePair Issue::mapVariables() const
+void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    auto pair = VariablePair::create(variable1, variable2);
+    setMapVariables(pair);
+}
+
+VariablePairPtr Issue::mapVariables() const
 {
     if (mPimpl->mItemType != ItemType::MAP_VARIABLES) {
-        return std::make_pair(nullptr, nullptr);
+        return VariablePair::create();
     }
-    return std::any_cast<VariablePair>(mPimpl->mItem);
+    return std::any_cast<VariablePairPtr>(mPimpl->mItem);
 }
 
 void Issue::setVariable(const VariablePtr &variable)

@@ -929,7 +929,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     if (!variable1Missing) {
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Variable '" + iterInfo[0] + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
-                        issue->setConnection(std::make_pair(variable1, variable2));
+                        issue->setConnection(VariablePair::create(variable1, variable2));
                         issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                         mParser->addIssue(issue);
                     }
@@ -937,7 +937,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             } else {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Connection in model '" + model->name() + "' specifies '" + iterInfo[0] + "' as variable_1 but the corresponding component_1 is invalid.");
-                issue->setConnection(std::make_pair(variable1, variable2));
+                issue->setConnection(VariablePair::create(variable1, variable2));
                 issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addIssue(issue);
             }
@@ -953,7 +953,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     if (!variable2Missing) {
                         IssuePtr issue = Issue::create();
                         issue->setDescription("Variable '" + iterInfo[1] + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
-                        issue->setConnection(std::make_pair(variable1, variable2));
+                        issue->setConnection(VariablePair::create(variable1, variable2));
                         issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
                         mParser->addIssue(issue);
                     }
@@ -961,7 +961,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             } else {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Connection in model '" + model->name() + "' specifies '" + iterInfo[1] + "' as variable_2 but the corresponding component_2 is invalid.");
-                issue->setConnection(std::make_pair(variable1, variable2));
+                issue->setConnection(VariablePair::create(variable1, variable2));
                 issue->setReferenceRule(Issue::ReferenceRule::MAP_VARIABLES_VARIABLE2);
                 mParser->addIssue(issue);
             }

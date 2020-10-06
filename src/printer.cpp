@@ -52,11 +52,11 @@ struct Printer::PrinterImpl
     std::string printResetChild(const std::string &childLabel, const std::string &childId, const std::string &math, IdList &idList, bool autoIds);
 };
 
-std::string printMapVariables(const VariablePair &variablePair, IdList &idList, bool autoIds)
+std::string printMapVariables(const VariablePairPtr &variablePair, IdList &idList, bool autoIds)
 {
-    std::string mapVariables = "<map_variables variable_1=\"" + variablePair.first->name() + "\""
-                               + " variable_2=\"" + variablePair.second->name() + "\"";
-    std::string mappingId = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
+    std::string mapVariables = "<map_variables variable_1=\"" + variablePair->variable1()->name() + "\""
+                               + " variable_2=\"" + variablePair->variable2()->name() + "\"";
+    std::string mappingId = Variable::equivalenceMappingId(variablePair->variable1(), variablePair->variable2());
     if (!mappingId.empty()) {
         mapVariables += " id=\"" + mappingId + "\"";
     } else if (autoIds) {
@@ -90,18 +90,18 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             continue;
         }
         std::string mappingVariables;
-        VariablePair variablePair = variableMap.at(componentMapIndex1);
-        std::string connectionId = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
+        VariablePairPtr variablePair = variableMap.at(componentMapIndex1);
+        std::string connectionId = Variable::equivalenceConnectionId(variablePair->variable1(), variablePair->variable2());
         mappingVariables += printMapVariables(variablePair, idList, autoIds);
         // Check for subsequent variable equivalence pairs with the same parent components.
         size_t componentMapIndex2 = componentMapIndex1 + 1;
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
             ComponentPtr nextComponent1 = iterPair2->first;
             ComponentPtr nextComponent2 = iterPair2->second;
-            VariablePair variablePair2 = variableMap.at(componentMapIndex2);
+            VariablePairPtr variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2, idList, autoIds);
-                connectionId = Variable::equivalenceConnectionId(variablePair2.first, variablePair2.second);
+                connectionId = Variable::equivalenceConnectionId(variablePair2->variable1(), variablePair2->variable2());
             }
             ++componentMapIndex2;
         }
@@ -144,16 +144,10 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
         for (size_t j = 0; j < variable->equivalentVariableCount(); ++j) {
             VariablePtr equivalentVariable = variable->equivalentVariable(j);
             if (equivalentVariable->hasEquivalentVariable(variable)) {
-                VariablePair variablePair = std::make_pair(variable, equivalentVariable);
-                VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
-                bool pairFound = false;
-                for (const auto &iter : variableMap) {
-                    if ((iter == variablePair) || (iter == reciprocalVariablePair)) {
-                        pairFound = true;
-                        break;
-                    }
-                }
-                if (!pairFound) {
+                VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
+                auto pairFound = std::find_if(variableMap.begin(), variableMap.end(),
+                                              [variable, equivalentVariable](VariablePairPtr in) { return (in->variable1() == equivalentVariable && in->variable2() == variable) || (in->variable1() == variable && in->variable2() == equivalentVariable); });
+                if (pairFound == variableMap.end()) {
                     // Get parent components.
                     ComponentPtr component1 = owningComponent(variable);
                     ComponentPtr component2 = owningComponent(equivalentVariable);

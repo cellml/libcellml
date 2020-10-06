@@ -52,10 +52,10 @@ public:
         ALGEBRAIC
     };
 
-    ~AnalyserVariable(); /**< Destructor */
-    AnalyserVariable(const AnalyserVariable &rhs) = delete; /**< Copy constructor */
-    AnalyserVariable(AnalyserVariable &&rhs) noexcept = delete; /**< Move constructor */
-    AnalyserVariable &operator=(AnalyserVariable rhs) = delete; /**< Assignment operator */
+    ~AnalyserVariable(); /**< Destructor. */
+    AnalyserVariable(const AnalyserVariable &rhs) = delete; /**< Copy constructor. */
+    AnalyserVariable(AnalyserVariable &&rhs) noexcept = delete; /**< Move constructor. */
+    AnalyserVariable &operator=(AnalyserVariable rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Get the @c Type of this @c AnalyserVariable.
@@ -122,7 +122,7 @@ public:
     AnalyserEquationPtr equation() const;
 
 private:
-    AnalyserVariable(); /**< Constructor */
+    AnalyserVariable(); /**< Constructor. */
 
     struct AnalyserVariableImpl;
     AnalyserVariableImpl *mPimpl;

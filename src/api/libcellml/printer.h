@@ -31,10 +31,10 @@ namespace libcellml {
 class LIBCELLML_EXPORT Printer
 {
 public:
-    ~Printer(); /**< Destructor */
-    Printer(const Printer &rhs) = delete; /**< Copy constructor */
-    Printer(Printer &&rhs) noexcept = delete; /**< Move constructor */
-    Printer &operator=(Printer rhs) = delete; /**< Assignment operator */
+    ~Printer(); /**< Destructor. */
+    Printer(const Printer &rhs) = delete; /**< Copy constructor. */
+    Printer(Printer &&rhs) noexcept = delete; /**< Move constructor. */
+    Printer &operator=(Printer rhs) = delete; /**< Assignment operator. */
 
     /**
      * @brief Create a @c Printer object.
@@ -60,7 +60,7 @@ public:
     std::string printModel(const ModelPtr &model, bool autoIds = false) const;
 
 private:
-    Printer(); /**< Constructor */
+    Printer(); /**< Constructor. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
     PrinterImpl *mPimpl; /**< Private member to implementation pointer. */
