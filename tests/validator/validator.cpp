@@ -2119,6 +2119,8 @@ TEST(Validator, unitSimpleCycle)
     v->validateModel(m);
 
     EXPECT_EQ_ISSUES(expectedIssues, v);
+    auto issue = v->issue(0);
+    EXPECT_EQ("grandfather", issue->units()->name());
 }
 
 TEST(Validator, unitComplexCycle)
