@@ -1439,7 +1439,7 @@ std::string Annotator::AnnotatorImpl::setAutoId(const AnyItem &item)
 {
     std::string newId;
     if (validItem(item)) {
-        if (mModel.lock()) {
+        if (mModel.lock() != nullptr) {
             auto oldId = id(item);
 
             if (!isOwnedByModel(item)) {
