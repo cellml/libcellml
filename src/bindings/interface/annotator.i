@@ -14,7 +14,7 @@
 "Interacts with CellML objects using their id attribute.";
 
 %feature("docstring") libcellml::Annotator::setModel
-"Set the model for this Annototor to work with.";
+"Set the model for this Annotator to work with.";
 
 %feature("docstring") libcellml::Annotator::item
 "Return the item with the given id.";
@@ -63,9 +63,6 @@
 
 %feature("docstring") libcellml::Annotator::assignIds
 "Set all items of the given type in the stored model to automatically generated, unique strings.";
-
-%feature("docstring") libcellml::Annotator::assignId
-"Set the id of the given item to an automatically generated, unique string.";
 
 %feature("docstring") libcellml::Annotator::clearAllIds
 "Clear all the id strings in the given or stored model.";
@@ -140,6 +137,22 @@
 %ignore libcellml::Annotator::items;
 %ignore libcellml::Annotator::assignId(const AnyItem &item);
 
+%ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &,libcellml::CellMLElement);
+%ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &,libcellml::CellMLElement);
+%ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::ImportSourcePtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &,libcellml::CellMLElement);
+%ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::UnitItem const &);
+%ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::VariablePair const &,libcellml::CellMLElement);
+%ignore libcellml::Annotator::assignId(libcellml::VariablePair const &);
+%ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &,libcellml::CellMLElement);
+%ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &);
+%ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &, size_t);
+
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 
@@ -162,6 +175,14 @@ from libcellml import CellMLElement
     }
 
 %pythoncode %{
+
+    def assignId(self, arg1, arg2=None):
+        r"""Set the id of the given item to an automatically generated, unique string, and return new id."""
+        if arg2:
+            return _annotator.Annotator_assignId(self, arg1, arg2)
+        if type(arg1).__name__ in ['list', 'tuple']:
+            return _annotator.Annotator_assignId(self, arg1[1], arg1[0])
+        return _annotator.Annotator_assignId(self, arg1)
 
     def item(self, id, index=-1):
         r"""Retrieve a unique item with the given id."""

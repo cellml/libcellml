@@ -311,13 +311,15 @@ class AnnotatorTestCase(unittest.TestCase):
         model = Model()
         component1 = Component("c1")
         component2 = Component("c2")
+        component3 = Component("c3")
+        component3.setId("id3")
 
         units = Units("u1")
         units.addUnit("volt")
 
         model.addComponent(component1)
         model.addComponent(component2)
-
+        component2.addComponent(component3)
         model.addUnits(units)
 
         annotator.setModel(model)
@@ -339,6 +341,10 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da56", units.unitId(0))
 
         self.assertEqual("", annotator.assignId(None, CellMLElement_UNDEFINED))
+
+        item = annotator.item("id3")
+        annotator.assignId(item)
+        self.assertEqual("b4da57", component3.id())
 
     def test_auto_ids_group(self):
         from libcellml import Annotator, Component, Model
@@ -525,6 +531,7 @@ class AnnotatorTestCase(unittest.TestCase):
         v_p[1] = v2
         self.assertEqual("ray", v_p.first.name())
         self.assertEqual("charles", v_p.second.name())
+
 
 
 if __name__ == '__main__':
