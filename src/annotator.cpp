@@ -170,13 +170,13 @@ struct Annotator::AnnotatorImpl
 
     std::string makeUniqueId();
 
-    std::string id(AnyItem item);
+    std::string id(const AnyItem &item);
     std::string setAutoId(const AnyItem &item);
-    bool isOwnedByModel(AnyItem item) const;
+    bool isOwnedByModel(const AnyItem &item) const;
     void removeId(const AnyItem &item, const std::string &id);
-    void setId(AnyItem item, const std::string &id);
-    bool itemsEqual(AnyItem itemWeak, const AnyItem &itemShared);
-    bool validItem(AnyItem item);
+    void setId(const AnyItem &item, const std::string &id);
+    bool itemsEqual(const AnyItem &itemWeak, const AnyItem &itemShared);
+    bool validItem(const AnyItem &item);
 
     void doSetAllAutomaticIds();
     void doSetModelIds();
@@ -197,7 +197,7 @@ struct Annotator::AnnotatorImpl
     bool exists(const std::string &id, size_t index) const;
 
     size_t generateHash();
-    void doUpdateComponentHash(ComponentPtr &component, std::string &idsString);
+    void doUpdateComponentHash(const ComponentPtr &component, std::string &idsString);
 
     void addIssueNoModel() const;
     void addInvalidArgument(CellMLElement type) const;
@@ -1274,7 +1274,7 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
     return id;
 }
 
-std::string Annotator::AnnotatorImpl::id(AnyItem item)
+std::string Annotator::AnnotatorImpl::id(const AnyItem &item)
 {
     std::string id;
     CellMLElement type = item.first;
@@ -1321,7 +1321,7 @@ std::string Annotator::AnnotatorImpl::id(AnyItem item)
     return id;
 }
 
-void Annotator::AnnotatorImpl::setId(AnyItem item, const std::string &id)
+void Annotator::AnnotatorImpl::setId(const AnyItem &item, const std::string &id)
 {
     CellMLElement type = item.first;
     if (type == CellMLElement::UNIT) {
@@ -1366,7 +1366,7 @@ void Annotator::AnnotatorImpl::setId(AnyItem item, const std::string &id)
     }
 }
 
-bool Annotator::AnnotatorImpl::isOwnedByModel(AnyItem item) const
+bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
 {
     bool modelBased = false;
     CellMLElement type = item.first;
@@ -1399,7 +1399,7 @@ bool Annotator::AnnotatorImpl::isOwnedByModel(AnyItem item) const
     return modelBased;
 }
 
-bool Annotator::AnnotatorImpl::itemsEqual(AnyItem itemWeak, const AnyItem &itemShared)
+bool Annotator::AnnotatorImpl::itemsEqual(const AnyItem &itemWeak, const AnyItem &itemShared)
 {
     bool itemsEqual = false;
     auto item = convertToWeak(itemShared);
@@ -1428,7 +1428,7 @@ bool Annotator::AnnotatorImpl::itemsEqual(AnyItem itemWeak, const AnyItem &itemS
     return itemsEqual;
 }
 
-bool Annotator::AnnotatorImpl::validItem(AnyItem item)
+bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
 {
     bool valid = false;
     CellMLElement type = item.first;
@@ -1673,7 +1673,7 @@ size_t Annotator::duplicateCount(const std::string &id)
     return mPimpl->mIdList.count(id);
 }
 
-void Annotator::AnnotatorImpl::doUpdateComponentHash(ComponentPtr &component, std::string &idsString)
+void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &component, std::string &idsString)
 {
     for (size_t i = 0; i < component->variableCount(); ++i) {
         idsString += "v=" + std::to_string(i) + component->variable(i)->id();
