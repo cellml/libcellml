@@ -291,8 +291,8 @@ struct Validator::ValidatorImpl
     * @param errorList An array of loops, returned so that the reported issues are not too repetitive.
     */
     void checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                            std::vector<std::string> &history,
-                            std::vector<std::vector<std::string>> &errorList);
+                             std::vector<std::string> &history,
+                             std::vector<std::vector<std::string>> &errorList);
 
     /** @brief Function to check IDs within the model scope are unique.
      *
@@ -629,14 +629,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
             IssuePtr issue = Issue::create();
             issue->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
-            issue->setUnits(units);
+            issue->setUnit(std::make_pair(units, index));
             issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
             mValidator->addIssue(issue);
         }
     } else {
         IssuePtr issue = Issue::create();
         issue->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference. The reference given is '" + reference + "'.");
-        issue->setUnits(units);
+        issue->setUnit(std::make_pair(units, index));
         issue->setReferenceRule(Issue::ReferenceRule::UNIT_UNITS_REF);
         mValidator->addIssue(issue);
     }
@@ -645,7 +645,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             if (!isCellMLInteger(prefix)) {
                 IssuePtr issue = Issue::create();
                 issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
-                issue->setUnits(units);
+                issue->setUnit(std::make_pair(units, index));
                 issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                 mValidator->addIssue(issue);
             } else {
@@ -655,7 +655,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                 } catch (std::out_of_range &) {
                     IssuePtr issue = Issue::create();
                     issue->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
-                    issue->setUnits(units);
+                    issue->setUnit(std::make_pair(units, index));
                     issue->setReferenceRule(Issue::ReferenceRule::UNIT_PREFIX);
                     mValidator->addIssue(issue);
                 }
@@ -994,7 +994,6 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
         if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
             IssuePtr issue = Issue::create();
             issue->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
-
             issue->setMath(component);
             issue->setReferenceRule(Issue::ReferenceRule::MATH_CI_VARIABLE_REF);
             mValidator->addIssue(issue);
@@ -1390,8 +1389,8 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
 }
 
 void Validator::ValidatorImpl::checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                  std::vector<std::string> &history,
-                                                  std::vector<std::vector<std::string>> &errorList)
+                                                   std::vector<std::string> &history,
+                                                   std::vector<std::vector<std::string>> &errorList)
 {
     if (parent->isBaseUnit()) {
         return;
