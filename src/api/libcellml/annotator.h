@@ -129,7 +129,7 @@ public:
      *  - no item with the given @p id exists in the stored model;
      *  - the given @p index is beyond the range [0, \#duplicateCount(id));
      *  - the item stored at the @p index is not a @c ComponentPtr; or
-     *  - the annotator does not have a model attached;
+     *  - the annotator does not have a model attached.
      *
      * @param id A @c std::string representing the id of the item to retrieve.
      * @param index The position of an item within the list of items with the given @p id to retrieve.
@@ -147,7 +147,7 @@ public:
      *  - the annotator does not have a model attached;
      *  - the @p id is not found;
      *  - the item with @p id is not a component; or
-     *  - the @p id is not unique;
+     *  - the @p id is not unique.
      *
      * @overload
      *
