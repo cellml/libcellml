@@ -24,7 +24,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
       model_string = file_contents("annotator/unique_ids.cellml")
 
-      model = parser.parseModel(model_string)
+      model = parser.parseModel(model_string_itemCellmlElement)
       annotator.setModel(model)
 
       self.assertEqual(CellMLElement.UNDEFINED, annotator.item("not_an_id")[0])
@@ -32,7 +32,7 @@ class AnnotatorTestCase(unittest.TestCase):
       self.assertEqual(CellMLElement.MAP_VARIABLES, annotator.item("map_variables_2")[0])
 
       # For coverage purposes only.
-      annotator._itemCellMLElement("not_an_id", 0)
+      annotator._itemCellmlElement("not_an_id", 0)
 
     def test_type_based_retrieval(self):
         from libcellml import Annotator, Model, Parser
