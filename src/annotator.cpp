@@ -43,13 +43,13 @@ AnyItem convertToShared(const AnyItem &item)
     AnyItem converted = std::make_pair(CellMLElement::UNDEFINED, nullptr);
 
     auto type = item.first;
-    if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+    if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         auto component = std::any_cast<ComponentWeakPtr>(item.second).lock();
         if (component) {
             converted.first = item.first;
             converted.second = component;
         }
-    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         auto weakVariablePair = std::any_cast<VariableWeakPair>(item.second);
         auto variable1 = weakVariablePair.first.lock();
         auto variable2 = weakVariablePair.second.lock();
@@ -57,7 +57,7 @@ AnyItem convertToShared(const AnyItem &item)
             converted.first = item.first;
             converted.second = std::make_pair(variable1, variable2);
         }
-    } else if (type == CellMLElement::ENCAPSULATION || type == CellMLElement::MODEL) {
+    } else if ((type == CellMLElement::ENCAPSULATION) || (type == CellMLElement::MODEL)) {
         auto model = std::any_cast<ModelWeakPtr>(item.second).lock();
         if (model) {
             converted.first = item.first;
@@ -69,7 +69,7 @@ AnyItem convertToShared(const AnyItem &item)
             converted.first = item.first;
             converted.second = importSource;
         }
-    } else if (type == CellMLElement::RESET || type == CellMLElement::RESET_VALUE || type == CellMLElement::TEST_VALUE) {
+    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::RESET_VALUE) || (type == CellMLElement::TEST_VALUE)) {
         auto reset = std::any_cast<ResetWeakPtr>(item.second).lock();
         if (reset) {
             converted.first = item.first;
@@ -104,15 +104,15 @@ AnyItem convertToWeak(const AnyItem &item)
     AnyItem converted = std::make_pair(item.first, nullptr);
 
     auto type = item.first;
-    if (type == CellMLElement::COMPONENT || type == CellMLElement::COMPONENT_REF) {
+    if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         ComponentWeakPtr weakComponent = std::any_cast<ComponentPtr>(item.second);
         converted.second = weakComponent;
-    } else if (type == CellMLElement::CONNECTION || type == CellMLElement::MAP_VARIABLES) {
+    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         auto variablePair = std::any_cast<VariablePair>(item.second);
         VariableWeakPtr weakVariable1 = variablePair.first;
         VariableWeakPtr weakVariable2 = variablePair.second;
         converted.second = std::make_pair(weakVariable1, weakVariable2);
-    } else if (type == CellMLElement::ENCAPSULATION || type == CellMLElement::MODEL) {
+    } else if ((type == CellMLElement::ENCAPSULATION) || (type == CellMLElement::MODEL)) {
         auto model = std::any_cast<ModelPtr>(item.second);
         ModelWeakPtr weakModel = model;
         converted.second = weakModel;
@@ -120,7 +120,7 @@ AnyItem convertToWeak(const AnyItem &item)
         auto importSource = std::any_cast<ImportSourcePtr>(item.second);
         ImportSourceWeakPtr weakImportSource = importSource;
         converted.second = weakImportSource;
-    } else if (type == CellMLElement::RESET || type == CellMLElement::RESET_VALUE || type == CellMLElement::TEST_VALUE) {
+    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::RESET_VALUE) || (type == CellMLElement::TEST_VALUE)) {
         auto reset = std::any_cast<ResetPtr>(item.second);
         ResetWeakPtr weakReset = reset;
         converted.second = weakReset;
