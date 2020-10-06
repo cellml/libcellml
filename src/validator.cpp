@@ -290,9 +290,9 @@ struct Validator::ValidatorImpl
     * @param history A vector of the chained dependencies. Cyclic variables exist where the first and last units are equal.
     * @param errorList An array of loops, returned so that the reported issues are not too repetitive.
     */
-    void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                            std::vector<std::string> &history,
-                            std::vector<std::vector<std::string>> &errorList);
+    void checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                             std::vector<std::string> &history,
+                             std::vector<std::vector<std::string>> &errorList);
 
     /** @brief Function to check IDs within the model scope are unique.
      *
@@ -994,7 +994,6 @@ void Validator::ValidatorImpl::validateAndCleanCiNode(const XmlNodePtr &node, co
         if (std::find(variableNames.begin(), variableNames.end(), textInNode) == variableNames.end()) {
             IssuePtr issue = Issue::create();
             issue->setDescription("MathML ci element has the child text '" + textInNode + "' which does not correspond with any variable names present in component '" + component->name() + "'.");
-
             issue->setMath(component);
             issue->setReferenceRule(Issue::ReferenceRule::MATH_CI_VARIABLE_REF);
             mValidator->addIssue(issue);
@@ -1355,7 +1354,7 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
         // Test each units' dependencies for presence of self in tree.
         UnitsPtr u = model->units(i);
         history.push_back(u->name());
-        checkUnitForCycles(model, u, history, issueList);
+        checkUnitsForCycles(model, u, history, issueList);
         // Have to delete this each time to prevent reinitialisation with previous base variables.
         std::vector<std::string>().swap(history);
     }
@@ -1378,9 +1377,9 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
                 }
                 des += issues[issues.size() - 1] + "'";
                 issue->setDescription("Cyclic units exist: " + des);
-                issue->setModel(model);
+                auto cyclicUnits = model->units(issues[issues.size() - 1]);
+                issue->setUnits(cyclicUnits);
                 issue->setReferenceRule(Issue::ReferenceRule::UNIT_CIRCULAR_REF);
-
                 mValidator->addIssue(issue);
                 reportedIssueList.push_back(hash);
             }
@@ -1389,9 +1388,9 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
     }
 }
 
-void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                  std::vector<std::string> &history,
-                                                  std::vector<std::vector<std::string>> &errorList)
+void Validator::ValidatorImpl::checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                                                   std::vector<std::string> &history,
+                                                   std::vector<std::vector<std::string>> &errorList)
 {
     if (parent->isBaseUnit()) {
         return;
@@ -1421,7 +1420,7 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
                 history.push_back(ref);
                 // Making a copy of the history vector to this point.
                 std::vector<std::string> child_history(history);
-                checkUnitForCycles(model, child, child_history, errorList);
+                checkUnitsForCycles(model, child, child_history, errorList);
                 std::vector<std::string>().swap(child_history);
             }
         }
