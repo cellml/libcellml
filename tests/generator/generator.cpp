@@ -33,7 +33,6 @@ TEST(Generator, emptyModel)
 
     auto analyserModel = analyser->model();
     auto generator = libcellml::Generator::create();
-
     generator->setModel(analyserModel);
 
     EXPECT_EQ(EMPTY_STRING, generator->interfaceCode());

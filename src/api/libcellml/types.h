@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "libcellml/enums.h"
 
+#include "libcellml/enums.h"
+
 namespace libcellml {
 
 // General classes.

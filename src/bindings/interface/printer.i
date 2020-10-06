@@ -23,5 +23,6 @@
 
 %create_constructor(Printer)
 
+%include "libcellml/enums.h"
 %include "libcellml/types.h"
 %include "libcellml/printer.h"

@@ -80,7 +80,7 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
         if (causes) {
-            std::cout << ", " << static_cast<int>(l->issue(i)->cause());
+            std::cout << ", " << static_cast<int>(l->issue(i)->itemType());
         }
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
@@ -210,7 +210,7 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
 }
 
 void expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
-                                   const std::vector<libcellml::Issue::Cause> &causes,
+                                   const std::vector<libcellml::ItemType> &causes,
                                    const std::vector<libcellml::Issue::Level> &levels,
                                    const libcellml::LoggerPtr &logger)
 {
@@ -219,7 +219,7 @@ void expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
     EXPECT_EQ(levels.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
-        EXPECT_EQ(causes.at(i), logger->issue(i)->cause());
+        EXPECT_EQ(causes.at(i), logger->issue(i)->itemType());
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
     }
 }

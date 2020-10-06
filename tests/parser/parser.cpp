@@ -1391,10 +1391,10 @@ TEST(Parser, invalidImportsAndGetIssue)
     EXPECT_EQ(import, importFromIssue);
 }
 
-TEST(Parser, invalidModelWithAllCausesOfIssues)
+TEST(Parser, invalidModelWithDifferentCausesOfIssues)
 {
     // Check for all causes of issues.
-    std::vector<bool> foundCause(9, false);
+    std::vector<bool> foundCause(7, false);
 
     // Trigger CellML entity issues
     const std::string in =
@@ -1431,32 +1431,34 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     EXPECT_EQ_ISSUES(expectedIssues, parser);
 
     for (size_t i = 0; i < parser->issueCount(); ++i) {
-        switch (parser->issue(i)->cause()) {
-        case libcellml::Issue::Cause::COMPONENT:
+        switch (parser->issue(i)->itemType()) {
+        case libcellml::ItemType::COMPONENT:
             foundCause.at(0) = true;
             break;
-        case (libcellml::Issue::Cause::CONNECTION):
+        case libcellml::ItemType::ENCAPSULATION:
             foundCause.at(1) = true;
             break;
-        case (libcellml::Issue::Cause::ENCAPSULATION):
+        case libcellml::ItemType::IMPORT:
             foundCause.at(2) = true;
             break;
-        case (libcellml::Issue::Cause::IMPORT):
+        case libcellml::ItemType::MODEL:
             foundCause.at(3) = true;
             break;
-        case (libcellml::Issue::Cause::MODEL):
+        case libcellml::ItemType::UNITS:
             foundCause.at(4) = true;
             break;
-        case (libcellml::Issue::Cause::UNITS):
+        case libcellml::ItemType::VARIABLE:
             foundCause.at(5) = true;
             break;
-        case (libcellml::Issue::Cause::VARIABLE):
-            foundCause.at(6) = true;
-            break;
-        case libcellml::Issue::Cause::MATHML:
-        case libcellml::Issue::Cause::RESET:
-        case libcellml::Issue::Cause::UNDEFINED:
-        case libcellml::Issue::Cause::XML:
+        case libcellml::ItemType::COMPONENT_REF:
+        case libcellml::ItemType::CONNECTION:
+        case libcellml::ItemType::MAP_VARIABLES:
+        case libcellml::ItemType::MATHML:
+        case libcellml::ItemType::RESET:
+        case libcellml::ItemType::RESET_VALUE:
+        case libcellml::ItemType::TEST_VALUE:
+        case libcellml::ItemType::UNDEFINED:
+        case libcellml::ItemType::UNIT:
             break;
         }
     }
@@ -1467,31 +1469,16 @@ TEST(Parser, invalidModelWithAllCausesOfIssues)
     libcellml::IssuePtr undefinedIssue = libcellml::Issue::create();
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
-    if (parser2->issue(0)->cause() == libcellml::Issue::Cause::UNDEFINED) {
-        foundCause.at(7) = true;
-    }
-
-    // Trigger an XML issue
-    const std::string input3 = "jarjarbinks";
-    const std::vector<std::string> expectedIssues3 = {
-        "LibXml2 error: Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input.",
-    };
-    libcellml::ParserPtr parser3 = libcellml::Parser::create();
-    parser3->parseModel(input3);
-    EXPECT_EQ_ISSUES(expectedIssues3, parser3);
-    for (size_t i = 0; i < parser3->issueCount(); ++i) {
-        if (parser3->issue(i)->cause() == libcellml::Issue::Cause::XML) {
-            foundCause.at(8) = true;
-        }
+    if (parser2->issue(0)->itemType() == libcellml::ItemType::UNDEFINED) {
+        foundCause.at(6) = true;
     }
 
     // Check that we've found all the possible issue types
-    bool foundAllCauses = false;
-    if (std::all_of(foundCause.begin(), foundCause.end(), [](bool i) { return i; })) {
-        foundAllCauses = true;
+    size_t index = 0;
+    for (auto state : foundCause) {
+        SCOPED_TRACE(index++);
+        EXPECT_TRUE(state);
     }
-    EXPECT_TRUE(foundAllCauses);
 }
 
 TEST(Parser, invalidModelWithTextInAllElements)
