@@ -215,6 +215,9 @@ TEST(Annotator, duplicateIdBehaviour)
     EXPECT_EQ(libcellml::CellMLElement::UNDEFINED, annotator->item("duplicateId").first);
     EXPECT_EQ(size_t(1), annotator->issueCount());
     EXPECT_EQ(expectedErrors[0], annotator->issue(0)->description());
+
+    EXPECT_FALSE(annotator->isUnique("duplicateId"));
+    EXPECT_EQ(size_t(3), annotator->duplicateCount("duplicateId"));
 }
 
 TEST(Annotator, getItemByIdSpecificType)
@@ -2135,7 +2138,7 @@ TEST(Annotator, autoIdOnOutOfDateBuild)
     EXPECT_EQ("b4da61", model->component("component2")->variable(0)->id());
 }
 
-TEST(Annotator, retreiveItemByIndex)
+TEST(Annotator, retrieveItemByIndex)
 {
     auto annotator = libcellml::Annotator::create();
     auto parser = libcellml::Parser::create();
