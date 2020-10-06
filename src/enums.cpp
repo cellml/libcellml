@@ -36,7 +36,7 @@ static const std::map<CellMLElement, std::string> cellMLElementToString = {
     {CellMLElement::UNITS, "units"},
     {CellMLElement::VARIABLE, "variable"}};
 
-std::string cellMLElementAsString(CellMLElement value)
+std::string cellmlElementAsString(CellMLElement value)
 {
     return cellMLElementToString.at(value);
 }

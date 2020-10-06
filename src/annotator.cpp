@@ -446,7 +446,7 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
 void Annotator::AnnotatorImpl::addInvalidArgument(CellMLElement type) const
 {
     auto issue = Issue::create();
-    issue->setDescription("The given type '" + cellMLElementAsString(type) + "' is invalid for this method.");
+    issue->setDescription("The given type '" + cellmlElementAsString(type) + "' is invalid for this method.");
     issue->setLevel(Issue::Level::ERROR);
     mAnnotator->addIssue(issue);
 }
