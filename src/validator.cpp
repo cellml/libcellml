@@ -291,8 +291,8 @@ struct Validator::ValidatorImpl
     * @param errorList An array of loops, returned so that the reported issues are not too repetitive.
     */
     void checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                            std::vector<std::string> &history,
-                            std::vector<std::vector<std::string>> &errorList);
+                             std::vector<std::string> &history,
+                             std::vector<std::vector<std::string>> &errorList);
 
     /** @brief Function to check IDs within the model scope are unique.
      *
@@ -1390,8 +1390,8 @@ void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
 }
 
 void Validator::ValidatorImpl::checkUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                  std::vector<std::string> &history,
-                                                  std::vector<std::vector<std::string>> &errorList)
+                                                   std::vector<std::string> &history,
+                                                   std::vector<std::vector<std::string>> &errorList)
 {
     if (parent->isBaseUnit()) {
         return;

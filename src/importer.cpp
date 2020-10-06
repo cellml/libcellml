@@ -58,7 +58,7 @@ struct Importer::ImporterImpl
     ImportLibrary mLibrary;
 
     IssuePtr makeIssueCyclicDependency(const ModelPtr &model, Type type,
-                                   std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
+                                       std::vector<std::tuple<std::string, std::string, std::string>> &history) const;
 
     bool fetchModel(const ImportSourcePtr &importSource, const std::string &baseFile);
     bool fetchImportSource(const ImportSourcePtr &importSource, Type type, const std::string &baseFile, std::vector<std::tuple<std::string, std::string, std::string>> &history);
@@ -320,8 +320,8 @@ bool Importer::ImporterImpl::fetchUnits(const UnitsPtr &importUnits, const std::
 }
 
 IssuePtr Importer::ImporterImpl::makeIssueCyclicDependency(const ModelPtr &model,
-                                                       Type type,
-                                                       std::vector<std::tuple<std::string, std::string, std::string>> &history) const
+                                                           Type type,
+                                                           std::vector<std::tuple<std::string, std::string, std::string>> &history) const
 {
     std::string msg = "Cyclic dependencies were found when attempting to resolve "
                       + std::string((type == Type::UNITS) ? "units" : "components") + " in model '"
