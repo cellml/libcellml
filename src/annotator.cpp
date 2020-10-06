@@ -1660,7 +1660,7 @@ size_t Annotator::AnnotatorImpl::generateHash()
             doUpdateComponentHash(component, idsString);
         }
 
-        return std::hash<std::string>{}(idsString);
+        return std::hash<std::string> {}(idsString);
     }
     return 0;
 }
