@@ -45,7 +45,7 @@ AnyItem convertToShared(const AnyItem &item)
     auto type = item.first;
     if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         auto component = std::any_cast<ComponentWeakPtr>(item.second).lock();
-        if (component) {
+        if (component != nullptr) {
             converted.first = item.first;
             converted.second = component;
         }
@@ -53,44 +53,44 @@ AnyItem convertToShared(const AnyItem &item)
         auto weakVariablePair = std::any_cast<VariableWeakPair>(item.second);
         auto variable1 = weakVariablePair.first.lock();
         auto variable2 = weakVariablePair.second.lock();
-        if (variable1 && variable2) {
+        if ((variable1 != nullptr) && (variable2 != nullptr)) {
             converted.first = item.first;
             converted.second = std::make_pair(variable1, variable2);
         }
     } else if ((type == CellMLElement::ENCAPSULATION) || (type == CellMLElement::MODEL)) {
         auto model = std::any_cast<ModelWeakPtr>(item.second).lock();
-        if (model) {
+        if (model != nullptr) {
             converted.first = item.first;
             converted.second = model;
         }
     } else if (type == CellMLElement::IMPORT) {
         auto importSource = std::any_cast<ImportSourceWeakPtr>(item.second).lock();
-        if (importSource) {
+        if (importSource != nullptr) {
             converted.first = item.first;
             converted.second = importSource;
         }
     } else if ((type == CellMLElement::RESET) || (type == CellMLElement::RESET_VALUE) || (type == CellMLElement::TEST_VALUE)) {
         auto reset = std::any_cast<ResetWeakPtr>(item.second).lock();
-        if (reset) {
+        if (reset != nullptr) {
             converted.first = item.first;
             converted.second = reset;
         }
     } else if (type == CellMLElement::UNIT) {
         auto weakUnitItem = std::any_cast<UnitWeakItem>(item.second);
         auto units = weakUnitItem.first.lock();
-        if (units) {
+        if (units != nullptr) {
             converted.first = item.first;
             converted.second = std::make_pair(units, weakUnitItem.second);
         }
     } else if (type == CellMLElement::UNITS) {
         auto units = std::any_cast<UnitsWeakPtr>(item.second).lock();
-        if (units) {
+        if (units != nullptr) {
             converted.first = item.first;
             converted.second = units;
         }
     } else if (type == CellMLElement::VARIABLE) {
         auto variable = std::any_cast<VariableWeakPtr>(item.second).lock();
-        if (variable) {
+        if (variable != nullptr) {
             converted.first = item.first;
             converted.second = variable;
         }
@@ -826,7 +826,7 @@ UnitItem Annotator::unit(const std::string &id, size_t index)
 void Annotator::clearAllIds()
 {
     auto model = mPimpl->mModel.lock();
-    if (model) {
+    if (model != nullptr) {
         model->setId("");
         for (size_t i = 0; i < model->importSourceCount(); ++i) {
             model->importSource(i)->setId("");
@@ -879,7 +879,7 @@ void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component
 bool Annotator::assignAllIds()
 {
     auto model = mPimpl->mModel.lock();
-    if (model) {
+    if (model != nullptr) {
         mPimpl->doSetAllAutomaticIds();
         return true;
     }
@@ -905,7 +905,7 @@ bool Annotator::assignIds(CellMLElement type)
 {
     auto model = mPimpl->mModel.lock();
     bool changed = false;
-    if (model) {
+    if (model != nullptr) {
         changed = true;
         switch (type) {
         case CellMLElement::COMPONENT:
@@ -1636,7 +1636,7 @@ size_t Annotator::AnnotatorImpl::generateHash()
 {
     // Serialise the stored model into a (very) simplified string of id-ed items, and create a hash.
     auto model = mModel.lock();
-    if (model) {
+    if (model != nullptr) {
         std::string idsString;
         idsString += "m=" + model->id() + "me=" + model->encapsulationId();
 
