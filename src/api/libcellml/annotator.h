@@ -105,7 +105,7 @@ public:
      *
      * From a list of items in the stored model with the given @p id string,
      * this method returns the item in the @p index position.
-     * 
+     *
      * See item(const std::string &) for a full breakdown of the @ref AnyItem return value.
      *
      * @overload
@@ -506,7 +506,7 @@ public:
      *
      *  If an item with the id is not found, or has another type, the
      *  @c nullptr is returned.
-     * 
+     *
      *  The annotator index must be built using Annotator::buildModelIndex(ModelPtr model)
      *  before this method can be called successfully.
      *
@@ -526,7 +526,7 @@ public:
      * Existing ids will not be changed.
      *
      * Returns @c true if at least one id was assigned, @c false otherwise.
-     * 
+     *
      * @return @c true if any ids have been changed, @c false otherwise.
      */
     bool assignAllIds();
@@ -538,27 +538,27 @@ public:
      * excluding its MathML items.
      *
      * Existing ids will not be changed.
-     * 
+     *
      * The given @p model replaces any previously stored in this annotator.
-     * 
+     *
      * @overload
      *
      * @param model The @c ModelPtr to which ids will be assigned.
-     * 
+     *
      * @return @c true if any ids have been changed, @c false otherwise.
      */
     bool assignAllIds(ModelPtr &model);
 
     /**
      * @brief Assign an id string to every item of the given @p type in the model.
-     * 
+     *
      * Assign an id string to every item of the given @p type in the
      * model. Returns @c true if at least one id was assigned, @c false otherwise.
      *
      * Existing ids will not be changed.
-     * 
+     *
      * @param type Items of this @c CellMLElement will all be assigned a new id.
-     * 
+     *
      * @return @c true if any ids have been changed, @c false otherwise.
      */
     bool assignIds(CellMLElement type);
@@ -573,10 +573,10 @@ public:
 
     /**
      * @brief Clear all ids from all items in the given @p model.
-     * 
+     *
      * Clear all ids from the @p model. The given @p model will replace any model currently stored
      * in this annotator.
-     * 
+     *
      * @param model A @ref ModelPtr.
      */
     void clearAllIds(ModelPtr &model);
@@ -585,7 +585,7 @@ public:
      * @brief Test whether the given @p id exists uniquely within the stored model.
      *
      * Test whether the given @p id exists uniquely within the stored model.
-     * 
+     *
      * @param id A @c std::string to test for uniqueness amongst the set of ids in the stored model.
      *
      * @return @c true if the @p id exists exactly once, @c false otherwise.
@@ -594,47 +594,47 @@ public:
 
     /**
      * @brief Return a @c std::vector of @c AnyItem items which have the given @p id.
-     * 
+     *
      * Return all items with the given @p id.
      *
      * The annotator requires a model to be set with setModel(ModelPtr)
      * before this method can be called successfully.
-     * 
+     *
      * @param id A @c std::string used to identify the items to retrieve.
-     * 
+     *
      * @return a @c std::vector of @ref AnyItem items.
      */
     std::vector<AnyItem> items(const std::string &id);
 
-    /** 
+    /**
      * @brief Return a @c std::vector of @c std::strings representing all id
      * strings in the stored model.
-     * 
+     *
      * Return all ids in the stored model.
      *
      * The annotator requires a model to be set with setModel(ModelPtr)
      * before this method can be called successfully.
-     * 
+     *
      * @return a @c std::vector of @c std::strings.
      */
     std::vector<std::string> ids();
 
-    /** 
+    /**
      * @brief Return a @c std::vector of @c std::strings representing any duplicated id
      * string in the stored model.
-     * 
+     *
      * Return all duplicated ids in the stored model.
      *
      * The annotator requires a model to be set with setModel(ModelPtr)
      * before this method can be called successfully.
-     * 
+     *
      * @return a @c std::vector of @c std::strings.
      */
     std::vector<std::string> duplicateIds();
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p item.
-     * 
+     *
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      *
@@ -642,16 +642,16 @@ public:
      *   - no model has been stored in this annotator;
      *   - the given @p item is not a member of the stored model; or
      *   - the given @p item is @c nullptr.
-     * 
+     *
      * @param item An @c AnyItem to which a new id will be assigned.
-     * 
+     *
      * @return the new id.
      */
     std::string assignId(const AnyItem &item);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p model.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p model.
      * The default is to assign an id to a MODEL item.
      * This method will return the new id that has been assigned, or an empty string
@@ -666,19 +666,19 @@ public:
      *  - the given @p item is not a member of the stored model;
      *  - the given @p item is not relevant to the given @p type; or
      *  - the given @p item is @c nullptr.
-     * 
+     *
      * @overload
      *
      * @param model A @c ModelPtr model to which the new id will be assigned.
      * @param type An @c CellMLElement enumeration.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const ModelPtr &model, CellMLElement type = CellMLElement::MODEL);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p component.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p component.
      * The default is to assign an id to a COMPONENT item.
      * This method will return the new id that has been assigned, or an empty string
@@ -689,19 +689,19 @@ public:
      *
      * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
-     * 
+     *
      * @overload
      *
      * @param component A @c ComponentPtr item.
      * @param type An @c CellMLElement enumeration.
-     *    
+     *
      * @return the new id string.
      */
     std::string assignId(const ComponentPtr &component, CellMLElement type = CellMLElement::COMPONENT);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p importSource.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p importSource.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -713,21 +713,21 @@ public:
      *
      * @param importSource An @c ImportSourcePtr to which the new id will be assigned.
      * @param type An @c CellMLElement enum.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const ImportSourcePtr &importSource);
 
     /**
      * @overload
-     * 
+     *
      * @brief Assign an automatically generated, unique id of the associated @p type to the given @p reset.
-     * 
+     *
      * Assign an automatically generated, unique id of the associated @p type to the given @p reset.
      * The default is to assign an id to a RESET item.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
-     * 
+     *
      * Only CellMLElement::RESET, CellMLElement::RESET_VALUE, and CellMLElement::TEST_VALUE are relevant any other
      * CellMLElement type will not assign an id.
      *
@@ -745,7 +745,7 @@ public:
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p units.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p units.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -756,7 +756,7 @@ public:
      * @overload
      *
      * @param units A @c UnitsPtr item to which the new id is assigned.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const UnitsPtr &units);
@@ -774,7 +774,7 @@ public:
      * @overload
      *
      * @param unitItem A @c UnitItem item to which the new id is assigned.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const UnitItem &unitItem);
@@ -792,14 +792,14 @@ public:
      * @overload
      *
      * @param variable A @c VariablePtr item to which the new id is assigned.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const VariablePtr &variable);
 
     /**
      * @brief Assign an automatically generated, unique id to the associated @p type for the given @p pair.
-     * 
+     *
      * Assign an automatically generated, unique id to the associated @p type for the given @p pair.
      * The default is to assign an id to a MAP_VARIABLES item.
      * This method will return the new id that has been assigned, or an empty string
@@ -815,17 +815,17 @@ public:
      *
      * @param pair A @c VariablePair item.
      * @param type A @c CellMLElement enumeration.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const VariablePair &pair, CellMLElement type = CellMLElement::MAP_VARIABLES);
 
     /**
      * @overload
-     * 
+     *
      * @brief Assign an automatically generated, unique id to the item of type @p type
      *        which exists between @p item1 and @p item2.
-     * 
+     *
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
      * The default is to assign an id to a MAP_VARIABLES item.
@@ -841,20 +841,20 @@ public:
      * @param variable1 A @c VariablePtr item defining to the first item in a connection or equivalence.
      * @param variable2 A @c VariablePtr item defining to the second item in a connection or equivalence.
      * @param type A @c CellMLElement enumeration.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const VariablePtr &variable1, const VariablePtr &variable2, CellMLElement type = CellMLElement::MAP_VARIABLES);
 
     /**
-     * @brief Assign an automatically generated, unique id to the unit item at index @p index 
+     * @brief Assign an automatically generated, unique id to the unit item at index @p index
      *        within units @p units.
-     * 
+     *
      * Assign an automatically generated, unique id to the unit item at index @p index
      * within units @p units.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
-     * 
+     *
      * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
@@ -862,14 +862,14 @@ public:
      *
      * @param units A @c UnitsPtr containing the child unit item.
      * @param index The index at which the child unit exists within the parent @p units item.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignId(const UnitsPtr &units, size_t index);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p component.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p component.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -878,7 +878,7 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param component The @c ComponentPtr which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignComponentId(const ComponentPtr &component);
@@ -896,51 +896,51 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param component The @c ComponentPtr whose encapsulation id will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignComponentRefId(const ComponentPtr &component);
 
     /**
-     * @brief Assign an automatically generated, unique id to the connection 
+     * @brief Assign an automatically generated, unique id to the connection
      *        formed between the variables in the given @c variablePair.
-     * 
+     *
      * Assign an automatically generated, unique id to the connection
      * formed between the variables in the given @c variablePair.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
-     * 
+     *
      * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the connection
      *                     which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignConnectionId(const VariablePair &variablePair);
 
     /**
-     * @brief Assign an automatically generated, unique id to the encapsulation 
+     * @brief Assign an automatically generated, unique id to the encapsulation
      *        of the given @c model.
-     * 
+     *
      * Assign an automatically generated, unique id to the encapsulation
      * of the given @c model.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
-     * 
+     *
      * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param model A @c ModelPtr whose encapsulation will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignEncapsulationId(const ModelPtr &model);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p importSource.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p importSource.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -949,15 +949,15 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param importSource An @c ImportSourcePtr which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignImportSourceId(const ImportSourcePtr &importSource);
 
     /**
-     * @brief Assign an automatically generated, unique id to the variable mapping 
+     * @brief Assign an automatically generated, unique id to the variable mapping
      *        formed between the variables in the given @c variablePair.
-     * 
+     *
      * Assign an automatically generated, unique id to the variable mapping
      * formed between the variables in the given @c variablePair.
      * This method will return the new id that has been assigned, or an empty string
@@ -966,16 +966,16 @@ public:
      * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
-     * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the equivalence 
+     * @param variablePair A @c VariablePair containing two @c VariablePtrs which define the equivalence
      *                     which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignMapVariablesId(const VariablePair &variablePair);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p model.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p model.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -984,14 +984,14 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param model The @c ModelPtr which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignModelId(const ModelPtr &model);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p reset.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p reset.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -1000,14 +1000,14 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignResetId(const ResetPtr &reset);
 
     /**
      * @brief Assign an automatically generated, unique id to the reset value inside the given @p reset.
-     * 
+     *
      * Assign an automatically generated, unique id to the reset value inside the given @p reset.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -1016,14 +1016,14 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr whose reset value will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignResetValueId(const ResetPtr &reset);
 
     /**
      * @brief Assign an automatically generated, unique id to the test value inside the given @p reset.
-     * 
+     *
      * Assign an automatically generated, unique id to the test value inside the given @p reset.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -1032,14 +1032,14 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param reset The @c ResetPtr whose test value will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignTestValueId(const ResetPtr &reset);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p unitItem.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p unitItem.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -1047,15 +1047,15 @@ public:
      * @see assignId(const ModelPtr &, CellMLElement) for a list of reasons that an id may not be assigned.
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
-     * @param unitItem The @c UnitItem which will be assigned the new id. 
-     * 
+     * @param unitItem The @c UnitItem which will be assigned the new id.
+     *
      * @return the new id string.
      */
     std::string assignUnitId(const UnitItem &unitItem);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p units.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p units.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -1064,14 +1064,14 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param units The @c UnitsPtr which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignUnitsId(const UnitsPtr &units);
 
     /**
      * @brief Assign an automatically generated, unique id to the given @p variable.
-     * 
+     *
      * Assign an automatically generated, unique id to the given @p variable.
      * This method will return the new id that has been assigned, or an empty string
      * if the operation failed.
@@ -1080,7 +1080,7 @@ public:
      * @see errorCount() if and/or error(size_t) for any issues that may have been raised.
      *
      * @param variable The @c VariablePtr which will be assigned the new id.
-     * 
+     *
      * @return the new id string.
      */
     std::string assignVariableId(const VariablePtr &variable);
@@ -1091,7 +1091,7 @@ public:
      * Return the number of items with the given @p id.
      *
      * @param id A @c std::string for the id to find.
-     * 
+     *
      * @return the number of items with the given @p id.
      */
     size_t duplicateCount(const std::string &id);
