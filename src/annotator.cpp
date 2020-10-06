@@ -453,16 +453,15 @@ void Annotator::AnnotatorImpl::addInvalidArgument(CellMLElement type) const
 
 bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 {
-    bool exists = true;
     if (!mAnnotator->hasModel()) {
         addIssueNoModel();
-        exists = false;
-    } else if ((mIdList.count(id) <= index) || (mIdList.count(id) == 0)) {
-        addIssueNotFound(id);
-        exists = false;
+        return false;
     }
-
-    return exists;
+    if ((mIdList.count(id) <= index) || (mIdList.count(id) == 0)) {
+        addIssueNotFound(id);
+        return false;
+    }
+    return true;
 }
 
 AnyItem Annotator::item(const std::string &id)
@@ -523,211 +522,184 @@ std::vector<std::string> Annotator::ids()
 
 ComponentPtr Annotator::component(const std::string &id)
 {
-    ComponentPtr component = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            component = this->component(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return component(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return component;
+    return nullptr;
 }
 
 VariablePtr Annotator::variable(const std::string &id)
 {
-    VariablePtr variable = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            variable = this->variable(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return variable(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return variable;
+    return nullptr;
 }
 
 ModelPtr Annotator::model(const std::string &id)
 {
-    ModelPtr model = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            model = this->model(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return model(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return model;
+    return nullptr;
 }
 
 ModelPtr Annotator::encapsulation(const std::string &id)
 {
-    ModelPtr model = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            model = this->encapsulation(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return encapsulation(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return model;
+    return nullptr;
 }
 
 UnitsPtr Annotator::units(const std::string &id)
 {
-    UnitsPtr units = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            units = this->units(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return units(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return units;
+    return nullptr;
 }
 
 ImportSourcePtr Annotator::importSource(const std::string &id)
 {
-    ImportSourcePtr importSource = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            importSource = this->importSource(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return importSource(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return importSource;
+    return nullptr;
 }
 
 ResetPtr Annotator::reset(const std::string &id)
 {
-    ResetPtr reset = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            reset = this->reset(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return reset(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return reset;
+    return nullptr;
 }
 
 VariablePair Annotator::connection(const std::string &id)
 {
-    VariablePair pair = std::make_pair(nullptr, nullptr);
     if (hasModel()) {
         if (isUnique(id)) {
-            pair = this->connection(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return connection(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return pair;
+    return std::make_pair(nullptr, nullptr);
 }
 
 VariablePair Annotator::mapVariables(const std::string &id)
 {
-    VariablePair pair = std::make_pair(nullptr, nullptr);
     if (hasModel()) {
         if (isUnique(id)) {
-            pair = this->mapVariables(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return mapVariables(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return pair;
+    return std::make_pair(nullptr, nullptr);
 }
 
 UnitItem Annotator::unit(const std::string &id)
 {
-    UnitItem unitItem = std::make_pair(nullptr, 0);
     if (hasModel()) {
         if (isUnique(id)) {
-            unitItem = this->unit(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return unit(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return unitItem;
+    return std::make_pair(nullptr, 0);
 }
 
 ComponentPtr Annotator::componentRef(const std::string &id)
 {
-    ComponentPtr component = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            component = this->componentRef(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return componentRef(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return component;
+    return nullptr;
 }
 
 ResetPtr Annotator::testValue(const std::string &id)
 {
-    ResetPtr reset = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            reset = this->testValue(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return testValue(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return reset;
+    return nullptr;
 }
 
 ResetPtr Annotator::resetValue(const std::string &id)
 {
-    ResetPtr reset = nullptr;
     if (hasModel()) {
         if (isUnique(id)) {
-            reset = this->resetValue(id, 0);
-        } else {
-            mPimpl->addIssueNonUnique(id);
+            return resetValue(id, 0);
         }
+        mPimpl->addIssueNonUnique(id);
     } else {
         mPimpl->addIssueNoModel();
     }
-    return reset;
+    return nullptr;
 }
 
 ComponentPtr Annotator::component(const std::string &id, size_t index)
 {
     mPimpl->update();
-    ComponentPtr component = nullptr;
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            component = std::any_cast<ComponentPtr>(i.second);
+            return std::any_cast<ComponentPtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
-    return component;
+    return nullptr;
 }
 
 ComponentPtr Annotator::componentRef(const std::string &id, size_t index)
@@ -738,31 +710,29 @@ ComponentPtr Annotator::componentRef(const std::string &id, size_t index)
 VariablePtr Annotator::variable(const std::string &id, size_t index)
 {
     mPimpl->update();
-    VariablePtr variable = nullptr;
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            variable = std::any_cast<VariablePtr>(i.second);
+            return std::any_cast<VariablePtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
 
-    return variable;
+    return nullptr;
 }
 
 ModelPtr Annotator::model(const std::string &id, size_t index)
 {
     mPimpl->update();
-    ModelPtr model = nullptr;
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            model = std::any_cast<ModelPtr>(i.second);
+            return std::any_cast<ModelPtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
 
-    return model;
+    return nullptr;
 }
 
 ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
@@ -773,44 +743,41 @@ ModelPtr Annotator::encapsulation(const std::string &id, size_t index)
 UnitsPtr Annotator::units(const std::string &id, size_t index)
 {
     mPimpl->update();
-    UnitsPtr units = nullptr;
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            units = std::any_cast<UnitsPtr>(i.second);
+            return std::any_cast<UnitsPtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
-    return units;
+    return nullptr;
 }
 
 ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
 {
     mPimpl->update();
-    ImportSourcePtr importSource = nullptr;
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            importSource = std::any_cast<ImportSourcePtr>(i.second);
+            return std::any_cast<ImportSourcePtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
 
-    return importSource;
+    return nullptr;
 }
 
 ResetPtr Annotator::reset(const std::string &id, size_t index)
 {
     mPimpl->update();
-    ResetPtr reset = nullptr;
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            reset = std::any_cast<ResetPtr>(i.second);
+            return std::any_cast<ResetPtr>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
-    return reset;
+    return nullptr;
 }
 
 ResetPtr Annotator::testValue(const std::string &id, size_t index)
@@ -826,16 +793,15 @@ ResetPtr Annotator::resetValue(const std::string &id, size_t index)
 VariablePair Annotator::connection(const std::string &id, size_t index)
 {
     mPimpl->update();
-    VariablePair pair = std::make_pair(nullptr, nullptr);
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            pair = std::any_cast<VariablePair>(i.second);
+            return std::any_cast<VariablePair>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
 
-    return pair;
+    return std::make_pair(nullptr, nullptr);
 }
 
 VariablePair Annotator::mapVariables(const std::string &id, size_t index)
@@ -846,16 +812,15 @@ VariablePair Annotator::mapVariables(const std::string &id, size_t index)
 UnitItem Annotator::unit(const std::string &id, size_t index)
 {
     mPimpl->update();
-    UnitItem unitItem = std::make_pair(nullptr, 0);
     if (mPimpl->exists(id, index)) {
         auto i = items(id).at(index);
         try {
-            unitItem = std::any_cast<UnitItem>(i.second);
+            return std::any_cast<UnitItem>(i.second);
         } catch (std::bad_any_cast &) {
         }
     }
 
-    return unitItem;
+    return std::make_pair(nullptr, 0);
 }
 
 void Annotator::clearAllIds()
@@ -913,16 +878,13 @@ void Annotator::AnnotatorImpl::doClearComponentIds(const ComponentPtr &component
 
 bool Annotator::assignAllIds()
 {
-    bool assigned = false;
     auto model = mPimpl->mModel.lock();
     if (model) {
         mPimpl->doSetAllAutomaticIds();
-        assigned = true;
-    } else {
-        mPimpl->addIssueNoModel();
+        return true;
     }
-
-    return assigned;
+    mPimpl->addIssueNoModel();
+    return false;
 }
 
 bool Annotator::assignAllIds(ModelPtr &model)
@@ -1265,49 +1227,50 @@ std::string Annotator::AnnotatorImpl::makeUniqueId()
 
 std::string Annotator::AnnotatorImpl::id(const AnyItem &item)
 {
-    std::string id;
     CellMLElement type = item.first;
     if (type == CellMLElement::UNIT) {
         auto unitItem = std::any_cast<UnitItem>(item.second);
-        id = unitItem.first->unitId(unitItem.second);
-    } else if (type == CellMLElement::MODEL) {
-        auto entity = std::any_cast<ModelPtr>(item.second);
-        id = entity->id();
-    } else if (type == CellMLElement::RESET) {
-        auto entity = std::any_cast<ResetPtr>(item.second);
-        id = entity->id();
-    } else if (type == CellMLElement::UNITS) {
-        auto entity = std::any_cast<UnitsPtr>(item.second);
-        id = entity->id();
-    } else if (type == CellMLElement::IMPORT) {
-        auto entity = std::any_cast<ImportSourcePtr>(item.second);
-        id = entity->id();
-    } else if (type == CellMLElement::VARIABLE) {
-        auto entity = std::any_cast<VariablePtr>(item.second);
-        id = entity->id();
-    } else if (type == CellMLElement::COMPONENT) {
-        auto entity = std::any_cast<ComponentPtr>(item.second);
-        id = entity->id();
-    } else if (type == CellMLElement::CONNECTION) {
-        auto variablePair = std::any_cast<VariablePair>(item.second);
-        id = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
-    } else if (type == CellMLElement::TEST_VALUE) {
-        auto reset = std::any_cast<ResetPtr>(item.second);
-        id = reset->testValueId();
-    } else if (type == CellMLElement::RESET_VALUE) {
-        auto reset = std::any_cast<ResetPtr>(item.second);
-        id = reset->resetValueId();
-    } else if (type == CellMLElement::COMPONENT_REF) {
-        auto entity = std::any_cast<ComponentPtr>(item.second);
-        id = entity->encapsulationId();
-    } else if (type == CellMLElement::ENCAPSULATION) {
-        auto entity = std::any_cast<ModelPtr>(item.second);
-        id = entity->encapsulationId();
-    } else if (type == CellMLElement::MAP_VARIABLES) {
-        auto variablePair = std::any_cast<VariablePair>(item.second);
-        id = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
+        return unitItem.first->unitId(unitItem.second);
     }
-    return id;
+    if (type == CellMLElement::MODEL) {
+        return std::any_cast<ModelPtr>(item.second)->id();
+    }
+    if (type == CellMLElement::RESET) {
+        return std::any_cast<ResetPtr>(item.second)->id();
+    }
+    if (type == CellMLElement::UNITS) {
+        return std::any_cast<UnitsPtr>(item.second)->id();
+    }
+    if (type == CellMLElement::IMPORT) {
+        return std::any_cast<ImportSourcePtr>(item.second)->id();
+    }
+    if (type == CellMLElement::VARIABLE) {
+        return std::any_cast<VariablePtr>(item.second)->id();
+    }
+    if (type == CellMLElement::COMPONENT) {
+        return std::any_cast<ComponentPtr>(item.second)->id();
+    }
+    if (type == CellMLElement::CONNECTION) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        return Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
+    }
+    if (type == CellMLElement::TEST_VALUE) {
+        return std::any_cast<ResetPtr>(item.second)->testValueId();
+    }
+    if (type == CellMLElement::RESET_VALUE) {
+        return std::any_cast<ResetPtr>(item.second)->resetValueId();
+    }
+    if (type == CellMLElement::COMPONENT_REF) {
+        return std::any_cast<ComponentPtr>(item.second)->encapsulationId();
+    }
+    if (type == CellMLElement::ENCAPSULATION) {
+        return std::any_cast<ModelPtr>(item.second)->encapsulationId();
+    }
+    if (type == CellMLElement::MAP_VARIABLES) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        return Variable::equivalenceMappingId(variablePair.first, variablePair.second);
+    }
+    return {};
 }
 
 void Annotator::AnnotatorImpl::setId(const AnyItem &item, const std::string &id)
@@ -1317,38 +1280,28 @@ void Annotator::AnnotatorImpl::setId(const AnyItem &item, const std::string &id)
         auto unitItem = std::any_cast<UnitItem>(item.second);
         unitItem.first->setUnitId(unitItem.second, id);
     } else if (type == CellMLElement::MODEL) {
-        auto entity = std::any_cast<ModelPtr>(item.second);
-        entity->setId(id);
+        std::any_cast<ModelPtr>(item.second)->setId(id);
     } else if (type == CellMLElement::RESET) {
-        auto entity = std::any_cast<ResetPtr>(item.second);
-        entity->setId(id);
+        std::any_cast<ResetPtr>(item.second)->setId(id);
     } else if (type == CellMLElement::UNITS) {
-        auto entity = std::any_cast<UnitsPtr>(item.second);
-        entity->setId(id);
+        std::any_cast<UnitsPtr>(item.second)->setId(id);
     } else if (type == CellMLElement::IMPORT) {
-        auto entity = std::any_cast<ImportSourcePtr>(item.second);
-        entity->setId(id);
+        std::any_cast<ImportSourcePtr>(item.second)->setId(id);
     } else if (type == CellMLElement::VARIABLE) {
-        auto entity = std::any_cast<VariablePtr>(item.second);
-        entity->setId(id);
+        std::any_cast<VariablePtr>(item.second)->setId(id);
     } else if (type == CellMLElement::COMPONENT) {
-        auto entity = std::any_cast<ComponentPtr>(item.second);
-        entity->setId(id);
+        std::any_cast<ComponentPtr>(item.second)->setId(id);
     } else if (type == CellMLElement::CONNECTION) {
         auto variablePair = std::any_cast<VariablePair>(item.second);
         Variable::setEquivalenceConnectionId(variablePair.first, variablePair.second, id);
     } else if (type == CellMLElement::TEST_VALUE) {
-        auto reset = std::any_cast<ResetPtr>(item.second);
-        reset->setTestValueId(id);
+        std::any_cast<ResetPtr>(item.second)->setTestValueId(id);
     } else if (type == CellMLElement::RESET_VALUE) {
-        auto reset = std::any_cast<ResetPtr>(item.second);
-        reset->setResetValueId(id);
+        std::any_cast<ResetPtr>(item.second)->setResetValueId(id);
     } else if (type == CellMLElement::COMPONENT_REF) {
-        auto entity = std::any_cast<ComponentPtr>(item.second);
-        entity->setEncapsulationId(id);
+        std::any_cast<ComponentPtr>(item.second)->setEncapsulationId(id);
     } else if (type == CellMLElement::ENCAPSULATION) {
-        auto entity = std::any_cast<ModelPtr>(item.second);
-        entity->setEncapsulationId(id);
+        std::any_cast<ModelPtr>(item.second)->setEncapsulationId(id);
     } else if (type == CellMLElement::MAP_VARIABLES) {
         auto variablePair = std::any_cast<VariablePair>(item.second);
         Variable::setEquivalenceMappingId(variablePair.first, variablePair.second, id);
@@ -1357,144 +1310,141 @@ void Annotator::AnnotatorImpl::setId(const AnyItem &item, const std::string &id)
 
 bool Annotator::AnnotatorImpl::isOwnedByModel(const AnyItem &item) const
 {
-    bool modelBased = false;
     CellMLElement type = item.first;
     auto model = mModel.lock();
     if (type == CellMLElement::UNIT) {
-        auto unitItem = std::any_cast<UnitItem>(item.second);
-        modelBased = owningModel(unitItem.first) == model;
-    } else if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
-        auto entity = std::any_cast<ModelPtr>(item.second);
-        modelBased = entity == model;
-    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
-        auto entity = std::any_cast<ResetPtr>(item.second);
-        modelBased = owningModel(entity) == model;
-    } else if (type == CellMLElement::UNITS) {
-        auto entity = std::any_cast<UnitsPtr>(item.second);
-        modelBased = owningModel(entity) == model;
-    } else if (type == CellMLElement::IMPORT) {
-        auto entity = std::any_cast<ImportSourcePtr>(item.second);
-        modelBased = owningModel(entity) == model;
-    } else if (type == CellMLElement::VARIABLE) {
-        auto entity = std::any_cast<VariablePtr>(item.second);
-        modelBased = owningModel(entity) == model;
-    } else if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
-        auto entity = std::any_cast<ComponentPtr>(item.second);
-        modelBased = owningModel(entity) == model;
-    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
-        auto variablePair = std::any_cast<VariablePair>(item.second);
-        modelBased = owningModel(variablePair.first) == model && owningModel(variablePair.second) == model;
+        return owningModel(std::any_cast<UnitItem>(item.second).first) == model;
     }
-    return modelBased;
+    if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
+        return std::any_cast<ModelPtr>(item.second) == model;
+    }
+    if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
+        return owningModel(std::any_cast<ResetPtr>(item.second)) == model;
+    }
+    if (type == CellMLElement::UNITS) {
+        return owningModel(std::any_cast<UnitsPtr>(item.second)) == model;
+    }
+    if (type == CellMLElement::IMPORT) {
+        return owningModel(std::any_cast<ImportSourcePtr>(item.second)) == model;
+    }
+    if (type == CellMLElement::VARIABLE) {
+        return owningModel(std::any_cast<VariablePtr>(item.second)) == model;
+    }
+    if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
+        return owningModel(std::any_cast<ComponentPtr>(item.second)) == model;
+    }
+    if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
+        auto variablePair = std::any_cast<VariablePair>(item.second);
+        return owningModel(variablePair.first) == model && owningModel(variablePair.second) == model;
+    }
+    return false;
 }
 
 bool Annotator::AnnotatorImpl::itemsEqual(const AnyItem &itemWeak, const AnyItem &itemShared)
 {
-    bool itemsEqual = false;
     auto item = convertToWeak(itemShared);
     CellMLElement type = itemWeak.first;
     if (type == CellMLElement::UNIT) {
         auto unit1 = std::any_cast<UnitWeakItem>(itemWeak.second);
         auto unit2 = std::any_cast<UnitWeakItem>(item.second);
-        itemsEqual = equals(unit1.first, unit2.first) && unit1.second == unit2.second;
-    } else if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
-        itemsEqual = equals(std::any_cast<ModelWeakPtr>(itemWeak.second), std::any_cast<ModelWeakPtr>(item.second));
-    } else if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
-        itemsEqual = equals(std::any_cast<ResetWeakPtr>(itemWeak.second), std::any_cast<ResetWeakPtr>(item.second));
-    } else if (type == CellMLElement::UNITS) {
-        itemsEqual = equals(std::any_cast<UnitsWeakPtr>(itemWeak.second), std::any_cast<UnitsWeakPtr>(item.second));
-    } else if (type == CellMLElement::IMPORT) {
-        itemsEqual = equals(std::any_cast<ImportSourceWeakPtr>(itemWeak.second), std::any_cast<ImportSourceWeakPtr>(item.second));
-    } else if (type == CellMLElement::VARIABLE) {
-        itemsEqual = equals(std::any_cast<VariableWeakPtr>(itemWeak.second), std::any_cast<VariableWeakPtr>(item.second));
-    } else if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
-        itemsEqual = equals(std::any_cast<ComponentWeakPtr>(itemWeak.second), std::any_cast<ComponentWeakPtr>(item.second));
-    } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
+        return equals(unit1.first, unit2.first) && unit1.second == unit2.second;
+    }
+    if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
+        return equals(std::any_cast<ModelWeakPtr>(itemWeak.second), std::any_cast<ModelWeakPtr>(item.second));
+    }
+    if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
+        return equals(std::any_cast<ResetWeakPtr>(itemWeak.second), std::any_cast<ResetWeakPtr>(item.second));
+    }
+    if (type == CellMLElement::UNITS) {
+        return equals(std::any_cast<UnitsWeakPtr>(itemWeak.second), std::any_cast<UnitsWeakPtr>(item.second));
+    }
+    if (type == CellMLElement::IMPORT) {
+        return equals(std::any_cast<ImportSourceWeakPtr>(itemWeak.second), std::any_cast<ImportSourceWeakPtr>(item.second));
+    }
+    if (type == CellMLElement::VARIABLE) {
+        return equals(std::any_cast<VariableWeakPtr>(itemWeak.second), std::any_cast<VariableWeakPtr>(item.second));
+    }
+    if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
+        return equals(std::any_cast<ComponentWeakPtr>(itemWeak.second), std::any_cast<ComponentWeakPtr>(item.second));
+    }
+    if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         auto pair1 = std::any_cast<VariableWeakPair>(itemWeak.second);
         auto pair2 = std::any_cast<VariableWeakPair>(item.second);
-        itemsEqual = (equals(pair1.first, pair2.first) && equals(pair1.second, pair2.second)) || (equals(pair1.first, pair2.second) && equals(pair1.second, pair2.first));
+        return (equals(pair1.first, pair2.first) && equals(pair1.second, pair2.second)) || (equals(pair1.first, pair2.second) && equals(pair1.second, pair2.first));
     }
-    return itemsEqual;
+    return false;
 }
 
 bool Annotator::AnnotatorImpl::validItem(const AnyItem &item)
 {
-    bool valid = false;
     CellMLElement type = item.first;
     if (type == CellMLElement::UNIT) {
         try {
-            auto unitItem = std::any_cast<UnitItem>(item.second);
-            if (unitItem.first) {
-                valid = true;
+            if (std::any_cast<UnitItem>(item.second).first != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if ((type == CellMLElement::MODEL) || (type == CellMLElement::ENCAPSULATION)) {
         try {
-            auto entity = std::any_cast<ModelPtr>(item.second);
-            if (entity) {
-                valid = true;
+            if (std::any_cast<ModelPtr>(item.second) != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if ((type == CellMLElement::RESET) || (type == CellMLElement::TEST_VALUE) || (type == CellMLElement::RESET_VALUE)) {
         try {
-            auto entity = std::any_cast<ResetPtr>(item.second);
-            if (entity) {
-                valid = true;
+            if (std::any_cast<ResetPtr>(item.second) != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if (type == CellMLElement::UNITS) {
         try {
-            auto entity = std::any_cast<UnitsPtr>(item.second);
-            if (entity) {
-                valid = true;
+            if (std::any_cast<UnitsPtr>(item.second) != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if (type == CellMLElement::IMPORT) {
         try {
-            auto entity = std::any_cast<ImportSourcePtr>(item.second);
-            if (entity) {
-                valid = true;
+            if (std::any_cast<ImportSourcePtr>(item.second) != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if (type == CellMLElement::VARIABLE) {
         try {
-            auto entity = std::any_cast<VariablePtr>(item.second);
-            if (entity) {
-                valid = true;
+            if (std::any_cast<VariablePtr>(item.second) != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if ((type == CellMLElement::COMPONENT) || (type == CellMLElement::COMPONENT_REF)) {
         try {
-            auto entity = std::any_cast<ComponentPtr>(item.second);
-            if (entity) {
-                valid = true;
+            if (std::any_cast<ComponentPtr>(item.second) != nullptr) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     } else if ((type == CellMLElement::CONNECTION) || (type == CellMLElement::MAP_VARIABLES)) {
         try {
             auto pair = std::any_cast<VariablePair>(item.second);
-            if (pair.first && pair.second) {
-                valid = true;
+            if ((pair.first != nullptr) && (pair.second != nullptr)) {
+                return true;
             }
         } catch (std::bad_any_cast &) {
-            valid = false;
+            return false;
         }
     }
-    return valid;
+    return false;
 }
 
 void Annotator::AnnotatorImpl::removeId(const AnyItem &item, const std::string &id)
@@ -1510,31 +1460,31 @@ void Annotator::AnnotatorImpl::removeId(const AnyItem &item, const std::string &
 
 std::string Annotator::AnnotatorImpl::setAutoId(const AnyItem &item)
 {
-    std::string id;
+    std::string newId;
     if (validItem(item)) {
         if (mModel.lock()) {
-            auto oldId = this->id(item);
+            auto oldId = id(item);
 
             if (!isOwnedByModel(item)) {
-                return id;
+                return newId;
             }
 
             update();
-            id = makeUniqueId();
+            newId = makeUniqueId();
 
             if (!oldId.empty()) {
                 removeId(item, oldId);
             }
 
-            this->setId(item, id);
-            mIdList.insert(std::make_pair(id, convertToWeak(item)));
+            setId(item, newId);
+            mIdList.insert(std::make_pair(newId, convertToWeak(item)));
         } else {
             addIssueNoModel();
         }
     } else {
         addInvalidArgument(item.first);
     }
-    return id;
+    return newId;
 }
 
 std::string Annotator::assignComponentId(const ComponentPtr &component)
@@ -1685,7 +1635,6 @@ void Annotator::AnnotatorImpl::doUpdateComponentHash(const ComponentPtr &compone
 size_t Annotator::AnnotatorImpl::generateHash()
 {
     // Serialise the stored model into a (very) simplified string of id-ed items, and create a hash.
-    size_t hash = 0;
     auto model = mModel.lock();
     if (model) {
         std::string idsString;
@@ -1711,10 +1660,9 @@ size_t Annotator::AnnotatorImpl::generateHash()
             doUpdateComponentHash(component, idsString);
         }
 
-        std::hash<std::string> hasher;
-        hash = hasher(idsString);
+        return std::hash<std::string>{}(idsString);
     }
-    return hash;
+    return 0;
 }
 
 bool Annotator::hasModel() const
