@@ -503,7 +503,7 @@ std::vector<std::string> Annotator::duplicateIds()
     std::vector<std::string> ids;
     for (auto i = mPimpl->mIdList.begin(), end = mPimpl->mIdList.end(); i != end; i = mPimpl->mIdList.upper_bound(i->first)) {
         auto next = i;
-        next++;
+        ++next;
         if ((next != end) && (next->first == i->first) && !i->first.empty()) {
             ids.push_back(i->first);
         }
