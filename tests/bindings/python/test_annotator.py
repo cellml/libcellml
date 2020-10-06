@@ -13,26 +13,26 @@ class AnnotatorTestCase(unittest.TestCase):
 
         x = Annotator()
         self.assertIsNotNone(x)
-        del(x)
+        del x
 
     def test_item(self):
-      from libcellml import Annotator, CellMLElement, Model, Parser
+        from libcellml import Annotator, CellMLElement, Model, Parser
 
-      annotator = Annotator()
-      model = Model()
-      parser = Parser()
+        annotator = Annotator()
+        model = Model()
+        parser = Parser()
 
-      model_string = file_contents("annotator/unique_ids.cellml")
+        model_string = file_contents("annotator/unique_ids.cellml")
 
-      model = parser.parseModel(model_string)
-      annotator.setModel(model)
+        model = parser.parseModel(model_string)
+        annotator.setModel(model)
 
-      self.assertEqual(CellMLElement.UNDEFINED, annotator.item("not_an_id")[0])
-      self.assertEqual(CellMLElement.UNDEFINED, annotator.item("not_an_id", 3)[0])
-      self.assertEqual(CellMLElement.MAP_VARIABLES, annotator.item("map_variables_2")[0])
+        self.assertEqual(CellMLElement.UNDEFINED, annotator.item("not_an_id")[0])
+        self.assertEqual(CellMLElement.UNDEFINED, annotator.item("not_an_id", 3)[0])
+        self.assertEqual(CellMLElement.MAP_VARIABLES, annotator.item("map_variables_2")[0])
 
-      # For coverage purposes only.
-      annotator._itemCellMLElement("not_an_id", 0)
+        # For coverage purposes only.
+        annotator._itemCellmlElement("not_an_id", 0)
 
     def test_type_based_retrieval(self):
         from libcellml import Annotator, Model, Parser
@@ -78,7 +78,6 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(model.component("component2").variable("variable1").name(),
                          annotator.variable("variable_1").name())
 
-
         self.assertEqual(model.component("component2").variable("variable2").name(),
                          annotator.variable("variable_2").name())
         self.assertEqual(model.component("component2").reset(0).variable().name(),
@@ -95,37 +94,37 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(model.component("component2").component("component3").variable("variable2").name(),
                          annotator.variable("variable_4").name())
         self.assertEqual(v1v1[0].name(),
-            annotator.connection("connection_1")[0].name())
+                         annotator.connection("connection_1")[0].name())
 
         self.assertEqual(v1v1[1].name(),
-            annotator.connection("connection_1")[1].name())
+                         annotator.connection("connection_1")[1].name())
         self.assertEqual(v1v1[0].name(),
-            annotator.mapVariables("map_variables_1")[0].name())
+                         annotator.mapVariables("map_variables_1")[0].name())
         self.assertEqual(v1v1[1].name(),
-            annotator.mapVariables("map_variables_1")[1].name())
+                         annotator.mapVariables("map_variables_1")[1].name())
         self.assertEqual(v2v2[0].name(),
-            annotator.mapVariables("map_variables_2")[0].name())
+                         annotator.mapVariables("map_variables_2")[0].name())
         self.assertEqual(v2v2[1].name(),
-            annotator.mapVariables("map_variables_2")[1].name())
+                         annotator.mapVariables("map_variables_2")[1].name())
 
         self.assertIsNone(annotator.model("i_dont_exist"))
         self.assertIsNone(annotator.component("i_dont_exist"))
         self.assertIsNone(annotator.variable("i_dont_exist"))
         self.assertIsNone(annotator.units("i_dont_exist"))
-        non_existent_unit  = annotator.unit("i_dont_exist")
+        non_existent_unit = annotator.unit("i_dont_exist")
         self.assertIsNone(non_existent_unit.first)
         self.assertEqual(0, non_existent_unit.second)
         self.assertIsNone(annotator.reset("i_dont_exist"))
         self.assertIsNone(annotator.resetValue("i_dont_exist"))
         self.assertIsNone(annotator.testValue("i_dont_exist"))
         self.assertIsNone(annotator.componentRef("i_dont_exist"))
-        non_existent_connection  = annotator.connection("i_dont_exist")
+        non_existent_connection = annotator.connection("i_dont_exist")
         self.assertIsNone(non_existent_connection.first)
         self.assertIsNone(non_existent_connection.second)
         self.assertIsNone(annotator.importSource("i_dont_exist"))
 
     def test_ids(self):
-        from libcellml import Annotator, Model, Parser
+        from libcellml import Annotator, Parser
 
         annotator = Annotator()
         parser = Parser()
@@ -136,7 +135,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(24, len(annotator.ids()))
 
     def test_duplicate_count(self):
-        from libcellml import Annotator, Model, Parser
+        from libcellml import Annotator, Parser
 
         annotator = Annotator()
         parser = Parser()
@@ -148,7 +147,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual(7, annotator.duplicateCount("duplicateId3"))
 
     def test_has_model(self):
-        from libcellml import Annotator, Model, Parser
+        from libcellml import Annotator, Parser
 
         annotator = Annotator()
         parser = Parser()
@@ -161,7 +160,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertTrue(annotator.hasModel())
 
     def test_is_unique(self):
-        from libcellml import Annotator, Model, Parser
+        from libcellml import Annotator, Parser
 
         annotator = Annotator()
         parser = Parser()
@@ -177,9 +176,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertFalse(annotator.isUnique("duplicateId2"))
 
     def test_assign_by_type(self):
-        from libcellml import Annotator, Model, Parser, Variable
+        from libcellml import Annotator, Parser, Variable
         from libcellml.annotator import UnitItem, VariablePair
-        #from libcellml.types import UnitItem, VariablePair
 
         annotator = Annotator()
         parser = Parser()
@@ -254,7 +252,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da61", u.unitId(0))
 
     def test_auto_ids(self):
-        from libcellml import Annotator, Model, Parser, Variable
+        from libcellml import Annotator, Parser, Variable
         annotator = Annotator()
         parser = Parser()
         model_string = file_contents("annotator/unique_ids.cellml")
@@ -305,9 +303,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da6c", model.encapsulationId())
 
     def test_assign_id(self):
-        from libcellml import Annotator, CellMLElement, Component, Model, Units
+        from libcellml import Annotator, Component, Model, Units
         from libcellml.annotator import UnitItem
-        #from libcellml.types import UnitItem
         from libcellml.enums import CellMLElement_UNDEFINED
 
         annotator = Annotator()
@@ -344,7 +341,7 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("", annotator.assignId(None, CellMLElement_UNDEFINED))
 
     def test_auto_ids_group(self):
-        from libcellml import Annotator, CellMLElement, Component, Model
+        from libcellml import Annotator, Component, Model
         from libcellml.enums import CellMLElement_COMPONENT
         annotator = Annotator()
         model = Model()
@@ -371,9 +368,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da57", component3.id())
 
     def test_auto_id_individual(self):
-        from libcellml import Annotator, CellMLElement, Model, Parser, Variable
+        from libcellml import Annotator, CellMLElement, Parser, Variable
         from libcellml.annotator import UnitItem, VariablePair
-        #from libcellml.types import UnitItem, VariablePair
 
         annotator = Annotator()
         parser = Parser()
@@ -389,7 +385,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da56", model.component("component2").encapsulationId())
 
         self.assertEqual("b4da57", annotator.assignId(VariablePair(model.component("component2").variable("variable1"),
-                                                      model.component("component2").variable("variable1").equivalentVariable(0)),
+                                                                   model.component("component2").variable(
+                                                                       "variable1").equivalentVariable(0)),
                                                       CellMLElement.CONNECTION))
 
         self.assertEqual("b4da57", Variable.equivalenceConnectionId(
@@ -400,17 +397,20 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da58", model.importSource(0).id())
 
         self.assertEqual("b4da59", annotator.assignId(VariablePair(model.component("component2").variable("variable2"),
-                                                      model.component("component2").variable("variable2").equivalentVariable(0)),
+                                                                   model.component("component2").variable(
+                                                                       "variable2").equivalentVariable(0)),
                                                       CellMLElement.MAP_VARIABLES))
         self.assertEqual("b4da59", Variable.equivalenceMappingId(model.component("component2").variable("variable2"),
-                                                                 model.component("component2").variable("variable2").equivalentVariable(0)))
+                                                                 model.component("component2").variable(
+                                                                     "variable2").equivalentVariable(0)))
         self.assertEqual("b4da5a", annotator.assignId(model, CellMLElement.MODEL))
         self.assertEqual("b4da5a", model.id())
 
         self.assertEqual("b4da5b", annotator.assignId(model.component("component2").reset(0), CellMLElement.RESET))
         self.assertEqual("b4da5b", model.component("component2").reset(0).id())
 
-        self.assertEqual("b4da5c", annotator.assignId(model.component("component2").reset(0), CellMLElement.RESET_VALUE))
+        self.assertEqual("b4da5c",
+                         annotator.assignId(model.component("component2").reset(0), CellMLElement.RESET_VALUE))
         self.assertEqual("b4da5c", model.component("component2").reset(0).resetValueId())
 
         self.assertEqual("b4da5d", annotator.assignId(model.component("component2").reset(0), CellMLElement.TEST_VALUE))
@@ -429,9 +429,9 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("b4da61", model.encapsulationId())
 
     def test_list_duplicate_ids(self):
-        from libcellml import Annotator, CellMLElement, Model, Parser
+        from libcellml import Annotator, CellMLElement, Parser
 
-        model_string =  file_contents("annotator/lots_of_duplicate_ids.cellml")
+        model_string = file_contents("annotator/lots_of_duplicate_ids.cellml")
 
         parser = Parser()
         annotator = Annotator()
@@ -451,43 +451,43 @@ class AnnotatorTestCase(unittest.TestCase):
 
         expected_items = {
             "duplicateId1": (
-                                (CellMLElement.UNITS, model.units("units2")),
-                                (CellMLElement.IMPORT, model.importSource(0)),
-                                (CellMLElement.MAP_VARIABLES, (c4v1, c2v1)),
-                                (CellMLElement.COMPONENT, model.component("component2")),
-                                (CellMLElement.CONNECTION, (c2v1, c3v1)),
-                                (CellMLElement.TEST_VALUE, model.component("component2").reset(0)),
-                                (CellMLElement.COMPONENT_REF, model.component("component2").component("component3")),
-                                (CellMLElement.VARIABLE, model.component("component2").component("component3").variable("variable2")),
-                            ),
+                (CellMLElement.UNITS, model.units("units2")),
+                (CellMLElement.IMPORT, model.importSource(0)),
+                (CellMLElement.MAP_VARIABLES, (c4v1, c2v1)),
+                (CellMLElement.COMPONENT, model.component("component2")),
+                (CellMLElement.CONNECTION, (c2v1, c3v1)),
+                (CellMLElement.TEST_VALUE, model.component("component2").reset(0)),
+                (CellMLElement.COMPONENT_REF, model.component("component2").component("component3")),
+                (CellMLElement.VARIABLE, model.component("component2").component("component3").variable("variable2")),
+            ),
             "duplicateId2": (
-                                (CellMLElement.MODEL, model),
-                                (CellMLElement.UNITS, model.units("units1")),
-                                (CellMLElement.UNITS, model.units("blob")),
-                                (CellMLElement.CONNECTION, (c4v2, c2v2)),
-                                (CellMLElement.VARIABLE, c4v2),
-                                (CellMLElement.COMPONENT_REF, model.component("component2")),
-                                (CellMLElement.RESET, model.component("component2").reset(0)),
-                                (CellMLElement.VARIABLE, c3v1),
-                            ),
+                (CellMLElement.MODEL, model),
+                (CellMLElement.UNITS, model.units("units1")),
+                (CellMLElement.UNITS, model.units("blob")),
+                (CellMLElement.CONNECTION, (c4v2, c2v2)),
+                (CellMLElement.VARIABLE, c4v2),
+                (CellMLElement.COMPONENT_REF, model.component("component2")),
+                (CellMLElement.RESET, model.component("component2").reset(0)),
+                (CellMLElement.VARIABLE, c3v1),
+            ),
             "duplicateId3": (
-                                (CellMLElement.IMPORT, model.importSource(1)),
-                                (CellMLElement.UNITS, model.units("units3")),
-                                (CellMLElement.VARIABLE, c4v1),
-                                (CellMLElement.VARIABLE, c2v2),
-                                (CellMLElement.MAP_VARIABLES, (c2v2, c4v2)),
-                                (CellMLElement.COMPONENT, model.component("component2").component("component3")),
-                                (CellMLElement.ENCAPSULATION, model),
-                            ),
+                (CellMLElement.IMPORT, model.importSource(1)),
+                (CellMLElement.UNITS, model.units("units3")),
+                (CellMLElement.VARIABLE, c4v1),
+                (CellMLElement.VARIABLE, c2v2),
+                (CellMLElement.MAP_VARIABLES, (c2v2, c4v2)),
+                (CellMLElement.COMPONENT, model.component("component2").component("component3")),
+                (CellMLElement.ENCAPSULATION, model),
+            ),
             "duplicateId4": (
-                                (CellMLElement.UNIT, ((model.units("units2"), 0))),
-                                (CellMLElement.COMPONENT, model.component("component1")),
-                                (CellMLElement.COMPONENT, model.component("component4")),
-                                (CellMLElement.MAP_VARIABLES, (c2v1, c3v1)),
-                                (CellMLElement.VARIABLE, c2v1),
-                                (CellMLElement.MAP_VARIABLES, (c2v2, c4v2)),
-                                (CellMLElement.RESET_VALUE, model.component("component2").reset(0)),
-                            )}
+                (CellMLElement.UNIT, ((model.units("units2"), 0))),
+                (CellMLElement.COMPONENT, model.component("component1")),
+                (CellMLElement.COMPONENT, model.component("component4")),
+                (CellMLElement.MAP_VARIABLES, (c2v1, c3v1)),
+                (CellMLElement.VARIABLE, c2v1),
+                (CellMLElement.MAP_VARIABLES, (c2v2, c4v2)),
+                (CellMLElement.RESET_VALUE, model.component("component2").reset(0)),
+            )}
 
         for id in expected_ids:
             items_with_id = annotator.items(id)
@@ -502,7 +502,6 @@ class AnnotatorTestCase(unittest.TestCase):
     def test_unit_item_coverage(self):
         from libcellml import Units
         from libcellml.annotator import UnitItem
-        #from libcellml.types import UnitItem
 
         u = Units("bob")
         u_i = UnitItem()
@@ -516,8 +515,7 @@ class AnnotatorTestCase(unittest.TestCase):
     def test_variable_pair_coverage(self):
         from libcellml import Variable
         from libcellml.annotator import VariablePair
-        #from libcellml.types import UnitItem
-
+        
         v1 = Variable("ray")
         v2 = Variable("charles")
         v_p = VariablePair()

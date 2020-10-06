@@ -50,7 +50,7 @@
 "Return the ComponentPtr with the given component_ref id.";
 
 %feature("docstring") libcellml::Annotator::unit
-"Returns a UnitItem a pair consisting of UnitsPtr and index which defines the Unit with the given id.";
+"Returns a UnitItem, a pair consisting of UnitsPtr and index which defines the Unit with the given id.";
 
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given id.";
@@ -127,7 +127,7 @@
 // PRIVATE: Functions only written to support bindings. They are not
 // intended to be called from anywhere other than this file.
 
-%feature("docstring") libcellml::Annotator::_itemCellMLElement
+%feature("docstring") libcellml::Annotator::_itemCellmlElement
 "Private: Utility function to retrieve item type integer based on id.";
 
 %{
@@ -155,7 +155,7 @@ from libcellml import CellMLElement
 
 %extend libcellml::Annotator {
 
-    CellMLElement _itemCellMLElement(const std::string &id, size_t index)
+    CellMLElement _itemCellmlElement(const std::string &id, size_t index)
     {
         auto itemInfo = $self->item(id, index);
         return itemInfo.first;
@@ -171,7 +171,7 @@ from libcellml import CellMLElement
         if index == -1:
             index = 0
 
-        type = _annotator.Annotator__itemCellMLElement(self, id, index)
+        type = _annotator.Annotator__itemCellmlElement(self, id, index)
         if type == CellMLElement.COMPONENT:
             return (type, _annotator.Annotator_component(self, id, index))
         elif type == CellMLElement.COMPONENT_REF:
