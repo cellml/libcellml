@@ -50,7 +50,7 @@
 "Return the ComponentPtr with the given component_ref id.";
 
 %feature("docstring") libcellml::Annotator::unit
-"Returns a UnitItem a pair consisting of UnitsPtr and index which defines the Unit with the given id.";
+"Returns a UnitItem, a pair consisting of UnitsPtr and index which defines the Unit with the given id.";
 
 %feature("docstring") libcellml::Annotator::connection
 "Return a VariablePair that defines a connection with given id.";
