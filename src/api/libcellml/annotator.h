@@ -151,7 +151,7 @@ public:
      *
      * @overload
      *
-     * @param id @c std::tring representing the id of the item to retrieve.
+     * @param id A @c std::string representing the id of the item to retrieve.
      *
      * @return A @ref ComponentPtr on success otherwise @c nullptr.
      */
@@ -181,7 +181,7 @@ public:
      *
      * @overload
      *
-     * @param id @c std::string representing the id of the item to retrieve.
+     * @param id A @c std::string representing the id of the item to retrieve.
      *
      * @return A @c ComponentPtr on success otherwise @c nullptr.
      */
@@ -597,7 +597,7 @@ public:
      *
      * Return all items with the given @p id.
      *
-     * The annotator requires a model to be set with setModel(ModelPtr)
+     * The annotator requires a model to be set with setModel(const ModelPtr &)
      * before this method can be called successfully.
      *
      * @param id A @c std::string used to identify the items to retrieve.
@@ -612,7 +612,7 @@ public:
      *
      * Return all ids in the stored model.
      *
-     * The annotator requires a model to be set with setModel(ModelPtr)
+     * The annotator requires a model to be set with setModel(const ModelPtr &)
      * before this method can be called successfully.
      *
      * @return a @c std::vector of @c std::strings.
@@ -625,7 +625,7 @@ public:
      *
      * Return all duplicated ids in the stored model.
      *
-     * The annotator requires a model to be set with setModel(ModelPtr)
+     * The annotator requires a model to be set with setModel(const ModelPtr &)
      * before this method can be called successfully.
      *
      * @return a @c std::vector of @c std::strings.
