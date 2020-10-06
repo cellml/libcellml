@@ -238,7 +238,6 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
     // Imports.
     ImportSourcePtr importSource = component->importSource();
     if (component->isImport() && importSource != nullptr) {
-        ImportSourceWeakPtr weakImportSource = importSource;
         id = importSource->id();
         if (!id.empty()) {
             auto entry = convertToWeak(std::make_pair(CellMLElement::IMPORT, importSource));
@@ -321,7 +320,6 @@ void listComponentIdsAndItems(const ComponentPtr &component, ItemList &idList)
     // Resets.
     for (size_t r = 0; r < component->resetCount(); ++r) {
         ResetPtr reset = component->reset(r);
-        ResetWeakPtr weakReset = reset;
         id = reset->id();
         if (!id.empty()) {
             auto entry = convertToWeak(std::make_pair(CellMLElement::RESET, reset));
@@ -378,7 +376,6 @@ ItemList listIdsAndItems(const ModelPtr &model)
         }
         if (units->isImport() && units->importSource() != nullptr) {
             ImportSourcePtr importSource = units->importSource();
-            ImportSourceWeakPtr weakImportSource = importSource;
             id = importSource->id();
             auto entry = convertToWeak(std::make_pair(CellMLElement::IMPORT, importSource));
             idList.insert(std::make_pair(id, entry));
