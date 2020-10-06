@@ -161,7 +161,7 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(
             Issue.ReferenceRule.MAP_VARIABLES_IDENTICAL_UNIT_REDUCTION, int)
         self.assertIsInstance(
-            Issue.ReferenceRule.TODO, int)
+            Issue.ReferenceRule.NOT_SPECIFIED, int)
 
         # Test conversion to enum
         e = Issue()
