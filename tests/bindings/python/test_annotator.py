@@ -24,7 +24,7 @@ class AnnotatorTestCase(unittest.TestCase):
 
       model_string = file_contents("annotator/unique_ids.cellml")
 
-      model = parser.parseModel(model)
+      model = parser.parseModel(model_string)
       annotator.setModel(model)
 
       self.assertEqual(CellMLElement.UNDEFINED, annotator.item("not_an_id")[0])
