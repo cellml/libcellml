@@ -6,7 +6,7 @@
 #include "libcellml/enums.h"
 %}
 
-%ignore libcellml::cellMLElementAsString;
+%ignore libcellml::cellmlElementAsString;
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
