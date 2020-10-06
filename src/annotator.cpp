@@ -744,8 +744,7 @@ VariablePtr Annotator::variable(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             variable = std::any_cast<VariablePtr>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
 
@@ -760,8 +759,7 @@ ModelPtr Annotator::model(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             model = std::any_cast<ModelPtr>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
 
@@ -781,8 +779,7 @@ UnitsPtr Annotator::units(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             units = std::any_cast<UnitsPtr>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
     return units;
@@ -796,8 +793,7 @@ ImportSourcePtr Annotator::importSource(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             importSource = std::any_cast<ImportSourcePtr>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
 
@@ -812,8 +808,7 @@ ResetPtr Annotator::reset(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             reset = std::any_cast<ResetPtr>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
     return reset;
@@ -837,8 +832,7 @@ VariablePair Annotator::connection(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             pair = std::any_cast<VariablePair>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
 
@@ -858,8 +852,7 @@ UnitItem Annotator::unit(const std::string &id, size_t index)
         auto i = items(id).at(index);
         try {
             unitItem = std::any_cast<UnitItem>(i.second);
-        } catch (std::bad_any_cast &e) {
-            (void)e;
+        } catch (std::bad_any_cast &) {
         }
     }
 
