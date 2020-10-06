@@ -871,3 +871,37 @@ TEST(Importer, clearModelImportsBeforeResolving)
     // resolved import source has not.
     importer->resolveImports(model, resourcePath("importer/"));
 }
+
+
+TEST(Importer, KRM)
+{
+    auto parser = libcellml::Parser::create();
+    auto model = parser->parseModel(fileContents("importer/KRM/SodiumChannelModel_unflattened.cellml"));
+    EXPECT_NE(model, nullptr);
+
+    printIssues(parser);
+    EXPECT_EQ(size_t(0), parser->issueCount());
+
+    auto validator = libcellml::Validator::create();
+    validator->validateModel(model);
+    printIssues(validator);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto importer = libcellml::Importer::create();
+    importer->resolveImports(model, resourcePath("importer/KRM/"));
+    printIssues(importer);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    auto clonedModel = model->clone();
+    validator->validateModel(clonedModel);
+    printIssues(validator);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+
+    auto flatModel = importer->flattenModel(model);
+    printIssues(importer);
+    EXPECT_EQ(size_t(0), importer->issueCount());
+
+    validator->validateModel(flatModel);
+    printIssues(validator);
+    EXPECT_EQ(size_t(0), validator->issueCount());
+}
