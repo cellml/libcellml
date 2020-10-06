@@ -5,11 +5,11 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 */
 %module(package="libcellml") types
 
-%include <stdint.i>
 %include <std_multimap.i>
 %include <std_pair.i>
 %include <std_shared_ptr.i>
 %include <std_string.i>
+%include <stdint.i>
 
 %shared_ptr(libcellml::Analyser)
 %shared_ptr(libcellml::AnalyserEquation)
@@ -42,7 +42,6 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
-
 %}
 
 %include "libcellml/types.h"
