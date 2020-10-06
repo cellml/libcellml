@@ -357,7 +357,6 @@ ItemList listIdsAndItems(const ModelPtr &model)
     // Units.
     for (size_t u = 0; u < model->unitsCount(); ++u) {
         UnitsPtr units = model->units(u);
-        UnitsWeakPtr weakUnits = units;
         id = units->id();
         if (!id.empty()) {
             auto entry = convertToWeak(std::make_pair(CellMLElement::UNITS, units));
