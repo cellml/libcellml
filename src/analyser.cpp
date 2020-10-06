@@ -924,6 +924,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                   + "' and variable '" + internalVariable->mVariable->name()
                                   + "' in component '" + trackedVariableComponent->name()
                                   + "' are equivalent and cannot therefore both be initialised.");
+            issue->setReferenceRule(Issue::ReferenceRule::TODO);
             issue->setVariable(variable);
             mAnalyser->addIssue(issue);
         }
@@ -950,7 +951,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                       + "' is initialised using variable '" + internalVariable->mVariable->initialValue()
                                       + "', but it is not a constant.");
                 issue->setVariable(variable);
-
+                issue->setReferenceRule(Issue::ReferenceRule::TODO);
                 mAnalyser->addIssue(issue);
             }
         }
@@ -1036,7 +1037,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                             issue->setVariable(voiEquivalentVariable);
 
                             mAnalyser->addIssue(issue);
-
+                            issue->setReferenceRule(Issue::ReferenceRule::TODO);
                             isVoiInitialised = true;
                         }
                     }
@@ -1060,6 +1061,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' cannot both be the variable of integration.");
             issue->setVariable(variable);
+            issue->setReferenceRule(Issue::ReferenceRule::TODO);
             mAnalyser->addIssue(issue);
         }
     }
@@ -1080,6 +1082,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' in component '" + owningComponent(variable)->name()
                                   + "' must be of the first order.");
             issue->setMath(owningComponent(variable));
+            issue->setReferenceRule(Issue::ReferenceRule::TODO);
             mAnalyser->addIssue(issue);
         }
     }
@@ -1302,7 +1305,7 @@ void Analyser::AnalyserImpl::analyseModel(const ModelPtr &model)
                                       + "' in component '" + owningComponent(realVariable)->name()
                                       + "' " + issueType + ".");
                 issue->setVariable(realVariable);
-
+                issue->setReferenceRule(Issue::ReferenceRule::TODO);
                 mAnalyser->addIssue(issue);
             }
         }
