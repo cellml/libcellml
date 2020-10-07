@@ -140,23 +140,6 @@
 %ignore libcellml::Annotator::items;
 %ignore libcellml::Annotator::assignId;
 
-// %ignore libcellml::Annotator::assignId(const AnyItem &item);
-// %ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &,libcellml::CellMLElement);
-// %ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &,libcellml::CellMLElement);
-// %ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::ImportSourcePtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &,libcellml::CellMLElement);
-// %ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::UnitItem const &);
-// %ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::VariablePair const &,libcellml::CellMLElement);
-// %ignore libcellml::Annotator::assignId(libcellml::VariablePair const &);
-// %ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &,libcellml::CellMLElement);
-// %ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &);
-// %ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &, size_t);
-
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 
@@ -166,6 +149,7 @@ from libcellml import CellMLElement
 %template() std::vector<std::string>;
 
 %include "libcellml/annotator.h"
+%include "libcellml/issue.h"
 
 %template(UnitItem) std::pair< libcellml::UnitsPtr, size_t >;
 %template(VariablePair) std::pair< libcellml::VariablePtr, libcellml::VariablePtr >;
@@ -270,8 +254,23 @@ from libcellml import CellMLElement
 
     def item(self, id, index=-1):
         r"""Retrieve a unique item with the given id."""
-        if index == -1 and not _annotator.Annotator_isUnique(self, id):
-            return (CellMLElement.UNDEFINED, None)
+        if index == -1:
+            num = _annotator.Annotator_duplicateCount(self, id)
+            if num > 1:
+                from libcellml import Issue
+                issue = Issue()
+                issue.setDescription("The id '" + id + "' occurs " + str(num) + " times in the model so a unique item cannot be located.")
+                issue.setLevel(Issue.Level.WARNING)
+                self.addIssue(issue)
+                return (CellMLElement.UNDEFINED, None)
+
+            if num == 0:
+                from libcellml import Issue
+                issue = Issue()
+                issue.setDescription("Could not find an item with an id of '" + id + "' in the model.")
+                issue.setLevel(Issue.Level.WARNING)
+                self.addIssue(issue)
+                return (CellMLElement.UNDEFINED, None)
 
         if index == -1:
             index = 0
