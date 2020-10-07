@@ -149,7 +149,6 @@ from libcellml import CellMLElement
 %template() std::vector<std::string>;
 
 %include "libcellml/annotator.h"
-%include "libcellml/issue.h"
 
 %template(UnitItem) std::pair< libcellml::UnitsPtr, size_t >;
 %template(VariablePair) std::pair< libcellml::VariablePtr, libcellml::VariablePtr >;

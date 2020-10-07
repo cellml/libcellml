@@ -535,9 +535,8 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("ray", v_p.first.name())
         self.assertEqual("charles", v_p.second.name())
 
-    def test_krm(self):
-        from libcellml import Annotator, CellMLElement, Parser, Variable
-        from libcellml.annotator import UnitItem, VariablePair
+    def test_assign_ids_to_duplicates(self):
+        from libcellml import Annotator, Parser
 
         annotator = Annotator()
         parser = Parser()
@@ -550,6 +549,36 @@ class AnnotatorTestCase(unittest.TestCase):
             for item in item_list:
                 annotator.assignId(item)
             self.assertEqual(0, annotator.duplicateCount(id))
+
+    def test_raise_not_found_issue(self):
+        from libcellml import Annotator, Parser
+
+        annotator = Annotator()
+        parser = Parser()
+
+        message = 'Could not find an item with an id of \'i_dont_exist\' in the model.'
+
+        model = parser.parseModel(file_contents('annotator/unique_ids.cellml'))
+        annotator.setModel(model)
+        annotator.item('i_dont_exist')
+
+        self.assertEqual(1, annotator.issueCount())
+        self.assertEqual(message, annotator.issue(0).description())
+
+    def test_raise_non_unique_issue(self):
+        from libcellml import Annotator, Parser
+
+        annotator = Annotator()
+        parser = Parser()
+
+        non_unique_message = 'The id \'duplicateId\' occurs 29 times in the model so a unique item cannot be located.'
+
+        model = parser.parseModel(file_contents('annotator/duplicate_ids.cellml'))
+        annotator.setModel(model)
+
+        annotator.item('duplicateId')
+        self.assertEqual(1, annotator.issueCount())
+        self.assertEqual(non_unique_message, annotator.issue(0).description())
 
 
 if __name__ == '__main__':
