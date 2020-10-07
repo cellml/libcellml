@@ -177,62 +177,93 @@ from libcellml import CellMLElement
         auto itemInfo = $self->item(id, index);
         return itemInfo.first;
     }
-
-    std::string _assignId(const AnyItem &item) {
+    std::string _assignId(const AnyItem &item)
+    {
         return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ModelPtr const &item, libcellml::CellMLElement type) {
+    std::string _assignId(libcellml::ModelPtr const &item, libcellml::CellMLElement type)
+    {
         return $self->assignId(item, type);
     }
-    std::string _assignId(libcellml::ModelPtr const &item) {
+    std::string _assignId(libcellml::ModelPtr const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ComponentPtr const &item, libcellml::CellMLElement type){
+    std::string _assignId(libcellml::ComponentPtr const &item, libcellml::CellMLElement type)
+    {
     return $self->assignId(item, type);
     }
-    std::string _assignId(libcellml::ComponentPtr const &item){
+    std::string _assignId(libcellml::ComponentPtr const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ImportSourcePtr const &item){
+    std::string _assignId(libcellml::ImportSourcePtr const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::ResetPtr const &item, libcellml::CellMLElement type){
+    std::string _assignId(libcellml::ImportSourcePtr const &item, libcellml::CellMLElement type)
+    {
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::ResetPtr const &item, libcellml::CellMLElement type)
+    {
     return $self->assignId(item, type);
     }
-    std::string _assignId(libcellml::ResetPtr const &item){
+    std::string _assignId(libcellml::ResetPtr const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::UnitsPtr const &item){
+    std::string _assignId(libcellml::UnitsPtr const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::UnitItem const &item){
+    std::string _assignId(libcellml::UnitItem const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::VariablePtr const &item){
+    std::string _assignId(libcellml::UnitItem const &item, libcellml::CellMLElement type)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::VariablePair const &item, libcellml::CellMLElement type){
+    std::string _assignId(libcellml::VariablePtr const &item)
+    {
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::VariablePtr const &item, libcellml::CellMLElement type)
+    {
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::VariablePair const &item, libcellml::CellMLElement type)
+    {
     return $self->assignId(item, type);
     }
-    std::string _assignId(libcellml::VariablePair const &item){
+    std::string _assignId(libcellml::VariablePair const &item)
+    {
     return $self->assignId(item);
     }
-    std::string _assignId(libcellml::VariablePtr const &item1, libcellml::VariablePtr const &item2, libcellml::CellMLElement type) {
+    std::string _assignId(libcellml::VariablePtr const &item1, libcellml::VariablePtr const &item2, libcellml::CellMLElement type)
+    {
     return $self->assignId(item1, item2, type);
     }
-    std::string _assignId(libcellml::VariablePtr const &item1,libcellml::VariablePtr const &item2){
+    std::string _assignId(libcellml::VariablePtr const &item1,libcellml::VariablePtr const &item2)
+    {
     return $self->assignId(item1, item2);
     }
-    std::string _assignId(libcellml::UnitsPtr const &item, size_t index){
+    std::string _assignId(libcellml::UnitsPtr const &item, size_t index)
+    {
     return $self->assignId(item, index);
+    }
+    std::string _assignId(libcellml::UnitsPtr const &item, libcellml::CellMLElement type)
+    {
+    return $self->assignId(item);
     }
 
 %pythoncode %{
 
     def assignId(self, *args):
         r"""Set the id of the given item to an automatically generated, unique string, and return new id."""
-        if (len(args) == 1):
-            if (type(args[0]).__name__ in ['list', 'tuple']):
+        if len(args) == 1:
+            if type(args[0]).__name__ in ['list', 'tuple']:
                 return _annotator.Annotator__assignId(self, args[0][1], args[0][0])
             return _annotator.Annotator__assignId(self, args[0])
         return _annotator.Annotator__assignId(self, args[0], args[1])

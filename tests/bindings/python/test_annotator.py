@@ -535,6 +535,21 @@ class AnnotatorTestCase(unittest.TestCase):
         self.assertEqual("ray", v_p.first.name())
         self.assertEqual("charles", v_p.second.name())
 
+    def test_krm(self):
+        from libcellml import Annotator, CellMLElement, Parser, Variable
+        from libcellml.annotator import UnitItem, VariablePair
+
+        annotator = Annotator()
+        parser = Parser()
+        model_string = file_contents("annotator/lots_of_duplicate_ids.cellml")
+        model = parser.parseModel(model_string)
+        annotator.setModel(model)
+
+        for id in annotator.duplicateIds():
+            item_list = annotator.items(id)
+            for item in item_list:
+                annotator.assignId(item)
+            self.assertEqual(0, annotator.duplicateCount(id))
 
 
 if __name__ == '__main__':
