@@ -318,7 +318,7 @@ void testReferenceRule(const libcellml::IssuePtr &e)
     case libcellml::Issue::ReferenceRule::MAP_VARIABLES_AVAILABLE_INTERFACE:
         EXPECT_EQ("3.10.8", e->referenceHeading());
         break;
-    case libcellml::Issue::ReferenceRule::NOT_SPECIFIED:
+    case libcellml::Issue::ReferenceRule::UNSPECIFIED:
         EXPECT_EQ("", e->referenceHeading());
         break;
     }
@@ -577,7 +577,7 @@ TEST(Issue, referenceRule)
     e->setReferenceRule(libcellml::Issue::ReferenceRule::XML);
     ++count;
     testReferenceRule(e);
-    e->setReferenceRule(libcellml::Issue::ReferenceRule::NOT_SPECIFIED);
+    e->setReferenceRule(libcellml::Issue::ReferenceRule::UNSPECIFIED);
     ++count;
     testReferenceRule(e);
     EXPECT_EQ(size_t(84), count);
