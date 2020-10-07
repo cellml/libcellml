@@ -926,6 +926,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                   + "' are equivalent and cannot therefore both be initialised.");
             issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
             issue->setVariable(variable);
+
             mAnalyser->addIssue(issue);
         }
 
@@ -952,6 +953,7 @@ void Analyser::AnalyserImpl::analyseComponent(const ComponentPtr &component)
                                       + "', but it is not a constant.");
                 issue->setVariable(variable);
                 issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
+
                 mAnalyser->addIssue(issue);
             }
         }
@@ -1035,9 +1037,10 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                                   + "' in component '" + owningComponent(voiEquivalentVariable)->name()
                                                   + "' cannot be both a variable of integration and initialised.");
                             issue->setVariable(voiEquivalentVariable);
+                            issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
 
                             mAnalyser->addIssue(issue);
-                            issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
+
                             isVoiInitialised = true;
                         }
                     }
@@ -1062,6 +1065,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' cannot both be the variable of integration.");
             issue->setVariable(variable);
             issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
+
             mAnalyser->addIssue(issue);
         }
     }
@@ -1083,6 +1087,7 @@ void Analyser::AnalyserImpl::analyseEquationAst(const AnalyserEquationAstPtr &as
                                   + "' must be of the first order.");
             issue->setMath(owningComponent(variable));
             issue->setReferenceRule(Issue::ReferenceRule::NOT_SPECIFIED);
+
             mAnalyser->addIssue(issue);
         }
     }
