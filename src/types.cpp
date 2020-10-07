@@ -30,7 +30,7 @@ namespace libcellml {
 struct UnitReference::UnitReferenceImpl
 {
     UnitsWeakPtr mUnits; /**< Variable 1 for the pair.*/
-    size_t mIndex; /**< Variable 2 for the pair.*/
+    size_t mIndex = std::numeric_limits<size_t>::max(); /**< Variable 2 for the pair.*/
 };
 
 /**

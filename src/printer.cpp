@@ -146,7 +146,10 @@ void buildMapsForComponentsVariables(const ComponentPtr &component, ComponentMap
             if (equivalentVariable->hasEquivalentVariable(variable)) {
                 VariablePairPtr variablePair = VariablePair::create(variable, equivalentVariable);
                 auto pairFound = std::find_if(variableMap.begin(), variableMap.end(),
-                                              [variable, equivalentVariable](VariablePairPtr in) { return (in->variable1() == equivalentVariable && in->variable2() == variable) || (in->variable1() == variable && in->variable2() == equivalentVariable); });
+                                              [variable, equivalentVariable](const VariablePairPtr &in) {
+                                                  return ((in->variable1() == equivalentVariable) && (in->variable2() == variable))
+                                                         || ((in->variable1() == variable) && (in->variable2() == equivalentVariable));
+                                              });
                 if (pairFound == variableMap.end()) {
                     // Get parent components.
                     ComponentPtr component1 = owningComponent(variable);
