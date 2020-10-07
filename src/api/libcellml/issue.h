@@ -51,9 +51,9 @@ public:
      *   - libcellml::ImportSourcePtr (defaults the item type to CellMLReferenceType::IMPORT);
      *   - libcellml::ModelPtr (defaults the item type to CellMLReferenceType::MODEL);
      *   - libcellml::ResetPtr (defaults the item type to CellMLReferenceType::RESET);
-     *   - libcellml::UnitReference (defaults the item type to CellMLReferenceType::UNIT);
+     *   - libcellml::UnitReferencePtr (defaults the item type to CellMLReferenceType::UNIT);
      *   - libcellml::UnitsPtr (defaults the item type to CellMLReferenceType::UNITS);
-     *   - libcellml::VariablePair (defaults the item type to CellMLReferenceType::MAP_VARIABLES);
+     *   - libcellml::VariablePairPtr (defaults the item type to CellMLReferenceType::MAP_VARIABLES);
      *   - libcellml::VariablePtr (defaults the item type to CellMLReferenceType::VARIABLE); or
      *   - libcellml::CellMLReferenceType, std::any.
      *
