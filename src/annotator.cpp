@@ -468,7 +468,7 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 AnyItem Annotator::item(const std::string &id)
 {
     AnyItem retrieved = std::make_pair(CellMLElement::UNDEFINED, nullptr);
-    auto num = duplicateCount(id);
+    auto num = itemCount(id);
     if (num == 1) {
         retrieved = item(id, 0);
     } else if (num == 0) {
@@ -527,7 +527,7 @@ std::vector<std::string> Annotator::ids()
 ComponentPtr Annotator::component(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return component(id, 0);
         }
@@ -545,7 +545,7 @@ ComponentPtr Annotator::component(const std::string &id)
 VariablePtr Annotator::variable(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return variable(id, 0);
         }
@@ -563,7 +563,7 @@ VariablePtr Annotator::variable(const std::string &id)
 ModelPtr Annotator::model(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return model(id, 0);
         }
@@ -581,7 +581,7 @@ ModelPtr Annotator::model(const std::string &id)
 ModelPtr Annotator::encapsulation(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return encapsulation(id, 0);
         }
@@ -599,7 +599,7 @@ ModelPtr Annotator::encapsulation(const std::string &id)
 UnitsPtr Annotator::units(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return units(id, 0);
         }
@@ -617,7 +617,7 @@ UnitsPtr Annotator::units(const std::string &id)
 ImportSourcePtr Annotator::importSource(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return importSource(id, 0);
         }
@@ -635,7 +635,7 @@ ImportSourcePtr Annotator::importSource(const std::string &id)
 ResetPtr Annotator::reset(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return reset(id, 0);
         }
@@ -653,7 +653,7 @@ ResetPtr Annotator::reset(const std::string &id)
 VariablePair Annotator::connection(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return connection(id, 0);
         }
@@ -671,7 +671,7 @@ VariablePair Annotator::connection(const std::string &id)
 VariablePair Annotator::mapVariables(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return mapVariables(id, 0);
         }
@@ -689,7 +689,7 @@ VariablePair Annotator::mapVariables(const std::string &id)
 UnitItem Annotator::unit(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return unit(id, 0);
         }
@@ -707,7 +707,7 @@ UnitItem Annotator::unit(const std::string &id)
 ComponentPtr Annotator::componentRef(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return componentRef(id, 0);
         }
@@ -725,7 +725,7 @@ ComponentPtr Annotator::componentRef(const std::string &id)
 ResetPtr Annotator::testValue(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return testValue(id, 0);
         }
@@ -743,7 +743,7 @@ ResetPtr Annotator::testValue(const std::string &id)
 ResetPtr Annotator::resetValue(const std::string &id)
 {
     if (hasModel()) {
-        auto num = duplicateCount(id);
+        auto num = itemCount(id);
         if (num == 1) {
             return resetValue(id, 0);
         }
@@ -1651,7 +1651,7 @@ std::string Annotator::assignId(const VariablePtr &variable1, const VariablePtr 
     return mPimpl->setAutoId(std::make_pair(type, std::make_pair(variable1, variable2)));
 }
 
-size_t Annotator::duplicateCount(const std::string &id)
+size_t Annotator::itemCount(const std::string &id)
 {
     return mPimpl->mIdList.count(id);
 }
