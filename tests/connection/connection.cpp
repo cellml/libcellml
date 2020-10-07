@@ -117,6 +117,18 @@ TEST(Variable, hasIndirectEquivalentVariable)
     EXPECT_TRUE(v1->hasEquivalentVariable(v3, true));
 }
 
+TEST(Variable, connectionId)
+{
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    EXPECT_EQ("", libcellml::Variable::equivalenceConnectionId(v1, v2));
+
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_id");
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v1, v2));
+}
+
 TEST(Connection, componentlessVariableInvalidConnection)
 {
     const std::string e =
@@ -885,6 +897,57 @@ TEST(Connection, removeVariablesFromConnections)
     comp1->removeAllVariables();
     a = printer->printModel(m);
     EXPECT_EQ(e5, a);
+}
+
+TEST(Connection, nonUniqueWayOfGettingEquivalenceConnectionId)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    libcellml::VariablePtr v3 = libcellml::Variable::create();
+    libcellml::VariablePtr v4 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    comp1->addVariable(v1);
+    comp1->addVariable(v2);
+    comp2->addVariable(v3);
+    comp2->addVariable(v4);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v4));
+}
+
+TEST(Connection, connectionIdFromReverseVariablesToThoseSet)
+{
+    libcellml::ModelPtr m = libcellml::Model::create();
+    libcellml::ComponentPtr comp1 = libcellml::Component::create();
+    libcellml::ComponentPtr comp2 = libcellml::Component::create();
+    libcellml::VariablePtr v1 = libcellml::Variable::create();
+    libcellml::VariablePtr v2 = libcellml::Variable::create();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "connection_id");
+
+    EXPECT_EQ("connection_id", libcellml::Variable::equivalenceConnectionId(v2, v1));
 }
 
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces)
