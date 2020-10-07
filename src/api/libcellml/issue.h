@@ -69,7 +69,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const ComponentPtr &component, CellmlElementType type = CellmlElementType::COMPONENT) noexcept;
+    static IssuePtr create(const ComponentPtr &component, CellmlElementType cellmlElementType = CellmlElementType::COMPONENT) noexcept;
 
     /**
      * @overload
@@ -79,12 +79,12 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const ModelPtr &model, CellmlElementType type = CellmlElementType::MODEL) noexcept;
+    static IssuePtr create(const ModelPtr &model, CellmlElementType cellmlElementType = CellmlElementType::MODEL) noexcept;
 
     /**
      * @overload
      */
-    static IssuePtr create(const ResetPtr &reset, CellmlElementType type = CellmlElementType::RESET) noexcept;
+    static IssuePtr create(const ResetPtr &reset, CellmlElementType cellmlElementType = CellmlElementType::RESET) noexcept;
 
     /**
      * @overload
@@ -99,7 +99,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const VariablePairPtr &variablePair, CellmlElementType type = CellmlElementType::MAP_VARIABLES) noexcept;
+    static IssuePtr create(const VariablePairPtr &variablePair, CellmlElementType cellmlElementType = CellmlElementType::MAP_VARIABLES) noexcept;
 
     /**
      * @overload
@@ -597,10 +597,10 @@ public:
      *
      * Set an @c std::any item relevant to this issue.
      *
+     * @param cellmlElementType A @c CellmlElementType enum.
      * @param item An @c std::any item relevant to this issue.
-     * @param type An @c CellmlElementType enum.
      */
-    void setItem(CellmlElementType type, const std::any &item);
+    void setItem(CellmlElementType cellmlElementType, const std::any &item);
 
     /**
      * @brief Get the stored item as an @c std::any item.
