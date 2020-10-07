@@ -115,7 +115,7 @@
 %feature("docstring") libcellml::Annotator::assignVariableId
 "Assign an automatically generated, unique id to the given variable.";
 
-%feature("docstring") libcellml::Annotator::duplicateCount
+%feature("docstring") libcellml::Annotator::itemCount
 "Return the number of items in the stored model with the given id.";
 
 %feature("docstring") libcellml::Annotator::hasModel
@@ -242,7 +242,6 @@ from libcellml import CellMLElement
     }
 
 %pythoncode %{
-
     def assignId(self, *args):
         r"""Set the id of the given item to an automatically generated, unique string, and return new id."""
         if len(args) == 1:
@@ -254,7 +253,7 @@ from libcellml import CellMLElement
     def item(self, id, index=-1):
         r"""Retrieve a unique item with the given id."""
         if index == -1:
-            num = _annotator.Annotator_duplicateCount(self, id)
+            num = _annotator.Annotator_itemCount(self, id)
             if num > 1:
                 from libcellml import Issue
                 issue = Issue()
@@ -305,13 +304,12 @@ from libcellml import CellMLElement
 
     def items(self, id):
         r"""Returns everything with the given id as as list of (type, item) tuples."""
-        count = _annotator.Annotator_duplicateCount(self, id)
+        count = _annotator.Annotator_itemCount(self, id)
         itemsList = []
         for c in range(0, count):
             items_with_id = self.item(id, c)
             itemsList.append(items_with_id)
         return itemsList
-
 %}
 
 }

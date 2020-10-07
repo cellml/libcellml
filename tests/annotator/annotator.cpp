@@ -90,7 +90,7 @@ TEST(Annotator, getEntityFromId)
     EXPECT_EQ(importSource, std::any_cast<libcellml::ImportSourcePtr>(annotator->item("import_id").second));
 }
 
-TEST(Annotator, getNonEntityFromId)
+TEST(Annotator, getVariablePairFromId)
 {
     auto model = createModelTwoComponentsWithOneVariableEach("model", "c1", "c2", "v1", "v2");
     auto annotator = libcellml::Annotator::create();
@@ -217,7 +217,7 @@ TEST(Annotator, duplicateIdBehaviour)
     EXPECT_EQ(expectedErrors[0], annotator->issue(0)->description());
 
     EXPECT_FALSE(annotator->isUnique("duplicateId"));
-    EXPECT_EQ(size_t(3), annotator->duplicateCount("duplicateId"));
+    EXPECT_EQ(size_t(3), annotator->itemCount("duplicateId"));
 }
 
 TEST(Annotator, getItemByIdSpecificType)
@@ -1865,7 +1865,7 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
     EXPECT_EQ(ids, annotator->duplicateIds());
 
     for (const auto &id : ids) {
-        auto num = annotator->duplicateCount(id);
+        auto num = annotator->itemCount(id);
         for (size_t index = 0; index < num; ++index) {
             libcellml::AnyItem item = annotator->item(id, index);
 
