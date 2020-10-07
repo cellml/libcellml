@@ -192,7 +192,7 @@ IssuePtr Issue::create(const UnitPtr &unit) noexcept
 
 IssuePtr Issue::create(const VariablePairPtr &variablePair, CellMLReferenceType type) noexcept
 {
-    if ((variablePair->isValid()) && ((type == CellMLReferenceType::CONNECTION) || (type == CellMLReferenceType::MAP_VARIABLES))) {
+    if (variablePair->isValid() && ((type == CellMLReferenceType::CONNECTION) || (type == CellMLReferenceType::MAP_VARIABLES))) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
         issue->mPimpl->mItem = variablePair;
         issue->mPimpl->mCellMLReferenceType = type;
@@ -357,7 +357,7 @@ UnitsPtr Issue::units() const
 
 void Issue::setUnit(const UnitPtr &unit)
 {
-    (unit->isValid()) ? setItem(CellMLReferenceType::UNIT, unit) : mPimpl->clearItem();
+    unit->isValid() ? setItem(CellMLReferenceType::UNIT, unit) : mPimpl->clearItem();
 }
 
 UnitPtr Issue::unit() const
@@ -367,7 +367,7 @@ UnitPtr Issue::unit() const
 
 void Issue::setConnection(const VariablePairPtr &pair)
 {
-    (pair->isValid()) ? setItem(CellMLReferenceType::CONNECTION, pair) : mPimpl->clearItem();
+    pair->isValid() ? setItem(CellMLReferenceType::CONNECTION, pair) : mPimpl->clearItem();
 }
 
 void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
@@ -383,7 +383,7 @@ VariablePairPtr Issue::connection() const
 
 void Issue::setMapVariables(const VariablePairPtr &pair)
 {
-    (pair->isValid()) ? setItem(CellMLReferenceType::MAP_VARIABLES, pair) : mPimpl->clearItem();
+    pair->isValid() ? setItem(CellMLReferenceType::MAP_VARIABLES, pair) : mPimpl->clearItem();
 }
 
 void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
