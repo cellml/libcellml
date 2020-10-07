@@ -74,7 +74,7 @@ size_t UnitReference::index() const
 bool UnitReference::isValid() const
 {
     auto units = mPimpl->mUnits.lock();
-    if (units) {
+    if (units != nullptr) {
         return mPimpl->mIndex < units->unitCount();
     }
 
@@ -110,7 +110,7 @@ VariablePtr VariablePair::variable2() const
 
 bool VariablePair::isValid() const
 {
-    return mPimpl->mVariable1.lock() != nullptr && mPimpl->mVariable2.lock() != nullptr;
+    return (mPimpl->mVariable1.lock() != nullptr) && (mPimpl->mVariable2.lock() != nullptr);
 }
 
 } // namespace libcellml
