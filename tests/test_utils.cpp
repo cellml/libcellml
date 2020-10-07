@@ -41,7 +41,7 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool rule)
+void printIssues(const libcellml::LoggerPtr &l, bool headings, bool itemTypes, bool rule)
 {
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
@@ -65,7 +65,7 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool causes, bool
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
-        if (causes) {
+        if (itemTypes) {
             std::cout << ", " << static_cast<int>(l->issue(i)->itemType());
         }
         if (rule) {
@@ -195,17 +195,17 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
-                                   const std::vector<libcellml::CellMLReferenceType> &causes,
-                                   const std::vector<libcellml::Issue::Level> &levels,
-                                   const libcellml::LoggerPtr &logger)
+void expectEqualIssuesItemTypesLevels(const std::vector<std::string> &issues,
+                                      const std::vector<libcellml::CellMLReferenceType> &itemTypes,
+                                      const std::vector<libcellml::Issue::Level> &levels,
+                                      const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
-    EXPECT_EQ(causes.size(), logger->issueCount());
+    EXPECT_EQ(itemTypes.size(), logger->issueCount());
     EXPECT_EQ(levels.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
-        EXPECT_EQ(causes.at(i), logger->issue(i)->itemType());
+        EXPECT_EQ(itemTypes.at(i), logger->issue(i)->itemType());
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
     }
 }

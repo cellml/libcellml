@@ -75,7 +75,7 @@ private:
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 std::string TEST_EXPORT fileContents(const std::string &fileName);
-void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool causes = false, bool rule = false);
+void TEST_EXPORT printIssues(const libcellml::LoggerPtr &l, bool headings = false, bool itemTypes = false, bool rule = false);
 
 void TEST_EXPORT printModel(const libcellml::ModelPtr &model, bool includeMaths = true);
 void TEST_EXPORT printComponent(const libcellml::ComponentPtr &component, bool includeMaths = true);
@@ -85,10 +85,10 @@ void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::s
                                                         const std::vector<std::string> &specificationHeadings,
                                                         const libcellml::LoggerPtr &logger);
 
-void TEST_EXPORT expectEqualIssuesCausesLevels(const std::vector<std::string> &issues,
-                                               const std::vector<libcellml::CellMLReferenceType> &causes,
-                                               const std::vector<libcellml::Issue::Level> &levels,
-                                               const libcellml::LoggerPtr &logger);
+void TEST_EXPORT expectEqualIssuesItemTypesLevels(const std::vector<std::string> &issues,
+                                                  const std::vector<libcellml::CellMLReferenceType> &itemTypes,
+                                                  const std::vector<libcellml::Issue::Level> &levels,
+                                                  const libcellml::LoggerPtr &logger);
 
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &modelName = "",
@@ -110,6 +110,6 @@ void TEST_EXPORT compareModel(const libcellml::ModelPtr &m1, const libcellml::Mo
     SCOPED_TRACE("Issue occured here."); \
     expectEqualIssuesSpecificationHeadings(issues, specificationHeadings, logger)
 
-#define EXPECT_EQ_ISSUES_CAUSES_LEVELS(issues, causes, levels, logger) \
+#define EXPECT_EQ_ISSUES_ITEMTYPES_LEVELS(issues, itemTypes, levels, logger) \
     SCOPED_TRACE("Issue occured here."); \
-    expectEqualIssuesCausesLevels(issues, causes, levels, logger)
+    expectEqualIssuesItemTypesLevels(issues, itemTypes, levels, logger)
