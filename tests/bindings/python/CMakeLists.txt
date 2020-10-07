@@ -15,6 +15,7 @@
 set(TEST_SRCS
   test_analyser.py
   test_analyser_equation_ast.py
+  test_annotator.py
   test_component.py
   test_docstrings.py
   test_entity.py
