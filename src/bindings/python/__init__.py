@@ -24,7 +24,7 @@ from libcellml.model import Model
 from libcellml.parser import Parser
 from libcellml.printer import Printer
 from libcellml.reset import Reset
-from libcellml.types import UnitReference, VariablePair
+from libcellml.types import Unit, VariablePair
 from libcellml.units import Units
 from libcellml.validator import Validator
 from libcellml.variable import Variable

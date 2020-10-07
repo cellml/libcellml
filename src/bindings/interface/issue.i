@@ -74,10 +74,10 @@ Level::ERROR will be returned.";
 "Sets the :class`Units` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::unit
-"Get the :class:`UnitReference` relevant to this issue (or ``None``).";
+"Get the :class:`Unit` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setUnit
-"Sets the :class`UnitReference` relevant to this issue (``None`` to unset).";
+"Sets the :class`Unit` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::variable
 "Get the :class:`Variable` relevant to this issue (or ``None``).";
@@ -168,8 +168,8 @@ from libcellml import CellMLReferenceType
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
-    Issue(const UnitReferencePtr &unitItem) {
-        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unitItem));
+    Issue(const UnitPtr &unit) {
+        auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unit));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 

@@ -51,7 +51,7 @@ public:
      *   - libcellml::ImportSourcePtr (defaults the item type to CellMLReferenceType::IMPORT);
      *   - libcellml::ModelPtr (defaults the item type to CellMLReferenceType::MODEL);
      *   - libcellml::ResetPtr (defaults the item type to CellMLReferenceType::RESET);
-     *   - libcellml::UnitReferencePtr (defaults the item type to CellMLReferenceType::UNIT);
+     *   - libcellml::UnitPtr (defaults the item type to CellMLReferenceType::UNIT);
      *   - libcellml::UnitsPtr (defaults the item type to CellMLReferenceType::UNITS);
      *   - libcellml::VariablePairPtr (defaults the item type to CellMLReferenceType::MAP_VARIABLES);
      *   - libcellml::VariablePtr (defaults the item type to CellMLReferenceType::VARIABLE); or
@@ -104,7 +104,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const UnitReferencePtr &unitItem) noexcept;
+    static IssuePtr create(const UnitPtr &unit) noexcept;
 
     /**
      * @brief The issue Level enum class.
@@ -527,23 +527,23 @@ public:
     ResetPtr testValue() const;
 
     /**
-     * @brief Set the @c UnitReference whose relevant to this issue.
+     * @brief Set the @c Unit whose relevant to this issue.
      *
      * The internal type will be set to @c CellMLReferenceType::UNIT.
      *
-     * @param unit A @c UnitReference relevant to this issue.
+     * @param unit A @c Unit relevant to this issue.
      */
-    void setUnit(const UnitReferencePtr &unit);
+    void setUnit(const UnitPtr &unit);
 
     /**
      * @brief Get the unit relevant to this issue.
      *
      * Get the unit relevant to this issue.
      *
-     * @return A @c UnitReference relevant to this issue,
+     * @return A @c Unit relevant to this issue,
      *         or @c std::pair(nullptr,0) if the internal type is not @c CellMLReferenceType::UNIT.
      */
-    UnitReferencePtr unit() const;
+    UnitPtr unit() const;
 
     /**
      * @brief Set the @c ModelPtr whose encapsulation is relevant to this issue.
@@ -683,7 +683,7 @@ private:
      *
      * @param unit The unit the issue references.
      */
-    explicit Issue(const UnitReferencePtr &unit);
+    explicit Issue(const UnitPtr &unit);
 
     struct IssueImpl; /**< Forward declaration for pImpl idiom. */
     IssueImpl *mPimpl; /**< Private member to implementation pointer. */
