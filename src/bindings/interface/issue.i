@@ -74,10 +74,10 @@ Level::ERROR will be returned.";
 "Sets the :class`Units` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::unit
-"Get the :class:`UnitItem` relevant to this issue (or ``None``).";
+"Get the :class:`UnitReference` relevant to this issue (or ``None``).";
 
 %feature("docstring") libcellml::Issue::setUnit
-"Sets the :class`UnitItem` relevant to this issue (``None`` to unset).";
+"Sets the :class`UnitReference` relevant to this issue (``None`` to unset).";
 
 %feature("docstring") libcellml::Issue::variable
 "Get the :class:`Variable` relevant to this issue (or ``None``).";
@@ -168,7 +168,7 @@ from libcellml import ItemType
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
 
-    Issue(const UnitItem &unitItem) {
+    Issue(const UnitReferencePtr &unitItem) {
         auto ptr = new std::shared_ptr<libcellml::Issue>(libcellml::Issue::create(unitItem));
         return reinterpret_cast<libcellml::Issue *>(ptr);
     }
@@ -191,25 +191,25 @@ from libcellml import ItemType
             elif itemType == ItemType.COMPONENT_REF:
                 _issue.Issue_setComponentRef(self, item)
             elif itemType == ItemType.CONNECTION:
-               _issue.Issue_setConnection(self, item)
+                _issue.Issue_setConnection(self, item)
             elif itemType == ItemType.ENCAPSULATION:
-               _issue.Issue_setEncapsulation(self, item)
+                _issue.Issue_setEncapsulation(self, item)
             elif itemType == ItemType.IMPORT:
-               _issue.Issue_setImportSource(self, item)
+                _issue.Issue_setImportSource(self, item)
             elif itemType == ItemType.MAP_VARIABLES:
-               _issue.Issue_setMapVariables(self, item)
+                _issue.Issue_setMapVariables(self, item)
             elif itemType == ItemType.MODEL:
-               _issue.Issue_setModel(self, item)
+                _issue.Issue_setModel(self, item)
             elif itemType == ItemType.RESET:
-               _issue.Issue_setReset(self, item)
+                _issue.Issue_setReset(self, item)
             elif itemType == ItemType.RESET_VALUE:
-               _issue.Issue_setResetValue(self, item)
+                _issue.Issue_setResetValue(self, item)
             elif itemType == ItemType.TEST_VALUE:
                 _issue.Issue_setTestValue(self, item)
             elif itemType == ItemType.UNIT:
-               _issue.Issue_setUnit(self, item)
+                _issue.Issue_setUnit(self, item)
             elif itemType == ItemType.UNITS:
-               _issue.Issue_setUnits(self, item)
+                _issue.Issue_setUnits(self, item)
             elif itemType == ItemType.VARIABLE:
                 _issue.Issue_setVariable(self, item)
 
@@ -249,6 +249,3 @@ from libcellml import ItemType
     }
 
 %include "libcellml/issue.h"
-
-%template(UnitItem) std::pair<libcellml::UnitsPtr, size_t>;
-//%template(VariablePair) std::pair<libcellml::VariablePtr, libcellml::VariablePtr>;

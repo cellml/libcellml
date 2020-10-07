@@ -51,7 +51,7 @@ public:
      *   - libcellml::ImportSourcePtr (defaults the item type to ItemType::IMPORT);
      *   - libcellml::ModelPtr (defaults the item type to ItemType::MODEL);
      *   - libcellml::ResetPtr (defaults the item type to ItemType::RESET);
-     *   - libcellml::UnitItem (defaults the item type to ItemType::UNIT);
+     *   - libcellml::UnitReference (defaults the item type to ItemType::UNIT);
      *   - libcellml::UnitsPtr (defaults the item type to ItemType::UNITS);
      *   - libcellml::VariablePair (defaults the item type to ItemType::MAP_VARIABLES);
      *   - libcellml::VariablePtr (defaults the item type to ItemType::VARIABLE); or
@@ -104,7 +104,7 @@ public:
     /**
      * @overload
      */
-    static IssuePtr create(const UnitItem &unitItem) noexcept;
+    static IssuePtr create(const UnitReferencePtr &unitItem) noexcept;
 
     /**
      * @brief The issue Level enum class.
@@ -505,21 +505,21 @@ public:
     ResetPtr testValue() const;
 
     /**
-     * @brief Set the @c UnitItem whose relevant to this issue.
+     * @brief Set the @c UnitReference whose relevant to this issue.
      *
      * The internal type will be set to @c ItemType::UNIT.
      *
-     * @param unit A @c UnitItem relevant to this issue.
+     * @param unit A @c UnitReference relevant to this issue.
      */
-    void setUnit(const UnitItem &unit);
+    void setUnit(const UnitReferencePtr &unit);
 
     /**
      * Get the unit relevant to this issue.
      *
-     * @return A @c UnitItem relevant to this issue,
+     * @return A @c UnitReference relevant to this issue,
      *         or @c std::pair(nullptr,0) if the internal type is not @c ItemType::UNIT.
      */
-    UnitItem unit() const;
+    UnitReferencePtr unit() const;
 
     /**
      * @brief Set the @c ModelPtr whose encapsulation is relevant to this issue.
@@ -655,7 +655,7 @@ private:
      *
      * @param unit The unit the issue references.
      */
-    explicit Issue(const UnitItem &unit);
+    explicit Issue(const UnitReferencePtr &unit);
 
     struct IssueImpl; /**< Forward declaration for pImpl idiom. */
     IssueImpl *mPimpl; /**< Private member to implementation pointer. */

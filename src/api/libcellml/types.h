@@ -75,7 +75,71 @@ class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
 
 using AnyItem = std::pair<ItemType, std::any>; /**< Type definition for the AnyItem pair. */
-using UnitItem = std::pair<UnitsPtr, size_t>; /**< Type definition for the UnitItem pair. */
+//using UnitReference = std::pair<UnitsPtr, size_t>; /**< Type definition for the UnitReference pair. */
+
+class UnitReference;
+using UnitReferencePtr = std::shared_ptr<UnitReference>;
+
+/**
+ * @brief The UnitReference class
+ *
+ * The UnitReference class can be used to refer to a unit in a @ref Units.
+ */
+class LIBCELLML_EXPORT UnitReference
+{
+public:
+    ~UnitReference(); /**< Destructor. */
+    UnitReference(const UnitReference &rhs) = delete; /**< Copy constructor. */
+    UnitReference(UnitReference &&rhs) noexcept = delete; /**< Move constructor. */
+    UnitReference &operator=(UnitReference rhs) = delete; /**< Assignment operator. */
+
+    /**
+     * @brief Create a unit reference object.
+     *
+     * Factory method to create a @ref UnitReferencePtr.  Create a
+     * unit reference with @ref Units and index with::
+     *
+     *   UnitReferencePtr UnitReference = libcellml::UnitReferencePtr::create(units, index);
+     *
+     * @return A smart pointer to a @ref UnitReferencePtr object.
+     */
+    static UnitReferencePtr create(const UnitsPtr &units, size_t index) noexcept;
+
+    /**
+     * @brief Get the first variable in the pair.
+     *
+     * Get the first variable in the pair.
+     *
+     * @return The first variable in the pair.
+     */
+    UnitsPtr units() const;
+
+    /**
+     * @brief Get the index.
+     *
+     * Get the index for the unit in the @ref Units.
+     *
+     * @return The second variable in the pair.
+     */
+    size_t index() const;
+
+    /**
+     * @brief Test to see if this unit reference is valid.
+     *
+     * Test to see if the @ref Units used in this unit reference exists and
+     * has a unit at the given index.
+     *
+     * @return @c true if this unit reference is valid, @c false otherwise.
+     */
+    bool isValid() const;
+
+private:
+    UnitReference(); /**< Constructor. */
+    explicit UnitReference(const UnitsPtr &units, size_t index); /**< Constructor with two variables as parameters. */
+
+    struct UnitReferenceImpl; /**< Forward declaration for pImpl idiom. */
+    UnitReferenceImpl *mPimpl; /**< Private member to implementation pointer. */
+};
 
 class VariablePair;
 using VariablePairPtr = std::shared_ptr<VariablePair>;
@@ -98,20 +162,11 @@ public:
      * @brief Create a variable pair object.
      *
      * Factory method to create a @ref VariablePairPtr.  Create a
-     * blank model with::
-     *
-     *   VariablePairPtr variablePair = libcellml::VariablePairPtr::create();
-     *
-     * or a variable pair with variable 1 and variable 2 with::
+     * variable pair with variable 1 and variable 2 with::
      *
      *   VariablePairPtr variablePair = libcellml::VariablePairPtr::create(variable1, variable2);
      *
      * @return A smart pointer to a @ref VariablePairPtr object.
-     */
-    static VariablePairPtr create() noexcept;
-
-    /**
-     * @overload
      */
     static VariablePairPtr create(const VariablePtr &variable1, const VariablePtr &variable2) noexcept;
 

@@ -106,10 +106,10 @@ Issue::Issue(const ResetPtr &reset)
     mPimpl->mItemType = ItemType::RESET;
 }
 
-Issue::Issue(const UnitItem &unit)
+Issue::Issue(const UnitReferencePtr &unit)
     : mPimpl(new IssueImpl())
 {
-    mPimpl->mItem = std::make_any<UnitItem>(unit);
+    mPimpl->mItem = std::make_any<UnitReferencePtr>(unit);
     mPimpl->mItemType = ItemType::UNIT;
 }
 
@@ -180,9 +180,9 @@ IssuePtr Issue::create(const VariablePtr &variable) noexcept
     return nullptr;
 }
 
-IssuePtr Issue::create(const UnitItem &unitItem) noexcept
+IssuePtr Issue::create(const UnitReferencePtr &unitItem) noexcept
 {
-    if (unitItem.first != nullptr) {
+    if (unitItem->isValid()) {
         auto issue = std::shared_ptr<Issue> {new Issue {unitItem}};
         issue->mPimpl->mItemType = ItemType::UNIT;
         return issue;
@@ -266,7 +266,7 @@ void Issue::setItem(ItemType type, const std::any &item)
             mPimpl->clearItem();
             break;
         case ItemType::UNIT:
-            mPimpl->mItem = std::any_cast<UnitItem>(item);
+            mPimpl->mItem = std::any_cast<UnitReferencePtr>(item);
             break;
         case ItemType::UNITS:
             mPimpl->mItem = std::any_cast<UnitsPtr>(item);
@@ -404,21 +404,21 @@ UnitsPtr Issue::units() const
     return std::any_cast<UnitsPtr>(mPimpl->mItem);
 }
 
-void Issue::setUnit(const UnitItem &unit)
+void Issue::setUnit(const UnitReferencePtr &unit)
 {
-    if (unit.first != nullptr) {
+    if (unit->isValid()) {
         setItem(ItemType::UNIT, unit);
     } else if (mPimpl->mItemType == ItemType::UNIT) {
         mPimpl->clearItem();
     }
 }
 
-UnitItem Issue::unit() const
+UnitReferencePtr Issue::unit() const
 {
     if (mPimpl->mItemType != ItemType::UNIT) {
-        return std::make_pair(nullptr, 0);
+        return UnitReference::create(nullptr, 0);
     }
-    return std::any_cast<UnitItem>(mPimpl->mItem);
+    return std::any_cast<UnitReferencePtr>(mPimpl->mItem);
 }
 
 void Issue::setConnection(const VariablePairPtr &pair)
@@ -439,7 +439,7 @@ void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &varia
 VariablePairPtr Issue::connection() const
 {
     if (mPimpl->mItemType != ItemType::CONNECTION) {
-        return VariablePair::create();
+        return VariablePair::create(nullptr, nullptr);
     }
     return std::any_cast<VariablePairPtr>(mPimpl->mItem);
 }
@@ -462,7 +462,7 @@ void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &var
 VariablePairPtr Issue::mapVariables() const
 {
     if (mPimpl->mItemType != ItemType::MAP_VARIABLES) {
-        return VariablePair::create();
+        return VariablePair::create(nullptr, nullptr);
     }
     return std::any_cast<VariablePairPtr>(mPimpl->mItem);
 }

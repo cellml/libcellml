@@ -16,20 +16,75 @@ limitations under the License.
 
 #include "libcellml/types.h"
 
+#include "libcellml/units.h"
+
 #include "internaltypes.h"
 
 namespace libcellml {
 
 /**
- * @brief The Reset::ResetImpl struct.
+ * @brief The UnitReference::UnitReferenceImpl struct.
  *
- * The private implementation for the Reset class.
+ * The private implementation for the UnitReference class.
+ */
+struct UnitReference::UnitReferenceImpl
+{
+    UnitsWeakPtr mUnits; /**< Variable 1 for the pair.*/
+    size_t mIndex; /**< Variable 2 for the pair.*/
+};
+
+/**
+ * @brief The VariablePair::VariablePairImpl struct.
+ *
+ * The private implementation for the VariablePair class.
  */
 struct VariablePair::VariablePairImpl
 {
     VariableWeakPtr mVariable1; /**< Variable 1 for the pair.*/
     VariableWeakPtr mVariable2; /**< Variable 2 for the pair.*/
 };
+
+UnitReference::UnitReference()
+    : mPimpl(new UnitReferenceImpl())
+{
+}
+
+UnitReference::UnitReference(const UnitsPtr &units, size_t index)
+    : mPimpl(new UnitReferenceImpl())
+{
+    mPimpl->mUnits = units;
+    mPimpl->mIndex = index;
+}
+
+UnitReference::~UnitReference()
+{
+    delete mPimpl;
+}
+
+UnitReferencePtr UnitReference::create(const UnitsPtr &units, size_t index) noexcept
+{
+    return std::shared_ptr<UnitReference> {new UnitReference {units, index}};
+}
+
+UnitsPtr UnitReference::units() const
+{
+    return mPimpl->mUnits.lock();
+}
+
+size_t UnitReference::index() const
+{
+    return mPimpl->mIndex;
+}
+
+bool UnitReference::isValid() const
+{
+    auto units = mPimpl->mUnits.lock();
+    if (units) {
+        return mPimpl->mIndex < units->unitCount();
+    }
+
+    return false;
+}
 
 VariablePair::VariablePair()
     : mPimpl(new VariablePairImpl())
@@ -41,11 +96,6 @@ VariablePair::VariablePair(const VariablePtr &variable1, const VariablePtr &vari
 {
     mPimpl->mVariable1 = variable1;
     mPimpl->mVariable2 = variable2;
-}
-
-VariablePairPtr VariablePair::create() noexcept
-{
-    return std::shared_ptr<VariablePair> {new VariablePair {}};
 }
 
 VariablePairPtr VariablePair::create(const VariablePtr &variable1, const VariablePtr &variable2) noexcept
@@ -73,4 +123,4 @@ bool VariablePair::isValid() const
     return mPimpl->mVariable1.lock() != nullptr && mPimpl->mVariable2.lock() != nullptr;
 }
 
-}
+} // namespace libcellml
