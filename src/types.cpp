@@ -44,11 +44,6 @@ struct VariablePair::VariablePairImpl
     VariableWeakPtr mVariable2; /**< Variable 2 for the pair.*/
 };
 
-UnitReference::UnitReference()
-    : mPimpl(new UnitReferenceImpl())
-{
-}
-
 UnitReference::UnitReference(const UnitsPtr &units, size_t index)
     : mPimpl(new UnitReferenceImpl())
 {
@@ -84,11 +79,6 @@ bool UnitReference::isValid() const
     }
 
     return false;
-}
-
-VariablePair::VariablePair()
-    : mPimpl(new VariablePairImpl())
-{
 }
 
 VariablePair::VariablePair(const VariablePtr &variable1, const VariablePtr &variable2)
