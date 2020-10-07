@@ -75,7 +75,6 @@ class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
 
 using AnyItem = std::pair<ItemType, std::any>; /**< Type definition for the AnyItem pair. */
-//using UnitReference = std::pair<UnitsPtr, size_t>; /**< Type definition for the UnitReference pair. */
 
 class UnitReference;
 using UnitReferencePtr = std::shared_ptr<UnitReference>;
