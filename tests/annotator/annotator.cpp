@@ -90,7 +90,7 @@ TEST(Annotator, getEntityFromId)
     EXPECT_EQ(importSource, std::any_cast<libcellml::ImportSourcePtr>(annotator->item("import_id").second));
 }
 
-TEST(Annotator, getNonEntityFromId)
+TEST(Annotator, getVariablePairFromId)
 {
     auto model = createModelTwoComponentsWithOneVariableEach("model", "c1", "c2", "v1", "v2");
     auto annotator = libcellml::Annotator::create();
