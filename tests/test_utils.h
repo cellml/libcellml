@@ -16,11 +16,16 @@ limitations under the License.
 
 #pragma once
 
+#include <chrono>
 #include <iostream>
 #include <libcellml>
 #include <sstream>
 
 #include "test_exportdefinitions.h"
+
+#define TEST_UTILS
+#include "../src/commonutils.h"
+#undef TEST_UTILS
 
 const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
@@ -72,6 +77,9 @@ private:
     std::ostringstream mSS;
     bool mNewLine;
 };
+
+std::chrono::steady_clock::time_point TEST_EXPORT timeNow();
+int TEST_EXPORT elapsedTime(const std::chrono::steady_clock::time_point &startTime);
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 std::string TEST_EXPORT fileContents(const std::string &fileName);
