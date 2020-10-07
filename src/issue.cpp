@@ -287,147 +287,87 @@ std::any Issue::item() const
 
 void Issue::setComponent(const ComponentPtr &component)
 {
-    if (component != nullptr) {
-        setItem(ItemType::COMPONENT, component);
-    } else if (mPimpl->mItemType == ItemType::COMPONENT) {
-        mPimpl->clearItem();
-    }
+    (component == nullptr) ? mPimpl->clearItem() : setItem(ItemType::COMPONENT, component);
 }
 
 ComponentPtr Issue::component() const
 {
-    if (mPimpl->mItemType != ItemType::COMPONENT) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::COMPONENT) ? std::any_cast<ComponentPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setComponentRef(const ComponentPtr &component)
 {
-    if (component != nullptr) {
-        setItem(ItemType::COMPONENT_REF, component);
-    } else if (mPimpl->mItemType == ItemType::COMPONENT_REF) {
-        mPimpl->clearItem();
-    }
+    (component == nullptr) ? mPimpl->clearItem() : setItem(ItemType::COMPONENT_REF, component);
 }
 
 ComponentPtr Issue::componentRef() const
 {
-    if (mPimpl->mItemType != ItemType::COMPONENT_REF) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::COMPONENT_REF) ? std::any_cast<ComponentPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setMath(const ComponentPtr &component)
 {
-    if (component != nullptr) {
-        setItem(ItemType::MATHML, component);
-    } else if (mPimpl->mItemType == ItemType::MATHML) {
-        mPimpl->clearItem();
-    }
+    (component == nullptr) ? mPimpl->clearItem() : setItem(ItemType::MATHML, component);
 }
 
 ComponentPtr Issue::math() const
 {
-    if (mPimpl->mItemType != ItemType::MATHML) {
-        return nullptr;
-    }
-    return std::any_cast<ComponentPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::MATHML) ? std::any_cast<ComponentPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
-    if (importSource != nullptr) {
-        setItem(ItemType::IMPORT, importSource);
-    } else if (mPimpl->mItemType == ItemType::IMPORT) {
-        mPimpl->clearItem();
-    }
+    (importSource == nullptr) ? mPimpl->clearItem() : setItem(ItemType::IMPORT, importSource);
 }
 
 ImportSourcePtr Issue::importSource() const
 {
-    if (mPimpl->mItemType != ItemType::IMPORT) {
-        return nullptr;
-    }
-    return std::any_cast<ImportSourcePtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::IMPORT) ? std::any_cast<ImportSourcePtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setModel(const ModelPtr &model)
 {
-    if (model != nullptr) {
-        setItem(ItemType::MODEL, model);
-    } else if (mPimpl->mItemType == ItemType::MODEL) {
-        mPimpl->clearItem();
-    }
+    (model == nullptr) ? mPimpl->clearItem() : setItem(ItemType::MODEL, model);
 }
 
 ModelPtr Issue::model() const
 {
-    if (mPimpl->mItemType != ItemType::MODEL) {
-        return nullptr;
-    }
-    return std::any_cast<ModelPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::MODEL) ? std::any_cast<ModelPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setEncapsulation(const ModelPtr &model)
 {
-    if (model != nullptr) {
-        setItem(ItemType::ENCAPSULATION, model);
-    } else if (mPimpl->mItemType == ItemType::ENCAPSULATION) {
-        mPimpl->clearItem();
-    }
+    (model == nullptr) ? mPimpl->clearItem() : setItem(ItemType::ENCAPSULATION, model);
 }
 
 ModelPtr Issue::encapsulation() const
 {
-    if (mPimpl->mItemType != ItemType::ENCAPSULATION) {
-        return nullptr;
-    }
-    return std::any_cast<ModelPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::ENCAPSULATION) ? std::any_cast<ModelPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setUnits(const UnitsPtr &units)
 {
-    if (units != nullptr) {
-        setItem(ItemType::UNITS, units);
-    } else if (mPimpl->mItemType == ItemType::UNITS) {
-        mPimpl->clearItem();
-    }
+    (units == nullptr) ? mPimpl->clearItem() : setItem(ItemType::UNITS, units);
 }
 
 UnitsPtr Issue::units() const
 {
-    if (mPimpl->mItemType != ItemType::UNITS) {
-        return nullptr;
-    }
-    return std::any_cast<UnitsPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::UNITS) ? std::any_cast<UnitsPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setUnit(const UnitReferencePtr &unit)
 {
-    if (unit->isValid()) {
-        setItem(ItemType::UNIT, unit);
-    } else if (mPimpl->mItemType == ItemType::UNIT) {
-        mPimpl->clearItem();
-    }
+    (unit->isValid()) ? setItem(ItemType::UNIT, unit) : mPimpl->clearItem();
 }
 
 UnitReferencePtr Issue::unit() const
 {
-    if (mPimpl->mItemType != ItemType::UNIT) {
-        return UnitReference::create(nullptr, 0);
-    }
-    return std::any_cast<UnitReferencePtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::UNIT) ? std::any_cast<UnitReferencePtr>(mPimpl->mItem) : UnitReference::create(nullptr, 0);
 }
 
 void Issue::setConnection(const VariablePairPtr &pair)
 {
-    if ((pair->isValid())) {
-        setItem(ItemType::CONNECTION, pair);
-    } else if (mPimpl->mItemType == ItemType::CONNECTION) {
-        mPimpl->clearItem();
-    }
+    (pair->isValid()) ? setItem(ItemType::CONNECTION, pair) : mPimpl->clearItem();
 }
 
 void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &variable2)
@@ -438,19 +378,12 @@ void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &varia
 
 VariablePairPtr Issue::connection() const
 {
-    if (mPimpl->mItemType != ItemType::CONNECTION) {
-        return VariablePair::create(nullptr, nullptr);
-    }
-    return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::CONNECTION) ? std::any_cast<VariablePairPtr>(mPimpl->mItem) : VariablePair::create(nullptr, nullptr);
 }
 
 void Issue::setMapVariables(const VariablePairPtr &pair)
 {
-    if ((pair->isValid())) {
-        setItem(ItemType::MAP_VARIABLES, pair);
-    } else if (mPimpl->mItemType == ItemType::MAP_VARIABLES) {
-        mPimpl->clearItem();
-    }
+    (pair->isValid()) ? setItem(ItemType::MAP_VARIABLES, pair) : mPimpl->clearItem();
 }
 
 void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &variable2)
@@ -461,78 +394,47 @@ void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &var
 
 VariablePairPtr Issue::mapVariables() const
 {
-    if (mPimpl->mItemType != ItemType::MAP_VARIABLES) {
-        return VariablePair::create(nullptr, nullptr);
-    }
-    return std::any_cast<VariablePairPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::MAP_VARIABLES) ? std::any_cast<VariablePairPtr>(mPimpl->mItem) : VariablePair::create(nullptr, nullptr);
 }
 
 void Issue::setVariable(const VariablePtr &variable)
 {
-    if (variable != nullptr) {
-        setItem(ItemType::VARIABLE, variable);
-    } else if (mPimpl->mItemType == ItemType::VARIABLE) {
-        mPimpl->clearItem();
-    }
+    (variable == nullptr) ? mPimpl->clearItem() : setItem(ItemType::VARIABLE, variable);
 }
 
 VariablePtr Issue::variable() const
 {
-    if (mPimpl->mItemType != ItemType::VARIABLE) {
-        return nullptr;
-    }
-    return std::any_cast<VariablePtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::VARIABLE) ? std::any_cast<VariablePtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setReset(const ResetPtr &reset)
 {
-    if (reset != nullptr) {
-        setItem(ItemType::RESET, reset);
-    } else if (mPimpl->mItemType == ItemType::RESET) {
-        mPimpl->clearItem();
-    }
+    (reset == nullptr) ? mPimpl->clearItem() : setItem(ItemType::RESET, reset);
 }
 
 ResetPtr Issue::reset() const
 {
-    if (mPimpl->mItemType != ItemType::RESET) {
-        return nullptr;
-    }
-    return std::any_cast<ResetPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::RESET) ? std::any_cast<ResetPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setResetValue(const ResetPtr &reset)
 {
-    if (reset != nullptr) {
-        setItem(ItemType::RESET_VALUE, reset);
-    } else if (mPimpl->mItemType == ItemType::RESET_VALUE) {
-        mPimpl->clearItem();
-    }
+    (reset == nullptr) ? mPimpl->clearItem() : setItem(ItemType::RESET_VALUE, reset);
 }
 
 ResetPtr Issue::resetValue() const
 {
-    if (mPimpl->mItemType != ItemType::RESET_VALUE) {
-        return nullptr;
-    }
-    return std::any_cast<ResetPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::RESET_VALUE) ? std::any_cast<ResetPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setTestValue(const ResetPtr &reset)
 {
-    if (reset != nullptr) {
-        setItem(ItemType::TEST_VALUE, reset);
-    } else if (mPimpl->mItemType == ItemType::TEST_VALUE) {
-        mPimpl->clearItem();
-    }
+    (reset == nullptr) ? mPimpl->clearItem() : setItem(ItemType::TEST_VALUE, reset);
 }
 
 ResetPtr Issue::testValue() const
 {
-    if (mPimpl->mItemType != ItemType::TEST_VALUE) {
-        return nullptr;
-    }
-    return std::any_cast<ResetPtr>(mPimpl->mItem);
+    return (mPimpl->mItemType == ItemType::TEST_VALUE) ? std::any_cast<ResetPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::clear()
