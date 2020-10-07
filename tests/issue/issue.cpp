@@ -23,7 +23,7 @@ TEST(Issue, createModelIssue)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
 
-    EXPECT_EQ(libcellml::ItemType::MODEL, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, e->itemType());
 }
 
 TEST(Issue, createComponentIssue)
@@ -31,7 +31,7 @@ TEST(Issue, createComponentIssue)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
 
-    EXPECT_EQ(libcellml::ItemType::COMPONENT, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::COMPONENT, e->itemType());
 }
 
 TEST(Issue, createVariableIssue)
@@ -39,7 +39,7 @@ TEST(Issue, createVariableIssue)
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
 
-    EXPECT_EQ(libcellml::ItemType::VARIABLE, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::VARIABLE, e->itemType());
 }
 
 TEST(Issue, createUnitsIssue)
@@ -47,7 +47,7 @@ TEST(Issue, createUnitsIssue)
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
 
-    EXPECT_EQ(libcellml::ItemType::UNITS, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNITS, e->itemType());
 }
 
 TEST(Issue, createImportSourceIssue)
@@ -55,7 +55,7 @@ TEST(Issue, createImportSourceIssue)
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
 
-    EXPECT_EQ(libcellml::ItemType::IMPORT, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::IMPORT, e->itemType());
 }
 
 TEST(Issue, createResetIssue)
@@ -63,7 +63,7 @@ TEST(Issue, createResetIssue)
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);
 
-    EXPECT_EQ(libcellml::ItemType::RESET, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::RESET, e->itemType());
 }
 
 void testReferenceRule(const libcellml::IssuePtr &e)
@@ -588,7 +588,7 @@ TEST(Issue, createModelWarning)
     libcellml::ModelPtr m = libcellml::Model::create();
     libcellml::IssuePtr e = libcellml::Issue::create(m);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::MODEL, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -597,7 +597,7 @@ TEST(Issue, createComponentWarning)
     libcellml::ComponentPtr c = libcellml::Component::create();
     libcellml::IssuePtr e = libcellml::Issue::create(c);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::COMPONENT, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::COMPONENT, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -606,7 +606,7 @@ TEST(Issue, createVariableWarning)
     libcellml::VariablePtr v = libcellml::Variable::create();
     libcellml::IssuePtr e = libcellml::Issue::create(v);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::VARIABLE, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::VARIABLE, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -615,7 +615,7 @@ TEST(Issue, createUnitsWarning)
     libcellml::UnitsPtr u = libcellml::Units::create();
     libcellml::IssuePtr e = libcellml::Issue::create(u);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::UNITS, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNITS, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -625,7 +625,7 @@ TEST(Issue, createUnitWarning)
     u->addUnit("second");
     libcellml::IssuePtr e = libcellml::Issue::create(libcellml::UnitReference::create(u, 0));
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::UNIT, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNIT, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -634,7 +634,7 @@ TEST(Issue, createImportSourceWarning)
     libcellml::ImportSourcePtr i = libcellml::ImportSource::create();
     libcellml::IssuePtr e = libcellml::Issue::create(i);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::IMPORT, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::IMPORT, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -643,7 +643,7 @@ TEST(Issue, createResetWarning)
     libcellml::ResetPtr r = libcellml::Reset::create();
     libcellml::IssuePtr e = libcellml::Issue::create(r);
     e->setLevel(libcellml::Issue::Level::WARNING);
-    EXPECT_EQ(libcellml::ItemType::RESET, e->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::RESET, e->itemType());
     EXPECT_EQ(libcellml::Issue::Level::WARNING, e->level());
 }
 
@@ -738,82 +738,82 @@ TEST(Issue, setGetItems)
 
     issue->setComponent(component);
     EXPECT_EQ(component, issue->component());
-    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::COMPONENT, issue->itemType());
     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item()));
 
     issue->setComponentRef(component);
     EXPECT_EQ(component, issue->componentRef());
-    EXPECT_EQ(libcellml::ItemType::COMPONENT_REF, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::COMPONENT_REF, issue->itemType());
     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item()));
 
     issue->setConnection(variable1, variable2);
     EXPECT_EQ(variable1, issue->connection()->variable1());
     EXPECT_EQ(variable2, issue->connection()->variable2());
-    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::CONNECTION, issue->itemType());
     EXPECT_EQ(variable1, std::any_cast<libcellml::VariablePairPtr>(issue->item())->variable1());
     EXPECT_EQ(variable2, std::any_cast<libcellml::VariablePairPtr>(issue->item())->variable2());
 
     issue->setEncapsulation(model);
     EXPECT_EQ(model, issue->encapsulation());
-    EXPECT_EQ(libcellml::ItemType::ENCAPSULATION, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::ENCAPSULATION, issue->itemType());
     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(issue->item()));
 
     issue->setImportSource(import);
     EXPECT_EQ(import, issue->importSource());
-    EXPECT_EQ(libcellml::ItemType::IMPORT, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::IMPORT, issue->itemType());
     EXPECT_EQ(import, std::any_cast<libcellml::ImportSourcePtr>(issue->item()));
 
     issue->setMapVariables(variable1, variable2);
     EXPECT_EQ(variable1, issue->mapVariables()->variable1());
     EXPECT_EQ(variable2, issue->mapVariables()->variable2());
-    EXPECT_EQ(libcellml::ItemType::MAP_VARIABLES, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MAP_VARIABLES, issue->itemType());
     EXPECT_EQ(variable1, std::any_cast<libcellml::VariablePairPtr>(issue->item())->variable1());
     EXPECT_EQ(variable2, std::any_cast<libcellml::VariablePairPtr>(issue->item())->variable2());
 
     issue->setMath(component);
     EXPECT_EQ(component, issue->math());
-    EXPECT_EQ(libcellml::ItemType::MATHML, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MATHML, issue->itemType());
     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item()));
 
     issue->setModel(model);
     EXPECT_EQ(model, issue->model());
-    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, issue->itemType());
     EXPECT_EQ(model, std::any_cast<libcellml::ModelPtr>(issue->item()));
 
     issue->setReset(reset);
     EXPECT_EQ(reset, issue->reset());
-    EXPECT_EQ(libcellml::ItemType::RESET, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::RESET, issue->itemType());
     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item()));
 
     issue->setResetValue(reset);
     EXPECT_EQ(reset, issue->resetValue());
-    EXPECT_EQ(libcellml::ItemType::RESET_VALUE, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::RESET_VALUE, issue->itemType());
     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item()));
 
     issue->setTestValue(reset);
     EXPECT_EQ(reset, issue->testValue());
-    EXPECT_EQ(libcellml::ItemType::TEST_VALUE, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::TEST_VALUE, issue->itemType());
     EXPECT_EQ(reset, std::any_cast<libcellml::ResetPtr>(issue->item()));
 
     issue->setUnit(libcellml::UnitReference::create(units, 0));
     EXPECT_EQ(units, issue->unit()->units());
     EXPECT_EQ(size_t(0), issue->unit()->index());
-    EXPECT_EQ(libcellml::ItemType::UNIT, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNIT, issue->itemType());
     EXPECT_EQ(units, std::any_cast<libcellml::UnitReferencePtr>(issue->item())->units());
     EXPECT_EQ(size_t(0), std::any_cast<libcellml::UnitReferencePtr>(issue->item())->index());
 
     issue->setUnits(units);
     EXPECT_EQ(units, issue->units());
-    EXPECT_EQ(libcellml::ItemType::UNITS, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNITS, issue->itemType());
     EXPECT_EQ(units, std::any_cast<libcellml::UnitsPtr>(issue->item()));
 
     issue->setVariable(variable1);
     EXPECT_EQ(variable1, issue->variable());
-    EXPECT_EQ(libcellml::ItemType::VARIABLE, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::VARIABLE, issue->itemType());
     EXPECT_EQ(variable1, std::any_cast<libcellml::VariablePtr>(issue->item()));
 
-    issue->setItem(libcellml::ItemType::COMPONENT, item);
-    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::COMPONENT, item);
+    EXPECT_EQ(libcellml::CellMLReferenceType::COMPONENT, issue->itemType());
     EXPECT_EQ(component, std::any_cast<libcellml::ComponentPtr>(issue->item()));
     EXPECT_EQ(component, issue->component());
 }
@@ -832,18 +832,18 @@ TEST(Issue, createCorrectType)
     auto pair = libcellml::VariablePair::create(variable1, variable2);
 
     EXPECT_NE(nullptr, libcellml::Issue::create(component));
-    EXPECT_NE(nullptr, libcellml::Issue::create(component, libcellml::ItemType::COMPONENT_REF));
-    EXPECT_NE(nullptr, libcellml::Issue::create(component, libcellml::ItemType::MATHML));
+    EXPECT_NE(nullptr, libcellml::Issue::create(component, libcellml::CellMLReferenceType::COMPONENT_REF));
+    EXPECT_NE(nullptr, libcellml::Issue::create(component, libcellml::CellMLReferenceType::MATHML));
     EXPECT_NE(nullptr, libcellml::Issue::create(variable1));
     EXPECT_NE(nullptr, libcellml::Issue::create(model));
-    EXPECT_NE(nullptr, libcellml::Issue::create(model, libcellml::ItemType::ENCAPSULATION));
+    EXPECT_NE(nullptr, libcellml::Issue::create(model, libcellml::CellMLReferenceType::ENCAPSULATION));
     EXPECT_NE(nullptr, libcellml::Issue::create(import));
     EXPECT_NE(nullptr, libcellml::Issue::create(reset));
-    EXPECT_NE(nullptr, libcellml::Issue::create(reset, libcellml::ItemType::RESET_VALUE));
-    EXPECT_NE(nullptr, libcellml::Issue::create(reset, libcellml::ItemType::TEST_VALUE));
+    EXPECT_NE(nullptr, libcellml::Issue::create(reset, libcellml::CellMLReferenceType::RESET_VALUE));
+    EXPECT_NE(nullptr, libcellml::Issue::create(reset, libcellml::CellMLReferenceType::TEST_VALUE));
     EXPECT_NE(nullptr, libcellml::Issue::create(units));
     EXPECT_NE(nullptr, libcellml::Issue::create(unit));
-    EXPECT_NE(nullptr, libcellml::Issue::create(pair, libcellml::ItemType::CONNECTION));
+    EXPECT_NE(nullptr, libcellml::Issue::create(pair, libcellml::CellMLReferenceType::CONNECTION));
     EXPECT_NE(nullptr, libcellml::Issue::create(pair));
 }
 
@@ -859,10 +859,10 @@ TEST(Issue, createMismatchedTypeReturnsNull)
     units->addUnit("second");
     auto unit = libcellml::UnitReference::create(units, 0);
 
-    EXPECT_EQ(nullptr, libcellml::Issue::create(component, libcellml::ItemType::MODEL));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(model, libcellml::ItemType::MATHML));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(reset, libcellml::ItemType::IMPORT));
-    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::VariablePair::create(variable1, variable2), libcellml::ItemType::VARIABLE));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(component, libcellml::CellMLReferenceType::MODEL));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(model, libcellml::CellMLReferenceType::MATHML));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(reset, libcellml::CellMLReferenceType::IMPORT));
+    EXPECT_EQ(nullptr, libcellml::Issue::create(libcellml::VariablePair::create(variable1, variable2), libcellml::CellMLReferenceType::VARIABLE));
 }
 
 TEST(Issue, createIssueWithNullptr)
@@ -905,35 +905,35 @@ TEST(Issue, setItemWithNullptr)
 
     auto issue = libcellml::Issue::create();
 
-    issue->setItem(libcellml::ItemType::COMPONENT, component);
-    EXPECT_EQ(libcellml::ItemType::COMPONENT, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::COMPONENT, component);
+    EXPECT_EQ(libcellml::CellMLReferenceType::COMPONENT, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::CONNECTION, pair1);
-    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::CONNECTION, pair1);
+    EXPECT_EQ(libcellml::CellMLReferenceType::CONNECTION, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::CONNECTION, pair2);
-    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::CONNECTION, pair2);
+    EXPECT_EQ(libcellml::CellMLReferenceType::CONNECTION, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::CONNECTION, pair3);
-    EXPECT_EQ(libcellml::ItemType::CONNECTION, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::CONNECTION, pair3);
+    EXPECT_EQ(libcellml::CellMLReferenceType::CONNECTION, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::ENCAPSULATION, model);
-    EXPECT_EQ(libcellml::ItemType::ENCAPSULATION, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::ENCAPSULATION, model);
+    EXPECT_EQ(libcellml::CellMLReferenceType::ENCAPSULATION, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::IMPORT, import);
-    EXPECT_EQ(libcellml::ItemType::IMPORT, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::IMPORT, import);
+    EXPECT_EQ(libcellml::CellMLReferenceType::IMPORT, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::RESET, reset);
-    EXPECT_EQ(libcellml::ItemType::RESET, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::RESET, reset);
+    EXPECT_EQ(libcellml::CellMLReferenceType::RESET, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::UNIT, unitItem);
-    EXPECT_EQ(libcellml::ItemType::UNIT, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::UNIT, unitItem);
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNIT, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::UNITS, units);
-    EXPECT_EQ(libcellml::ItemType::UNITS, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::UNITS, units);
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNITS, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::VARIABLE, variable);
-    EXPECT_EQ(libcellml::ItemType::VARIABLE, issue->itemType());
+    issue->setItem(libcellml::CellMLReferenceType::VARIABLE, variable);
+    EXPECT_EQ(libcellml::CellMLReferenceType::VARIABLE, issue->itemType());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullComponent)
@@ -1296,21 +1296,21 @@ TEST(Issue, clearStoredItem)
     auto model = libcellml::Model::create();
     auto issue = libcellml::Issue::create(model);
     EXPECT_EQ(model, issue->model());
-    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, issue->itemType());
 
     // Clear by setting to nullptr.
     issue->setModel(nullptr);
     EXPECT_EQ(nullptr, issue->model());
-    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNDEFINED, issue->itemType());
 
     issue->setModel(model);
     EXPECT_EQ(model, issue->model());
-    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, issue->itemType());
 
     // Clear by calling the clear function.
     issue->clear();
     EXPECT_EQ(nullptr, issue->model());
-    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNDEFINED, issue->itemType());
 }
 
 TEST(Issue, crossClearStoredItem)
@@ -1318,12 +1318,12 @@ TEST(Issue, crossClearStoredItem)
     auto model = libcellml::Model::create();
     auto issue = libcellml::Issue::create(model);
     EXPECT_EQ(model, issue->model());
-    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, issue->itemType());
 
     // Cannot clear by setting to nullptr through another type.
     issue->setEncapsulation(nullptr);
     EXPECT_EQ(nullptr, issue->model());
-    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNDEFINED, issue->itemType());
 }
 
 TEST(Issue, clear)
@@ -1332,7 +1332,7 @@ TEST(Issue, clear)
     auto model = libcellml::Model::create();
 
     EXPECT_EQ(nullptr, issue->model());
-    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNDEFINED, issue->itemType());
     EXPECT_EQ("", issue->description());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, issue->level());
     EXPECT_EQ(libcellml::Issue::ReferenceRule::UNDEFINED, issue->referenceRule());
@@ -1343,7 +1343,7 @@ TEST(Issue, clear)
     issue->setReferenceRule(libcellml::Issue::ReferenceRule::CONNECTION_CHILD);
 
     EXPECT_EQ(model, issue->model());
-    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, issue->itemType());
     EXPECT_EQ("description", issue->description());
     EXPECT_EQ(libcellml::Issue::Level::MESSAGE, issue->level());
     EXPECT_EQ(libcellml::Issue::ReferenceRule::CONNECTION_CHILD, issue->referenceRule());
@@ -1351,7 +1351,7 @@ TEST(Issue, clear)
     issue->clear();
 
     EXPECT_EQ(nullptr, issue->model());
-    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNDEFINED, issue->itemType());
     EXPECT_EQ("", issue->description());
     EXPECT_EQ(libcellml::Issue::Level::ERROR, issue->level());
     EXPECT_EQ(libcellml::Issue::ReferenceRule::UNDEFINED, issue->referenceRule());
@@ -1362,7 +1362,7 @@ TEST(Issue, setItemMisMatchingType)
     auto issue = libcellml::Issue::create();
     auto model = libcellml::Model::create();
 
-    issue->setItem(libcellml::ItemType::MATHML, model);
+    issue->setItem(libcellml::CellMLReferenceType::MATHML, model);
 
     EXPECT_EQ(nullptr, issue->math());
 }
@@ -1372,13 +1372,13 @@ TEST(Issue, setItemUndefined)
     auto issue = libcellml::Issue::create();
     auto model = libcellml::Model::create();
 
-    issue->setItem(libcellml::ItemType::MODEL, model);
+    issue->setItem(libcellml::CellMLReferenceType::MODEL, model);
 
     EXPECT_EQ(model, issue->model());
-    EXPECT_EQ(libcellml::ItemType::MODEL, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::MODEL, issue->itemType());
 
-    issue->setItem(libcellml::ItemType::UNDEFINED, model);
+    issue->setItem(libcellml::CellMLReferenceType::UNDEFINED, model);
 
     EXPECT_EQ(nullptr, issue->model());
-    EXPECT_EQ(libcellml::ItemType::UNDEFINED, issue->itemType());
+    EXPECT_EQ(libcellml::CellMLReferenceType::UNDEFINED, issue->itemType());
 }

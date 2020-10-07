@@ -14,7 +14,7 @@ from libcellml.analyserequationast import AnalyserEquationAst
 from libcellml.analysermodel import AnalyserModel
 from libcellml.analyservariable import AnalyserVariable
 from libcellml.component import Component
-from libcellml.enums import ItemType
+from libcellml.enums import CellMLReferenceType
 from libcellml.generator import Generator
 from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importer import Importer

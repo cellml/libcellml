@@ -152,7 +152,7 @@ Provides support for shared pointers declared in types.h.
   }
 }
 
-%typemap(in) libcellml::ItemType (int val, int ecode) {
+%typemap(in) libcellml::CellMLReferenceType (int val, int ecode) {
   ecode = SWIG_AsVal(int)($input, &val);
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
