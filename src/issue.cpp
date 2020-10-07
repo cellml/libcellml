@@ -362,7 +362,7 @@ void Issue::setUnit(const UnitPtr &unit)
 
 UnitPtr Issue::unit() const
 {
-    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::UNIT) ? std::any_cast<UnitPtr>(mPimpl->mItem) : Unit::create(nullptr, 0);
+    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::UNIT) ? std::any_cast<UnitPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setConnection(const VariablePairPtr &pair)
@@ -378,7 +378,7 @@ void Issue::setConnection(const VariablePtr &variable1, const VariablePtr &varia
 
 VariablePairPtr Issue::connection() const
 {
-    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::CONNECTION) ? std::any_cast<VariablePairPtr>(mPimpl->mItem) : VariablePair::create(nullptr, nullptr);
+    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::CONNECTION) ? std::any_cast<VariablePairPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setMapVariables(const VariablePairPtr &pair)
@@ -394,7 +394,7 @@ void Issue::setMapVariables(const VariablePtr &variable1, const VariablePtr &var
 
 VariablePairPtr Issue::mapVariables() const
 {
-    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::MAP_VARIABLES) ? std::any_cast<VariablePairPtr>(mPimpl->mItem) : VariablePair::create(nullptr, nullptr);
+    return (mPimpl->mCellMLReferenceType == CellMLReferenceType::MAP_VARIABLES) ? std::any_cast<VariablePairPtr>(mPimpl->mItem) : nullptr;
 }
 
 void Issue::setVariable(const VariablePtr &variable)

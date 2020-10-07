@@ -454,7 +454,7 @@ public:
      * Get the connection relevant to this issue.
      *
      * @return A @ref VariablePairPtr representing the connection relevant to this issue,
-     *         or @c std::pair(nullptr,nullptr) if the internal type is not @c CellMLReferenceType::CONNECTION.
+     *         or @c nullptr if the internal type is not @c CellMLReferenceType::CONNECTION.
      */
     VariablePairPtr connection() const;
 
@@ -484,7 +484,7 @@ public:
      * Get the equivalent variable pair relevant to this issue.
      *
      * @return A @c VariablePair representing the variable equivalence relevant to this issue,
-     *         or @c std::pair(nullptr,nullptr) if the internal type is not @c CellMLReferenceType::MAP_VARIABLES.
+     *         or @c nullptr if the internal type is not @c CellMLReferenceType::MAP_VARIABLES.
      */
     VariablePairPtr mapVariables() const;
 
@@ -541,7 +541,7 @@ public:
      * Get the unit relevant to this issue.
      *
      * @return A @c Unit relevant to this issue,
-     *         or @c std::pair(nullptr,0) if the internal type is not @c CellMLReferenceType::UNIT.
+     *         or @c nullptr if the internal type is not @c CellMLReferenceType::UNIT.
      */
     UnitPtr unit() const;
 
