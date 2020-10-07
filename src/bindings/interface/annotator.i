@@ -262,8 +262,8 @@ from libcellml import CellMLElement
 
     def assignId(self, *args):
         r"""Set the id of the given item to an automatically generated, unique string, and return new id."""
-        if (len(args) == 1):
-            if (type(args[0]).__name__ in ['list', 'tuple']):
+        if len(args) == 1:
+            if type(args[0]).__name__ in ['list', 'tuple']:
                 return _annotator.Annotator__assignId(self, args[0][1], args[0][0])
             return _annotator.Annotator__assignId(self, args[0])
         return _annotator.Annotator__assignId(self, args[0], args[1])
