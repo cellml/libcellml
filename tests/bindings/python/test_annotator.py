@@ -346,6 +346,9 @@ class AnnotatorTestCase(unittest.TestCase):
         annotator.assignId(item)
         self.assertEqual("b4da57", component3.id())
 
+        # For coverage only.
+        annotator._assignId(component2)
+
     def test_auto_ids_group(self):
         from libcellml import Annotator, Component, Model
         from libcellml.enums import CellMLElement_COMPONENT

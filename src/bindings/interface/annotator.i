@@ -127,6 +127,9 @@
 %feature("docstring") libcellml::Annotator::_itemCellmlElement
 "Private: Utility function to retrieve item type integer based on id.";
 
+%feature("docstring") libcellml::Annotator::_assignId
+"Private: Utility function to assign an automatic id.";
+
 %{
 #include "libcellml/annotator.h"
 %}
@@ -135,23 +138,24 @@
 
 %ignore libcellml::Annotator::item;
 %ignore libcellml::Annotator::items;
-%ignore libcellml::Annotator::assignId(const AnyItem &item);
+%ignore libcellml::Annotator::assignId;
 
-%ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &,libcellml::CellMLElement);
-%ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &,libcellml::CellMLElement);
-%ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::ImportSourcePtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &,libcellml::CellMLElement);
-%ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::UnitItem const &);
-%ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::VariablePair const &,libcellml::CellMLElement);
-%ignore libcellml::Annotator::assignId(libcellml::VariablePair const &);
-%ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &,libcellml::CellMLElement);
-%ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &);
-%ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &, size_t);
+// %ignore libcellml::Annotator::assignId(const AnyItem &item);
+// %ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &,libcellml::CellMLElement);
+// %ignore libcellml::Annotator::assignId(libcellml::ModelPtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &,libcellml::CellMLElement);
+// %ignore libcellml::Annotator::assignId(libcellml::ComponentPtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::ImportSourcePtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &,libcellml::CellMLElement);
+// %ignore libcellml::Annotator::assignId(libcellml::ResetPtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::UnitItem const &);
+// %ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::VariablePair const &,libcellml::CellMLElement);
+// %ignore libcellml::Annotator::assignId(libcellml::VariablePair const &);
+// %ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &,libcellml::CellMLElement);
+// %ignore libcellml::Annotator::assignId(libcellml::VariablePtr const &,libcellml::VariablePtr const &);
+// %ignore libcellml::Annotator::assignId(libcellml::UnitsPtr const &, size_t);
 
 %pythoncode %{
 # libCellML generated wrapper code starts here.
@@ -174,15 +178,64 @@ from libcellml import CellMLElement
         return itemInfo.first;
     }
 
+    std::string _assignId(const AnyItem &item) {
+        return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::ModelPtr const &item, libcellml::CellMLElement type) {
+        return $self->assignId(item, type);
+    }
+    std::string _assignId(libcellml::ModelPtr const &item) {
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::ComponentPtr const &item, libcellml::CellMLElement type){
+    return $self->assignId(item, type);
+    }
+    std::string _assignId(libcellml::ComponentPtr const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::ImportSourcePtr const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::ResetPtr const &item, libcellml::CellMLElement type){
+    return $self->assignId(item, type);
+    }
+    std::string _assignId(libcellml::ResetPtr const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::UnitsPtr const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::UnitItem const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::VariablePtr const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::VariablePair const &item, libcellml::CellMLElement type){
+    return $self->assignId(item, type);
+    }
+    std::string _assignId(libcellml::VariablePair const &item){
+    return $self->assignId(item);
+    }
+    std::string _assignId(libcellml::VariablePtr const &item1, libcellml::VariablePtr const &item2, libcellml::CellMLElement type) {
+    return $self->assignId(item1, item2, type);
+    }
+    std::string _assignId(libcellml::VariablePtr const &item1,libcellml::VariablePtr const &item2){
+    return $self->assignId(item1, item2);
+    }
+    std::string _assignId(libcellml::UnitsPtr const &item, size_t index){
+    return $self->assignId(item, index);
+    }
+
 %pythoncode %{
 
-    def assignId(self, arg1, arg2=None):
+    def assignId(self, *args):
         r"""Set the id of the given item to an automatically generated, unique string, and return new id."""
-        if arg2:
-            return _annotator.Annotator_assignId(self, arg1, arg2)
-        if type(arg1).__name__ in ['list', 'tuple']:
-            return _annotator.Annotator_assignId(self, arg1[1], arg1[0])
-        return _annotator.Annotator_assignId(self, arg1)
+        if (len(args) == 1):
+            if (type(args[0]).__name__ in ['list', 'tuple']):
+                return _annotator.Annotator__assignId(self, args[0][1], args[0][0])
+            return _annotator.Annotator__assignId(self, args[0])
+        return _annotator.Annotator__assignId(self, args[0], args[1])
 
     def item(self, id, index=-1):
         r"""Retrieve a unique item with the given id."""
