@@ -1393,8 +1393,8 @@ TEST(Parser, invalidImportsAndGetIssue)
 
 TEST(Parser, invalidModelWithDifferentCausesOfIssues)
 {
-    // Check for all causes of issues.
-    std::vector<bool> foundCause(7, false);
+    // Check for all item types of issues.
+    std::vector<bool> foundItemType(7, false);
 
     // Trigger CellML entity issues
     const std::string in =
@@ -1433,22 +1433,22 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     for (size_t i = 0; i < parser->issueCount(); ++i) {
         switch (parser->issue(i)->itemType()) {
         case libcellml::CellMLReferenceType::COMPONENT:
-            foundCause.at(0) = true;
+            foundItemType.at(0) = true;
             break;
         case libcellml::CellMLReferenceType::ENCAPSULATION:
-            foundCause.at(1) = true;
+            foundItemType.at(1) = true;
             break;
         case libcellml::CellMLReferenceType::IMPORT:
-            foundCause.at(2) = true;
+            foundItemType.at(2) = true;
             break;
         case libcellml::CellMLReferenceType::MODEL:
-            foundCause.at(3) = true;
+            foundItemType.at(3) = true;
             break;
         case libcellml::CellMLReferenceType::UNITS:
-            foundCause.at(4) = true;
+            foundItemType.at(4) = true;
             break;
         case libcellml::CellMLReferenceType::VARIABLE:
-            foundCause.at(5) = true;
+            foundItemType.at(5) = true;
             break;
         case libcellml::CellMLReferenceType::COMPONENT_REF:
         case libcellml::CellMLReferenceType::CONNECTION:
@@ -1470,13 +1470,13 @@ TEST(Parser, invalidModelWithDifferentCausesOfIssues)
     parser2->addIssue(undefinedIssue);
     EXPECT_EQ(size_t(1), parser2->issueCount());
     if (parser2->issue(0)->itemType() == libcellml::CellMLReferenceType::UNDEFINED) {
-        foundCause.at(6) = true;
+        foundItemType.at(6) = true;
     }
 
     // Check that we've found all the possible issue types
-    size_t index = 0;
-    for (auto state : foundCause) {
-        SCOPED_TRACE(index++);
+    size_t index = std::numeric_limits<size_t>::max();
+    for (auto state : foundItemType) {
+        SCOPED_TRACE(++index);
         EXPECT_TRUE(state);
     }
 }
