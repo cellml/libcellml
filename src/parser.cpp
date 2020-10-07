@@ -1122,7 +1122,6 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 issue->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponent->name() + "' as a parent component_ref but it does not have any children.");
                 issue->setEncapsulation(model);
                 issue->setReferenceRule(Issue::ReferenceRule::ENCAPSULATION_CHILD);
-                //KRM should this still be an issue??
                 mParser->addIssue(issue);
             }
         } else if (!parentComponent && haveComponentRef) {
