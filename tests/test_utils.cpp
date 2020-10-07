@@ -41,7 +41,7 @@ std::string fileContents(const std::string &fileName)
     return buffer.str();
 }
 
-void printIssues(const libcellml::LoggerPtr &l, bool headings, bool itemTypes, bool rule)
+void printIssues(const libcellml::LoggerPtr &l, bool headings, bool cellmlElementTypes, bool rule)
 {
     int width = int(floor(log10(l->errorCount())));
     for (size_t i = 0; i < l->issueCount(); ++i) {
@@ -65,8 +65,8 @@ void printIssues(const libcellml::LoggerPtr &l, bool headings, bool itemTypes, b
         if (headings) {
             std::cout << ", " << l->issue(i)->referenceHeading();
         }
-        if (itemTypes) {
-            std::cout << ", " << static_cast<int>(l->issue(i)->itemType());
+        if (cellmlElementTypes) {
+            std::cout << ", " << static_cast<int>(l->issue(i)->cellmlElementType());
         }
         if (rule) {
             std::cout << ", " << static_cast<int>(l->issue(i)->referenceRule());
@@ -195,17 +195,17 @@ void expectEqualIssuesSpecificationHeadings(const std::vector<std::string> &issu
     }
 }
 
-void expectEqualIssuesItemTypesLevels(const std::vector<std::string> &issues,
-                                      const std::vector<libcellml::CellmlElementType> &itemTypes,
+void expectEqualIssuesCellmlElementTypesLevels(const std::vector<std::string> &issues,
+                                      const std::vector<libcellml::CellmlElementType> &cellmlElementTypes,
                                       const std::vector<libcellml::Issue::Level> &levels,
                                       const libcellml::LoggerPtr &logger)
 {
     EXPECT_EQ(issues.size(), logger->issueCount());
-    EXPECT_EQ(itemTypes.size(), logger->issueCount());
+    EXPECT_EQ(cellmlElementTypes.size(), logger->issueCount());
     EXPECT_EQ(levels.size(), logger->issueCount());
     for (size_t i = 0; i < logger->issueCount() && i < issues.size(); ++i) {
         EXPECT_EQ(issues.at(i), logger->issue(i)->description());
-        EXPECT_EQ(itemTypes.at(i), logger->issue(i)->itemType());
+        EXPECT_EQ(cellmlElementTypes.at(i), logger->issue(i)->cellmlElementType());
         EXPECT_EQ(levels.at(i), logger->issue(i)->level());
     }
 }
