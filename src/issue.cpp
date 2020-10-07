@@ -120,7 +120,10 @@ IssuePtr Issue::create() noexcept
 
 IssuePtr Issue::create(const ComponentPtr &component, CellmlElementType cellmlElementType) noexcept
 {
-    if ((component != nullptr) && ((cellmlElementType == CellmlElementType::COMPONENT) || (cellmlElementType == CellmlElementType::COMPONENT_REF) || (cellmlElementType == CellmlElementType::MATH))) {
+    if ((component != nullptr)
+        && ((cellmlElementType == CellmlElementType::COMPONENT)
+            || (cellmlElementType == CellmlElementType::COMPONENT_REF)
+            || (cellmlElementType == CellmlElementType::MATH))) {
         auto issue = std::shared_ptr<Issue> {new Issue {component}};
         issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
@@ -141,7 +144,9 @@ IssuePtr Issue::create(const ImportSourcePtr &importSource) noexcept
 IssuePtr Issue::create(const ModelPtr &model, CellmlElementType cellmlElementType) noexcept
 {
     // Acceptable type values are: ENCAPSULATION, MODEL.
-    if ((model != nullptr) && ((cellmlElementType == CellmlElementType::MODEL) || (cellmlElementType == CellmlElementType::ENCAPSULATION))) {
+    if ((model != nullptr)
+        && ((cellmlElementType == CellmlElementType::MODEL)
+            || (cellmlElementType == CellmlElementType::ENCAPSULATION))) {
         auto issue = std::shared_ptr<Issue> {new Issue {model}};
         issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
@@ -152,7 +157,10 @@ IssuePtr Issue::create(const ModelPtr &model, CellmlElementType cellmlElementTyp
 IssuePtr Issue::create(const ResetPtr &reset, CellmlElementType cellmlElementType) noexcept
 {
     // Acceptable type values are: RESET, TEST_VALUE, RESET_VALUE.
-    if ((reset != nullptr) && ((cellmlElementType == CellmlElementType::RESET) || (cellmlElementType == CellmlElementType::RESET_VALUE) || (cellmlElementType == CellmlElementType::TEST_VALUE))) {
+    if ((reset != nullptr)
+        && ((cellmlElementType == CellmlElementType::RESET)
+            || (cellmlElementType == CellmlElementType::RESET_VALUE)
+            || (cellmlElementType == CellmlElementType::TEST_VALUE))) {
         auto issue = std::shared_ptr<Issue> {new Issue {reset}};
         issue->mPimpl->mCellmlElementType = cellmlElementType;
         return issue;
@@ -192,7 +200,9 @@ IssuePtr Issue::create(const UnitPtr &unit) noexcept
 
 IssuePtr Issue::create(const VariablePairPtr &variablePair, CellmlElementType cellmlElementType) noexcept
 {
-    if (variablePair->isValid() && ((cellmlElementType == CellmlElementType::CONNECTION) || (cellmlElementType == CellmlElementType::MAP_VARIABLES))) {
+    if (variablePair->isValid()
+        && ((cellmlElementType == CellmlElementType::CONNECTION)
+            || (cellmlElementType == CellmlElementType::MAP_VARIABLES))) {
         auto issue = std::shared_ptr<Issue> {new Issue {}};
         issue->mPimpl->mItem = variablePair;
         issue->mPimpl->mCellmlElementType = cellmlElementType;
