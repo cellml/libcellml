@@ -152,7 +152,7 @@ TEST(Annotator, getVariablePairFromId)
     EXPECT_EQ(v1v2, std::any_cast<libcellml::VariablePairPtr>(annotator->item("map_id").second));
     EXPECT_EQ(libcellml::CellmlElementType::CONNECTION, annotator->item("connection_id").first);
     EXPECT_TRUE((v1v2 == std::any_cast<libcellml::VariablePairPtr>(annotator->item("connection_id").second)
-     || (v3v4 == std::any_cast<libcellml::VariablePairPtr>(annotator->item("connection_id").second))));
+                 || (v3v4 == std::any_cast<libcellml::VariablePairPtr>(annotator->item("connection_id").second))));
 
     // Component refs are returned as CellmlElementType enum and ComponentPtr:
     EXPECT_EQ(libcellml::CellmlElementType::COMPONENT_REF, annotator->item("component_ref1_id").first);
@@ -1854,8 +1854,8 @@ TEST(Annotator, retrieveDuplicateIdItemsWithIndex)
 
     };
 
-    libcellml::VariablePairPtr pair; 
-    libcellml::VariablePairPtr testPair; 
+    libcellml::VariablePairPtr pair;
+    libcellml::VariablePairPtr testPair;
 
     auto annotator = libcellml::Annotator::create();
     annotator->setModel(model);
