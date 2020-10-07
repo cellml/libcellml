@@ -446,7 +446,8 @@ void Annotator::AnnotatorImpl::addIssueNoModel() const
 void Annotator::AnnotatorImpl::addInvalidArgument(CellMLElement type) const
 {
     auto issue = Issue::create();
-    issue->setDescription("The given type '" + cellmlElementAsString(type) + "' is invalid for this method.");
+    auto description = "The item is internally inconsistent: the enum type '" + cellmlElementAsString(type) + "' cannot be used with the stored item.";
+    issue->setDescription(description);
     issue->setLevel(Issue::Level::ERROR);
     mAnnotator->addIssue(issue);
 }
