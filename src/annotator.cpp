@@ -104,17 +104,20 @@ AnyItem convertToWeak(const AnyItem &item)
     AnyItem converted = std::make_pair(item.first, nullptr);
 
     auto type = item.first;
-    if ((type == CellmlElementType::COMPONENT) || (type == CellmlElementType::COMPONENT_REF)) {
+    if ((type == CellmlElementType::COMPONENT)
+        || (type == CellmlElementType::COMPONENT_REF)) {
         ComponentWeakPtr weakComponent = std::any_cast<ComponentPtr>(item.second);
         converted.second = weakComponent;
-    } else if ((type == CellmlElementType::CONNECTION) || (type == CellmlElementType::MAP_VARIABLES)) {
+    } else if ((type == CellmlElementType::CONNECTION)
+               || (type == CellmlElementType::MAP_VARIABLES)) {
         auto variablePair = std::any_cast<VariablePairPtr>(item.second);
         // auto v1 = variablePair->variable1();
         // VariableWeakPtr weakVariable1 = v1;
         // VariableWeakPtr weakVariable2 = variablePair->variable2();
         // converted.second = VariablePair::create(weakVariable1, weakVariable2);
         converted.second = variablePair;  // KRM this is already a weak pointer pair?
-    } else if ((type == CellmlElementType::ENCAPSULATION) || (type == CellmlElementType::MODEL)) {
+    } else if ((type == CellmlElementType::ENCAPSULATION)
+               || (type == CellmlElementType::MODEL)) {
         auto model = std::any_cast<ModelPtr>(item.second);
         ModelWeakPtr weakModel = model;
         converted.second = weakModel;
@@ -122,7 +125,9 @@ AnyItem convertToWeak(const AnyItem &item)
         auto importSource = std::any_cast<ImportSourcePtr>(item.second);
         ImportSourceWeakPtr weakImportSource = importSource;
         converted.second = weakImportSource;
-    } else if ((type == CellmlElementType::RESET) || (type == CellmlElementType::RESET_VALUE) || (type == CellmlElementType::TEST_VALUE)) {
+    } else if ((type == CellmlElementType::RESET)
+               || (type == CellmlElementType::RESET_VALUE)
+               || (type == CellmlElementType::TEST_VALUE)) {
         auto reset = std::any_cast<ResetPtr>(item.second);
         ResetWeakPtr weakReset = reset;
         converted.second = weakReset;
