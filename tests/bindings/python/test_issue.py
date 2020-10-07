@@ -403,7 +403,7 @@ class IssueTestCase(unittest.TestCase):
         from libcellml import Issue, Variable, VariablePair
 
         e = Issue()
-        self.assertIsNone(e.connection().variable1())
+        self.assertIsNone(e.connection())
         v1 = Variable("v1")
         v2 = Variable("v2")
         e.setConnection(VariablePair(v1, v2))
@@ -416,7 +416,7 @@ class IssueTestCase(unittest.TestCase):
         from libcellml import Issue, Variable, VariablePair
 
         e = Issue()
-        self.assertIsNone(e.mapVariables().variable1())
+        self.assertIsNone(e.mapVariables())
         v1 = Variable("v1")
         v2 = Variable("v2")
 
@@ -430,7 +430,7 @@ class IssueTestCase(unittest.TestCase):
         from libcellml import Issue, Units, Unit
 
         e = Issue()
-        self.assertIsNone(e.unit().units())
+        self.assertIsNone(e.unit())
 
         u = Units("my_units")
         u.addUnit("volt")

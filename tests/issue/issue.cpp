@@ -944,16 +944,16 @@ TEST(Issue, getMismatchedTypeReturnsNullComponent)
     issue->setComponent(component);
     EXPECT_NE(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -969,16 +969,16 @@ TEST(Issue, getMismatchedTypeReturnsNullComponentRef)
     issue->setComponentRef(component);
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_NE(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -998,19 +998,19 @@ TEST(Issue, getMismatchedTypeReturnsNullConnection)
     EXPECT_NE(nullptr, issue->connection()->variable1());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
     issue->setConnection(nullptr, nullptr);
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
-    EXPECT_EQ(nullptr, issue->connection()->variable2());
+    EXPECT_EQ(nullptr, issue->connection());
+    EXPECT_EQ(nullptr, issue->connection());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullEncapsulation)
@@ -1021,16 +1021,16 @@ TEST(Issue, getMismatchedTypeReturnsNullEncapsulation)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_NE(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1046,16 +1046,16 @@ TEST(Issue, getMismatchedTypeReturnsNullImportSource)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_NE(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1073,22 +1073,22 @@ TEST(Issue, getMismatchedTypeReturnsNullMapVariables)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_NE(nullptr, issue->mapVariables()->variable1());
+    EXPECT_NE(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
     issue->setMapVariables(nullptr, nullptr);
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable2());
+    EXPECT_EQ(nullptr, issue->mapVariables());
+    EXPECT_EQ(nullptr, issue->mapVariables());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullMath)
@@ -1098,16 +1098,16 @@ TEST(Issue, getMismatchedTypeReturnsNullMath)
     issue->setMath(component);
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_NE(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1123,16 +1123,16 @@ TEST(Issue, getMismatchedTypeReturnsNullModel)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_NE(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1148,16 +1148,16 @@ TEST(Issue, getMismatchedTypeReturnsNullReset)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_NE(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1173,16 +1173,16 @@ TEST(Issue, getMismatchedTypeReturnsNullResetValue)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_NE(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1198,16 +1198,16 @@ TEST(Issue, getMismatchedTypeReturnsNullTestValue)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_NE(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1225,10 +1225,10 @@ TEST(Issue, getMismatchedTypeReturnsUnit)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
@@ -1239,7 +1239,7 @@ TEST(Issue, getMismatchedTypeReturnsUnit)
     EXPECT_EQ(nullptr, issue->variable());
 
     issue->setUnit(libcellml::Unit::create(nullptr, size_t(0)));
-    EXPECT_FALSE(issue->unit()->isValid());
+    EXPECT_EQ(nullptr, issue->unit());
 }
 
 TEST(Issue, getMismatchedTypeReturnsNullUnits)
@@ -1250,16 +1250,16 @@ TEST(Issue, getMismatchedTypeReturnsNullUnits)
 
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_NE(nullptr, issue->units());
     EXPECT_EQ(nullptr, issue->variable());
 
@@ -1274,16 +1274,16 @@ TEST(Issue, getMismatchedTypeReturnsNullVariable)
     issue->setVariable(variable);
     EXPECT_EQ(nullptr, issue->component());
     EXPECT_EQ(nullptr, issue->componentRef());
-    EXPECT_EQ(nullptr, issue->connection()->variable1());
+    EXPECT_EQ(nullptr, issue->connection());
     EXPECT_EQ(nullptr, issue->encapsulation());
     EXPECT_EQ(nullptr, issue->importSource());
-    EXPECT_EQ(nullptr, issue->mapVariables()->variable1());
+    EXPECT_EQ(nullptr, issue->mapVariables());
     EXPECT_EQ(nullptr, issue->math());
     EXPECT_EQ(nullptr, issue->model());
     EXPECT_EQ(nullptr, issue->reset());
     EXPECT_EQ(nullptr, issue->resetValue());
     EXPECT_EQ(nullptr, issue->testValue());
-    EXPECT_EQ(nullptr, issue->unit()->units());
+    EXPECT_EQ(nullptr, issue->unit());
     EXPECT_EQ(nullptr, issue->units());
     EXPECT_NE(nullptr, issue->variable());
 
