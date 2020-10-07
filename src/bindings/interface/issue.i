@@ -134,7 +134,7 @@ Level::ERROR will be returned.";
 %pythoncode %{
 # libCellML generated wrapper code starts here.
 
-from libcellml import CellMLReferenceType
+from libcellml import CellmlElementType
 %}
 
 %create_constructor(Issue)
@@ -187,64 +187,64 @@ from libcellml import CellMLReferenceType
         def setItem(self, itemType, item):
             r"""Set the item by item type related to this issue."""
 
-            if itemType == CellMLReferenceType.COMPONENT:
+            if itemType == CellmlElementType.COMPONENT:
                 _issue.Issue_setComponent(self, item)
-            elif itemType == CellMLReferenceType.COMPONENT_REF:
+            elif itemType == CellmlElementType.COMPONENT_REF:
                 _issue.Issue_setComponentRef(self, item)
-            elif itemType == CellMLReferenceType.CONNECTION:
+            elif itemType == CellmlElementType.CONNECTION:
                 _issue.Issue_setConnection(self, item)
-            elif itemType == CellMLReferenceType.ENCAPSULATION:
+            elif itemType == CellmlElementType.ENCAPSULATION:
                 _issue.Issue_setEncapsulation(self, item)
-            elif itemType == CellMLReferenceType.IMPORT:
+            elif itemType == CellmlElementType.IMPORT:
                 _issue.Issue_setImportSource(self, item)
-            elif itemType == CellMLReferenceType.MAP_VARIABLES:
+            elif itemType == CellmlElementType.MAP_VARIABLES:
                 _issue.Issue_setMapVariables(self, item)
-            elif itemType == CellMLReferenceType.MODEL:
+            elif itemType == CellmlElementType.MODEL:
                 _issue.Issue_setModel(self, item)
-            elif itemType == CellMLReferenceType.RESET:
+            elif itemType == CellmlElementType.RESET:
                 _issue.Issue_setReset(self, item)
-            elif itemType == CellMLReferenceType.RESET_VALUE:
+            elif itemType == CellmlElementType.RESET_VALUE:
                 _issue.Issue_setResetValue(self, item)
-            elif itemType == CellMLReferenceType.TEST_VALUE:
+            elif itemType == CellmlElementType.TEST_VALUE:
                 _issue.Issue_setTestValue(self, item)
-            elif itemType == CellMLReferenceType.UNIT:
+            elif itemType == CellmlElementType.UNIT:
                 _issue.Issue_setUnit(self, item)
-            elif itemType == CellMLReferenceType.UNITS:
+            elif itemType == CellmlElementType.UNITS:
                 _issue.Issue_setUnits(self, item)
-            elif itemType == CellMLReferenceType.VARIABLE:
+            elif itemType == CellmlElementType.VARIABLE:
                 _issue.Issue_setVariable(self, item)
 
         def item(self):
             r"""Get the item relevant to this issue by item type (or ``None``)."""
 
             itemType = _issue.Issue_itemType(self)
-            if itemType == CellMLReferenceType.COMPONENT:
+            if itemType == CellmlElementType.COMPONENT:
                 return (itemType, _issue.Issue_component(self))
-            elif itemType == CellMLReferenceType.COMPONENT_REF:
+            elif itemType == CellmlElementType.COMPONENT_REF:
                 return (itemType, _issue.Issue_componentRef(self))
-            elif itemType == CellMLReferenceType.CONNECTION:
+            elif itemType == CellmlElementType.CONNECTION:
                 return (itemType, _issue.Issue_connection(self))
-            elif itemType == CellMLReferenceType.ENCAPSULATION:
+            elif itemType == CellmlElementType.ENCAPSULATION:
                 return (itemType, _issue.Issue_encapsulation(self))
-            elif itemType == CellMLReferenceType.IMPORT:
+            elif itemType == CellmlElementType.IMPORT:
                 return (itemType, _issue.Issue_importSource(self))
-            elif itemType == CellMLReferenceType.MAP_VARIABLES:
+            elif itemType == CellmlElementType.MAP_VARIABLES:
                 return (itemType, _issue.Issue_mapVariables(self))
-            elif itemType == CellMLReferenceType.MODEL:
+            elif itemType == CellmlElementType.MODEL:
                 return (itemType, _issue.Issue_model(self))
-            elif itemType == CellMLReferenceType.RESET:
+            elif itemType == CellmlElementType.RESET:
                 return (itemType, _issue.Issue_reset(self))
-            elif itemType == CellMLReferenceType.RESET_VALUE:
+            elif itemType == CellmlElementType.RESET_VALUE:
                 return (itemType, _issue.Issue_resetValue(self))
-            elif itemType == CellMLReferenceType.TEST_VALUE:
+            elif itemType == CellmlElementType.TEST_VALUE:
                 return (itemType, _issue.Issue_testValue(self))
-            elif itemType == CellMLReferenceType.UNIT:
+            elif itemType == CellmlElementType.UNIT:
                 return (itemType, _issue.Issue_unit(self))
-            elif itemType == CellMLReferenceType.UNITS:
+            elif itemType == CellmlElementType.UNITS:
                 return (itemType, _issue.Issue_units(self))
-            elif itemType == CellMLReferenceType.VARIABLE:
+            elif itemType == CellmlElementType.VARIABLE:
                 return (itemType, _issue.Issue_variable(self))
-            return (CellMLReferenceType.UNDEFINED, None)
+            return (CellmlElementType.UNDEFINED, None)
         %}
     }
 

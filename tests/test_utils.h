@@ -86,7 +86,7 @@ void TEST_EXPORT expectEqualIssuesSpecificationHeadings(const std::vector<std::s
                                                         const libcellml::LoggerPtr &logger);
 
 void TEST_EXPORT expectEqualIssuesItemTypesLevels(const std::vector<std::string> &issues,
-                                                  const std::vector<libcellml::CellMLReferenceType> &itemTypes,
+                                                  const std::vector<libcellml::CellmlElementType> &itemTypes,
                                                   const std::vector<libcellml::Issue::Level> &levels,
                                                   const libcellml::LoggerPtr &logger);
 
