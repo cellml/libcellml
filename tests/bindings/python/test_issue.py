@@ -12,8 +12,10 @@ class IssueTestCase(unittest.TestCase):
         from libcellml import ImportSource
         from libcellml import Model
         from libcellml import Reset
+        from libcellml import UnitReference
         from libcellml import Units
         from libcellml import Variable
+        from libcellml import VariablePair
 
         e1 = Issue()
         del e1
@@ -42,9 +44,17 @@ class IssueTestCase(unittest.TestCase):
         e7 = Issue(v)
         del e7
 
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        vp = VariablePair(v1, v2)
+        e8 = Issue(vp)
+        del e8
+
+        ur = UnitReference(u, 0)
+        e9 = Issue(ur)
+        del e9
+
     def test_item_type_enum(self):
-        import libcellml
-        from libcellml import Issue
         from libcellml import ItemType
 
         self.assertIsInstance(ItemType.COMPONENT, int)
@@ -396,7 +406,6 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsNone(e.connection().variable1())
         v1 = Variable("v1")
         v2 = Variable("v2")
-
         e.setConnection(VariablePair(v1, v2))
         p = e.connection()
         self.assertIsInstance(p.variable1(), Variable)
@@ -418,23 +427,25 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(p.variable2().name(), "v2")
 
     def test_unit_item(self):
-        from libcellml import Issue, Units
-        from libcellml.issue import UnitItem
+        from libcellml import Issue, Units, UnitReference
 
         e = Issue()
-        self.assertIsNone(e.unit()[0])
-        u = Units("my_units")
+        self.assertIsNone(e.unit().units())
 
-        e.setUnit(UnitItem(u, 3))
+        u = Units("my_units")
+        u.addUnit("volt")
+        u.addUnit("second")
+        u.addUnit("kelvin")
+        u.addUnit("metre")
+        e.setUnit(UnitReference(u, 3))
         ui = e.unit()
-        self.assertIsInstance(ui[0], Units)
-        self.assertEqual(ui[0].name(), "my_units")
-        self.assertEqual(ui[1], 3)
+        self.assertIsInstance(ui.units(), Units)
+        self.assertEqual(ui.units().name(), "my_units")
+        self.assertEqual(ui.index(), 3)
 
     def test_item(self):
-        from libcellml import Component, Issue, ImportSource, Model
+        from libcellml import Component, Issue, ImportSource, Model, UnitReference
         from libcellml import Reset, Units, Variable, ItemType, VariablePair
-        from libcellml.issue import UnitItem
 
         i = Issue()
 
@@ -452,11 +463,15 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(ItemType.UNITS, uItem[0])
         self.assertEqual("u", uItem[1].name())
 
-        i.setItem(ItemType.UNIT, UnitItem(Units("ui"), 2))
+        u = Units("ui")
+        u.addUnit("volt")
+        u.addUnit("second")
+        u.addUnit("metre")
+        i.setItem(ItemType.UNIT, UnitReference(u, 2))
         uiItem = i.item()
         self.assertEqual(ItemType.UNIT, uiItem[0])
-        self.assertEqual("ui", uiItem[1][0].name())
-        self.assertEqual(2, uiItem[1][1])
+        self.assertEqual("ui", uiItem[1].units().name())
+        self.assertEqual(2, uiItem[1].index())
 
         v1 = Variable("v1")
         v2 = Variable("v2")
@@ -561,18 +576,11 @@ class IssueTestCase(unittest.TestCase):
         self.assertEqual(Issue.Level.HINT, e.level())
 
     def test_unit_item_coverage(self):
-        from libcellml import Units
-        from libcellml.issue import UnitItem
-        #from libcellml.types import UnitItem
+        from libcellml import Units, UnitReference
 
         u = Units("bob")
-        u_i = UnitItem()
-        self.assertEqual(2, len(u_i))
-        self.assertEqual("(None, 0)", str(u_i))
-        u_i[0] = u
-        u_i[1] = 4
-        self.assertEqual("bob", u_i.first.name())
-        self.assertEqual(4, u_i.second)
+        u_i = UnitReference(u, 0)
+        self.assertFalse(u_i.isValid())
 
     def test_variable_pair_coverage(self):
         from libcellml import Variable, VariablePair
