@@ -242,7 +242,6 @@ from libcellml import CellMLElement
     }
 
 %pythoncode %{
-
     def assignId(self, *args):
         r"""Set the id of the given item to an automatically generated, unique string, and return new id."""
         if len(args) == 1:
@@ -311,7 +310,6 @@ from libcellml import CellMLElement
             items_with_id = self.item(id, c)
             itemsList.append(items_with_id)
         return itemsList
-
 %}
 
 }
