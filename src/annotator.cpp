@@ -469,7 +469,7 @@ bool Annotator::AnnotatorImpl::exists(const std::string &id, size_t index) const
 
 AnyItem Annotator::item(const std::string &id)
 {
-    AnyItem retrieved = std::make_pair(CellMLElement::UNDEFINED, nullptr);
+    AnyItem retrieved = std::make_pair(CellmlElementType::UNDEFINED, nullptr);
     auto num = itemCount(id);
     if (num == 1) {
         retrieved = item(id, 0);
